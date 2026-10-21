@@ -8,7 +8,7 @@
 
 ## 1. Disclosure of AI Assistance
 
-The team acknowledges the use of generative artificial intelligence, including **ChatGPT (OpenAI)**, to assist in preparing and presenting the ASTRA project documentation. Such assistance included structuring and synthesizing supplied meeting notes and draft materials, refining English-language explanations, improving clarity and consistency, and preparing report content and document formatting.
+The team acknowledges the use of generative artificial intelligence, including **ChatGPT (OpenAI)**, to assist in preparing and presenting the ASTRA project documentation. Such assistance included structuring and synthesizing supplied meeting notes and draft materials, refining English-language explanations, improving clarity and consistency, and preparing report content and document formatting. We used *Claude* for image rendering too.
 
 ## 2. Origin of the Project Work
 
