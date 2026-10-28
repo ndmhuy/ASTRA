@@ -1,5 +1,6 @@
 # ASTRA — Kế Hoạch Thiết Kế & Đặc Tả UI/UX (Master Plan)
-**Mục tiêu tài liệu:** Bản đặc tả kỹ thuật và kiến trúc giao diện chuẩn xác dành cho kỹ sư / AI lập trình xây dựng lại từ đầu (build from scratch).  
+
+**Mục tiêu tài liệu:** Bản đặc tả kỹ thuật, kiến trúc giao diện và phân tích Tư Duy Tính Toán (Computational Thinking) chuẩn xác dành cho kỹ sư / AI lập trình xây dựng lại từ đầu và phục vụ viết báo cáo học thuật.  
 **Dự án:** ASTRA — AI-Powered Exam Generation & Verification  
 **Nền tảng:** Desktop-First (Tối ưu cho màn hình ngang giáo viên 16:9, độ phân giải 1366x768 đến 1920x1080).
 
@@ -30,7 +31,7 @@ Tuyệt đối **NÉ TRÁNH** các lỗi giao diện AI thường gặp sau:
 
 ## 2. Luồng Trải Nghiệm Người Dùng (User Flow)
 
-### Bước 1: Màn hình khởi đầu (The Fork in the Road)
+### Màn hình khởi đầu (The Fork in the Road)
 Khi giáo viên mới truy cập vào trang web, không hiển thị một bảng điều khiển phức tạp. Hệ thống hiển thị một khung câu hỏi trực diện ngay chính giữa màn hình:
 
 ```
@@ -106,8 +107,6 @@ Toàn bộ màn hình Desktop được chia làm **2 khung song song cố địn
     - **Nút `[🌐 Tìm trên mạng]` (Toggle switch):** Bật/tắt chế độ tra cứu dữ liệu web thời gian thực.
     - **Nút `[Gửi / Mũi tên]`:** Nằm gọn ở góc phải thanh chat. Phím tắt: `Enter` để gửi, `Shift + Enter` để xuống dòng.
 
----
-
 ### 4.2 Khung bên Phải: Live Creation Canvas (Cơ Chế Dopamine)
 - **Mục tiêu UX:** Tạo cảm giác thỏa mãn và tin cậy cho giáo viên khi tận mắt chứng kiến đề thi đang được "dệt" thành hình từng câu một cách chuyên nghiệp.
 - **Cách thức hoạt động:**
@@ -126,7 +125,45 @@ Toàn bộ màn hình Desktop được chia làm **2 khung song song cố địn
 
 ---
 
-## 5. Cấu Trúc Thành Phần Giao Diện Đề Xuất (Component Architecture)
+## 5. Phân Tích Dưới Lăng Kính Tư Duy Tính Toán (Computational Thinking Analysis)
+
+*Phần này phân tích nền tảng tư duy tính toán cốt lõi định hình nên toàn bộ thiết kế giao diện ASTRA, bám sát khung chương trình CSC10014 và tiêu chí đánh giá độ phức tạp tư duy (Complexity).*
+
+### 5.1 Decomposition (Phân rã)
+- **Phân rã không gian làm việc (Workspace Decomposition):** Phân rã tiến trình soạn đề thành hai không gian độc lập về mặt nhận thức nhưng đồng bộ về dữ liệu:
+  1. *Không gian Chỉ huy & Tương tác (Control Plane - Khung Trái):* Nơi giáo viên ra lệnh, đính kèm tài liệu và giao tiếp.
+  2. *Không gian Sản phẩm & Thẩm định (Artifact Plane - Khung Phải):* Nơi kết quả đề thi được hiện thực hóa và kiểm duyệt trực tiếp.
+- **Phân rã hành vi sửa chữa (Item-Level Repair Decomposition):**  
+  Thay vì cơ chế "All-or-Nothing" (muốn đổi 1 câu phải chạy lại toàn bộ 40 câu gây tốn token và mất các câu đã ưng ý), hệ thống phân rã đề thi thành từng thực thể `QuestionItem`, cho phép gửi yêu cầu sửa riêng lẻ cho đúng câu đó mà không ảnh hưởng 39 câu còn lại.
+
+### 5.2 Pattern Recognition (Nhận diện mẫu)
+- **Mẫu thẩm định hội đồng thi (Exam Committee Proofreading Pattern):**  
+  Trong thực tế, giáo viên không đọc 40 câu với sự chú ý ngang nhau. Họ chỉ quan tâm sâu ở **các câu bị tranh cãi hoặc có nguy cơ lệch đáp án**. Giao diện nhận diện mẫu hành vi này để tạo cơ chế **Triage**: Phân cụm câu hỏi thành 2 tập hợp $\{ \text{Verified} \}$ (hiển thị sạch sẽ, không nút thừa) và $\{ \text{Flagged} \}$ (đóng khung lưu ý kèm 2 lựa chọn xử lý nhanh).
+- **Mẫu tương tác quen thuộc (Conversational Mental Model):**  
+  Giáo viên ngày nay đã quen thuộc với giao diện chatbot (ChatGPT/Claude). Việc tái sử dụng mẫu thanh chat hiện đại giúp loại bỏ hoàn toàn chi phí học cách sử dụng (Zero-learning curve).
+
+### 5.3 Abstraction (Trừu tượng hóa & Giấu thông tin)
+- **Layered Abstraction (Trừu tượng hóa phân tầng):**  
+  UI đóng vai trò là tầng trừu tượng cao nhất, che giấu hoàn toàn các chi tiết kỹ thuật phức tạp bên dưới (như cấu trúc mạng tác tử, vector embedding, RAG retrieval, token limits, multi-turn prompts). Giáo viên chỉ tương tác với các thực thể sư phạm thuần túy: *Đề bài, Đáp án, SGK, Barem điểm*.
+- **Information Hiding qua Onboarding Fork:**  
+  Câu hỏi khởi đầu *"Bạn muốn tạo đề nhanh?"* là một lớp trừu tượng hóa: nó đóng gói toàn bộ ma trận kiến thức phức tạp thành một câu hỏi nhị phân đơn giản, bảo vệ giáo viên khỏi sự choáng ngợp thông tin (cognitive overload).
+
+### 5.4 Algorithm Design (Thiết kế luồng thuật toán UI)
+- **Máy trạng thái hữu hạn (Finite State Machine - FSM):**  
+  Giao diện hoạt động như một FSM với các chuyển trạng thái xác định:  
+  $$\text{ONBOARDING} \xrightarrow{\text{chọn}} \text{WORKSPACE\_IDLE} \xrightarrow{\text{prompt}} \text{STREAMING\_GENERATION} \xrightarrow{\text{hoàn tất}} \text{READY\_TO\_EXPORT}$$
+- **Thuật toán tiếp nhận luồng sự kiện (Dopamine Streaming Algorithm):**  
+  Tiếp nhận luồng Server-Sent Events (SSE) bất đồng bộ từ backend, giải mã JSON từng câu và chèn trực tiếp vào Document Object Model (DOM) theo đúng thứ tự mà không gây hiện tượng giật trang (layout shift).
+
+### 5.5 Spatial & Temporal Reasoning (Tư duy Không gian & Thời gian)
+- **Spatial Reasoning (Tư duy cấu trúc thị giác):**  
+  Áp dụng mô hình bố cục ngang 40–60. Khung chat bên trái giữ vai trò neo thông tin điều khiển, khung canvas bên phải đóng vai trò mặt giấy in mở rộng. Mắt người dùng di chuyển tự nhiên từ trái (mô tả ý định) sang phải (chứng kiến sản phẩm thành hình) theo quy luật dòng chảy thị giác tự nhiên.
+- **Temporal Reasoning (Tư duy tiến trình thời gian):**  
+  Thời gian chạy của hệ thống Multi-Agent kéo dài từ 2–5 phút. Nếu để màn hình chờ thông thường, người dùng sẽ nghĩ hệ thống bị treo. Bằng cách kích hoạt cơ chế sinh câu hỏi song song (cứ xong câu nào hiện câu đó), thời gian chờ tâm lý (perceived latency) được triệt tiêu, kích hoạt sự hứng thú và tin tưởng vào tiến độ công việc.
+
+---
+
+## 6. Cấu Trúc Thành Phần Giao Diện Đề Xuất (Component Architecture)
 
 Dành cho AI hoặc Kỹ sư viết code Frontend:
 
@@ -154,7 +191,28 @@ src/
 
 ---
 
-## 6. Tiêu Chuẩn Nghiệm Thu Kỹ Thuật (Acceptance Checklist)
+## 7. Công Nghệ & Tech Stack (Implementation Stack)
+
+*Mục này đóng vai trò tham chiếu kỹ thuật cho việc hiện thực hóa:*
+
+- **Giao diện & Ứng dụng Client:**
+  - **Framework:** React 19 + TypeScript (Đảm bảo an toàn kiểu dữ liệu cho các hợp đồng interface).
+  - **Build Tool:** Vite (Tốc độ biên dịch siêu tốc < 2.5 giây, HMR tức thì).
+  - **Styling:** CSS Modules / Tailwind CSS cấu hình nhẹ (Tập trung typography, khoảng đệm, bo góc 4px–8px).
+- **Xử lý Công thức & Ký hiệu Khoa học:**
+  - **KaTeX (`katex`):** Bộ thư viện toán học nhanh nhất hiện nay, hiển thị công thức Toán, Lý, Hóa chuẩn LaTeX cho thi THPTQG.
+- **Hệ thống Biểu tượng (Icons):**
+  - **Lucide-React:** Bộ icon hình học thanh mảnh, hiện đại, kích thước chuẩn 16px–20px.
+- **Giao thức Giao tiếp với Multi-Agent Backend:**
+  - **Server-Sent Events (SSE):** Duy trì kết nối một chiều thời gian thực để stream từng câu hỏi và trạng thái kiểm duyệt từ backend lên Live Canvas.
+  - **REST API (`fetch` / JSON):** Xử lý gửi prompt, đính kèm tệp và yêu cầu sửa câu hỏi đơn lẻ.
+- **Xuất bản Tài liệu:**
+  - **Tệp Word (.docx):** Sinh tệp DOCX trực tiếp từ cấu trúc dữ liệu `ExamPackage` để giáo viên mở bằng Microsoft Word.
+  - **Tệp PDF:** Tận dụng CSS Print Stylesheet để in trực tiếp từ trình duyệt mà không làm lệch font.
+
+---
+
+## 8. Tiêu Chuẩn Nghiệm Thu Kỹ Thuật (Acceptance Checklist)
 
 1. **Hiển thị Desktop:** Màn hình ngang hiển thị đầy đủ cả Khung Chat và Khung Giấy thi cùng lúc mà không bị vỡ bố cục hay phải cuộn ngang.
 2. **Khởi đầu 1 câu hỏi:** Khi vừa tải trang, chỉ có đúng một câu hỏi chào và 2 nút lựa chọn rõ ràng.
