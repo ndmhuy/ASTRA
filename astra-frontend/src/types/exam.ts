@@ -125,3 +125,11 @@ export interface GenerationProgress {
   statusMessage: string;       // Thông điệp trạng thái chi tiết
   latestItemPreview?: QuestionItem; // Câu hỏi vừa được kiểm duyệt để xem trước
 }
+
+
+export interface ChatMessage {
+  id: string;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  timestamp: string;
+}

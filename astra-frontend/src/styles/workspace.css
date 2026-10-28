@@ -1,0 +1,68 @@
+/* ASTRA Workspace Layout — workspace.css */
+
+.astra-workspace-split {
+  display: flex;
+  height: calc(100vh - 58px); /* trừ navbar */
+  overflow: hidden;
+}
+
+.astra-chat-pane {
+  width: 38%;
+  min-width: 320px;
+  border-right: 1.5px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.astra-canvas-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #f8fafc;
+  overflow: hidden;
+}
+
+/* Chat message flat lines */
+.chat-msg-user {
+  text-align: right;
+  padding: 8px 16px;
+  color: #334155;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.chat-msg-assistant {
+  padding: 8px 16px;
+  color: #0f172a;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.chat-msg-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #059669;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+
+/* Question card */
+.exam-question-card {
+  margin-bottom: 20px;
+  padding: 16px 20px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  transition: opacity 200ms ease;
+}
+
+.exam-question-card.appearing {
+  opacity: 0;
+}
+
+.exam-question-card.visible {
+  opacity: 1;
+}

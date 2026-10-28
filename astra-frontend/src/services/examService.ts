@@ -438,5 +438,32 @@ export class ApiExamService implements IExamService {
   }
 }
 
-// Singleton export: Toggle between MockExamService and ApiExamService seamlessly
-export const examService: IExamService = new MockExamService();
+// ============================================================
+// SERVICE SELECTOR — điều khiển bởi .env
+// ============================================================
+// Để chuyển sang backend thật:
+//   1. Trong file .env, đặt VITE_SERVICE_MODE=api
+//   2. Đặt VITE_API_BASE_URL=http://your-backend-url/api
+//   3. Restart dev server (npm run dev)
+//
+// Backend cần implement 4 endpoints:
+//   POST   /api/exams/generate                         → { jobId: string }
+//   GET    /api/exams/{jobId}/events                   → SSE stream of GenerationProgress
+//   GET    /api/exams/{jobId}                          → ExamPackage
+//   POST   /api/exams/{jobId}/questions/{id}/regenerate → QuestionItem
+//   PUT    /api/exams/{jobId}/questions/{id}            → void
+//   GET    /api/exams/{jobId}/export?type=...&format=... → file download
+//
+// SSE event format (mỗi data line):
+//   { stage, stageName, percent, estimatedSecondsLeft,
+//     completedItems, totalItems, statusMessage,
+//     latestItemPreview?: QuestionItem }
+// ============================================================
+
+const serviceMode = import.meta.env.VITE_SERVICE_MODE ?? 'mock';
+const apiBaseUrl  = import.meta.env.VITE_API_BASE_URL  ?? '/api';
+
+export const examService: IExamService =
+  serviceMode === 'api'
+    ? new ApiExamService(apiBaseUrl)
+    : new MockExamService();
