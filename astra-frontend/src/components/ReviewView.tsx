@@ -4,13 +4,13 @@ import { MathRenderer } from './MathRenderer';
 import { EditQuestionModal } from './EditQuestionModal';
 import { ExportModal } from './ExportModal';
 import { 
-  CheckCircle, 
   AlertCircle, 
   Edit3, 
   Check, 
   RefreshCw,
   Printer,
-  ArrowLeft
+  ArrowLeft,
+  Filter
 } from 'lucide-react';
 
 interface ReviewViewProps {
@@ -59,168 +59,234 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
     }
   };
 
+  const scrollToQuestion = (id: number) => {
+    const el = document.getElementById(`question-card-${id}`);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
   return (
-    <div className="astra-simple-container">
-      {/* Top Navigation Bar: Back & Print */}
-      <div className="flex items-center justify-between mb-5">
+    <div className="astra-desktop-workspace">
+      {/* Top Bar Navigation */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <button
           onClick={onBackToConfig}
           className="astra-back-link"
         >
-          <ArrowLeft className="w-5 h-5 mr-1.5" />
-          <span>Quay lại chỉnh sửa yêu cầu</span>
+          <ArrowLeft className="w-4 h-4 mr-1.5" />
+          <span>Quay lại trang tạo đề</span>
         </button>
 
-        <button
-          onClick={() => setIsExportOpen(true)}
-          className="astra-hero-button sm:w-auto px-7 py-3.5 shadow-md flex items-center gap-2"
-        >
-          <Printer className="w-5 h-5" />
-          <span>XUẤT BẢN WORD / IN ĐỀ</span>
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setIsExportOpen(true)}
+            className="astra-btn-baby-green px-6 py-3 shadow-md flex items-center gap-2"
+          >
+            <Printer className="w-5 h-5" />
+            <span>XUẤT BẢN WORD / IN ĐỀ</span>
+          </button>
+        </div>
       </div>
 
-      {/* Paper Header Card */}
-      <div className="astra-clean-card mb-8">
-        <div className="text-xs font-bold text-indigo-700 uppercase tracking-wider mb-1.5">
-          {examPackage.subject} · Lớp {examPackage.grade} · Đề số: {examPackage.examId}
-        </div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 leading-snug">
-          {examPackage.title}
-        </h1>
-        <p className="text-base text-gray-600 mt-2">
-          Thời gian làm bài: <strong>{examPackage.durationMinutes} phút</strong> · Tổng số: <strong>{questions.length} câu trắc nghiệm</strong>
-        </p>
+      {/* Desktop Horizontal 2-Column Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
+        
+        {/* ====================================================================
+            LEFT SIDEBAR: BẢNG ĐIỀU HƯỚNG CÂU HỎI & THỐNG KÊ (STICKY)
+            ==================================================================== */}
+        <div className="lg:col-span-4 sticky top-24 space-y-4">
+          <div className="astra-panel p-5">
+            <div className="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-1">
+              {examPackage.subject} · Lớp {examPackage.grade}
+            </div>
+            <h2 className="text-lg font-extrabold text-gray-900 leading-snug">
+              {examPackage.title}
+            </h2>
+            <div className="text-xs text-gray-500 mt-1 mb-4">
+              Thời gian: <strong>{examPackage.durationMinutes} phút</strong> · Mã: {examPackage.examId}
+            </div>
 
-        {/* Friendly Triage Notice (Only if there are flagged items) */}
-        {flaggedCount > 0 ? (
-          <div className="astra-notice-banner mt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div className="flex items-center gap-3">
-              <AlertCircle className="w-6 h-6 text-amber-600 flex-shrink-0" />
-              <div className="text-sm sm:text-base text-amber-900 font-medium">
-                Hệ thống phát hiện <strong>{flaggedCount} câu</strong> có thể gây phân vân cho học sinh. Thầy/Cô nên xem qua trước khi in nhé.
+            {/* Thống kê nhanh */}
+            <div className="grid grid-cols-2 gap-2 pb-4 mb-4 border-b border-gray-100">
+              <div className="p-2.5 bg-emerald-50 rounded-xl text-center">
+                <div className="text-xs text-emerald-700 font-semibold">Đã kiểm duyệt</div>
+                <div className="text-lg font-extrabold text-emerald-800">
+                  {questions.length - flaggedCount} / {questions.length}
+                </div>
+              </div>
+              <div className={`p-2.5 rounded-xl text-center ${flaggedCount > 0 ? 'bg-amber-50 text-amber-800' : 'bg-gray-50 text-gray-600'}`}>
+                <div className="text-xs font-semibold">Cần lưu ý</div>
+                <div className="text-lg font-extrabold">
+                  {flaggedCount} câu {flaggedCount > 0 && '⚠️'}
+                </div>
               </div>
             </div>
 
-            <button
-              onClick={() => setOnlyFlagged(!onlyFlagged)}
-              className="astra-toggle-chip"
-            >
-              {onlyFlagged ? 'Xem lại toàn bộ 40 câu' : `Chỉ xem ${flaggedCount} câu cần lưu ý`}
-            </button>
-          </div>
-        ) : (
-          <div className="mt-5 pt-4 border-t border-gray-100 flex items-center gap-2.5 text-sm text-emerald-700 font-semibold">
-            <CheckCircle className="w-5 h-5 text-emerald-600" />
-            Toàn bộ câu hỏi đều đạt chuẩn kiểm định độc lập và không có xung đột đáp án.
-          </div>
-        )}
-      </div>
-
-      {/* Clean Paper-like Question List */}
-      <div className="space-y-6">
-        {displayQuestions.map((q) => {
-          const isFlagged = q.status === 'FLAGGED';
-          const isRepairing = repairingId === q.id;
-
-          return (
-            <div
-              key={q.id}
-              className={`astra-paper-question ${isFlagged ? 'flagged' : ''}`}
-            >
-              {/* Question Stem */}
-              <div className="flex items-start justify-between gap-4 mb-4">
-                <div className="text-lg text-gray-900 leading-relaxed font-semibold">
-                  <span className="text-indigo-900 font-bold mr-2 text-xl">Câu {q.id}:</span>
-                  <MathRenderer content={q.stem} />
-                </div>
-
-                {/* Subtle Edit button */}
+            {/* Lọc câu hỏi */}
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                Mục lục câu hỏi ({questions.length} câu):
+              </span>
+              {flaggedCount > 0 && (
                 <button
-                  onClick={() => setEditingQuestion(q)}
-                  className="astra-subtle-edit-btn"
-                  title="Chỉnh sửa câu hỏi này"
+                  onClick={() => setOnlyFlagged(!onlyFlagged)}
+                  className={`text-xs font-bold px-2.5 py-1 rounded-full border transition-all ${onlyFlagged ? 'bg-amber-500 text-white border-amber-500' : 'bg-amber-50 text-amber-800 border-amber-200'}`}
                 >
-                  <Edit3 className="w-4 h-4 mr-1" />
-                  <span>Sửa</span>
+                  <Filter className="w-3 h-3 inline mr-1" />
+                  {onlyFlagged ? 'Hiện tất cả' : 'Chỉ xem cờ'}
                 </button>
-              </div>
-
-              {/* Choices in Clean Layout */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-base text-gray-800 my-4">
-                {(['A', 'B', 'C', 'D'] as const).map((k) => {
-                  const isCorrect = q.key === k;
-                  return (
-                    <div
-                      key={k}
-                      className={`astra-paper-choice ${isCorrect ? 'correct' : ''}`}
-                    >
-                      <span className="font-extrabold mr-2.5 text-gray-800 text-lg">{k}.</span>
-                      <span className="flex-1"><MathRenderer content={q.choices[k]} /></span>
-                      {isCorrect && (
-                        <span className="ml-auto text-xs font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">
-                          Đáp án đúng
-                        </span>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* If Flagged: Show clear, friendly pedagogical guidance with 2 simple buttons */}
-              {isFlagged ? (
-                <div className="astra-flagged-box mt-4 p-4 rounded-xl bg-amber-50 border-2 border-amber-200">
-                  <div className="text-sm font-bold text-amber-900 mb-1.5 flex items-center gap-2">
-                    <AlertCircle className="w-5 h-5 text-amber-600" />
-                    Lưu ý sư phạm từ hệ thống:
-                  </div>
-                  <div className="text-sm text-amber-800 mb-4 leading-relaxed font-medium">
-                    {q.auditNotes || 'Phương án nhiễu có thể khiến học sinh nhầm lẫn công thức. Thầy/Cô kiểm tra lại đáp án nhé.'}
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-3">
-                    <button
-                      onClick={() => handleQuickApprove(q)}
-                      className="astra-btn-approve"
-                    >
-                      <Check className="w-4 h-4 mr-1.5" />
-                      Tôi đồng ý với câu hỏi này
-                    </button>
-                    <button
-                      onClick={() => handleRegenerate(q.id)}
-                      disabled={isRepairing}
-                      className="astra-btn-repair"
-                    >
-                      <RefreshCw className={`w-4 h-4 mr-1.5 ${isRepairing ? 'animate-spin' : ''}`} />
-                      {isRepairing ? 'Đang tạo câu mới...' : 'Đổi câu hỏi khác'}
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                /* Verified Question: Clean, subtle explanation */
-                <div className="text-sm text-gray-600 mt-3 pt-3 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div>
-                    <strong className="text-gray-700">Hướng dẫn giải:</strong> <MathRenderer content={q.explanation} />
-                  </div>
-                  <span className="text-emerald-700 font-semibold text-xs whitespace-nowrap bg-emerald-50 px-2.5 py-1 rounded-full self-start sm:self-auto">
-                    ✔ Chuẩn SGK
-                  </span>
-                </div>
               )}
             </div>
-          );
-        })}
-      </div>
 
-      {/* Floating Bottom Print Action for easy reaching */}
-      <div className="mt-10 text-center">
-        <button
-          onClick={() => setIsExportOpen(true)}
-          className="astra-hero-button sm:w-auto px-10 py-4 shadow-lg inline-flex items-center gap-2 text-lg"
-        >
-          <Printer className="w-6 h-6" />
-          <span>HOÀN TẤT & XUẤT FILE WORD</span>
-        </button>
+            {/* Ma trận các ô số câu để nhảy nhanh */}
+            <div className="grid grid-cols-5 gap-2 max-h-60 overflow-y-auto p-1">
+              {questions.map((q) => {
+                const isFlagged = q.status === 'FLAGGED';
+                return (
+                  <button
+                    key={q.id}
+                    onClick={() => scrollToQuestion(q.id)}
+                    className={`astra-nav-number-cell ${isFlagged ? 'flagged' : 'verified'}`}
+                    title={`Câu ${q.id}: ${q.topic} - ${isFlagged ? 'Cần kiểm tra' : 'Đã duyệt'}`}
+                  >
+                    <span>{q.id}</span>
+                    {isFlagged ? (
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500 ml-1"></span>
+                    ) : (
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 ml-1"></span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="mt-5 pt-3 border-t border-gray-100">
+              <button
+                onClick={() => setIsExportOpen(true)}
+                className="w-full astra-btn-baby-green py-2.5 text-sm"
+              >
+                <Printer className="w-4 h-4 mr-1.5" />
+                <span>In đề ngay (.doc / .pdf)</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* ====================================================================
+            RIGHT MAIN AREA: NỘI DUNG ĐỀ THI DẠNG TRANG IN CHUẨN
+            ==================================================================== */}
+        <div className="lg:col-span-8 space-y-5">
+          {flaggedCount > 0 && !onlyFlagged && (
+            <div className="p-4 bg-amber-50 border-2 border-amber-200 rounded-2xl flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0" />
+                <div className="text-sm text-amber-900 font-medium">
+                  Có <strong>{flaggedCount} câu</strong> được đánh dấu cần xem xét (đã tô viền vàng bên dưới).
+                </div>
+              </div>
+              <button
+                onClick={() => setOnlyFlagged(true)}
+                className="text-xs font-bold text-amber-800 bg-white border border-amber-300 px-3 py-1.5 rounded-lg hover:bg-amber-100"
+              >
+                Lọc ra để xem
+              </button>
+            </div>
+          )}
+
+          {displayQuestions.map((q) => {
+            const isFlagged = q.status === 'FLAGGED';
+            const isRepairing = repairingId === q.id;
+
+            return (
+              <div
+                key={q.id}
+                id={`question-card-${q.id}`}
+                className={`astra-paper-question ${isFlagged ? 'flagged' : ''}`}
+              >
+                {/* Header câu hỏi */}
+                <div className="flex items-start justify-between gap-4 mb-3">
+                  <div className="text-base text-gray-900 leading-relaxed font-semibold">
+                    <span className="text-emerald-900 font-extrabold mr-2 text-lg">Câu {q.id}:</span>
+                    <MathRenderer content={q.stem} />
+                  </div>
+
+                  <button
+                    onClick={() => setEditingQuestion(q)}
+                    className="astra-subtle-edit-btn"
+                    title="Chỉnh sửa câu hỏi này"
+                  >
+                    <Edit3 className="w-3.5 h-3.5 mr-1" />
+                    <span>Sửa</span>
+                  </button>
+                </div>
+
+                {/* 4 phương án A, B, C, D */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-800 my-3">
+                  {(['A', 'B', 'C', 'D'] as const).map((k) => {
+                    const isCorrect = q.key === k;
+                    return (
+                      <div
+                        key={k}
+                        className={`astra-paper-choice ${isCorrect ? 'correct' : ''}`}
+                      >
+                        <span className="font-extrabold mr-2 text-gray-800 text-base">{k}.</span>
+                        <span className="flex-1"><MathRenderer content={q.choices[k]} /></span>
+                        {isCorrect && (
+                          <span className="ml-auto text-xs font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">
+                            Đáp án đúng
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Khung cảnh báo nếu có cờ */}
+                {isFlagged ? (
+                  <div className="astra-flagged-box mt-3.5 p-4 rounded-xl bg-amber-50 border-2 border-amber-200">
+                    <div className="text-xs font-bold text-amber-900 mb-1 flex items-center gap-1.5">
+                      <AlertCircle className="w-4 h-4 text-amber-600" />
+                      Lưu ý từ hệ thống thẩm định:
+                    </div>
+                    <div className="text-xs sm:text-sm text-amber-800 mb-3 leading-relaxed font-medium">
+                      {q.auditNotes || 'Phương án nhiễu có thể gây phân vân cho học sinh. Thầy/Cô kiểm tra lại nhé.'}
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <button
+                        onClick={() => handleQuickApprove(q)}
+                        className="astra-btn-approve text-xs py-2 px-3.5"
+                      >
+                        <Check className="w-3.5 h-3.5 mr-1" />
+                        Tôi đồng ý với câu hỏi này
+                      </button>
+                      <button
+                        onClick={() => handleRegenerate(q.id)}
+                        disabled={isRepairing}
+                        className="astra-btn-repair text-xs py-2 px-3.5"
+                      >
+                        <RefreshCw className={`w-3.5 h-3.5 mr-1 ${isRepairing ? 'animate-spin' : ''}`} />
+                        {isRepairing ? 'Đang tạo câu mới...' : 'Đổi câu hỏi khác'}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  /* Câu đã đạt: Hướng dẫn giải nhẹ nhàng */
+                  <div className="text-xs text-gray-600 mt-2.5 pt-2.5 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                      <strong className="text-gray-700">Hướng dẫn giải:</strong> <MathRenderer content={q.explanation} />
+                    </div>
+                    <span className="text-emerald-700 font-semibold text-xs whitespace-nowrap bg-emerald-50 px-2 py-0.5 rounded-full">
+                      ✔ Chuẩn SGK
+                    </span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
       </div>
 
       {/* Edit Modal */}
