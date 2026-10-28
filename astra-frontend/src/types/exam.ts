@@ -7,6 +7,7 @@
  */
 
 export type Subject = 
+  | 'Tổng hợp'
   | 'Vật Lý'
   | 'Toán Học'
   | 'Hóa Học'

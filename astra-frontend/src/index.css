@@ -1,7 +1,7 @@
 /* ==========================================================================
-   ASTRA DESIGN SYSTEM - CLEAN, DIRECT & USER-FRIENDLY
-   - Tập trung vào tính năng chính: Tạo đề từ Prompt
-   - Nút to, rõ, không chồng lấn, điều hướng cực kỳ dễ dàng
+   ASTRA DESIGN SYSTEM - USER-DEFINED LAYOUT
+   - Cột trái: 1. Định dạng đề (ô to click sổ list), 2. Môn học (có Tổng hợp), 3. Nút Tạo đề
+   - Cột phải (Trung tâm lệch phải): Ô Prompt to, rộng rãi
    ========================================================================== */
 
 :root {
@@ -24,6 +24,7 @@
 
   --radius-md: 12px;
   --radius-lg: 16px;
+  --radius-xl: 20px;
 }
 
 * {
@@ -34,13 +35,19 @@
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: #f8fafc;
+  background-color: #f7faf8;
   color: var(--gray-900);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Layout container (Centered, max 900px, spacious) */
+/* Page Wrapper */
+.astra-workspace-wrapper {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 24px 20px 70px;
+}
+
 .astra-container {
   max-width: 900px;
   margin: 0 auto;
@@ -57,7 +64,7 @@ body {
 }
 
 .astra-header-inner {
-  max-width: 900px;
+  max-width: 1140px;
   margin: 0 auto;
   padding: 12px 20px;
   display: flex;
@@ -128,149 +135,109 @@ body {
   font-weight: bold;
 }
 
-/* Page Titles */
-.astra-title-area {
-  text-align: center;
-  margin-bottom: 28px;
-}
-
-.astra-title-area h1 {
-  font-size: 1.85rem;
-  font-weight: 800;
-  color: var(--gray-900);
-}
-
-.astra-title-area p {
-  font-size: 0.95rem;
-  color: var(--gray-500);
-  margin-top: 6px;
-}
-
-/* Main Form Card */
-.astra-form-card {
+/* Main Grid Card */
+.astra-main-grid-card {
   background: #ffffff;
   border: 1.5px solid var(--gray-200);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   padding: 32px 36px;
-  box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.05);
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.05);
 }
 
-.astra-field-group {
-  margin-bottom: 28px;
-}
-
-.astra-label {
-  display: block;
-  font-size: 0.9rem;
-  font-weight: 800;
-  color: var(--gray-900);
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  margin-bottom: 12px;
-}
-
-/* Subject button row */
-.astra-button-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.astra-choice-btn {
-  padding: 10px 20px;
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--gray-700);
-  background: #ffffff;
-  border: 2px solid var(--gray-200);
+/* ==========================================================================
+   LEFT COLUMN: BIG FORMAT SELECTOR & SUBJECTS & ACTION BUTTON
+   ========================================================================== */
+.astra-big-format-selector {
+  width: 100%;
+  padding: 14px 18px;
+  border: 2px solid var(--primary-green-border);
   border-radius: var(--radius-md);
+  background: #f0fdf4;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
-.astra-choice-btn:hover {
+.astra-big-format-selector:hover {
+  border-color: var(--primary-green);
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.15);
+}
+
+.astra-format-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 6px;
+  background: #ffffff;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  box-shadow: 0 12px 28px -4px rgba(15, 23, 42, 0.15);
+  z-index: 30;
+  overflow: hidden;
+}
+
+.astra-dropdown-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--gray-100);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.1s ease;
+}
+
+.astra-dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.astra-dropdown-item:hover {
+  background: var(--primary-green-light);
+}
+
+.astra-dropdown-item.selected {
+  background: #f0fdf4;
+  border-left: 4px solid var(--primary-green);
+}
+
+/* Subject Grid Pills */
+.astra-subject-pill-btn {
+  padding: 9px 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--gray-700);
+  background: #ffffff;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s ease;
+}
+
+.astra-subject-pill-btn:hover {
   border-color: var(--primary-green);
   color: var(--primary-green);
   background: var(--primary-green-light);
 }
 
-.astra-choice-btn.active {
+.astra-subject-pill-btn.selected {
   background: var(--primary-green);
   color: #ffffff;
   border-color: var(--primary-green);
-  box-shadow: 0 4px 10px -2px rgba(5, 150, 105, 0.35);
+  box-shadow: 0 3px 8px -2px rgba(5, 150, 105, 0.35);
 }
 
-/* Quick format cards (3 cards) */
-.astra-grid-3 {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
-}
-
-.astra-format-card {
-  border: 2px solid var(--gray-200);
-  border-radius: var(--radius-md);
-  padding: 14px 16px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  background: #ffffff;
-}
-
-.astra-format-card:hover {
-  border-color: var(--primary-green);
-  transform: translateY(-1px);
-}
-
-.astra-format-card.active {
-  border-color: var(--primary-green);
-  background: var(--primary-green-light);
-  box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.2);
-}
-
-.astra-format-title {
-  font-size: 0.95rem;
-  font-weight: 800;
-  color: var(--gray-900);
-  margin-bottom: 4px;
-}
-
-.astra-format-desc {
-  font-size: 0.8rem;
-  color: var(--gray-500);
-  line-height: 1.4;
-}
-
-/* Textarea */
-.astra-input-textarea {
-  width: 100%;
-  padding: 16px;
-  font-size: 1rem;
-  font-family: inherit;
-  border: 2px solid var(--gray-200);
-  border-radius: var(--radius-md);
-  line-height: 1.6;
-  outline: none;
-  resize: vertical;
-}
-
-.astra-input-textarea:focus {
-  border-color: var(--primary-green);
-  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
-}
-
-/* Big Action Button */
-.astra-submit-area {
-  margin-top: 10px;
-}
-
-.astra-big-submit-btn {
+/* Left Action Button (Aligned horizontally with prompt) */
+.astra-hero-action-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 18px 32px;
-  font-size: 1.15rem;
+  padding: 16px 24px;
+  font-size: 1.05rem;
   font-weight: 800;
   color: #ffffff;
   background: var(--primary-green);
@@ -279,17 +246,59 @@ body {
   cursor: pointer;
   transition: all 0.15s ease;
   box-shadow: 0 6px 16px -2px rgba(5, 150, 105, 0.35);
+  letter-spacing: -0.01em;
 }
 
-.astra-big-submit-btn:hover:not(:disabled) {
+.astra-hero-action-button:hover:not(:disabled) {
   background: var(--primary-green-hover);
   transform: translateY(-1px);
   box-shadow: 0 8px 20px -2px rgba(5, 150, 105, 0.45);
 }
 
-.astra-big-submit-btn:disabled {
+.astra-hero-action-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* ==========================================================================
+   RIGHT COLUMN: LARGE CENTER-RIGHT PROMPT TEXTAREA
+   ========================================================================== */
+.astra-large-center-prompt {
+  width: 100%;
+  min-height: 250px;
+  flex: 1;
+  padding: 18px 20px;
+  font-size: 1.05rem;
+  font-family: inherit;
+  border: 2px solid var(--gray-300);
+  border-radius: var(--radius-md);
+  line-height: 1.65;
+  outline: none;
+  transition: border-color 0.2s ease;
+  resize: vertical;
+}
+
+.astra-large-center-prompt:focus {
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.12);
+}
+
+.astra-tag-chip {
+  padding: 5px 12px;
+  font-size: 0.775rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  background: var(--gray-100);
+  border: 1px solid var(--gray-300);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.astra-tag-chip:hover {
+  background: var(--primary-green-light);
+  color: var(--primary-green);
+  border-color: #a7f3d0;
 }
 
 /* ==========================================================================
