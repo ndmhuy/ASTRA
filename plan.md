@@ -32,28 +32,23 @@ Mới vào → hỏi ngay một câu: **"Bạn muốn tạo đề nhanh?"**
 
 ## 2. Phân Tích: Abstraction (Trừu tượng hóa)
 
-### Vấn đề cần giải quyết
+### Bài toán (Problem Definition)
 
-Backend trả về dữ liệu thô: câu hỏi, đáp án, các ký hiệu toán học ở dạng plain text hay cú pháp LaTeX chưa render. Ví dụ:
+Backend AI trả về đề thi ở dạng thô: câu hỏi, đáp án, ký hiệu toán học lẫn lộn cú pháp LaTeX chưa xử lý. Nếu đổ thẳng ra màn hình, giáo viên thấy thế này:
 
 ```
-Câu 3: Tính \frac{d}{dx}(x^2 + 3x). Đáp án: A. 2x+3  B. x^2  C. 3x  D. 2x
+Câu 3: Tinh \frac{d}{dx}(x^2 + 3x). DAP AN: A. 2x+3  B. x^2  C. 3x  D. 2x
 ```
 
-Nếu đổ thẳng ra màn hình, giáo viên thấy một mớ ký tự lộn xộn, không đọc được.
+Đề không đọc được, công thức hiện ra như ký tự lạ. **Cần một tầng ở giữa** nhận dữ liệu thô đó và chuyển thành trang đề thi đẹp, chuẩn, in được.
 
-### Abstraction ở đây là gì?
+Đây chính là bài toán UI/UX phải giải.
 
-**UI/UX đóng vai trò là tầng phiên dịch** giữa dữ liệu thô của backend và thứ giáo viên cần nhìn thấy.
+---
 
-| | Backend (AI agent) | UI/UX (Frontend) |
-|---|---|---|
-| **Quan tâm đến** | Câu hỏi đúng chưa? Đáp án có nhất quán không? | Câu hỏi hiển thị đẹp chưa? Font, layout, công thức render đúng chưa? |
-| **Không cần biết** | Cách render LaTeX, CSS, font size | Cách agent tạo câu hỏi, cách kiểm tra đáp án |
+### Input
 
-Backend chỉ cần trả JSON đúng cấu trúc. Frontend nhận JSON đó và xử lý toàn bộ phần hiển thị.
-
-**Input của UI:** JSON thô từ backend — mỗi câu gồm nội dung câu hỏi (có thể chứa LaTeX), 4 đáp án, đáp án đúng, và trạng thái kiểm tra (verified / flagged).
+JSON thô từ backend — stream từng câu một khi AI agent vừa xong:
 
 ```json
 {
@@ -65,13 +60,37 @@ Backend chỉ cần trả JSON đúng cấu trúc. Frontend nhận JSON đó và
 }
 ```
 
-**Output của UI:** Câu hỏi được render đẹp — công thức toán hiển thị đúng qua KaTeX, layout chuẩn đề thi, đánh số thứ tự, 4 đáp án xếp thẳng hàng, câu bị "flagged" thì có ghi chú nhẹ bên dưới.
+- `question` và `options` chứa cú pháp LaTeX thô, chưa render.
+- `status` là `verified` (2 agent đồng ý đáp án) hoặc `flagged` (lệch nhau, cần xem lại).
 
-### Tại sao tách biệt này quan trọng?
+### Output
 
-- AI agent tập trung vào đúng việc của nó: **nội dung đúng**.
-- Frontend tập trung vào đúng việc của nó: **hiển thị đẹp**.
-- Nếu sau này muốn đổi cách render (ví dụ từ KaTeX sang MathJax, hoặc xuất PDF theo layout khác), chỉ cần sửa frontend — backend không cần đổi gì.
+Câu hỏi hiển thị trên màn hình giống một trang đề thi thật:
+
+```
+Câu 3: Tính d/dx(x² + 3x).   ← công thức đã render đẹp qua KaTeX
+
+  A. 2x + 3      B. x²      C. 3x      D. 2x
+
+  Đáp án: A
+```
+
+Câu `flagged` thêm một dòng ghi chú xám nhẹ bên dưới + nút `[Sửa]` — không dùng màu đỏ hay cảnh báo to.
+
+---
+
+### Abstraction: tách "nội dung đúng" khỏi "hiển thị đẹp"
+
+Hai vế của hệ thống cần tập trung vào đúng việc của mình:
+
+| | Backend (AI agent) | Frontend (UI/UX) |
+|---|---|---|
+| **Lo về** | Câu đúng chưa? Đáp án nhất quán không? | Công thức có render đúng không? Layout có chuẩn không? |
+| **Không cần biết** | Font chữ, CSS, cách render LaTeX | Agent hoạt động thế nào, đáp án được kiểm tra ra sao |
+
+Backend chỉ cần trả JSON đúng cấu trúc ở trên. Mọi việc còn lại — parse LaTeX, render công thức, dàn layout, xuất PDF — là việc của frontend.
+
+Nhờ tách biệt này: nếu sau muốn đổi cách render (KaTeX → MathJax) hay đổi layout xuất file, chỉ sửa frontend — backend không đổi gì.
 
 ---
 
