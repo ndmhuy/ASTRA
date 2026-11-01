@@ -196,14 +196,18 @@ const INITIAL_MOCK_QUESTIONS: QuestionItem[] = [
 // MOCK IMPLEMENTATION (Simulates multi-stage generation, delay & RTC)
 // ============================================================================
 export class MockExamService implements IExamService {
-  private currentExamPackage: ExamPackage | null = null;
-  private currentQuestions: QuestionItem[] = [...INITIAL_MOCK_QUESTIONS];
+  private jobs = new Map<string, ExamPackage>();
+  private getJob(jobId: string): ExamPackage {
+    const job = this.jobs.get(jobId);
+    if (!job) throw new Error(`Exam job ${jobId} not found`);
+    return job;
+  }
 
   async startGeneration(params: ExamRequestParams): Promise<{ jobId: string }> {
-    const jobId = 'astra-job-' + Date.now();
+    const jobId = 'astra-job-' + crypto.randomUUID();
     
     // Construct initialized ExamPackage
-    this.currentExamPackage = {
+    const pkg: ExamPackage = {
       examId: `ASTRA-${params.subject.toUpperCase()}-${Date.now().toString().slice(-4)}`,
       title: `Đề Khảo Sát Chất Lượng Môn ${params.subject} - Lớp ${params.grade}`,
       subject: params.subject,
@@ -226,14 +230,15 @@ export class MockExamService implements IExamService {
         },
         topics: ['Dao động cơ', 'Sóng cơ & Sóng âm', 'Dòng điện xoay chiều', 'Dao động & Sóng điện từ', 'Sóng ánh sáng']
       },
-      questions: [...INITIAL_MOCK_QUESTIONS]
+      questions: structuredClone(INITIAL_MOCK_QUESTIONS)
     };
 
+    this.jobs.set(jobId, pkg);
     return { jobId };
   }
 
-  onProgress(_jobId: string, callback: (progress: GenerationProgress) => void): () => void {
-    const totalItems = this.currentExamPackage?.blueprint.totalQuestions || 40;
+  onProgress(jobId: string, callback: (progress: GenerationProgress) => void): () => void {
+    const totalItems = this.getJob(jobId).questions.length;
 
     const stages = [
       { name: 'Xây dựng & Khóa Ma Trận Đề (Blueprint Builder)', durationMs: 1200 },
@@ -292,35 +297,21 @@ export class MockExamService implements IExamService {
     };
   }
 
-  async getExamPackage(_jobId: string): Promise<ExamPackage> {
-    if (!this.currentExamPackage) {
-      // Fallback
-      await this.startGeneration({
-        subject: 'Vật Lý',
-        grade: 12,
-        examType: 'THPT_STANDARD',
-        durationMinutes: 50,
-        itemCount: 40,
-        prompt: 'Đề ôn tập chuẩn',
-        uploadedFiles: []
-      });
-    }
-    return {
-      ...this.currentExamPackage!,
-      questions: [...this.currentQuestions]
-    };
+  async getExamPackage(jobId: string): Promise<ExamPackage> {
+    return structuredClone(this.getJob(jobId));
   }
 
-  async regenerateQuestion(_jobId: string, questionId: number, instruction?: string): Promise<QuestionItem> {
+  async regenerateQuestion(jobId: string, questionId: number, instruction?: string): Promise<QuestionItem> {
     // Simulate targeted LLM repair for a single item
     await new Promise((res) => setTimeout(res, 1200));
 
-    const index = this.currentQuestions.findIndex((q) => q.id === questionId);
+    const currentQuestions = this.getJob(jobId).questions;
+    const index = currentQuestions.findIndex((q) => q.id === questionId);
     if (index === -1) {
       throw new Error(`Question ${questionId} not found`);
     }
 
-    const current = this.currentQuestions[index];
+    const current = currentQuestions[index];
     const repaired: QuestionItem = {
       ...current,
       status: 'VERIFIED',
@@ -330,29 +321,31 @@ export class MockExamService implements IExamService {
       solverKey: current.key
     };
 
-    this.currentQuestions[index] = repaired;
+    currentQuestions[index] = repaired;
     return repaired;
   }
 
-  async updateQuestion(_jobId: string, updatedQuestion: QuestionItem): Promise<void> {
-    const index = this.currentQuestions.findIndex((q) => q.id === updatedQuestion.id);
+  async updateQuestion(jobId: string, updatedQuestion: QuestionItem): Promise<void> {
+    const currentQuestions = this.getJob(jobId).questions;
+    const index = currentQuestions.findIndex((q) => q.id === updatedQuestion.id);
     if (index !== -1) {
-      this.currentQuestions[index] = { ...updatedQuestion };
+      currentQuestions[index] = { ...updatedQuestion };
     }
   }
 
-  async downloadExport(_jobId: string, type: 'STUDENT_EXAM' | 'TEACHER_KEY' | 'MATRIX', format: 'docx' | 'pdf'): Promise<void> {
-    const title = this.currentExamPackage?.title || 'De_Thi_ASTRA';
+  async downloadExport(jobId: string, type: 'STUDENT_EXAM' | 'TEACHER_KEY' | 'MATRIX', format: 'docx' | 'pdf'): Promise<void> {
+    const pkg = this.getJob(jobId);
+    const title = pkg.title;
     const filename = `${title}_${type}.${format === 'docx' ? 'doc' : 'txt'}`;
 
     let content = `==========================================================\n`;
     content += `${title.toUpperCase()}\n`;
-    content += `Môn: ${this.currentExamPackage?.subject} | Lớp: ${this.currentExamPackage?.grade}\n`;
-    content += `Thời gian: ${this.currentExamPackage?.durationMinutes} phút (Không kể phát đề)\n`;
+    content += `Môn: ${pkg.subject} | Lớp: ${pkg.grade}\n`;
+    content += `Thời gian: ${pkg.durationMinutes} phút (Không kể phát đề)\n`;
     content += `Chế độ xuất: ${type}\n`;
     content += `==========================================================\n\n`;
 
-    this.currentQuestions.forEach((q, idx) => {
+    pkg.questions.forEach((q, idx) => {
       content += `Câu ${idx + 1}: ${q.stem.replace(/\\text\{([^\}]+)\}/g, '$1')}\n`;
       content += `  A. ${q.choices.A}\n`;
       content += `  B. ${q.choices.B}\n`;
@@ -460,8 +453,8 @@ export class ApiExamService implements IExamService {
 //     latestItemPreview?: QuestionItem }
 // ============================================================
 
-const serviceMode = import.meta.env.VITE_SERVICE_MODE ?? 'mock';
-const apiBaseUrl  = import.meta.env.VITE_API_BASE_URL  ?? '/api';
+const serviceMode = import.meta.env?.VITE_SERVICE_MODE ?? 'mock';
+const apiBaseUrl  = import.meta.env?.VITE_API_BASE_URL  ?? '/api';
 
 export const examService: IExamService =
   serviceMode === 'api'

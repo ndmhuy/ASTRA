@@ -4,10 +4,14 @@ import { Paperclip, Globe, ArrowUp } from 'lucide-react';
 interface ModernChatBarProps {
   onSend: (message: string, options: { searchWeb: boolean; attachedFiles: File[] }) => void;
   disabled?: boolean;
+  draft?: string;
+  onDraftChange?: (value: string) => void;
 }
 
-export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled = false }) => {
-  const [text, setText] = useState('');
+export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled = false, draft, onDraftChange }) => {
+  const [localText, setLocalText] = useState('');
+  const text = draft ?? localText;
+  const setText = (value: string) => { setLocalText(value); onDraftChange?.(value); };
   const [searchWeb, setSearchWeb] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);

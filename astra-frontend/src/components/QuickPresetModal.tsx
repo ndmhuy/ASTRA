@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import type { ExamRequestParams, ExamType } from '../types/exam';
 
 interface QuickPresetModalProps {
+  title?: string;
   onStart: (params: ExamRequestParams) => void;
   onClose: () => void;
 }
@@ -44,7 +45,7 @@ const SUBJECT_OPTIONS: { label: string; value: string }[] = [
   { label: 'Tổng hợp',    value: 'T\u1ed5ng h\u1ee3p' },
 ];
 
-export const QuickPresetModal: React.FC<QuickPresetModalProps> = ({ onStart, onClose }) => {
+export const QuickPresetModal: React.FC<QuickPresetModalProps> = ({ onStart, onClose, title = 'Tạo đề từ mẫu' }) => {
   const [selectedPreset, setSelectedPreset] = useState<ExamType>('THPT_STANDARD');
   const [selectedSubjectValue, setSelectedSubjectValue] = useState<string>(SUBJECT_OPTIONS[0].value);
 
@@ -123,7 +124,7 @@ export const QuickPresetModal: React.FC<QuickPresetModalProps> = ({ onStart, onC
             marginBottom: 20,
           }}
         >
-          Tạo đề từ mẫu
+          {title}
         </h2>
 
         {/* Preset Cards */}
