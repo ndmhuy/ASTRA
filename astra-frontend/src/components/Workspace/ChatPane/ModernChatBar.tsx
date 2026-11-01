@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
+import { Paperclip, Globe, ArrowUp } from 'lucide-react';
 
 interface ModernChatBarProps {
   onSend: (message: string, options: { searchWeb: boolean; attachedFiles: File[] }) => void;
@@ -99,7 +100,7 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
           transition: 'border-color 150ms ease',
         }}
         onFocusCapture={(e) => {
-          (e.currentTarget as HTMLDivElement).style.borderColor = '#059669';
+          (e.currentTarget as HTMLDivElement).style.borderColor = '#24634b';
         }}
         onBlurCapture={(e) => {
           (e.currentTarget as HTMLDivElement).style.borderColor = '#cbd5e1';
@@ -107,6 +108,7 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
       >
         <textarea
           ref={textareaRef}
+          aria-label="Yêu cầu soạn đề"
           value={text}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
@@ -142,6 +144,7 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
           <button
             onClick={() => fileInputRef.current?.click()}
             title="Đính kèm tài liệu"
+            aria-label="Đính kèm tài liệu"
             style={{
               background: 'none',
               border: 'none',
@@ -153,7 +156,7 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
               lineHeight: 1,
             }}
           >
-            📎
+            <Paperclip size={18} />
           </button>
           <input
             ref={fileInputRef}
@@ -167,12 +170,13 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
           <button
             onClick={() => setSearchWeb((v) => !v)}
             title="Tìm trên mạng"
+            aria-pressed={searchWeb}
             style={{
-              background: searchWeb ? '#ecfdf5' : 'none',
+              background: searchWeb ? '#edf4ef' : 'none',
               border: searchWeb ? '1px solid #059669' : '1px solid transparent',
               cursor: 'pointer',
               fontSize: 13,
-              color: searchWeb ? '#059669' : '#64748b',
+              color: searchWeb ? '#24634b' : '#64748b',
               padding: '3px 8px',
               borderRadius: 4,
               lineHeight: 1.5,
@@ -183,7 +187,7 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
               gap: 4,
             }}
           >
-            <span>🌐</span>
+            <Globe size={16} />
             <span style={{ fontSize: 12 }}>Tìm mạng</span>
           </button>
 
@@ -195,7 +199,7 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
             onClick={handleSend}
             disabled={!text.trim() || disabled}
             style={{
-              background: !text.trim() || disabled ? '#e2e8f0' : '#059669',
+              background: !text.trim() || disabled ? '#e2e8f0' : '#24634b',
               color: !text.trim() || disabled ? '#94a3b8' : '#ffffff',
               border: 'none',
               borderRadius: 5,
@@ -210,8 +214,9 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
               flexShrink: 0,
             }}
             title="Gửi"
+            aria-label="Gửi yêu cầu"
           >
-            ↑
+            <ArrowUp size={18} />
           </button>
         </div>
       </div>

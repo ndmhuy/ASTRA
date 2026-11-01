@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Sparkles } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 import { OnboardingFork } from './components/OnboardingFork';
 import { QuickPresetModal } from './components/QuickPresetModal';
 import { WorkspaceLayout } from './components/Workspace/WorkspaceLayout';
@@ -197,11 +197,11 @@ export const App: React.FC = () => {
   const hasActiveSession = liveQuestions.length > 0 || messages.length > 0;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: '#fafbfa' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: '#f4f5f2' }}>
       {/* Navbar */}
       <header
         style={{
-          height: 58,
+          height: 64,
           background: '#ffffff',
           borderBottom: '1px solid #e2e8f0',
           display: 'flex',
@@ -212,15 +212,16 @@ export const App: React.FC = () => {
         }}
       >
         {/* Brand */}
-        <div
-          style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}
+        <button
+          aria-label="ASTRA · Màn hình chính"
+          style={{ border: 0, background: 'transparent', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}
           onClick={() => setScreen('onboarding')}
         >
           <div
             style={{
               width: 30,
               height: 30,
-              background: '#ecfdf5',
+              background: '#edf4ef',
               border: '1px solid #a7f3d0',
               borderRadius: 6,
               display: 'flex',
@@ -228,12 +229,12 @@ export const App: React.FC = () => {
               justifyContent: 'center',
             }}
           >
-            <Sparkles style={{ width: 16, height: 16, color: '#059669' }} />
+            <BookOpen style={{ width: 16, height: 16, color: '#24634b' }} />
           </div>
           <span style={{ fontSize: 16, fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>
             ASTRA
           </span>
-        </div>
+        </button>
 
         {/* Spacer */}
         <div style={{ flex: 1 }} />
@@ -273,7 +274,7 @@ export const App: React.FC = () => {
       {/* Main content */}
       {screen === 'onboarding' && (
         <OnboardingFork
-          onQuickMode={() => { handleStartFresh(); setShowQuickModal(true); }}
+          onQuickMode={() => setShowQuickModal(true)}
           onProMode={handleProMode}
           hasActiveSession={hasActiveSession}
           onResumeSession={() => setScreen('workspace')}
@@ -288,7 +289,8 @@ export const App: React.FC = () => {
                 {/* Chat pane header */}
                 <div
                   style={{
-                    padding: '12px 16px',
+                    padding: '12px 24px',
+                    minHeight: 68,
                     borderBottom: '1px solid #e2e8f0',
                     flexShrink: 0,
                   }}

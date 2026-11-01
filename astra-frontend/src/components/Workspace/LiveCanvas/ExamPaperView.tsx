@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { FileText } from 'lucide-react';
 import type { QuestionItem } from '../../../types/exam';
 import { QuestionCard } from './QuestionCard';
 
@@ -16,92 +17,33 @@ interface ExamPaperViewProps {
   onEditQuestion?: (questionId: number) => void;
 }
 
-export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
-  questions,
-  examMeta,
-  isGenerating,
-  latestQuestionCount = 0,
-  onEditQuestion,
-}) => {
-  return (
-    <div
-      style={{
-        flex: 1,
-        overflowY: 'auto',
-        padding: '20px 24px',
-      }}
-    >
-      {/* Exam Paper Header */}
-      {examMeta && (
-        <div
-          style={{
-            textAlign: 'center',
-            marginBottom: 24,
-            paddingBottom: 16,
-            borderBottom: '1px solid #e2e8f0',
-          }}
-        >
-          <div style={{ fontSize: 12, color: '#64748b', marginBottom: 4 }}>
-            TRƯỜNG THPT — Năm học 2025–2026
-          </div>
-          <div style={{ fontSize: 18, fontWeight: 700, color: '#0f172a', marginBottom: 4 }}>
-            {examMeta.title || `ĐỀ KIỂM TRA MÔN ${examMeta.subject.toUpperCase()}`}
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 24, fontSize: 13, color: '#334155', flexWrap: 'wrap' }}>
-            <span>Môn: <strong>{examMeta.subject}</strong></span>
-            <span>Thời gian: <strong>{examMeta.duration} phút</strong></span>
-            <span>Số câu: <strong>{examMeta.totalCount}</strong></span>
-          </div>
-        </div>
-      )}
-
-      {/* Questions */}
-      {questions.length === 0 && !isGenerating && (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '60px 20px',
-            color: '#94a3b8',
-            textAlign: 'center',
-          }}
-        >
-          <div style={{ fontSize: 32, marginBottom: 12 }}>📄</div>
-          <p style={{ fontSize: 14, lineHeight: 1.6 }}>
-            Đề thi sẽ hiển thị ở đây khi quá trình tạo bắt đầu.
-          </p>
-        </div>
-      )}
-
-      {questions.map((q, i) => {
-        // Questions added after the previous snapshot are "appearing"
-        const isNew = i >= latestQuestionCount;
-        return (
-          <QuestionCard
-            key={q.id}
-            question={q}
-            index={i}
-            appearing={isNew}
-            onEdit={onEditQuestion ? () => onEditQuestion(q.id) : undefined}
-          />
-        );
-      })}
-
-      {/* Generating indicator */}
-      {isGenerating && (
-        <div
-          style={{
-            textAlign: 'center',
-            padding: '16px 0 8px',
-            fontSize: 13,
-            color: '#64748b',
-          }}
-        >
-          Đang tạo câu tiếp theo…
-        </div>
-      )}
+export const ExamPaperView: React.FC<ExamPaperViewProps> = ({ questions, examMeta, isGenerating, latestQuestionCount = 0, onEditQuestion }) => {
+  const [review, setReview] = useState(false);
+  const flaggedCount = questions.filter(q => q.status === 'FLAGGED').length;
+  return <>
+    <div className="paper-toolbar">
+      <div className="view-switch" role="group" aria-label="Chế độ xem đề thi">
+        <button aria-pressed={!review} onClick={() => setReview(false)}>Đề thi</button>
+        <button aria-pressed={review} onClick={() => setReview(true)}>Đáp án & kiểm định</button>
+      </div>
+      {flaggedCount > 0 && <button className="review-count" onClick={() => setReview(true)}>{flaggedCount} câu cần xem xét</button>}
     </div>
-  );
+    <div className="paper-scroll">
+      <article className="exam-paper">
+        {examMeta ? <header className="exam-paper-heading">
+          <div className="eyebrow">Đề kiểm tra · {examMeta.subject}</div>
+          <h1>{examMeta.title || `Đề thi ${examMeta.subject}`}</h1>
+          <p>Thời gian: {examMeta.duration} phút <span>·</span> {examMeta.totalCount} câu hỏi</p>
+          {!review && <div className="student-line">Họ và tên: ................................................ <span>Lớp: ................</span></div>}
+        </header> : <div className="paper-empty">
+          <FileText size={36} strokeWidth={1} />
+          <h2>Đề thi của bạn bắt đầu ở đây</h2>
+          <p>Chọn mẫu đề từ màn hình chính hoặc nhập yêu cầu trong khung soạn đề.</p>
+        </div>}
+        {questions.map((q, i) => <QuestionCard key={q.id} question={q} index={i} review={review} appearing={i >= latestQuestionCount} onEdit={onEditQuestion ? () => onEditQuestion(q.id) : undefined} />)}
+        {isGenerating && <p className="paper-progress" role="status">Đang soạn câu hỏi tiếp theo…</p>}
+        {questions.length > 0 && !isGenerating && <footer className="paper-end">— Hết —</footer>}
+      </article>
+    </div>
+  </>;
 };

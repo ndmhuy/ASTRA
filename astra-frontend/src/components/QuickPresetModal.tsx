@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { ExamRequestParams, ExamType } from '../types/exam';
 
 interface QuickPresetModalProps {
@@ -48,6 +48,26 @@ export const QuickPresetModal: React.FC<QuickPresetModalProps> = ({ onStart, onC
   const [selectedPreset, setSelectedPreset] = useState<ExamType>('THPT_STANDARD');
   const [selectedSubjectValue, setSelectedSubjectValue] = useState<string>(SUBJECT_OPTIONS[0].value);
 
+  const modalRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const previous = document.activeElement as HTMLElement | null;
+    const modal = modalRef.current;
+    const controls = () => Array.from(modal?.querySelectorAll<HTMLElement>('button, input, select') || []);
+    controls()[0]?.focus();
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+      if (event.key === 'Tab') {
+        const items = controls();
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+      }
+    };
+    modal?.addEventListener('keydown', handleKey);
+    return () => { modal?.removeEventListener('keydown', handleKey); previous?.focus(); };
+  }, [onClose]);
+
   const handleStart = () => {
     const preset = PRESETS.find((p) => p.id === selectedPreset)!;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -77,7 +97,7 @@ export const QuickPresetModal: React.FC<QuickPresetModalProps> = ({ onStart, onC
       />
 
       {/* Modal */}
-      <div
+      <div ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="preset-title"
         style={{
           position: 'fixed',
           top: '50%',
@@ -87,13 +107,15 @@ export const QuickPresetModal: React.FC<QuickPresetModalProps> = ({ onStart, onC
           background: '#ffffff',
           border: '1px solid #e2e8f0',
           borderRadius: 8,
-          width: '100%',
-          maxWidth: 440,
+          width: 'calc(100% - 32px)',
+          maxHeight: '90dvh',
+          overflowY: 'auto',
+          maxWidth: 540,
           padding: '28px 28px 24px',
           boxShadow: '0 4px 24px rgba(0,0,0,0.10)',
         }}
       >
-        <h2
+        <h2 id="preset-title"
           style={{
             fontSize: 20,
             fontWeight: 700,
@@ -101,7 +123,7 @@ export const QuickPresetModal: React.FC<QuickPresetModalProps> = ({ onStart, onC
             marginBottom: 20,
           }}
         >
-          Tạo đề nhanh
+          Tạo đề từ mẫu
         </h2>
 
         {/* Preset Cards */}
@@ -120,9 +142,9 @@ export const QuickPresetModal: React.FC<QuickPresetModalProps> = ({ onStart, onC
                     alignItems: 'center',
                     gap: 14,
                     padding: '16px 18px',
-                    border: `2px solid ${isSelected ? '#059669' : '#e2e8f0'}`,
+                    border: `2px solid ${isSelected ? '#24634b' : '#e2e8f0'}`,
                     borderRadius: 6,
-                    background: isSelected ? '#ecfdf5' : '#ffffff',
+                    background: isSelected ? '#edf4ef' : '#ffffff',
                     cursor: 'pointer',
                     transition: 'border-color 150ms ease, background 150ms ease',
                   }}
@@ -133,7 +155,7 @@ export const QuickPresetModal: React.FC<QuickPresetModalProps> = ({ onStart, onC
                     value={preset.id}
                     checked={isSelected}
                     onChange={() => setSelectedPreset(preset.id)}
-                    style={{ accentColor: '#059669', width: 18, height: 18, flexShrink: 0 }}
+                    style={{ accentColor: '#24634b', width: 18, height: 18, flexShrink: 0 }}
                   />
                   <div>
                     <div style={{ fontSize: 16, fontWeight: 700, color: '#0f172a' }}>{preset.label}</div>
@@ -191,7 +213,7 @@ export const QuickPresetModal: React.FC<QuickPresetModalProps> = ({ onStart, onC
           style={{
             width: '100%',
             padding: '15px 0',
-            background: '#059669',
+            background: '#24634b',
             color: '#ffffff',
             border: 'none',
             borderRadius: 6,

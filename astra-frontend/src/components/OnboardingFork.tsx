@@ -1,184 +1,46 @@
 import React from 'react';
+import { ArrowRight, FileText, SlidersHorizontal } from 'lucide-react';
 
 interface OnboardingForkProps {
   onQuickMode: () => void;
   onProMode: () => void;
-  /** Nếu có phiên làm việc đang mở, hiện nút "Quay lại" */
   hasActiveSession?: boolean;
   onResumeSession?: () => void;
 }
 
-export const OnboardingFork: React.FC<OnboardingForkProps> = ({
-  onQuickMode,
-  onProMode,
-  hasActiveSession = false,
-  onResumeSession,
-}) => {
-  return (
-    <div
-      style={{
-        minHeight: 'calc(100vh - 58px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: '#fafbfa',
-        padding: '32px 16px',
-      }}
-    >
-      <div style={{ textAlign: 'center', maxWidth: 480, width: '100%' }}>
-        {/* Brand */}
-        <h1
-          style={{
-            fontSize: '2.5rem',
-            fontWeight: 800,
-            color: '#0f172a',
-            letterSpacing: '-0.02em',
-            marginBottom: 8,
-            lineHeight: 1.1,
-          }}
-        >
-          ASTRA
-        </h1>
-        <p
-          style={{
-            fontSize: 15,
-            color: '#64748b',
-            marginBottom: hasActiveSession ? 28 : 40,
-            lineHeight: 1.5,
-          }}
-        >
-          Hệ thống soạn &amp; kiểm định đề thi thông minh
-        </p>
-
-        {/* Resume session banner — chỉ hiện khi đang có phiên làm việc */}
-        {hasActiveSession && onResumeSession && (
-          <div
-            style={{
-              marginBottom: 28,
-              padding: '16px 20px',
-              border: '1.5px solid #a7f3d0',
-              borderRadius: 6,
-              background: '#f0fdf4',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: 12,
-              textAlign: 'left',
-            }}
-          >
-            <div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#065f46' }}>
-                Bạn có phiên làm việc đang mở
-              </div>
-              <div style={{ fontSize: 13, color: '#047857', marginTop: 2 }}>
-                Đề thi và hội thoại vẫn còn đó
-              </div>
-            </div>
-            <button
-              onClick={onResumeSession}
-              style={{
-                flexShrink: 0,
-                padding: '10px 20px',
-                background: '#059669',
-                color: '#ffffff',
-                border: 'none',
-                borderRadius: 6,
-                fontSize: 14,
-                fontWeight: 700,
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-              }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = '#047857'; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = '#059669'; }}
-            >
-              Quay lại →
-            </button>
-          </div>
-        )}
-
-        {/* Divider khi có session */}
-        {hasActiveSession && (
-          <p style={{ fontSize: 12, color: '#94a3b8', marginBottom: 20, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            Hoặc bắt đầu phiên mới
-          </p>
-        )}
-
-        {/* Question */}
-        {!hasActiveSession && (
-          <p
-            style={{
-              fontSize: 17,
-              fontWeight: 600,
-              color: '#334155',
-              marginBottom: 24,
-            }}
-          >
-            Bạn muốn tạo đề như thế nào?
-          </p>
-        )}
-
-        {/* Action Buttons */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 14, alignItems: 'center', width: '100%', maxWidth: 360, margin: '0 auto' }}>
-          <button
-            onClick={onQuickMode}
-            style={{
-              width: '100%',
-              padding: '16px 32px',
-              background: hasActiveSession ? 'transparent' : '#059669',
-              color: hasActiveSession ? '#334155' : '#ffffff',
-              border: hasActiveSession ? '1.5px solid #cbd5e1' : 'none',
-              borderRadius: 6,
-              fontSize: 17,
-              fontWeight: 700,
-              cursor: 'pointer',
-              letterSpacing: '-0.01em',
-              transition: 'background 150ms ease, border-color 150ms ease',
-            }}
-            onMouseEnter={(e) => {
-              const btn = e.currentTarget as HTMLButtonElement;
-              btn.style.background = hasActiveSession ? '#f1f5f9' : '#047857';
-              if (hasActiveSession) btn.style.borderColor = '#94a3b8';
-            }}
-            onMouseLeave={(e) => {
-              const btn = e.currentTarget as HTMLButtonElement;
-              btn.style.background = hasActiveSession ? 'transparent' : '#059669';
-              if (hasActiveSession) btn.style.borderColor = '#cbd5e1';
-            }}
-          >
-            Tạo nhanh
-          </button>
-
-          <button
-            onClick={onProMode}
-            style={{
-              width: '100%',
-              padding: '14px 32px',
-              background: 'transparent',
-              color: '#334155',
-              border: '1.5px solid #cbd5e1',
-              borderRadius: 6,
-              fontSize: 15,
-              fontWeight: 600,
-              cursor: 'pointer',
-              transition: 'border-color 150ms ease, background 150ms ease',
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.borderColor = '#94a3b8';
-              (e.currentTarget as HTMLButtonElement).style.background = '#f1f5f9';
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.borderColor = '#cbd5e1';
-              (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
-            }}
-          >
-            Chế độ Chuyên nghiệp
-          </button>
-
-          <p style={{ fontSize: 12, color: '#94a3b8', marginTop: 4 }}>
-            "Tạo nhanh" phù hợp cho hầu hết giáo viên · Chuyên nghiệp dành cho tùy chỉnh sâu
-          </p>
-        </div>
+export const OnboardingFork: React.FC<OnboardingForkProps> = ({ onQuickMode, onProMode, hasActiveSession, onResumeSession }) => (
+  <main className="home-screen">
+    <div className="home-content">
+      <div className="eyebrow">Không gian soạn đề · ASTRA</div>
+      <h1>Soạn đề thi mới</h1>
+      <p className="home-intro">Từ ý tưởng đến một đề thi hoàn chỉnh.<br />Chọn cách bắt đầu, sau đó xem và kiểm tra từng câu hỏi.</p>
+      {hasActiveSession && onResumeSession && (
+        <section className="resume-session" aria-label="Phiên đang mở">
+          <div><strong>Tiếp tục đề thi đang soạn</strong><p>Đề thi và hội thoại của bạn vẫn được giữ trong phiên này.</p></div>
+          <button className="button-primary" onClick={onResumeSession}>Tiếp tục <ArrowRight size={17} /></button>
+        </section>
+      )}
+      <div className="home-options">
+        <button className="home-option home-option-primary" onClick={onQuickMode}>
+          <div className="option-top"><FileText size={26} strokeWidth={1.5} /><span>Dễ bắt đầu</span></div>
+          <h2>Tạo từ mẫu</h2>
+          <p>Chọn môn học và cấu trúc đề có sẵn. ASTRA sẽ tạo các câu hỏi để bạn kiểm tra.</p>
+          <div className="option-detail">Chọn cấu trúc đề → Chọn môn học</div>
+          <div className="option-action">Chọn mẫu đề <ArrowRight size={19} /></div>
+        </button>
+        <button className="home-option" onClick={onProMode}>
+          <div className="option-top"><SlidersHorizontal size={26} strokeWidth={1.5} /><span>Tùy chỉnh nội dung</span></div>
+          <h2>Tạo theo yêu cầu</h2>
+          <p>Mở không gian làm việc để mô tả chủ đề, mức độ và nội dung bạn muốn đưa vào đề.</p>
+          <div className="option-detail">Nhập yêu cầu bằng ngôn ngữ tự nhiên</div>
+          <div className="option-action">Mở không gian soạn đề <ArrowRight size={19} /></div>
+        </button>
       </div>
+      <ol className="home-steps" aria-label="Quy trình soạn đề">
+        <li><span>01</span><div><strong>Chọn nội dung</strong><p>Môn học, cấu trúc và yêu cầu</p></div></li>
+        <li><span>02</span><div><strong>Xem & kiểm tra</strong><p>Đọc đề và xem ghi chú kiểm định</p></div></li>
+        <li><span>03</span><div><strong>Xuất đề thi</strong><p>Tách riêng đề và đáp án</p></div></li>
+      </ol>
     </div>
-  );
-};
+  </main>
+);
