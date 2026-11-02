@@ -7,7 +7,7 @@ import './AstraWelcome.css';
 export function AstraWelcome({ onComplete }: { onComplete: () => void }) {
   useEffect(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const timer = window.setTimeout(onComplete, reduced ? 350 : 3650);
+    const timer = window.setTimeout(onComplete, reduced ? 350 : 3400);
     return () => window.clearTimeout(timer);
   }, [onComplete]);
 
