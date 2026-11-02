@@ -24,7 +24,7 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({ questions, examMet
     <div className="paper-toolbar">
       <div className="view-switch" role="group" aria-label="Chế độ xem đề thi">
         <button aria-pressed={!review} onClick={() => setReview(false)}>Đề thi</button>
-        <button aria-pressed={review} onClick={() => setReview(true)}>Đáp án & kiểm định</button>
+        <button aria-pressed={review} onClick={() => setReview(true)}>Xem đáp án</button>
       </div>
       {flaggedCount > 0 && <button className="review-count" onClick={() => setReview(true)}>{flaggedCount} câu cần xem xét</button>}
     </div>
@@ -38,7 +38,7 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({ questions, examMet
         </header> : <div className="paper-empty">
           <FileText size={36} strokeWidth={1} />
           <h2>Đề thi của bạn bắt đầu ở đây</h2>
-          <p>Chọn mẫu đề từ màn hình chính hoặc nhập yêu cầu trong khung soạn đề.</p>
+          <p>Nhập yêu cầu ở khung bên trái, rồi bấm “Tạo đề từ yêu cầu”.</p>
         </div>}
         {questions.map((q, i) => <QuestionCard key={q.id} question={q} index={i} review={review} appearing={i >= latestQuestionCount} onEdit={onEditQuestion ? () => onEditQuestion(q.id) : undefined} />)}
         {isGenerating && <p className="paper-progress" role="status">Đang soạn câu hỏi tiếp theo…</p>}

@@ -1,0 +1,42 @@
+.astra-welcome {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  color: #242323;
+  animation: astra-welcome-out 400ms ease 3.25s both;
+}
+.astra-welcome-content {
+  width: min(420px, 82vw);
+  text-align: center;
+  animation: astra-welcome-in 550ms ease both;
+}
+.astra-welcome-logo { display: block; width: 100%; overflow: visible; }
+.astra-welcome-wordmark {
+  margin-top: -4px;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: .27em;
+  padding-left: .27em;
+}
+.astra-welcome-content p {
+  margin: 18px 0 0;
+  font-size: 16px;
+  font-weight: 400;
+  color: #77716b;
+  letter-spacing: .025em;
+}
+
+@keyframes astra-welcome-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes astra-welcome-out {
+  from { opacity: 1; }
+  to { opacity: 0; visibility: hidden; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .astra-welcome, .astra-welcome-content { animation: none; }
+}

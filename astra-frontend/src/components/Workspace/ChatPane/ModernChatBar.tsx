@@ -117,7 +117,7 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           disabled={disabled}
-          placeholder="Nhập yêu cầu... (Enter gửi, Shift+Enter xuống dòng)"
+          placeholder="Ví dụ: Tạo 20 câu Toán lớp 12 về đạo hàm"
           rows={1}
           style={{
             width: '100%',
@@ -125,7 +125,7 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
             border: 'none',
             outline: 'none',
             padding: '10px 12px 6px',
-            fontSize: 14,
+            fontSize: 16,
             color: '#0f172a',
             background: 'transparent',
             lineHeight: '22px',
@@ -207,8 +207,8 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
               color: !text.trim() || disabled ? '#94a3b8' : '#ffffff',
               border: 'none',
               borderRadius: 5,
-              width: 38,
-              height: 38,
+              width: 44,
+              height: 44,
               cursor: !text.trim() || disabled ? 'not-allowed' : 'pointer',
               display: 'flex',
               alignItems: 'center',

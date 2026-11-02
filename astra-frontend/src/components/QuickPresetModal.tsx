@@ -111,14 +111,14 @@ export const QuickPresetModal: React.FC<QuickPresetModalProps> = ({ onStart, onC
           width: 'calc(100% - 32px)',
           maxHeight: '90dvh',
           overflowY: 'auto',
-          maxWidth: 540,
+          maxWidth: 600,
           padding: '28px 28px 24px',
           boxShadow: '0 4px 24px rgba(0,0,0,0.10)',
         }}
       >
         <h2 id="preset-title"
           style={{
-            fontSize: 20,
+            fontSize: 24,
             fontWeight: 700,
             color: '#0f172a',
             marginBottom: 20,
@@ -129,7 +129,7 @@ export const QuickPresetModal: React.FC<QuickPresetModalProps> = ({ onStart, onC
 
         {/* Preset Cards */}
         <div style={{ marginBottom: 20 }}>
-          <p style={{ fontSize: 12, fontWeight: 600, color: '#64748b', marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <p style={{ fontSize: 14, fontWeight: 600, color: '#64748b', marginBottom: 10,  letterSpacing: '0' }}>
             Loại đề thi
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -160,7 +160,7 @@ export const QuickPresetModal: React.FC<QuickPresetModalProps> = ({ onStart, onC
                   />
                   <div>
                     <div style={{ fontSize: 16, fontWeight: 700, color: '#0f172a' }}>{preset.label}</div>
-                    <div style={{ fontSize: 13, color: '#64748b', marginTop: 2 }}>{preset.description}</div>
+                    <div style={{ fontSize: 16, color: '#64748b', marginTop: 2 }}>{preset.description}</div>
                   </div>
                 </label>
               );
@@ -173,13 +173,13 @@ export const QuickPresetModal: React.FC<QuickPresetModalProps> = ({ onStart, onC
           <label
             htmlFor="subject-select"
             style={{
-              fontSize: 12,
+              fontSize: 14,
               fontWeight: 600,
               color: '#64748b',
               display: 'block',
               marginBottom: 8,
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em',
+              
+              letterSpacing: '0',
             }}
           >
             Môn học
@@ -193,7 +193,7 @@ export const QuickPresetModal: React.FC<QuickPresetModalProps> = ({ onStart, onC
               padding: '12px 14px',
               border: '1.5px solid #e2e8f0',
               borderRadius: 6,
-              fontSize: 15,
+              fontSize: 16,
               color: '#0f172a',
               background: '#ffffff',
               cursor: 'pointer',
@@ -225,7 +225,7 @@ export const QuickPresetModal: React.FC<QuickPresetModalProps> = ({ onStart, onC
             letterSpacing: '-0.01em',
           }}
         >
-          Bắt đầu tạo đề →
+          Tạo đề thi →
         </button>
 
         <button

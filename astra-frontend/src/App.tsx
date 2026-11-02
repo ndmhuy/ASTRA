@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useSyncExternalStore, useCallback } from 'react';
-import { BookOpen } from 'lucide-react';
+import { AstraLogo } from './components/AstraLogo';
+import { AstraWelcome } from './components/AstraWelcome';
 import { OnboardingFork } from './components/OnboardingFork';
 import { QuickPresetModal } from './components/QuickPresetModal';
 import { WorkspaceLayout } from './components/Workspace/WorkspaceLayout';
@@ -13,6 +14,8 @@ import { ExamSessions } from './state/examSessions';
 import './styles/workspace.css';
 
 export const App: React.FC = () => {
+  const [showWelcome, setShowWelcome] = useState(true);
+  const finishWelcome = useCallback(() => setShowWelcome(false), []);
   const [store] = useState(() => new ExamSessions(examService));
   const sessions = useSyncExternalStore(store.subscribe, store.getSnapshot);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -41,79 +44,16 @@ export const App: React.FC = () => {
   const handleExportWord = () => { if (active?.jobId) void examService.downloadExport(active.jobId, 'STUDENT_EXAM', 'docx'); };
   const handleExportAnswer = () => { if (active?.jobId) void examService.downloadExport(active.jobId, 'TEACHER_KEY', 'docx'); };
 
+  if (showWelcome) return <AstraWelcome onComplete={finishWelcome} />;
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: '#f4f5f2' }}>
-      {/* Navbar */}
-      <header
-        style={{
-          height: 64,
-          background: '#ffffff',
-          borderBottom: '1px solid #e2e8f0',
-          display: 'flex',
-          alignItems: 'center',
-          padding: '0 20px',
-          flexShrink: 0,
-          gap: 16,
-        }}
-      >
-        {/* Brand */}
-        <button
-          aria-label="ASTRA · Màn hình chính"
-          style={{ border: 0, background: 'transparent', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}
-          onClick={() => setScreen('onboarding')}
-        >
-          <div
-            style={{
-              width: 30,
-              height: 30,
-              background: '#edf4ef',
-              border: '1px solid #a7f3d0',
-              borderRadius: 6,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <BookOpen style={{ width: 16, height: 16, color: '#24634b' }} />
-          </div>
-          <span style={{ fontSize: 16, fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>
-            ASTRA
-          </span>
+    <div className="app-shell">
+      <header className="app-header">
+        <button className="app-brand" aria-label="ASTRA · Màn hình chính" onClick={() => setScreen('onboarding')}>
+          <AstraLogo className="app-brand-logo" /><span>ASTRA</span>
         </button>
-
-        {/* Spacer */}
-        <div style={{ flex: 1 }} />
-
-        {/* "Trở lại / Tạo đề mới" trong workspace */}
-        {screen === 'workspace' && (
-          <button
-            onClick={() => {
-              setScreen('onboarding');
-              setShowQuickModal(false);
-            }}
-            style={{
-              padding: '9px 18px',
-              fontSize: 14,
-              fontWeight: 600,
-              color: '#334155',
-              background: '#ffffff',
-              border: '1.5px solid #cbd5e1',
-              borderRadius: 6,
-              cursor: 'pointer',
-              transition: 'border-color 150ms ease, background 150ms ease',
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.borderColor = '#94a3b8';
-              (e.currentTarget as HTMLButtonElement).style.background = '#f8fafc';
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.borderColor = '#cbd5e1';
-              (e.currentTarget as HTMLButtonElement).style.background = '#ffffff';
-            }}
-          >
-            ← Màn hình chính
-          </button>
-        )}
+        <div className="header-context">{screen === 'workspace' ? 'Soạn đề thi' : 'Công cụ soạn đề cho giáo viên'}</div>
+        <div className="header-right">{screen === 'workspace' ? <button className="header-back" onClick={() => { setScreen('onboarding'); setShowQuickModal(false); }}>← Thư viện đề thi</button> : <span className="header-session">Dành cho giáo viên</span>}<span className="header-avatar" aria-label="Giáo viên">GV</span></div>
       </header>
 
       {/* Main content */}
@@ -141,7 +81,7 @@ export const App: React.FC = () => {
                   }}
                 >
                   <div style={{ fontSize: 13, fontWeight: 600, color: '#0f172a' }}>Trợ lý soạn đề</div>
-                  <div style={{ fontSize: 12, color: '#64748b' }}>Nhập yêu cầu để điều chỉnh đề thi</div>
+                  <div style={{ fontSize: 12, color: '#64748b' }}>Mô tả đề muốn tạo hoặc yêu cầu sửa câu hỏi</div>
                 </div>
 
                 <div className="session-context"><strong>{active.title}</strong><span>{active.mode === 'template' ? 'Từ mẫu' : 'Theo yêu cầu'}</span></div>
