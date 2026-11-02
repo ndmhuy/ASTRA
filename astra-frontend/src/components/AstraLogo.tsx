@@ -1,8 +1,12 @@
 import { useId } from 'react';
+import ASTRA_Star from '../assets/ASTRA_Star.svg';
 
-export function AstraLogo({ animated = false, className }: { animated?: boolean; className?: string }) {
+export function AstraLogo({ animated = false, className, useAstraStar = false }: { animated?: boolean; className?: string; useAstraStar?: boolean }) {
   const orbitId = useId();
   const glowId = useId();
+  const star = useAstraStar
+    ? <image href={ASTRA_Star} x="-29" y="-29.725" width="58" height="58" />
+    : <path d="M0-24C1-7 3-2 15 0C3 2 1 7 0 24C-1 7-3 2-15 0C-3-2-1-7 0-24Z" />;
   return (
         <svg className={className} viewBox="0 0 320 280" aria-hidden="true">
           <defs>
@@ -26,11 +30,12 @@ export function AstraLogo({ animated = false, className }: { animated?: boolean;
             <animateMotion dur="1.75s" repeatCount="1" fill="freeze" calcMode="paced">
               <mpath href={`#${orbitId}`} />
             </animateMotion>
-            <path d="M0-24C1-7 3-2 15 0C3 2 1 7 0 24C-1 7-3 2-15 0C-3-2-1-7 0-24Z" filter={`url(#${glowId})`} opacity="0">
+            <g filter={`url(#${glowId})`} opacity="0">
+              {star}
               <animate attributeName="opacity" from="0" to="0.55" begin="1.75s" dur="0.35s" fill="freeze" />
-            </path>
-            <path d="M0-24C1-7 3-2 15 0C3 2 1 7 0 24C-1 7-3 2-15 0C-3-2-1-7 0-24Z" />
-          </g> : <path transform="translate(253 78)" d="M0-24C1-7 3-2 15 0C3 2 1 7 0 24C-1 7-3 2-15 0C-3-2-1-7 0-24Z" fill="#F3C54B" />}
+            </g>
+            {star}
+          </g> : <g transform="translate(253 78)" fill="#F3C54B">{star}</g>}
         </svg>
   );
 }
