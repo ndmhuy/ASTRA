@@ -1,0 +1,272 @@
+{
+  "rows": [
+    {
+      "qid": "q021",
+      "topic": "Đột biến số lượng nhiễm sắc thể",
+      "grade": 12,
+      "part": "P2",
+      "idx": 3,
+      "solved_answer": null,
+      "solved_statements": {
+        "a": null,
+        "b": null,
+        "c": "Đ",
+        "d": null
+      },
+      "solution": "n = 4. Tổng số 9 NST phù hợp thể ba nhưng chưa chứng minh chỉ một cặp thừa một chiếc; tổng số 12 cũng chưa chứng minh mỗi loại có ba chiếc. Thể 16 NST có thể hình thành do nhân đôi toàn bộ bộ NST mà không phân li, tạo tế bào 4n. Nếu thể IV là thể một thông thường thì vẫn có đủ bốn loại NST, tương ứng bốn nhóm gen liên kết; riêng tổng số 7 chưa xác định thành phần từng loại. Theo giả định các dạng đột biến đơn giản thường dùng, bộ đáp án dự kiến là Đ–Đ–Đ–S.",
+      "confidence": "medium",
+      "discrimination": "low",
+      "steps": 3,
+      "routine": true,
+      "direct_recall": false,
+      "cue_use": "Dùng n = 4 và phân biệt tổng số NST với số bản sao của từng loại; không coi thiếu dữ kiện là yêu cầu phân hóa.",
+      "alternatives": [],
+      "statements": [
+        {
+          "sub": "a",
+          "falsehood_kind": "unverified",
+          "reason": "Chưa có thành phần từng loại NST để xác nhận thể ba."
+        },
+        {
+          "sub": "b",
+          "falsehood_kind": "unverified",
+          "reason": "12 NST tương ứng 3n về tổng số, nhưng chưa chứng minh ba bộ đầy đủ."
+        },
+        {
+          "sub": "c",
+          "falsehood_kind": "not_false",
+          "reason": "Nhân đôi toàn bộ NST mà không phân li có thể làm tăng bộ NST từ 2n lên 4n."
+        },
+        {
+          "sub": "d",
+          "falsehood_kind": "unverified",
+          "reason": "Nếu là thể một thì nhận định sai do nhầm mất một chiếc với mất cả một loại NST; tổng số đơn thuần chưa đủ kết luận."
+        }
+      ],
+      "error_flags": [
+        {
+          "kind": "insufficient_data",
+          "reason": "Cần bổ sung thành phần từng loại NST hoặc giới hạn rõ các thể chỉ thuộc dạng lệch bội đơn giản và đa bội nguyên bộ để chấm a, b, d duy nhất.",
+          "needs_teacher": true
+        }
+      ],
+      "coverage_comment": "Kiểm tra nhận diện dạng đột biến và nhóm gen liên kết; mức suy luận thông thường thấp.",
+      "stimulus_use": {
+        "depends_on_shared_context": true,
+        "context_available": true,
+        "reason": "Bốn ý dùng chung dữ kiện trong một câu; ngữ cảnh đầy đủ về tổng số nhưng thiếu thành phần từng loại NST."
+      }
+    },
+    {
+      "qid": "q022",
+      "topic": "Chọn lọc tự nhiên đối với alen lặn gây chết",
+      "grade": 12,
+      "part": "P2",
+      "idx": 4,
+      "solved_answer": "a Đ; b Đ; c S; d S",
+      "solved_statements": {
+        "a": "Đ",
+        "b": "Đ",
+        "c": "S",
+        "d": "S"
+      },
+      "solution": "P có q(a) = 0,6/2 = 0,3 và p(A) = 0,7. Hợp tử F1 gồm 0,49 AA : 0,42 Aa : 0,09 aa. Sau khi aa chết, q(a) ở trưởng thành bằng 0,42/[2 × 0,91] = 3/13 ≈ 0,2308, làm tròn hai chữ số là 0,23. Alen a còn được giữ trong Aa; theo mô hình, q ở thế hệ sau bằng q/(1 + q), nên không bằng 0 sau hữu hạn thế hệ.",
+      "confidence": "high",
+      "discrimination": "medium",
+      "steps": 4,
+      "routine": true,
+      "direct_recall": false,
+      "cue_use": "Phân biệt giai đoạn hợp tử với trưởng thành và chuẩn hóa mẫu số sau chọn lọc.",
+      "alternatives": [],
+      "statements": [
+        {
+          "sub": "a",
+          "falsehood_kind": "not_false",
+          "reason": "Mỗi cá thể dị hợp đóng góp một alen a trong hai alen."
+        },
+        {
+          "sub": "b",
+          "falsehood_kind": "not_false",
+          "reason": "Ngẫu phối tạo hợp tử aa với tần số q² = 0,09."
+        },
+        {
+          "sub": "c",
+          "falsehood_kind": "real_misconception",
+          "reason": "Phải tính lại tần số alen trong nhóm sống sót; kết quả là khoảng 0,23."
+        },
+        {
+          "sub": "d",
+          "falsehood_kind": "obvious_exaggeration",
+          "reason": "Khẳng định loại bỏ hoàn toàn sau ít thế hệ bỏ qua alen lặn được che giấu trong dị hợp."
+        }
+      ],
+      "error_flags": [],
+      "coverage_comment": "Phân hóa chủ yếu ở ý c: đổi tập thống kê sau chọn lọc; ý d không làm tăng mức phân hóa chung.",
+      "stimulus_use": {
+        "depends_on_shared_context": true,
+        "context_available": true,
+        "reason": "Các ý cùng dùng cấu trúc P và quy tắc gây chết; không thiếu hoặc tách rời ngữ cảnh."
+      }
+    },
+    {
+      "qid": "q023",
+      "topic": "Cân bằng di truyền Hardy–Weinberg",
+      "grade": 12,
+      "part": "P3",
+      "idx": 1,
+      "solved_answer": "0,6",
+      "solved_statements": {},
+      "solution": "Hoa trắng là aa nên q² = 0,16, suy ra q = 0,4. Tần số A là p = 1 − q = 0,6. Chấp nhận lời giải xác định đúng tần số alen lặn rồi lấy phần bù.",
+      "confidence": "high",
+      "discrimination": "low",
+      "steps": 2,
+      "routine": true,
+      "direct_recall": false,
+      "cue_use": "Điều kiện cân bằng cho phép lấy căn tần số kiểu hình lặn.",
+      "alternatives": [],
+      "statements": [],
+      "error_flags": [],
+      "coverage_comment": "Vận dụng trực tiếp mô hình đã cho, phù hợp dạng tính ngắn phân hóa thấp.",
+      "stimulus_use": {
+        "depends_on_shared_context": false,
+        "context_available": true,
+        "reason": "Câu độc lập, đủ dữ kiện ngay trong đề dẫn."
+      }
+    },
+    {
+      "qid": "q024",
+      "topic": "Phân li độc lập và xác suất kiểu hình",
+      "grade": 12,
+      "part": "P3",
+      "idx": 2,
+      "solved_answer": "42,2",
+      "solved_statements": {},
+      "solution": "Mỗi phép lai dị hợp cho xác suất kiểu hình trội 3/4. Ba locus phân li độc lập nên P(A–B–D–) = (3/4)³ = 27/64 = 42,1875%; làm tròn được 42,2%.",
+      "confidence": "high",
+      "discrimination": "low",
+      "steps": 3,
+      "routine": true,
+      "direct_recall": false,
+      "cue_use": "Dùng điều kiện phân li độc lập để nhân ba xác suất.",
+      "alternatives": [],
+      "statements": [],
+      "error_flags": [],
+      "coverage_comment": "Phép tính quen thuộc; ba locus không tự tạo mức phân hóa cao.",
+      "stimulus_use": {
+        "depends_on_shared_context": false,
+        "context_available": true,
+        "reason": "Câu độc lập, quan hệ trội và vị trí các locus đã được cung cấp."
+      }
+    },
+    {
+      "qid": "q025",
+      "topic": "Quan hệ giữa chiều dài gen và sản phẩm dịch mã",
+      "grade": 12,
+      "part": "P3",
+      "idx": 3,
+      "solved_answer": "498",
+      "solved_statements": {},
+      "solution": "Theo mô hình lí tưởng đã cho, gen có 5100/3,4 = 1500 cặp nucleotide, mARN có 1500 nucleotide, tương ứng 500 bộ ba. Một bộ ba kết thúc không mã hóa axit amin; cắt thêm axit amin mở đầu nên chuỗi hoàn chỉnh có 500 − 1 − 1 = 498 axit amin.",
+      "confidence": "high",
+      "discrimination": "low",
+      "steps": 4,
+      "routine": true,
+      "direct_recall": false,
+      "cue_use": "Giữ đúng đơn vị cặp nucleotide, bộ ba và hai khoản loại trừ được đề quy định.",
+      "alternatives": [],
+      "statements": [],
+      "error_flags": [],
+      "coverage_comment": "Chuỗi quy đổi trực tiếp; không đòi hỏi tự dựng chiều đọc hoặc khung đọc như ví dụ phân hóa cao trong profile chính thức.",
+      "stimulus_use": {
+        "depends_on_shared_context": false,
+        "context_available": true,
+        "reason": "Giả thiết về vùng mã hóa và xử lí axit amin mở đầu nằm ngay trong câu."
+      }
+    },
+    {
+      "qid": "q026",
+      "topic": "Liên kết gen và hoán vị gen",
+      "grade": 12,
+      "part": "P3",
+      "idx": 4,
+      "solved_answer": "66",
+      "solved_statements": {},
+      "solution": "Theo quy ước bài tập phổ thông, 20 cM ứng với f = 0,20. Cây AB/ab tạo AB = ab = 0,40; Ab = aB = 0,10. Khi tự thụ, P(aa) = P(bb) = 0,25 và P(aabb) = 0,40² = 0,16. Vì vậy P(A–B–) = 1 − 0,25 − 0,25 + 0,16 = 0,66 = 66%.",
+      "confidence": "high",
+      "discrimination": "medium",
+      "steps": 4,
+      "routine": true,
+      "direct_recall": false,
+      "cue_use": "Dùng pha liên kết để tính giao tử ab và cộng lại phần giao của hai biến cố lặn.",
+      "alternatives": [],
+      "statements": [],
+      "error_flags": [],
+      "coverage_comment": "Phối hợp giao tử liên kết với biến cố đối; mô hình và pha đã cho nên chưa đạt yêu cầu suy luận cao.",
+      "stimulus_use": {
+        "depends_on_shared_context": false,
+        "context_available": true,
+        "reason": "Câu độc lập, có pha liên kết và quy định giảm phân giống nhau ở hai giới."
+      }
+    },
+    {
+      "qid": "q027",
+      "topic": "Di truyền học người và xác suất có điều kiện",
+      "grade": 12,
+      "part": "P3",
+      "idx": 5,
+      "solved_answer": "0,11",
+      "solved_statements": {},
+      "solution": "Mỗi cặp bố mẹ bình thường sinh con aa đều phải là Aa × Aa. Với mỗi người vợ hoặc chồng đã biết bình thường, xác suất mang Aa là (1/2)/(3/4) = 2/3. Theo giả định thông thường hai gia đình độc lập, xác suất con bị bệnh là (2/3)² × 1/4 = 1/9 ≈ 0,11. Đề hỏi xác suất, không yêu cầu đổi sang phần trăm.",
+      "confidence": "high",
+      "discrimination": "medium",
+      "steps": 4,
+      "routine": true,
+      "direct_recall": false,
+      "cue_use": "Điều kiện hóa theo kiểu hình bình thường trước khi nhân xác suất truyền alen.",
+      "alternatives": [],
+      "statements": [],
+      "error_flags": [],
+      "coverage_comment": "Có trọng số kiểu gen nhưng hai nhánh đối xứng, một locus và không ghép giới tính; thấp hơn ví dụ phân hóa cao chính thức.",
+      "stimulus_use": {
+        "depends_on_shared_context": false,
+        "context_available": true,
+        "reason": "Quan hệ gia đình cần thiết được mô tả trong câu; không cần phả hệ bên ngoài."
+      }
+    },
+    {
+      "qid": "q028",
+      "topic": "Ước tính kích thước quần thể bằng bắt–thả–bắt lại",
+      "grade": 12,
+      "part": "P3",
+      "idx": 6,
+      "solved_answer": "400",
+      "solved_statements": {},
+      "solution": "Ước tính tỉ lệ cá thể đánh dấu trong quần thể bằng tỉ lệ ở mẫu bắt lại: 60/N ≈ 12/80. Suy ra N ≈ 60 × 80/12 = 400 cá thể.",
+      "confidence": "high",
+      "discrimination": "low",
+      "steps": 2,
+      "routine": true,
+      "direct_recall": false,
+      "cue_use": "Dùng số cá thể đánh dấu, cỡ mẫu bắt lại và số tái bắt; các điều kiện quần thể kín, trộn đều được nêu.",
+      "alternatives": [],
+      "statements": [],
+      "error_flags": [],
+      "coverage_comment": "Áp dụng trực tiếp phép ước tính; hiểu theo mô hình lấy mẫu đại diện, dấu không mất và không làm đổi khả năng bị bắt.",
+      "stimulus_use": {
+        "depends_on_shared_context": false,
+        "context_available": true,
+        "reason": "Toàn bộ số liệu nằm trong câu độc lập, không liên kết với câu chuột đồng ở phần khác."
+      }
+    }
+  ],
+  "calibration_limits": [
+    "Đã đánh giá đúng 8 qid mục tiêu; không dùng công cụ, web hoặc đáp án có sẵn.",
+    "Profile chính thức chỉ có một đề và đang chờ giáo viên duyệt; hiệu chuẩn có giới hạn, chưa chứng minh đặc trưng tái diễn. Profile cấp tỉnh không thay chuẩn chính thức.",
+    "low/medium/high là ước lượng chuyên gia về yêu cầu suy luận, không phải độ phân biệt thực nghiệm hoặc kết quả đo độ khó trên học sinh.",
+    "Thứ tự P1–P2–P3 khớp quan sát được cung cấp; registry không có block, thứ tự chuẩn hoặc quy tắc vị trí để kiểm chứng thêm. Không suy ra thứ tự này bắt buộc cho mọi mã đề.",
+    "Các khoảng câu in trong hướng dẫn khớp tài liệu: P1 có 18 câu, P2 có 4 câu, P3 có 6 câu. Không thấy nhánh tự chọn hoặc trộn các nhánh loại trừ nhau.",
+    "Các ý đúng/sai là thành phần trong từng câu, không phải cụm nhiều câu. Không thấy ngữ cảnh chung liên câu bị thiếu, lặp hoặc gắn sai ở các mục tiêu.",
+    "q021 thiếu thông tin thành phần từng loại NST; đáp án theo quy ước dạng đơn giản đã được tách khỏi kết luận chắc chắn từ dữ kiện.",
+    "Chỉ kiểm tra được nội dung và cấu trúc nguồn TeX được cung cấp; không có trang đính kèm để xác nhận bố cục sau dàn trang."
+  ]
+}
