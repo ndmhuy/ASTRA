@@ -1,0 +1,172 @@
+Mã đề: 0102
+
+BỘ GIÁO DỤC VÀ ĐÀO TẠO
+ĐỀ THI CHÍNH THỨC
+(Đề thi có 04 trang)
+
+KỲ THI TỐT NGHIỆP TRUNG HỌC PHỔ THÔNG NĂM 2026
+Môn thi: TOÁN
+Thời gian làm bài: 90 phút, không kể thời gian phát đề
+
+Họ, tên thí sinh: .....................................................................
+Số báo danh: .........................................................................
+
+PHẦN I: Thí sinh trả lời từ câu 1 đến câu 12. Mỗi câu hỏi thí sinh chỉ chọn một phương án.
+
+Câu 1. Cho hình lập phương $ABCD.A'B'C'D'$ (xem hình dưới). Vectơ nào sau đây bằng vectơ $\vec{AD}$?
+
+[HÌNH: Hình lập phương ABCD.A'B'C'D']
+
+A. $\vec{AB}$.
+B. $\vec{AA'}$.
+C. $\vec{CD}$.
+D. $\vec{B'C'}$.
+
+Câu 2. Cho các hàm số $y=f(x)$ và $y=g(x)$ có đạo hàm trên tập số thực $\mathbb{R}$ thỏa mãn $f'(x)=2x$ và $g'(x)=x^2$. Đạo hàm của hàm số $y=f(x)+g(x)$ là
+A. $4x$.
+B. $2x+x^2$.
+C. $2+2x$.
+D. $2+x^2$.
+
+Câu 3. Trong không gian với hệ tọa độ $Oxyz$, cho hai điểm $A(2;3;1)$ và $B(4;1;1)$. Vectơ $\vec{AB}$ có tọa độ là
+A. $(3;2;1)$.
+B. $(-2;2;0)$.
+C. $(6;4;2)$.
+D. $(2;-2;0)$.
+
+Câu 4. Cho $\int f(x)\mathrm{d}x = \sin x + C$. Phát biểu nào sau đây là đúng?
+A. $\int [2+f(x)]\mathrm{d}x = 2x - \sin x + C$.
+B. $\int [2+f(x)]\mathrm{d}x = 2x + \sin x + C$.
+C. $\int [2+f(x)]\mathrm{d}x = 2x + \cos x + C$.
+D. $\int [2+f(x)]\mathrm{d}x = 2x - \cos x + C$.
+
+Câu 5. Cho cấp số nhân $(u_n)$ có số hạng đầu $u_1$ và công bội $q$ với $u_1 \ne 0$, $q > 1$. Số hạng $u_3$ là
+A. $u_3 = u_1 \cdot q^3$.
+B. $u_3 = u_1 + 2q$.
+C. $u_3 = u_1 \cdot q^2$.
+D. $u_3 = u_1 + 3q$.
+
+Câu 6. Nghiệm của phương trình $\log_3(3x) = 2$ là
+A. $x = 2$.
+B. $x = 3$.
+C. $x = \frac{8}{3}$.
+D. $x = \frac{2}{3}$.
+
+Câu 7. Cho cấp số cộng $(u_n)$ có $u_1 = -2$ và công sai $d = 3$. Giá trị của $u_2$ bằng
+A. $1$.
+B. $-1$.
+C. $-6$.
+D. $-5$.
+
+Câu 8. Hàm số $F(x) = 5x^3$ là một nguyên hàm của hàm số nào sau đây?
+A. $f_2(x) = 5x^2$.
+B. $f_4(x) = 5x^4$.
+C. $f_3(x) = 15x^2$.
+D. $f_1(x) = \frac{5x^4}{4}$.
+
+Câu 9. Cho hai biến cố độc lập $A$ và $B$ có xác suất thỏa mãn $P(A) = 0,3$ và $P(B) = 0,6$. Giá trị của $P(AB)$ bằng
+A. $0,9$.
+B. $0,3$.
+C. $0,18$.
+D. $0,5$.
+
+Câu 10. Cặp số nào sau đây là nghiệm của hệ bất phương trình $\begin{cases} x+y-2 < 0 \\ x-y+2 > 0 \end{cases}$?
+A. $(1;0)$.
+B. $(0;3)$.
+C. $(-3;0)$.
+D. $(1;2)$.
+
+Câu 11. Khảo sát thời gian (đơn vị: phút) học trực tuyến trong một ngày của 42 học sinh, người ta thu được mẫu số liệu ghép nhóm như sau:
+
+| Thời gian học trực tuyến | $[10;20)$ | $[20;30)$ | $[30;40)$ | $[40;50)$ | $[50;60)$ | $[60;70)$ |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| Số học sinh | 5 | 7 | 15 | 6 | 5 | 4 |
+
+Trung vị của mẫu số liệu trên thuộc nhóm nào sau đây?
+A. $[40;50)$.
+B. $[20;30)$.
+C. $[30;40)$.
+D. $[50;60)$.
+
+Câu 12. Cho hàm số $y = \frac{ax+b}{cx+d}$ ($c \ne 0$, $ad - bc \ne 0$) có bảng biến thiên như hình dưới đây:
+
+| $x$ | $-\infty$ | | $1$ | | $+\infty$ |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| $y'$ | | $+$ | $\|$ | $+$ | |
+| $y$ | | $\nearrow^{+\infty}$ | $\|$ | $\nearrow^{-2}$ | |
+| | $-2$ | | $\|$ | $-\infty$ | |
+
+Đường tiệm cận đứng của đồ thị hàm số đã cho có phương trình là
+A. $x = -2$.
+B. $y = 1$.
+C. $y = -2$.
+D. $x = 1$.
+
+PHẦN II: Thí sinh trả lời từ câu 1 đến câu 4. Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn đúng hoặc sai.
+
+Câu 1. Một hệ thống pin năng lượng mặt trời gồm các tấm pin được kết nối với một bộ lưu trữ điện. Trong thời gian mặt trời chiếu sáng của một ngày, năng lượng điện thu được từ các tấm pin được lưu trong bộ lưu trữ điện. Gọi $F(t)$ là năng lượng điện (kWh) lưu trữ được kể từ thời điểm hệ thống bắt đầu hoạt động đến thời điểm $t$, trong đó $t$ là thời gian tính theo giờ ($0 \le t \le 12$) và thời điểm hệ thống bắt đầu hoạt động ứng với $t = 0$. Biết rằng $F(0) = 0$.
+Tốc độ lưu trữ năng lượng điện (kW) của hệ thống này là hàm số $f(t) = F'(t)$ với $0 \le t \le 12$. Số liệu ghi nhận được ở một ngày cụ thể trong năm cho thấy $f(t) = -0,15t^2 + 1,8t$ với $0 \le t \le 12$.
+a) $F(t) = -0,05t^3 + 0,9t^2$ với $0 \le t \le 12$.
+b) Năng lượng điện (kWh) lưu trữ được kể từ thời điểm $t = a$ đến thời điểm $t = b$ ($0 \le a < b \le 12$) là $\int_a^b f(t)\mathrm{d}t$.
+c) Năng lượng điện lưu trữ được kể từ thời điểm $t = 1$ đến thời điểm $t = 5$ nhỏ hơn 15,3 kWh.
+d) Năng lượng điện lưu trữ được kể từ thời điểm $t = 1$ đến thời điểm $t = 9$ gấp hai lần năng lượng điện lưu trữ được kể từ thời điểm $t = 1$ đến thời điểm $t = 5$.
+
+Câu 2. Cho hàm số $f(x) = \frac{1}{3}x^3 - 2x^2 + 3x + 8$.
+a) Đạo hàm của hàm số đã cho là $f'(x) = x^2 - 4x + 3$.
+b) Phương trình $f'(x) = 0$ có tập nghiệm là $S = \{1; 3\}$.
+c) Hàm số đã cho nghịch biến trên khoảng $(1; 3)$.
+d) Giá trị cực tiểu của hàm số đã cho bằng $\frac{28}{3}$.
+
+Câu 3. Nhằm đưa ra cảnh báo sớm về tình trạng sức khỏe của cư dân, người ta sử dụng một ứng dụng trí tuệ nhân tạo để sàng lọc nguy cơ mắc bệnh dựa trên hồ sơ y tế được lưu trữ. Khi phát hiện nguy cơ mắc bệnh, ứng dụng này sẽ gửi cảnh báo để giúp người dân đi khám bệnh kịp thời. Người ta dùng ứng dụng này để tầm soát nguy cơ mắc một loại bệnh.
+Kết quả thu được khi quét thử nghiệm hồ sơ y tế của 10000 người như sau: Có 1000 người nhận được cảnh báo và 9000 người còn lại không nhận được cảnh báo từ ứng dụng. Trong số 1000 người nhận được cảnh báo thì có 600 người có bệnh và 400 người không có bệnh. Trong số 9000 người không nhận được cảnh báo thì có 200 người có bệnh và 8800 người không có bệnh.
+Chọn ngẫu nhiên một người trong số 10000 người nói trên.
+a) Xác suất để người đó không nhận được cảnh báo từ ứng dụng bằng $0,9$.
+b) Xác suất để người đó không có bệnh, biết rằng người đó không nhận được cảnh báo từ ứng dụng, lớn hơn $0,97$.
+c) Xác suất để người đó không có bệnh bằng $0,9$.
+d) Xác suất để người đó không nhận được cảnh báo từ ứng dụng, biết rằng người đó không có bệnh, lớn hơn $0,95$.
+
+Câu 4. Trong không gian xét hệ tọa độ $Oxyz$ có một đơn vị dài trên các trục tương ứng với 10 mét trên thực tế. Một mục tiêu cần được bảo vệ có vị trí ở gốc tọa độ $O$. Người ta thiết lập một vành đai bảo vệ quanh mục tiêu theo một đường tròn tâm $O$ có bán kính bằng 6 đơn vị (tương ứng 60 mét trên thực tế) nằm trong mặt phẳng $(Oxy)$. Một máy bay không người lái (được coi như một hạt) bay theo một đường thẳng từ vị trí $M(2;11;3)$ đến vị trí $N(14;2;3)$. Tại mỗi vị trí của máy bay, khoảng cách từ máy bay đến vành đai bảo vệ là độ dài ngắn nhất của các đoạn thẳng nối từ vị trí đó đến một điểm bất kì trên vành đai.
+a) $\vec{MN} = (12;-9;0)$.
+b) Phương trình tham số của đường thẳng $MN$ là $\begin{cases} x = 2+4t \\ y = 11-3t \\ z = 0 \end{cases}$ với $t \in \mathbb{R}$.
+c) Trong quá trình bay từ $M$ đến $N$, khoảng cách ngắn nhất từ máy bay đến vành đai bảo vệ là 100 mét.
+d) Trong quá trình bay từ $M$ đến $N$, khoảng cách từ máy bay đến vành đai bảo vệ là ngắn nhất khi máy bay ở vị trí có tọa độ là $(6;8;3)$.
+
+PHẦN III: Thí sinh trả lời từ câu 1 đến câu 6.
+
+Câu 1. Để chế tác một hạt cườm, người ta lấy một khối vật thể có dạng một khối tròn xoay được tạo thành khi quay hình phẳng giới hạn bởi trục $Ox$ và nửa trên của elip $\frac{x^2}{1,5^2} + \frac{y^2}{1^2} = 1$ (một đơn vị dài trên mỗi trục tọa độ tương ứng với một xăng-ti-mét trong thực tế) quanh trục $Ox$; sau đó khoan dọc theo trục xoay (xem hình dưới). Lỗ khoan có dạng hình trụ với bán kính $0,1\text{ cm}$ và có trục nằm trên trục xoay. Phần còn lại sau khi khoan là hạt cườm, có dạng một khối tròn xoay.
+Thể tích của hạt cườm đó bằng bao nhiêu xăng-ti-mét khối (không làm tròn kết quả các phép tính trung gian, chỉ làm tròn kết quả cuối cùng đến hàng phần trăm)?
+
+[HÌNH: Mặt cắt và sơ đồ hình học của hạt cườm tạo bởi elip quay quanh trục Ox và lỗ khoan hình trụ bán kính 0,1 cm]
+
+Lưu ý: Các kích thước trong hình minh họa có thể không đúng tỉ lệ thực tế.
+
+Câu 2. Cho hình lập phương $ABCD.MNPQ$ có cạnh bằng 14. Gọi $E$ là trung điểm của đoạn thẳng $AB$. Khoảng cách từ điểm $P$ đến mặt phẳng $(MED)$ bằng bao nhiêu (không làm tròn kết quả các phép tính trung gian, chỉ làm tròn kết quả cuối cùng đến hàng phần mười)?
+
+Câu 3. Trong một trò chơi bạn Bình cần vượt qua một thử thách. Theo yêu cầu của thử thách, Bình cần điền tất cả 15 số thuộc tập hợp $\{1;2;3;4;5;6;7;8;9;11;12;13;16;17;21\}$ vào 15 ô vuông trong hình dưới thỏa mãn đồng thời ba điều kiện sau:
+- Mỗi ô điền đúng một số và mỗi số chỉ được sử dụng một lần;
+- Hiệu hai số ở hai ô bất kì khác nhau trên cùng một hàng không chia hết cho 5;
+- Hiệu hai số ở hai ô bất kì khác nhau trên cùng một cột không chia hết cho 5.
+Hai cách điền gọi là giống nhau nếu số điền ở mỗi ô tương ứng trong 15 ô là giống nhau (không tính đến thứ tự điền các số vào 15 ô vuông). Gọi $H$ là số cách điền khác nhau để bạn Bình vượt qua được thử thách. Giá trị của $\frac{H}{10}$ bằng bao nhiêu?
+
+[HÌNH: Lưới ô vuông dạng bậc thang gồm 5 hàng và 5 cột: Hàng 1 có 5 ô (Cột 1-5), Hàng 2 có 4 ô (Cột 1-4), Hàng 3 có 3 ô (Cột 1-3), Hàng 4 có 2 ô (Cột 1-2), Hàng 5 có 1 ô (Cột 1), tổng cộng 15 ô vuông]
+
+Câu 4. Một công ty nông sản có công suất chế biến không quá 180 tấn nguyên liệu một tháng. Nếu công ty chế biến $x$ tấn nguyên liệu trong một tháng ($1 \le x \le 180$) thì chi phí sản xuất và doanh thu lần lượt là $C(x) = 0,002x^3 + 30x + 20$ (triệu đồng) và $R(x) = 90x$ (triệu đồng). Lợi nhuận lớn nhất mà công ty đạt được trong một tháng là bao nhiêu triệu đồng?
+
+Câu 5. Một nông trại cung cấp rau quả cho siêu thị A với số liệu bán hàng của bốn ngày trong tuần được ghi lại trong bảng sau:
+
+| Ngày | Số ki-lô-gam (Rau muống) | Số ki-lô-gam (Bí xanh) | Số ki-lô-gam (Cà chua) | Tổng số tiền (nghìn đồng) |
+| :--- | :---: | :---: | :---: | :---: |
+| Thứ Tư | 19 | 15 | 10 | 615 |
+| Thứ Năm | 20 | 12 | 8 | 540 |
+| Thứ Sáu | 25 | 12 | 7 | 570 |
+| Thứ Bảy | 50 | 30 | 20 | ? |
+
+Biết rằng đơn giá theo ki-lô-gam của mỗi loại rau quả trong bảng trên là không đổi. Tổng số tiền nông trại thu được ở ngày thứ Bảy từ ba loại rau quả trên khi cung cấp cho siêu thị A là bao nhiêu nghìn đồng?
+
+Câu 6. Một khung hình trang trí có dạng một đa giác đều 12 cạnh $A_1A_2 \dots A_{12}$ (xem hình dưới) được gắn cố định trên một trần nhà. Bạn Dũng có 12 bóng đèn gồm bốn bóng màu đỏ và tám bóng màu xanh, có công suất đôi một khác nhau. Bạn Dũng lắp ngẫu nhiên 12 bóng đèn trên vào 12 đỉnh $A_1, A_2, \dots, A_{12}$ sao cho mỗi đỉnh có đúng một bóng đèn. Gọi $P$ là xác suất để mỗi hình vuông (có bốn đỉnh là các đỉnh của đa giác đã cho) đều có ít nhất một bóng đèn màu đỏ. Giá trị của $4565P$ bằng bao nhiêu?
+
+[HÌNH: Đa giác đều 12 cạnh có các đỉnh A_1, A_2, ..., A_12]
+
+------------------ HẾT ------------------
+- Thí sinh không được sử dụng tài liệu;
+- Giám thị không giải thích gì thêm.

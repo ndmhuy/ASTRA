@@ -1,0 +1,74 @@
+{
+  "input": {
+    "subject": "toan",
+    "kind": "provincial",
+    "year": 2026,
+    "source": "official/2026-provincial-toan/de-khao-sat-chat-luong-toan-12-dot-1-nam-2025-2026-so-gddt-phu-tho/paper.pdf",
+    "slug": "de-khao-sat-chat-luong-toan-12-dot-1-nam-2025-2026-so-gddt-phu-tho"
+  },
+  "verification": {
+    "checked_addresses": [
+      "Trang 1: phần đầu, mã đề và Câu 1–4; đồ thị, công thức và các phương án",
+      "Trang 2: Câu 5–12; hình miền nghiệm, công thức, các phương án và bảng Câu 11",
+      "Trang 3: Phần II, Câu 1–4; hai bảng dữ liệu, biểu thức và các mệnh đề",
+      "Trang 3: Phần III, Câu 1; dữ kiện và biểu thức khoảng cách",
+      "Trang 4: Phần III, Câu 2–6; công thức, dữ kiện và biểu thức"
+    ],
+    "disagreements": [
+      {
+        "location": "Phần I, Câu 9",
+        "before": "qua mặt phẳng $Oxy$ có tọa độ là",
+        "after": "qua mặt phẳng $Ocz$ có tọa độ là",
+        "reason": "Ảnh in ghi mặt phẳng $Ocz$ (mặt phẳng tọa độ chứa các trục $Oz$ và $Oy$); bản chép thành $Oxy$.",
+        "settled_by_image": true
+      },
+      {
+        "location": "Phần I, Câu 12",
+        "before": "hai vectơ $\\overrightarrow{AB'}$ và $\\overrightarrow{A'C}$",
+        "after": "hai vectơ $\\overrightarrow{AB'}$ và $\\overrightarrow{A'C}$",
+        "reason": "Ảnh ghi $\\overrightarrow{AB'}$ và $\\overrightarrow{A'C}$; bản chép khớp.",
+        "settled_by_image": true
+      },
+      {
+        "location": "Phần I, Câu 11, các mốc lớp",
+        "before": "$[10,5;12,5)$ | $[12,5;14,5)$ | $[14,5;16,5)$ | $[16,5;18,5)$ | $[18,5;20,5)$",
+        "after": "$[10,5;12,5)$ | $[12,5;14,5)$ | $[14,5;16,5)$ | $[16,5;18,5)$ | $[18,5;20,5)$",
+        "reason": "Các khoảng và tần số 3, 12, 15, 24, 2 khớp bảng trong ảnh.",
+        "settled_by_image": true
+      }
+    ],
+    "missing_figures": [],
+    "unreadable": [],
+    "limitations": [
+      "Chỉ có ảnh đề thi, không thấy bảng đáp án in kèm; không thể chép independent_key hay đối chiếu khóa đáp án từ ảnh này.",
+      "Các trang được đính kèm là trang 1–4/4; không có trang nào ngoài tập ảnh cần kiểm tra."
+    ],
+    "independent_key": null,
+    "pass": false
+  },
+  "failures": [
+    "Lượt hai chưa đạt"
+  ],
+  "model": "gpt-6-luna",
+  "verification_model": "gpt-6-luna",
+  "calls": "/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/outputs/calls/ocr-toan--de-khao-sat-chat-luong-toan-12-dot-1-nam-2025-2026-so-gddt-phu-tho",
+  "qa_failures": [
+    "Không có khóa khớp mã được xác nhận"
+  ],
+  "source_text_resolution": {
+    "reviewer": "Sol parent visual review",
+    "source_image": "/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/outputs/key-corrections/phutho-1008-source-page2.jpg",
+    "sha256": "da3ae56d35927339a89ec5d316fcda305a10b7da87f55ab3f450a7171feaf30c",
+    "address": {
+      "part": "P1",
+      "idx": 9
+    },
+    "correction": "Coordinate-plane label read as Oxz from source image; the Luna suggested Ocz was a glyph misread.",
+    "key_status": "No printed key available; remains excluded from fully keyed sample.",
+    "derived_from": "/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/work/toan--de-khao-sat-chat-luong-toan-12-dot-1-nam-2025-2026-so-gddt-phu-tho/p2-2.jpg"
+  },
+  "qa_content_failures": [],
+  "qa_key_failures": [
+    "Không có khóa khớp mã được xác nhận"
+  ]
+}

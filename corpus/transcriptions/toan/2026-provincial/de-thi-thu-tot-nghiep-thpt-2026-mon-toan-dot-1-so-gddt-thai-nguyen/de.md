@@ -1,0 +1,185 @@
+status: ocr-draft
+source: official/2026-provincial-toan/de-thi-thu-tot-nghiep-thpt-2026-mon-toan-dot-1-so-gddt-thai-nguyen/paper.pdf; pages 1–4; mã đề 0101
+
+# SỞ GIÁO DỤC VÀ ĐÀO TẠO TỈNH THÁI NGUYÊN
+
+**THI THỬ TỐT NGHIỆP THPT NĂM 2026 (Đợt 1)**  
+**Bài thi: TOÁN**  
+Thời gian làm bài: 90 phút, không kể thời gian phát đề  
+**ĐỀ THI CHÍNH THỨC**  
+(Đề thi có 04 trang)  
+Mã đề thi **0101**
+
+## PHẦN I
+
+Thí sinh trả lời từ câu 1 đến câu 12. Mỗi câu hỏi thí sinh chỉ chọn một phương án.
+
+**Câu 1.** Cho hình chóp $S.ABCD$ có $SA$ vuông góc với mặt phẳng $(ABCD)$, tứ giác $ABCD$ là hình vuông, $SA=3$ và $AB=1$. Thể tích của khối chóp $S.ABCD$ bằng
+
+A. $2$.  
+B. $1$.  
+C. $3$.  
+D. $9$.
+
+**Câu 2.** Cho hình hộp $ABCD.EFGH$ (tham khảo hình vẽ). Đường thẳng $GF$ song song với mặt phẳng nào sau đây?
+
+[HÌNH: Hình hộp $ABCD.EFGH$ với các đỉnh được ghi nhãn.]  
+![](images/cau_2.png)
+
+A. $(ACGE)$.  
+B. $(ABFE)$.  
+C. $(ABCD)$.  
+D. $(BDHF)$.
+
+**Câu 3.** Nghiệm của phương trình $\log_2(x-1)=3$ là
+
+A. $x=9$.  
+B. $x=4$.  
+C. $x=7$.  
+D. $x=10$.
+
+**Câu 4.** Cho hàm số đa thức bậc bốn $y=f(x)$ có đồ thị như hình vẽ. Hàm số đã cho đồng biến trên khoảng nào dưới đây?
+
+[HÌNH: Đồ thị hàm bậc bốn có hai cực đại tại $x=-1$ và $x=1$, một cực tiểu tại $x=0$, các đường nét đứt đánh dấu hoành độ cực trị.]  
+![](images/cau_4.png)
+
+A. $(-1;0)$.  
+B. $(-\infty;-1)$.  
+C. $(-\infty;1)$.  
+D. $(-1;+\infty)$.
+
+**Câu 5.** Tiệm cận ngang của đồ thị hàm số $y=\dfrac{2x-5}{x+2}$ là đường thẳng có phương trình
+
+A. $y=-2$.  
+B. $y=\dfrac{5}{2}$.  
+C. $y=\dfrac{2}{5}$.  
+D. $y=2$.
+
+**Câu 6.** Nguyên hàm của hàm số $f(x)=2^x+x$ là
+
+A. $\dfrac{2^x}{\ln 2}+x^2+C$.  
+B. $\dfrac{2^x}{\ln 2}+\dfrac{x^2}{2}+C$.  
+C. $2^x+\dfrac{x^2}{2}+C$.  
+D. $2^x+x^2+C$.
+
+**Câu 7.** Đồ thị của hàm số nào dưới đây có dạng như đường cong trong hình vẽ?
+
+[HÌNH: Đồ thị dạng hàm bậc ba, nhánh trái đi xuống và nhánh phải đi lên, có cực đại bên trái trục tung và cực tiểu bên phải.]  
+![](images/cau_7.png)
+
+A. $y=\dfrac{2x-1}{x+2}$.  
+B. $y=x^3-3x+1$.  
+C. $y=-x^3+3x+1$.  
+D. $y=\dfrac{x^2-1}{2x-1}$.
+
+**Câu 8.** Trong không gian với hệ tọa độ $Oxyz$, hình chiếu vuông góc của điểm $M(2;1;-1)$ trên mặt phẳng $(Oxz)$ có tọa độ là
+
+A. $(0;1;0)$.  
+B. $(2;1;0)$.  
+C. $(0;1;-1)$.  
+D. $(2;0;-1)$.
+
+**Câu 9.** Cho cấp số cộng $(u_n)$ có $u_1=2$ và $u_4=11$. Công sai của cấp số cộng đã cho bằng
+
+A. $1$.  
+B. $2$.  
+C. $4$.  
+D. $3$.
+
+**Câu 10.** Trong không gian với hệ tọa độ $Oxyz$, cho vectơ $\vec a=(2;-1;3)$, $\vec b=(1;3;-2)$. Tọa độ của vectơ $\vec c=\vec a-2\vec b$ là
+
+A. $(0;-7;7)$.  
+B. $(4;-7;7)$.  
+C. $(0;7;7)$.  
+D. $(0;-7;-7)$.
+
+**Câu 11.** Mỗi ngày bác An đều đi bộ để rèn luyện sức khỏe. Quãng đường đi bộ mỗi ngày của bác An trong 20 ngày được thống kê ở bảng sau:
+
+| Quãng đường (km) | $[2,7;3,0)$ | $[3,0;3,3)$ | $[3,3;3,6)$ | $[3,6;3,9)$ | $[3,9;4,2)$ |
+|---|---:|---:|---:|---:|---:|
+| Số ngày | 3 | 6 | 5 | 4 | 2 |
+
+Khoảng tứ phân vị của mẫu số liệu ghép nhóm trên là
+
+A. $0,5$.  
+B. $0,9$.  
+C. $0,575$.  
+D. $0,975$.
+
+**Câu 12.** Cho hàm số $f(x)$ có bảng biến thiên như hình vẽ. Giá trị cực tiểu của hàm số đã cho là
+
+[HÌNH: Bảng biến thiên với các mốc $-1,0,1$; giá trị cực đại $2$ tại $x=-1,1$ và giá trị cực tiểu $1$ tại $x=0$.]  
+![](images/cau_12.png)
+
+A. $y=1$.  
+B. $y=0$.  
+C. $y=-1$.  
+D. $y=2$.
+
+## PHẦN II
+
+Thí sinh trả lời từ câu 1 đến câu 4. Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn đúng hoặc sai.
+
+**Câu 1.** Trong không gian với hệ tọa độ $Oxyz$, cho hình thang $ABCD$ vuông tại $A$ và $B$. Biết $A(1;2;1)$, $B(2;0;-1)$, $C(6;1;0)$ và diện tích hình thang $ABCD$ bằng $6\sqrt 2$.
+
+**a)** $\cos(\overrightarrow{AB},\overrightarrow{AC})=\dfrac{\sqrt3}{3}$.
+
+**b)** Tọa độ điểm $D$ là $(a;b;c)$. Khi đó $a+b+c=\dfrac{22}{3}$.
+
+**c)** Gọi điểm $M(x_M;y_M;z_M)$ nằm trên mặt phẳng $(Oxy)$ thỏa mãn $MA^2+2MB^2+3MC^2$ đạt giá trị nhỏ nhất. Khi đó $x_M<4$.
+
+**d)** $\overrightarrow{AB}\cdot\overrightarrow{AC}=9$.
+
+**Câu 2.** Trong hình vẽ sau đây, khi kéo ra khỏi vị trí cân bằng ở điểm $O$ và buông tay, lực đàn hồi của lò xo khiến vật $A$ gắn ở đầu của lò xo dao động quanh $O$. Tọa độ $s$ (centimét) của $A$ trên trục $Ox$ vào thời điểm $t$ (giây) sau khi buông tay được xác định bởi công thức $s=10\sin\left(10t-\dfrac{\pi}{2}\right)$.
+
+[HÌNH: Vật $A$ gắn với lò xo nằm trên trục $Ox$, vị trí cân bằng được ghi $O$.]  
+![](images/cau_2_part2.png)
+
+**a)** Giá trị nhỏ nhất của hàm số $s=10\sin\left(10t-\dfrac{\pi}{2}\right)$ bằng $-1$.
+
+**b)** Thời điểm đầu tiên tọa độ của vật $A$ trên trục bằng $5$ là $t=\dfrac{2\pi}{15}$ (giây).
+
+**c)** Tập xác định của hàm số $s=10\sin\left(10t-\dfrac{\pi}{2}\right)$ là $\mathbb R$.
+
+**d)** Trong 3 giây đầu tiên vật đi qua vị trí cân bằng 10 lần.
+
+**Câu 3.** Cây cà chua khi trồng có chiều cao 5 cm. Tốc độ tăng chiều cao của cây cà chua sau khi trồng $t$ tuần được cho bởi hàm số $v(t)=-0,1t^3+t^2$, đơn vị: centimét/tuần. Gọi $h(t)$ là độ cao của cây cà chua ở tuần thứ $t$, đơn vị: centimét.
+
+**a)** Vào thời điểm cây cà chua đó phát triển nhanh nhất, chiều cao của cây cà chua nhỏ hơn 54 cm.
+
+**b)** Cây cà chua đó có thể phát triển và cao hơn 88 cm.
+
+**c)** Tốc độ tăng chiều cao của cây cà chua sau khi trồng được 2 tuần là 3,2 centimét/tuần.
+
+**d)** Giai đoạn tăng trưởng của cây cà chua đó kéo dài 8 tuần.
+
+**Câu 4.** Cho hàm số $y=f(x)=(x^2-5x+7)e^x$.
+
+**a)** $f(0)=7$.
+
+**b)** Hàm số $y=f(x)$ nghịch biến trên khoảng $\left(-\infty;\dfrac52\right)$.
+
+**c)** Đạo hàm của hàm số đã cho là $f'(x)=(2x-5)e^x$.
+
+**d)** Giá trị nhỏ nhất của hàm số $y=f(x)$ trên đoạn $[0;2]$ bằng 7.
+
+## PHẦN III
+
+Thí sinh trả lời từ câu 1 đến câu 6.
+
+**Câu 1.** Có bao nhiêu cách chọn sáu số từ chín số nguyên $1,2,\ldots,9$ và điền vào các ô của hình dưới đây (mỗi ô chỉ điền đúng một số) sao cho tổng các số ở mỗi cột (kể cả cột có một ô) bằng nhau?
+
+[HÌNH: Sáu ô vuông xếp thành ba cột bậc thang, chiều cao lần lượt một, hai và ba ô.]  
+![](images/cau_1_part3.png)
+
+**Câu 2.** Cho tứ diện $ABCD$ có $\widehat{BAC}=30^\circ$, $\widehat{CAD}=45^\circ$, $\widehat{DAB}=60^\circ$. Gọi $\alpha=[B;AD;C]$ thì giá trị của $\cos\alpha$ bằng bao nhiêu? (Không làm tròn kết quả các phép tính trung gian, chỉ làm tròn kết quả cuối cùng đến hàng phần trăm.)
+
+**Câu 3.** Trong một cuộc thi pha chế, mỗi đội chơi được sử dụng tối đa 24 gam hương liệu, 9 lít nước và 210 gam đường để pha chế nước ngọt loại I và nước ngọt loại II. Để pha chế 1 lít nước ngọt loại I cần 10 gam đường, 1 lít nước và 4 gam hương liệu. Để pha chế 1 lít nước ngọt loại II cần 30 gam đường, 1 lít nước và 1 gam hương liệu. Mỗi lít nước ngọt loại I được 80 điểm thưởng, mỗi lít nước ngọt loại II được 60 điểm thưởng. Hỏi số điểm thưởng cao nhất có thể của mỗi đội trong cuộc thi là bao nhiêu?
+
+**Câu 4.** Tung đồng thời hai con xúc xắc khác nhau đều cân đối và đồng chất ba lần. Bằng cách cộng số chấm xuất hiện trên hai con xúc xắc trong mỗi lần tung ta được một số ngẫu nhiên từ 2 đến 12. Gọi ba số này lần lượt là $a,b,t$. Chọn ngẫu nhiên một tam giác có hai cạnh có độ dài là $a,b$ và góc xen giữa chúng bằng $(t-1)15^\circ$. Xác suất để tam giác này là tam giác vuông bằng bao nhiêu? (Kết quả làm tròn đến hàng phần trăm.)
+
+**Câu 5.** Đối với ngành nuôi trồng thủy sản, việc kiểm soát lượng thuốc tồn dư trong nước là một nhiệm vụ quan trọng nhằm đáp ứng các tiêu chuẩn an toàn về môi trường. Khi nghiên cứu một loại thuốc trị bệnh trong nuôi trồng thủy sản, người ta sử dụng thuốc đó một lần và theo dõi nồng độ thuốc tồn dư trong nước kể từ lúc sử dụng thuốc. Kết quả cho thấy nồng độ thuốc $y(t)$ (đơn vị: mg/lít) tồn dư trong nước tại thời điểm $t$ ngày kể từ lúc sử dụng thuốc, thỏa mãn $y(t)=e^{g(t)}$ và $y'(t)=k\cdot y(t)$ với $t\ge0$, trong đó $k$ là hằng số khác không. Đo nồng độ thuốc tồn dư trong nước tại các thời điểm $t=6$ ngày, $t=12$ ngày nhận được kết quả lần lượt là 2 mg/lít, 1 mg/lít. Nồng độ thuốc tồn dư trong nước tại thời điểm 30 ngày bằng bao nhiêu mg/lít? (Kết quả làm tròn đến hàng phần trăm.)
+
+**Câu 6.** Cho hình hộp chữ nhật $ABCD.EFGH$ với $AB=6$, $AD=8$ và $DH=10$. Gọi điểm $M$ là trung điểm của đoạn thẳng $AF$ và điểm $I$ thuộc mặt phẳng $(ABCD)$. Khi $IM+IG$ nhỏ nhất thì điểm $I$ cách hai đường thẳng $BA$ và $BC$ tương ứng bằng $a$ và $b$. Giá trị của biểu thức $P=3a+6b$ bằng bao nhiêu?
+
+**-------- HẾT --------**
