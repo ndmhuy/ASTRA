@@ -1,0 +1,116 @@
+{
+  "input": {
+    "subject": "tieng-nhat",
+    "kind": "paper",
+    "year": 2026,
+    "source": "official/2026-papers-extra/tieng-nhat",
+    "slug": "ma-1603"
+  },
+  "verification": {
+    "checked_addresses": [
+      "Page 1: header, Questions 1–9 and options",
+      "Page 2: Section II notice, Questions 10–14 and options",
+      "Page 2: Section III passage, Questions 15–18 and options",
+      "Page 3: Section III Questions 19–25 and options",
+      "Page 3: Section IV passage, Questions 26–30 and options",
+      "Page 4: Section IV Questions 31–35 and options",
+      "Page 4: Section V passage, Questions 36–40 and options"
+    ],
+    "disagreements": [
+      {
+        "location": "Section I, opening sentence",
+        "before": "動物を見ると (1) 自然ににっこりしてしまうという人は多いだろう。",
+        "after": "動物を見ると自然ににっこりしてしまうという人は多いだろう。",
+        "reason": "The printed text has a single blank marker (1) before 自然; the transcript duplicates it as both (1) and the word 自然.",
+        "settled_by_image": true
+      },
+      {
+        "location": "Section II notice, first bullet",
+        "before": "・自転車に②学校のシールが貼ってある物だけが、ここに③置けます。",
+        "after": "・自転車に②学校のシールが貼ってある物だけが、ここに③置けます。",
+        "reason": "The image shows underlined target words 学校 and 置けます; the circled numerals ② and ③ are callouts, not printed text in the notice.",
+        "settled_by_image": true
+      },
+      {
+        "location": "Section III, sentence about popular shop",
+        "before": "だからデパートでは、有名なおいしい店に店を(20)____かが生きるか死ぬかの問題になるほどだ。",
+        "after": "だからデパートでは、有名なおいしい店に店を(20)____かが生きるか死ぬかの問題になるほどだ。",
+        "reason": "The image reads 店を(20)____かが, with no を after the blank; the transcript matches.",
+        "settled_by_image": true
+      },
+      {
+        "location": "Section V, sentence about bookcase",
+        "before": "先生のご本は、(37)____本だなに置いていたのですが、見つかりませんでした。",
+        "after": "先生のご本は、(37)____本だなに置いていたのですが、見つかりませんでした。",
+        "reason": "The image has the same sentence and blank placement; no disagreement found.",
+        "settled_by_image": true
+      }
+    ],
+    "missing_figures": [],
+    "unreadable": [],
+    "pass": false,
+    "limitations": [
+      "Only the four attached exam pages were reviewed; no printed answer-key page is attached, so independent_key is null and key matching could not be checked.",
+      "This review uses Luna; first-pass model identity was not supplied, so cross-model independence cannot be confirmed.",
+      "The transcript identifies exam code 1603, matching the code printed on the attached pages."
+    ],
+    "independent_key": null
+  },
+  "failures": [
+    "Có hai ký tự phương án chưa đọc chắc; chỉ dùng tham chiếu hình thức, chưa dùng làm bằng chứng nội dung/tần suất"
+  ],
+  "model": "gpt-6-luna",
+  "verification_model": "gpt-6-luna",
+  "calls": "/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/outputs/calls/ocr-tieng-nhat--ma-1603",
+  "source_readability_resolution": {
+    "reviewer": "Sol parent visual review",
+    "source_images": [
+      {
+        "path": "/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/outputs/source-reviews/tieng-nhat-2026-page1.jpg",
+        "sha256": "1e5e024f31906ce15019cb6fed8d06dd16cdc5c20d8dbd05d6d4577571edbdb2"
+      },
+      {
+        "path": "/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/outputs/source-reviews/tieng-nhat-2026-page2.jpg",
+        "sha256": "06eda9a3bbf3c1242d223e13c0f3c00e05fdd9da61bac4da2fadefbfe0fa23f2"
+      }
+    ],
+    "notes": [
+      "Source has a separate vocabulary callout (I), distinct from cloze blank (1). Restored callout/underline, preserved the actual cloze blank.",
+      "Restored a clearly visible omitted place word and corrected kana-length/dakuten distractor transcription at question twelve.",
+      "Two unclear wrong-option glyphs at question ten are marked [?], never guessed.",
+      "Four full pages and all forty question addresses are available; use as form reference only, not frequency evidence or teacher approval."
+    ],
+    "remaining_unreadable_addresses": [
+      {
+        "part": "P1",
+        "idx": 10,
+        "option": "A"
+      },
+      {
+        "part": "P1",
+        "idx": 10,
+        "option": "D"
+      }
+    ]
+  },
+  "form_reference_eligible": true,
+  "matched_key_source": {
+    "path": "/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/transcriptions/tieng-nhat/2026-answer/key.json",
+    "exact_code": "1603",
+    "note": "Existing official answer table; not solved or inferred."
+  },
+  "key_coverage": {
+    "mismatches": [],
+    "incomplete": [],
+    "basis": "exact year/code join to existing official-answer transcription",
+    "source": {
+      "path": "/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/transcriptions/tieng-nhat/2026-answer/key.json",
+      "exact_code": "1603",
+      "note": "Existing official answer table; not solved or inferred."
+    },
+    "new_independent_key_read": false
+  },
+  "qa_failures": [],
+  "qa_content_failures": [],
+  "qa_key_failures": []
+}
