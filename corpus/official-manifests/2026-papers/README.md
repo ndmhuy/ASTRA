@@ -1,0 +1,5 @@
+# Kỳ thi tốt nghiệp THPT 2026: one mã đề per subject, as page images (captured 2026-10-27)
+Source: images embedded in VnExpress articles (per subject, "xem mã đề khác phía dưới"), original size (about 1700x2560). Downloaded with the owner's approval. The mã đề is printed in each page footer ("Trang x/y - Mã đề thi NNNN"); read it during OCR.
+WARNING for OCR: these are PHOTOS of candidates' own papers, not clean scans. Some carry pencil marks and circled answers (for example Toán, circles on options) and show-through of the back page. Answers must NEVER be taken from the marks; the answer keys in `official/2026-answers/` are the only source. A candidate's name box can be partly visible: internal evidence only, never shipped, never published.
+Images per subject: toan 4, ngu-van 2, tieng-anh 4, vat-li 3 (page count to verify), hoa-hoc 4, sinh-hoc 4, lich-su 4, dia-li 4, tin-hoc 4.
+Still to capture for 2026: gdktpl, cong-nghe (2), tieng-nga, tieng-phap, tieng-trung, tieng-nhat, tieng-duc, tieng-han.
