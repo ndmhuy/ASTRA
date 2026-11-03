@@ -1,0 +1,190 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "29ef7685b276b728",
+    "topic": "Tuần hoàn ở động vật",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Hình hệ tuần hoàn có tên mạch, ngăn tim, chiều dòng máu và các mạng mao mạch được đánh dấu.",
+        "task": "Kiểm tra việc xác định các mạng mao mạch theo bên cơ thể.",
+        "reasoning": "Theo các mạch phổi dẫn tới từng mạng mao mạch; đối chiếu bên giải phẫu với nhãn trong hình.",
+        "combines": [
+          "Giải phẫu tuần hoàn",
+          "Định hướng trên sơ đồ"
+        ],
+        "difficulty_source": "Nhãn mạch trên hình hỗ trợ trực tiếp việc định vị",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Sơ đồ dòng máu qua tim, phổi và các mạch nối.",
+        "task": "Kiểm tra trình tự đường đi của máu trong vòng tuần hoàn trao đổi khí.",
+        "reasoning": "Xác định ngăn tim khởi phát vòng tuần hoàn; theo dòng qua hệ mạch và mao mạch; kiểm tra ngăn tim tiếp nhận máu trở về.",
+        "combines": [
+          "Các ngăn tim",
+          "Hệ mạch phổi"
+        ],
+        "difficulty_source": "Đối chiếu một đường đi tuần hoàn cơ bản",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Sơ đồ có cả vòng tuần hoàn trao đổi khí và vòng tuần hoàn cơ thể.",
+        "task": "Đánh giá quy tắc khái quát về thành phần khí của máu trong các loại mạch.",
+        "reasoning": "Nhớ loại mạch được gọi theo chiều đi so với tim; xét sự trao đổi khí trong các vòng tuần hoàn; tìm trường hợp làm quy tắc khái quát không đúng.",
+        "combines": [
+          "Chiều dòng máu",
+          "Trao đổi khí",
+          "Phân loại mạch máu"
+        ],
+        "difficulty_source": "Phải tách tiêu chí gọi tên mạch khỏi mức oxygen hóa",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Sơ đồ tim và hệ mạch đưa máu tới các mô rồi trở về tim.",
+        "task": "Kiểm tra trình tự của vòng tuần hoàn cơ thể.",
+        "reasoning": "Xác định ngăn tim bơm máu đi nuôi cơ thể; theo trình tự các loại mạch qua mô; xác định ngăn tim nhận máu trở về.",
+        "combines": [
+          "Các ngăn tim",
+          "Hệ mạch cơ thể"
+        ],
+        "difficulty_source": "Nhớ và đối chiếu đường tuần hoàn cơ bản",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "55c12f561006|P2|4|a",
+      "55c12f561006|P2|4|b",
+      "55c12f561006|P2|4|c",
+      "55c12f561006|P2|4|d",
+      "8bbf9eea6d33|P2|3|a",
+      "8bbf9eea6d33|P2|3|b",
+      "8bbf9eea6d33|P2|3|c",
+      "8bbf9eea6d33|P2|3|d"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "29ef7685b276b728",
+    "stem": "Một mô hình tuần hoàn của thỏ khỏe mạnh dùng hai thẻ K và L để thay tên hai mạng mao mạch. Mô hình biểu diễn các đường đi sau; mũi tên chỉ chiều máu chảy:\nTâm thất phải → động mạch phổi → K → tĩnh mạch phổi → tâm nhĩ trái.\nTâm thất trái → động mạch chủ → động mạch đến cơ quan → L → tĩnh mạch từ cơ quan → tĩnh mạch chủ → tâm nhĩ phải.\nKhi qua K, máu nhận ôxi từ không khí trong phế nang. Khi qua L, máu cung cấp ôxi cho các tế bào cơ quan. Xác định mỗi phát biểu sau là đúng hay sai.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "K biểu diễn mạng mao mạch phổi, còn L biểu diễn mạng mao mạch ở các cơ quan thuộc vòng tuần hoàn cơ thể."
+      },
+      {
+        "sub": "b",
+        "text": "Sau khi rời K, máu đi qua tĩnh mạch phổi rồi đổ trực tiếp vào tâm thất trái."
+      },
+      {
+        "sub": "c",
+        "text": "Máu trong tĩnh mạch phổi giàu ôxi hơn máu trong động mạch phổi, dù tĩnh mạch phổi đưa máu về tim."
+      },
+      {
+        "sub": "d",
+        "text": "Đường máu từ tâm thất trái qua L rồi về tâm nhĩ phải thuộc vòng tuần hoàn phổi."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) Đúng. K nằm giữa động mạch phổi và tĩnh mạch phổi, là nơi máu nhận ôxi từ phế nang; L là nơi máu trao ôxi cho tế bào cơ quan.\nb) Sai. Tĩnh mạch phổi đưa máu vào tâm nhĩ trái; máu sau đó mới chuyển xuống tâm thất trái.\nc) Đúng. Máu nhận ôxi khi qua K nên máu rời phổi qua tĩnh mạch phổi giàu ôxi hơn máu đến phổi qua động mạch phổi. Tên động mạch và tĩnh mạch được xác định theo chiều dòng máu so với tim.\nd) Sai. Đường đi từ tâm thất trái qua mao mạch các cơ quan rồi về tâm nhĩ phải thuộc vòng tuần hoàn cơ thể.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Bỏ qua tâm nhĩ trái khi xác định nơi tiếp nhận máu từ tĩnh mạch phổi.",
+        "why_plausible": "Học sinh nhớ máu từ phổi sẽ được tâm thất trái bơm đi nên có thể nhầm đích đến trực tiếp với ngăn bơm máu tiếp theo."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Gán tên vòng tuần hoàn phổi cho đường máu qua các cơ quan cơ thể.",
+        "why_plausible": "Học sinh có thể nhớ hai vòng tuần hoàn nhưng chưa gắn đúng tên vòng với mạng mao mạch và các ngăn tim tương ứng."
+      }
+    ],
+    "level_reason": "Mức của toàn bộ mẫu là TH, bằng mức cao nhất của các phát biểu. Học sinh đọc mô hình bằng chữ, diễn giải vị trí trao đổi khí và phân biệt chiều dòng máu với mức giàu ôxi. Các thao tác đều là đối chiếu, giải thích quan hệ tuần hoàn quen thuộc.",
+    "prerequisites": [
+      "Tuần hoàn kép ở thú",
+      "Chức năng của tâm nhĩ và tâm thất",
+      "Quy tắc gọi tên động mạch và tĩnh mạch",
+      "Trao đổi khí ở phổi và các mô"
+    ],
+    "variation_guidance": "Có thể đổi kí hiệu hai mạng mao mạch hoặc thay thỏ bằng một loài thú khác. Nếu thay mô hình bằng hình vẽ, phải cung cấp đủ nhãn và chiều mũi tên. Giữ bốn phát biểu và đánh giá mức của toàn mẫu theo phát biểu có mức cao nhất.",
+    "uncertainties": [
+      "Quan sát cấu trúc được cung cấp cho mục tiêu này chỉ đến từ nguồn cấp tỉnh qua bên thứ ba; không có điểm neo chính thức để đối chiếu cấu trúc câu."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "29ef7685b276b728",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) K là mao mạch phổi, nơi máu nhận ôxi; L là mao mạch cơ quan, nơi máu cung cấp ôxi cho tế bào. b) Tĩnh mạch phổi đổ vào tâm nhĩ trái, không đổ trực tiếp vào tâm thất trái. c) Máu nhận thêm ôxi khi qua K nên tĩnh mạch phổi chứa máu giàu ôxi hơn động mạch phổi; tên tĩnh mạch chỉ hướng máu về tim. d) Đường từ tâm thất trái qua các cơ quan rồi về tâm nhĩ phải thuộc vòng tuần hoàn cơ thể.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a) Diễn giải ký hiệu K, L từ đường đi và chức năng đã cho. b) Đọc đường đi để phân biệt ngăn tim nhận máu. c) Diễn giải sự thay đổi hàm lượng ôxi khi máu qua phổi và phân biệt với chiều chảy của tĩnh mạch. d) Đối chiếu đường đi đã cho với hai vòng tuần hoàn. Từng ý chỉ cần đọc hiểu mô hình hoặc vận dụng kiến thức theo cách quen thuộc."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/sinh-hoc/4a26d69c37f33438e982fcc420832555a9c67ec9a977d9df1067f1d37aa4b0eb.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/sinh-hoc/4a26d69c37f33438e982fcc420832555a9c67ec9a977d9df1067f1d37aa4b0eb.resolve.json"
+}

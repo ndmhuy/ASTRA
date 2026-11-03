@@ -1,0 +1,122 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "d27b98d101ec1e22",
+    "topic": "Di truyền quần thể và ứng dụng",
+    "part": "P3",
+    "level": "TH",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Bảng số lượng cá thể thuộc các kiểu gene của một locus đa allele trên nhiễm sắc thể thường.",
+        "task": "Tính tần số của một allele trong quần thể.",
+        "reasoning": "Chọn các kiểu gene chứa allele cần xét; đếm bản sao allele với trọng số phù hợp cho đồng hợp và dị hợp; chia cho tổng bản sao của locus trong quần thể; làm tròn theo yêu cầu.",
+        "combines": [
+          "Kiểu gene đa allele",
+          "Tần số allele",
+          "Đọc bảng"
+        ],
+        "difficulty_source": "Đếm bản sao allele theo công thức quen thuộc, không cần giả định cân bằng di truyền",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Một quần thể cân bằng, số cá thể theo kiểu hình và việc loại bỏ một nhóm trước khi ngẫu phối tiếp.",
+        "task": "Tính tỉ lệ cá thể dị hợp trong toàn bộ thế hệ sau và làm tròn.",
+        "reasoning": "Suy tần số allele từ tần số kiểu hình lặn; lập cấu trúc kiểu gene ban đầu; chuẩn hóa thành phần nhóm còn sinh sản; tính lại tần số allele; áp dụng ngẫu phối và làm tròn tỉ lệ dị hợp.",
+        "combines": [
+          "Cân bằng di truyền",
+          "Chọn lọc theo kiểu hình",
+          "Tần số allele",
+          "Tỉ lệ dị hợp"
+        ],
+        "difficulty_source": "Phải đổi mẫu số sau loại bỏ cá thể rồi mới tính thế hệ sau",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một quần thể ngẫu phối cân bằng với tần số một allele đã biết và các allele còn lại có tần số bằng nhau.",
+        "task": "Tính tổng tần số các kiểu gene đồng hợp.",
+        "reasoning": "Tính phần tần số còn lại; chia đều cho các allele chưa biết; bình phương tần số từng allele để tính đồng hợp; cộng và đổi sang đơn vị trả lời.",
+        "combines": [
+          "Tần số allele",
+          "Cân bằng Hardy–Weinberg",
+          "Tổng tần số đồng hợp"
+        ],
+        "difficulty_source": "Áp dụng công thức tổng bình phương tần số allele",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Bảng tần số các kiểu gene tại nhiều locus, quy luật trội và điều kiện tự phối độc lập.",
+        "task": "Tính tần số kiểu hình kết hợp ở đời con của toàn quần thể.",
+        "reasoning": "Lọc các nhóm bố mẹ có thể tạo kiểu hình đích; tính xác suất kiểu hình ấy trong đời con từng nhóm; nhân với trọng số nhóm ban đầu; cộng các đóng góp và làm tròn.",
+        "combines": [
+          "Phân li độc lập",
+          "Tự thụ phấn",
+          "Xác suất toàn phần"
+        ],
+        "difficulty_source": "Phải lấy trung bình có trọng số theo từng kiểu gene thay vì gộp quần thể thành một phép lai",
+        "evidence_uncertainty": "Khóa cung cấp không khớp phép cộng đóng góp từ các dòng theo bảng và giả thiết đã in; tên cơ quan mang tính trạng cũng không nhất quán giữa phần quy ước và yêu cầu.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "b68b84764a9b|P3|5|None",
+      "2cbdc74db082|P3|1|None",
+      "4b4716b94db4|P3|4|None",
+      "55c12f561006|P3|2|None",
+      "61a0198fbfda|P3|1|None",
+      "8bbf9eea6d33|P3|1|None"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "d27b98d101ec1e22",
+    "stem": "Ở một quần thể động vật lưỡng bội, một locus trên nhiễm sắc thể thường có ba allele A₁, A₂ và A₃. Kết quả khảo sát toàn bộ quần thể ghi nhận: 40 cá thể A₁A₁, 60 cá thể A₁A₂, 20 cá thể A₁A₃, 30 cá thể A₂A₂, 10 cá thể A₂A₃ và 40 cá thể A₃A₃. Tần số allele A₂ trong quần thể bằng bao nhiêu? Viết kết quả dưới dạng số thập phân, làm tròn đến ba chữ số sau dấu phẩy.",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "0,475",
+        "level": "TH"
+      }
+    ],
+    "solution": "Tổng số cá thể là 40 + 60 + 20 + 30 + 10 + 40 = 200, tương ứng 400 bản sao allele tại locus. Số bản sao A₂ là 60 + 2 × 30 + 10 = 130. Vì vậy, tần số A₂ = 130/400 = 0,325.",
+    "distractors": [],
+    "level_reason": "Yêu cầu đếm bản sao allele trong các kiểu gene bằng trọng số quen thuộc rồi chia cho hai lần số cá thể. Đây là thủ tục chuẩn ở mức TH, không cần giả định cân bằng di truyền.",
+    "prerequisites": [
+      "Mỗi cá thể lưỡng bội có hai allele tại locus trên nhiễm sắc thể thường",
+      "Cách tính tần số allele từ số lượng các kiểu gene"
+    ],
+    "variation_guidance": "Thay số lượng các kiểu gene và allele cần tính; giữ bảng số liệu đầy đủ và thống nhất yêu cầu làm tròn. Không thêm giả định cân bằng Hardy–Weinberg khi chỉ cần đếm allele.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "d27b98d101ec1e22",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "0,325",
+        "level": "TH"
+      }
+    ],
+    "solution": "Tổng số cá thể là 200. Số bản sao allele A₂ là 60 + 2 × 30 + 10 = 130. Tần số A₂ = 130/(2 × 200) = 0,325.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Áp dụng quy trình quen thuộc: đếm số bản sao allele rồi chia cho tổng số allele tại locus trong quần thể lưỡng bội."
+  },
+  "key_agreement": false,
+  "level_agreement": true,
+  "status": "needs_teacher_review_with_flags",
+  "generation_receipt": "audit/outputs/topic-samples/sinh-hoc/cf5c53ca6a39db40db7fc32e23fb95578a0afb810667be46a21171b8f4f3082d.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/sinh-hoc/cf5c53ca6a39db40db7fc32e23fb95578a0afb810667be46a21171b8f4f3082d.resolve.json"
+}

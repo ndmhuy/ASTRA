@@ -1,0 +1,151 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "26273b1e58383375",
+    "topic": "Di truyền nhiễm sắc thể và quy luật di truyền",
+    "part": "P2",
+    "level": "NB",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Thông tin vị trí gene gây bệnh và kiểu gene của các thành viên trong gia đình.",
+        "task": "Đánh giá nhận định về quy luật di truyền của bệnh.",
+        "reasoning": [
+          "Xác định loại nhiễm sắc thể mang gene từ thông tin đã cho.",
+          "Đối chiếu với khái niệm di truyền liên kết giới tính."
+        ],
+        "combines": [
+          "Vị trí gene",
+          "Di truyền học người"
+        ],
+        "difficulty_source": "Thông tin vị trí gene trực tiếp quyết định kết luận",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "61a0198fbfda|P2|1|a"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "26273b1e58383375",
+    "stem": "Trong một mô hình di truyền ở người, gene có hai alen A và a nằm trên vùng không tương đồng của nhiễm sắc thể X. Alen a gây bệnh và lặn hoàn toàn so với alen A. Một người mẹ có kiểu gene X^A X^a. Hãy xác định mỗi nhận định sau là đúng hay sai.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Gene đang xét là gene liên kết với giới tính."
+      },
+      {
+        "sub": "b",
+        "text": "Bệnh đang xét thuộc dạng di truyền liên kết với nhiễm sắc thể Y."
+      },
+      {
+        "sub": "c",
+        "text": "Người mẹ có kiểu gene dị hợp tại locus đang xét."
+      },
+      {
+        "sub": "d",
+        "text": "Trong mô hình này, a là alen trội so với A."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "NB"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "NB"
+      }
+    ],
+    "solution": "a đúng: gene nằm trên nhiễm sắc thể giới tính X nên là gene liên kết với giới tính. b sai: đề cho gene nằm trên vùng không tương đồng của X, không phải trên Y. c đúng: người mẹ mang hai alen khác nhau A và a tại cùng locus nên dị hợp. d sai: đề đã xác định a lặn hoàn toàn so với A.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Đồng nhất di truyền liên kết giới tính với di truyền liên kết Y.",
+        "why_plausible": "Học sinh nhớ tên nhóm quy luật nhưng chưa phân biệt gene trên X với gene trên Y."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Cho rằng alen gây bệnh luôn là alen trội.",
+        "why_plausible": "Học sinh nhầm tác động gây bệnh với quan hệ trội – lặn giữa hai alen."
+      }
+    ],
+    "level_reason": "Cả bốn nhận định chỉ yêu cầu nhận diện vị trí gene, khái niệm dị hợp hoặc nhắc lại quan hệ trội – lặn đã cho. Mức cao nhất của các nhận định là NB, nên mức của toàn mẫu là NB.",
+    "prerequisites": [
+      "Khái niệm gene liên kết với giới tính",
+      "Phân biệt gene trên X và gene trên Y",
+      "Khái niệm dị hợp",
+      "Quan hệ trội – lặn"
+    ],
+    "variation_guidance": "Có thể thay kí hiệu alen hoặc kiểu gene được nêu, nhưng giữ các nhận định ở mức nhận diện trực tiếp; không thêm suy luận đời con nếu vẫn nhắm mức NB.",
+    "uncertainties": [
+      "Quan sát được cung cấp cho mục tiêu này chỉ thuộc nguồn cấp tỉnh do bên thứ ba cung cấp và chỉ gắn với một nhận định; các nhận định còn lại được sáng tác để tạo mẫu đúng/sai hoàn chỉnh."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "26273b1e58383375",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "NB"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "NB"
+      }
+    ],
+    "solution": "a) Đúng: gene trên vùng không tương đồng của X là gene liên kết với giới tính. b) Sai: gene nằm trên X. c) Đúng: X^A X^a mang hai alen khác nhau tại locus đang xét. d) Sai: đề cho a lặn hoàn toàn so với A.",
+    "confidence": "high",
+    "error_flags": [
+      "nhan_dinh_sai_hien_nhien_do_mau_thuan_truc_tiep_voi_gia_thiet"
+    ],
+    "level_reason": "Từng nhận định chỉ yêu cầu nhận biết: a về vị trí gene liên kết giới tính; b về nhiễm sắc thể mang gene; c về định nghĩa dị hợp; d về quan hệ trội–lặn đã nêu."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "needs_teacher_review_with_flags",
+  "generation_receipt": "audit/outputs/topic-samples/sinh-hoc/d4e2339592ec823e9120976d7a8b9c6b964708bdae152ecccf6f2e373fc6b913.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/sinh-hoc/d4e2339592ec823e9120976d7a8b9c6b964708bdae152ecccf6f2e373fc6b913.resolve.json"
+}

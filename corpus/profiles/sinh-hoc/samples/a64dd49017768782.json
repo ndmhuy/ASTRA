@@ -1,0 +1,195 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "a64dd49017768782",
+    "topic": "Di truyền nhiễm sắc thể và quy luật di truyền",
+    "part": "P2",
+    "level": "VD",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Biểu hiện bệnh theo giới và quan hệ bố mẹ con, cùng giả thiết chỉ một gene đang xét nằm trên nhiễm sắc thể giới tính.",
+        "task": "Kiểm tra khả năng sinh con gái mắc bệnh của một cặp bố mẹ.",
+        "reasoning": "Suy ra gene bệnh là gene lặn liên kết giới tính bằng các tổ hợp gia đình; xác định allele bố truyền cho con gái; xét điều kiện bắt buộc để con gái biểu hiện bệnh.",
+        "combines": [
+          "Di truyền liên kết giới tính",
+          "Suy luận kiểu gene",
+          "Xác suất di truyền"
+        ],
+        "difficulty_source": "Nhận ra ràng buộc truyền allele từ bố cho con gái có thể thay thế việc liệt kê toàn bộ phép lai",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Bảng các kiểu hình gia đình cho các tính trạng có cơ chế di truyền khác nhau.",
+        "task": "Kiểm tra số người có thể xác định đầy đủ kiểu gene ở tất cả locus được xét.",
+        "reasoning": "Suy ra cơ chế di truyền từng tính trạng; lập các khả năng kiểu gene của từng người; dùng quan hệ bố mẹ con để loại khả năng; chỉ đếm người có kiểu gene duy nhất ở mọi locus.",
+        "combines": [
+          "Di truyền trội lặn",
+          "Di truyền liên kết giới tính",
+          "Suy luận ràng buộc gia đình"
+        ],
+        "difficulty_source": "Phải quản lí đồng thời tính xác định và bất định của kiểu gene ở từng người",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Thông tin gia đình của các cá thể dự kiến kết đôi, trong đó một phần kiểu gene chỉ biết qua xác suất có điều kiện.",
+        "task": "Kiểm tra xác suất sinh con thuộc giới và tổ hợp kiểu hình được yêu cầu.",
+        "reasoning": "Suy ra kiểu gene chắc chắn và các khả năng còn lại của bố mẹ; tính trọng số kiểu gene dựa trên kiểu hình đã biết; tính xác suất ở từng locus; kết hợp với xác suất giới tính và điều kiện độc lập.",
+        "combines": [
+          "Xác suất có điều kiện",
+          "Di truyền liên kết giới tính",
+          "Di truyền trên nhiễm sắc thể thường",
+          "Quy tắc nhân xác suất"
+        ],
+        "difficulty_source": "Phải kết hợp bất định kiểu gene của bố mẹ với sự kiện đồng thời có điều kiện giới tính",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Quan hệ giữa kiểu gene, sản phẩm sinh hóa và màu sắc trong điều kiện môi trường cho phép biểu hiện.",
+        "task": "Kiểm tra tổng số phép lai giữa các cây cùng kiểu hình khi không phân biệt chiều lai.",
+        "reasoning": "Lập ánh xạ từ các tổ hợp allele sang kiểu hình; nhóm các kiểu gene cùng màu; đếm các cặp kiểu gene có lặp trong mỗi nhóm; cộng và tránh đếm hai chiều.",
+        "combines": [
+          "Tương tác gene",
+          "Phân li độc lập",
+          "Đếm tổ hợp",
+          "Ảnh hưởng môi trường"
+        ],
+        "difficulty_source": "Phải chuyển sơ đồ sinh hóa thành các lớp kiểu gene rồi đếm cặp không thứ tự",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "b68b84764a9b|P2|3|b",
+      "b68b84764a9b|P2|3|c",
+      "b68b84764a9b|P2|3|d",
+      "2cbdc74db082|P2|4|b",
+      "2cbdc74db082|P2|4|c",
+      "4b4716b94db4|P2|2|a",
+      "4b4716b94db4|P2|2|b",
+      "4b4716b94db4|P2|2|c",
+      "4b4716b94db4|P2|2|d",
+      "55c12f561006|P2|1|b",
+      "55c12f561006|P2|1|c",
+      "55c12f561006|P2|1|d",
+      "61a0198fbfda|P2|2|d",
+      "8bbf9eea6d33|P2|4|b"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "a64dd49017768782",
+    "stem": "Xét hai bệnh di truyền giả định M và N ở người. Bệnh M do allele lặn a trên nhiễm sắc thể thường quy định; người có A không mắc bệnh M. Bệnh N do allele lặn b trên vùng không tương đồng của nhiễm sắc thể X quy định; allele B quy định không mắc bệnh N. Hai gene phân li độc lập. Một phụ nữ không mắc cả hai bệnh có em trai mắc cả hai bệnh; bố mẹ của cô đều không mắc cả hai bệnh. Cô kết hôn với một người đàn ông không mắc cả hai bệnh, nhưng bố của người đàn ông mắc bệnh M. Không có đột biến, các kiểu gene biểu hiện đầy đủ và có sức sống như nhau. Xác suất sinh con trai hoặc con gái đều bằng 1/2; không có thêm thông tin xét nghiệm hay tiền sử sinh con của cặp vợ chồng. Hãy xác định mỗi phát biểu sau đúng hay sai.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Xác suất người phụ nữ có kiểu gene Aa là 2/3."
+      },
+      {
+        "sub": "b",
+        "text": "Xác suất người phụ nữ có kiểu gene XᴮXᵇ là 1/2."
+      },
+      {
+        "sub": "c",
+        "text": "Cặp vợ chồng này không thể sinh con gái mắc bệnh N."
+      },
+      {
+        "sub": "d",
+        "text": "Xác suất đứa con đầu lòng là con trai mắc đồng thời cả hai bệnh bằng 1/24."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "VD"
+      }
+    ],
+    "solution": "Về bệnh M, em trai mắc bệnh có kiểu gene aa nên bố mẹ của người phụ nữ đều là Aa. Với điều kiện người phụ nữ không mắc bệnh M, xác suất cô là Aa bằng 2/3. Người chồng không mắc bệnh M nhưng nhận a từ bố mắc bệnh nên chắc chắn là Aa. Vì vậy, xác suất con mắc bệnh M là (2/3) × (1/4) = 1/6. Về bệnh N, em trai có kiểu gene XᵇY, trong khi mẹ không mắc bệnh, nên mẹ là XᴮXᵇ; bố là XᴮY. Người phụ nữ có xác suất mang kiểu gene XᴮXᵇ bằng 1/2. Người chồng là XᴮY nên mọi con gái đều nhận Xᴮ từ bố và không mắc bệnh N. Xác suất sinh con trai mắc bệnh N là (1/2) × (1/2) × (1/2) = 1/8, lần lượt ứng với xác suất mẹ mang allele b, sinh con trai và mẹ truyền b. Do hai gene phân li độc lập, xác suất con đầu lòng là con trai mắc cả hai bệnh bằng (1/6) × (1/8) = 1/48.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Tính được xác suất mắc cả hai bệnh trong nhóm con trai là 1/24 rồi dùng kết quả đó cho sự kiện sinh một con trai mắc cả hai bệnh.",
+        "why_plausible": "Học sinh có thể bỏ sót xác suất giới tính 1/2 khi chuyển từ xác suất có điều kiện trong nhóm con trai sang xác suất trên mọi lần sinh."
+      }
+    ],
+    "level_reason": "Các phát biểu a, b, c dùng những suy luận gia đình quen thuộc. Phát biểu d yêu cầu phối hợp phân bố kiểu gene có điều kiện của người mẹ, kiểu gene bắt buộc của người cha, di truyền liên kết X và xác suất giới tính. Mức cao nhất của toàn mẫu là VD.",
+    "prerequisites": [
+      "Di truyền lặn trên nhiễm sắc thể thường",
+      "Di truyền lặn liên kết nhiễm sắc thể X",
+      "Xác suất có điều kiện",
+      "Quy tắc nhân xác suất"
+    ],
+    "variation_guidance": "Có thể thay quan hệ gia đình hoặc kiểu hình người phối ngẫu, nhưng cần tính lại phân bố kiểu gene có điều kiện và phân biệt xác suất trong nhóm con trai với xác suất trên mọi lần sinh.",
+    "uncertainties": [
+      "Hai bệnh và gia đình đều là tình huống giả định phục vụ minh họa, không mô tả một bệnh hoặc gia đình thực tế."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "a64dd49017768782",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "VD"
+      }
+    ],
+    "solution": "Về bệnh M, bố mẹ người phụ nữ đều Aa vì không mắc bệnh nhưng sinh con aa. Người phụ nữ không mắc bệnh nên xác suất mang Aa là 2/3. Người chồng không mắc bệnh và có bố aa nên chắc chắn Aa. Về bệnh N, mẹ người phụ nữ là XᴮXᵇ, bố là XᴮY; xác suất người phụ nữ mang XᴮXᵇ là 1/2. Chồng có kiểu gene XᴮY nên mọi con gái đều nhận Xᴮ từ bố và không mắc bệnh N. Xác suất con mắc M là (2/3) × (1/4) = 1/6. Xác suất con là trai mắc N là (1/2) × (1/2) × (1/2) = 1/8. Do phân li độc lập, xác suất con đầu lòng là trai mắc cả hai bệnh bằng (1/6) × (1/8) = 1/48.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Ý a và b là suy luận phả hệ và xác suất có điều kiện quen thuộc cho từng gene; ý c dựa vào quy luật bố truyền X cho con gái. Ý d phải kết nối suy luận kiểu gene từ hai gia đình, xác suất mang allele bệnh của mẹ, hai cơ chế di truyền và giới tính để xác định biến cố đồng thời."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/sinh-hoc/07ad15b26cfa1854874a4b90be537ffece245a3db4291e4a36e7820da9a319c7.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/sinh-hoc/07ad15b26cfa1854874a4b90be537ffece245a3db4291e4a36e7820da9a319c7.resolve.json"
+}

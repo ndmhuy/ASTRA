@@ -1,0 +1,141 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "d06868f8bacffa8a",
+    "topic": "Quang hợp và năng suất cây trồng",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Định nghĩa chỉ số diện tích lá, thông tin về vai trò của chỉ số và mô tả chú giải đồ thị của thí nghiệm dinh dưỡng khoáng.",
+        "task": "Đánh giá mối liên hệ giữa bộ lá và năng suất cơ quan thu hoạch.",
+        "reasoning": "Nhận diện diện tích lá là yếu tố liên quan quang hợp; liên hệ sản phẩm quang hợp với tích lũy vào cơ quan thu hoạch.",
+        "combines": [
+          "Quang hợp",
+          "Năng suất cây trồng"
+        ],
+        "difficulty_source": "Quan hệ được gợi trực tiếp trong phần giới thiệu thí nghiệm",
+        "evidence_uncertainty": "Đồ thị chỉ có mô tả chú giải, thiếu diễn biến đường; riêng nhận định này có thể xét từ thông tin bằng lời.",
+        "evidence_class": "official"
+      }
+    ],
+    "support_refs": [
+      "b68b84764a9b|P2|1|a"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "d06868f8bacffa8a",
+    "stem": "Chỉ số diện tích lá được tính bằng tổng diện tích một mặt của các lá chia cho diện tích đất trồng tương ứng. Trong một thí nghiệm giả định trên cùng giống khoai lang, các lô có cùng mật độ trồng và chế độ tưới nhưng nhận các mức dinh dưỡng khoáng khác nhau. Kết quả tại cùng thời điểm thu hoạch: lô K có chỉ số diện tích lá 2,0 và khối lượng chất khô của củ 360 g/m² đất; lô L tương ứng là 3,2 và 470 g/m² đất; lô M tương ứng là 4,4 và 440 g/m² đất. Lá là cơ quan quang hợp chủ yếu; một phần sản phẩm quang hợp được vận chuyển đến củ và tích lũy ở đó. Xét các phát biểu sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Trên 1 m² đất của lô L, tổng diện tích một mặt của các lá là 3,2 m²."
+      },
+      {
+        "sub": "b",
+        "text": "Bộ lá có liên quan đến sự tích lũy chất khô ở củ thông qua việc cung cấp sản phẩm quang hợp."
+      },
+      {
+        "sub": "c",
+        "text": "Lô M có khối lượng chất khô của củ trên mỗi mét vuông đất cao hơn lô L vì có chỉ số diện tích lá lớn hơn."
+      },
+      {
+        "sub": "d",
+        "text": "Kết quả từ lô L và lô M cho thấy tăng chỉ số diện tích lá trong khoảng đã xét không đi kèm với tăng khối lượng chất khô của củ."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) Đúng: diện tích lá bằng chỉ số diện tích lá nhân diện tích đất, tức 3,2 × 1 = 3,2 m². b) Đúng: lá tạo sản phẩm quang hợp, trong đó một phần được vận chuyển và tích lũy ở củ. c) Sai: lô M có chỉ số diện tích lá lớn hơn nhưng khối lượng chất khô của củ chỉ đạt 440 g/m², thấp hơn mức 470 g/m² của lô L. d) Đúng: từ L đến M, chỉ số diện tích lá tăng từ 3,2 lên 4,4 còn khối lượng chất khô của củ giảm từ 470 xuống 440 g/m². Các số liệu này mô tả mối liên hệ trong thí nghiệm, chưa tách riêng tác động nhân quả của diện tích lá khỏi dinh dưỡng khoáng.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "c",
+        "mistake": "Cho rằng chỉ số diện tích lá lớn hơn tất yếu tạo ra khối lượng củ lớn hơn.",
+        "why_plausible": "Học sinh biết lá quang hợp và cung cấp chất hữu cơ cho củ nhưng có thể suy rộng quan hệ đó thành quan hệ tăng đồng thời trong mọi trường hợp."
+      }
+    ],
+    "level_reason": "Mức cao nhất là TH: học sinh diễn giải chỉ số theo định nghĩa, liên hệ quang hợp với tích lũy chất khô và so sánh trực tiếp số liệu. Không cần xây dựng mô hình hay xác định nguyên nhân của sự khác biệt giữa các lô.",
+    "prerequisites": [
+      "Khái niệm chỉ số diện tích lá.",
+      "Vai trò của quang hợp trong tạo chất hữu cơ.",
+      "Sự vận chuyển sản phẩm quang hợp đến cơ quan tích lũy.",
+      "Cách so sánh số liệu giữa các nghiệm thức."
+    ],
+    "variation_guidance": "Có thể thay cây trồng có cơ quan tích lũy và điều chỉnh số liệu. Cần cung cấp đầy đủ kết quả, đồng thời tránh suy ra quan hệ nhân quả riêng của diện tích lá khi các lô còn khác nhau về dinh dưỡng.",
+    "uncertainties": [
+      "Số liệu là giả định phục vụ minh họa, không phải kết quả thực nghiệm.",
+      "Quan sát định hướng chỉ hỗ trợ mối liên hệ giữa bộ lá, quang hợp và cơ quan thu hoạch; các phát biểu còn lại được xây dựng mới từ dữ liệu đầy đủ trong câu hỏi."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "d06868f8bacffa8a",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) Tổng diện tích một mặt lá trên 1 m² đất của lô L là 3,2 × 1 = 3,2 m². b) Lá cung cấp sản phẩm quang hợp, một phần được chuyển đến củ và tích lũy thành chất khô. c) Lô M có khối lượng chất khô của củ là 440 g/m², thấp hơn mức 470 g/m² của lô L dù chỉ số diện tích lá lớn hơn. d) Từ L sang M, chỉ số diện tích lá tăng từ 3,2 lên 4,4 nhưng khối lượng chất khô của củ giảm từ 470 xuống 440 g/m²; vì vậy hai đại lượng không cùng tăng trong so sánh này.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a áp dụng trực tiếp định nghĩa chỉ số diện tích lá nên là TH. b nhắc lại mối liên hệ đã nêu trong đề nên là NB. c và d đọc, so sánh và diễn giải số liệu trực tiếp nên là TH; không cần xây dựng mô hình hay suy luận nhân quả."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/sinh-hoc/d7041c26c54eea3213a5f7fd83ada5e9396198628cf8826a862f1cc24aaa2cee.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/sinh-hoc/d7041c26c54eea3213a5f7fd83ada5e9396198628cf8826a862f1cc24aaa2cee.resolve.json"
+}

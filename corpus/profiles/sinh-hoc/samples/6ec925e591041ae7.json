@@ -1,0 +1,172 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "6ec925e591041ae7",
+    "topic": "Di truyền quần thể và ứng dụng",
+    "part": "P1",
+    "level": "TH",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Tần số các kiểu gene tại một locus trong quần thể.",
+        "task": "Tính tần số allele được chỉ định.",
+        "reasoning": "Xác định đóng góp allele của từng kiểu gene; cộng phần đóng góp từ đồng hợp và dị hợp.",
+        "combines": [
+          "Tần số kiểu gene",
+          "Tần số allele"
+        ],
+        "difficulty_source": "Áp dụng trực tiếp quy tắc đếm allele",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Cấu trúc kiểu gene ban đầu và lịch sử thay đổi hình thức sinh sản qua các thế hệ.",
+        "task": "Xác định cấu trúc kiểu gene cuối quá trình.",
+        "reasoning": "Tính tần số allele ban đầu; lập cấu trúc cân bằng sau ngẫu phối; tính phần dị hợp còn lại khi tự phối; cộng phần chuyển thành đồng hợp vào cấu trúc trước tự phối.",
+        "combines": [
+          "Tần số allele",
+          "Cân bằng Hardy–Weinberg",
+          "Tự thụ phấn"
+        ],
+        "difficulty_source": "Phải đổi mô hình đúng thời điểm giữa các giai đoạn sinh sản",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Quần thể ban đầu đồng nhất về kiểu gene dị hợp và số thế hệ tự phối.",
+        "task": "Tính tần số một kiểu gene đồng hợp ở thế hệ được yêu cầu.",
+        "reasoning": "Tính phần dị hợp còn lại qua tự phối; lấy phần giảm dị hợp phân bổ đều cho các kiểu gene đồng hợp.",
+        "combines": [
+          "Tự thụ phấn",
+          "Tần số kiểu gene"
+        ],
+        "difficulty_source": "Áp dụng trực tiếp quy luật giảm dị hợp qua tự phối",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Sơ đồ vector, vùng điều hòa, chiều phiên mã và các sản phẩm nối DNA có cấu trúc khác nhau.",
+        "task": "Xác định nhóm vector không tạo được sản phẩm protein mong muốn.",
+        "reasoning": [
+          "Xác định sự hiện diện của gene đích trong từng cấu trúc.",
+          "Đối chiếu hướng gene với vùng khởi động phiên mã.",
+          "Phân loại khả năng biểu hiện rồi chọn tổ hợp phù hợp."
+        ],
+        "combines": [
+          "DNA tái tổ hợp",
+          "Điều hòa biểu hiện gene",
+          "Đọc sơ đồ vector"
+        ],
+        "difficulty_source": "Phân biệt có gene với có khả năng biểu hiện gene",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "2cbdc74db082|P1|2|None",
+      "55c12f561006|P1|11|None",
+      "55c12f561006|P1|2|None",
+      "61a0198fbfda|P1|18|None",
+      "61a0198fbfda|P1|4|None",
+      "61a0198fbfda|P1|7|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "6ec925e591041ae7",
+    "stem": "Ở một quần thể thực vật lưỡng bội, một locus trên nhiễm sắc thể thường có hai allele A và a. Tần số các kiểu gene trong quần thể là 0,36 AA : 0,48 Aa : 0,16 aa. Tần số allele A của quần thể bằng bao nhiêu?",
+    "options": [
+      {
+        "label": "A",
+        "text": "0,36."
+      },
+      {
+        "label": "B",
+        "text": "0,60."
+      },
+      {
+        "label": "C",
+        "text": "0,84."
+      },
+      {
+        "label": "D",
+        "text": "0,40."
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "TH"
+      }
+    ],
+    "solution": "Chọn B. Tần số allele A là f(AA) + ½f(Aa) = 0,36 + 0,24 = 0,60. A chỉ tính đóng góp của nhóm AA. C cộng toàn bộ tần số Aa, dù mỗi cá thể Aa chỉ có một allele A trong hai allele tại locus. D là tần số allele a: 0,16 + 0,24 = 0,40.",
+    "distractors": [
+      {
+        "label": "A",
+        "sub": null,
+        "mistake": "Lấy tần số kiểu gene AA làm tần số allele A và bỏ qua allele A trong nhóm Aa.",
+        "why_plausible": "Học sinh nhận ra nhóm AA chứa allele A nhưng chưa tính phần đóng góp của cá thể dị hợp."
+      },
+      {
+        "label": "C",
+        "sub": null,
+        "mistake": "Tính f(A) = f(AA) + f(Aa) = 0,84.",
+        "why_plausible": "Học sinh nhầm tỉ lệ cá thể mang allele A với tỉ lệ allele A trong toàn bộ vốn allele tại locus."
+      },
+      {
+        "label": "D",
+        "sub": null,
+        "mistake": "Tính đúng tần số allele a nhưng trả lời cho allele A.",
+        "why_plausible": "Hai allele được tính bằng cùng một quy tắc nên học sinh dễ đổi nhầm nhóm đồng hợp cần sử dụng."
+      }
+    ],
+    "level_reason": "Học sinh đọc cấu trúc kiểu gene và áp dụng trực tiếp quy tắc tính tần số allele từ nhóm đồng hợp và dị hợp. Đây là bài tập chuẩn thuộc TH, không cần giả định quần thể cân bằng Hardy–Weinberg.",
+    "prerequisites": [
+      "Phân biệt tần số kiểu gene và tần số allele",
+      "Mỗi cá thể lưỡng bội có hai allele tại locus đang xét",
+      "Công thức f(A) = f(AA) + ½f(Aa)"
+    ],
+    "variation_guidance": "Có thể thay cấu trúc kiểu gene hoặc yêu cầu tính allele a. Các tần số kiểu gene phải không âm và có tổng bằng 1; không cần đặt điều kiện cân bằng di truyền.",
+    "uncertainties": [
+      "Cấu trúc minh họa chỉ tham khảo quan sát trừu tượng từ nguồn đề cấp tỉnh do bên thứ ba cung cấp; chưa có điểm neo chính thức để đối chiếu."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "6ec925e591041ae7",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "TH"
+      }
+    ],
+    "solution": "Tần số allele A là f(AA) + ½f(Aa) = 0,36 + 0,48/2 = 0,60.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "TH: Thay trực tiếp các tần số kiểu gene vào công thức tính tần số allele."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/sinh-hoc/b92b73f247ce7db8a4db5c5917d7dfdec0245bab0a276c097577aff87ee5d30c.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/sinh-hoc/b92b73f247ce7db8a4db5c5917d7dfdec0245bab0a276c097577aff87ee5d30c.resolve.json"
+}

@@ -1,0 +1,80 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "bb1a619fb6ee1287",
+    "topic": "Chu kì tế bào và nguyên phân",
+    "part": "P3",
+    "level": "TH",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Các đồ thị trực quan mô tả lượng DNA theo những pha của chu kì tế bào.",
+        "task": "Chọn đồ thị phù hợp với quy luật nhân đôi và phân chia DNA.",
+        "reasoning": "Xác định pha diễn ra nhân đôi; giữ nguyên mức DNA trong các pha không tổng hợp; đặt sự giảm lượng DNA vào giai đoạn phân chia; đối chiếu hình dạng đồ thị.",
+        "combines": [
+          "Các pha chu kì tế bào",
+          "Nhân đôi DNA",
+          "Đọc đồ thị"
+        ],
+        "difficulty_source": "Ghép đúng các đoạn đồ thị với chức năng từng pha",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "8bbf9eea6d33|P3|3|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "bb1a619fb6ee1287",
+    "stem": "Một tế bào lưỡng bội có lượng DNA trong nhân ở pha G1 là 4 pg. Tế bào trải qua một chu kì bình thường, DNA nhân đôi hoàn tất và nguyên phân không có sai sót. Ba bản ghi dưới đây mô tả lượng DNA trong một nhân theo thứ tự: pha G1 → cuối pha S → pha G2 → nhân của mỗi tế bào con ngay sau khi phân chia.\nBản ghi 1: 4 → 4 → 8 → 4 (pg).\nBản ghi 2: 4 → 8 → 4 → 4 (pg).\nBản ghi 3: 4 → 8 → 8 → 4 (pg).\nHãy ghi số của bản ghi phù hợp.",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "3",
+        "level": "TH"
+      }
+    ],
+    "solution": "DNA nhân đôi trong pha S nên lượng DNA tăng từ 4 pg lên 8 pg vào cuối pha S. Ở pha G2, lượng DNA vẫn là 8 pg. Sau nguyên phân và phân chia tế bào chất bình thường, mỗi tế bào con có một nhân chứa 4 pg DNA. Vì vậy bản ghi 3 phù hợp. Bản ghi 1 sai vì không thể hiện sự tăng lượng DNA trong pha S. Bản ghi 2 sai vì đặt sự giảm lượng DNA vào pha G2, khi tế bào chưa phân chia.",
+    "distractors": [],
+    "level_reason": "Học sinh đối chiếu các dãy số với quy luật nhân đôi DNA ở pha S, duy trì lượng DNA ở pha G2 và phân chia cho hai nhân con. Đây là đọc biểu diễn và áp dụng quy luật chu kì tế bào quen thuộc ở mức TH.",
+    "prerequisites": [
+      "Trình tự các pha G1, S, G2 và pha phân bào.",
+      "DNA nhân đôi trong pha S.",
+      "Sự phân chia đồng đều DNA cho hai nhân con trong nguyên phân bình thường."
+    ],
+    "variation_guidance": "Thay lượng DNA ban đầu hoặc đổi thứ tự các bản ghi; luôn xác định rõ đại lượng tính cho một nhân và mốc đo sau phân chia.",
+    "uncertainties": [
+      "Căn cứ tham khảo về dạng nhiệm vụ chỉ là mô tả đồ thị cấp tỉnh qua nguồn thứ ba; các bản ghi trong mẫu này được tự tạo và không phải dữ liệu đề thi chính thức."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "bb1a619fb6ee1287",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "3",
+        "level": "TH"
+      }
+    ],
+    "solution": "DNA nhân đôi trong pha S nên tăng từ 4 pg lên 8 pg, giữ ở mức 8 pg trong pha G2. Sau nguyên phân và phân chia tế bào, mỗi nhân con có 4 pg DNA. Trình tự phù hợp là 4 → 8 → 8 → 4.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Đối chiếu các bản ghi với quy luật biến đổi lượng DNA trong chu kì tế bào bằng quy trình quen thuộc."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/sinh-hoc/dc62eacc14f3d3989290beb5a136324acd35a2069d36c087df02b3f7ed5c7bbf.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/sinh-hoc/dc62eacc14f3d3989290beb5a136324acd35a2069d36c087df02b3f7ed5c7bbf.resolve.json"
+}
