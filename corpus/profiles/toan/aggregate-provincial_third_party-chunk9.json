@@ -1,0 +1,821 @@
+{
+  "evidence_limits": "Các dòng là bằng chứng từ đề bên thứ ba cấp tỉnh. Trường recurring chỉ nhận true khi cấu trúc được hỗ trợ ở các đề khác nhau. Các mục còn lại là cấu trúc quan sát riêng, chưa đủ căn cứ gọi là dạng lặp lại. Không suy diễn cơ chế phương án nhiễu khi thiếu khóa đáp án khớp mã. Các nhận xét về điều không xuất hiện chỉ giới hạn trong dữ liệu được cung cấp.",
+  "patterns": [
+    {
+      "part_kind": "true_false",
+      "topic": "Đọc cực trị từ đồ thị",
+      "grade": 12,
+      "construction": "Cho đồ thị; nhận diện các vị trí đổi chiều biến thiên rồi đối chiếu phát biểu về cực trị.",
+      "wrong_options": "Dòng được xác nhận đúng; chưa có bằng chứng về cách tạo phát biểu sai.",
+      "difficulty_source": "Phân biệt đổi chiều biến thiên với các đặc điểm hình dạng khác.",
+      "discrimination": "low",
+      "typical_steps": 2,
+      "recurring": false,
+      "refs": [
+        "11d88d9a96ad|P2|3|b"
+      ]
+    },
+    {
+      "part_kind": "true_false",
+      "topic": "Giá trị lớn nhất hoặc nhỏ nhất trên đoạn",
+      "grade": 12,
+      "construction": "Cho đa thức hoặc đồ thị kèm điều kiện đủ để suy ra đa thức; tìm điểm tới hạn thuộc đoạn, tính giá trị tại đó và các đầu mút, so sánh rồi kiểm tra cực trị toàn cục được đề xuất.",
+      "wrong_options": "Chưa đủ bằng chứng để khái quát cách tạo phát biểu sai; một dòng được xác nhận đúng, dòng còn lại thiếu khóa khớp mã.",
+      "difficulty_source": "Không đồng nhất cực trị địa phương với giá trị lớn nhất hoặc nhỏ nhất trên toàn đoạn; dữ kiện đồ thị có thể đòi hỏi khôi phục quan hệ hệ số.",
+      "discrimination": "medium",
+      "typical_steps": 4,
+      "recurring": true,
+      "refs": [
+        "11d88d9a96ad|P2|3|c",
+        "0ecb85132b84|P2|3|d"
+      ]
+    },
+    {
+      "part_kind": "true_false",
+      "topic": "Nhận dạng tổ hợp hệ số qua đạo hàm",
+      "grade": 12,
+      "construction": "Cho đa thức chứa hệ số chưa biết và vị trí cực trị trên đồ thị; nhận ra tổ hợp cần kiểm tra là giá trị đạo hàm tại vị trí ấy rồi dùng điều kiện cực trị.",
+      "wrong_options": "Gán giá trị hàm đọc từ đồ thị cho biểu thức thực chất biểu diễn giá trị đạo hàm.",
+      "difficulty_source": "Nhìn ra ý nghĩa của tổ hợp hệ số để tránh giải toàn bộ hệ số.",
+      "discrimination": "medium",
+      "typical_steps": 3,
+      "recurring": false,
+      "refs": [
+        "11d88d9a96ad|P2|3|d"
+      ]
+    },
+    {
+      "part_kind": "true_false",
+      "topic": "Điều kiện ban đầu của mô hình vận tốc",
+      "grade": 11,
+      "construction": "Cho công thức vận tốc chứa hằng số và vận tốc ban đầu; thống nhất đơn vị, thay thời điểm bắt đầu rồi kiểm tra hằng số.",
+      "wrong_options": "Dòng được xác nhận đúng; chưa có bằng chứng về cách tạo phát biểu sai.",
+      "difficulty_source": "Đồng nhất đơn vị trước khi thay dữ kiện.",
+      "discrimination": "low",
+      "typical_steps": 2,
+      "recurring": false,
+      "refs": [
+        "11d88d9a96ad|P2|4|a"
+      ]
+    },
+    {
+      "part_kind": "true_false",
+      "topic": "Thời điểm vận tốc đạt ngưỡng",
+      "grade": 11,
+      "construction": "Cho vận tốc biến thiên tuyến tính và giới hạn vận tốc; đổi đơn vị, giải phương trình đạt giới hạn rồi đối chiếu thời điểm.",
+      "wrong_options": "Dòng được xác nhận đúng; chưa có bằng chứng về cách tạo phát biểu sai.",
+      "difficulty_source": "Dùng đúng đại lượng và đơn vị trong phương trình đạt ngưỡng.",
+      "discrimination": "low",
+      "typical_steps": 2,
+      "recurring": false,
+      "refs": [
+        "11d88d9a96ad|P2|4|b"
+      ]
+    },
+    {
+      "part_kind": "true_false",
+      "topic": "Khoảng cách tương đối từ vận tốc",
+      "grade": 12,
+      "construction": "Cho các chuyển động cùng chiều và khoảng cách ban đầu; xác định giai đoạn đang xét, tích phân vận tốc biến thiên, tính quãng đường còn lại rồi cập nhật khoảng cách tương đối.",
+      "wrong_options": "Chỉ cập nhật vị trí của đối tượng phía sau và bỏ chuyển động của đối tượng phía trước.",
+      "difficulty_source": "Phối hợp các vị trí chuyển động thay vì coi mốc so sánh là đứng yên.",
+      "discrimination": "medium",
+      "typical_steps": 4,
+      "recurring": false,
+      "refs": [
+        "11d88d9a96ad|P2|4|c"
+      ]
+    },
+    {
+      "part_kind": "true_false",
+      "topic": "Chuyển động theo giai đoạn",
+      "grade": 12,
+      "construction": "Cho quá trình tăng tốc rồi giữ vận tốc giới hạn; xác định mốc chuyển giai đoạn, tính khoảng cách còn lại, kiểm tra giai đoạn bắt kịp và ghép thời gian.",
+      "wrong_options": "Dòng được xác nhận đúng; chưa có bằng chứng về cách tạo phát biểu sai.",
+      "difficulty_source": "Thay mô hình đúng lúc và kiểm tra nghiệm thuộc giai đoạn áp dụng.",
+      "discrimination": "medium",
+      "typical_steps": 5,
+      "recurring": false,
+      "refs": [
+        "11d88d9a96ad|P2|4|d"
+      ]
+    },
+    {
+      "part_kind": "short_answer",
+      "topic": "Diện tích miền có phần khoét",
+      "grade": 12,
+      "construction": "Cho miền đối xứng ghép từ các cung cùng dữ kiện kích thước và đơn giá; xác định phần giao thực sự bị khoét, tính diện tích còn lại bằng tích phân hoặc hình học, rồi chuyển sang đại lượng cần trả lời.",
+      "wrong_options": null,
+      "difficulty_source": "Đọc đúng biên miền và phần giao; không trừ toàn bộ miền phụ khi chỉ một phần nằm trong miền chính. Suy luận vị trí tâm từ hình còn có bất định nguồn.",
+      "discrimination": "high",
+      "typical_steps": 6,
+      "recurring": false,
+      "refs": [
+        "11d88d9a96ad|P3|1|None"
+      ]
+    },
+    {
+      "part_kind": "short_answer",
+      "topic": "Khoảng cách trong lăng trụ xiên",
+      "grade": 11,
+      "construction": "Cho đáy đều, điều kiện cách đều và góc cạnh bên với đáy; suy hình chiếu và chiều cao, dựng cấu hình bằng tọa độ hoặc hình học rồi tính khoảng cách đến mặt phẳng xiên.",
+      "wrong_options": null,
+      "difficulty_source": "Suy cấu hình ẩn từ điều kiện cách đều và giữ đúng phép tịnh tiến giữa các đáy. Cách giải tọa độ huy động kiến thức lớp sau.",
+      "discrimination": "high",
+      "typical_steps": 5,
+      "recurring": false,
+      "refs": [
+        "11d88d9a96ad|P3|2|None"
+      ]
+    },
+    {
+      "part_kind": "short_answer",
+      "topic": "Đếm lựa chọn có điều kiện kéo theo",
+      "grade": 10,
+      "construction": "Cho các nhóm thuộc tính và điều kiện tham gia phụ thuộc; phân loại cơ cấu được phép, diễn giải cấu hình bị cấm rồi đếm theo trường hợp rời nhau hoặc đếm bù.",
+      "wrong_options": null,
+      "difficulty_source": "Phân biệt điều kiện kéo theo với điều kiện cùng xuất hiện theo cả hai chiều.",
+      "discrimination": "medium",
+      "typical_steps": 4,
+      "recurring": false,
+      "refs": [
+        "11d88d9a96ad|P3|3|None"
+      ]
+    },
+    {
+      "part_kind": "short_answer",
+      "topic": "Ngưỡng nguyên trong mô hình theo kỳ",
+      "grade": 11,
+      "construction": "Cho biến đổi theo tỉ lệ cố định, có thể kèm khoản điều chỉnh cuối kỳ; lập biểu thức bằng cấp số nhân, giải bất phương trình đạt hoặc vượt ngưỡng, chọn chỉ số nguyên đầu tiên và kiểm tra kỳ liền trước.",
+      "wrong_options": null,
+      "difficulty_source": "Giữ đúng thứ tự cập nhật, mốc chỉ số và chiều bất đẳng thức; phân biệt giá trị từng kỳ với giá trị cộng dồn.",
+      "discrimination": "medium",
+      "typical_steps": 4,
+      "recurring": true,
+      "refs": [
+        "11d88d9a96ad|P3|4|None",
+        "0ecb85132b84|P3|1|None"
+      ]
+    },
+    {
+      "part_kind": "short_answer",
+      "topic": "Phương trình chi phí chứa căn",
+      "grade": 10,
+      "construction": "Cho tuyến ghép từ đoạn thẳng và đoạn xiên với đơn giá khác nhau; chọn biến độ dài, dùng quan hệ vuông góc để biểu diễn đoạn xiên, lập phương trình chi phí, khử căn và thử lại.",
+      "wrong_options": null,
+      "difficulty_source": "Chuyển hình thành biểu thức, giữ miền hình học và điều kiện dấu khi bình phương. Miền vị trí phụ thuộc một phần vào hình minh họa.",
+      "discrimination": "medium",
+      "typical_steps": 5,
+      "recurring": false,
+      "refs": [
+        "11d88d9a96ad|P3|5|None"
+      ]
+    },
+    {
+      "part_kind": "short_answer",
+      "topic": "Xác suất chuỗi có cấu trúc lặp",
+      "grade": 10,
+      "construction": "Cho chuỗi ký tự với yêu cầu lặp và phân biệt; xác định không gian mẫu, chọn ký tự lặp cùng vị trí, gán có thứ tự các ký tự còn lại rồi tính xác suất và xử lý dạng biểu diễn được yêu cầu.",
+      "wrong_options": null,
+      "difficulty_source": "Phân biệt chuỗi ký tự với số tự nhiên và tránh đếm trùng cấu trúc lặp.",
+      "discrimination": "medium",
+      "typical_steps": 6,
+      "recurring": false,
+      "refs": [
+        "11d88d9a96ad|P3|6|None"
+      ]
+    },
+    {
+      "part_kind": "multiple_choice",
+      "topic": "Phương trình lôgarit cơ bản",
+      "grade": 11,
+      "construction": "Cho phương trình lôgarit có đối số bậc nhất; đặt điều kiện, chuyển sang dạng lũy thừa, giải và kiểm tra nghiệm.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định được cơ chế nhiễu.",
+      "difficulty_source": "Đổi dạng đúng và giữ điều kiện đối số.",
+      "discrimination": "low",
+      "typical_steps": 3,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P1|1|None"
+      ]
+    },
+    {
+      "part_kind": "multiple_choice",
+      "topic": "Trung vị của số liệu ghép nhóm",
+      "grade": 11,
+      "construction": "Cho bảng khoảng và tần số; tìm cỡ mẫu, dùng tần số tích lũy xác định nhóm trung vị rồi nội suy.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định được cơ chế nhiễu.",
+      "difficulty_source": "Chọn đúng nhóm trước khi áp dụng công thức.",
+      "discrimination": "low",
+      "typical_steps": 3,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P1|2|None"
+      ]
+    },
+    {
+      "part_kind": "multiple_choice",
+      "topic": "Số hạng của cấp số cộng",
+      "grade": 11,
+      "construction": "Cho số hạng đầu, công sai và chỉ số; xác định số lần dịch chỉ số rồi tính bằng công thức tổng quát.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định được cơ chế nhiễu.",
+      "difficulty_source": "Kiểm soát chỉ số và dấu công sai.",
+      "discrimination": "low",
+      "typical_steps": 2,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P1|3|None"
+      ]
+    },
+    {
+      "part_kind": "multiple_choice",
+      "topic": "Nghiệm phương trình lượng giác",
+      "grade": 11,
+      "construction": "Cho phương trình lượng giác cơ bản và các họ nghiệm; nhận diện nghiệm trên đường tròn rồi dùng tính tuần hoàn để chọn tập nghiệm đầy đủ.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định được cơ chế nhiễu.",
+      "difficulty_source": "Nhớ đúng họ nghiệm và bảo đảm tính đầy đủ.",
+      "discrimination": "low",
+      "typical_steps": 2,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P1|4|None"
+      ]
+    },
+    {
+      "part_kind": "multiple_choice",
+      "topic": "Đọc vectơ từ dạng biểu diễn chuẩn",
+      "grade": 12,
+      "construction": "Cho khai triển theo vectơ đơn vị hoặc phương trình chính tắc; đọc các thành phần theo thứ tự tọa độ, giữ dấu rồi đối chiếu vectơ cần tìm; với vectơ chỉ phương, chấp nhận bội khác không.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định được cơ chế nhiễu.",
+      "difficulty_source": "Đọc đúng vị trí, dấu và ý nghĩa của hệ số.",
+      "discrimination": "low",
+      "typical_steps": 2,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P1|5|None",
+        "0ecb85132b84|P1|10|None"
+      ]
+    },
+    {
+      "part_kind": "multiple_choice",
+      "topic": "Đơn điệu từ đạo hàm phân tích nhân tử",
+      "grade": 12,
+      "construction": "Cho đạo hàm đã phân tích; tách nhân tử luôn cùng dấu, xét dấu phần còn lại rồi chọn khoảng đồng biến.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định được cơ chế nhiễu.",
+      "difficulty_source": "Nhận ra nhân tử quyết định dấu đạo hàm.",
+      "discrimination": "low",
+      "typical_steps": 3,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P1|6|None"
+      ]
+    },
+    {
+      "part_kind": "multiple_choice",
+      "topic": "Vectơ chỉ phương từ các điểm",
+      "grade": 12,
+      "construction": "Cho các điểm xác định đường thẳng; lấy hiệu tọa độ để tạo vectơ nối rồi đối chiếu với vectơ cùng phương khác không.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định được cơ chế nhiễu.",
+      "difficulty_source": "Trừ đúng thành phần có dấu và nhận ra các vectơ tương đương về phương.",
+      "discrimination": "low",
+      "typical_steps": 2,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P1|7|None"
+      ]
+    },
+    {
+      "part_kind": "multiple_choice",
+      "topic": "Nguyên hàm hàm mũ",
+      "grade": 12,
+      "construction": "Cho hàm mũ nhân hệ số hằng; dùng tính tuyến tính và công thức nguyên hàm rồi bổ sung hằng số tùy ý.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định được cơ chế nhiễu.",
+      "difficulty_source": "Nhớ đúng hệ số trong công thức.",
+      "discrimination": "low",
+      "typical_steps": 2,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P1|8|None"
+      ]
+    },
+    {
+      "part_kind": "multiple_choice",
+      "topic": "Đẳng thức vectơ qua trung điểm",
+      "grade": 12,
+      "construction": "Cho hình không gian có cấu trúc hình bình hành; nhận diện trung điểm chung của các đường chéo rồi chuyển tổng vectơ về vectơ tới trung điểm.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định được cơ chế nhiễu.",
+      "difficulty_source": "Nhận ra tính chất phẳng bên trong hình không gian.",
+      "discrimination": "low",
+      "typical_steps": 3,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P1|9|None"
+      ]
+    },
+    {
+      "part_kind": "multiple_choice",
+      "topic": "Dựng khoảng cách đến mặt phẳng",
+      "grade": 11,
+      "construction": "Cho khối có cấu trúc vuông góc quen thuộc và mặt phẳng chéo; dựng đoạn tới tâm mặt, chứng minh vuông góc với mặt phẳng rồi tính độ dài.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định được cơ chế nhiễu.",
+      "difficulty_source": "Xác định chân đường vuông góc thay vì chọn đoạn nối thuận mắt.",
+      "discrimination": "medium",
+      "typical_steps": 3,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P1|11|None"
+      ]
+    },
+    {
+      "part_kind": "multiple_choice",
+      "topic": "Thể tích tròn xoay bằng tích phân",
+      "grade": 12,
+      "construction": "Cho miền dưới đồ thị và trục quay; nhận diện bán kính thiết diện, lập tích phân diện tích thiết diện rồi tính.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định được cơ chế nhiễu.",
+      "difficulty_source": "Dùng bình phương bán kính trong công thức thể tích.",
+      "discrimination": "low",
+      "typical_steps": 3,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P1|12|None"
+      ]
+    },
+    {
+      "part_kind": "true_false",
+      "topic": "Lập mô hình tăng trưởng từ quan hệ đạo hàm",
+      "grade": 12,
+      "construction": "Cho tốc độ biến thiên tỉ lệ với đại lượng; nhận dạng họ hàm mũ, dùng điều kiện ban đầu xác định hệ số rồi kiểm tra công thức.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định tính đúng sai hay cơ chế tạo phát biểu sai.",
+      "difficulty_source": "Phân biệt dữ kiện ban đầu với dữ kiện ở thời điểm sau.",
+      "discrimination": "low",
+      "typical_steps": 3,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P2|1|a"
+      ]
+    },
+    {
+      "part_kind": "true_false",
+      "topic": "Xác định tốc độ tăng trưởng mũ",
+      "grade": 11,
+      "construction": "Cho giá trị của đại lượng tại các thời điểm; lập tỉ số, biểu diễn bằng hàm mũ của khoảng thời gian rồi lấy lôgarit để kiểm tra hệ số.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định tính đúng sai hay cơ chế tạo phát biểu sai.",
+      "difficulty_source": "Dùng đúng khoảng thời gian và tỉ số giá trị.",
+      "discrimination": "low",
+      "typical_steps": 3,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P2|1|b"
+      ]
+    },
+    {
+      "part_kind": "true_false",
+      "topic": "Dự báo bằng mô hình mũ",
+      "grade": 11,
+      "construction": "Cho dữ kiện xác định mô hình tăng trưởng; tìm các hệ số, thay thời điểm cần xét rồi đối chiếu giá trị dự báo.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định tính đúng sai hay cơ chế tạo phát biểu sai.",
+      "difficulty_source": "Thay đúng thời gian sau khi xác định mô hình.",
+      "discrimination": "low",
+      "typical_steps": 3,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P2|1|c"
+      ]
+    },
+    {
+      "part_kind": "true_false",
+      "topic": "Thời gian đạt mức tăng trưởng",
+      "grade": 11,
+      "construction": "Cho quá trình tăng trưởng và mức mục tiêu; xác định mô hình, lập phương trình mũ theo thời gian rồi giải và đối chiếu.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định tính đúng sai hay cơ chế tạo phát biểu sai.",
+      "difficulty_source": "Đảo từ tính giá trị sang tìm đối số.",
+      "discrimination": "low",
+      "typical_steps": 3,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P2|1|d"
+      ]
+    },
+    {
+      "part_kind": "true_false",
+      "topic": "Xác suất giao từ xác suất có điều kiện",
+      "grade": 12,
+      "construction": "Cho tỉ trọng nhóm và xác suất tính chất trong nhóm; nhận diện yêu cầu đồng thời, áp dụng công thức nhân rồi kiểm tra.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định tính đúng sai hay cơ chế tạo phát biểu sai.",
+      "difficulty_source": "Phân biệt xác suất giao với xác suất có điều kiện.",
+      "discrimination": "low",
+      "typical_steps": 3,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P2|2|a"
+      ]
+    },
+    {
+      "part_kind": "true_false",
+      "topic": "Biến cố đối trong nhóm điều kiện",
+      "grade": 12,
+      "construction": "Cho xác suất tính chất trong nhóm; giữ nguyên điều kiện nhóm, lấy phần bù rồi đối chiếu phát biểu.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định tính đúng sai hay cơ chế tạo phát biểu sai.",
+      "difficulty_source": "Lấy phần bù trong đúng không gian điều kiện.",
+      "discrimination": "low",
+      "typical_steps": 3,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P2|2|b"
+      ]
+    },
+    {
+      "part_kind": "true_false",
+      "topic": "Xác suất toàn phần",
+      "grade": 12,
+      "construction": "Cho phân hoạch theo nguồn và xác suất tính chất theo nguồn; tính xác suất giao trong từng nhóm rồi cộng để kiểm tra xác suất chung.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định tính đúng sai hay cơ chế tạo phát biểu sai.",
+      "difficulty_source": "Dùng trọng số nhóm khi tổng hợp các tỉ lệ.",
+      "discrimination": "low",
+      "typical_steps": 3,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P2|2|c"
+      ]
+    },
+    {
+      "part_kind": "true_false",
+      "topic": "Truy ngược điều kiện bằng Bayes",
+      "grade": 12,
+      "construction": "Cho tỉ trọng nguồn và xác suất tính chất theo nguồn; tính xác suất giao cùng xác suất toàn phần rồi chuẩn hóa để truy ngược nguồn.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định tính đúng sai hay cơ chế tạo phát biểu sai.",
+      "difficulty_source": "Đảo chiều điều kiện và chọn đúng mẫu số.",
+      "discrimination": "medium",
+      "typical_steps": 3,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P2|2|d"
+      ]
+    },
+    {
+      "part_kind": "true_false",
+      "topic": "Tập nghiệm của phương trình đạo hàm",
+      "grade": 12,
+      "construction": "Cho đa thức và tập nghiệm đề xuất; tính đạo hàm, giải phương trình đạo hàm triệt tiêu rồi đối chiếu toàn bộ tập nghiệm.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định tính đúng sai hay cơ chế tạo phát biểu sai.",
+      "difficulty_source": "Kiểm tra tính đầy đủ thay vì chỉ xác nhận một nghiệm phù hợp.",
+      "discrimination": "low",
+      "typical_steps": 3,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P2|3|a"
+      ]
+    },
+    {
+      "part_kind": "true_false",
+      "topic": "Đạo hàm đa thức",
+      "grade": 11,
+      "construction": "Cho đa thức và đạo hàm đề xuất; lấy đạo hàm từng hạng tử, ghép kết quả rồi đối chiếu.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định tính đúng sai hay cơ chế tạo phát biểu sai.",
+      "difficulty_source": "Áp dụng đúng quy tắc đạo hàm và dấu hệ số.",
+      "discrimination": "low",
+      "typical_steps": 2,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P2|3|b"
+      ]
+    },
+    {
+      "part_kind": "true_false",
+      "topic": "Giá trị hàm số tại đối số cho trước",
+      "grade": 10,
+      "construction": "Cho biểu thức hàm, đối số và giá trị đề xuất; thay trực tiếp, thực hiện phép toán rồi đối chiếu.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định tính đúng sai hay cơ chế tạo phát biểu sai.",
+      "difficulty_source": "Giữ đúng dấu và thứ tự phép toán.",
+      "discrimination": "low",
+      "typical_steps": 2,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P2|3|c"
+      ]
+    },
+    {
+      "part_kind": "true_false",
+      "topic": "Đọc bán kính từ phương trình mặt cầu",
+      "grade": 12,
+      "construction": "Cho phương trình mặt cầu dạng chuẩn; nhận diện bình phương bán kính, lấy căn dương rồi kiểm tra.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định tính đúng sai hay cơ chế tạo phát biểu sai.",
+      "difficulty_source": "Phân biệt bán kính với bình phương bán kính.",
+      "discrimination": "low",
+      "typical_steps": 2,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P2|4|a"
+      ]
+    },
+    {
+      "part_kind": "true_false",
+      "topic": "Khoảng cách từ tâm đến đường thẳng",
+      "grade": 12,
+      "construction": "Cho phương trình mặt cầu và các điểm xác định đường thẳng; đọc tâm, lập vectơ chỉ phương, tìm hình chiếu vuông góc rồi tính khoảng cách.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định tính đúng sai hay cơ chế tạo phát biểu sai.",
+      "difficulty_source": "Chọn đoạn vuông góc thích hợp từ dữ kiện tọa độ.",
+      "discrimination": "medium",
+      "typical_steps": 3,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P2|4|b"
+      ]
+    },
+    {
+      "part_kind": "true_false",
+      "topic": "Kiểm tra vectơ chỉ phương",
+      "grade": 12,
+      "construction": "Cho các điểm xác định đường thẳng và vectơ đề xuất; tính vectơ nối rồi kiểm tra tính cùng phương và điều kiện khác vectơ không.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định tính đúng sai hay cơ chế tạo phát biểu sai.",
+      "difficulty_source": "Trừ đúng tọa độ và kiểm tra tính cùng phương.",
+      "discrimination": "low",
+      "typical_steps": 2,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P2|4|c"
+      ]
+    },
+    {
+      "part_kind": "true_false",
+      "topic": "Khả năng tiếp xúc khi mặt cầu chuyển động",
+      "grade": 12,
+      "construction": "Cho mặt cầu tịnh tiến theo phương cố định và đường thẳng; biểu diễn tâm chuyển động, phân tích khoảng cách, tìm giá trị nhỏ nhất trên miền cho phép rồi xét điều kiện tiếp xúc.",
+      "wrong_options": "Thiếu khóa khớp mã; chưa xác định tính đúng sai hay cơ chế tạo phát biểu sai.",
+      "difficulty_source": "Tách thành phần khoảng cách bất biến và biến thiên, đồng thời giữ đúng hướng chuyển động.",
+      "discrimination": "medium",
+      "typical_steps": 4,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P2|4|d"
+      ]
+    },
+    {
+      "part_kind": "short_answer",
+      "topic": "Quỹ tích giao điểm và tối ưu khoảng cách",
+      "grade": 12,
+      "construction": "Cho họ tia có điều kiện góc và hướng tới mặt phẳng; dùng hình chiếu để suy quỹ tích tròn của giao điểm, sau đó tìm vị trí xa nhất bằng quan hệ khoảng cách.",
+      "wrong_options": null,
+      "difficulty_source": "Đổi bài toán không gian thành quỹ tích phẳng và kiểm tra điều kiện đạt cực đại; cách hiểu góc và hướng tia cần nhất quán.",
+      "discrimination": "high",
+      "typical_steps": 4,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P3|2|None"
+      ]
+    },
+    {
+      "part_kind": "short_answer",
+      "topic": "Ngưỡng lợi nhuận trên miền nguyên",
+      "grade": 12,
+      "construction": "Cho doanh thu, chi phí chứa lôgarit và mức lợi nhuận yêu cầu; lập bất phương trình, xét biến thiên, định vị ngưỡng bằng tính toán số rồi kiểm tra các giá trị nguyên kề ngưỡng.",
+      "wrong_options": null,
+      "difficulty_source": "Chứng minh tính nhỏ nhất khi không có phép giải tường minh sơ cấp.",
+      "discrimination": "medium",
+      "typical_steps": 5,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P3|3|None"
+      ]
+    },
+    {
+      "part_kind": "short_answer",
+      "topic": "Tối ưu thể tích dưới ràng buộc hình học",
+      "grade": 12,
+      "construction": "Cho khối chóp cụt đều với ràng buộc diện tích và đường chéo; biểu diễn chiều cao, lập thể tích, chọn biến tổng hợp, xác định miền khả thi rồi tối ưu và kiểm tra cấu hình đạt được.",
+      "wrong_options": null,
+      "difficulty_source": "Liên kết các ràng buộc bằng biến thích hợp và bảo đảm cực đại thuộc cấu hình không suy biến.",
+      "discrimination": "high",
+      "typical_steps": 5,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P3|4|None"
+      ]
+    },
+    {
+      "part_kind": "short_answer",
+      "topic": "Xác suất hình học rời rạc qua chẵn lẻ",
+      "grade": 10,
+      "construction": "Cho tập điểm nguyên và phép chọn điểm phân biệt; chuyển điều kiện trung điểm nguyên thành điều kiện chẵn lẻ, phân hoạch tập điểm, đếm cặp thuận lợi và toàn bộ theo cùng quy ước rồi tính xác suất.",
+      "wrong_options": null,
+      "difficulty_source": "Nhìn ra phân hoạch số học và giữ nhất quán việc xét thứ tự khi đếm.",
+      "discrimination": "medium",
+      "typical_steps": 5,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P3|5|None"
+      ]
+    },
+    {
+      "part_kind": "short_answer",
+      "topic": "Hiệu diện tích bằng ghép miền",
+      "grade": 12,
+      "construction": "Cho đồ thị, các đường thẳng và hình phân biệt miền kín; xác định biên, ghép các diện tích để triệt tiêu phần chung rồi tính bằng hình đơn giản và tích phân trên đoạn đã biết.",
+      "wrong_options": null,
+      "difficulty_source": "Chọn phép cộng trừ miền để loại giao điểm đại số không cần thiết và giữ đúng dấu.",
+      "discrimination": "high",
+      "typical_steps": 5,
+      "recurring": false,
+      "refs": [
+        "0ecb85132b84|P3|6|None"
+      ]
+    }
+  ],
+  "discrimination_moves": [
+    {
+      "move": "Buộc suy cấu hình trung gian trước khi tính",
+      "how_to_apply": "Cho điều kiện cách đều, góc hoặc kích thước gián tiếp; để người giải tự xác định hình chiếu, tâm hoặc chiều cao cần thiết. Không cung cấp sẵn toàn bộ cấu hình tính toán.",
+      "refs": [
+        "11d88d9a96ad|P3|2|None",
+        "0ecb85132b84|P3|2|None",
+        "0ecb85132b84|P3|4|None"
+      ]
+    },
+    {
+      "move": "Đổi biểu diễn để giảm độ phức tạp",
+      "how_to_apply": "Thiết kế dữ kiện cho phép chuyển từ hình không gian sang tọa độ hoặc quỹ tích phẳng, hay từ nhiều kích thước sang biến tổng hợp. Độ khó nằm ở lựa chọn biểu diễn.",
+      "refs": [
+        "11d88d9a96ad|P3|2|None",
+        "0ecb85132b84|P3|2|None",
+        "0ecb85132b84|P3|4|None"
+      ]
+    },
+    {
+      "move": "Đòi hỏi nhận diện miền thực sự cần tính",
+      "how_to_apply": "Dùng hình có phần giao, phần khoét hoặc phần chung; yêu cầu người giải xác định biên và quan hệ bao chứa trước khi lập biểu thức diện tích.",
+      "refs": [
+        "11d88d9a96ad|P3|1|None",
+        "0ecb85132b84|P3|6|None"
+      ]
+    },
+    {
+      "move": "Thưởng cho việc tránh tính đại lượng trung gian không cần thiết",
+      "how_to_apply": "Tạo quan hệ cộng trừ hoặc biến tổng hợp giúp loại các đại lượng khó tìm; lời giải hiệu quả xuất phát từ cấu trúc của mục tiêu thay vì giải riêng mọi ẩn.",
+      "refs": [
+        "0ecb85132b84|P3|4|None",
+        "0ecb85132b84|P3|6|None"
+      ]
+    },
+    {
+      "move": "Gắn tối ưu với tính khả thi và điều kiện đạt được",
+      "how_to_apply": "Sau khi tìm cận hoặc điểm cực trị, yêu cầu ngầm kiểm tra hướng chuyển động, miền biến hoặc cấu hình không suy biến để bảo đảm giá trị tối ưu thực sự đạt được.",
+      "refs": [
+        "0ecb85132b84|P3|2|None",
+        "0ecb85132b84|P3|4|None"
+      ]
+    }
+  ],
+  "easy_vs_hard": [
+    {
+      "topic": "Cực trị và giá trị tối ưu của hàm số",
+      "easy": "Đọc trực tiếp chỗ đổi chiều trên đồ thị hoặc so sánh giá trị theo quy trình khi biểu thức đã cho.",
+      "hard": "Suy quan hệ hệ số từ đồ thị rồi mới xét đủ điểm tới hạn và đầu mút.",
+      "refs": [
+        "11d88d9a96ad|P2|3|b",
+        "0ecb85132b84|P2|3|d",
+        "11d88d9a96ad|P2|3|c"
+      ]
+    },
+    {
+      "topic": "Khoảng cách trong không gian",
+      "easy": "Dựng đoạn vuông góc trong cấu hình quen thuộc có kích thước trực tiếp.",
+      "hard": "Suy hình chiếu và chiều cao từ điều kiện gián tiếp, rồi mô hình hóa mặt phẳng xiên trước khi tính khoảng cách.",
+      "refs": [
+        "0ecb85132b84|P1|11|None",
+        "11d88d9a96ad|P3|2|None"
+      ]
+    },
+    {
+      "topic": "Tích phân và đại lượng hình học",
+      "easy": "Miền và thiết diện đã rõ; lập tích phân theo công thức trực tiếp.",
+      "hard": "Phải nhận ra phần giao hoặc phép ghép miền thích hợp trước khi chọn tích phân cần tính.",
+      "refs": [
+        "0ecb85132b84|P1|12|None",
+        "11d88d9a96ad|P3|1|None",
+        "0ecb85132b84|P3|6|None"
+      ]
+    },
+    {
+      "topic": "Mô hình chuyển động",
+      "easy": "Thay điều kiện ban đầu hoặc giải thời điểm đạt ngưỡng vận tốc.",
+      "hard": "Tính khoảng cách tương đối, kiểm tra giai đoạn áp dụng và ghép thời gian qua các mô hình.",
+      "refs": [
+        "11d88d9a96ad|P2|4|a",
+        "11d88d9a96ad|P2|4|b",
+        "11d88d9a96ad|P2|4|c",
+        "11d88d9a96ad|P2|4|d"
+      ]
+    },
+    {
+      "topic": "Tăng trưởng theo hàm mũ",
+      "easy": "Xác định hệ số hoặc thay thời gian vào mô hình liên tục.",
+      "hard": "Lập mô hình cập nhật theo kỳ, giữ đúng mốc thời gian và chọn chỉ số nguyên đầu tiên thỏa điều kiện.",
+      "refs": [
+        "0ecb85132b84|P2|1|b",
+        "0ecb85132b84|P2|1|c",
+        "11d88d9a96ad|P3|4|None",
+        "0ecb85132b84|P3|1|None"
+      ]
+    }
+  ],
+  "fact_use": {
+    "common": [
+      {
+        "use": "Kiến thức ghi nhớ được dùng làm quy tắc thao tác: công thức nghiệm, số hạng, nguyên hàm hoặc nội suy; người giải vẫn phải nhận dạng dữ kiện và áp dụng đúng điều kiện.",
+        "refs": [
+          "0ecb85132b84|P1|3|None",
+          "0ecb85132b84|P1|4|None",
+          "0ecb85132b84|P1|8|None",
+          "0ecb85132b84|P1|2|None"
+        ]
+      },
+      {
+        "use": "Định nghĩa và dạng chuẩn giúp đọc ý nghĩa của dữ kiện, như thành phần vectơ, vectơ chỉ phương và bán kính; trọng tâm là thứ tự, dấu và quan hệ giữa đại lượng với biểu thức.",
+        "refs": [
+          "0ecb85132b84|P1|5|None",
+          "0ecb85132b84|P1|10|None",
+          "0ecb85132b84|P2|4|a"
+        ]
+      },
+      {
+        "use": "Các dữ kiện định lượng được cung cấp để lập mô hình, đổi đơn vị, đặt ràng buộc hoặc xác định ngưỡng; mốc thời gian có vai trò chỉ số tính toán.",
+        "refs": [
+          "11d88d9a96ad|P2|4|a",
+          "11d88d9a96ad|P3|4|None",
+          "11d88d9a96ad|P3|5|None",
+          "0ecb85132b84|P3|1|None"
+        ]
+      }
+    ],
+    "not_observed": [
+      {
+        "use": "Không thấy yêu cầu nhớ ngày tháng, tên riêng hay dữ kiện thực tế bên ngoài đề để xác định đáp án; các mốc và tham số trong mô hình được cho làm dữ liệu.",
+        "refs": [
+          "11d88d9a96ad|P3|4|None",
+          "0ecb85132b84|P2|1|b",
+          "0ecb85132b84|P3|1|None"
+        ]
+      },
+      {
+        "use": "Không thấy yêu cầu chép lại nguyên văn định nghĩa hay phát biểu định lý; kiến thức ghi nhớ được kiểm tra qua chọn nghiệm, đọc biểu diễn, tính toán hoặc kiểm tra nhận định.",
+        "refs": [
+          "0ecb85132b84|P1|4|None",
+          "0ecb85132b84|P1|9|None",
+          "0ecb85132b84|P2|2|a",
+          "0ecb85132b84|P2|3|b"
+        ]
+      }
+    ]
+  },
+  "anti_patterns": [
+    {
+      "avoid": "Đưa kiến thức thực tế ngoài đề thành điều kiện bắt buộc để giải mô hình.",
+      "basis": "Các dòng mô hình hóa cung cấp quy luật và tham số cần dùng; yêu cầu nằm ở diễn giải toán học.",
+      "refs": [
+        "11d88d9a96ad|P2|4|a",
+        "11d88d9a96ad|P3|5|None",
+        "0ecb85132b84|P2|1|b",
+        "0ecb85132b84|P3|3|None"
+      ]
+    },
+    {
+      "avoid": "Tạo độ khó chỉ bằng chuỗi tính toán dài khi có cấu trúc rút gọn rõ ràng.",
+      "basis": "Các dòng phân hóa cao khai thác quỹ tích, biến tổng hợp hoặc triệt tiêu miền để giảm tính toán.",
+      "refs": [
+        "0ecb85132b84|P3|2|None",
+        "0ecb85132b84|P3|4|None",
+        "0ecb85132b84|P3|6|None"
+      ]
+    },
+    {
+      "avoid": "Chấp nhận nghiệm đại số mà bỏ miền hình học, giai đoạn chuyển động hoặc điều kiện nguyên.",
+      "basis": "Các dòng tương ứng gắn kết quả với miền áp dụng, thử lại nghiệm hoặc kiểm tra giá trị nguyên liền trước.",
+      "refs": [
+        "11d88d9a96ad|P2|4|d",
+        "11d88d9a96ad|P3|4|None",
+        "11d88d9a96ad|P3|5|None",
+        "0ecb85132b84|P3|3|None"
+      ]
+    },
+    {
+      "avoid": "Dùng hình minh họa như phần trang trí có thể bỏ qua.",
+      "basis": "Trong các dòng hình học và diện tích, hình mang thông tin về cấu hình, miền vị trí hoặc biên cần tính; một số suy luận từ hình còn được ghi nhận là chưa kiểm chứng độc lập.",
+      "refs": [
+        "11d88d9a96ad|P3|1|None",
+        "11d88d9a96ad|P3|5|None",
+        "0ecb85132b84|P3|4|None",
+        "0ecb85132b84|P3|6|None"
+      ]
+    },
+    {
+      "avoid": "Coi các đại lượng gần nghĩa là có thể thay thế nhau.",
+      "basis": "Các lỗi hoặc điểm phân biệt được ghi nhận nằm ở giá trị hàm với đạo hàm, quãng đường với khoảng cách tương đối, giá trị từng kỳ với cộng dồn, và xác suất thuận với xác suất truy ngược.",
+      "refs": [
+        "11d88d9a96ad|P2|3|d",
+        "11d88d9a96ad|P2|4|c",
+        "0ecb85132b84|P3|1|None",
+        "0ecb85132b84|P2|2|d"
+      ]
+    }
+  ]
+}
