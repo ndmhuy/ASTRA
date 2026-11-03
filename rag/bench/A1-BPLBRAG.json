@@ -1,0 +1,52 @@
+{
+  "id": "A1-BPLBRAG",
+  "name": "haiku-all-blueprint-labeler-rag",
+  "description": "A1-BPLB plus curriculum-map evidence in the composer prompt (design G, arm BP+LB+RAG; lane L9-lite). The evidence is the map only (unit titles, no passages): lexical retrieval, no embedding.",
+  "policy_version": "none",
+  "mas": {
+    "profile": "on",
+    "level_scheme": "default",
+    "slot_table": true,
+    "struct_gate": true,
+    "labeler": true,
+    "controller": true,
+    "rag": true
+  },
+  "routing": {
+    "composer": "claude-haiku-5-5",
+    "solver": "claude-haiku-5-5",
+    "critics": "claude-haiku-5-5",
+    "solution": "claude-haiku-5-5",
+    "figure_critic": "claude-haiku-5-5",
+    "illustrator": "claude-haiku-5-5"
+  },
+  "effort": {
+    "composer": null,
+    "solver": null,
+    "critics": null,
+    "solution": null,
+    "figure_critic": null,
+    "illustrator": null
+  },
+  "batching": {
+    "review": "part"
+  },
+  "lock_rule": "match_r1",
+  "escalation": [],
+  "adapters": {
+    "anthropic": {
+      "adapter": "claude_cli",
+      "model_alias": {
+        "claude-haiku-5-5": "haiku",
+        "claude-sonnet-5-5": "sonnet"
+      },
+      "timeout_s": 900
+    }
+  },
+  "session_config": {},
+  "requires_seams": [
+    "lock_rule:disable_two_approval_fallback (match-r1 is always on; the 2-approval rule cannot be switched off)",
+    "labeler:rate_call_site (the app has no rater call until lane LW; with the controller on and no rater, every level-bearing slot goes to the teacher as check_unavailable)",
+    "rag:curriculum_map_only (no passages, official items or task families yet; the map rows are drafts)"
+  ]
+}
