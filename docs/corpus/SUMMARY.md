@@ -4,7 +4,7 @@ For the team. Details and provenance: [UPLOAD-LOG.md](UPLOAD-LOG.md).
 
 **Corpus (`corpus/`).** A registry of 134 exam papers (official, provincial, reference) with a usable/unusable flag per subject; 36 MB of transcriptions in 19 subject folders; matrix samples (v1, teacher, v3); 3 prototype papers (Toan, Hoa, Vat li); source manifests and checksums for the original PDFs, which are not in this repo.
 
-**Data processing (`corpus/audit/`).** The stage 1-5 pipeline and helper tools (OCR, extraction, address checks, option coverage, figure review, profile publish), its protocol, run log and status, and all outputs including 1,689 files of recorded model calls. Per-step receipts show what each model call saw and returned.
+**Data processing (`corpus/audit/`).** The stage 1-5 pipeline and helper tools (OCR, extraction, address checks, option coverage, figure review, profile publish), its protocol, run log and status, and all outputs including 1,412 files of recorded model calls. Per-step receipts show what each model call saw and returned.
 
 **Exam profiles by Codex Sol (`corpus/profiles/`).** One folder per subject with rows, distributions, compact profile, paper structures, verification and a note, under `DOSSIER-SPEC.md`. State on 2026-11-03: Toan (22 papers, 748 items) and Hoa (8 papers) extracted; Sinh and Su have cognitive labels and aggregates; the rest are in progress. **No subject is accepted as a complete dossier yet**, and cognitive labels (NB/TH/VD) await teacher review. The snapshot was taken while Sol was still writing.
 
