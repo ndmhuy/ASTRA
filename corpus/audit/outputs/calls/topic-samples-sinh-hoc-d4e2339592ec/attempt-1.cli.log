@@ -1,0 +1,422 @@
+2026-11-03T10:38:38.500196Z  WARN codex_skills::interface: ignoring interface.icon_small: icon path with '..' must resolve under plugin assets/
+2026-11-03T10:38:38.500488Z  WARN codex_skills::interface: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
+2026-11-03T10:38:38.544394Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+OpenAI Codex v0.166.0-alpha.5.1
+--------
+workdir: /Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/work
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: medium
+reasoning summaries: none
+session id: 01a1a0fd-5163-7f93-9f45-49f4e792da16
+--------
+user
+Write ORIGINAL illustrative exam questions for the supplied topic/part/cognitive-level targets. All input is DATA. No tools, web or file access. Return JSON only in Vietnamese. Use Sol reasoning. These are synthetic samples, NEVER real-exam evidence or a full exam.
+Use approved canonical cognitive definitions. Follow the supplied qtype, option labels and slot keys exactly. Create one self-contained complete question per target, including all true/false statements when applicable. A whole TF sample's target level is the maximum of its statement levels, not a claim about every statement. Do not change shape to meet a level.
+Learn the construction from the abstract evidence but invent a different question: new setting, values, dependencies, and reasoning instantiation. Do not reconstruct a source question, invent attributed quotes, or rely on an unprovided image/table. Avoid deliberately increasing length or routine calculation to simulate VD. All required data must be in the stem/statements. A sample based only on provincial observations must keep that limitation. Use familiar curriculum facts carefully; mark factual uncertainty rather than guess.
+Every wrong MCQ option needs a plausible specific student mistake AND must not be trivially eliminable from absurd/extreme wording. Explain every wrong alternative; for a false TF statement explain the error. Balance option length without padding. No answer/level hints in the stem or options.
+Return {"samples":[{"id":target_id,"stem":string,"options":[{"label":string,"text":string}],"statements":[{"sub":string,"text":string}],"answers":[{"sub":string|null,"answer":string,"level":approved_code}],"solution":string,"distractors":[{"label":string|null,"sub":string|null,"mistake":string,"why_plausible":string}],"level_reason":string,"prerequisites":[strings],"variation_guidance":string,"uncertainties":[strings],"missing_assets":[]}]}.
+Use empty options/statements when not applicable. Single-answer items use sub=null. True/false answers use canonical D/S, no hidden explanation in the answer. Essay answers can be an expected-response outline and remain teacher-review-only. Return every target id exactly once. Do not supply counts or claim teacher approval, empirical discrimination, or successful independent verification.
+
+{"canonical_levels": {"revision": "de8c614ada6e3ae9f9072cedb7521fb96c1d13e5", "scheme_id": "default", "scheme_version": 2, "preamble": "A level is the performance a student must show to answer correctly. It is NOT the length of the text, NOT the amount of numbers to read, and NOT the verb used in the outcome sentence.", "levels": [{"code": "NB", "label": {"vi": "Nhận biết", "en": "Recall"}, "ordinal": 1, "status": "APPROVED", "definition_en": "recognise or retrieve. The student recognises, names or restates a fact, concept, definition, symbol, property, formula or step as taught. The answer sits in ONE knowledge unit. A scenario, if any, is decoration.", "samples": [], "bands": []}, {"code": "TH", "label": {"vi": "Thông hiểu", "en": "Comprehension"}, "ordinal": 2, "status": "APPROVED", "definition_en": "Explain, distinguish, interpret, or execute a familiar routine procedure. The student reads a given representation or uses taught knowledge in a standard exercise. A single substitution of given values into a taught formula or equation is TH; several routine algebraic or numerical operations can also remain TH. Choosing the obvious familiar formula without its name being supplied does not by itself make a question VD.", "samples": [], "bands": []}, {"code": "VD", "label": {"vi": "Vận dụng", "en": "Application"}, "ordinal": 3, "status": "APPROVED", "definition_en": "Model a situation or construct a substantive chain of reasoning. The task requires the student to formulate a model, connect and apply multiple knowledge units, or plan and justify several dependent thinking steps rather than merely execute a familiar calculation. Judge the minimum cognitive work needed for a correct answer. A longer text, more numbers, more written calculation steps, or an unstated but obvious formula is not sufficient for VD. A standard multi-step calculation can remain TH; no single surface cue is a compulsory condition for all VD questions.", "samples": [], "bands": []}], "subject_layer": null}, "targets": [{"id": "69f62ae74890dbcd", "topic": "Di truyền nhiễm sắc thể và quy luật di truyền", "part": "P1", "level": "NB", "qtype": "mcq", "option_labels": ["A", "B", "C", "D"], "slot_keys": [null], "canonical_answer_alphabet": ["A", "B", "C", "D"], "abstract_observations": [{"given": "Một kích thước đặc trưng và các tên mức tổ chức nhiễm sắc thể.", "task": "Ghép kích thước với mức cấu trúc tương ứng.", "reasoning": "Nhớ kích thước đặc trưng của các mức đóng xoắn; chọn mức phù hợp.", "combines": ["Cấu trúc siêu hiển vi nhiễm sắc thể"], "difficulty_source": "Phụ thuộc trí nhớ về kích thước đặc trưng", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Các cách viết kiểu gene tại nhiều locus.", "task": "Nhận diện kiểu gene đồng hợp tại mọi locus.", "reasoning": "Tách các cặp allele theo locus; kiểm tra sự giống nhau của allele trong mọi cặp.", "combines": ["Kí hiệu kiểu gene", "Khái niệm đồng hợp"], "difficulty_source": "Đối chiếu trực tiếp kí hiệu với định nghĩa", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Mô tả một kiểu gene biểu hiện khác nhau khi điều kiện môi trường thay đổi.", "task": "Gọi đúng tên hiện tượng.", "reasoning": "Xác định yếu tố giữ nguyên và yếu tố biến đổi; ghép hiện tượng với khái niệm tương ứng.", "combines": ["Kiểu gene và kiểu hình", "Ảnh hưởng của môi trường"], "difficulty_source": "Nhận biết định nghĩa trực tiếp", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Kích thước đặc trưng của một mức tổ chức nhiễm sắc thể.", "task": "Gọi tên mức cấu trúc tương ứng.", "reasoning": "Nhớ quan hệ giữa kích thước và mức đóng xoắn; ghép dữ kiện với tên cấu trúc.", "combines": ["Cấu trúc nhiễm sắc thể"], "difficulty_source": "Phụ thuộc trí nhớ về kích thước các bậc cấu trúc", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}], "support_refs": ["2cbdc74db082|P1|3|None", "4b4716b94db4|P1|5|None", "55c12f561006|P1|10|None", "55c12f561006|P1|4|None", "61a0198fbfda|P1|10|None", "61a0198fbfda|P1|5|None", "8bbf9eea6d33|P1|12|None", "8bbf9eea6d33|P1|2|None"], "official_anchor_available": false}, {"id": "eed7fc5eaefb9466", "topic": "Di truyền nhiễm sắc thể và quy luật di truyền", "part": "P1", "level": "TH", "qtype": "mcq", "option_labels": ["A", "B", "C", "D"], "slot_keys": [null], "canonical_answer_alphabet": ["A", "B", "C", "D"], "abstract_observations": [{"given": "Vị trí của gene trên nhiễm sắc thể giới tính và các cặp kiểu gene bố mẹ.", "task": "Chọn phép lai tạo đủ các tổ hợp kiểu gene được yêu cầu.", "reasoning": "Liệt kê loại giao tử của mỗi giới; tổ hợp giao tử; phân biệt các kiểu gene ở con đực và con cái.", "combines": ["Di truyền liên kết giới tính", "Tổ hợp giao tử"], "difficulty_source": "Liệt kê tổ hợp giao tử theo quy trình quen thuộc", "evidence_uncertainty": null, "evidence_class": "official"}, {"given": "Quan hệ trội lặn của một tính trạng và các cặp kiểu gene bố mẹ.", "task": "Chọn phép lai bảo đảm toàn bộ đời con biểu hiện tính trạng lặn.", "reasoning": "Suy ra kiểu gene bắt buộc của kiểu hình lặn; xác định bố mẹ chỉ tạo loại giao tử phù hợp.", "combines": ["Quan hệ trội lặn", "Phân li allele"], "difficulty_source": "Điều kiện kiểu gene lặn xác định ngay phép lai", "evidence_uncertainty": null, "evidence_class": "official"}, {"given": "Quy luật di truyền của bệnh và biểu hiện bệnh qua các thế hệ trong gia đình.", "task": "Chọn kết luận di truyền chắc chắn phù hợp.", "reasoning": "Xác định nguồn nhiễm sắc thể giới tính của người con mắc bệnh; suy ra trạng thái mang allele của mẹ; kiểm tra khả năng truyền allele cho hậu duệ.", "combines": ["Di truyền liên kết với giới tính", "Quan hệ kiểu gene và kiểu hình"], "difficulty_source": "Phải tách trạng thái mang allele khỏi biểu hiện bệnh", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Một phép lai cùng kiểu hình và tỉ lệ phân li của các nhóm kiểu hình ở đời con.", "task": "Nhận diện dạng tương tác di truyền giải thích sự phân li.", "reasoning": "Nhận ra dấu hiệu nhiều locus cùng chi phối một tính trạng; đối chiếu cách gộp nhóm kiểu gene với các mô hình tương tác; chọn tên quy luật theo cách phân loại của đáp án.", "combines": ["Phân li kiểu gene", "Tương tác gene", "Quan hệ kiểu gene và kiểu hình"], "difficulty_source": "Nhận dạng mô hình tương tác từ tỉ lệ phân li quen thuộc", "evidence_uncertainty": "Tên gọi dạng tương tác trong khóa có thể khác cách phân loại ở một số tài liệu; không nên dùng riêng lựa chọn giữa các tên gần nhau để suy ra năng lực cơ chế.", "evidence_class": "provincial_third_party"}], "support_refs": ["b68b84764a9b|P1|15|None", "b68b84764a9b|P1|8|None", "2cbdc74db082|P1|7|None", "4b4716b94db4|P1|10|None", "4b4716b94db4|P1|12|None", "4b4716b94db4|P1|2|None", "55c12f561006|P1|1|None", "55c12f561006|P1|7|None", "55c12f561006|P1|8|None"], "official_anchor_available": true}, {"id": "c5490de85366650e", "topic": "Di truyền nhiễm sắc thể và quy luật di truyền", "part": "P1", "level": "VD", "qtype": "mcq", "option_labels": ["A", "B", "C", "D"], "slot_keys": [null], "canonical_answer_alphabet": ["A", "B", "C", "D"], "abstract_observations": [{"given": "Mô tả bằng lời hình về sự mất biểu hiện của allele tạo sắc tố khi thay đổi vị trí trên nhiễm sắc thể và sự tồn tại các dòng tế bào khác nhau trong cơ thể.", "task": "Suy ra kiểu gene ban đầu có thể tạo kiểu hình khảm sau đột biến ở một số tế bào.", "reasoning": "Phân biệt mất chức năng allele với giảm biểu hiện do vị trí; xét sắc tố ở tế bào có và không có đột biến; kiểm tra khả năng allele còn lại bù biểu hiện; loại các kiểu gene không tạo được hai loại tế bào màu sắc.", "combines": ["Đột biến cấu trúc nhiễm sắc thể", "Điều hòa biểu hiện gene", "Di truyền liên kết giới tính", "Thể khảm"], "difficulty_source": "Phải nối biến đổi vị trí gene với biểu hiện ở từng dòng tế bào và khả năng bù allele", "evidence_uncertainty": "Hình chỉ được mô tả bằng lời; nhận định dựa trên cơ chế được nêu, chưa kiểm tra độc lập hình gốc.", "evidence_class": "official"}, {"given": "Hình phả hệ có dữ liệu nhóm máu chưa đầy đủ và kí hiệu khả năng tham gia của từng người.", "task": "Chọn người hiến phù hợp theo thông tin di truyền và điều kiện có mặt.", "reasoning": "Suy kiểu gene và nhóm máu của người nhận từ quan hệ bố mẹ và con; suy nhóm máu còn thiếu của người có thể hiến; kiểm tra tương hợp; loại người không có mặt.", "combines": ["Di truyền đa allele và đồng trội", "Phân tích phả hệ", "Nguyên tắc tương hợp nhóm máu", "Đọc chú giải hình"], "difficulty_source": "Kết hợp suy luận nhóm máu ẩn với điều kiện có mặt trên phả hệ", "evidence_uncertainty": "Bối cảnh truyền máu được giản lược theo hệ nhóm máu trong bài học; đề không cung cấp các yếu tố tương hợp khác.", "evidence_class": "provincial_third_party"}, {"given": "Thông tin bệnh ở anh chị em ruột của các cá thể không biểu hiện bệnh trong một cặp vợ chồng.", "task": "Tính xác suất con thuộc giới được yêu cầu đồng thời mắc bệnh.", "reasoning": "Suy ra cơ chế lặn từ quan hệ giữa bố mẹ và con mắc bệnh; tính xác suất mang allele bệnh có điều kiện ở mỗi người không bệnh; tính nguy cơ con bệnh từ các khả năng kiểu gene; kết hợp với xác suất giới tính.", "combines": ["Suy luận kiểu di truyền", "Xác suất có điều kiện", "Di truyền giới tính"], "difficulty_source": "Phải điều kiện hóa kiểu gene người không bệnh rồi kết hợp các sự kiện", "evidence_uncertainty": "Cách diễn đạt về giới của con có thể được hiểu là điều kiện đã biết; khóa được cung cấp dùng cách hiểu sự kiện đồng thời về giới và bệnh.", "evidence_class": "provincial_third_party"}, {"given": "Phả hệ một tính trạng bệnh cùng ảnh điện di các thành viên và mẫu tham chiếu; vị trí và độ đậm băng mang thông tin về đoạn DNA.", "task": "Chọn kết luận không phù hợp về biến đổi di truyền hoặc nguy cơ sinh con mắc bệnh.", "reasoning": ["Đối chiếu các băng thay đổi với kiểu hình bệnh và mẫu tham chiếu.", "Dùng độ đậm băng để phân biệt trạng thái đồng hợp và dị hợp.", "Kết hợp sự truyền trong gia đình để xác định mô hình di truyền.", "Tính giới hạn nguy cơ sinh con từ kiểu gene đã xác định thay vì chỉ từ kiểu hình."], "combines": ["Di truyền phả hệ", "Điện di DNA", "Đột biến mất đoạn", "Xác suất di truyền"], "difficulty_source": "Phối hợp độ đậm băng với phả hệ để loại bất định kiểu gene", "evidence_uncertainty": "Ký hiệu thế hệ của một mẫu trong bản OCR không thống nhất với phả hệ; hình gốc vẫn cho phép đối chiếu mẫu theo vị trí và nhãn.", "evidence_class": "provincial_third_party"}], "support_refs": ["b68b84764a9b|P1|10|None", "2cbdc74db082|P1|18|None", "55c12f561006|P1|16|None", "61a0198fbfda|P1|14|None", "8bbf9eea6d33|P1|13|None"], "official_anchor_available": true}, {"id": "26273b1e58383375", "topic": "Di truyền nhiễm sắc thể và quy luật di truyền", "part": "P2", "level": "NB", "qtype": "true_false", "option_labels": [], "slot_keys": ["a", "b", "c", "d"], "canonical_answer_alphabet": ["D", "S"], "abstract_observations": [{"given": "Thông tin vị trí gene gây bệnh và kiểu gene của các thành viên trong gia đình.", "task": "Đánh giá nhận định về quy luật di truyền của bệnh.", "reasoning": ["Xác định loại nhiễm sắc thể mang gene từ thông tin đã cho.", "Đối chiếu với khái niệm di truyền liên kết giới tính."], "combines": ["Vị trí gene", "Di truyền học người"], "difficulty_source": "Thông tin vị trí gene trực tiếp quyết định kết luận", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}], "support_refs": ["61a0198fbfda|P2|1|a"], "official_anchor_available": false}]}
+2026-11-03T10:38:39.329432Z  WARN codex_skills::interface: ignoring interface.icon_small: icon path with '..' must resolve under plugin assets/
+2026-11-03T10:38:39.329495Z  WARN codex_skills::interface: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
+codex
+{
+  "samples": [
+    {
+      "id": "69f62ae74890dbcd",
+      "stem": "Ở một loài thực vật lưỡng bội, xét ba locus có các cặp alen tương ứng là A/a, B/b và E/e. Kiểu gene nào sau đây đồng hợp tại cả ba locus?",
+      "options": [
+        {"label": "A", "text": "AAbbEe"},
+        {"label": "B", "text": "AabbEE"},
+        {"label": "C", "text": "aaBBee"},
+        {"label": "D", "text": "aaBbEE"}
+      ],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "C", "level": "NB"}
+      ],
+      "solution": "Đáp án C. Đồng hợp tại một locus nghĩa là hai alen của locus đó giống nhau. Kiểu gene aaBBee có ba cặp đồng hợp: aa, BB và ee. A có cặp Ee dị hợp; B có cặp Aa dị hợp; D có cặp Bb dị hợp.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Chỉ kiểm tra hai cặp AA và bb, bỏ qua cặp Ee dị hợp.",
+          "why_plausible": "Hai locus đầu đều đồng hợp nên học sinh có thể kết luận trước khi kiểm tra locus cuối."
+        },
+        {
+          "label": "B",
+          "sub": null,
+          "mistake": "Chỉ kiểm tra hai cặp bb và EE, bỏ qua cặp Aa dị hợp.",
+          "why_plausible": "Học sinh nhận ra các cặp đồng hợp ở cuối nhưng không áp dụng điều kiện cho mọi locus."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Cho rằng có các cặp aa và EE đồng hợp là đủ, dù cặp Bb dị hợp.",
+          "why_plausible": "Học sinh có thể nhầm điều kiện đồng hợp tại một số locus với đồng hợp tại tất cả locus."
+        }
+      ],
+      "level_reason": "Học sinh chỉ cần nhận diện kí hiệu phù hợp với định nghĩa đồng hợp trong một đơn vị kiến thức; không cần suy luận phép lai.",
+      "prerequisites": [
+        "Cách viết kiểu gene của cơ thể lưỡng bội",
+        "Khái niệm đồng hợp và dị hợp"
+      ],
+      "variation_guidance": "Có thể thay tên alen và vị trí cặp dị hợp trong các phương án nhiễu, đồng thời giữ duy nhất một kiểu gene đồng hợp tại mọi locus.",
+      "uncertainties": [
+        "Quan sát xây dựng cho mục tiêu này chỉ thuộc nguồn cấp tỉnh do bên thứ ba cung cấp; mẫu tổng hợp này không xác lập đặc trưng của đề thi chính thức."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "eed7fc5eaefb9466",
+      "stem": "Ở một loài động vật, con cái có cặp nhiễm sắc thể giới tính XX, con đực có cặp XY. Gene quy định màu mắt có hai alen M và m, nằm trên vùng không tương đồng của nhiễm sắc thể X. Giảm phân và thụ tinh diễn ra bình thường. Phép lai nào sau đây có thể tạo đời con gồm đủ bốn kiểu gene X^M X^M, X^M X^m, X^M Y và X^m Y?",
+      "options": [
+        {"label": "A", "text": "♀ X^M X^M × ♂ X^m Y"},
+        {"label": "B", "text": "♀ X^M X^m × ♂ X^M Y"},
+        {"label": "C", "text": "♀ X^M X^m × ♂ X^m Y"},
+        {"label": "D", "text": "♀ X^m X^m × ♂ X^M Y"}
+      ],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "B", "level": "TH"}
+      ],
+      "solution": "Đáp án B. Con cái X^M X^m tạo trứng mang X^M hoặc X^m; con đực X^M Y tạo tinh trùng mang X^M hoặc Y. Tổ hợp các giao tử cho đúng bốn kiểu gene yêu cầu. Phép lai A chỉ tạo X^M X^m và X^M Y. Phép lai C tạo X^M X^m, X^m X^m, X^M Y và X^m Y, thiếu X^M X^M. Phép lai D chỉ tạo X^M X^m và X^m Y.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Cho rằng bố mẹ mang đủ hai alen M và m thì đời con sẽ có đủ bốn kiểu gene yêu cầu.",
+          "why_plausible": "Học sinh chú ý sự có mặt của hai alen nhưng bỏ qua việc mẹ chỉ tạo một loại trứng."
+        },
+        {
+          "label": "C",
+          "sub": null,
+          "mistake": "Thấy phép lai tạo bốn kiểu gene rồi đồng nhất chúng với bốn kiểu gene được yêu cầu.",
+          "why_plausible": "Phép lai này cũng tạo bốn kiểu gene, nhưng alen trên X của bố làm thay đổi các kiểu gene ở con cái."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Cho rằng alen M của bố có thể truyền cho cả con trai và con gái.",
+          "why_plausible": "Học sinh áp dụng cách tổ hợp alen của gene trên nhiễm sắc thể thường, quên rằng con trai nhận Y từ bố."
+        }
+      ],
+      "level_reason": "Học sinh thực hiện quy trình quen thuộc: xác định giao tử, tổ hợp giao tử và đối chiếu các kiểu gene đời con. Đây là thông hiểu, không đòi hỏi xây dựng mô hình di truyền mới.",
+      "prerequisites": [
+        "Gene trên vùng không tương đồng của nhiễm sắc thể X",
+        "Sự truyền nhiễm sắc thể giới tính từ bố mẹ",
+        "Lập sơ đồ lai"
+      ],
+      "variation_guidance": "Có thể thay kí hiệu alen hoặc tập kiểu gene cần tạo; cần kiểm tra từng phép lai để bảo đảm chỉ một phương án đáp ứng đầy đủ yêu cầu.",
+      "uncertainties": [],
+      "missing_assets": []
+    },
+    {
+      "id": "c5490de85366650e",
+      "stem": "Một bệnh di truyền do một gene có hai alen trên nhiễm sắc thể thường quy định. Tính trạng biểu hiện hoàn toàn theo kiểu trội – lặn; không có đột biến mới. Mai và Nam đều không mắc bệnh. Bố mẹ của Mai đều không mắc bệnh nhưng có một người con mắc bệnh; bố mẹ của Nam cũng đều không mắc bệnh nhưng có một người con mắc bệnh. Hai gia đình không có quan hệ huyết thống. Trước đây, Nam có một người con với một phụ nữ mắc bệnh; người con này không mắc bệnh. Không có thông tin chọn lọc nào khác về người con đó. Biết xác suất sinh con trai là 1/2 và độc lập với sự di truyền gene gây bệnh. Dựa trên toàn bộ thông tin trên, xác suất lần sinh tới Mai và Nam sinh một con trai mắc bệnh là bao nhiêu?",
+      "options": [
+        {"label": "A", "text": "1/18"},
+        {"label": "B", "text": "1/12"},
+        {"label": "C", "text": "1/32"},
+        {"label": "D", "text": "1/24"}
+      ],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "D", "level": "VD"}
+      ],
+      "solution": "Đáp án D. Bố mẹ không bệnh sinh con bệnh, trong điều kiện đề cho, nên bệnh do alen lặn a quy định; người bệnh có kiểu gene aa. Bố mẹ của mỗi người đều phải là Aa × Aa. Vì Mai không bệnh, xác suất Mai có kiểu gene Aa là 2/3. Trước khi xét người con trước đây, Nam cũng có xác suất Aa bằng 2/3 và AA bằng 1/3. Với người mẹ aa, nếu Nam là AA thì xác suất con không bệnh bằng 1; nếu Nam là Aa thì xác suất này bằng 1/2. Do đã biết người con không bệnh, xác suất Nam là Aa được cập nhật thành [(2/3) × (1/2)] / [(1/3) × 1 + (2/3) × (1/2)] = 1/2. Xác suất con của Mai và Nam mắc bệnh là (2/3) × (1/2) × (1/4) = 1/12. Xác suất đồng thời là con trai và mắc bệnh bằng (1/12) × (1/2) = 1/24. Phương án A bỏ qua thông tin người con trước của Nam; B chưa kết hợp xác suất giới tính; C dùng sai xác suất Mai mang alen bệnh là 1/2.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Giữ xác suất Nam mang alen bệnh là 2/3, tính (2/3) × (2/3) × (1/4) × (1/2) = 1/18.",
+          "why_plausible": "Học sinh nhớ xác suất 2/3 của người không bệnh trong gia đình Aa × Aa nhưng chưa cập nhật theo thông tin về con của Nam."
+        },
+        {
+          "label": "B",
+          "sub": null,
+          "mistake": "Tính đúng xác suất con mắc bệnh là 1/12 nhưng coi đó là xác suất sinh con trai mắc bệnh.",
+          "why_plausible": "Học sinh có thể đọc yêu cầu về giới tính thành điều kiện đã biết thay vì một sự kiện phải xảy ra đồng thời."
+        },
+        {
+          "label": "C",
+          "sub": null,
+          "mistake": "Coi hai khả năng AA và Aa của Mai là đồng xác suất, rồi tính (1/2) × (1/2) × (1/4) × (1/2) = 1/32.",
+          "why_plausible": "Sau khi loại aa, học sinh có thể chia đều xác suất cho hai tên kiểu gene còn lại, bỏ qua tỉ lệ AA : Aa là 1 : 2."
+        }
+      ],
+      "level_reason": "Học sinh phải suy ra cơ chế di truyền, xác định xác suất kiểu gene có điều kiện từ gia đình, dùng thông tin về một người con để cập nhật riêng xác suất kiểu gene của Nam, rồi kết hợp nguy cơ bệnh với giới tính. Các bước phụ thuộc nhau và đòi hỏi xây dựng mô hình xác suất từ dữ kiện.",
+      "prerequisites": [
+        "Di truyền trội – lặn trên nhiễm sắc thể thường",
+        "Phân li kiểu gene trong phép lai Aa × Aa",
+        "Xác suất có điều kiện",
+        "Quy tắc nhân xác suất"
+      ],
+      "variation_guidance": "Có thể thay thông tin về con trước bằng một kết quả xét nghiệm được mô tả đầy đủ về khả năng xuất hiện ở từng kiểu gene. Phải tính lại xác suất hậu nghiệm và giữ rõ yêu cầu đồng thời về giới tính và bệnh.",
+      "uncertainties": [
+        "Nhánh quan sát về xác suất bệnh trong gia đình được cung cấp chỉ thuộc nguồn cấp tỉnh do bên thứ ba cung cấp; mẫu này không chứng minh dạng bài tương ứng xuất hiện trong đề thi chính thức.",
+        "Mô hình bệnh là giả định phục vụ bài tập, không mô tả một bệnh cụ thể trong thực tế."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "26273b1e58383375",
+      "stem": "Trong một mô hình di truyền ở người, gene có hai alen A và a nằm trên vùng không tương đồng của nhiễm sắc thể X. Alen a gây bệnh và lặn hoàn toàn so với alen A. Một người mẹ có kiểu gene X^A X^a. Hãy xác định mỗi nhận định sau là đúng hay sai.",
+      "options": [],
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Gene đang xét là gene liên kết với giới tính."
+        },
+        {
+          "sub": "b",
+          "text": "Bệnh đang xét thuộc dạng di truyền liên kết với nhiễm sắc thể Y."
+        },
+        {
+          "sub": "c",
+          "text": "Người mẹ có kiểu gene dị hợp tại locus đang xét."
+        },
+        {
+          "sub": "d",
+          "text": "Trong mô hình này, a là alen trội so với A."
+        }
+      ],
+      "answers": [
+        {"sub": "a", "answer": "D", "level": "NB"},
+        {"sub": "b", "answer": "S", "level": "NB"},
+        {"sub": "c", "answer": "D", "level": "NB"},
+        {"sub": "d", "answer": "S", "level": "NB"}
+      ],
+      "solution": "a đúng: gene nằm trên nhiễm sắc thể giới tính X nên là gene liên kết với giới tính. b sai: đề cho gene nằm trên vùng không tương đồng của X, không phải trên Y. c đúng: người mẹ mang hai alen khác nhau A và a tại cùng locus nên dị hợp. d sai: đề đã xác định a lặn hoàn toàn so với A.",
+      "distractors": [
+        {
+          "label": null,
+          "sub": "b",
+          "mistake": "Đồng nhất di truyền liên kết giới tính với di truyền liên kết Y.",
+          "why_plausible": "Học sinh nhớ tên nhóm quy luật nhưng chưa phân biệt gene trên X với gene trên Y."
+        },
+        {
+          "label": null,
+          "sub": "d",
+          "mistake": "Cho rằng alen gây bệnh luôn là alen trội.",
+          "why_plausible": "Học sinh nhầm tác động gây bệnh với quan hệ trội – lặn giữa hai alen."
+        }
+      ],
+      "level_reason": "Cả bốn nhận định chỉ yêu cầu nhận diện vị trí gene, khái niệm dị hợp hoặc nhắc lại quan hệ trội – lặn đã cho. Mức cao nhất của các nhận định là NB, nên mức của toàn mẫu là NB.",
+      "prerequisites": [
+        "Khái niệm gene liên kết với giới tính",
+        "Phân biệt gene trên X và gene trên Y",
+        "Khái niệm dị hợp",
+        "Quan hệ trội – lặn"
+      ],
+      "variation_guidance": "Có thể thay kí hiệu alen hoặc kiểu gene được nêu, nhưng giữ các nhận định ở mức nhận diện trực tiếp; không thêm suy luận đời con nếu vẫn nhắm mức NB.",
+      "uncertainties": [
+        "Quan sát được cung cấp cho mục tiêu này chỉ thuộc nguồn cấp tỉnh do bên thứ ba cung cấp và chỉ gắn với một nhận định; các nhận định còn lại được sáng tác để tạo mẫu đúng/sai hoàn chỉnh."
+      ],
+      "missing_assets": []
+    }
+  ]
+}
+tokens used
+8,713
+{
+  "samples": [
+    {
+      "id": "69f62ae74890dbcd",
+      "stem": "Ở một loài thực vật lưỡng bội, xét ba locus có các cặp alen tương ứng là A/a, B/b và E/e. Kiểu gene nào sau đây đồng hợp tại cả ba locus?",
+      "options": [
+        {"label": "A", "text": "AAbbEe"},
+        {"label": "B", "text": "AabbEE"},
+        {"label": "C", "text": "aaBBee"},
+        {"label": "D", "text": "aaBbEE"}
+      ],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "C", "level": "NB"}
+      ],
+      "solution": "Đáp án C. Đồng hợp tại một locus nghĩa là hai alen của locus đó giống nhau. Kiểu gene aaBBee có ba cặp đồng hợp: aa, BB và ee. A có cặp Ee dị hợp; B có cặp Aa dị hợp; D có cặp Bb dị hợp.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Chỉ kiểm tra hai cặp AA và bb, bỏ qua cặp Ee dị hợp.",
+          "why_plausible": "Hai locus đầu đều đồng hợp nên học sinh có thể kết luận trước khi kiểm tra locus cuối."
+        },
+        {
+          "label": "B",
+          "sub": null,
+          "mistake": "Chỉ kiểm tra hai cặp bb và EE, bỏ qua cặp Aa dị hợp.",
+          "why_plausible": "Học sinh nhận ra các cặp đồng hợp ở cuối nhưng không áp dụng điều kiện cho mọi locus."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Cho rằng có các cặp aa và EE đồng hợp là đủ, dù cặp Bb dị hợp.",
+          "why_plausible": "Học sinh có thể nhầm điều kiện đồng hợp tại một số locus với đồng hợp tại tất cả locus."
+        }
+      ],
+      "level_reason": "Học sinh chỉ cần nhận diện kí hiệu phù hợp với định nghĩa đồng hợp trong một đơn vị kiến thức; không cần suy luận phép lai.",
+      "prerequisites": [
+        "Cách viết kiểu gene của cơ thể lưỡng bội",
+        "Khái niệm đồng hợp và dị hợp"
+      ],
+      "variation_guidance": "Có thể thay tên alen và vị trí cặp dị hợp trong các phương án nhiễu, đồng thời giữ duy nhất một kiểu gene đồng hợp tại mọi locus.",
+      "uncertainties": [
+        "Quan sát xây dựng cho mục tiêu này chỉ thuộc nguồn cấp tỉnh do bên thứ ba cung cấp; mẫu tổng hợp này không xác lập đặc trưng của đề thi chính thức."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "eed7fc5eaefb9466",
+      "stem": "Ở một loài động vật, con cái có cặp nhiễm sắc thể giới tính XX, con đực có cặp XY. Gene quy định màu mắt có hai alen M và m, nằm trên vùng không tương đồng của nhiễm sắc thể X. Giảm phân và thụ tinh diễn ra bình thường. Phép lai nào sau đây có thể tạo đời con gồm đủ bốn kiểu gene X^M X^M, X^M X^m, X^M Y và X^m Y?",
+      "options": [
+        {"label": "A", "text": "♀ X^M X^M × ♂ X^m Y"},
+        {"label": "B", "text": "♀ X^M X^m × ♂ X^M Y"},
+        {"label": "C", "text": "♀ X^M X^m × ♂ X^m Y"},
+        {"label": "D", "text": "♀ X^m X^m × ♂ X^M Y"}
+      ],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "B", "level": "TH"}
+      ],
+      "solution": "Đáp án B. Con cái X^M X^m tạo trứng mang X^M hoặc X^m; con đực X^M Y tạo tinh trùng mang X^M hoặc Y. Tổ hợp các giao tử cho đúng bốn kiểu gene yêu cầu. Phép lai A chỉ tạo X^M X^m và X^M Y. Phép lai C tạo X^M X^m, X^m X^m, X^M Y và X^m Y, thiếu X^M X^M. Phép lai D chỉ tạo X^M X^m và X^m Y.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Cho rằng bố mẹ mang đủ hai alen M và m thì đời con sẽ có đủ bốn kiểu gene yêu cầu.",
+          "why_plausible": "Học sinh chú ý sự có mặt của hai alen nhưng bỏ qua việc mẹ chỉ tạo một loại trứng."
+        },
+        {
+          "label": "C",
+          "sub": null,
+          "mistake": "Thấy phép lai tạo bốn kiểu gene rồi đồng nhất chúng với bốn kiểu gene được yêu cầu.",
+          "why_plausible": "Phép lai này cũng tạo bốn kiểu gene, nhưng alen trên X của bố làm thay đổi các kiểu gene ở con cái."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Cho rằng alen M của bố có thể truyền cho cả con trai và con gái.",
+          "why_plausible": "Học sinh áp dụng cách tổ hợp alen của gene trên nhiễm sắc thể thường, quên rằng con trai nhận Y từ bố."
+        }
+      ],
+      "level_reason": "Học sinh thực hiện quy trình quen thuộc: xác định giao tử, tổ hợp giao tử và đối chiếu các kiểu gene đời con. Đây là thông hiểu, không đòi hỏi xây dựng mô hình di truyền mới.",
+      "prerequisites": [
+        "Gene trên vùng không tương đồng của nhiễm sắc thể X",
+        "Sự truyền nhiễm sắc thể giới tính từ bố mẹ",
+        "Lập sơ đồ lai"
+      ],
+      "variation_guidance": "Có thể thay kí hiệu alen hoặc tập kiểu gene cần tạo; cần kiểm tra từng phép lai để bảo đảm chỉ một phương án đáp ứng đầy đủ yêu cầu.",
+      "uncertainties": [],
+      "missing_assets": []
+    },
+    {
+      "id": "c5490de85366650e",
+      "stem": "Một bệnh di truyền do một gene có hai alen trên nhiễm sắc thể thường quy định. Tính trạng biểu hiện hoàn toàn theo kiểu trội – lặn; không có đột biến mới. Mai và Nam đều không mắc bệnh. Bố mẹ của Mai đều không mắc bệnh nhưng có một người con mắc bệnh; bố mẹ của Nam cũng đều không mắc bệnh nhưng có một người con mắc bệnh. Hai gia đình không có quan hệ huyết thống. Trước đây, Nam có một người con với một phụ nữ mắc bệnh; người con này không mắc bệnh. Không có thông tin chọn lọc nào khác về người con đó. Biết xác suất sinh con trai là 1/2 và độc lập với sự di truyền gene gây bệnh. Dựa trên toàn bộ thông tin trên, xác suất lần sinh tới Mai và Nam sinh một con trai mắc bệnh là bao nhiêu?",
+      "options": [
+        {"label": "A", "text": "1/18"},
+        {"label": "B", "text": "1/12"},
+        {"label": "C", "text": "1/32"},
+        {"label": "D", "text": "1/24"}
+      ],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "D", "level": "VD"}
+      ],
+      "solution": "Đáp án D. Bố mẹ không bệnh sinh con bệnh, trong điều kiện đề cho, nên bệnh do alen lặn a quy định; người bệnh có kiểu gene aa. Bố mẹ của mỗi người đều phải là Aa × Aa. Vì Mai không bệnh, xác suất Mai có kiểu gene Aa là 2/3. Trước khi xét người con trước đây, Nam cũng có xác suất Aa bằng 2/3 và AA bằng 1/3. Với người mẹ aa, nếu Nam là AA thì xác suất con không bệnh bằng 1; nếu Nam là Aa thì xác suất này bằng 1/2. Do đã biết người con không bệnh, xác suất Nam là Aa được cập nhật thành [(2/3) × (1/2)] / [(1/3) × 1 + (2/3) × (1/2)] = 1/2. Xác suất con của Mai và Nam mắc bệnh là (2/3) × (1/2) × (1/4) = 1/12. Xác suất đồng thời là con trai và mắc bệnh bằng (1/12) × (1/2) = 1/24. Phương án A bỏ qua thông tin người con trước của Nam; B chưa kết hợp xác suất giới tính; C dùng sai xác suất Mai mang alen bệnh là 1/2.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Giữ xác suất Nam mang alen bệnh là 2/3, tính (2/3) × (2/3) × (1/4) × (1/2) = 1/18.",
+          "why_plausible": "Học sinh nhớ xác suất 2/3 của người không bệnh trong gia đình Aa × Aa nhưng chưa cập nhật theo thông tin về con của Nam."
+        },
+        {
+          "label": "B",
+          "sub": null,
+          "mistake": "Tính đúng xác suất con mắc bệnh là 1/12 nhưng coi đó là xác suất sinh con trai mắc bệnh.",
+          "why_plausible": "Học sinh có thể đọc yêu cầu về giới tính thành điều kiện đã biết thay vì một sự kiện phải xảy ra đồng thời."
+        },
+        {
+          "label": "C",
+          "sub": null,
+          "mistake": "Coi hai khả năng AA và Aa của Mai là đồng xác suất, rồi tính (1/2) × (1/2) × (1/4) × (1/2) = 1/32.",
+          "why_plausible": "Sau khi loại aa, học sinh có thể chia đều xác suất cho hai tên kiểu gene còn lại, bỏ qua tỉ lệ AA : Aa là 1 : 2."
+        }
+      ],
+      "level_reason": "Học sinh phải suy ra cơ chế di truyền, xác định xác suất kiểu gene có điều kiện từ gia đình, dùng thông tin về một người con để cập nhật riêng xác suất kiểu gene của Nam, rồi kết hợp nguy cơ bệnh với giới tính. Các bước phụ thuộc nhau và đòi hỏi xây dựng mô hình xác suất từ dữ kiện.",
+      "prerequisites": [
+        "Di truyền trội – lặn trên nhiễm sắc thể thường",
+        "Phân li kiểu gene trong phép lai Aa × Aa",
+        "Xác suất có điều kiện",
+        "Quy tắc nhân xác suất"
+      ],
+      "variation_guidance": "Có thể thay thông tin về con trước bằng một kết quả xét nghiệm được mô tả đầy đủ về khả năng xuất hiện ở từng kiểu gene. Phải tính lại xác suất hậu nghiệm và giữ rõ yêu cầu đồng thời về giới tính và bệnh.",
+      "uncertainties": [
+        "Nhánh quan sát về xác suất bệnh trong gia đình được cung cấp chỉ thuộc nguồn cấp tỉnh do bên thứ ba cung cấp; mẫu này không chứng minh dạng bài tương ứng xuất hiện trong đề thi chính thức.",
+        "Mô hình bệnh là giả định phục vụ bài tập, không mô tả một bệnh cụ thể trong thực tế."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "26273b1e58383375",
+      "stem": "Trong một mô hình di truyền ở người, gene có hai alen A và a nằm trên vùng không tương đồng của nhiễm sắc thể X. Alen a gây bệnh và lặn hoàn toàn so với alen A. Một người mẹ có kiểu gene X^A X^a. Hãy xác định mỗi nhận định sau là đúng hay sai.",
+      "options": [],
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Gene đang xét là gene liên kết với giới tính."
+        },
+        {
+          "sub": "b",
+          "text": "Bệnh đang xét thuộc dạng di truyền liên kết với nhiễm sắc thể Y."
+        },
+        {
+          "sub": "c",
+          "text": "Người mẹ có kiểu gene dị hợp tại locus đang xét."
+        },
+        {
+          "sub": "d",
+          "text": "Trong mô hình này, a là alen trội so với A."
+        }
+      ],
+      "answers": [
+        {"sub": "a", "answer": "D", "level": "NB"},
+        {"sub": "b", "answer": "S", "level": "NB"},
+        {"sub": "c", "answer": "D", "level": "NB"},
+        {"sub": "d", "answer": "S", "level": "NB"}
+      ],
+      "solution": "a đúng: gene nằm trên nhiễm sắc thể giới tính X nên là gene liên kết với giới tính. b sai: đề cho gene nằm trên vùng không tương đồng của X, không phải trên Y. c đúng: người mẹ mang hai alen khác nhau A và a tại cùng locus nên dị hợp. d sai: đề đã xác định a lặn hoàn toàn so với A.",
+      "distractors": [
+        {
+          "label": null,
+          "sub": "b",
+          "mistake": "Đồng nhất di truyền liên kết giới tính với di truyền liên kết Y.",
+          "why_plausible": "Học sinh nhớ tên nhóm quy luật nhưng chưa phân biệt gene trên X với gene trên Y."
+        },
+        {
+          "label": null,
+          "sub": "d",
+          "mistake": "Cho rằng alen gây bệnh luôn là alen trội.",
+          "why_plausible": "Học sinh nhầm tác động gây bệnh với quan hệ trội – lặn giữa hai alen."
+        }
+      ],
+      "level_reason": "Cả bốn nhận định chỉ yêu cầu nhận diện vị trí gene, khái niệm dị hợp hoặc nhắc lại quan hệ trội – lặn đã cho. Mức cao nhất của các nhận định là NB, nên mức của toàn mẫu là NB.",
+      "prerequisites": [
+        "Khái niệm gene liên kết với giới tính",
+        "Phân biệt gene trên X và gene trên Y",
+        "Khái niệm dị hợp",
+        "Quan hệ trội – lặn"
+      ],
+      "variation_guidance": "Có thể thay kí hiệu alen hoặc kiểu gene được nêu, nhưng giữ các nhận định ở mức nhận diện trực tiếp; không thêm suy luận đời con nếu vẫn nhắm mức NB.",
+      "uncertainties": [
+        "Quan sát được cung cấp cho mục tiêu này chỉ thuộc nguồn cấp tỉnh do bên thứ ba cung cấp và chỉ gắn với một nhận định; các nhận định còn lại được sáng tác để tạo mẫu đúng/sai hoàn chỉnh."
+      ],
+      "missing_assets": []
+    }
+  ]
+}

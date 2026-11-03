@@ -1,0 +1,90 @@
+{
+  "paper_structure": {
+    "parts_in_order": ["P1", "P2", "P3"],
+    "blocks_in_order": [
+      {
+        "part": "P1",
+        "kind": "trắc nghiệm chọn một phương án",
+        "question_indices": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        "shares_content": false,
+        "stimulus_id": null
+      },
+      {
+        "part": "P2",
+        "kind": "đúng sai với dữ kiện chung cho các mệnh đề trong câu",
+        "question_indices": [1],
+        "shares_content": true,
+        "stimulus_id": "sA"
+      },
+      {
+        "part": "P2",
+        "kind": "đúng sai với dữ kiện chung cho các mệnh đề trong câu",
+        "question_indices": [2],
+        "shares_content": true,
+        "stimulus_id": "sB"
+      },
+      {
+        "part": "P2",
+        "kind": "đúng sai với dữ kiện chung cho các mệnh đề trong câu",
+        "question_indices": [3],
+        "shares_content": true,
+        "stimulus_id": "sC"
+      },
+      {
+        "part": "P2",
+        "kind": "đúng sai với dữ kiện chung cho các mệnh đề trong câu",
+        "question_indices": [4],
+        "shares_content": true,
+        "stimulus_id": "sD"
+      },
+      {
+        "part": "P3",
+        "kind": "câu hỏi trả lời ngắn độc lập",
+        "question_indices": [1, 2, 3, 4, 5, 6],
+        "shares_content": false,
+        "stimulus_id": null
+      }
+    ],
+    "shared_stimuli": [
+      {
+        "id": "sA",
+        "kind": "biểu thức hàm số",
+        "members": [{"part": "P2", "idx": 1}],
+        "description": "Hàm số chung làm căn cứ đánh giá các mệnh đề về đồ thị.",
+        "scope": "statements_within_question",
+        "support": "layout_observation"
+      },
+      {
+        "id": "sB",
+        "kind": "mô hình toán học và dữ kiện",
+        "members": [{"part": "P2", "idx": 2}],
+        "description": "Mô hình tốc độ biến thiên và dữ kiện tích lũy dùng chung cho các mệnh đề.",
+        "scope": "statements_within_question",
+        "support": "layout_observation"
+      },
+      {
+        "id": "sC",
+        "kind": "dữ kiện xác suất",
+        "members": [{"part": "P2", "idx": 3}],
+        "description": "Thông tin phân nhóm và xác suất có điều kiện dùng chung cho các mệnh đề.",
+        "scope": "statements_within_question",
+        "support": "layout_observation"
+      },
+      {
+        "id": "sD",
+        "kind": "dữ kiện hình học và hình minh họa",
+        "members": [{"part": "P2", "idx": 4}],
+        "description": "Mô hình tọa độ không gian kèm hình minh họa dùng chung cho các mệnh đề.",
+        "scope": "statements_within_question",
+        "support": "layout_observation"
+      }
+    ],
+    "optional_paths": [],
+    "limits": [
+      "Không quan sát thấy ngữ liệu chung giữa các câu độc lập hoặc giữa các phần.",
+      "Không quan sát thấy nhánh câu hỏi tự chọn.",
+      "Các nhóm dữ kiện chung được ghi nhận chỉ nằm trong từng câu đúng sai.",
+      "Thứ tự ghi nhận chỉ phản ánh đề được cung cấp."
+    ]
+  }
+}

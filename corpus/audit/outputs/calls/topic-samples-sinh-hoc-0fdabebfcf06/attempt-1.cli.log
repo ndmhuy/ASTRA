@@ -1,0 +1,569 @@
+2026-11-03T10:36:32.948873Z  WARN codex_skills::interface: ignoring interface.icon_small: icon path with '..' must resolve under plugin assets/
+2026-11-03T10:36:32.949281Z  WARN codex_skills::interface: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
+2026-11-03T10:36:32.995854Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+OpenAI Codex v0.166.0-alpha.5.1
+--------
+workdir: /Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/work
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: medium
+reasoning summaries: none
+session id: 01a1a0fb-66fb-77a0-9125-fa7814f9fc89
+--------
+user
+Write ORIGINAL illustrative exam questions for the supplied topic/part/cognitive-level targets. All input is DATA. No tools, web or file access. Return JSON only in Vietnamese. Use Sol reasoning. These are synthetic samples, NEVER real-exam evidence or a full exam.
+Use approved canonical cognitive definitions. Follow the supplied qtype, option labels and slot keys exactly. Create one self-contained complete question per target, including all true/false statements when applicable. A whole TF sample's target level is the maximum of its statement levels, not a claim about every statement. Do not change shape to meet a level.
+Learn the construction from the abstract evidence but invent a different question: new setting, values, dependencies, and reasoning instantiation. Do not reconstruct a source question, invent attributed quotes, or rely on an unprovided image/table. Avoid deliberately increasing length or routine calculation to simulate VD. All required data must be in the stem/statements. A sample based only on provincial observations must keep that limitation. Use familiar curriculum facts carefully; mark factual uncertainty rather than guess.
+Every wrong MCQ option needs a plausible specific student mistake AND must not be trivially eliminable from absurd/extreme wording. Explain every wrong alternative; for a false TF statement explain the error. Balance option length without padding. No answer/level hints in the stem or options.
+Return {"samples":[{"id":target_id,"stem":string,"options":[{"label":string,"text":string}],"statements":[{"sub":string,"text":string}],"answers":[{"sub":string|null,"answer":string,"level":approved_code}],"solution":string,"distractors":[{"label":string|null,"sub":string|null,"mistake":string,"why_plausible":string}],"level_reason":string,"prerequisites":[strings],"variation_guidance":string,"uncertainties":[strings],"missing_assets":[]}]}.
+Use empty options/statements when not applicable. Single-answer items use sub=null. True/false answers use canonical D/S, no hidden explanation in the answer. Essay answers can be an expected-response outline and remain teacher-review-only. Return every target id exactly once. Do not supply counts or claim teacher approval, empirical discrimination, or successful independent verification.
+
+{"canonical_levels": {"revision": "de8c614ada6e3ae9f9072cedb7521fb96c1d13e5", "scheme_id": "default", "scheme_version": 2, "preamble": "A level is the performance a student must show to answer correctly. It is NOT the length of the text, NOT the amount of numbers to read, and NOT the verb used in the outcome sentence.", "levels": [{"code": "NB", "label": {"vi": "Nhận biết", "en": "Recall"}, "ordinal": 1, "status": "APPROVED", "definition_en": "recognise or retrieve. The student recognises, names or restates a fact, concept, definition, symbol, property, formula or step as taught. The answer sits in ONE knowledge unit. A scenario, if any, is decoration.", "samples": [], "bands": []}, {"code": "TH", "label": {"vi": "Thông hiểu", "en": "Comprehension"}, "ordinal": 2, "status": "APPROVED", "definition_en": "Explain, distinguish, interpret, or execute a familiar routine procedure. The student reads a given representation or uses taught knowledge in a standard exercise. A single substitution of given values into a taught formula or equation is TH; several routine algebraic or numerical operations can also remain TH. Choosing the obvious familiar formula without its name being supplied does not by itself make a question VD.", "samples": [], "bands": []}, {"code": "VD", "label": {"vi": "Vận dụng", "en": "Application"}, "ordinal": 3, "status": "APPROVED", "definition_en": "Model a situation or construct a substantive chain of reasoning. The task requires the student to formulate a model, connect and apply multiple knowledge units, or plan and justify several dependent thinking steps rather than merely execute a familiar calculation. Judge the minimum cognitive work needed for a correct answer. A longer text, more numbers, more written calculation steps, or an unstated but obvious formula is not sufficient for VD. A standard multi-step calculation can remain TH; no single surface cue is a compulsory condition for all VD questions.", "samples": [], "bands": []}], "subject_layer": null}, "targets": [{"id": "98f58fd174f2beaf", "topic": "Các phân tử sinh học", "part": "P1", "level": "NB", "qtype": "mcq", "option_labels": ["A", "B", "C", "D"], "slot_keys": [null], "canonical_answer_alphabet": ["A", "B", "C", "D"], "abstract_observations": [{"given": "Một nhóm phân tử sinh học cùng các mô tả về tính chất, chức năng và cấu tạo.", "task": "Chọn đặc điểm không thuộc nhóm phân tử được xét.", "reasoning": ["Nhớ các tính chất cơ bản của nhóm phân tử.", "Phân biệt đặc điểm cấu tạo của nhóm này với các đại phân tử khác."], "combines": ["Thành phần hóa học của tế bào"], "difficulty_source": "Nhớ trực tiếp đặc điểm cấu tạo cơ bản", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}], "support_refs": ["61a0198fbfda|P1|2|None"], "official_anchor_available": false}, {"id": "277582ccec5bad95", "topic": "Các phân tử sinh học", "part": "P2", "level": "TH", "qtype": "true_false", "option_labels": [], "slot_keys": ["a", "b", "c", "d"], "canonical_answer_alphabet": ["D", "S"], "abstract_observations": [{"given": "Một phân tử được nhận diện qua loại đường đơn cấu tạo nên nó.", "task": "Đánh giá khả năng phân tử đảm nhiệm chức năng di truyền trong nhân.", "reasoning": "Suy ra nhóm phân tử từ đơn phân; đối chiếu với nhóm chất lưu giữ thông tin di truyền của tế bào.", "combines": ["Đơn phân và đại phân tử", "Chức năng vật chất di truyền"], "difficulty_source": "Loại đơn phân xác định ngay nhóm chất", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}], "support_refs": ["4b4716b94db4|P2|4|b"], "official_anchor_available": false}, {"id": "0e46b1c974f16717", "topic": "Công nghệ tế bào và biệt hóa", "part": "P1", "level": "TH", "qtype": "mcq", "option_labels": ["A", "B", "C", "D"], "slot_keys": [null], "canonical_answer_alphabet": ["A", "B", "C", "D"], "abstract_observations": [{"given": "Hình thể hiện một tế bào trung gian từ phôi có thể tạo nhiều loại tế bào chuyên hóa.", "task": "Xác định bản chất của tế bào trung gian.", "reasoning": "Đọc chiều các mũi tên biệt hóa; dùng khả năng tạo nhiều dòng tế bào để nhận diện loại tế bào.", "combines": ["Tế bào gốc", "Biệt hóa tế bào"], "difficulty_source": "Chiều biệt hóa trong hình chỉ rõ đặc tính nhận diện", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}], "support_refs": ["2cbdc74db082|P1|6|None"], "official_anchor_available": false}, {"id": "6ec765fc9d6b5cd4", "topic": "Cấu trúc tế bào nhân thực", "part": "P2", "level": "TH", "qtype": "true_false", "option_labels": [], "slot_keys": ["a", "b", "c", "d"], "canonical_answer_alphabet": ["D", "S"], "abstract_observations": [{"given": "Thành phần base của một phân tử và điều kiện bổ sung về sự bằng nhau giữa các loại base.", "task": "Đánh giá các vị trí tế bào có thể chứa phân tử đó.", "reasoning": "Nhận diện DNA từ thành phần base; kiểm tra dấu hiệu phù hợp với cấu trúc bổ sung; nhớ các cấu trúc tế bào có hệ gene riêng.", "combines": ["Thành phần DNA", "Nguyên tắc bổ sung", "Cấu trúc tế bào nhân thực"], "difficulty_source": "Nối dữ liệu thành phần phân tử với vị trí trong tế bào", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}], "support_refs": ["4b4716b94db4|P2|4|c"], "official_anchor_available": false}]}
+2026-11-03T10:36:33.306510Z  WARN codex_skills::interface: ignoring interface.icon_small: icon path with '..' must resolve under plugin assets/
+2026-11-03T10:36:33.306571Z  WARN codex_skills::interface: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
+codex
+{
+  "samples": [
+    {
+      "id": "98f58fd174f2beaf",
+      "stem": "Đặc điểm nào sau đây không thuộc về protein?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Được cấu tạo từ các đơn phân là amino acid."
+        },
+        {
+          "label": "B",
+          "text": "Có thể tham gia cấu tạo các thành phần của tế bào."
+        },
+        {
+          "label": "C",
+          "text": "Được cấu tạo từ các đơn phân là nucleotide."
+        },
+        {
+          "label": "D",
+          "text": "Có thể xúc tác các phản ứng sinh hóa trong tế bào."
+        }
+      ],
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "answer": "C",
+          "level": "NB"
+        }
+      ],
+      "solution": "Chọn C. Protein được cấu tạo từ các amino acid; nucleotide là đơn phân của axit nucleic. A là đặc điểm cấu tạo của protein. B đúng vì nhiều protein tham gia cấu trúc tế bào. D đúng vì nhiều enzyme có bản chất là protein.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Cho rằng amino acid không phải đơn phân của protein.",
+          "why_plausible": "Học sinh có thể nhớ lẫn tên đơn phân của protein và axit nucleic."
+        },
+        {
+          "label": "B",
+          "sub": null,
+          "mistake": "Cho rằng protein chỉ đảm nhiệm chức năng enzyme nên không tham gia cấu trúc tế bào.",
+          "why_plausible": "Chức năng xúc tác thường được nhấn mạnh khiến học sinh bỏ sót chức năng cấu trúc."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Cho rằng enzyme là một nhóm chất tách biệt với protein.",
+          "why_plausible": "Học sinh có thể ghi nhớ tên chức năng mà chưa liên hệ với bản chất hóa học của enzyme."
+        }
+      ],
+      "level_reason": "Học sinh chỉ cần nhớ và nhận diện đặc điểm cấu tạo, chức năng cơ bản của protein trong một đơn vị kiến thức; không cần xử lí tình huống.",
+      "prerequisites": [
+        "Đơn phân của protein và axit nucleic",
+        "Các chức năng cơ bản của protein"
+      ],
+      "variation_guidance": "Có thể thay các chức năng cấu trúc và xúc tác bằng vận chuyển hoặc bảo vệ, nhưng giữ yêu cầu nhận diện trực tiếp một đặc điểm không thuộc protein.",
+      "uncertainties": [
+        "Quan sát tham chiếu chỉ thuộc nguồn bên thứ ba cấp tỉnh, không có điểm neo chính thức; câu này là mẫu minh họa tổng hợp, không phải bằng chứng đề thi thật."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "277582ccec5bad95",
+      "stem": "Phân tử X là một polymer sinh học. Khi thủy phân hoàn toàn X, người ta chỉ thu được glucose, không thu được loại đơn phân nào khác. Với mỗi nhận định sau về X, hãy xác định đúng hay sai.",
+      "options": [],
+      "statements": [
+        {
+          "sub": "a",
+          "text": "X thuộc nhóm polysaccharide."
+        },
+        {
+          "sub": "b",
+          "text": "Các đơn phân cấu tạo nên X là nucleotide có chứa đường glucose."
+        },
+        {
+          "sub": "c",
+          "text": "X có thể là ADN đảm nhiệm chức năng lưu giữ thông tin di truyền trong nhân tế bào."
+        },
+        {
+          "sub": "d",
+          "text": "Chỉ từ dữ kiện về sản phẩm thủy phân, chưa thể phân biệt X là tinh bột hay cellulose."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "answer": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "answer": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "answer": "D",
+          "level": "TH"
+        }
+      ],
+      "solution": "a đúng: X là polymer chỉ cho glucose khi thủy phân hoàn toàn, phù hợp với polysaccharide cấu tạo từ các đơn phân glucose. b sai: đơn phân của X là glucose, không phải nucleotide; nucleotide của ADN chứa đường deoxyribose, còn nucleotide của ARN chứa đường ribose. c sai: ADN là polymer của các deoxyribonucleotide, không phải polymer của glucose. d đúng: cả tinh bột và cellulose đều có thể cho glucose khi thủy phân hoàn toàn; cần thêm dữ kiện về kiểu liên kết hoặc cấu trúc để phân biệt.",
+      "distractors": [
+        {
+          "label": null,
+          "sub": "b",
+          "mistake": "Đồng nhất một phân tử đường đơn với một nucleotide.",
+          "why_plausible": "Học sinh nhớ nucleotide có thành phần đường nhưng nhầm thành phần với toàn bộ đơn phân."
+        },
+        {
+          "label": null,
+          "sub": "c",
+          "mistake": "Cho rằng mọi polymer sinh học đều có thể đảm nhiệm vai trò vật chất di truyền trong nhân.",
+          "why_plausible": "X và ADN đều là các phân tử lớn nên học sinh có thể bỏ qua sự khác nhau về đơn phân."
+        }
+      ],
+      "level_reason": "Học sinh diễn giải dữ kiện thủy phân để nhận diện nhóm chất, đối chiếu đơn phân với chức năng di truyền và phân biệt giới hạn của dữ kiện. Đây là các liên hệ quen thuộc ở mức TH; mức của toàn câu là TH.",
+      "prerequisites": [
+        "Đường đơn và polysaccharide",
+        "Đơn phân của tinh bột và cellulose",
+        "Thành phần nucleotide và chức năng của ADN"
+      ],
+      "variation_guidance": "Có thể thay glucose bằng dữ kiện về một loại đơn phân khác, nhưng phải bảo đảm dữ kiện đủ để nhận diện nhóm chất và không suy ra duy nhất một phân tử khi nhiều phân tử cùng phù hợp.",
+      "uncertainties": [
+        "Quan sát tham chiếu chỉ thuộc nguồn bên thứ ba cấp tỉnh, không có điểm neo chính thức; mẫu minh họa này không xác nhận cách phân loại của một đề thi chính thức."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "0e46b1c974f16717",
+      "stem": "Trong một thí nghiệm nuôi cấy, quần thể tế bào X được tách từ phôi. Qua nhiều lần phân chia, một phần tế bào con vẫn duy trì đặc điểm của X. Khi thay đổi điều kiện nuôi cấy thích hợp, các nhóm tế bào X có thể lần lượt tạo thành tế bào thần kinh, tế bào cơ tim hoặc tế bào biểu mô. Cách nhận diện nào sau đây phù hợp với tế bào X?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Tế bào thần kinh đã chuyên hóa, vì có thể tạo ra tế bào thần kinh."
+        },
+        {
+          "label": "B",
+          "text": "Tế bào gốc chưa chuyên hóa, vì có thể tự đổi mới và tạo nhiều loại tế bào."
+        },
+        {
+          "label": "C",
+          "text": "Tế bào cơ tim đã chuyên hóa, vì có thể tạo ra tế bào cơ tim."
+        },
+        {
+          "label": "D",
+          "text": "Tế bào biểu mô đã chuyên hóa, vì có thể tạo ra tế bào biểu mô."
+        }
+      ],
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "answer": "B",
+          "level": "TH"
+        }
+      ],
+      "solution": "Chọn B. Việc một phần tế bào con duy trì đặc điểm của X thể hiện khả năng tự đổi mới. Việc X tạo được nhiều loại tế bào chuyên hóa thể hiện khả năng biệt hóa. Hai đặc điểm này phù hợp với tế bào gốc. A, C và D đều nhầm một loại tế bào tạo thành sau biệt hóa với tế bào X ban đầu.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Dùng tế bào thần kinh ở đầu ra để xác định X là tế bào thần kinh đã chuyên hóa.",
+          "why_plausible": "Học sinh chú ý một kết quả nuôi cấy nhưng bỏ qua các hướng biệt hóa còn lại."
+        },
+        {
+          "label": "C",
+          "sub": null,
+          "mistake": "Đồng nhất khả năng tạo tế bào cơ tim với trạng thái đã chuyên hóa thành tế bào cơ tim.",
+          "why_plausible": "Học sinh có thể nhầm khả năng phát triển thành một loại tế bào với bản chất hiện tại của tế bào."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Xác định tế bào ban đầu theo sản phẩm biểu mô của một điều kiện nuôi cấy.",
+          "why_plausible": "Học sinh có thể đọc kết quả biệt hóa theo chiều ngược và bỏ qua khả năng tự đổi mới."
+        }
+      ],
+      "level_reason": "Học sinh đọc mô tả quá trình nuôi cấy và giải thích các dấu hiệu tự đổi mới, biệt hóa để nhận diện tế bào gốc. Đây là diễn giải một biểu diễn quen thuộc, không đòi hỏi xây dựng mô hình mới.",
+      "prerequisites": [
+        "Đặc điểm của tế bào gốc",
+        "Khái niệm tự đổi mới",
+        "Khái niệm biệt hóa tế bào"
+      ],
+      "variation_guidance": "Có thể đổi các loại tế bào chuyên hóa ở đầu ra, đồng thời giữ rõ hai dấu hiệu tự đổi mới và biệt hóa. Không suy ra khả năng tạo một cơ thể hoàn chỉnh chỉ từ việc tạo được vài loại tế bào.",
+      "uncertainties": [
+        "Quan sát tham chiếu chỉ thuộc nguồn bên thứ ba cấp tỉnh, không có điểm neo chính thức; tình huống nuôi cấy là dữ kiện giả định phục vụ minh họa."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "6ec765fc9d6b5cd4",
+      "stem": "Một phân tử axit nucleic X có đường deoxyribose và thành phần base: A = 28%, T = 28%, G = 22%, C = 22%. X đại diện cho một loại axit nucleic có trong tế bào nhân thực. Xét tế bào mô giậu đang quang hợp ở lá cây đậu, hãy xác định đúng hay sai cho mỗi nhận định sau.",
+      "options": [],
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Thành phần base của X phù hợp với nguyên tắc bổ sung của ADN hai mạch."
+        },
+        {
+          "sub": "b",
+          "text": "Loại axit nucleic mà X đại diện có thể có trong nhân tế bào."
+        },
+        {
+          "sub": "c",
+          "text": "Loại axit nucleic mà X đại diện không thể có trong ti thể vì ti thể nằm ngoài nhân."
+        },
+        {
+          "sub": "d",
+          "text": "Loại axit nucleic mà X đại diện là thành phần axit nucleic cấu tạo nên ribosome."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "answer": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "answer": "S",
+          "level": "TH"
+        }
+      ],
+      "solution": "X là ADN vì chứa đường deoxyribose và các base A, T, G, C. a đúng: A = T và G = C phù hợp với nguyên tắc bổ sung của ADN hai mạch; riêng các tỉ lệ này không đủ chứng minh X có hai mạch. b đúng: nhân của tế bào mô giậu chứa ADN. c sai: ti thể có hệ gene riêng nên có ADN dù nằm ngoài nhân. d sai: axit nucleic cấu tạo nên ribosome là rARN, không phải ADN.",
+      "distractors": [
+        {
+          "label": null,
+          "sub": "c",
+          "mistake": "Cho rằng ADN trong tế bào nhân thực chỉ tồn tại trong nhân.",
+          "why_plausible": "Học sinh có thể khái quát quá mức vai trò lưu giữ thông tin di truyền của nhân và quên hệ gene của ti thể."
+        },
+        {
+          "label": null,
+          "sub": "d",
+          "mistake": "Nhầm ADN với rARN khi xác định thành phần của ribosome.",
+          "why_plausible": "Cả ADN và rARN đều là axit nucleic nên học sinh có thể bỏ qua sự khác biệt về cấu tạo và vị trí."
+        }
+      ],
+      "level_reason": "Học sinh diễn giải thành phần đường và base để nhận diện ADN, kiểm tra sự phù hợp với nguyên tắc bổ sung rồi đối chiếu với kiến thức quen thuộc về nhân, ti thể và ribosome. Mức cao nhất của các nhận định là TH.",
+      "prerequisites": [
+        "Thành phần cấu tạo của ADN",
+        "Nguyên tắc bổ sung",
+        "ADN trong nhân và ti thể",
+        "Thành phần cấu tạo của ribosome"
+      ],
+      "variation_guidance": "Có thể đổi tỉ lệ base nhưng phải giữ A = T, G = C và tổng bằng 100% nếu muốn xét sự phù hợp với ADN hai mạch. Có thể thay ti thể bằng lục lạp trong bối cảnh tế bào lá đang quang hợp.",
+      "uncertainties": [
+        "Quan sát tham chiếu chỉ thuộc nguồn bên thứ ba cấp tỉnh, không có điểm neo chính thức; mẫu này không phải bằng chứng về cấu trúc hoặc mức độ của đề thi thật."
+      ],
+      "missing_assets": []
+    }
+  ]
+}
+2026-11-03T10:38:04.927159Z  WARN codex_core::shell_snapshot: Failed to delete shell snapshot at AbsolutePathBuf("/Users/huynguyen/.codex/shell_snapshots/01a1a0fb-66fb-77a0-9125-fa7814f9fc89.1793702192971127000.sh"): Os { code: 2, kind: NotFound, message: "No such file or directory" }
+tokens used
+6,603
+{
+  "samples": [
+    {
+      "id": "98f58fd174f2beaf",
+      "stem": "Đặc điểm nào sau đây không thuộc về protein?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Được cấu tạo từ các đơn phân là amino acid."
+        },
+        {
+          "label": "B",
+          "text": "Có thể tham gia cấu tạo các thành phần của tế bào."
+        },
+        {
+          "label": "C",
+          "text": "Được cấu tạo từ các đơn phân là nucleotide."
+        },
+        {
+          "label": "D",
+          "text": "Có thể xúc tác các phản ứng sinh hóa trong tế bào."
+        }
+      ],
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "answer": "C",
+          "level": "NB"
+        }
+      ],
+      "solution": "Chọn C. Protein được cấu tạo từ các amino acid; nucleotide là đơn phân của axit nucleic. A là đặc điểm cấu tạo của protein. B đúng vì nhiều protein tham gia cấu trúc tế bào. D đúng vì nhiều enzyme có bản chất là protein.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Cho rằng amino acid không phải đơn phân của protein.",
+          "why_plausible": "Học sinh có thể nhớ lẫn tên đơn phân của protein và axit nucleic."
+        },
+        {
+          "label": "B",
+          "sub": null,
+          "mistake": "Cho rằng protein chỉ đảm nhiệm chức năng enzyme nên không tham gia cấu trúc tế bào.",
+          "why_plausible": "Chức năng xúc tác thường được nhấn mạnh khiến học sinh bỏ sót chức năng cấu trúc."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Cho rằng enzyme là một nhóm chất tách biệt với protein.",
+          "why_plausible": "Học sinh có thể ghi nhớ tên chức năng mà chưa liên hệ với bản chất hóa học của enzyme."
+        }
+      ],
+      "level_reason": "Học sinh chỉ cần nhớ và nhận diện đặc điểm cấu tạo, chức năng cơ bản của protein trong một đơn vị kiến thức; không cần xử lí tình huống.",
+      "prerequisites": [
+        "Đơn phân của protein và axit nucleic",
+        "Các chức năng cơ bản của protein"
+      ],
+      "variation_guidance": "Có thể thay các chức năng cấu trúc và xúc tác bằng vận chuyển hoặc bảo vệ, nhưng giữ yêu cầu nhận diện trực tiếp một đặc điểm không thuộc protein.",
+      "uncertainties": [
+        "Quan sát tham chiếu chỉ thuộc nguồn bên thứ ba cấp tỉnh, không có điểm neo chính thức; câu này là mẫu minh họa tổng hợp, không phải bằng chứng đề thi thật."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "277582ccec5bad95",
+      "stem": "Phân tử X là một polymer sinh học. Khi thủy phân hoàn toàn X, người ta chỉ thu được glucose, không thu được loại đơn phân nào khác. Với mỗi nhận định sau về X, hãy xác định đúng hay sai.",
+      "options": [],
+      "statements": [
+        {
+          "sub": "a",
+          "text": "X thuộc nhóm polysaccharide."
+        },
+        {
+          "sub": "b",
+          "text": "Các đơn phân cấu tạo nên X là nucleotide có chứa đường glucose."
+        },
+        {
+          "sub": "c",
+          "text": "X có thể là ADN đảm nhiệm chức năng lưu giữ thông tin di truyền trong nhân tế bào."
+        },
+        {
+          "sub": "d",
+          "text": "Chỉ từ dữ kiện về sản phẩm thủy phân, chưa thể phân biệt X là tinh bột hay cellulose."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "answer": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "answer": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "answer": "D",
+          "level": "TH"
+        }
+      ],
+      "solution": "a đúng: X là polymer chỉ cho glucose khi thủy phân hoàn toàn, phù hợp với polysaccharide cấu tạo từ các đơn phân glucose. b sai: đơn phân của X là glucose, không phải nucleotide; nucleotide của ADN chứa đường deoxyribose, còn nucleotide của ARN chứa đường ribose. c sai: ADN là polymer của các deoxyribonucleotide, không phải polymer của glucose. d đúng: cả tinh bột và cellulose đều có thể cho glucose khi thủy phân hoàn toàn; cần thêm dữ kiện về kiểu liên kết hoặc cấu trúc để phân biệt.",
+      "distractors": [
+        {
+          "label": null,
+          "sub": "b",
+          "mistake": "Đồng nhất một phân tử đường đơn với một nucleotide.",
+          "why_plausible": "Học sinh nhớ nucleotide có thành phần đường nhưng nhầm thành phần với toàn bộ đơn phân."
+        },
+        {
+          "label": null,
+          "sub": "c",
+          "mistake": "Cho rằng mọi polymer sinh học đều có thể đảm nhiệm vai trò vật chất di truyền trong nhân.",
+          "why_plausible": "X và ADN đều là các phân tử lớn nên học sinh có thể bỏ qua sự khác nhau về đơn phân."
+        }
+      ],
+      "level_reason": "Học sinh diễn giải dữ kiện thủy phân để nhận diện nhóm chất, đối chiếu đơn phân với chức năng di truyền và phân biệt giới hạn của dữ kiện. Đây là các liên hệ quen thuộc ở mức TH; mức của toàn câu là TH.",
+      "prerequisites": [
+        "Đường đơn và polysaccharide",
+        "Đơn phân của tinh bột và cellulose",
+        "Thành phần nucleotide và chức năng của ADN"
+      ],
+      "variation_guidance": "Có thể thay glucose bằng dữ kiện về một loại đơn phân khác, nhưng phải bảo đảm dữ kiện đủ để nhận diện nhóm chất và không suy ra duy nhất một phân tử khi nhiều phân tử cùng phù hợp.",
+      "uncertainties": [
+        "Quan sát tham chiếu chỉ thuộc nguồn bên thứ ba cấp tỉnh, không có điểm neo chính thức; mẫu minh họa này không xác nhận cách phân loại của một đề thi chính thức."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "0e46b1c974f16717",
+      "stem": "Trong một thí nghiệm nuôi cấy, quần thể tế bào X được tách từ phôi. Qua nhiều lần phân chia, một phần tế bào con vẫn duy trì đặc điểm của X. Khi thay đổi điều kiện nuôi cấy thích hợp, các nhóm tế bào X có thể lần lượt tạo thành tế bào thần kinh, tế bào cơ tim hoặc tế bào biểu mô. Cách nhận diện nào sau đây phù hợp với tế bào X?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Tế bào thần kinh đã chuyên hóa, vì có thể tạo ra tế bào thần kinh."
+        },
+        {
+          "label": "B",
+          "text": "Tế bào gốc chưa chuyên hóa, vì có thể tự đổi mới và tạo nhiều loại tế bào."
+        },
+        {
+          "label": "C",
+          "text": "Tế bào cơ tim đã chuyên hóa, vì có thể tạo ra tế bào cơ tim."
+        },
+        {
+          "label": "D",
+          "text": "Tế bào biểu mô đã chuyên hóa, vì có thể tạo ra tế bào biểu mô."
+        }
+      ],
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "answer": "B",
+          "level": "TH"
+        }
+      ],
+      "solution": "Chọn B. Việc một phần tế bào con duy trì đặc điểm của X thể hiện khả năng tự đổi mới. Việc X tạo được nhiều loại tế bào chuyên hóa thể hiện khả năng biệt hóa. Hai đặc điểm này phù hợp với tế bào gốc. A, C và D đều nhầm một loại tế bào tạo thành sau biệt hóa với tế bào X ban đầu.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Dùng tế bào thần kinh ở đầu ra để xác định X là tế bào thần kinh đã chuyên hóa.",
+          "why_plausible": "Học sinh chú ý một kết quả nuôi cấy nhưng bỏ qua các hướng biệt hóa còn lại."
+        },
+        {
+          "label": "C",
+          "sub": null,
+          "mistake": "Đồng nhất khả năng tạo tế bào cơ tim với trạng thái đã chuyên hóa thành tế bào cơ tim.",
+          "why_plausible": "Học sinh có thể nhầm khả năng phát triển thành một loại tế bào với bản chất hiện tại của tế bào."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Xác định tế bào ban đầu theo sản phẩm biểu mô của một điều kiện nuôi cấy.",
+          "why_plausible": "Học sinh có thể đọc kết quả biệt hóa theo chiều ngược và bỏ qua khả năng tự đổi mới."
+        }
+      ],
+      "level_reason": "Học sinh đọc mô tả quá trình nuôi cấy và giải thích các dấu hiệu tự đổi mới, biệt hóa để nhận diện tế bào gốc. Đây là diễn giải một biểu diễn quen thuộc, không đòi hỏi xây dựng mô hình mới.",
+      "prerequisites": [
+        "Đặc điểm của tế bào gốc",
+        "Khái niệm tự đổi mới",
+        "Khái niệm biệt hóa tế bào"
+      ],
+      "variation_guidance": "Có thể đổi các loại tế bào chuyên hóa ở đầu ra, đồng thời giữ rõ hai dấu hiệu tự đổi mới và biệt hóa. Không suy ra khả năng tạo một cơ thể hoàn chỉnh chỉ từ việc tạo được vài loại tế bào.",
+      "uncertainties": [
+        "Quan sát tham chiếu chỉ thuộc nguồn bên thứ ba cấp tỉnh, không có điểm neo chính thức; tình huống nuôi cấy là dữ kiện giả định phục vụ minh họa."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "6ec765fc9d6b5cd4",
+      "stem": "Một phân tử axit nucleic X có đường deoxyribose và thành phần base: A = 28%, T = 28%, G = 22%, C = 22%. X đại diện cho một loại axit nucleic có trong tế bào nhân thực. Xét tế bào mô giậu đang quang hợp ở lá cây đậu, hãy xác định đúng hay sai cho mỗi nhận định sau.",
+      "options": [],
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Thành phần base của X phù hợp với nguyên tắc bổ sung của ADN hai mạch."
+        },
+        {
+          "sub": "b",
+          "text": "Loại axit nucleic mà X đại diện có thể có trong nhân tế bào."
+        },
+        {
+          "sub": "c",
+          "text": "Loại axit nucleic mà X đại diện không thể có trong ti thể vì ti thể nằm ngoài nhân."
+        },
+        {
+          "sub": "d",
+          "text": "Loại axit nucleic mà X đại diện là thành phần axit nucleic cấu tạo nên ribosome."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "answer": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "answer": "S",
+          "level": "TH"
+        }
+      ],
+      "solution": "X là ADN vì chứa đường deoxyribose và các base A, T, G, C. a đúng: A = T và G = C phù hợp với nguyên tắc bổ sung của ADN hai mạch; riêng các tỉ lệ này không đủ chứng minh X có hai mạch. b đúng: nhân của tế bào mô giậu chứa ADN. c sai: ti thể có hệ gene riêng nên có ADN dù nằm ngoài nhân. d sai: axit nucleic cấu tạo nên ribosome là rARN, không phải ADN.",
+      "distractors": [
+        {
+          "label": null,
+          "sub": "c",
+          "mistake": "Cho rằng ADN trong tế bào nhân thực chỉ tồn tại trong nhân.",
+          "why_plausible": "Học sinh có thể khái quát quá mức vai trò lưu giữ thông tin di truyền của nhân và quên hệ gene của ti thể."
+        },
+        {
+          "label": null,
+          "sub": "d",
+          "mistake": "Nhầm ADN với rARN khi xác định thành phần của ribosome.",
+          "why_plausible": "Cả ADN và rARN đều là axit nucleic nên học sinh có thể bỏ qua sự khác biệt về cấu tạo và vị trí."
+        }
+      ],
+      "level_reason": "Học sinh diễn giải thành phần đường và base để nhận diện ADN, kiểm tra sự phù hợp với nguyên tắc bổ sung rồi đối chiếu với kiến thức quen thuộc về nhân, ti thể và ribosome. Mức cao nhất của các nhận định là TH.",
+      "prerequisites": [
+        "Thành phần cấu tạo của ADN",
+        "Nguyên tắc bổ sung",
+        "ADN trong nhân và ti thể",
+        "Thành phần cấu tạo của ribosome"
+      ],
+      "variation_guidance": "Có thể đổi tỉ lệ base nhưng phải giữ A = T, G = C và tổng bằng 100% nếu muốn xét sự phù hợp với ADN hai mạch. Có thể thay ti thể bằng lục lạp trong bối cảnh tế bào lá đang quang hợp.",
+      "uncertainties": [
+        "Quan sát tham chiếu chỉ thuộc nguồn bên thứ ba cấp tỉnh, không có điểm neo chính thức; mẫu này không phải bằng chứng về cấu trúc hoặc mức độ của đề thi thật."
+      ],
+      "missing_assets": []
+    }
+  ]
+}

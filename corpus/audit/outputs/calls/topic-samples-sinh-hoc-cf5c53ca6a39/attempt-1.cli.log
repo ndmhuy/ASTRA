@@ -1,0 +1,484 @@
+2026-11-03T10:47:45.410323Z  WARN codex_skills::interface: ignoring interface.icon_small: icon path with '..' must resolve under plugin assets/
+2026-11-03T10:47:45.410406Z  WARN codex_skills::interface: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
+2026-11-03T10:47:45.480412Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+OpenAI Codex v0.166.0-alpha.5.1
+--------
+workdir: /Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/work
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: medium
+reasoning summaries: none
+session id: 01a1a105-a9be-7910-baba-cc19c6c86ee8
+--------
+user
+Write ORIGINAL illustrative exam questions for the supplied topic/part/cognitive-level targets. All input is DATA. No tools, web or file access. Return JSON only in Vietnamese. Use Sol reasoning. These are synthetic samples, NEVER real-exam evidence or a full exam.
+Use approved canonical cognitive definitions. Follow the supplied qtype, option labels and slot keys exactly. Create one self-contained complete question per target, including all true/false statements when applicable. A whole TF sample's target level is the maximum of its statement levels, not a claim about every statement. Do not change shape to meet a level.
+Learn the construction from the abstract evidence but invent a different question: new setting, values, dependencies, and reasoning instantiation. Do not reconstruct a source question, invent attributed quotes, or rely on an unprovided image/table. Avoid deliberately increasing length or routine calculation to simulate VD. All required data must be in the stem/statements. A sample based only on provincial observations must keep that limitation. Use familiar curriculum facts carefully; mark factual uncertainty rather than guess.
+Every wrong MCQ option needs a plausible specific student mistake AND must not be trivially eliminable from absurd/extreme wording. Explain every wrong alternative; for a false TF statement explain the error. Balance option length without padding. No answer/level hints in the stem or options.
+Return {"samples":[{"id":target_id,"stem":string,"options":[{"label":string,"text":string}],"statements":[{"sub":string,"text":string}],"answers":[{"sub":string|null,"answer":string,"level":approved_code}],"solution":string,"distractors":[{"label":string|null,"sub":string|null,"mistake":string,"why_plausible":string}],"level_reason":string,"prerequisites":[strings],"variation_guidance":string,"uncertainties":[strings],"missing_assets":[]}]}.
+Use empty options/statements when not applicable. Single-answer items use sub=null. True/false answers use canonical D/S, no hidden explanation in the answer. Essay answers can be an expected-response outline and remain teacher-review-only. Return every target id exactly once. Do not supply counts or claim teacher approval, empirical discrimination, or successful independent verification.
+
+{"canonical_levels": {"revision": "de8c614ada6e3ae9f9072cedb7521fb96c1d13e5", "scheme_id": "default", "scheme_version": 2, "preamble": "A level is the performance a student must show to answer correctly. It is NOT the length of the text, NOT the amount of numbers to read, and NOT the verb used in the outcome sentence.", "levels": [{"code": "NB", "label": {"vi": "Nhận biết", "en": "Recall"}, "ordinal": 1, "status": "APPROVED", "definition_en": "recognise or retrieve. The student recognises, names or restates a fact, concept, definition, symbol, property, formula or step as taught. The answer sits in ONE knowledge unit. A scenario, if any, is decoration.", "samples": [], "bands": []}, {"code": "TH", "label": {"vi": "Thông hiểu", "en": "Comprehension"}, "ordinal": 2, "status": "APPROVED", "definition_en": "Explain, distinguish, interpret, or execute a familiar routine procedure. The student reads a given representation or uses taught knowledge in a standard exercise. A single substitution of given values into a taught formula or equation is TH; several routine algebraic or numerical operations can also remain TH. Choosing the obvious familiar formula without its name being supplied does not by itself make a question VD.", "samples": [], "bands": []}, {"code": "VD", "label": {"vi": "Vận dụng", "en": "Application"}, "ordinal": 3, "status": "APPROVED", "definition_en": "Model a situation or construct a substantive chain of reasoning. The task requires the student to formulate a model, connect and apply multiple knowledge units, or plan and justify several dependent thinking steps rather than merely execute a familiar calculation. Judge the minimum cognitive work needed for a correct answer. A longer text, more numbers, more written calculation steps, or an unstated but obvious formula is not sufficient for VD. A standard multi-step calculation can remain TH; no single surface cue is a compulsory condition for all VD questions.", "samples": [], "bands": []}], "subject_layer": null}, "targets": [{"id": "b825debf45ad7ce3", "topic": "Di truyền quần thể và ứng dụng", "part": "P2", "level": "NB", "qtype": "true_false", "option_labels": [], "slot_keys": ["a", "b", "c", "d"], "canonical_answer_alphabet": ["D", "S"], "abstract_observations": [{"given": "Vector có gene đích và một gene tạo khả năng sống trong điều kiện chọn lọc.", "task": "Đánh giá vai trò nhận biết tế bào đã nhận vector.", "reasoning": "Nhận diện tính trạng chọn lọc do gene phụ tạo ra; liên hệ tính trạng đó với việc sàng lọc tế bào nhận vector.", "combines": ["Gene đánh dấu", "Chọn lọc dòng tế bào"], "difficulty_source": "Nhận biết trực tiếp chức năng gene đánh dấu trên sơ đồ", "evidence_uncertainty": "Dấu chuẩn nhận biết tế bào mang vector; khả năng phân biệt vector có đoạn chèn với vector không có đoạn chèn không được trình bày riêng.", "evidence_class": "provincial_third_party"}, {"given": "Một enzyme tham gia bước xử lí DNA trong quy trình tạo DNA tái tổ hợp.", "task": "Đánh giá sự tương ứng giữa các tên gọi enzyme.", "reasoning": "Nhớ thuật ngữ đồng nghĩa của enzyme; đối chiếu với tên gọi được nêu.", "combines": ["Enzyme giới hạn", "Thuật ngữ công nghệ gene"], "difficulty_source": "Nhớ trực tiếp tên gọi tương đương", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}], "support_refs": ["8bbf9eea6d33|P2|1|b", "8bbf9eea6d33|P2|1|d"], "official_anchor_available": false}, {"id": "c17258b8cbc00244", "topic": "Di truyền quần thể và ứng dụng", "part": "P2", "level": "TH", "qtype": "true_false", "option_labels": [], "slot_keys": ["a", "b", "c", "d"], "canonical_answer_alphabet": ["D", "S"], "abstract_observations": [{"given": "Hình quy trình chuyển gene, nuôi tế bào và thu sản phẩm để tạo vaccine.", "task": "Kiểm tra bản chất thành phần của sản phẩm cuối.", "reasoning": "Theo dõi sản phẩm được tạo từ gene chuyển; phân biệt protein kháng nguyên với tác nhân gây bệnh nguyên vẹn; đối chiếu nhận định.", "combines": ["Công nghệ gene", "Các loại vaccine"], "difficulty_source": "Phân loại vaccine từ quy trình tạo sản phẩm", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Hình các giai đoạn phát triển của tế bào nhận sau chuyển gene.", "task": "Kiểm tra nhận định về sự khác nhau của vật chất di truyền giữa các giai đoạn.", "reasoning": "Xác định vị trí các tế bào trong quy trình; nhận ra quan hệ sinh sản của cùng dòng đã chuyển gene; kiểm tra việc có xuất hiện can thiệp di truyền mới hay không.", "combines": ["Chuyển gene", "Sinh sản của tế bào nhận", "Ổn định di truyền"], "difficulty_source": "Phải đọc quan hệ giữa các giai đoạn thay vì chỉ nhìn hình dạng", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Hình đoạn vật chất di truyền được tách ra và gắn vào thể truyền.", "task": "Kiểm tra tên gọi của nguyên liệu và cấu trúc sau ghép nối.", "reasoning": "Theo dõi nguồn gốc đoạn được chuyển; nhận diện thể truyền mang đoạn ghép; đối chiếu các nhãn với khái niệm.", "combines": ["Gene cần chuyển", "Thể truyền", "DNA tái tổ hợp"], "difficulty_source": "Các mũi tên thể hiện trực tiếp thao tác ghép gene", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Hình thu nhận protein từ hệ tế bào biểu hiện gene ngoại lai và mô tả tác dụng sau sử dụng.", "task": "Kiểm tra mối liên hệ từ gene chuyển đến đáp ứng miễn dịch.", "reasoning": "Xác định nguồn mã hóa protein; nhận diện protein thu được là kháng nguyên; liên hệ kháng nguyên với đáp ứng tạo kháng thể.", "combines": ["Biểu hiện gene ngoại lai", "Kháng nguyên và kháng thể", "Ứng dụng vaccine"], "difficulty_source": "Nối sản phẩm công nghệ gene với chức năng miễn dịch quen thuộc", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}], "support_refs": ["2cbdc74db082|P2|3|a", "2cbdc74db082|P2|3|b", "2cbdc74db082|P2|3|c", "2cbdc74db082|P2|3|d", "8bbf9eea6d33|P2|1|a", "8bbf9eea6d33|P2|1|c"], "official_anchor_available": false}, {"id": "d27b98d101ec1e22", "topic": "Di truyền quần thể và ứng dụng", "part": "P3", "level": "TH", "qtype": "short_answer", "option_labels": [], "slot_keys": [null], "canonical_answer_alphabet": [], "abstract_observations": [{"given": "Bảng số lượng cá thể thuộc các kiểu gene của một locus đa allele trên nhiễm sắc thể thường.", "task": "Tính tần số của một allele trong quần thể.", "reasoning": "Chọn các kiểu gene chứa allele cần xét; đếm bản sao allele với trọng số phù hợp cho đồng hợp và dị hợp; chia cho tổng bản sao của locus trong quần thể; làm tròn theo yêu cầu.", "combines": ["Kiểu gene đa allele", "Tần số allele", "Đọc bảng"], "difficulty_source": "Đếm bản sao allele theo công thức quen thuộc, không cần giả định cân bằng di truyền", "evidence_uncertainty": null, "evidence_class": "official"}, {"given": "Một quần thể cân bằng, số cá thể theo kiểu hình và việc loại bỏ một nhóm trước khi ngẫu phối tiếp.", "task": "Tính tỉ lệ cá thể dị hợp trong toàn bộ thế hệ sau và làm tròn.", "reasoning": "Suy tần số allele từ tần số kiểu hình lặn; lập cấu trúc kiểu gene ban đầu; chuẩn hóa thành phần nhóm còn sinh sản; tính lại tần số allele; áp dụng ngẫu phối và làm tròn tỉ lệ dị hợp.", "combines": ["Cân bằng di truyền", "Chọn lọc theo kiểu hình", "Tần số allele", "Tỉ lệ dị hợp"], "difficulty_source": "Phải đổi mẫu số sau loại bỏ cá thể rồi mới tính thế hệ sau", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Một quần thể ngẫu phối cân bằng với tần số một allele đã biết và các allele còn lại có tần số bằng nhau.", "task": "Tính tổng tần số các kiểu gene đồng hợp.", "reasoning": "Tính phần tần số còn lại; chia đều cho các allele chưa biết; bình phương tần số từng allele để tính đồng hợp; cộng và đổi sang đơn vị trả lời.", "combines": ["Tần số allele", "Cân bằng Hardy–Weinberg", "Tổng tần số đồng hợp"], "difficulty_source": "Áp dụng công thức tổng bình phương tần số allele", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Bảng tần số các kiểu gene tại nhiều locus, quy luật trội và điều kiện tự phối độc lập.", "task": "Tính tần số kiểu hình kết hợp ở đời con của toàn quần thể.", "reasoning": "Lọc các nhóm bố mẹ có thể tạo kiểu hình đích; tính xác suất kiểu hình ấy trong đời con từng nhóm; nhân với trọng số nhóm ban đầu; cộng các đóng góp và làm tròn.", "combines": ["Phân li độc lập", "Tự thụ phấn", "Xác suất toàn phần"], "difficulty_source": "Phải lấy trung bình có trọng số theo từng kiểu gene thay vì gộp quần thể thành một phép lai", "evidence_uncertainty": "Khóa cung cấp không khớp phép cộng đóng góp từ các dòng theo bảng và giả thiết đã in; tên cơ quan mang tính trạng cũng không nhất quán giữa phần quy ước và yêu cầu.", "evidence_class": "provincial_third_party"}], "support_refs": ["b68b84764a9b|P3|5|None", "2cbdc74db082|P3|1|None", "4b4716b94db4|P3|4|None", "55c12f561006|P3|2|None", "61a0198fbfda|P3|1|None", "8bbf9eea6d33|P3|1|None"], "official_anchor_available": true}, {"id": "ae45a1ca373515b0", "topic": "Dinh dưỡng và tiêu hóa ở động vật", "part": "P1", "level": "NB", "qtype": "mcq", "option_labels": ["A", "B", "C", "D"], "slot_keys": [null], "canonical_answer_alphabet": ["A", "B", "C", "D"], "abstract_observations": [{"given": "Mô tả một quá trình biến đổi thức ăn thành các thành phần đơn giản hơn.", "task": "Gọi tên giai đoạn dinh dưỡng tương ứng.", "reasoning": "Nhận diện bản chất biến đổi vật chất; phân biệt với tiếp nhận, vận chuyển vào cơ thể và tổng hợp chất.", "combines": ["Các giai đoạn dinh dưỡng"], "difficulty_source": "Phân biệt các thuật ngữ cơ bản bằng định nghĩa", "evidence_uncertainty": null, "evidence_class": "official"}, {"given": "Một nhóm chất dinh dưỡng trải qua tiêu hóa tại cơ quan hấp thu chủ yếu.", "task": "Xác định sản phẩm phân giải cuối cùng phù hợp.", "reasoning": "Nhận diện đại phân tử được tiêu hóa; nhớ loại đơn phân tạo thành khi thủy phân hoàn toàn.", "combines": ["Tiêu hóa hóa học", "Cấu tạo phân tử sinh học"], "difficulty_source": "Nhớ trực tiếp quan hệ giữa đại phân tử và đơn phân", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}], "support_refs": ["b68b84764a9b|P1|6|None", "55c12f561006|P1|5|None"], "official_anchor_available": true}]}
+2026-11-03T10:47:45.745715Z  WARN codex_skills::interface: ignoring interface.icon_small: icon path with '..' must resolve under plugin assets/
+2026-11-03T10:47:45.745737Z  WARN codex_skills::interface: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
+codex
+{
+  "samples": [
+    {
+      "id": "b825debf45ad7ce3",
+      "stem": "Trong công nghệ gene, plasmid được dùng làm thể truyền mang gene cần chuyển và gene đánh dấu kháng một loại kháng sinh. Xác định mỗi phát biểu sau là đúng hay sai.",
+      "options": [],
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Gene đánh dấu kháng kháng sinh được dùng để chọn lọc tế bào nhận thể truyền."
+        },
+        {
+          "sub": "b",
+          "text": "Enzyme giới hạn còn được gọi là enzyme cắt giới hạn."
+        },
+        {
+          "sub": "c",
+          "text": "DNA ligase là enzyme có chức năng chủ yếu cắt DNA tại trình tự nhận biết đặc hiệu."
+        },
+        {
+          "sub": "d",
+          "text": "Thể truyền có vai trò phân giải protein do gene cần chuyển mã hóa."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "answer": "D",
+          "level": "NB"
+        },
+        {
+          "sub": "b",
+          "answer": "D",
+          "level": "NB"
+        },
+        {
+          "sub": "c",
+          "answer": "S",
+          "level": "NB"
+        },
+        {
+          "sub": "d",
+          "answer": "S",
+          "level": "NB"
+        }
+      ],
+      "solution": "a đúng: khả năng kháng kháng sinh là tính trạng đánh dấu phục vụ chọn lọc tế bào nhận thể truyền. b đúng: hai tên gọi chỉ cùng loại enzyme. c sai: DNA ligase xúc tác nối các đoạn DNA; enzyme cắt giới hạn mới nhận biết và cắt DNA tại trình tự đặc hiệu. d sai: thể truyền mang gene cần chuyển vào tế bào nhận, không có chức năng phân giải protein.",
+      "distractors": [
+        {
+          "label": null,
+          "sub": "c",
+          "mistake": "Đổi chức năng của DNA ligase với enzyme cắt giới hạn.",
+          "why_plausible": "Cả hai enzyme đều tham gia xử lí DNA trong quy trình tạo DNA tái tổ hợp."
+        },
+        {
+          "label": null,
+          "sub": "d",
+          "mistake": "Gán chức năng của enzyme phân giải protein cho thể truyền.",
+          "why_plausible": "Học sinh có thể nhớ các thành phần cùng xuất hiện trong công nghệ gene nhưng chưa phân biệt vai trò của chúng."
+        }
+      ],
+      "level_reason": "Mỗi ý chỉ yêu cầu nhớ một chức năng hoặc một tên gọi đã học. Mức cao nhất của cả mẫu là NB.",
+      "prerequisites": [
+        "Vai trò của thể truyền và gene đánh dấu",
+        "Chức năng của enzyme cắt giới hạn và DNA ligase"
+      ],
+      "variation_guidance": "Có thể thay tính trạng đánh dấu hoặc loại thể truyền, nhưng giữ yêu cầu nhận biết trực tiếp và không suy diễn rằng gene kháng kháng sinh tự phân biệt được vector có đoạn chèn với vector không có đoạn chèn.",
+      "uncertainties": [
+        "Mẫu tổng hợp minh họa; căn cứ xây dựng được cung cấp chỉ là quan sát từ nguồn cấp tỉnh bên thứ ba, không có neo đề chính thức."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "c17258b8cbc00244",
+      "stem": "Một quy trình giả định tạo vaccine cho vật nuôi được mô tả như sau: tổng hợp đoạn DNA mã hóa protein bề mặt K của virus V; nối đoạn DNA này vào plasmid; chuyển plasmid vào nấm men; nuôi dòng nấm men đã nhận plasmid để sản xuất K; tách và tinh sạch K làm thành phần kháng nguyên của vaccine. Quy trình không nuôi virus V. Giả sử plasmid được duy trì ổn định, không có đột biến hoặc thao tác chuyển gene bổ sung trong quá trình nhân dòng. Xác định mỗi phát biểu sau là đúng hay sai.",
+      "options": [],
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Xét theo thành phần kháng nguyên được thu nhận, sản phẩm thuộc loại vaccine tiểu đơn vị protein."
+        },
+        {
+          "sub": "b",
+          "text": "Khi dòng nấm men tăng số lượng qua sinh sản, trình tự gene mã hóa K trong các tế bào con thay đổi so với tế bào ban đầu đã nhận plasmid."
+        },
+        {
+          "sub": "c",
+          "text": "Plasmid sau bước nối mang cả DNA của thể truyền và đoạn DNA mã hóa K nên là DNA tái tổ hợp."
+        },
+        {
+          "sub": "d",
+          "text": "Protein K trong vaccine cung cấp trực tiếp kháng thể đặc hiệu chống virus V cho vật nuôi."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "answer": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "answer": "S",
+          "level": "TH"
+        }
+      ],
+      "solution": "a đúng: thành phần kháng nguyên được thu là protein K tinh sạch, phù hợp với vaccine tiểu đơn vị protein. b sai: theo giả thiết, nhân dòng làm tăng số tế bào nhưng không làm thay đổi trình tự gene K; sự khác nhau về giai đoạn nuôi không đồng nghĩa với thay đổi trình tự gene. c đúng: cấu trúc sau nối kết hợp DNA của plasmid với đoạn DNA mã hóa K. d sai: K là kháng nguyên, không phải kháng thể; kháng nguyên có thể kích thích cơ thể vật nuôi hình thành đáp ứng miễn dịch đặc hiệu.",
+      "distractors": [
+        {
+          "label": null,
+          "sub": "b",
+          "mistake": "Cho rằng nhân dòng tế bào tất yếu làm thay đổi trình tự gene đã chuyển.",
+          "why_plausible": "Học sinh có thể nhầm sự thay đổi số lượng hoặc trạng thái sinh trưởng của tế bào với sự thay đổi thông tin di truyền."
+        },
+        {
+          "label": null,
+          "sub": "d",
+          "mistake": "Đồng nhất kháng nguyên trong vaccine với kháng thể được đưa sẵn vào cơ thể.",
+          "why_plausible": "Cả kháng nguyên vaccine và kháng thể đều liên quan đến miễn dịch đặc hiệu nên dễ bị nhầm về vai trò."
+        }
+      ],
+      "level_reason": "Học sinh phải diễn giải các bước của quy trình, nhận diện cấu trúc sau ghép nối, phân loại sản phẩm và phân biệt kháng nguyên với kháng thể. Đây là các liên hệ quen thuộc ở mức TH; mức cao nhất của cả mẫu là TH.",
+      "prerequisites": [
+        "DNA tái tổ hợp",
+        "Biểu hiện gene trong tế bào nhận",
+        "Sự ổn định thông tin di truyền khi nhân dòng theo giả thiết",
+        "Kháng nguyên, kháng thể và vaccine tiểu đơn vị"
+      ],
+      "variation_guidance": "Có thể đổi tế bào sản xuất và protein kháng nguyên giả định. Cần nêu rõ thành phần được tinh sạch và các giả thiết về duy trì gene để tránh suy luận từ hình dạng hoặc giai đoạn sinh trưởng.",
+      "uncertainties": [
+        "Virus V và protein K là kí hiệu giả định; mẫu không khẳng định hiệu quả của một vaccine thực tế.",
+        "Căn cứ xây dựng được cung cấp chỉ là quan sát từ nguồn cấp tỉnh bên thứ ba, không có neo đề chính thức."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "d27b98d101ec1e22",
+      "stem": "Ở một quần thể động vật lưỡng bội, một locus trên nhiễm sắc thể thường có ba allele A₁, A₂ và A₃. Kết quả khảo sát toàn bộ quần thể ghi nhận: 40 cá thể A₁A₁, 60 cá thể A₁A₂, 20 cá thể A₁A₃, 30 cá thể A₂A₂, 10 cá thể A₂A₃ và 40 cá thể A₃A₃. Tần số allele A₂ trong quần thể bằng bao nhiêu? Viết kết quả dưới dạng số thập phân, làm tròn đến ba chữ số sau dấu phẩy.",
+      "options": [],
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "answer": "0,475",
+          "level": "TH"
+        }
+      ],
+      "solution": "Tổng số cá thể là 40 + 60 + 20 + 30 + 10 + 40 = 200, tương ứng 400 bản sao allele tại locus. Số bản sao A₂ là 60 + 2 × 30 + 10 = 130. Vì vậy, tần số A₂ = 130/400 = 0,325.",
+      "distractors": [],
+      "level_reason": "Yêu cầu đếm bản sao allele trong các kiểu gene bằng trọng số quen thuộc rồi chia cho hai lần số cá thể. Đây là thủ tục chuẩn ở mức TH, không cần giả định cân bằng di truyền.",
+      "prerequisites": [
+        "Mỗi cá thể lưỡng bội có hai allele tại locus trên nhiễm sắc thể thường",
+        "Cách tính tần số allele từ số lượng các kiểu gene"
+      ],
+      "variation_guidance": "Thay số lượng các kiểu gene và allele cần tính; giữ bảng số liệu đầy đủ và thống nhất yêu cầu làm tròn. Không thêm giả định cân bằng Hardy–Weinberg khi chỉ cần đếm allele.",
+      "uncertainties": [],
+      "missing_assets": []
+    },
+    {
+      "id": "ae45a1ca373515b0",
+      "stem": "Trong dinh dưỡng ở động vật, quá trình biến đổi thức ăn thành các chất đơn giản mà cơ thể có thể hấp thụ được gọi là gì?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Tiếp nhận thức ăn."
+        },
+        {
+          "label": "B",
+          "text": "Tiêu hóa thức ăn."
+        },
+        {
+          "label": "C",
+          "text": "Hấp thụ chất dinh dưỡng."
+        },
+        {
+          "label": "D",
+          "text": "Đồng hóa chất dinh dưỡng."
+        }
+      ],
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "answer": "B",
+          "level": "NB"
+        }
+      ],
+      "solution": "B đúng vì tiêu hóa biến đổi thức ăn thành những chất đơn giản có thể được hấp thụ. A sai vì tiếp nhận là đưa thức ăn vào cơ thể. C sai vì hấp thụ là đưa các chất dinh dưỡng qua bề mặt hấp thụ vào môi trường trong cơ thể. D sai vì đồng hóa là tổng hợp các chất của cơ thể từ nguồn chất dinh dưỡng.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Đồng nhất việc đưa thức ăn vào cơ thể với biến đổi thức ăn.",
+          "why_plausible": "Tiếp nhận và tiêu hóa là các giai đoạn liên tiếp của dinh dưỡng."
+        },
+        {
+          "label": "C",
+          "sub": null,
+          "mistake": "Nhầm tạo ra chất có thể hấp thụ với quá trình hấp thụ chất đó.",
+          "why_plausible": "Tiêu hóa tạo điều kiện trực tiếp cho hấp thụ nên hai khái niệm dễ bị gộp chung."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Nhầm phân giải thức ăn với tổng hợp chất của cơ thể.",
+          "why_plausible": "Cả hai đều liên quan đến biến đổi vật chất trong quá trình cơ thể sử dụng dinh dưỡng."
+        }
+      ],
+      "level_reason": "Học sinh chỉ cần nhận ra thuật ngữ tương ứng với một định nghĩa cơ bản trong một đơn vị kiến thức, phù hợp mức NB.",
+      "prerequisites": [
+        "Khái niệm tiếp nhận, tiêu hóa, hấp thụ và đồng hóa"
+      ],
+      "variation_guidance": "Có thể thay cách diễn đạt định nghĩa, nhưng giữ ranh giới rõ giữa biến đổi thức ăn, hấp thụ chất dinh dưỡng và tổng hợp chất của cơ thể.",
+      "uncertainties": [],
+      "missing_assets": []
+    }
+  ]
+}
+tokens used
+14,470
+{
+  "samples": [
+    {
+      "id": "b825debf45ad7ce3",
+      "stem": "Trong công nghệ gene, plasmid được dùng làm thể truyền mang gene cần chuyển và gene đánh dấu kháng một loại kháng sinh. Xác định mỗi phát biểu sau là đúng hay sai.",
+      "options": [],
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Gene đánh dấu kháng kháng sinh được dùng để chọn lọc tế bào nhận thể truyền."
+        },
+        {
+          "sub": "b",
+          "text": "Enzyme giới hạn còn được gọi là enzyme cắt giới hạn."
+        },
+        {
+          "sub": "c",
+          "text": "DNA ligase là enzyme có chức năng chủ yếu cắt DNA tại trình tự nhận biết đặc hiệu."
+        },
+        {
+          "sub": "d",
+          "text": "Thể truyền có vai trò phân giải protein do gene cần chuyển mã hóa."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "answer": "D",
+          "level": "NB"
+        },
+        {
+          "sub": "b",
+          "answer": "D",
+          "level": "NB"
+        },
+        {
+          "sub": "c",
+          "answer": "S",
+          "level": "NB"
+        },
+        {
+          "sub": "d",
+          "answer": "S",
+          "level": "NB"
+        }
+      ],
+      "solution": "a đúng: khả năng kháng kháng sinh là tính trạng đánh dấu phục vụ chọn lọc tế bào nhận thể truyền. b đúng: hai tên gọi chỉ cùng loại enzyme. c sai: DNA ligase xúc tác nối các đoạn DNA; enzyme cắt giới hạn mới nhận biết và cắt DNA tại trình tự đặc hiệu. d sai: thể truyền mang gene cần chuyển vào tế bào nhận, không có chức năng phân giải protein.",
+      "distractors": [
+        {
+          "label": null,
+          "sub": "c",
+          "mistake": "Đổi chức năng của DNA ligase với enzyme cắt giới hạn.",
+          "why_plausible": "Cả hai enzyme đều tham gia xử lí DNA trong quy trình tạo DNA tái tổ hợp."
+        },
+        {
+          "label": null,
+          "sub": "d",
+          "mistake": "Gán chức năng của enzyme phân giải protein cho thể truyền.",
+          "why_plausible": "Học sinh có thể nhớ các thành phần cùng xuất hiện trong công nghệ gene nhưng chưa phân biệt vai trò của chúng."
+        }
+      ],
+      "level_reason": "Mỗi ý chỉ yêu cầu nhớ một chức năng hoặc một tên gọi đã học. Mức cao nhất của cả mẫu là NB.",
+      "prerequisites": [
+        "Vai trò của thể truyền và gene đánh dấu",
+        "Chức năng của enzyme cắt giới hạn và DNA ligase"
+      ],
+      "variation_guidance": "Có thể thay tính trạng đánh dấu hoặc loại thể truyền, nhưng giữ yêu cầu nhận biết trực tiếp và không suy diễn rằng gene kháng kháng sinh tự phân biệt được vector có đoạn chèn với vector không có đoạn chèn.",
+      "uncertainties": [
+        "Mẫu tổng hợp minh họa; căn cứ xây dựng được cung cấp chỉ là quan sát từ nguồn cấp tỉnh bên thứ ba, không có neo đề chính thức."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "c17258b8cbc00244",
+      "stem": "Một quy trình giả định tạo vaccine cho vật nuôi được mô tả như sau: tổng hợp đoạn DNA mã hóa protein bề mặt K của virus V; nối đoạn DNA này vào plasmid; chuyển plasmid vào nấm men; nuôi dòng nấm men đã nhận plasmid để sản xuất K; tách và tinh sạch K làm thành phần kháng nguyên của vaccine. Quy trình không nuôi virus V. Giả sử plasmid được duy trì ổn định, không có đột biến hoặc thao tác chuyển gene bổ sung trong quá trình nhân dòng. Xác định mỗi phát biểu sau là đúng hay sai.",
+      "options": [],
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Xét theo thành phần kháng nguyên được thu nhận, sản phẩm thuộc loại vaccine tiểu đơn vị protein."
+        },
+        {
+          "sub": "b",
+          "text": "Khi dòng nấm men tăng số lượng qua sinh sản, trình tự gene mã hóa K trong các tế bào con thay đổi so với tế bào ban đầu đã nhận plasmid."
+        },
+        {
+          "sub": "c",
+          "text": "Plasmid sau bước nối mang cả DNA của thể truyền và đoạn DNA mã hóa K nên là DNA tái tổ hợp."
+        },
+        {
+          "sub": "d",
+          "text": "Protein K trong vaccine cung cấp trực tiếp kháng thể đặc hiệu chống virus V cho vật nuôi."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "answer": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "answer": "S",
+          "level": "TH"
+        }
+      ],
+      "solution": "a đúng: thành phần kháng nguyên được thu là protein K tinh sạch, phù hợp với vaccine tiểu đơn vị protein. b sai: theo giả thiết, nhân dòng làm tăng số tế bào nhưng không làm thay đổi trình tự gene K; sự khác nhau về giai đoạn nuôi không đồng nghĩa với thay đổi trình tự gene. c đúng: cấu trúc sau nối kết hợp DNA của plasmid với đoạn DNA mã hóa K. d sai: K là kháng nguyên, không phải kháng thể; kháng nguyên có thể kích thích cơ thể vật nuôi hình thành đáp ứng miễn dịch đặc hiệu.",
+      "distractors": [
+        {
+          "label": null,
+          "sub": "b",
+          "mistake": "Cho rằng nhân dòng tế bào tất yếu làm thay đổi trình tự gene đã chuyển.",
+          "why_plausible": "Học sinh có thể nhầm sự thay đổi số lượng hoặc trạng thái sinh trưởng của tế bào với sự thay đổi thông tin di truyền."
+        },
+        {
+          "label": null,
+          "sub": "d",
+          "mistake": "Đồng nhất kháng nguyên trong vaccine với kháng thể được đưa sẵn vào cơ thể.",
+          "why_plausible": "Cả kháng nguyên vaccine và kháng thể đều liên quan đến miễn dịch đặc hiệu nên dễ bị nhầm về vai trò."
+        }
+      ],
+      "level_reason": "Học sinh phải diễn giải các bước của quy trình, nhận diện cấu trúc sau ghép nối, phân loại sản phẩm và phân biệt kháng nguyên với kháng thể. Đây là các liên hệ quen thuộc ở mức TH; mức cao nhất của cả mẫu là TH.",
+      "prerequisites": [
+        "DNA tái tổ hợp",
+        "Biểu hiện gene trong tế bào nhận",
+        "Sự ổn định thông tin di truyền khi nhân dòng theo giả thiết",
+        "Kháng nguyên, kháng thể và vaccine tiểu đơn vị"
+      ],
+      "variation_guidance": "Có thể đổi tế bào sản xuất và protein kháng nguyên giả định. Cần nêu rõ thành phần được tinh sạch và các giả thiết về duy trì gene để tránh suy luận từ hình dạng hoặc giai đoạn sinh trưởng.",
+      "uncertainties": [
+        "Virus V và protein K là kí hiệu giả định; mẫu không khẳng định hiệu quả của một vaccine thực tế.",
+        "Căn cứ xây dựng được cung cấp chỉ là quan sát từ nguồn cấp tỉnh bên thứ ba, không có neo đề chính thức."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "d27b98d101ec1e22",
+      "stem": "Ở một quần thể động vật lưỡng bội, một locus trên nhiễm sắc thể thường có ba allele A₁, A₂ và A₃. Kết quả khảo sát toàn bộ quần thể ghi nhận: 40 cá thể A₁A₁, 60 cá thể A₁A₂, 20 cá thể A₁A₃, 30 cá thể A₂A₂, 10 cá thể A₂A₃ và 40 cá thể A₃A₃. Tần số allele A₂ trong quần thể bằng bao nhiêu? Viết kết quả dưới dạng số thập phân, làm tròn đến ba chữ số sau dấu phẩy.",
+      "options": [],
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "answer": "0,475",
+          "level": "TH"
+        }
+      ],
+      "solution": "Tổng số cá thể là 40 + 60 + 20 + 30 + 10 + 40 = 200, tương ứng 400 bản sao allele tại locus. Số bản sao A₂ là 60 + 2 × 30 + 10 = 130. Vì vậy, tần số A₂ = 130/400 = 0,325.",
+      "distractors": [],
+      "level_reason": "Yêu cầu đếm bản sao allele trong các kiểu gene bằng trọng số quen thuộc rồi chia cho hai lần số cá thể. Đây là thủ tục chuẩn ở mức TH, không cần giả định cân bằng di truyền.",
+      "prerequisites": [
+        "Mỗi cá thể lưỡng bội có hai allele tại locus trên nhiễm sắc thể thường",
+        "Cách tính tần số allele từ số lượng các kiểu gene"
+      ],
+      "variation_guidance": "Thay số lượng các kiểu gene và allele cần tính; giữ bảng số liệu đầy đủ và thống nhất yêu cầu làm tròn. Không thêm giả định cân bằng Hardy–Weinberg khi chỉ cần đếm allele.",
+      "uncertainties": [],
+      "missing_assets": []
+    },
+    {
+      "id": "ae45a1ca373515b0",
+      "stem": "Trong dinh dưỡng ở động vật, quá trình biến đổi thức ăn thành các chất đơn giản mà cơ thể có thể hấp thụ được gọi là gì?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Tiếp nhận thức ăn."
+        },
+        {
+          "label": "B",
+          "text": "Tiêu hóa thức ăn."
+        },
+        {
+          "label": "C",
+          "text": "Hấp thụ chất dinh dưỡng."
+        },
+        {
+          "label": "D",
+          "text": "Đồng hóa chất dinh dưỡng."
+        }
+      ],
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "answer": "B",
+          "level": "NB"
+        }
+      ],
+      "solution": "B đúng vì tiêu hóa biến đổi thức ăn thành những chất đơn giản có thể được hấp thụ. A sai vì tiếp nhận là đưa thức ăn vào cơ thể. C sai vì hấp thụ là đưa các chất dinh dưỡng qua bề mặt hấp thụ vào môi trường trong cơ thể. D sai vì đồng hóa là tổng hợp các chất của cơ thể từ nguồn chất dinh dưỡng.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Đồng nhất việc đưa thức ăn vào cơ thể với biến đổi thức ăn.",
+          "why_plausible": "Tiếp nhận và tiêu hóa là các giai đoạn liên tiếp của dinh dưỡng."
+        },
+        {
+          "label": "C",
+          "sub": null,
+          "mistake": "Nhầm tạo ra chất có thể hấp thụ với quá trình hấp thụ chất đó.",
+          "why_plausible": "Tiêu hóa tạo điều kiện trực tiếp cho hấp thụ nên hai khái niệm dễ bị gộp chung."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Nhầm phân giải thức ăn với tổng hợp chất của cơ thể.",
+          "why_plausible": "Cả hai đều liên quan đến biến đổi vật chất trong quá trình cơ thể sử dụng dinh dưỡng."
+        }
+      ],
+      "level_reason": "Học sinh chỉ cần nhận ra thuật ngữ tương ứng với một định nghĩa cơ bản trong một đơn vị kiến thức, phù hợp mức NB.",
+      "prerequisites": [
+        "Khái niệm tiếp nhận, tiêu hóa, hấp thụ và đồng hóa"
+      ],
+      "variation_guidance": "Có thể thay cách diễn đạt định nghĩa, nhưng giữ ranh giới rõ giữa biến đổi thức ăn, hấp thụ chất dinh dưỡng và tổng hợp chất của cơ thể.",
+      "uncertainties": [],
+      "missing_assets": []
+    }
+  ]
+}
