@@ -1,0 +1,190 @@
+Đề: Hưng Yên, Lần 2, mã đề 1001
+
+SỞ GIÁO DỤC VÀ ĐÀO TẠO                          KỲ THI THỬ TỐT NGHIỆP THPT LẦN 2
+          HƯNG YÊN                                          NĂM HỌC 2025-2026
+      ĐỀ CHÍNH THỨC                           MÔN: GIÁO DỤC KINH TẾ VÀ PHÁP LUẬT
+         (Đề có 04 trang)                   Thời gian làm bài 50 phút, không kể thời gian phát đề
+
+Họ và tên: ………………………………………….. Số báo danh: ……………… MÃ ĐỀ: 1001
+
+PHẦN I. Câu trắc nghiệm nhiều phương án lựa chọn. Thí sinh trả lời từ câu 1 đến câu 24. Mỗi câu hỏi thí sinh chỉ chọn một phương án.
+
+Câu 1. Trong nền kinh tế hàng hóa, người tiến hành các hoạt động mua hàng hóa, dịch vụ để thỏa mãn các nhu cầu tiêu dùng cho sản xuất được gọi là.
+A. chủ thể sản xuất.
+B. chủ thể nhà nước.
+C. chủ thể trung gian.
+D. chủ thể tiêu dùng.
+
+Câu 2. Phát biểu nào dưới đây là sai về quyền tự do báo chí của công dân?
+A. Mọi công dân đều có quyền được đăng tải tác phẩm báo chí.
+B. Mọi công dân đều được tiếp cận với các thông tin báo chí.
+C. Mọi công dân đều có quyền được tiếp cận tác phẩm báo chí.
+D. Mọi công dân đều được sáng tác các tác phẩm báo chí.
+
+Câu 3. Cơ quan nào sau đây là cơ quan chấp hành của Quốc hội?
+A. Chủ tịch nước.
+B. Tòa án nhân dân.
+C. Chính phủ.
+D. Viện kiểm sát nhân dân.
+
+Câu 4. Việc thực hiện liên tục một, một số hoặc tất cả công đoạn của quá trình từ đầu tư, sản xuất, tiêu thụ sản phẩm hoặc cung ứng dịch vụ trên thị trường nhằm mục đích thu được lợi nhuận là hoạt động của.
+A. tiêu thụ.
+B. kinh doanh.
+C. sản xuất.
+D. tiêu dùng.
+
+Câu 5. Vùng biển tiếp liền và nằm ngoài lãnh hải Việt Nam, hợp với lãnh hải thành một vùng biển có chiều rộng 200 hải lý tính từ đường cơ sở gọi là.
+A. vùng đặc biệt quốc gia.
+B. vùng lãnh hải chiến lược.
+C. vùng đặc quyền kinh tế.
+D. vùng tiếp giáp lãnh hải.
+
+Câu 6. Anh A là công nhân của công ty QJ vừa bị mất việc làm do công ty ngừng hoạt động. Sau khi làm thủ tục đầy đủ, anh A được nhận một khoản tiền trợ cấp hằng tháng và được hỗ trợ tư vấn tìm kiếm việc làm mới. Khoản tiền trợ cấp và sự hỗ trợ tư vấn thuộc chế độ bảo hiểm nào sau đây?
+A. Bảo hiểm thất nghiệp.
+B. Bảo hiểm xã hội.
+C. Bảo hiểm y tế.
+D. Bảo hiểm thương mại.
+
+Câu 7. Quyền nào dưới đây là quyền tham gia quản lý nhà nước và xã hội?
+A. Quyền được bảo đảm an sinh xã hội.
+B. Quyền sở hữu thu nhập hợp pháp.
+C. Quyền giám sát hoạt động của cơ quan nhà nước.
+D. Quyền có nơi ở hợp pháp.
+
+Câu 8. Theo quy định của Hiến pháp năm 2013, quyền bình đẳng giữa các dân tộc trong lĩnh vực chính trị không bao gồm nội dung nào sau đây?
+A. Thực hiện quyền bầu cử, ứng cử.
+B. Tham gia quản lí nhà nước và xã hội.
+C. Tham gia vào bộ máy nhà nước.
+D. Sử dụng tiếng nói, chữ viết riêng.
+
+Câu 9. Gia đình bạn M đề ra mục tiêu tiết kiệm được 600 triệu đồng sau 03 năm. Sau khi thảo luận, gia đình bạn M quyết định phân chia các khoản chi mỗi tháng theo tỉ lệ 50% chi thiết yếu, 20% chi không thiết yếu và 30% để tiết kiệm. Gia đình bạn M đã thực hiện những bước nào sau đây trong việc lập kế hoạch quản lí thu, chi?
+A. Xác định mục tiêu tài chính và thống nhất tỉ lệ phân chia các khoản chi.
+B. Thống nhất tỉ lệ phân chia các khoản chi và xác định các nguồn thu nhập.
+C. Xác định mục tiêu tài chính và xác định các nguồn thu nhập trong gia đình.
+D. Thống nhất tỉ lệ phân chia các khoản chi và ghi chép, điều chỉnh kế hoạch.
+
+Câu 10. Đối với mỗi quốc gia, hội nhập kinh tế quốc tế có vai trò nào sau đây?
+A. Thay đổi công nghệ, hạn chế việc làm.
+B. Tạo việc làm, nâng cao thu nhập cho người dân.
+C. Gia tăng cạnh tranh, chú trọng nhập khẩu.
+D. Xuất khẩu lao động, suy giảm nhân lực.
+
+Câu 11. Do có mâu thuẫn từ việc thanh toán tiền thuê nhà giữa gia đình ông H và K, ông H đã khoá trái cửa phòng thuê và giam K trong suốt 4 giờ. K gọi điện báo công an đến thì ông H mới mở khoá phòng. Khi công an yêu cầu ông H lên phường làm việc thì ông nói không đi, vì cho rằng mình không làm gì sai phạm. Hành vi của ông H là xâm phạm đến quyền tự do cơ bản nào sau đây của công dân?
+A. quyền bất khả xâm phạm về chỗ ở.
+B. quyền được pháp luật bảo hộ về thân thể.
+C. quyền bất khả xâm phạm về thân thể.
+D. quyền được pháp luật bảo hộ về tính mạng, sức khỏe.
+
+Câu 12. Nước thành viên X đánh thuế nhập khẩu rất cao đối với rượu vang nhập khẩu từ các nước thành viên khác của WTO. Điều này khiến cho rượu vang nhập khẩu vào nước X không thể cạnh tranh được về giá cả so với rượu vang sản xuất trong nước. Trong trường hợp này, nước X đã vi phạm nguyên tắc cơ bản nào sau đây của WTO?
+A. Nguyên tắc minh bạch.
+B. Nguyên tắc không phân biệt đối xử.
+C. Nguyên tắc thương mại công bằng.
+D. Nguyên tắc mở cửa thị trường.
+
+Câu 13. Điểm khác biệt cốt lõi nhất giữa chính sách bảo hiểm xã hội và chính sách trợ giúp xã hội là gì?
+A. Bảo hiểm xã hội do nhà nước quản lý, còn trợ giúp xã hội do các tổ chức phi chính phủ thực hiện.
+B. Bảo hiểm xã hội dành cho mọi đối tượng, còn trợ giúp xã hội chỉ dành cho người nghèo.
+C. Bảo hiểm xã hội có tính chất đóng - hưởng, còn trợ giúp xã hội là sự hỗ trợ không hoàn lại.
+D. Bảo hiểm xã hội chi trả cho các rủi ro về sức khỏe, còn trợ giúp xã hội chỉ chi trả khi thiên tai.
+
+Câu 14. Là cơ sở để thiết lập các mối quan hệ ngoại giao, hữu nghị và hợp tác giữa các quốc gia, bảo đảm nhân quyền và sự phát triển chung của thế giới thuộc nội dung nào dưới đây của pháp luật quốc tế?
+A. Tiêu chuẩn.
+B. Vai trò.
+C. Khái niệm.
+D. Nguyên tắc.
+
+Câu 15. Cá nhân, tổ chức sử dụng pháp luật tức là làm những gì mà pháp luật.
+A. cho phép làm.
+B. không cho phép làm.
+C. quy định phải làm.
+D. khuyến khích làm.
+
+Câu 16. Theo quy định của Bộ Luật Dân sự năm 2015, khi thực hiện quyền sở hữu đối với tài sản, chủ thể được thực hiện mọi hành vi theo ý chí của mình để nắm giữ, quản lí, chi phối tài sản nhưng không được trái pháp luật và đạo đức xã hội; có quyền khai thác giá trị sử dụng và hưởng lợi từ các giá trị sử dụng tài sản đó, có thể chuyển giao quyền sử dụng tài sản cho người khác theo thoả thuận; có quyền quyết định đối với tài sản như: bán, trao đổi, tặng cho, cho vay, để thừa kế, từ bỏ quyền sở hữu, tiêu dùng hoặc tiêu huỷ tài sản. Thông tin trên nói về quyền nào sau đây?
+A. Quyền sử dụng và quyền định đoạt, quyền khai thác công dụng tài sản.
+B. Quyền quản lí, quyền sử dụng và quyền định đoạt.
+C. Quyền chiếm hữu, quyền sử dụng và quyền chiếm đoạt.
+D. Quyền chiếm hữu, quyền sử dụng và quyền định đoạt.
+
+Câu 17. Năm 1985, Việt Nam tiến hành đổi tiền theo Quyết định số 01/HĐBT-TĐ ngày 13/9/1985. Sau cuộc đổi tiền, nền kinh tế rơi vào tình trạng lạm phát tăng cao: CPI năm 1986 tăng lên 114,7%, năm 1987 là 323,1%, năm 1988 là 393%. Lạm phát ở Việt Nam trong giai đoạn 1986-1988 thuộc loại lạm phát nào dưới đây?
+A. Siêu lạm phát.
+B. Lạm phát vừa phải.
+C. Lạm phát nghiêm trọng.
+D. Lạm phát phi mã.
+
+Câu 18. Những hoạt động trao đổi hàng hoá, dịch vụ giữa các quốc gia thông qua xuất, nhập khẩu để mở rộng sản xuất, chuyển giao công nghệ và đầu tư giữa các quốc gia, nhờ đó tạo tiền đề cho tăng trưởng và phát triển kinh tế phản ánh hoạt động kinh tế đối ngoại nào sau đây?
+A. Đầu tư quốc tế.
+B. Liên minh kinh tế.
+C. Thương mại quốc tế.
+D. Hội nhập quốc tế.
+
+Câu 19. Khi giá cả một mặt hàng tăng cao do lượng người mua đông mà hàng lại khan hiếm, vận dụng quan hệ cung - cầu, người tiêu dùng nên lựa chọn cách nào dưới đây theo hướng có lợi nhất cho mình?
+A. Tìm mua một mặt hàng tương đương có giá thấp hơn.
+B. Bỏ hẳn không mua và không sử dụng mặt hàng đó nữa.
+C. Chấp nhận mua mặt hàng đó với giá cao vì đã quen dùng.
+D. Đợi khi nào mặt hàng đó ổn định thì tiếp tục mua.
+
+Câu 20. Tỉ lệ phần trăm thay đổi của tổng sản phẩm quốc nội từ thời kỳ này sang thời kỳ khác được gọi là.
+A. tổng sản phẩm quốc nội.
+B. tốc độ tăng trưởng kinh tế.
+C. tổng thu nhập quốc dân.
+D. tốc độ phát triển kinh tế.
+
+Đọc thông tin và trả lời các câu hỏi 21, 22.
+Sau khi tham gia vào lĩnh vực xây dựng, ông T nhận thấy nhu cầu về vật liệu ở lĩnh vực này ngày càng tăng. Hiện nay, nhu cầu về vật liệu gạch có tác dụng làm vách ngăn có khả năng chịu lực, cách âm, cách nhiệt và độ bền cao ngày càng lớn. Với kinh nghiệm và kiến thức chuyên môn ông đã quyết tâm phát triển công nghệ xây dựng tường đúc sẵn. Cùng đội ngũ nhân viên có kinh nghiệm lâu năm, ông T đã đầu tư công nghệ sản xuất, phát triển hệ thống trang web tư vấn và hỗ trợ người tiêu dùng. Với tính ưu việt là thi công nhanh, tác dụng cách âm, cách nhiệt và chịu lực tốt nên sản phẩm được các chủ đầu tư yêu thích. Khi kinh doanh có lợi nhuận, ông thường có cổ phần cho những nhân viên xuất sắc, gắn bó lâu dài với công ty.
+
+Câu 21. Việc ông T phát triển công nghệ tường đúc sẵn bắt nguồn từ những lợi thế nào sau đây?
+A. Nâng cao năng lực quản lí để cải thiện hiệu quả hoạt động.
+B. Xuất phát từ khả năng huy động các nguồn lực.
+C. Bắt nguồn từ một nhu cầu mới chưa được đáp ứng.
+D. Xuất phát từ sự gợi ý của đồng nghiệp.
+
+Câu 22. Việc ông T quyết định đầu tư công nghệ sản xuất và xây dựng hệ thống website hỗ trợ người tiêu dùng thể hiện năng lực nào sau đây của người kinh doanh?
+A. Sự kiên trì, nỗ lực vượt qua khó khăn để đạt được mục tiêu lợi nhuận cao.
+B. Khả năng thiết lập các mối quan hệ xã hội và giao tiếp hiệu quả với đối tác.
+C. Năng lực tổ chức, quản lý và thiết lập các mối quan hệ trong kinh doanh.
+D. Kỹ năng nắm bắt tâm lý khách hàng thông qua việc chia sẻ lợi nhuận nội bộ.
+
+Đọc thông tin và trả lời các câu hỏi 23, 24.
+Việc nhận vốn FDI vào Việt Nam có ý nghĩa rất quan trọng, trở thành một trong những động lực chính cho phát triển kinh tế của Việt Nam như bổ sung vốn đầu tư, thúc đẩy tăng trưởng kinh tế (GDP), tạo việc làm, tăng thu nhập, chuyển giao công nghệ hiện đại, nâng cao năng lực cạnh tranh quốc gia, phát triển cơ sở hạ tầng, tăng kim ngạch xuất khẩu và đóng góp lớn vào ngân sách nhà nước, đồng thời giúp Việt Nam hội nhập sâu rộng vào chuỗi giá trị toàn cầu. Nếu như những năm đầu của thời kỳ mở cửa, vốn FDI vào Việt Nam không đáng kể thì kể từ sau năm 2007, lượng vốn FDI không ngừng tăng lên. Từ năm 2020 đến nay, Việt Nam tiếp tục thu hút vốn FDI mạnh mẽ, đặc biệt vào năm 2024 khi tổng vốn đăng kí đạt 38,23 tỷ USD, vốn đăng kí cấp mới đạt 19,73 tỷ USD chủ yếu từ các đối tác lớn như Singapore (31.7%), Hàn Quốc (14.6%), Trung Quốc (14.4%).
+
+Câu 23. Xu hướng thu hút vốn FDI vào Việt Nam từ sau năm 2007 đến nay thể hiện điều gì trong quá trình hội nhập kinh tế quốc tế?
+A. Lượng vốn FDI giảm dần qua các năm, cho thấy Việt Nam thu hẹp hợp tác và giảm thu hút đầu tư nước ngoài.
+B. Lượng vốn FDI chỉ tập trung vào lĩnh vực nông nghiệp, không đóng góp đáng kể vào tăng trưởng kinh tế và xuất khẩu quốc gia.
+C. Lượng vốn FDI không ổn định, chủ yếu phụ thuộc vào một số ít quốc gia nhỏ và không có vai trò rõ ràng trong nền kinh tế.
+D. Lượng vốn FDI tăng mạnh, đặc biệt từ năm 2020 đến nay với sự tham gia của các đối tác lớn, góp phần thúc đẩy quá trình hội nhập sâu rộng.
+
+Câu 24. Dòng vốn FDI đổ vào lĩnh vực sản xuất tại Việt Nam là hình thức của hoạt động kinh tế đối ngoại nào dưới đây?
+A. Dịch vụ thu ngoại tệ.
+B. Liên minh thuế quan.
+C. Đầu tư quốc tế.
+D. Thương mại quốc tế.
+
+PHẦN II. Câu trắc nghiệm đúng sai. Thí sinh trả lời từ câu 1 đến câu 4. Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn đúng hoặc sai.
+
+Câu 1. Công ty Q chuyên sản xuất đồ nội thất và luôn quan tâm đến việc đáp ứng nhu cầu, thị hiếu của khách hàng. Ban Giám đốc công ty đã đẩy công nghiên cứu, tạo nhiều sản phẩm có chất lượng tốt, mẫu mã đẹp, sử dụng nguyên liệu thân thiện với môi trường, được người tiêu dùng trong và ngoài nước ưa chuộng. Bên cạnh đó, công ty cũng luôn quan tâm đến việc nâng cao hiệu quả kinh doanh, cải tiến kỹ thuật, phương thức quản lý, thực hiện kinh doanh có đạo đức và trách nhiệm xã hội. Công ty Q đã góp phần giải quyết việc làm, tạo thu nhập cho nhiều lao động ở địa phương, xây dựng các chính sách đãi ngộ hợp lý, thoả đáng cho đội ngũ nhân viên, như chế độ lương kịp thời, chế độ bảo hiểm xã hội, thăm hỏi nhân viên và thân nhân của họ, đảm bảo đầy đủ quyền lợi của người lao động.
+a) Thực hiện trách nhiệm xã hội làm tăng chi phí, giảm khả năng cạnh tranh của doanh nghiệp.
+b) Việc thực hiện trách nhiệm xã hội trong thông tin trên góp phần nâng cao giá trị thương hiệu và uy tín của công ty Q.
+c) Việc xây dựng chính sách đãi ngộ hợp lý, thoả đáng cho đội ngũ nhân viên là thể hiện khả năng lập kế hoạch kinh doanh của công ty Q.
+d) Công ty Q luôn quan tâm đến việc đáp ứng nhu cầu, thị hiếu của khách hàng là thực hiện trách nhiệm kinh tế.
+
+Câu 2. Kể từ tháng 1 năm 2007 khi Việt Nam chính thức gia nhập và trở thành thành viên thứ 150 của tổ chức thương mại thế giới WTO, nước ta đã ghi nhận những thành tựu về phát triển kinh tế. Việt Nam trở thành nền kinh tế có độ mở cao, GDP tăng mạnh và cán cân thương mại hàng hóa được cải thiện, chuyển từ nhập siêu sang xuất siêu trong giai đoạn 2016 - 2020. Đến năm 2020 nhiều hiệp định thương mại tự do song phương và đa phương đã có hiệu lực, thúc đẩy hoạt động xuất khẩu hàng hóa của nước ta ngày càng mở rộng. Theo Tổng cục Thống kê, từ năm 2016 đến năm 2022, cán cân thương mại của Việt Nam luôn đạt thặng dư với mức xuất siêu tăng dần qua các năm. Năm 2022, cán cân thương mại xuất siêu đạt 12,4 tỷ USD, là năm thứ 7 liên tiếp cán cân thương mại hàng hóa ở mức thặng dư và trở thành một trong 20 nền thương mại lớn nhất thế giới.
+a) Hội nhập kinh tế quốc tế đã giúp Việt Nam đẩy mạnh xuất khẩu hàng hóa, góp phần vào sự tăng trưởng và phát triển kinh tế.
+b) Hiệp định thương mại tự do là hình thức xóa bỏ thuế quan và những hàng rào phi thuế quan đối với những hàng hóa, dịch vụ trong quan hệ buôn bán với các nước thành viên.
+c) Các hiệp định thương mại tự do (FTA) là động lực duy nhất giúp cán cân thương mại Việt Nam thặng dư liên tiếp 7 năm.
+d) Khi gia nhập WTO, các doanh nghiệp Việt Nam đẩy mạnh hoạt động xuất khẩu hàng hóa cho các doanh nghiệp nước ngoài là thuộc hình thức đầu tư quốc tế.
+
+Câu 3. Chị T kí hợp đồng thuê nhà 24 tháng với vợ chồng bà G từ tháng 01/2024 đến tháng 6/2025. Do gặp sự cố tài chính, bà G đã ký hợp đồng chuyển nhượng toàn bộ quyền sử dụng đất và tài sản gắn liền với đất cho anh S. Sau khi hoàn tất thủ tục sang tên, anh S tiếp quản việc quản lý khu trọ, tiến hành cải tạo diện tích sinh hoạt chung và thông báo tăng giá thuê phòng cũng như chi phí dịch vụ điện, nước. Chị T không đồng ý nên đã đăng tải bài viết lên mạng xã hội với nội dung sai sự thật, cáo buộc bà G và anh S đàn dựng việc chuyển nhượng giả để tăng giá tiền phòng và tổ chức hoạt động phi pháp. Hành vi này đã xâm phạm nghiêm trọng đến uy tín và công việc kinh doanh của anh S. Mặc dù anh S đã yêu cầu gỡ bài và đính chính nhưng chị T kiên quyết từ chối. Trong lúc nóng giận, anh S đã tự ý phá khóa phòng, đập phá một số đồ dùng cá nhân và cưỡng chế trục xuất chị T ra khỏi khu trọ, đồng thời tuyên bố đơn phương chấm dứt hợp đồng thuê nhà mà không thông báo trước theo quy định.
+a) Anh S có quyền tự ý tăng giá thuê và phí dịch vụ theo biến động của thị trường mà không cần thỏa thuận với chị T.
+b) Sau khi kí kết hợp đồng chuyển nhượng, sang tên, với tư cách là chủ sở hữu hợp pháp mới, anh S có toàn quyền chiếm hữu, sử dụng và định đoạt đối với khu đất và tài sản gắn liền với mảnh đất đó.
+c) Sau khi hoàn tất thủ tục chuyển nhượng quyền sử dụng đất và tài sản gắn liền trên đất cho anh S, bà G không có quyền sử dụng nhưng vẫn được quyền định đoạt mảnh đất đó.
+d) Thông qua hợp đồng thuê phòng trọ, chị T xác lập quyền sở hữu đối với diện tích phòng trọ mà mình đang thuê.
+
+Câu 4. Gia đình ông A có nghề dệt thổ cẩm truyền thống nổi tiếng, nhưng vì ham mê cờ bạc, ông A thường xuyên bỏ bê công việc, nhiều lần đánh đập vợ và bắt con trai mình là B (đang học lớp 12) phải nghỉ học để đi làm thuê. Được chính quyền địa phương vận động, ông A nhận ra sai lầm. Để giúp gia đình ông A, địa phương đã hỗ trợ ông A vay vốn ưu đãi để mở một xưởng sản xuất tại nhà, giúp ổn định cuộc sống và giữ nghề. Riêng B, em đã được tiếp tục đến trường, nỗ lực học tập để sau khi thi THPT em sẽ lựa chọn vào đại học Luật mà mình mong muốn đồng thời tích cực cùng cha mẹ khôi phục nghề dệt thổ cẩm và quảng bá sản phẩm truyền thống của gia đình mình.
+a) Hành vi của ông A là vi phạm quyền và nghĩa vụ giữa vợ và chồng trong quan hệ nhân thân theo quy định của Luật Hôn nhân và Gia đình.
+b) Việc địa phương hỗ trợ gia đình ông A vay vốn ưu đãi để mở xưởng sản xuất là thực hiện chính sách hỗ trợ giải quyết việc làm, thu nhập và giảm nghèo.
+c) Việc B khôi phục nghề dệt thổ cẩm và quảng bá sản phẩm dệt là thực hiện quyền và nghĩa vụ của công dân trong việc bảo vệ và phát huy giá trị di sản văn hóa.
+d) Sau khi tốt nghiệp THPT, B đăng kí vào trường đại học Luật mà mình mong muốn là thể hiện quyền công dân có thể học thường xuyên, học suốt đời.
+
+------------- HẾT -------------
+- Thí sinh không được sử dụng tài liệu;
+- Cán bộ coi thi không giải thích gì thêm.
