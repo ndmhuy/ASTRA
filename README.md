@@ -79,3 +79,5 @@ Sửa file đó rồi gửi đến server:
 ```
 
 [Tác dụng của từng thư mục](docs/CAU_TRUC_THU_MUC.md).
+
+[ASTRA mini draft-only Composer → Illustrator và contract bàn giao](docs/MINI_COMPOSER_ILLUSTRATOR.md).
