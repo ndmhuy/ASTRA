@@ -9,7 +9,7 @@ import httpx
 
 from .config import Settings
 from .contracts import Completion
-from .mini import MiniRequest, StageResult, create_draft
+from .mini import MiniRequest, StageResult, create_draft, private_artifact_path
 from .providers.chat_completions import ChatCompletionsProvider
 
 
@@ -36,14 +36,24 @@ async def run(args) -> int:
         if settings.provider != "chat_completions":
             raise ValueError("Live draft requires EXAM_PROVIDER=chat_completions")
         async with httpx.AsyncClient(follow_redirects=False) as client:
-            result = await create_draft(payload, ChatCompletionsProvider(settings, client), args.output)
+            result = await create_draft(
+                payload, ChatCompletionsProvider(settings, client), args.output
+            )
     if isinstance(result, StageResult):
         print(result.model_dump_json(indent=2))
         return 1
-    print(json.dumps({"draft": str(args.output / "exam_draft.json"),
-                      "student": str(args.output / "student_view.json"),
-                      "composer": result.composer.status,
-                      "illustrator": result.illustrator.status}, ensure_ascii=False))
+    print(
+        json.dumps(
+            {
+                "draft": str(args.output / "exam_draft.json"),
+                "student": str(args.output / "student_view.json"),
+                "teacher_private": str(private_artifact_path(args.output, result.draft_id)),
+                "composer": result.composer.status,
+                "illustrator": result.illustrator.status,
+            },
+            ensure_ascii=False,
+        )
+    )
     return 0 if result.illustrator.status != "failed" else 1
 
 
