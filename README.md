@@ -81,3 +81,7 @@ Sửa file đó rồi gửi đến server:
 [Tác dụng của từng thư mục](docs/CAU_TRUC_THU_MUC.md).
 
 [ASTRA mini draft-only Composer → Illustrator và contract bàn giao](docs/MINI_COMPOSER_ILLUSTRATOR.md).
+
+[Khung đề ĐGNL HCM 120 câu theo đề tham chiếu 11](docs/HCM_DE11_FORMAT.md).
+
+[Nhập mẫu LaTeX/kho đề và xuất đề, đáp án, phiếu tô LaTeX](docs/LATEX_PIPELINE.md).

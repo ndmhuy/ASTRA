@@ -172,6 +172,19 @@ class GeneratedExam(Model):
     total_points: Points
     instructions: Text
     questions: list[Question] = Field(min_length=1, max_length=500)
+    shared_passages: list["SharedPassage"] = Field(default_factory=list)
+
+
+class SharedPassage(Model):
+    start_question: Annotated[int, Field(gt=0, strict=True)]
+    end_question: Annotated[int, Field(gt=0, strict=True)]
+    text: Text
+
+    @model_validator(mode="after")
+    def valid_range(self):
+        if self.end_question < self.start_question:
+            raise ValueError("passage end must follow start")
+        return self
 
 
 class AdditionalContext(Model):
@@ -186,6 +199,20 @@ class GenerationRequest(Model):
     context: AdditionalContext = Field(default_factory=AdditionalContext)
     include_answers: Annotated[bool, Field(strict=True)] = True
     include_solutions: Annotated[bool, Field(strict=True)] = True
+    format_profile: Literal["hcm_dgnl_de11"] | None = None
+
+    @model_validator(mode="after")
+    def profile_matches_matrix(self):
+        if self.format_profile == "hcm_dgnl_de11":
+            from .format_profiles import HCM_DE11_SECTIONS
+
+            expected = {topic_id: end - start + 1 for start, end, topic_id, _ in HCM_DE11_SECTIONS}
+            actual = {topic.id: topic.question_count for topic in self.matrix.topics}
+            if actual != expected or self.matrix.question_count != 120:
+                raise ValueError("hcm_dgnl_de11 requires the five fixed section counts")
+            if self.matrix.question_type_distribution != {QuestionType.MULTIPLE_CHOICE: 120}:
+                raise ValueError("hcm_dgnl_de11 requires 120 multiple-choice questions")
+        return self
 
 
 class ConstraintCheck(Model):
