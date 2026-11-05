@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { StationeryArt } from '../../StationeryArt';
 import { SchoolArt } from '../../SchoolArt';
 import type { QuestionItem } from '../../../types/exam';
 import { QuestionCard } from './QuestionCard';
@@ -36,7 +37,7 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({ questions, examMet
           <p>Thời gian: {examMeta.duration} phút <span>·</span> {examMeta.totalCount} câu hỏi</p>
           {!review && <div className="student-line">Họ và tên: ................................................ <span>Lớp: ................</span></div>}
         </header> : <div className="paper-empty">
-          <span className="preview-label">02 / TRANG ĐỀ</span><SchoolArt kind="book" className="preview-art" />
+          <StationeryArt kind="pencil" className="preview-pencil" /><StationeryArt kind="apple" className="preview-apple" /><span className="preview-label">02 / TRANG ĐỀ</span><SchoolArt kind="book" className="preview-art" />
           <h2>Một trang mới,<br />chờ ý tưởng hay.</h2>
           <p>Trao đổi với ASTRA, chọn thiết lập đề, rồi xem từng câu hỏi xuất hiện tại đây.</p>
         </div>}

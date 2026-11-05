@@ -73,15 +73,6 @@ Giao diện đã được refactor hoàn toàn từ luồng 3 bước tuần t�
 
 ## 3. Triết Lý Thiết Kế (Design System & Anti-LLMism)
 
-Hệ thống tuân thủ nghiêm ngặt các nguyên tắc sau:
-- **Tone màu:** Nền sáng dịu (`#fafbfa`, `#f8fafc`), bề mặt thẻ trắng viền mảnh 1px (`#e2e8f0`), điểm nhấn **Baby Green / Emerald** (`#059669`, `#10b981`, `#ecfdf5`).
-- **Bo góc chuẩn:** Chỉ dùng bo góc hình học thanh lịch `4px` đến `8px`. **Tuyệt đối không dùng pill-shape bo tròn xoe**.
-- **Không Animation hoa mắt:** Không dùng chấm nhấp nháy, không dùng loader xoay tít, không dùng hiệu ứng nảy (bounce).
-- **Typography:** Body 14–15px, Tiêu đề bài thi 20–22px, Label 12px.
-- **Trực quan cho giáo viên:** Các nút hành động chính có diện tích bấm lớn, nhãn chữ tiếng Việt tường minh.
-
----
-
 ## 4. Cấu Trúc Thư Mục Frontend (`astra-frontend/src`)
 
 ```
