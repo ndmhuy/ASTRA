@@ -27,12 +27,14 @@ export function AstraLogo({ animated = false, className, useAstraStar = false }:
             <path d="M182 193Q201 182 223 181" />
           </g>
           {animated ? <g fill="#F3C54B">
-            <animateMotion dur="1.75s" repeatCount="1" fill="freeze" calcMode="paced">
+            <animateMotion dur="2s" fill="freeze" calcMode="spline"
+              keyPoints="0;1" keyTimes="0;1" keySplines="0.37 0 0.35 1">
               <mpath href={`#${orbitId}`} />
             </animateMotion>
             <g filter={`url(#${glowId})`} opacity="0">
               {star}
-              <animate attributeName="opacity" from="0" to="0.55" begin="1.75s" dur="0.35s" fill="freeze" />
+              <animate attributeName="opacity" values="0;0.55" begin="1.55s" dur="0.65s"
+                calcMode="spline" keyTimes="0;1" keySplines="0.42 0 0.58 1" fill="freeze" />
             </g>
             {star}
           </g> : <g transform="translate(253 78)" fill="#F3C54B">{star}</g>}

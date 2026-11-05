@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FileText } from 'lucide-react';
+import { SchoolArt } from '../../SchoolArt';
 import type { QuestionItem } from '../../../types/exam';
 import { QuestionCard } from './QuestionCard';
 
@@ -29,16 +29,16 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({ questions, examMet
       {flaggedCount > 0 && <button className="review-count" onClick={() => setReview(true)}>{flaggedCount} câu cần xem xét</button>}
     </div>
     <div className="paper-scroll">
-      <article className="exam-paper">
+      <article className={`exam-paper ${!examMeta ? 'is-empty' : ''}`}>
         {examMeta ? <header className="exam-paper-heading">
           <div className="eyebrow">Đề kiểm tra · {examMeta.subject}</div>
           <h1>{examMeta.title || `Đề thi ${examMeta.subject}`}</h1>
           <p>Thời gian: {examMeta.duration} phút <span>·</span> {examMeta.totalCount} câu hỏi</p>
           {!review && <div className="student-line">Họ và tên: ................................................ <span>Lớp: ................</span></div>}
         </header> : <div className="paper-empty">
-          <FileText size={36} strokeWidth={1} />
-          <h2>Đề thi của bạn bắt đầu ở đây</h2>
-          <p>Nhập yêu cầu ở khung bên trái, rồi bấm “Tạo đề từ yêu cầu”.</p>
+          <span className="preview-label">02 / TRANG ĐỀ</span><SchoolArt kind="book" className="preview-art" />
+          <h2>Một trang mới,<br />chờ ý tưởng hay.</h2>
+          <p>Trao đổi với ASTRA, chọn thiết lập đề, rồi xem từng câu hỏi xuất hiện tại đây.</p>
         </div>}
         {questions.map((q, i) => <QuestionCard key={q.id} question={q} index={i} review={review} appearing={i >= latestQuestionCount} onEdit={onEditQuestion ? () => onEditQuestion(q.id) : undefined} />)}
         {isGenerating && <p className="paper-progress" role="status">Đang soạn câu hỏi tiếp theo…</p>}

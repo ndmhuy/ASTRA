@@ -88,3 +88,34 @@ test('mock service keeps per-job metadata and edits isolated', async () => {
   assert.equal((await service.getExamPackage(b.jobId)).subject, 'Toán Học');
   await assert.rejects(() => service.getExamPackage('missing'));
 });
+
+test('deleting a generating session stops updates and leaves other sessions intact', async () => {
+  const service = fakeService();
+  const store = new ExamSessions(service);
+  const removed = store.create('template');
+  const kept = store.create('custom');
+  store.setDraft(kept, 'Giữ nguyên nội dung');
+  await store.generate(removed, params());
+  const jobId = store.getSnapshot().find(s => s.id === removed).jobId;
+  store.remove(removed);
+  assert.deepEqual(service.stopped, [jobId]);
+  service.callbacks.get(jobId)({ stage: 5, percent: 100, completedItems: 1 });
+  await flush();
+  assert.equal(store.getSnapshot().length, 1);
+  assert.equal(store.getSnapshot()[0].id, kept);
+  assert.equal(store.getSnapshot()[0].draft, 'Giữ nguyên nội dung');
+});
+
+test('deleting before generation starts does not register a late subscription', async () => {
+  const service = fakeService();
+  let resolveStart;
+  service.startGeneration = () => new Promise(resolve => { resolveStart = resolve; });
+  const store = new ExamSessions(service);
+  const id = store.create('template');
+  const pending = store.generate(id, params());
+  store.remove(id);
+  resolveStart({ jobId: 'late-job' });
+  await pending;
+  assert.equal(service.callbacks.size, 0);
+  assert.deepEqual(store.getSnapshot(), []);
+});

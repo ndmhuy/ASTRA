@@ -41,6 +41,12 @@ export class ExamSessions {
     this.emit();
     return id;
   }
+  remove(id: string) {
+    this.subscriptions.get(id)?.();
+    this.subscriptions.delete(id);
+    this.sessions = this.sessions.filter(session => session.id !== id);
+    this.emit();
+  }
   setDraft(id: string, draft: string) { this.update(id, session => ({ ...session, draft })); }
   sendMessage(id: string, content: string) {
     const message = (role: ChatMessage['role'], text: string): ChatMessage => ({ id: crypto.randomUUID(), role, content: text, timestamp: new Date().toISOString() });
@@ -54,10 +60,10 @@ export class ExamSessions {
     let finishing = false;
     try {
       const { jobId } = await this.service.startGeneration(params);
-      if (this.disposed) return;
+      if (this.disposed || !this.sessions.some(session => session.id === id)) return;
       this.update(id, session => ({ ...session, jobId }));
       const unsubscribe = this.service.onProgress(jobId, progress => {
-        if (this.disposed || finishing) return;
+        if (this.disposed || finishing || !this.sessions.some(session => session.id === id)) return;
         this.update(id, session => {
           const item = progress.latestItemPreview;
           const append = item && !session.questions.some(question => question.id === item.id);

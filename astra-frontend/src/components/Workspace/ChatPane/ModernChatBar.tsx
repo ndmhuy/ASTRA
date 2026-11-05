@@ -56,7 +56,7 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
   };
 
   return (
-    <div
+    <div className="studio-composer"
       style={{
         padding: '10px 12px',
         borderTop: '1px solid #e2e8f0',
@@ -95,7 +95,7 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
       )}
 
       {/* Main input container */}
-      <div
+      <div className="composer-box"
         style={{
           border: '1.5px solid #cbd5e1',
           borderRadius: 6,
