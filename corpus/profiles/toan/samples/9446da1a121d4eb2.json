@@ -1,0 +1,219 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "9446da1a121d4eb2",
+    "topic": "Ứng dụng đạo hàm và khảo sát hàm số",
+    "part": "P2",
+    "level": "VD",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Đồ thị đa thức bậc ba với tọa độ các điểm cực trị và một đoạn xét giá trị.",
+        "task": "Kiểm tra giá trị nhỏ nhất của hàm trên đoạn.",
+        "reasoning": [
+          "Dùng tọa độ cực trị và điều kiện đạo hàm để xác định biểu thức hoặc các quan hệ hệ số cần thiết.",
+          "Xác định các điểm tới hạn nằm trong đoạn.",
+          "Tính giá trị tại các điểm tới hạn và các đầu mút.",
+          "So sánh để xác định giá trị nhỏ nhất."
+        ],
+        "combines": [
+          "Đọc đồ thị",
+          "Xác định đa thức từ điều kiện cực trị",
+          "Giá trị nhỏ nhất trên đoạn"
+        ],
+        "difficulty_source": "Kiểm tra đầu mút thay vì mặc nhiên dùng giá trị cực tiểu địa phương.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Hướng chuyển động, khoảng cách đã đi và tốc độ tức thời của các vật tại cùng thời điểm.",
+        "task": "Kiểm tra tốc độ biến thiên của khoảng cách tương đối.",
+        "reasoning": [
+          "Chuẩn hóa các vectơ hướng để xác định vị trí và vectơ vận tốc tức thời.",
+          "Lập vectơ vị trí tương đối và vectơ vận tốc tương đối.",
+          "Lấy đạo hàm hệ thức bình phương khoảng cách để biểu diễn tốc độ biến thiên bằng tích vô hướng.",
+          "Thay dữ kiện, giữ đúng dấu, làm tròn và đối chiếu nhận định."
+        ],
+        "combines": [
+          "Vectơ đơn vị",
+          "Chuyển động trong không gian",
+          "Tích vô hướng",
+          "Đạo hàm khoảng cách"
+        ],
+        "difficulty_source": "Chuyển dữ kiện hướng và tốc độ thành đạo hàm độ dài của vectơ tương đối.",
+        "evidence_uncertainty": "Không có khóa đúng sai khớp mã; đánh giá phân hóa dựa trên yêu cầu mô hình hóa và liên kết kiến thức, chưa có số liệu thực nghiệm.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một hàm phân thức và nhận định về diện tích tam giác tạo bởi tiếp tuyến tại điểm tùy ý cùng các tiệm cận.",
+        "task": "Kiểm tra tính bất biến và giá trị diện tích tam giác.",
+        "reasoning": [
+          "Tách hàm thành phần bậc nhất và phần phân thức để xác định các tiệm cận.",
+          "Đặt tham số cho tiếp điểm trong miền xác định và viết tiếp tuyến.",
+          "Tìm giao điểm của tiếp tuyến với từng tiệm cận.",
+          "Tính diện tích bằng tọa độ hoặc đáy và chiều cao thích hợp.",
+          "Rút gọn để kiểm tra sự phụ thuộc tham số và đối chiếu nhận định."
+        ],
+        "combines": [
+          "Tiệm cận",
+          "Phương trình tiếp tuyến",
+          "Giao điểm đường thẳng",
+          "Diện tích tam giác"
+        ],
+        "difficulty_source": "Chọn biểu diễn theo các tiệm cận để làm lộ đại lượng diện tích bất biến.",
+        "evidence_uncertainty": "Thiếu khóa đúng sai được xác nhận; đánh giá phân hóa dựa trên yêu cầu chứng minh tính bất biến, có đối chiếu mẫu hiệu chuẩn.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một đồ thị phân thức, một điểm cố định và họ đường thẳng qua tâm đối xứng cắt đồ thị tại hai điểm.",
+        "task": "Kiểm tra giá trị nhỏ nhất của diện tích tam giác tạo bởi điểm cố định và hai giao điểm.",
+        "reasoning": [
+          "Tịnh tiến tọa độ về tâm đối xứng để đơn giản hóa đồ thị và họ đường thẳng.",
+          "Xác định điều kiện để đường thẳng có hai giao điểm phân biệt với đồ thị.",
+          "Biểu diễn diện tích tam giác theo tham số bằng tọa độ hoặc tích độ dài đáy với chiều cao.",
+          "Tối ưu biểu thức trên miền tham số hợp lệ.",
+          "Kiểm tra khả năng đạt dấu bằng và đối chiếu nhận định."
+        ],
+        "combines": [
+          "Tâm đối xứng",
+          "Tương giao đường thẳng và đồ thị",
+          "Diện tích tam giác",
+          "Tối ưu hàm số hoặc bất đẳng thức"
+        ],
+        "difficulty_source": "Chọn biểu diễn khai thác đối xứng để biến diện tích hình học thành bài toán tối ưu một tham số.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "11d88d9a96ad|P2|3|c",
+      "3f1b2aa3cb72|P2|3|d",
+      "85efdd1a7e54|P2|3|d",
+      "9ed45d16a975|P2|4|d",
+      "acc00d945397|P2|2|b",
+      "acc00d945397|P2|2|d",
+      "ecd76ac672e5|P2|1|d"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "9446da1a121d4eb2",
+    "stem": "Cho hàm số f(x)=(2x²−x+2)/(x−1), có đồ thị (C). Xét tính đúng sai của các khẳng định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Với x≠1, ta có f′(x)=2−3/(x−1)²."
+      },
+      {
+        "sub": "b",
+        "text": "Hàm số đồng biến trên khoảng (1;+∞)."
+      },
+      {
+        "sub": "c",
+        "text": "Gọi I là giao điểm hai đường tiệm cận của (C). Với mọi điểm M thuộc (C), tiếp tuyến tại M cắt hai đường tiệm cận lần lượt tại P và Q. Diện tích tam giác IPQ luôn bằng 6."
+      },
+      {
+        "sub": "d",
+        "text": "Giá trị nhỏ nhất của f(x) trên đoạn [2;4] bằng 8."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "VD"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Viết f(x)=2x+1+3/(x−1). a) Lấy đạo hàm được f′(x)=2−3/(x−1)², nên a đúng. b) Trên khoảng (1;1+√6/2), đạo hàm âm, nên hàm số nghịch biến trên khoảng này. Vì thế b sai. c) Hai tiệm cận là x=1 và y=2x+1, giao tại I=(1;3). Đặt hoành độ tiếp điểm M bằng 1+t, với t≠0. Phương trình tiếp tuyến là y=3+2t+3/t+(2−3/t²)(x−1−t). Cho x=1, được P=(1;3+6/t). Giải giao điểm với y=2x+1, được Q=(1+2t;3+4t). Độ dài IP là 6/|t|, còn khoảng cách từ Q đến đường thẳng IP, tức x=1, là 2|t|. Do đó diện tích tam giác IPQ bằng (1/2)×(6/|t|)×2|t|=6, nên c đúng. d) Điểm tới hạn thuộc [2;4] là x=1+√6/2. Hàm số giảm từ 2 đến điểm này rồi tăng đến 4. Giá trị nhỏ nhất là 3+2√6, nhỏ hơn 8; trong khi f(2)=8 và f(4)=10. Vì vậy d sai.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Cho rằng hệ số 2 của phần bậc nhất quyết định chiều biến thiên trên toàn bộ nhánh bên phải.",
+        "why_plausible": "Khi x lớn, đồ thị đi gần đường thẳng có hệ số góc dương, nhưng gần x=1 thì số hạng −3/(x−1)² làm đạo hàm âm."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Chỉ so sánh hai giá trị ở đầu mút và bỏ qua điểm tới hạn bên trong đoạn.",
+        "why_plausible": "Hai đầu mút cho các giá trị dễ tính là 8 và 10, nên học sinh có thể chọn ngay 8 nếu chưa xét dấu đạo hàm trên đoạn."
+      }
+    ],
+    "level_reason": "Mức cao nhất của toàn mẫu là VD ở ý c: học sinh phải tham số hóa tiếp điểm, liên kết tiếp tuyến với hai tiệm cận rồi chọn đáy và chiều cao để chứng minh diện tích bất biến. Các ý a, b, d dùng quy trình đạo hàm và xét biến thiên quen thuộc nên ở mức TH.",
+    "prerequisites": [
+      "Đạo hàm hàm phân thức",
+      "Tiệm cận đứng và tiệm cận xiên",
+      "Phương trình tiếp tuyến",
+      "Giao điểm hai đường thẳng",
+      "Diện tích tam giác",
+      "Giá trị nhỏ nhất của hàm số trên đoạn"
+    ],
+    "variation_guidance": "Có thể thay hàm bằng f(x)=mx+b+k/(x−h), với k≠0, rồi dựng lại các nhận định. Phải tính lại diện tích và kiểm tra vị trí điểm tới hạn khi chọn đoạn xét giá trị nhỏ nhất.",
+    "uncertainties": [
+      "Các quan sát nền được cung cấp thuộc nguồn cấp tỉnh qua bên thứ ba; không có đối chiếu đề chính thức. Nội dung câu hỏi và các nhận định ở đây được sáng tác mới."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "9446da1a121d4eb2",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "VD"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Viết f(x)=2x+1+3/(x−1). a) Lấy đạo hàm được f′(x)=2−3/(x−1)², nên đúng. b) Trên (1;1+√(3/2)), f′(x)<0, nên hàm không đồng biến trên toàn bộ (1;+∞). c) Hai tiệm cận là x=1 và y=2x+1, giao tại I=(1;3). Đặt u=x−1, v=y−2x−1; đồ thị trở thành v=3/u. Với tiếp điểm có u=t≠0, phương trình tiếp tuyến là v=6/t−3u/t². Hai giao điểm với các tiệm cận có tọa độ (u;v) là (0;6/t) và (2t;0). Phép đổi tọa độ này có định thức bằng 1 nên bảo toàn diện tích. Diện tích IPQ bằng |(6/t)(2t)|/2=6. d) Trên [2;4], đạo hàm đổi dấu từ âm sang dương tại x=1+√(3/2). Giá trị nhỏ nhất là 3+2√6≈7,899, không bằng 8.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a: Thực hiện phép biến đổi và đạo hàm quen thuộc. b: Xét dấu đạo hàm để kiểm tra tính đơn điệu. c: Cần kết nối phương trình tiếp tuyến, giao điểm với hai tiệm cận và diện tích để chứng minh bất biến; cách đổi tọa độ và bảo toàn diện tích được giải thích bằng định thức, cũng có thể tính trực tiếp bằng tọa độ phổ thông. d: Thực hiện quy trình tìm giá trị nhỏ nhất trên đoạn."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/311d97575e803f54fd1c966c1d7cd2e0177fbf8a7b90e7e533519c834ffe1abd.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/311d97575e803f54fd1c966c1d7cd2e0177fbf8a7b90e7e533519c834ffe1abd.resolve.json"
+}

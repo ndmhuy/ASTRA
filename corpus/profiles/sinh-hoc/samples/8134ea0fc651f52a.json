@@ -57,28 +57,28 @@
   },
   "sample": {
     "id": "8134ea0fc651f52a",
-    "stem": "Một nhóm phân tử DNA ban đầu đều có hai mạch chứa đồng vị ¹⁵N. Người ta cho toàn bộ nhóm DNA nhân đôi hai lần liên tiếp trong môi trường chỉ cung cấp nitơ ¹⁴N. Sau giai đoạn này, có 24 phân tử chứa một mạch ¹⁵N và một mạch ¹⁴N. Tiếp theo, toàn bộ DNA được chuyển sang môi trường chỉ cung cấp nitơ ¹⁵N và nhân đôi một lần. Người ta loại bỏ tất cả phân tử có cả hai mạch chứa ¹⁵N, giữ lại toàn bộ các phân tử còn lại. Nhóm được giữ lại tiếp tục nhân đôi hai lần trong môi trường chỉ cung cấp nitơ ¹⁴N. Biết DNA nhân đôi theo nguyên tắc bán bảo tồn; mọi phân tử đều hoàn tất mỗi lần nhân đôi, không có trao đổi đoạn mạch hoặc thất thoát DNA ngoài bước loại bỏ đã nêu. Cuối cùng có bao nhiêu phân tử DNA có cả hai mạch chứa ¹⁴N?",
+    "stem": "Ở một mô hình tế bào nhân sơ, đoạn mã hóa của một gene không có intron có mạch khuôn theo chiều phiên mã là 3′-TAC GAA CTT ACC GGA TTT CAA ATT-5′. Có năm RNA polymerase cùng phiên mã gene này; ba enzyme đã đi qua hết bộ ba thứ tư, hai enzyme còn lại vừa sao chép xong bộ ba thứ ba và chưa bắt đầu bộ ba thứ tư. Mỗi RNA đang tổng hợp gắn đúng một ribosome; cả năm ribosome đều vừa tạo xong ba amino acid đầu tiên. Tại thời điểm đó, một can thiệp chỉ làm bộ ba thứ tư trên DNA khuôn đổi từ ACC thành ACT, giữ chiều dài gene và không làm thay đổi các phân tử RNA đã được tổng hợp. Sau can thiệp, mọi enzyme tiếp tục hoạt động bình thường, không khởi đầu thêm lượt phiên mã hoặc dịch mã; các RNA không bị phân hủy. Cho biết AUG là codon mở đầu, UGA và UAA là codon kết thúc; các codon còn lại xuất hiện trong đoạn RNA được phiên mã từ đoạn DNA này đều mã hóa amino acid. Khi cả năm ribosome kết thúc dịch mã, tổng số amino acid của năm chuỗi polypeptide tạo thành là bao nhiêu? Tính cả amino acid mở đầu, không xét cắt bỏ sau dịch mã.",
     "options": [],
     "statements": [],
     "answers": [
       {
         "sub": null,
-        "answer": "144",
+        "answer": "27",
         "level": "VD"
       }
     ],
-    "solution": "Kí hiệu H là mạch chứa ¹⁵N, L là mạch chứa ¹⁴N và n là số phân tử HH ban đầu. Sau hai lần nhân đôi trong môi trường ¹⁴N, nhóm DNA gồm 2n phân tử HL và 2n phân tử LL. Vì có 24 phân tử HL nên n = 12; lúc này có 24 HL và 24 LL. Khi nhân đôi một lần trong môi trường ¹⁵N, mỗi HL tạo một HH và một HL, còn mỗi LL tạo hai HL. Vì vậy thu được 24 HH và 72 HL. Loại bỏ HH thì còn 72 HL. Trong môi trường ¹⁴N, lần nhân đôi tiếp theo tạo 72 HL và 72 LL; lần cuối tạo 144 HL và 144 LL. Số phân tử có cả hai mạch chứa ¹⁴N là 144.",
+    "solution": "RNA tạo từ mạch khuôn chưa biến đổi có trình tự 5′-AUG CUU GAA UGG CCU AAA GUU UAA-3′, nên dịch mã được 7 amino acid rồi gặp UAA ở bộ ba 8. Biến đổi ACC thành ACT ở mạch khuôn làm bộ ba RNA tương ứng chuyển UGG thành UGA, tạo tín hiệu kết thúc ở bộ ba 4. Ba RNA đã được tổng hợp qua vị trí này giữ UGG vì can thiệp chỉ tác động lên DNA; ba ribosome trên chúng tạo ba chuỗi, mỗi chuỗi 7 amino acid. Hai RNA còn lại chưa sao chép bộ ba 4 sẽ nhận UGA từ DNA đã biến đổi; hai ribosome trên chúng kết thúc sau 3 amino acid. Tổng là 3 × 7 + 2 × 3 = 27 amino acid. Không dùng vị trí ribosome để suy RNA có nhận thay đổi DNA hay không; trạng thái phiên mã mới quyết định bộ ba nào đã tồn tại trên RNA.",
     "distractors": [],
-    "level_reason": "Học sinh phải lập mô hình các lớp DNA theo thành phần hai mạch, suy ngược quy mô nhóm ban đầu từ lớp lai, rồi điều chỉnh nhóm được theo dõi sau bước loại bỏ chọn lọc. Kết quả cuối phụ thuộc vào việc nối đúng lịch sử bảo toàn mạch với sự thay đổi thành phần nhóm qua từng môi trường; không thể chỉ dùng tổng số lần nhân đôi trong một công thức tăng số lượng.",
+    "level_reason": "Phải nối chiều bổ sung DNA–RNA, nhận ra biến đổi tạo codon kết thúc, dựng các nhóm sản phẩm theo vị trí RNA polymerase tại thời điểm can thiệp và tách trạng thái RNA khỏi vị trí ribosome. Phép cộng cuối đơn giản nhưng không đủ nếu chưa xây dựng đúng mô hình truyền thông tin theo thời điểm; chuỗi quyết định kết hợp phiên mã, dịch mã và đột biến thuộc VD.",
     "prerequisites": [
-      "Nguyên tắc bán bảo tồn trong tái bản DNA",
-      "Mạch mới nhận nitơ từ môi trường đang cung cấp nguyên liệu",
-      "Phân biệt DNA có hai mạch nặng, hai mạch nhẹ và một mạch mỗi loại",
-      "Bảo toàn mạch DNA qua các lần nhân đôi"
+      "Chiều và nguyên tắc bổ sung trong phiên mã",
+      "Codon mở đầu/kết thúc và nguyên tắc dịch mã",
+      "Phân biệt DNA khuôn với RNA đã tổng hợp",
+      "Quan hệ thời điểm giữa phiên mã và dịch mã ở tế bào nhân sơ"
     ],
-    "variation_guidance": "Có thể thay lớp DNA được loại bỏ hoặc đổi đồng vị cung cấp ở giai đoạn cuối. Khi thay đổi phải theo dõi lại từng loại mạch qua bước chọn lọc, không chỉ thay số trong đáp án.",
+    "variation_guidance": "Có thể đổi vị trí tạo codon kết thúc và vị trí RNA polymerase; phải xác định lại các RNA đã sao chép qua vị trí biến đổi. Không chỉ thêm phép tính hoặc đổi số phân tử để gọi là tăng mức. Nếu bỏ yêu cầu suy ảnh hưởng thời điểm và cho sẵn nhóm sản phẩm, mức có thể giảm xuống TH.",
     "uncertainties": [
-      "Cấu trúc minh họa chỉ tham khảo quan sát trừu tượng từ nguồn đề cấp tỉnh do bên thứ ba cung cấp; chưa có điểm neo chính thức để đối chiếu."
+      "Mô hình can thiệp tức thời là giả định của bài toán, không mô tả một kỹ thuật thực nghiệm cụ thể. Dạng có quan sát hỗ trợ từ nguồn tỉnh, chưa có điểm neo chính thức trong tập này."
     ],
     "missing_assets": []
   },
@@ -87,18 +87,23 @@
     "answers": [
       {
         "sub": null,
-        "answer": "216",
+        "answer": "27",
         "level": "VD"
       }
     ],
-    "solution": "Gọi H là mạch chứa ¹⁵N, L là mạch chứa ¹⁴N. Sau hai lần nhân đôi trong môi trường L, mỗi DNA HH ban đầu tạo 2 HL và 2 LL. Vì có 24 HL nên ban đầu có 12 DNA; lúc này có 24 HL và 24 LL. Nhân đôi trong môi trường H: 24 HL tạo 24 HH và 24 HL; 24 LL tạo 48 HL. Loại HH, còn 72 HL. Sau hai lần nhân đôi trong môi trường L, mỗi HL tạo 1 HL và 3 LL. Số DNA LL cuối cùng là 72 × 3 = 216.",
+    "solution": "RNA phiên mã từ mạch khuôn ban đầu có trình tự 5′-AUG CUU GAA UGG CCU AAA GUU UAA-3′. Ba RNA polymerase đã đi qua bộ ba thứ tư nên ba RNA tương ứng giữ codon UGG; mỗi ribosome tạo chuỗi gồm 7 amino acid trước khi gặp UAA. Hai RNA polymerase còn lại chưa sao chép bộ ba thứ tư nên sau can thiệp sẽ tạo codon UGA từ bộ ba khuôn ACT; mỗi ribosome tương ứng kết thúc với chuỗi gồm 3 amino acid. Tổng số amino acid là 3 × 7 + 2 × 3 = 27.",
     "confidence": "high",
     "error_flags": [],
-    "level_reason": "VD: Cần xây dựng và nối các chuyển đổi thành phần mạch qua nhiều giai đoạn, xác định nhóm còn lại sau bước loại chọn lọc rồi dùng nhóm đó làm đầu vào cho giai đoạn cuối."
+    "level_reason": "Cần kết nối chiều phiên mã, tính bổ sung DNA–RNA và cơ chế kết thúc dịch mã; đồng thời phân biệt ảnh hưởng của can thiệp lên hai nhóm RNA theo tiến độ phiên mã để xác định độ dài từng nhóm chuỗi."
   },
-  "key_agreement": false,
+  "key_agreement": true,
   "level_agreement": true,
-  "status": "needs_teacher_review_with_flags",
-  "generation_receipt": "audit/outputs/topic-samples/sinh-hoc/b92b73f247ce7db8a4db5c5917d7dfdec0245bab0a276c097577aff87ee5d30c.draft.json",
-  "resolve_receipt": "audit/outputs/topic-samples/sinh-hoc/b92b73f247ce7db8a4db5c5917d7dfdec0245bab0a276c097577aff87ee5d30c.resolve.json"
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/sinh-hoc/7a0a007089b785522397179f9138bddcbcfaf3ecb3e2ac31a22f7e9561451591.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/sinh-hoc/7a0a007089b785522397179f9138bddcbcfaf3ecb3e2ac31a22f7e9561451591.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 0,
+  "source_rows_sha256": "6cecf62b6ac3288061b1dd801b26551597a517bed45bb8a2e2a0ec649081b505",
+  "parent_changed_task_after_failed_level_check": true,
+  "prior_hold_retained": "audit/outputs/sample-revisions/sinh-hoc/8134ea0fc651f52a.held.json"
 }

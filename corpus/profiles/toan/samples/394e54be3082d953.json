@@ -1,0 +1,212 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "394e54be3082d953",
+    "topic": "Ứng dụng tích phân: tính diện tích và thể tích",
+    "part": "P1",
+    "level": "TH",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một hàm bậc nhất đổi dấu trên đoạn xét và các đường biên của miền phẳng.",
+        "task": "Chọn biểu thức tích phân tính diện tích miền.",
+        "reasoning": [
+          "Nhận diện diện tích là tích phân của khoảng cách đến trục hoành.",
+          "Kiểm tra hàm đổi dấu trên đoạn.",
+          "Chọn công thức lấy giá trị tuyệt đối bên trong tích phân."
+        ],
+        "combines": [
+          "Diện tích hình phẳng",
+          "Tích phân",
+          "Dấu của hàm số"
+        ],
+        "difficulty_source": "Nhận ra sự đổi dấu khiến hai cách đặt giá trị tuyệt đối khác nhau.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Miền dưới một đồ thị lũy thừa trên một đoạn và trục quay trùng trục hoành.",
+        "task": "Chọn thể tích vật thể tạo thành.",
+        "reasoning": [
+          "Nhận diện bán kính thiết diện tròn từ giá trị hàm số.",
+          "Lập tích phân diện tích thiết diện trên đoạn đã cho.",
+          "Tính tích phân."
+        ],
+        "combines": [
+          "Thể tích tròn xoay",
+          "Tích phân hàm lũy thừa"
+        ],
+        "difficulty_source": "Áp dụng trực tiếp công thức thể tích với bình phương bán kính.",
+        "evidence_uncertainty": "Chưa xác nhận được khóa đáp án khớp mã.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một đồ thị lũy thừa, trục tọa độ và các đường thẳng đứng giới hạn miền.",
+        "task": "Tính diện tích miền phẳng.",
+        "reasoning": [
+          "Nhận biết hàm không âm trên khoảng giới hạn để lập tích phân diện tích.",
+          "Tính nguyên hàm và thay các cận."
+        ],
+        "combines": [
+          "Diện tích bằng tích phân",
+          "Nguyên hàm lũy thừa"
+        ],
+        "difficulty_source": "Lập và tính một tích phân diện tích trực tiếp.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một đồ thị có các miền nằm khác phía trục hoành và các tích phân được đặt ký hiệu trên từng khoảng; có hình tô miền.",
+        "task": "Chọn quan hệ giữa diện tích và các tích phân đã đặt tên.",
+        "reasoning": [
+          "Đọc dấu của hàm số trên từng khoảng từ hình.",
+          "Đổi tích phân trên miền nằm dưới trục hoành thành diện tích dương.",
+          "Cộng diện tích các miền."
+        ],
+        "combines": [
+          "Đọc đồ thị",
+          "Dấu của tích phân",
+          "Diện tích hình phẳng"
+        ],
+        "difficulty_source": "Phải phân biệt diện tích không âm với tích phân có dấu.",
+        "evidence_uncertainty": "Thiếu khóa đáp án hợp lệ; hình đủ rõ để phân tích yêu cầu.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "163f20908cf7|P1|8|None",
+      "0ecb85132b84|P1|12|None",
+      "11d88d9a96ad|P1|12|None",
+      "525d3542283a|P1|2|None",
+      "54e9a2a276ca|P1|4|None",
+      "6aa30214ba7e|P1|12|None",
+      "7ab78715480e|P1|6|None",
+      "85efdd1a7e54|P1|12|None",
+      "9ed45d16a975|P1|1|None",
+      "ccae0b94a82d|P1|8|None",
+      "de5833d227dd|P1|8|None"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "394e54be3082d953",
+    "stem": "Cho miền phẳng giới hạn bởi đồ thị y=x+2, trục hoành và hai đường thẳng x=0, x=1. Quay miền phẳng này một vòng quanh trục Ox. Thể tích vật thể thu được bằng bao nhiêu?",
+    "options": [
+      {
+        "label": "A",
+        "text": "5π/2"
+      },
+      {
+        "label": "B",
+        "text": "19π/3"
+      },
+      {
+        "label": "C",
+        "text": "25π/4"
+      },
+      {
+        "label": "D",
+        "text": "19/3"
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "TH"
+      }
+    ],
+    "solution": "Thiết diện vuông góc với Ox tại x∈[0;1] là hình tròn bán kính x+2. Do đó V=π∫₀¹(x+2)²dx=π[x³/3+2x²+4x]₀¹=19π/3. Chọn B.",
+    "distractors": [
+      {
+        "label": "A",
+        "sub": null,
+        "mistake": "Tính π∫₀¹(x+2)dx=5π/2, không bình phương bán kính.",
+        "why_plausible": "Học sinh nhớ hệ số π nhưng nhầm tích phân bán kính với tích phân diện tích thiết diện."
+      },
+      {
+        "label": "C",
+        "sub": null,
+        "mistake": "Tính π[∫₀¹(x+2)dx]²=25π/4, đưa phép bình phương ra ngoài tích phân.",
+        "why_plausible": "Học sinh nhớ thể tích liên quan đến bình phương bán kính nhưng nhầm thứ tự bình phương và lấy tích phân."
+      },
+      {
+        "label": "D",
+        "sub": null,
+        "mistake": "Tính ∫₀¹(x+2)²dx=19/3 và bỏ hệ số π.",
+        "why_plausible": "Học sinh xác định đúng bình phương bán kính nhưng chưa chuyển nó thành diện tích hình tròn."
+      }
+    ],
+    "level_reason": "Học sinh nhận diện bán kính thiết diện và thực hiện công thức thể tích tròn xoay quen thuộc, sau đó tính tích phân đa thức trực tiếp. Đây là mức TH.",
+    "prerequisites": [
+      "Diện tích hình tròn",
+      "Thể tích vật thể tròn xoay quanh trục Ox",
+      "Nguyên hàm đa thức",
+      "Tính tích phân xác định"
+    ],
+    "variation_guidance": "Có thể thay hàm bán kính bằng một hàm không âm khác trên đoạn cho trước. Khi tạo phương án sai, giữ rõ từng lỗi về bình phương bán kính, thứ tự phép toán hoặc hệ số π.",
+    "uncertainties": [
+      "Quan sát về thể tích tròn xoay được cung cấp thuộc nguồn cấp tỉnh qua bên thứ ba và chưa xác nhận khóa khớp mã; đáp án mẫu mới được suy ra trực tiếp từ dữ kiện tự soạn."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "394e54be3082d953",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "TH"
+      }
+    ],
+    "solution": "Thể tích là V=π∫₀¹(x+2)²dx=π[x³/3+2x²+4x]₀¹=19π/3. Chọn B.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "TH vì áp dụng trực tiếp công thức thể tích vật thể tròn xoay quanh Ox và tính tích phân đa thức theo quy trình quen thuộc."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/toan/7a92b6651e15140ec965a82e5b996cea14001b987c61f757a5be16708a8cbe4c.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/toan/7a92b6651e15140ec965a82e5b996cea14001b987c61f757a5be16708a8cbe4c.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 9,
+  "source_rows_sha256": "863dd6885185956ed9dabede84bf529993a764e4871f75f25629503cf8f2731a",
+  "source_overlap_review": {
+    "disposition": "generic_mathematical_shape_false_positive",
+    "reviewer": "parent_sol",
+    "at_utc": "2026-11-03T22:37:54.769174+00:00",
+    "sample_sha256": "5b279ed27235e8812764b7f3e0f260462b6ee21e6b8c0aff9290efe6c6cafa15",
+    "overlap_sha256": [
+      "122d25e8e489aa544e1c0f16028f44af0525437bbb8c48c69083f70a8b74a468",
+      "14b402b80c283a616f9cf855391633e48c1874240a2dcd04b3cb758823dec657",
+      "1749f6435b30be7c8d0986825494fcc10d57630966c23ae5a7a02a4cb7433522",
+      "3e0ed4d1faf93262bd281b7b82d0415de7f24d936433c34c551eee9fd81b53a7",
+      "4131535d983b48ebd7fbedee75914c6e3d142ec1d276770dfdcba13d197383f8",
+      "5b911a618d763b07efe3351340cd8a8c9f8022dce2484a5709700ee90122840f",
+      "78031f098c76a951c2d1af9ea393b4d6037370b8a191a319627bc2f663b38d90",
+      "9c45a7c473bf9cba50b96e9aa123f32c4525f217bff5237b5200583686fef9bf",
+      "a2da8b7d5a27c0ec2832083f9475d718246e7b45db857f0edb863032e742062d"
+    ],
+    "reason": "Parent reread both matched source items. Word tokenization erases the distinction between x squared and x plus two; the source uses the former, the new sample the latter. The upper bound also changes, and the functional data, options and solution differ. Only conventional region-boundary wording and structural zero match. This is an exact case review, not a general exemption for copied questions.",
+    "mathematical_check": "The disk method integrates the square of the linear radius over the given new interval. The value is 19 pi / 3; alternatives correspond to failing to square, squaring an average, or omitting pi.",
+    "semantic_noncopying_proved": false
+  }
+}

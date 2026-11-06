@@ -1,0 +1,126 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "aeccfb7564f3b80e",
+    "topic": "Xác suất độc lập",
+    "part": "P1",
+    "level": "TH",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Xác suất của các biến cố cùng giả thiết độc lập.",
+        "task": "Tính xác suất giao của các biến cố.",
+        "reasoning": [
+          "Nhận diện điều kiện áp dụng công thức nhân xác suất.",
+          "Nhân các xác suất đã cho."
+        ],
+        "combines": [
+          "Biến cố độc lập",
+          "Xác suất giao"
+        ],
+        "difficulty_source": "Chọn đúng phép toán từ giả thiết độc lập.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      }
+    ],
+    "support_refs": [
+      "023e74626dd8|P1|9|None"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "aeccfb7564f3b80e",
+    "stem": "Trong một lượt thử, hai cảm biến hoạt động độc lập với nhau. Xác suất cảm biến thứ nhất phát hiện được tín hiệu là 0,6; xác suất cảm biến thứ hai phát hiện được tín hiệu là 0,3. Xác suất cả hai cảm biến đều phát hiện được tín hiệu bằng bao nhiêu?",
+    "options": [
+      {
+        "label": "A",
+        "text": "0,18"
+      },
+      {
+        "label": "B",
+        "text": "0,90"
+      },
+      {
+        "label": "C",
+        "text": "0,72"
+      },
+      {
+        "label": "D",
+        "text": "0,30"
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "A",
+        "level": "TH"
+      }
+    ],
+    "solution": "Gọi A và B lần lượt là biến cố cảm biến thứ nhất và thứ hai phát hiện được tín hiệu. Do A và B độc lập, P(A ∩ B) = P(A)P(B) = 0,6 × 0,3 = 0,18. Chọn A.",
+    "distractors": [
+      {
+        "label": "B",
+        "sub": null,
+        "mistake": "Cộng hai xác suất: 0,6 + 0,3 = 0,90.",
+        "why_plausible": "Học sinh nhầm quy tắc tính xác suất giao với phép cộng xác suất khi thấy hai biến cố được nêu cùng nhau."
+      },
+      {
+        "label": "C",
+        "sub": null,
+        "mistake": "Tính xác suất ít nhất một cảm biến phát hiện: 1 − 0,4 × 0,7 = 0,72.",
+        "why_plausible": "Học sinh hiểu giả thiết độc lập nhưng nhầm yêu cầu cả hai với ít nhất một."
+      },
+      {
+        "label": "D",
+        "sub": null,
+        "mistake": "Lấy xác suất nhỏ hơn trong hai xác suất đã cho.",
+        "why_plausible": "Học sinh nhầm hai biến cố độc lập với trường hợp biến cố có xác suất nhỏ hơn nằm trong biến cố còn lại."
+      }
+    ],
+    "level_reason": "Học sinh nhận diện giả thiết độc lập và áp dụng trực tiếp công thức nhân xác suất trong một tình huống quen thuộc; yêu cầu thuộc TH.",
+    "prerequisites": [
+      "Biến cố giao",
+      "Hai biến cố độc lập",
+      "Công thức nhân xác suất của hai biến cố độc lập"
+    ],
+    "variation_guidance": "Đây là mẫu minh họa tổng hợp. Có thể đổi bối cảnh và xác suất, đồng thời xây dựng lại phương án nhiễu từ các lỗi cộng xác suất, tính biến cố hợp và nhầm quan hệ bao hàm.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "aeccfb7564f3b80e",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "A",
+        "level": "TH"
+      }
+    ],
+    "solution": "Do hai cảm biến hoạt động độc lập, xác suất cả hai cùng phát hiện tín hiệu là 0,6 × 0,3 = 0,18.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Áp dụng trực tiếp quy tắc nhân xác suất của hai biến cố độc lập."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/418d184204665514c7cf7e614ca321fdd19e1db10c0c13e49368593bd9c1296a.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/418d184204665514c7cf7e614ca321fdd19e1db10c0c13e49368593bd9c1296a.resolve.json"
+}

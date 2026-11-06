@@ -1,0 +1,231 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "69cb48b525a49bce",
+    "topic": "Phương pháp tọa độ trong không gian",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Các điểm xác định một đường thẳng và một hệ phương trình tham số được đề xuất.",
+        "task": "Kiểm tra hệ tham số có biểu diễn đúng đường thẳng hay không.",
+        "reasoning": [
+          "Xác định vectơ chỉ phương từ các điểm đã cho.",
+          "Kiểm tra điểm đi qua của hệ tham số.",
+          "Đối chiếu cả tọa độ không đổi với dữ kiện không gian."
+        ],
+        "combines": [
+          "Vectơ chỉ phương",
+          "Phương trình tham số",
+          "Điều kiện điểm thuộc đường thẳng"
+        ],
+        "difficulty_source": "Kiểm tra đồng thời vectơ chỉ phương và điểm đi qua.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Một điểm trên quỹ đạo và một vectơ hướng được xác định gián tiếp qua các góc với trục.",
+        "task": "Kiểm tra phương trình chính tắc được đề xuất cho quỹ đạo.",
+        "reasoning": [
+          "Tính các tọa độ của vectơ hướng đơn vị từ các côsin góc.",
+          "Đọc vectơ chỉ phương trong phương trình đề xuất.",
+          "Kiểm tra hai vectơ có tỉ lệ với nhau và đường thẳng có đi qua điểm đã cho hay không."
+        ],
+        "combines": [
+          "Côsin chỉ phương",
+          "Vectơ cùng phương",
+          "Phương trình đường thẳng"
+        ],
+        "difficulty_source": "Kiểm tra tính tỉ lệ của vectơ thay vì chỉ khớp điểm đi qua.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Tâm và bán kính của một vùng cầu trong hệ tọa độ không gian.",
+        "task": "Kiểm tra phương trình mặt cầu được đề xuất.",
+        "reasoning": [
+          "Viết các bình phương khoảng cách theo tọa độ tâm.",
+          "So sánh vế phải với bình phương bán kính."
+        ],
+        "combines": [
+          "Khoảng cách trong không gian",
+          "Phương trình mặt cầu"
+        ],
+        "difficulty_source": "Kiểm tra một thành phần trong công thức chuẩn.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Tọa độ hai đầu mút của một hành trình thẳng và phương trình đường thẳng được đề xuất.",
+        "task": "Kiểm tra đường thẳng chứa hành trình.",
+        "reasoning": [
+          "Lấy hiệu tọa độ hai đầu mút làm vectơ chỉ phương.",
+          "Dùng một đầu mút để viết phương trình chính tắc.",
+          "Đối chiếu phương trình được nêu."
+        ],
+        "combines": [
+          "Vectơ nối hai điểm",
+          "Phương trình chính tắc"
+        ],
+        "difficulty_source": "Dữ kiện đã cung cấp trực tiếp điểm đi qua và phương hướng.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "023e74626dd8|P2|4|b",
+      "163f20908cf7|P2|3|b",
+      "0968e8bc9e2d|P2|2|a",
+      "0968e8bc9e2d|P2|2|b",
+      "0968e8bc9e2d|P2|2|d",
+      "0ecb85132b84|P2|4|a",
+      "11d88d9a96ad|P2|2|b",
+      "11d88d9a96ad|P2|2|c",
+      "54e9a2a276ca|P2|4|a",
+      "54e9a2a276ca|P2|4|b",
+      "54e9a2a276ca|P2|4|c",
+      "6aa30214ba7e|P2|4|a",
+      "7ab78715480e|P2|2|a",
+      "7ab78715480e|P2|2|c",
+      "85efdd1a7e54|P2|1|a",
+      "85efdd1a7e54|P2|1|b",
+      "9ed45d16a975|P2|3|a",
+      "9ed45d16a975|P2|3|b",
+      "9ed45d16a975|P2|3|d",
+      "acc00d945397|P2|3|d",
+      "aceb17d936f5|P2|3|b",
+      "aceb17d936f5|P2|3|c",
+      "adb051fd8253|P2|3|c",
+      "adb051fd8253|P2|3|d",
+      "c6340827ba59|P2|3|b",
+      "c6340827ba59|P2|3|c",
+      "c6340827ba59|P2|3|d",
+      "ccae0b94a82d|P2|3|a",
+      "ccae0b94a82d|P2|3|b",
+      "ccae0b94a82d|P2|3|c",
+      "ccae0b94a82d|P2|3|d",
+      "de5833d227dd|P2|2|a",
+      "fc12a8146279|P2|4|a",
+      "fc12a8146279|P2|4|b",
+      "fc12a8146279|P2|4|c"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "69cb48b525a49bce",
+    "stem": "Trong không gian Oxyz, cho hai điểm P(−2; 1; 4), Q(4; −3; 4) và đường thẳng d đi qua P, Q. Xác định tính đúng hoặc sai của mỗi khẳng định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Vectơ u = (3; −2; 0) là một vectơ chỉ phương của d."
+      },
+      {
+        "sub": "b",
+        "text": "Đường thẳng d có phương trình tham số x = −2 + 3t, y = 1 − 2t, z = 0, với t thuộc R."
+      },
+      {
+        "sub": "c",
+        "text": "Điểm R(1; −1; 4) thuộc d."
+      },
+      {
+        "sub": "d",
+        "text": "Đường thẳng d nằm trong mặt phẳng (α): 2x − 3y + 7 = 0."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Ta có PQ = (6; −4; 0) = 2(3; −2; 0), nên a đúng. Phương trình tham số của d có thể viết là x = −2 + 3t, y = 1 − 2t, z = 4. Vì vậy b sai: hệ được đề xuất có z = 0 nên không đi qua P hoặc Q. Với t = 1, phương trình đúng của d cho điểm (1; −1; 4), nên c đúng. Điểm P thuộc (α), nhưng thay Q vào vế trái phương trình (α) được 2·4 − 3·(−3) + 7 = 24 khác 0. Do Q không thuộc (α), d không nằm trong (α); d sai.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Cho rằng thành phần chỉ phương theo trục Oz bằng 0 thì tọa độ z của mọi điểm trên đường thẳng cũng bằng 0.",
+        "why_plausible": "Học sinh có thể nhầm tọa độ không đổi của điểm với thành phần bằng 0 của vectơ chỉ phương."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Chỉ kiểm tra P thuộc mặt phẳng rồi kết luận cả đường thẳng d nằm trong mặt phẳng.",
+        "why_plausible": "Một điểm chung là điều kiện cần nhưng chưa đủ để đường thẳng nằm trong mặt phẳng."
+      }
+    ],
+    "level_reason": "Các ý yêu cầu tính vectơ nối hai điểm, đối chiếu phương trình tham số và kiểm tra điều kiện thuộc bằng phép thế quen thuộc. Mức cao nhất của toàn câu là TH.",
+    "prerequisites": [
+      "Tọa độ vectơ nối hai điểm.",
+      "Hai vectơ cùng phương.",
+      "Phương trình tham số của đường thẳng.",
+      "Điều kiện điểm thuộc đường thẳng và mặt phẳng."
+    ],
+    "variation_guidance": "Có thể đổi hai điểm sao cho một tọa độ vẫn không đổi và khác 0; khi đổi mặt phẳng ở ý d, cần bảo đảm mặt phẳng chứa đúng một trong hai điểm đã cho.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "69cb48b525a49bce",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Ta có PQ=(6;−4;0)=2(3;−2;0), nên a đúng. Phương trình tham số của d là x=−2+3t, y=1−2t, z=4; khẳng định b ghi z=0 nên sai. Với t=1, ta được R(1;−1;4), nên c đúng. Thay Q vào phương trình mặt phẳng α được 2·4−3·(−3)+7=24≠0, nên Q không thuộc α và d sai.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a: Tính vectơ nối hai điểm và xét tính cùng phương. b: Đối chiếu phương trình tham số với điểm và vectơ chỉ phương. c: Thay tham số để kiểm tra điểm thuộc đường thẳng. d: Kiểm tra một điểm trên đường thẳng có thuộc mặt phẳng hay không. Từng ý đều là thao tác quen thuộc ở mức TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/85581bde458d2c2066009036a5f17771dc75ec917394512579a9123c675daa30.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/85581bde458d2c2066009036a5f17771dc75ec917394512579a9123c675daa30.resolve.json"
+}

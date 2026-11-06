@@ -1,0 +1,128 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "615eb837a41dbeae",
+    "topic": "Xác suất có điều kiện",
+    "part": "P1",
+    "level": "TH",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Xác suất của từng biến cố và của hợp hai biến cố.",
+        "task": "Chọn xác suất của một biến cố khi biết biến cố còn lại xảy ra.",
+        "reasoning": [
+          "Dùng công thức cộng để tìm xác suất giao.",
+          "Chia xác suất giao cho xác suất biến cố điều kiện."
+        ],
+        "combines": [
+          "Công thức cộng xác suất",
+          "Xác suất có điều kiện"
+        ],
+        "difficulty_source": "Giữ đúng vai trò của biến cố điều kiện khi chọn mẫu số.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "9ed45d16a975|P1|8|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "615eb837a41dbeae",
+    "stem": "Chọn ngẫu nhiên một học sinh trong một nhóm. Gọi A là biến cố học sinh đó tham gia câu lạc bộ âm nhạc, B là biến cố học sinh đó tham gia câu lạc bộ mỹ thuật. Biết P(A) = 0,6; P(B) = 0,5 và P(A∪B) = 0,8. Xác suất học sinh được chọn tham gia câu lạc bộ âm nhạc khi biết học sinh đó tham gia câu lạc bộ mỹ thuật bằng bao nhiêu?",
+    "options": [
+      {
+        "label": "A",
+        "text": "1/2."
+      },
+      {
+        "label": "B",
+        "text": "3/5."
+      },
+      {
+        "label": "C",
+        "text": "3/10."
+      },
+      {
+        "label": "D",
+        "text": "3/8."
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "TH"
+      }
+    ],
+    "solution": "Theo công thức cộng, P(A∩B) = P(A)+P(B)−P(A∪B) = 0,6+0,5−0,8 = 0,3. Do P(B)>0, xác suất cần tìm là P(A|B) = P(A∩B)/P(B) = 0,3/0,5 = 3/5. A là kết quả tính nhầm P(B|A); C chỉ là xác suất giao; D dùng sai mẫu số là xác suất hợp.",
+    "distractors": [
+      {
+        "label": "A",
+        "sub": null,
+        "mistake": "Đảo vai trò hai biến cố, tính P(B|A) = 0,3/0,6.",
+        "why_plausible": "Học sinh nhớ công thức nhưng xác định sai biến cố đứng sau điều kiện."
+      },
+      {
+        "label": "C",
+        "sub": null,
+        "mistake": "Dừng ở P(A∩B) = 0,3 và coi đó là xác suất có điều kiện.",
+        "why_plausible": "Việc cùng tham gia hai câu lạc bộ dễ bị đồng nhất với yêu cầu khi đã biết tham gia một câu lạc bộ."
+      },
+      {
+        "label": "D",
+        "sub": null,
+        "mistake": "Tính 0,3/0,8, lấy xác suất hợp làm mẫu số.",
+        "why_plausible": "Học sinh thu hẹp không gian xét thành nhóm tham gia ít nhất một câu lạc bộ thay vì nhóm tham gia mỹ thuật."
+      }
+    ],
+    "level_reason": "Học sinh dùng công thức cộng để tìm xác suất giao rồi áp dụng công thức xác suất có điều kiện. Đây là chuỗi tính toán chuẩn ở mức TH.",
+    "prerequisites": [
+      "Hợp và giao của hai biến cố",
+      "Công thức cộng xác suất",
+      "Công thức xác suất có điều kiện"
+    ],
+    "variation_guidance": "Thay bối cảnh và các xác suất sao cho dữ kiện nhất quán; duy trì các phương án nhiễu ứng với đảo điều kiện, quên chia và chọn sai mẫu số.",
+    "uncertainties": [
+      "Đây là mẫu minh họa tổng hợp; căn cứ về cách xây dựng chỉ từ quan sát cấp tỉnh qua nguồn bên thứ ba, chưa có đối chiếu chính thức."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "615eb837a41dbeae",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "TH"
+      }
+    ],
+    "solution": "P(A∩B) = P(A)+P(B)−P(A∪B) = 0,6+0,5−0,8 = 0,3. Do đó P(A|B) = P(A∩B)/P(B) = 0,3/0,5 = 3/5. Chọn B.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "TH: áp dụng trực tiếp công thức xác suất hợp để tìm giao, rồi tính xác suất có điều kiện theo quy trình quen thuộc."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/6a61552f241be3310fdbb8a26dd5244dc3c6b31e7df0a2f3a865c0b7dbde8ad4.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/6a61552f241be3310fdbb8a26dd5244dc3c6b31e7df0a2f3a865c0b7dbde8ad4.resolve.json"
+}

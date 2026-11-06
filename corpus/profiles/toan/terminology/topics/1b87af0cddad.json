@@ -1,0 +1,241 @@
+{
+  "schema_version": "research-topic-pack-v1",
+  "origin": "mixed_abstract_evidence_and_explicit_synthetic_examples",
+  "subject": "toan",
+  "topic": {
+    "topic": "Mô hình tuyến tính",
+    "display_topic": "Mô hình tuyến tính",
+    "parent_topic_annotation": {},
+    "raw_topics": [
+      "Mô hình tuyến tính: xác định tổng tiền từ đơn giá không đổi"
+    ],
+    "grades": [
+      "None"
+    ],
+    "classes": {
+      "official": {
+        "distinct_papers": 1,
+        "rows": 1,
+        "parts": {
+          "P3": {
+            "papers": 1,
+            "questions": 1,
+            "rows": 1,
+            "discrimination": {
+              "medium": 1
+            }
+          }
+        }
+      },
+      "provincial_third_party": {
+        "distinct_papers": 0,
+        "rows": 0,
+        "parts": {
+          "P3": {
+            "papers": 0,
+            "questions": 0,
+            "rows": 0,
+            "discrimination": {}
+          }
+        }
+      }
+    },
+    "patterns_by_class": {
+      "official": [],
+      "provincial_third_party": []
+    },
+    "support_refs": [
+      "023e74626dd8|P3|5|None"
+    ],
+    "cognitive_level_status": "abstract_classification_complete_pending_original_item_review",
+    "sample_status": "examples_published_pending_teacher",
+    "prototype_status": "no_mapped_case_not_evidence_of_absence",
+    "component_details": {
+      "reasoning_moves": [],
+      "cognitive_counts": [
+        {
+          "class": "official",
+          "part": "P3",
+          "topic": "Mô hình tuyến tính",
+          "counts": {
+            "TH": 1
+          },
+          "display_topic": "Mô hình tuyến tính"
+        }
+      ],
+      "containing_question_cognitive_counts": [
+        {
+          "class": "official",
+          "part": "P3",
+          "counts": {
+            "TH": 1
+          }
+        }
+      ],
+      "matrix_comparison": [
+        {
+          "part": "P3",
+          "topic": "Mô hình tuyến tính",
+          "grades": [
+            null
+          ],
+          "default_count": 0,
+          "default_topics": [],
+          "official_papers": 1,
+          "provincial_papers": 0,
+          "official_ids": [
+            "023e74626dd8"
+          ],
+          "provincial_ids": [],
+          "official_mean_questions": 0.5,
+          "provincial_mean_questions": 0.0,
+          "display_topic": "Mô hình tuyến tính"
+        }
+      ],
+      "prototype_cases": [],
+      "sample_ids": [
+        "9b602a2c021f2ddf"
+      ],
+      "sample_cells_planned": 1
+    }
+  },
+  "construction_observations": [
+    {
+      "part": "P3",
+      "idx": 5,
+      "sub": null,
+      "topic": "Mô hình tuyến tính: xác định tổng tiền từ đơn giá không đổi",
+      "grade": null,
+      "given": "Một bảng lượng hàng theo từng loại qua các lần giao dịch, tổng tiền đã biết ở một số lần và giả thiết đơn giá không đổi.",
+      "task": "Tính tổng tiền của lần giao dịch còn thiếu.",
+      "reasoning": [
+        "Biểu diễn tổng tiền bằng tổ hợp tuyến tính của lượng từng loại hàng với đơn giá.",
+        "Nhận ra vectơ lượng hàng cần hỏi tỉ lệ với một vectơ lượng hàng đã có tổng tiền.",
+        "Dùng cùng hệ số tỉ lệ để suy ra tổng tiền cần tìm."
+      ],
+      "steps": 3,
+      "combines": [
+        "Mô hình tuyến tính",
+        "Tỉ lệ thuận",
+        "Đọc bảng dữ liệu"
+      ],
+      "wrong_options": null,
+      "wrong_option_details": [],
+      "cue_use": "needed in reasoning",
+      "difficulty_source": "Nhận ra quan hệ tỉ lệ giữa các dòng dữ liệu để tránh giải hệ đơn giá không cần thiết.",
+      "discrimination": "medium",
+      "evidence_uncertainty": "Không xác định một lớp duy nhất: lời giải ngắn dùng tỉ lệ thuận từ cấp học trước, còn cách giải hệ tuyến tính không có mục bài tương ứng rõ ràng trong danh mục tham chiếu.",
+      "optional_path": null,
+      "paper_id": "023e74626dd8",
+      "year": "2026",
+      "evidence_class": "official",
+      "ref": "023e74626dd8|P3|5|None",
+      "printed_idx": 5,
+      "display_topic": "Mô hình tuyến tính: xác định tổng tiền từ đơn giá không đổi"
+    }
+  ],
+  "level_assignments": [
+    {
+      "ref": "023e74626dd8|P3|5|None",
+      "level": "TH",
+      "confidence": "medium",
+      "justification": "Lối giải ngắn được mô tả chỉ cần nhận ra quan hệ tỉ lệ và áp dụng tính tuyến tính quen thuộc, không bắt buộc xây dựng hệ suy luận phức tạp.",
+      "decisive_demand": "Nhận diện sự tỉ lệ giữa các bộ dữ liệu và chuyển tỉ lệ sang đại lượng cần tìm.",
+      "uncertainty": "Không có bảng cụ thể để đánh giá mức độ trực tiếp của quan hệ tỉ lệ; việc không xác định được lớp học không tự làm tăng mức nhận thức."
+    }
+  ],
+  "examples": [
+    {
+      "origin": "synthetic_not_corpus_evidence",
+      "model": "gpt-6.1-sol",
+      "target": {
+        "id": "9b602a2c021f2ddf",
+        "topic": "Mô hình tuyến tính",
+        "part": "P3",
+        "level": "TH",
+        "qtype": "short_answer",
+        "option_labels": [],
+        "slot_keys": [
+          null
+        ],
+        "canonical_answer_alphabet": [],
+        "abstract_observations": [
+          {
+            "given": "Một bảng lượng hàng theo từng loại qua các lần giao dịch, tổng tiền đã biết ở một số lần và giả thiết đơn giá không đổi.",
+            "task": "Tính tổng tiền của lần giao dịch còn thiếu.",
+            "reasoning": [
+              "Biểu diễn tổng tiền bằng tổ hợp tuyến tính của lượng từng loại hàng với đơn giá.",
+              "Nhận ra vectơ lượng hàng cần hỏi tỉ lệ với một vectơ lượng hàng đã có tổng tiền.",
+              "Dùng cùng hệ số tỉ lệ để suy ra tổng tiền cần tìm."
+            ],
+            "combines": [
+              "Mô hình tuyến tính",
+              "Tỉ lệ thuận",
+              "Đọc bảng dữ liệu"
+            ],
+            "difficulty_source": "Nhận ra quan hệ tỉ lệ giữa các dòng dữ liệu để tránh giải hệ đơn giá không cần thiết.",
+            "evidence_uncertainty": "Không xác định một lớp duy nhất: lời giải ngắn dùng tỉ lệ thuận từ cấp học trước, còn cách giải hệ tuyến tính không có mục bài tương ứng rõ ràng trong danh mục tham chiếu.",
+            "evidence_class": "official"
+          }
+        ],
+        "support_refs": [
+          "023e74626dd8|P3|5|None"
+        ],
+        "official_anchor_available": true,
+        "display_topic": "Mô hình tuyến tính"
+      },
+      "sample": {
+        "id": "9b602a2c021f2ddf",
+        "stem": "Một cửa hàng bán vở, bút và thước với đơn giá mỗi loại không đổi, không giảm giá và không thu thêm phí. Một lượt mua gồm 2 quyển vở, 3 chiếc bút và 1 chiếc thước có tổng tiền 46 nghìn đồng. Một lượt mua khác gồm 1 quyển vở, 2 chiếc bút và 2 chiếc thước có tổng tiền 36 nghìn đồng. Nếu mua 6 quyển vở, 9 chiếc bút và 3 chiếc thước thì phải trả bao nhiêu nghìn đồng?",
+        "options": [],
+        "statements": [],
+        "answers": [
+          {
+            "sub": null,
+            "answer": "138",
+            "level": "TH"
+          }
+        ],
+        "solution": "Lượng từng loại hàng cần mua đều gấp 3 lần lượng tương ứng trong lượt mua có tổng tiền 46 nghìn đồng: 6=3·2, 9=3·3 và 3=3·1. Vì đơn giá không đổi và không có khoản điều chỉnh khác, tổng tiền cũng gấp 3 lần, bằng 3·46=138 nghìn đồng. Dữ kiện về lượt mua 36 nghìn đồng không cần dùng để tính khoản tiền này.",
+        "distractors": [],
+        "level_reason": "Học sinh nhận ra quan hệ tỉ lệ trực tiếp giữa hai nhóm hàng và áp dụng tính chất của tổng tiền theo đơn giá cố định. Đây là diễn giải quan hệ tuyến tính quen thuộc ở mức TH.",
+        "prerequisites": [
+          "Tỉ lệ thuận",
+          "Tổng tiền bằng tổng các tích của số lượng và đơn giá",
+          "Nhận biết các nhóm số lượng cùng hệ số tỉ lệ"
+        ],
+        "variation_guidance": "Thay loại hàng, giá trị tổng tiền và hệ số tỉ lệ chung. Nếu thêm một lượt mua phụ, cần bảo đảm dữ kiện phù hợp với cùng một bộ đơn giá dương.",
+        "uncertainties": [],
+        "missing_assets": []
+      },
+      "independent_review": {
+        "id": "9b602a2c021f2ddf",
+        "answers": [
+          {
+            "sub": null,
+            "answer": "138",
+            "level": "TH"
+          }
+        ],
+        "solution": "Số lượng từng loại hàng cần mua đều gấp 3 lần lượt mua đầu tiên. Vì đơn giá không đổi, tổng tiền là 3×46=138 nghìn đồng.",
+        "confidence": "high",
+        "error_flags": [],
+        "level_reason": "Nhận ra quan hệ tỉ lệ trực tiếp và thực hiện một phép nhân quen thuộc; không cần xác định từng đơn giá."
+      },
+      "key_agreement": true,
+      "level_agreement": true,
+      "status": "model_checks_passed_pending_teacher_review",
+      "generation_receipt": "audit/outputs/topic-samples/toan/8841ca86c87c7b8306bb3a39609e6db5cfee643f3a86e88f24749a0f2c2982ce.draft.json",
+      "resolve_receipt": "audit/outputs/topic-samples/toan/8841ca86c87c7b8306bb3a39609e6db5cfee643f3a86e88f24749a0f2c2982ce.resolve.json"
+    }
+  ],
+  "unready_example_ids": [],
+  "missing_example_ids": [],
+  "teacher_approved": false,
+  "_terminology_provenance": {
+    "raw_source": "profiles/toan/topics/1b87af0cddad.json",
+    "raw_source_sha256": "5ca0e5547e8074ba1cf213f007131f2ca355e6fc1db32b14a85162497415fe85",
+    "rules_sha256": "b5b26e5d616a0c7dde76b6bcf6e6321705c32421ded69fa2f493f269a64f7df2",
+    "not_a_new_blind_solve": true
+  }
+}

@@ -1,0 +1,204 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "ca50758b262d7e08",
+    "topic": "Số đặc trưng của mẫu số liệu ghép nhóm",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Bảng các khoảng lớp và tần số cùng nhận định về cỡ mẫu.",
+        "task": "Kiểm tra tổng số quan sát.",
+        "reasoning": [
+          "Cộng các tần số của những lớp.",
+          "Đối chiếu tổng thu được với cỡ mẫu được nêu."
+        ],
+        "combines": [
+          "Đọc bảng tần số",
+          "Cỡ mẫu"
+        ],
+        "difficulty_source": "Phân biệt số lớp với tổng tần số.",
+        "evidence_uncertainty": "Thiếu khóa đáp án khớp mã đề; không gán đúng sai hoặc cơ chế gây sai cho nhận định.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Bảng các khoảng lớp và tần số cùng một số trung bình được đề xuất.",
+        "task": "Kiểm tra số trung bình của mẫu ghép nhóm.",
+        "reasoning": [
+          "Xác định giá trị đại diện của từng lớp.",
+          "Tính tổng các tích giữa giá trị đại diện và tần số tương ứng.",
+          "Chia cho cỡ mẫu rồi đối chiếu nhận định."
+        ],
+        "combines": [
+          "Giá trị đại diện của lớp",
+          "Trung bình có trọng số"
+        ],
+        "difficulty_source": "Sử dụng trọng số tần số thay vì lấy trung bình các lớp.",
+        "evidence_uncertainty": "Thiếu khóa đáp án khớp mã đề; không gán đúng sai hoặc cơ chế gây sai cho nhận định.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Bảng các khoảng lớp và tần số cùng một phương sai được đề xuất.",
+        "task": "Kiểm tra phương sai của mẫu ghép nhóm.",
+        "reasoning": [
+          "Xác định giá trị đại diện và cỡ mẫu.",
+          "Tính số trung bình có trọng số.",
+          "Tính trung bình có trọng số của bình phương độ lệch so với số trung bình.",
+          "Đối chiếu phương sai thu được với nhận định."
+        ],
+        "combines": [
+          "Số trung bình của mẫu ghép nhóm",
+          "Phương sai"
+        ],
+        "difficulty_source": "Áp dụng đúng công thức phương sai với tần số làm trọng số.",
+        "evidence_uncertainty": "Thiếu khóa đáp án khớp mã đề; không gán đúng sai hoặc cơ chế gây sai cho nhận định.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Bảng các khoảng lớp và tần số cùng một độ lệch chuẩn được đề xuất.",
+        "task": "Kiểm tra độ lệch chuẩn của mẫu ghép nhóm.",
+        "reasoning": [
+          "Xác định giá trị đại diện, cỡ mẫu và số trung bình.",
+          "Tính phương sai từ các giá trị đại diện và tần số.",
+          "Lấy căn bậc hai của phương sai.",
+          "Rút gọn và đối chiếu nhận định."
+        ],
+        "combines": [
+          "Phương sai của mẫu ghép nhóm",
+          "Độ lệch chuẩn",
+          "Biến đổi căn thức"
+        ],
+        "difficulty_source": "Phân biệt phương sai với độ lệch chuẩn và kiểm tra lại dữ liệu nền.",
+        "evidence_uncertainty": "Thiếu khóa đáp án khớp mã đề; không gán đúng sai hoặc cơ chế gây sai cho nhận định.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "ecd76ac672e5|P2|4|a",
+      "ecd76ac672e5|P2|4|b",
+      "ecd76ac672e5|P2|4|c",
+      "ecd76ac672e5|P2|4|d"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "ca50758b262d7e08",
+    "stem": "Thời gian hoàn thành một hoạt động của một nhóm học sinh được ghi lại theo bảng ghép nhóm sau, đơn vị là phút: khoảng [10; 20) có tần số 2; khoảng [20; 30) có tần số 4; khoảng [30; 40) có tần số 6; khoảng [40; 50) có tần số 8. Dùng trung điểm mỗi khoảng làm giá trị đại diện và tính phương sai với mẫu số là cỡ mẫu n. Xét tính đúng, sai của các nhận định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Cỡ mẫu là 20."
+      },
+      {
+        "sub": "b",
+        "text": "Số trung bình của mẫu số liệu ghép nhóm là 30 phút."
+      },
+      {
+        "sub": "c",
+        "text": "Phương sai của mẫu số liệu ghép nhóm là 100 phút bình phương."
+      },
+      {
+        "sub": "d",
+        "text": "Độ lệch chuẩn của mẫu số liệu ghép nhóm là 100 phút."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Các giá trị đại diện lần lượt là 15, 25, 35, 45. a) Cỡ mẫu n = 2 + 4 + 6 + 8 = 20. b) Số trung bình là (2·15 + 4·25 + 6·35 + 8·45)/20 = 35 phút, không phải 30 phút. c) Phương sai là [2·(15 − 35)² + 4·(25 − 35)² + 6·(35 − 35)² + 8·(45 − 35)²]/20 = 100 phút bình phương. d) Độ lệch chuẩn là căn bậc hai của phương sai, bằng 10 phút, không phải 100 phút.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Lấy trung bình cộng của bốn giá trị đại diện mà không dùng tần số làm trọng số.",
+        "why_plausible": "Phép tính (15 + 25 + 35 + 45)/4 cho kết quả 30, phù hợp với cách nhầm mỗi lớp có vai trò như một quan sát."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Dùng nguyên giá trị phương sai làm độ lệch chuẩn.",
+        "why_plausible": "Hai số đặc trưng được tính liên tiếp nên học sinh có thể bỏ qua bước lấy căn bậc hai."
+      }
+    ],
+    "level_reason": "Mức cao nhất của cả cụm là TH: các ý yêu cầu đọc tần số và thực hiện quy trình quen thuộc để tính cỡ mẫu, trung bình, phương sai và độ lệch chuẩn. Số phép tính không làm tăng mức lên VD.",
+    "prerequisites": [
+      "Cỡ mẫu và tần số",
+      "Giá trị đại diện của khoảng lớp",
+      "Trung bình có trọng số",
+      "Phương sai và độ lệch chuẩn của mẫu ghép nhóm"
+    ],
+    "variation_guidance": "Có thể thay các khoảng lớp và tần số, đồng thời giữ tần số không đều để phân biệt trung bình có trọng số với trung bình cộng các trung điểm. Phải tính lại toàn bộ số đặc trưng sau khi thay dữ liệu.",
+    "uncertainties": [
+      "Đây là mẫu minh họa tổng hợp nguyên bản, không phải câu hỏi hay bằng chứng từ đề thi thật.",
+      "Quan sát nền chỉ thuộc nguồn cấp tỉnh do bên thứ ba cung cấp và thiếu khóa đáp án khớp mã đề; các lỗi trong mẫu này được thiết kế mới, không được quy cho câu hỏi nguồn."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "ca50758b262d7e08",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Các giá trị đại diện là 15, 25, 35, 45. Cỡ mẫu n = 2 + 4 + 6 + 8 = 20. Trung bình là (2×15 + 4×25 + 6×35 + 8×45)/20 = 35 phút. Phương sai là [2×(15−35)² + 4×(25−35)² + 6×(35−35)² + 8×(45−35)²]/20 = 100 phút bình phương. Độ lệch chuẩn là √100 = 10 phút.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a) TH: cộng các tần số trong bảng. b) TH: tính trung bình có trọng số. c) TH: áp dụng công thức phương sai đã xác định mẫu số. d) TH: lấy căn bậc hai của phương sai. Đây đều là các quy trình tính toán quen thuộc."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/d5959d7b6d20cb33d11b63bd48b6c1a44deb20e9f5079f340f837bcb47ca9d78.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/d5959d7b6d20cb33d11b63bd48b6c1a44deb20e9f5079f340f837bcb47ca9d78.resolve.json"
+}

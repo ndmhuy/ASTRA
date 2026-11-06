@@ -1,0 +1,93 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "b337b9365aea27e1",
+    "topic": "Nguyên hàm và tích lũy",
+    "part": "P3",
+    "level": "VD",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Một mô hình vi phân liên hệ tốc độ giảm thể tích với căn thể tích, lượng ban đầu và lượng còn lại tại thời điểm đã biết.",
+        "task": "Xác định thời gian từ khi bắt đầu đến khi lượng chứa bằng không.",
+        "reasoning": [
+          "Đặt ẩn phụ là căn thể tích trên khoảng lượng chứa còn dương.",
+          "Dùng quy tắc đạo hàm để chuyển mô hình thành quan hệ có đạo hàm hằng.",
+          "Tích phân và sử dụng các dữ kiện thể tích theo thời gian để xác định tham số.",
+          "Tìm thời điểm căn thể tích bằng không và kiểm tra miền thời gian vật lý."
+        ],
+        "combines": [
+          "Đạo hàm hàm hợp",
+          "Nguyên hàm",
+          "Điều kiện ban đầu",
+          "Mô hình tốc độ thay đổi"
+        ],
+        "difficulty_source": "Nhận ra căn thể tích biến thiên tuyến tính thay vì giả định thể tích giảm đều.",
+        "evidence_uncertainty": "Xếp lớp theo công cụ đạo hàm và nguyên hàm; kỹ thuật giải phương trình vi phân tách biến không có mục riêng trong danh mục tham chiếu và có thể vượt quy trình được dạy tường minh ở bài nguyên hàm.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "3f1b2aa3cb72|P3|6|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "b337b9365aea27e1",
+    "stem": "Một bể A ban đầu chứa 144 lít nước, bể B ban đầu rỗng. Khi một bể còn nước và van xả mở, lượng nước V(t) trong bể đó thỏa mãn V'(t)=−k√V(t), trong đó t tính bằng phút và k>0 là hằng số giống nhau cho hai bể. Khi hết nước, bể giữ trạng thái rỗng. Van A mở từ t=0; tại t=2, bể A còn 100 lít và chưa có nước được chuyển sang B. Người vận hành được chọn một thời điểm τ≥2 khi A còn nước để chuyển tức thời một lượng nước từ A sang B, không quá 36 lít và không vượt lượng nước đang có trong A. Chỉ được chuyển một lần. Ngay sau khi chuyển, van B mở; van A vẫn mở liên tục. Bỏ qua thời gian chuyển và mọi thất thoát ngoài hai van xả. Thời gian ngắn nhất kể từ t=0 để cả hai bể đều hết nước là bao nhiêu phút? Làm tròn kết quả đến hàng phần trăm.",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "9,51",
+        "level": "VD"
+      }
+    ],
+    "solution": "Khi V>0, đặt u=√V. Quy tắc đạo hàm cho V'=2uu', nên u'=−k/2. Lấy nguyên hàm được u giảm tuyến tính theo thời gian. Trong hai phút đầu, √V giảm từ 12 xuống 10, suy ra k=2 và u'=−1. Trước khi chuyển, lượng nước tại thời điểm τ là W=(12−τ)², với 2≤τ<12. Nếu chuyển x lít thì hai bể cần thêm lần lượt √(W−x) và √x phút để cạn. Vì vậy thời điểm cả hai cùng hết nước là T=τ+max{√(W−x),√x}. Với τ cố định, hai thời gian được cân bằng tốt nhất khi x=W/2 nếu lượng chuyển này không vượt 36; nếu W>72 thì chọn x=36. Đặt τ0=12−6√2, là thời điểm W=72. Với 2≤τ≤τ0, thời gian nhỏ nhất theo x là F(τ)=τ+√((12−τ)²−36). Ta có F'(τ)=1−(12−τ)/√((12−τ)²−36)<0, nên F giảm. Với τ0≤τ<12, có thể chia đều lượng nước và thời gian nhỏ nhất là G(τ)=τ+(12−τ)/√2; hàm này tăng vì G'(τ)=1−1/√2>0. Do đó thời gian nhỏ nhất đạt tại τ=τ0, chuyển 36 lít để mỗi bể có 36 lít. Mỗi bể xả thêm 6 phút, nên Tmin=18−6√2≈9,5147186 phút, làm tròn được 9,51.",
+    "distractors": [],
+    "level_reason": "Học sinh phải suy ra quy luật tích lũy từ mô hình tốc độ, xây dựng hàm thời gian hoàn tất chung bằng giá trị lớn hơn của hai thời gian xả, rồi lựa chọn đồng thời thời điểm và lượng chuyển dưới giới hạn 36 lít. Việc nhận ra điểm đổi giữa hai chế độ tối ưu và chứng minh thời gian nhỏ nhất đòi hỏi một chuỗi lập luận phụ thuộc nhau, vượt việc tính thời gian cho các giai đoạn đã ấn định.",
+    "prerequisites": [
+      "Đạo hàm hàm hợp",
+      "Nguyên hàm của hàm hằng",
+      "Điều kiện ban đầu",
+      "Đạo hàm và tính đơn điệu",
+      "Mô hình hóa thời gian hoàn tất của hai quá trình diễn ra đồng thời"
+    ],
+    "variation_guidance": "Có thể thay lượng nước ban đầu, dữ kiện hiệu chỉnh hệ số và giới hạn lượng chuyển. Cần chọn giới hạn sao cho thời điểm lượng nước còn lại bằng hai lần giới hạn chuyển nằm sau lần quan sát và trước khi A cạn.",
+    "uncertainties": [
+      "Đây là mẫu minh họa tổng hợp nguyên gốc dựa trên cấu trúc quan sát cấp tỉnh qua bên thứ ba, không phải bằng chứng từ đề thi thật và không có neo đề chính thức.",
+      "Quy luật xả và thao tác chuyển tức thời là giả thiết toán học của bài, không phải khẳng định thực nghiệm về bể thực tế.",
+      "Lời giải chỉ dùng đạo hàm hàm hợp, nguyên hàm của hằng số và xét đơn điệu. Tuy nhiên, việc tự chọn căn của lượng nước để xử lý mô hình tốc độ có thể chưa được dạy tường minh trong một số lớp."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "b337b9365aea27e1",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "9,51",
+        "level": "VD"
+      }
+    ],
+    "solution": "Khi V>0, (√V)'=V'/(2√V)=−k/2. Trước khi chuyển nước, √V_A(t)=12−kt/2. Điều kiện V_A(2)=100 cho k=2. Vì vậy một bể đang chứa W lít sẽ hết nước sau √W phút. Đặt s=12−τ, khi đó 0<s≤10 và A chứa s² lít trước lúc chuyển. Nếu chuyển x lít, thời điểm cả hai bể hết nước là T=12−s+max(√(s²−x),√x), với 0≤x≤min(36,s²). Với s cố định, lựa chọn tối ưu là x=min(36,s²/2). Nếu s≤6√2 thì T nhỏ nhất theo x bằng 12−s+s/√2, giảm theo s. Nếu s≥6√2 thì T nhỏ nhất theo x bằng 12−s+√(s²−36), tăng theo s. Do đó tối ưu tại s=6√2, chuyển 36 lít vào thời điểm τ=12−6√2≥2. Khi đó mỗi bể còn 36 lít và cùng hết sau 6 phút. Thời gian cần tìm là 18−6√2≈9,51 phút. Phép biến đổi phương trình sử dụng đạo hàm hàm hợp trên khoảng V>0, không cần giả định một phương pháp giải phương trình vi phân ngoài kiến thức đạo hàm phổ thông.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Cần suy ra quy luật cạn nước từ phương trình đã cho, xây dựng hàm thời gian hoàn thành của hai bể, tối ưu lượng chuyển có ràng buộc rồi tối ưu thời điểm chuyển. Đây là chuỗi lập mô hình và suy luận phụ thuộc, thuộc VD."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/toan/6c85110f945e94e07413b0bb3c97cb4db59979d6ba4a6f3a4d5270113849f771.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/toan/6c85110f945e94e07413b0bb3c97cb4db59979d6ba4a6f3a4d5270113849f771.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 0,
+  "source_rows_sha256": "863dd6885185956ed9dabede84bf529993a764e4871f75f25629503cf8f2731a"
+}

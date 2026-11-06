@@ -1,0 +1,108 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "0380319aea9729ea",
+    "topic": "Vectơ và hệ trục tọa độ trong không gian",
+    "part": "P3",
+    "level": "TH",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Vị trí đầu, vectơ vận tốc không đổi của các vật và ngưỡng khoảng cách cảnh báo.",
+        "task": "Tìm thời điểm đầu tiên khoảng cách chạm ngưỡng và đổi đơn vị thời gian.",
+        "reasoning": [
+          "Biểu diễn vị trí từng vật theo cùng một biến thời gian.",
+          "Lập vectơ vị trí tương đối và bình phương khoảng cách.",
+          "Giải phương trình khoảng cách bằng ngưỡng.",
+          "Chọn nghiệm không âm đầu tiên phù hợp với quá trình tiếp cận.",
+          "Đổi đơn vị thời gian và làm tròn."
+        ],
+        "combines": [
+          "Tọa độ vectơ",
+          "Chuyển động thẳng đều",
+          "Khoảng cách trong không gian",
+          "Phương trình bậc hai",
+          "Đổi đơn vị"
+        ],
+        "difficulty_source": "Chọn thời điểm vượt ngưỡng đầu tiên thay vì nhận mọi nghiệm của phương trình khoảng cách.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Quy ước các hướng của hệ trục, vị trí đầu cuối bằng độ dời theo phương ngang và độ cao, cùng thời gian chuyển động thẳng.",
+        "task": "Tính tốc độ trung bình và làm tròn.",
+        "reasoning": [
+          "Chuyển các mô tả hướng và độ cao thành tọa độ có dấu.",
+          "Tính vectơ độ dời giữa vị trí đầu và cuối.",
+          "Tính độ dài quãng đường thẳng từ các thành phần độ dời.",
+          "Chia quãng đường cho thời gian rồi làm tròn theo yêu cầu."
+        ],
+        "combines": [
+          "Mô hình hóa bằng tọa độ không gian",
+          "Độ dài vectơ",
+          "Tốc độ trung bình"
+        ],
+        "difficulty_source": "Chuyển hướng đối nhau thành dấu tọa độ phù hợp.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "c6340827ba59|P3|3|None",
+      "ecd76ac672e5|P3|4|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "0380319aea9729ea",
+    "stem": "Chọn hệ tọa độ Oxyz với chiều dương Ox hướng đông, chiều dương Oy hướng bắc và chiều dương Oz hướng lên; mỗi đơn vị ứng với 1 m. Ban đầu, một thiết bị bay ở vị trí cách O 20 m về phía tây, 10 m về phía bắc và cao 6 m so với mặt phẳng Oxy. Sau 8 giây chuyển động thẳng không đổi chiều, thiết bị đến vị trí cách O 10 m về phía đông, 30 m về phía nam và cao 18 m. Tính tốc độ trung bình của thiết bị theo m/s. Làm tròn kết quả đến hàng phần mười và dùng dấu phẩy thập phân.",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "6,4",
+        "level": "TH"
+      }
+    ],
+    "solution": "Vị trí đầu là A(−20; 10; 6), vị trí cuối là B(10; −30; 18). Vectơ AB = (30; −40; 12). Do thiết bị chuyển động thẳng không đổi chiều, quãng đường là AB = √(30²+(−40)²+12²) = √2644 m. Tốc độ trung bình bằng √2644/8 ≈ 6,427 m/s. Làm tròn đến hàng phần mười được 6,4 m/s.",
+    "distractors": [],
+    "level_reason": "Học sinh chuyển các hướng đã quy ước thành dấu tọa độ rồi áp dụng trực tiếp công thức độ dài vectơ và tốc độ trung bình. Đây là bài tập quen thuộc ở mức TH.",
+    "prerequisites": [
+      "Biểu diễn vị trí bằng tọa độ có dấu",
+      "Tọa độ và độ dài vectơ trong không gian",
+      "Tốc độ trung bình",
+      "Làm tròn số"
+    ],
+    "variation_guidance": "Thay các vị trí và thời gian nhưng giữ quy ước hướng rõ ràng, chuyển động thẳng không đổi chiều và yêu cầu làm tròn cụ thể.",
+    "uncertainties": [
+      "Đây là mẫu minh họa tổng hợp; căn cứ về cách xây dựng chỉ từ quan sát cấp tỉnh qua nguồn bên thứ ba, chưa có đối chiếu chính thức."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "0380319aea9729ea",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "6,4",
+        "level": "TH"
+      }
+    ],
+    "solution": "Vị trí đầu là A(−20; 10; 6), vị trí cuối là B(10; −30; 18). Độ dời AB = (30; −40; 12). Vì chuyển động thẳng không đổi chiều, quãng đường là √(30²+40²+12²) = √2644 m. Tốc độ trung bình bằng √2644/8 ≈ 6,4275 m/s, làm tròn đến hàng phần mười được 6,4 m/s.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "TH: chuyển các hướng đã quy định thành tọa độ, tính khoảng cách rồi chia thời gian là quy trình tiêu chuẩn; không cần xây dựng mô hình hay phương pháp đặc biệt."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/6a61552f241be3310fdbb8a26dd5244dc3c6b31e7df0a2f3a865c0b7dbde8ad4.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/6a61552f241be3310fdbb8a26dd5244dc3c6b31e7df0a2f3a865c0b7dbde8ad4.resolve.json"
+}

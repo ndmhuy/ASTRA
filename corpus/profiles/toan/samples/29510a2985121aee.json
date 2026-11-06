@@ -1,0 +1,129 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "29510a2985121aee",
+    "topic": "Đường conic",
+    "part": "P1",
+    "level": "TH",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Phương trình chính tắc của một elip với các mẫu số cụ thể.",
+        "task": "Chọn tiêu cự của elip.",
+        "reasoning": [
+          "Đọc bình phương các bán trục từ phương trình.",
+          "Dùng hệ thức giữa bán trục và khoảng cách từ tâm đến tiêu điểm.",
+          "Chuyển khoảng cách từ tâm đến tiêu điểm thành tiêu cự."
+        ],
+        "combines": [
+          "Phương trình chính tắc elip",
+          "Quan hệ giữa các yếu tố của elip"
+        ],
+        "difficulty_source": "Phân biệt tiêu cự với khoảng cách từ tâm đến tiêu điểm.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "9ed45d16a975|P1|6|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "29510a2985121aee",
+    "stem": "Trong mặt phẳng tọa độ Oxy, cho elip có phương trình x²/100+y²/36=1. Tiêu cự của elip bằng bao nhiêu?",
+    "options": [
+      {
+        "label": "A",
+        "text": "8"
+      },
+      {
+        "label": "B",
+        "text": "12"
+      },
+      {
+        "label": "C",
+        "text": "16"
+      },
+      {
+        "label": "D",
+        "text": "20"
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "C",
+        "level": "TH"
+      }
+    ],
+    "solution": "Từ phương trình chính tắc, a²=100 và b²=36. Do c²=a²−b²=64 nên c=8. Tiêu cự là khoảng cách giữa hai tiêu điểm, bằng 2c=16. Chọn C. A nhầm khoảng cách từ tâm đến một tiêu điểm với tiêu cự. B lấy độ dài trục nhỏ 2b=12 làm tiêu cự. D lấy độ dài trục lớn 2a=20 làm tiêu cự.",
+    "distractors": [
+      {
+        "label": "A",
+        "sub": null,
+        "mistake": "Dừng ở c=8 và coi đó là tiêu cự.",
+        "why_plausible": "Học sinh tính đúng c nhưng nhầm khoảng cách từ tâm đến tiêu điểm với khoảng cách giữa hai tiêu điểm."
+      },
+      {
+        "label": "B",
+        "sub": null,
+        "mistake": "Dùng 2b thay cho 2c.",
+        "why_plausible": "Độ dài trục nhỏ cũng là một độ dài đặc trưng của elip, dễ bị nhầm khi chưa phân biệt rõ các yếu tố."
+      },
+      {
+        "label": "D",
+        "sub": null,
+        "mistake": "Dùng 2a thay cho 2c.",
+        "why_plausible": "Hai tiêu điểm nằm trên trục lớn nên học sinh có thể nhầm khoảng cách giữa chúng với độ dài trục lớn."
+      }
+    ],
+    "level_reason": "Học sinh đọc các bình phương bán trục từ phương trình rồi dùng hệ thức c²=a²−b² và tiêu cự 2c theo quy trình quen thuộc; mức TH.",
+    "prerequisites": [
+      "Phương trình chính tắc của elip",
+      "Hệ thức c²=a²−b²",
+      "Tiêu cự là khoảng cách giữa hai tiêu điểm"
+    ],
+    "variation_guidance": "Chọn hai mẫu số dương khác nhau và tính lại tiêu cự; có thể đổi vị trí trục lớn nhưng phải xác định a² là mẫu số lớn hơn.",
+    "uncertainties": [
+      "Định hướng cấu trúc chỉ dựa trên quan sát từ nguồn bên thứ ba cấp tỉnh; không có đối chiếu chính thức. Câu hỏi là minh họa tổng hợp mới, không phải bằng chứng đề thi thật."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "29510a2985121aee",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "C",
+        "level": "TH"
+      }
+    ],
+    "solution": "a²=100, b²=36 nên c²=a²−b²=64, suy ra c=8. Tiêu cự là khoảng cách giữa hai tiêu điểm: 2c=16.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Đọc các tham số từ phương trình chính tắc rồi áp dụng công thức tiêu cự trong bài tập chuẩn."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/1218244cf99a19a247ab2d760eeca76bbf572d7ec21223d72eeb900cae190a9a.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/1218244cf99a19a247ab2d760eeca76bbf572d7ec21223d72eeb900cae190a9a.resolve.json"
+}

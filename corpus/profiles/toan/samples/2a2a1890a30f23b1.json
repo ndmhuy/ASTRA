@@ -1,0 +1,146 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "2a2a1890a30f23b1",
+    "topic": "Tối ưu hình học",
+    "part": "P2",
+    "level": "VD",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Đường tròn trong mặt phẳng tọa độ, đoạn chuyển động ở độ cao không đổi và một vị trí đề xuất cho khoảng cách nhỏ nhất.",
+        "task": "Kiểm tra vị trí đạt khoảng cách nhỏ nhất tới đường tròn.",
+        "reasoning": [
+          "Biểu diễn hình chiếu của đoạn chuyển động trong mặt phẳng chứa đường tròn.",
+          "Tìm chân đường vuông góc từ tâm tới đường thẳng chứa đoạn chiếu.",
+          "Kiểm tra chân chiếu nằm trong đoạn và toàn đoạn chiếu ở ngoài đường tròn.",
+          "Suy ra vị trí cực tiểu của khoảng cách không gian rồi đối chiếu tọa độ được nêu."
+        ],
+        "combines": [
+          "Hình chiếu vuông góc",
+          "Tích vô hướng",
+          "Khoảng cách tới đường tròn",
+          "Điều kiện cực tiểu trên đoạn"
+        ],
+        "difficulty_source": "Chứng minh phép tối ưu khoảng cách tới tâm cũng tối ưu khoảng cách tới đường tròn trong miền đang xét.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      }
+    ],
+    "support_refs": [
+      "023e74626dd8|P2|4|d"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "2a2a1890a30f23b1",
+    "stem": "Trong không gian Oxyz, một vòng dây C được xác định bởi x² + y² = 4 và z = 0. Một đầu dò có vị trí M(t) = (t; 4 − t; 2), nhưng chỉ được hoạt động khi t thuộc [0; 1] hoặc [5/2; 3]. Gọi H(t) là hình chiếu vuông góc của M(t) lên mặt phẳng z = 0 và O là gốc tọa độ. Khoảng cách từ đầu dò đến C là khoảng cách ngắn nhất từ M(t) đến một điểm trên vòng dây. Xét tính đúng sai của các nhận định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Chân đường vuông góc kẻ từ O đến đường thẳng chứa các điểm H(t) là K(2; 2; 0)."
+      },
+      {
+        "sub": "b",
+        "text": "Trong các vị trí được phép hoạt động, giá trị nhỏ nhất của OH(t) bằng √10."
+      },
+      {
+        "sub": "c",
+        "text": "Khoảng cách từ đầu dò đến C nhỏ nhất khi M có tọa độ (5/2; 3/2; 2)."
+      },
+      {
+        "sub": "d",
+        "text": "Khoảng cách nhỏ nhất từ đầu dò đến C bằng √(33/2 − 2√34)."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "VD"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "VD"
+      }
+    ],
+    "solution": "a) Đường thẳng chứa H(t) có phương trình x + y = 4, z = 0. Đường vuông góc từ O có phương x = y nên chân chiếu là K(2;2;0). b) OH² = t² + (4 − t)² = 2(t − 2)² + 8. Trên [0;1], giá trị nhỏ nhất là 10 tại t = 1; trên [5/2;3], giá trị nhỏ nhất là 17/2 tại t = 5/2. Vì 17/2 < 10 nên giá trị nhỏ nhất của OH là √34/2, không phải √10. c) Với mọi t, OH ≥ √8 > 2, nên hình chiếu luôn ở ngoài vòng dây. Do đó d(M,C)² = 4 + (OH − 2)² tăng theo OH trong toàn bộ miền đang xét. Kết hợp với miền hoạt động gồm hai đoạn, khoảng cách nhỏ nhất đạt tại t = 5/2, tương ứng M(5/2;3/2;2). d) Thay OH = √34/2 vào biểu thức trên, ta được dmin² = 4 + (√34/2 − 2)² = 33/2 − 2√34.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Tìm được cực tiểu tại t = 1 trên khoảng hoạt động đầu tiên rồi dùng luôn làm cực tiểu toàn cục.",
+        "why_plausible": "Miền tham số bị tách thành hai đoạn, nên học sinh có thể bỏ sót việc so sánh với đầu mút t = 5/2 của đoạn còn lại."
+      }
+    ],
+    "level_reason": "Toàn mẫu đạt VD ở các ý c, d: cần chứng minh hình chiếu luôn ở ngoài vòng dây để chuyển bài toán tối ưu về khoảng cách đến tâm, rồi kết hợp với miền hoạt động không liền nhau. Các ý a, b là những bài toán hình chiếu và cực trị bậc hai quen thuộc.",
+    "prerequisites": [
+      "Hình chiếu vuông góc",
+      "Khoảng cách từ điểm đến đường tròn",
+      "Định lí Pythagore",
+      "Cực trị của hàm bậc hai trên từng đoạn",
+      "So sánh cực tiểu trên các miền rời nhau"
+    ],
+    "variation_guidance": "Có thể dịch chuyển hai khoảng hoạt động hoặc thay bán kính vòng dây. Nếu hình chiếu có thể đi vào trong vòng dây, phải xét lại tính đơn điệu theo khoảng cách đến tâm.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "2a2a1890a30f23b1",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "VD"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "VD"
+      }
+    ],
+    "solution": "H(t)=(t;4−t;0), nên đường thẳng chứa H có phương trình x+y=4, z=0. Chân đường vuông góc từ O xuống đường thẳng này là K(2;2;0), do đó a đúng. Đặt r=OH(t), ta có r²=2(t−2)²+8. Trên [0;1], giá trị nhỏ nhất của r² là 10 tại t=1; trên [5/2;3], giá trị nhỏ nhất là 17/2 tại t=5/2. Vì vậy r nhỏ nhất bằng √(17/2), nên b sai. Khoảng cách từ M đến C là √(4+(r−2)²). Do r luôn lớn hơn 2, khoảng cách này tăng theo r và nhỏ nhất tại t=5/2, tức M=(5/2;3/2;2). Bình phương khoảng cách nhỏ nhất bằng 4+(√(17/2)−2)²=33/2−2√34. Vậy c và d đúng.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a là phép xác định hình chiếu lên đường thẳng theo quy trình quen thuộc. b là tìm và so sánh cực tiểu của một tam thức trên hai đoạn. c và d cần liên kết hình chiếu, khoảng cách đến đường tròn và tính đơn điệu để xác định vị trí cùng giá trị tối ưu."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/ca57e2a1488a4c03c08c749147887c884e0ddb8b4463091bb3ae34f2cfe49339.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/ca57e2a1488a4c03c08c749147887c884e0ddb8b4463091bb3ae34f2cfe49339.resolve.json"
+}

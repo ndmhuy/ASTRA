@@ -1,0 +1,68 @@
+{
+  "schema_version": "scoped-prototype-verification-v1",
+  "subject": "hoa-hoc",
+  "artifacts": {
+    "tex": {
+      "path": "prototype.tex",
+      "sha256": "ecd142e85960757196be73ba0057c04ddab58ef4b651aebea7339bc79a626581"
+    },
+    "pdf": {
+      "path": "prototype.pdf",
+      "sha256": "6230db7d8d2aa7369fae85c0640c7e9b7e87371136b153841e0057f1fad7f1a8"
+    },
+    "answer_key": {
+      "path": "prototype_Answers.json",
+      "sha256": "c7c43aa3e182d890de357acd0469a467e45e6e71e1e1cfb2d26f854cd916dc8b"
+    }
+  },
+  "structure": {
+    "questions": 28,
+    "atomic_slots": 40,
+    "total_points": 10
+  },
+  "compile_evidence": {
+    "receipt": "compile-receipt.json",
+    "engine": "pdflatex",
+    "passes": 2,
+    "pages": 7,
+    "missing_glyph": false,
+    "tex_sha256_matches_receipt": true,
+    "pdf_sha256_matches_receipt": true
+  },
+  "visual_evidence": {
+    "review": "visual-review.json",
+    "status": "pass",
+    "reviewed_pages": 7,
+    "portable_frames": "pages/",
+    "frame_sha256": {
+      "page-1.png": "c62402ac4cfe817606a56327c48344e65467d94eb22e2fff547cb7377b2d6337",
+      "page-2.png": "b11f81e22ffb80b18d9cc285ea8fa3cd85b017d27f5662137c7c6b73e3c62a88",
+      "page-3.png": "f0eab2af40e434f77a20f7d83b5a3a35f3a6fbbf730eee3d946d50cd73698b27",
+      "page-4.png": "084aafcbb081005e8a16cc694d5357f1590f46c5def85ab8cba6d9e45b967b74",
+      "page-5.png": "bf23edcb8337666a4a97ffc04f461e050c1a7708e1b25e31a994e0bf7099ca71",
+      "page-6.png": "97034673e6fc6e130eec5c3756dc959a5a4f96e1cf01afdad283629d8e34944a",
+      "page-7.png": "c88b2d4dbfd1ea0c9e5eec4437b5841f80a4dcebe365d07b4454586a40026aec"
+    },
+    "scope": "Rendered layout only; no content or answer validation."
+  },
+  "content_scope": {
+    "fresh_replacements": 8,
+    "retained_legacy_questions": 20,
+    "original_20_content_independently_verified": true,
+    "layout_correction": {
+      "summary": "Crowded lower-right Haworth labels adjusted to below-right placement; final page 1 and page 7 visually reviewed.",
+      "pre_fix_frame_hash_evidence": "audit/outputs/scoped-three/hoa-frames-before-figure-fix.json",
+      "changed_frame": "page-1.png",
+      "page_7_pixel_change": false
+    },
+    "current_full_review": "content-review-20261106.json",
+    "atomic_units_reviewed": 40,
+    "keys_matched": 40
+  },
+  "acceptance": {
+    "teacher_acceptance": false,
+    "runtime_acceptance": false,
+    "agent_content_acceptance": "usable_for_mixed_practice",
+    "teacher_review_required": false
+  }
+}

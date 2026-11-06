@@ -1,0 +1,172 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "abd508685bef4e1d",
+    "topic": "Quy hoạch tuyến tính",
+    "part": "P2",
+    "level": "VD",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Các ràng buộc nguyên liệu, thị trường, doanh thu và giới hạn tổng sản lượng bổ sung.",
+        "task": "Kiểm tra sản lượng nhỏ nhất của một loại trong tập phương án đạt doanh thu lớn nhất.",
+        "reasoning": [
+          "Chuyển các ràng buộc thành hệ bất phương trình hai ẩn.",
+          "Tìm giá trị lớn nhất và xác định toàn bộ tập phương án cùng đạt giá trị đó.",
+          "Giao tập phương án tối ưu với ràng buộc tổng sản lượng bổ sung.",
+          "Tìm giá trị nhỏ nhất của biến được hỏi trên tập còn lại.",
+          "Đối chiếu với nhận định."
+        ],
+        "combines": [
+          "Hệ bất phương trình hai ẩn",
+          "Hàm mục tiêu tuyến tính",
+          "Tối ưu trên tập nghiệm tối ưu"
+        ],
+        "difficulty_source": "Nhận ra tập nghiệm tối ưu có thể là một đoạn rồi tối ưu tiếp dưới điều kiện bổ sung.",
+        "evidence_uncertainty": "Khóa đáp án chưa được xác nhận; đánh giá phân hóa dựa vào quyết định về toàn bộ tập nghiệm tối ưu, có đối chiếu mức cấu trúc với mẫu hiệu chuẩn được cung cấp.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Định mức nguyên liệu, giới hạn thị trường và đơn giá cho hai loại sản phẩm.",
+        "task": "Kiểm tra doanh thu lớn nhất.",
+        "reasoning": [
+          "Lập miền nghiệm từ điều kiện nguyên liệu, thị trường và sản lượng không âm.",
+          "Lập hàm doanh thu đúng theo từng loại sản phẩm.",
+          "Tìm giá trị lớn nhất bằng các đỉnh miền nghiệm hoặc một chặn đạt được.",
+          "Kiểm tra phương án đạt chặn và đối chiếu doanh thu."
+        ],
+        "combines": [
+          "Hệ bất phương trình hai ẩn",
+          "Hàm mục tiêu tuyến tính",
+          "Kiểm tra tính khả thi"
+        ],
+        "difficulty_source": "Lập đủ miền ràng buộc và chứng minh chặn doanh thu có thể đạt.",
+        "evidence_uncertainty": "Khóa đáp án chưa được xác nhận; chưa phân loại đúng sai.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "acc00d945397|P2|4|c",
+      "acc00d945397|P2|4|d"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "abd508685bef4e1d",
+    "stem": "Một cơ sở sản xuất hai loại hỗn hợp X và Y. Mỗi tấn X cần 2 tấn nguyên liệu I và 1 tấn nguyên liệu II; mỗi tấn Y cần 1 tấn nguyên liệu I và 2 tấn nguyên liệu II. Cơ sở có tối đa 12 tấn mỗi loại nguyên liệu và chỉ tiêu thụ được tối đa 5 tấn X. Doanh thu mỗi tấn X, Y lần lượt là 4 triệu đồng và 2 triệu đồng. Gọi x, y là sản lượng X, Y tính bằng tấn; cho phép sản lượng là số thực không âm. Xét tính đúng sai của các nhận định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Các điều kiện sản xuất được biểu diễn bởi x ≥ 0, y ≥ 0, 2x + y ≤ 12, x + 2y ≤ 12 và x ≤ 5."
+      },
+      {
+        "sub": "b",
+        "text": "Phương án sản xuất 3 tấn X và 5 tấn Y thỏa tất cả các giới hạn đã cho."
+      },
+      {
+        "sub": "c",
+        "text": "Doanh thu lớn nhất của cơ sở là 24 triệu đồng."
+      },
+      {
+        "sub": "d",
+        "text": "Nếu bổ sung giới hạn tổng sản lượng không quá 7,5 tấn, thì trong các phương án vẫn đạt doanh thu 24 triệu đồng, sản lượng X nhỏ nhất là 4 tấn."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "VD"
+      }
+    ],
+    "solution": "a) Đúng. Hai bất phương trình nguyên liệu lần lượt là 2x + y ≤ 12 và x + 2y ≤ 12; giới hạn tiêu thụ là x ≤ 5. b) Sai. Tại (3; 5), lượng nguyên liệu II cần dùng là 3 + 2·5 = 13 tấn, vượt 12 tấn. c) Đúng. Doanh thu R = 4x + 2y = 2(2x + y) ≤ 24 triệu đồng. Phương án (4; 4) thỏa mọi giới hạn và đạt 24 triệu đồng. d) Sai. Để đạt 24 triệu đồng phải có y = 12 − 2x. Thay vào điều kiện nguyên liệu II được x ≥ 4; kết hợp x ≤ 5, toàn bộ tập phương án tối ưu là y = 12 − 2x với 4 ≤ x ≤ 5. Giới hạn bổ sung cho x + y = 12 − x ≤ 7,5, tức x ≥ 4,5. Vì vậy sản lượng X nhỏ nhất là 4,5 tấn, ứng với y = 3 tấn.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Chỉ kiểm tra giới hạn nguyên liệu I và tiêu thụ X, bỏ qua nguyên liệu II.",
+        "why_plausible": "Phương án có 2·3 + 5 = 11 ≤ 12 và 3 ≤ 5 nên có thể bị chấp nhận nếu kiểm tra thiếu một ràng buộc."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Giữ nguyên đầu mút x = 4 của tập phương án tối ưu ban đầu sau khi bổ sung giới hạn tổng sản lượng.",
+        "why_plausible": "Phương án (4; 4) đạt doanh thu lớn nhất trước khi có điều kiện bổ sung, nhưng tổng sản lượng 8 tấn khiến phương án này không còn khả thi."
+      }
+    ],
+    "level_reason": "Mức của toàn mẫu là VD do ý d yêu cầu xác định toàn bộ đoạn phương án cùng tối ưu, giao đoạn đó với điều kiện bổ sung rồi tối ưu tiếp một biến. Các ý a, b, c chỉ yêu cầu lập, kiểm tra hoặc tối ưu theo quy trình quen thuộc.",
+    "prerequisites": [
+      "Hệ bất phương trình bậc nhất hai ẩn",
+      "Hàm mục tiêu tuyến tính",
+      "Điều kiện đạt dấu bằng trong một chặn tuyến tính",
+      "Tập phương án tối ưu có thể là một đoạn thẳng"
+    ],
+    "variation_guidance": "Khi thay định mức hoặc doanh thu, cần giữ một đoạn phương án cùng tối ưu và chọn giới hạn bổ sung cắt thực sự vào đoạn đó. Nêu rõ sản lượng liên tục hay nguyên.",
+    "uncertainties": [
+      "Quan sát nền thuộc nguồn cấp tỉnh do bên thứ ba cung cấp và chưa xác nhận khóa đáp án; các kết luận ở đây được suy ra từ dữ kiện mới của mẫu, không dùng khóa đó."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "abd508685bef4e1d",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "VD"
+      }
+    ],
+    "solution": "a) Các bất phương trình đúng theo định mức nguyên liệu, giới hạn tiêu thụ và điều kiện không âm. b) Với (x,y)=(3,5), lượng nguyên liệu II cần là 3+2·5=13>12 nên không khả thi. c) Doanh thu R=4x+2y=2(2x+y)≤24 triệu đồng; phương án (4,4) khả thi và đạt 24 triệu đồng. d) Để đạt 24 triệu đồng phải có y=12−2x. Giới hạn mới x+y≤7,5 suy ra x≥4,5. Phương án (4,5;3) thỏa mọi giới hạn, nên sản lượng X nhỏ nhất là 4,5 tấn.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a: TH vì chuyển các dữ kiện sang hệ bất phương trình theo quy trình quen thuộc. b: TH vì thay số kiểm tra giới hạn. c: TH vì tìm cực đại của hàm tuyến tính bằng chặn trực tiếp và một phương án đạt chặn. d: VD vì cần xác định điều kiện đạt doanh thu tối đa, kết hợp giới hạn bổ sung rồi tối thiểu hóa sản lượng X và kiểm tra tính khả thi."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/60df2dc43ad0ceca3a3a698dbe51e9473a290f7dca71335460a4c53cb0b65fd7.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/60df2dc43ad0ceca3a3a698dbe51e9473a290f7dca71335460a4c53cb0b65fd7.resolve.json"
+}

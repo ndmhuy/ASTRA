@@ -1,0 +1,147 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "2e14fb4a2cb0810e",
+    "topic": "Tọa độ và đường thẳng",
+    "part": "P1",
+    "level": "TH",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Tọa độ hai điểm phân biệt trong không gian.",
+        "task": "Chọn một vectơ chỉ phương của đường thẳng qua hai điểm.",
+        "reasoning": [
+          "Lấy tọa độ điểm cuối trừ tọa độ điểm đầu.",
+          "Đối chiếu vectơ thu được hoặc một bội khác không với các lựa chọn."
+        ],
+        "combines": [
+          "Phép trừ tọa độ vectơ",
+          "Vectơ chỉ phương"
+        ],
+        "difficulty_source": "Trừ đúng từng thành phần có dấu.",
+        "evidence_uncertainty": "Chưa xác nhận được khóa đáp án khớp mã.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "0ecb85132b84|P1|7|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "2e14fb4a2cb0810e",
+    "stem": "Trong không gian Oxyz, cho hai điểm A(1; −2; 3) và B(3; 1; −1). Điểm nào sau đây thuộc đường thẳng AB?",
+    "options": [
+      {
+        "label": "A",
+        "text": "M(5; 4; −1)."
+      },
+      {
+        "label": "B",
+        "text": "N(4; −1; 2)."
+      },
+      {
+        "label": "C",
+        "text": "P(−3; 4; −5)."
+      },
+      {
+        "label": "D",
+        "text": "Q(5; 4; −5)."
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "Ta có vectơ AB = (2; 3; −4). Một điểm thuộc đường thẳng AB khi vectơ nối A đến điểm đó là một bội của AB. Với Q, vectơ AQ = (4; 6; −8) = 2AB nên D đúng. Với M, vectơ AM = (4; 6; −4): hai thành phần đầu ứng với hệ số 2, nhưng thành phần cuối ứng với hệ số 1. Với N, vectơ AN = (3; 1; −1) không cùng phương với AB. Với P, vectơ AP = (−4; 6; −8): thành phần đầu ứng với hệ số −2, hai thành phần còn lại ứng với hệ số 2. Vì vậy A, B, C đều sai.",
+    "distractors": [
+      {
+        "label": "A",
+        "sub": null,
+        "mistake": "Khi lập điểm A + 2AB, chỉ nhân đôi hai thành phần đầu của vectơ AB.",
+        "why_plausible": "Hai tọa độ đầu khớp với cùng một tham số nên học sinh có thể bỏ sót việc kiểm tra tọa độ cuối."
+      },
+      {
+        "label": "B",
+        "sub": null,
+        "mistake": "Cộng trực tiếp tọa độ A và B rồi cho rằng điểm nhận được thuộc đường thẳng AB.",
+        "why_plausible": "Học sinh có thể nhầm phép cộng các vectơ vị trí với cách biểu diễn điểm trên đường thẳng qua hai điểm."
+      },
+      {
+        "label": "C",
+        "sub": null,
+        "mistake": "Đảo dấu riêng thành phần thứ nhất của vectơ dịch chuyển 2AB.",
+        "why_plausible": "Khi kiểm tra cùng phương, học sinh có thể chỉ so sánh độ lớn mà bỏ qua sự thống nhất về dấu của hệ số."
+      }
+    ],
+    "level_reason": "Học sinh tính vectơ AB rồi kiểm tra tính cùng phương của các vectơ nối từ A đến những điểm đã cho. Đây là quy trình quen thuộc, thuộc TH.",
+    "prerequisites": [
+      "Tọa độ vectơ nối hai điểm",
+      "Điều kiện hai vectơ cùng phương",
+      "Điều kiện một điểm thuộc đường thẳng qua hai điểm phân biệt"
+    ],
+    "variation_guidance": "Thay hai điểm đầu và xây dựng một điểm đúng theo A + tAB. Các điểm sai có thể xuất phát từ việc dùng tham số không thống nhất giữa các thành phần hoặc cộng tọa độ hai điểm.",
+    "uncertainties": [
+      "Đây là câu hỏi minh họa tổng hợp nguyên gốc, không phải bằng chứng đề thi thật.",
+      "Căn cứ xây dựng chỉ từ quan sát cấp tỉnh qua nguồn bên thứ ba; dữ liệu cung cấp chưa có neo chính thức và chưa xác nhận khóa đáp án nguồn khớp mã."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "2e14fb4a2cb0810e",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "Ta có vectơ AB = (2; 3; −4). Với Q(5; 4; −5), vectơ AQ = (4; 6; −8) = 2 vectơ AB nên Q thuộc đường thẳng AB. Các điểm còn lại không thỏa mãn điều kiện cùng phương.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Kiểm tra điểm thuộc đường thẳng bằng tính cùng phương của hai vectơ là quy trình quen thuộc."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/toan/c9fa72d951523b701c12b206e139b9d837df7c4a8e676158e4ef8bfc4edd137b.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/toan/c9fa72d951523b701c12b206e139b9d837df7c4a8e676158e4ef8bfc4edd137b.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 4,
+  "source_rows_sha256": "863dd6885185956ed9dabede84bf529993a764e4871f75f25629503cf8f2731a",
+  "source_overlap_review": {
+    "disposition": "generic_mathematical_shape_false_positive",
+    "reviewer": "parent_sol",
+    "at_utc": "2026-11-03T22:54:28.897706+00:00",
+    "sample_sha256": "bbacd095576479dee32215c885b3f66a863ca8678ec0f0006a269e61babe16b8",
+    "overlap_sha256": [
+      "14373c21149525ddbf2ef9f4fe866d4d4b369b563cef1652b5d18717ffed24b6",
+      "3efafbd490268f6f7d9bad20b228bf53b512eacd87efb54e02fcf0564bc48bec",
+      "7016d52e9248d9e8b4496323f40931cac529eb88f85a2879f22052ce1f5f857d",
+      "a1a6230636ec6ef1d7ed67f4978fdf2ac289b499dddc65e91b17abe8b264dc4d"
+    ],
+    "reason": "Parent reread both matching real items. The scanner discards minus signs: their actual coordinates and second point differ. Only the conventional Oxyz/two-points introduction and sign-insensitive tokens match. The new question asks point-on-line membership rather than either source task.",
+    "mathematical_check": "Subtract the first point from every option. Exactly D is twice the direction vector; the other ratios disagree. This is routine proportional-vector testing, TH.",
+    "semantic_noncopying_proved": false
+  }
+}

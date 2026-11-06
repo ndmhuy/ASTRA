@@ -1,0 +1,162 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "a8ff6e506a0b94d2",
+    "topic": "Phương pháp tọa độ trong không gian",
+    "part": "P2",
+    "level": "NB",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Phương trình tổng quát của mặt phẳng và một vectơ được đề xuất.",
+        "task": "Kiểm tra vectơ có phải pháp tuyến của mặt phẳng.",
+        "reasoning": [
+          "Đọc bộ hệ số của các biến tọa độ.",
+          "Kiểm tra quan hệ cùng phương với vectơ được đề xuất."
+        ],
+        "combines": [
+          "Phương trình mặt phẳng"
+        ],
+        "difficulty_source": "Nhận diện trực tiếp các hệ số pháp tuyến.",
+        "evidence_uncertainty": "Không có khóa đáp án đối sánh; không gán đúng sai cho nhận định.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một họ mặt phẳng chỉ có một tọa độ xuất hiện trong phương trình.",
+        "task": "Kiểm tra một vectơ pháp tuyến được đề xuất.",
+        "reasoning": [
+          "Đọc các hệ số tọa độ của phương trình.",
+          "Kiểm tra vectơ được nêu có cùng phương với vectơ hệ số hay không."
+        ],
+        "combines": [
+          "Phương trình mặt phẳng",
+          "Vectơ pháp tuyến"
+        ],
+        "difficulty_source": "Nhận biết mặt phẳng song song với mặt phẳng tọa độ.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "aceb17d936f5|P2|3|a",
+      "de5833d227dd|P2|2|b"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "a8ff6e506a0b94d2",
+    "stem": "Trong không gian Oxyz, cho các mặt phẳng (P): 4x − 3y + 2z − 7 = 0, (Q): x = 6, (R): y = −4 và (S): z = 9. Xác định tính đúng hoặc sai của mỗi nhận định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Vectơ (4; −3; 2) là một vectơ pháp tuyến của (P)."
+      },
+      {
+        "sub": "b",
+        "text": "Vectơ (0; 1; 0) là một vectơ pháp tuyến của (Q)."
+      },
+      {
+        "sub": "c",
+        "text": "Vectơ (0; 1; 0) là một vectơ pháp tuyến của (R)."
+      },
+      {
+        "sub": "d",
+        "text": "Vectơ (1; 0; 0) là một vectơ pháp tuyến của (S)."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "NB"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "NB"
+      }
+    ],
+    "solution": "Mặt phẳng Ax + By + Cz + D = 0 có vectơ pháp tuyến (A; B; C). Vì vậy, các vectơ pháp tuyến đọc trực tiếp từ phương trình của (P), (Q), (R), (S) lần lượt là (4; −3; 2), (1; 0; 0), (0; 1; 0), (0; 0; 1). Nhận định a và c đúng. Nhận định b sai vì vectơ được nêu không cùng phương với (1; 0; 0). Nhận định d sai vì vectơ được nêu không cùng phương với (0; 0; 1).",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Nhầm một vectơ có phương song song với mặt phẳng x = 6 thành vectơ pháp tuyến.",
+        "why_plausible": "Học sinh có thể nhầm vai trò của phương nằm trong mặt phẳng với phương vuông góc với mặt phẳng."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Gán vectơ đơn vị của trục Ox làm pháp tuyến cho mặt phẳng z = 9.",
+        "why_plausible": "Học sinh nhớ mặt phẳng có một tọa độ cố định nhưng nhầm trục ứng với tọa độ đó."
+      }
+    ],
+    "level_reason": "Cả bốn nhận định chỉ yêu cầu nhận diện bộ hệ số pháp tuyến trong phương trình mặt phẳng. Mức cao nhất của các nhận định là NB.",
+    "prerequisites": [
+      "Dạng tổng quát của phương trình mặt phẳng.",
+      "Vectơ pháp tuyến của mặt phẳng."
+    ],
+    "variation_guidance": "Thay các hệ số và tọa độ cố định; giữ việc nhận diện trực tiếp vectơ pháp tuyến để duy trì mức NB.",
+    "uncertainties": [
+      "Quan sát cấu trúc được cung cấp chỉ thuộc nguồn cấp tỉnh qua bên thứ ba, không có điểm neo chính thức; một quan sát thiếu khóa đáp án đối sánh. Đây là câu minh họa tổng hợp mới."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "a8ff6e506a0b94d2",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "NB"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "NB"
+      }
+    ],
+    "solution": "Mặt phẳng ax + by + cz + d = 0 có vectơ pháp tuyến (a; b; c). Do đó (P), (Q), (R), (S) lần lượt có các vectơ pháp tuyến (4; −3; 2), (1; 0; 0), (0; 1; 0), (0; 0; 1).",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Mỗi nhận định chỉ yêu cầu nhận biết vectơ pháp tuyến từ các hệ số của phương trình mặt phẳng, thuộc một đơn vị kiến thức."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/f545107910d5cb96f8bd79c9b19a7980ff2bca8c220d075a1ca49c88887f7702.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/f545107910d5cb96f8bd79c9b19a7980ff2bca8c220d075a1ca49c88887f7702.resolve.json"
+}

@@ -1,0 +1,171 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "bb0d7de178cdbf6c",
+    "topic": "Tích phân và chuyển động",
+    "part": "P2",
+    "level": "VD",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một chuyển động tăng tốc rồi giữ vận tốc giới hạn, đuổi theo một chuyển động đều có khoảng cách ban đầu.",
+        "task": "Kiểm tra tổng thời gian để bắt kịp.",
+        "reasoning": [
+          "Xác định thời điểm đạt vận tốc giới hạn.",
+          "Tính khoảng cách còn lại tại thời điểm chuyển giai đoạn.",
+          "Kiểm tra chưa bắt kịp trong giai đoạn tăng tốc.",
+          "Dùng vận tốc tương đối ở giai đoạn đều để tính thời gian còn lại.",
+          "Cộng thời gian các giai đoạn và đối chiếu."
+        ],
+        "combines": [
+          "Tích phân vận tốc",
+          "Hàm số theo từng giai đoạn",
+          "Vận tốc tương đối",
+          "Kiểm tra miền áp dụng"
+        ],
+        "difficulty_source": "Nhận ra phải đổi mô hình khi vận tốc chạm giới hạn.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Các vật chuyển động ngược chiều, khoảng cách ban đầu, quy luật hãm và thời gian phản ứng của một vật.",
+        "task": "Kiểm tra khả năng xảy ra va chạm.",
+        "reasoning": [
+          "Tính quãng đường chuyển động đều trong thời gian phản ứng.",
+          "Tìm thời điểm dừng và quãng đường hãm của từng vật.",
+          "Cộng các quãng đường khép khoảng cách cho đến khi các vật dừng.",
+          "Dùng tính tăng liên tục của tổng quãng đường trước khi dừng để so sánh với khoảng cách ban đầu."
+        ],
+        "combines": [
+          "Chuyển động từng giai đoạn",
+          "Tích phân",
+          "Điều kiện va chạm"
+        ],
+        "difficulty_source": "Phân biệt mốc bắt đầu hãm của từng vật và cộng đúng quãng đường phản ứng.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "11d88d9a96ad|P2|4|d",
+      "c6340827ba59|P2|4|d"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "bb0d7de178cdbf6c",
+    "stem": "Hai xe tự hành A và B chuyển động cùng chiều trên một đường thẳng, được coi là các chất điểm. Tại thời điểm t = 0, A ở vị trí 0 m, B ở vị trí 8 m. Xe B luôn có vận tốc 2 m/s. Người điều khiển chọn một tham số τ thuộc [2;4], tính bằng giây. Vận tốc của A, tính bằng m/s, được quy định bởi v_A(t) = 2t khi 0 ≤ t ≤ τ; v_A(t) = 4τ − 2t khi τ < t ≤ 2τ; v_A(t) = 0 khi t > 2τ. Gọi x_A(t), x_B(t) là vị trí hai xe tại thời điểm t. Xét tính đúng, sai của các khẳng định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Nếu chọn τ = 2 thì trong 2 giây đầu, A đi được 4 m."
+      },
+      {
+        "sub": "b",
+        "text": "Với mỗi giá trị τ được phép chọn, A bắt đầu đứng yên tại thời điểm t = 2τ."
+      },
+      {
+        "sub": "c",
+        "text": "Tổng quãng đường A đi được trước khi đứng yên là 4τ² m."
+      },
+      {
+        "sub": "d",
+        "text": "Có duy nhất một giá trị τ để A đi được tổng cộng ít nhất 18 m và đồng thời x_B(t) − x_A(t) ≥ 1 m với mọi t ≥ 0; giá trị đó là τ = 3."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "VD"
+      }
+    ],
+    "solution": "a) Khi τ = 2, quãng đường trong 2 giây đầu là ∫₀²2t dt = 4 m, nên a đúng. b) Vận tốc A dương khi 0 < t < 2τ và bằng 0 từ t = 2τ trở đi, nên b đúng. c) Hai giai đoạn chuyển động cho tổng quãng đường ∫₀^τ2t dt + ∫_τ^(2τ)(4τ − 2t) dt = 2τ² m, nên c sai. d) Đặt h(t) = x_A(t) − 2t, khi đó khoảng cách có hướng từ A đến B là 8 − h(t). Trên [0;τ], h(t) = t² − 2t; giá trị lớn nhất trên đoạn là τ² − 2τ vì τ ≥ 2. Trên [τ;2τ], h′(t) = 4τ − 2t − 2, nên h đạt cực đại tại t = 2τ − 1. Tại đó, A còn cách vị trí dừng 1 m, do đó h(2τ − 1) = (2τ² − 1) − 2(2τ − 1) = 2τ² − 4τ + 1. Giá trị này lớn hơn τ² − 2τ vì hiệu bằng (τ − 1)². Sau khi A dừng, h giảm. Vì vậy điều kiện khoảng cách ít nhất 1 m ở mọi thời điểm tương đương 2τ² − 4τ + 1 ≤ 7, suy ra τ ≤ 3 trong miền [2;4]. Điều kiện tổng quãng đường ít nhất 18 m tương đương 2τ² ≥ 18, suy ra τ ≥ 3. Hai điều kiện cùng đúng duy nhất khi τ = 3, nên d đúng.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "c",
+        "mistake": "Lấy vận tốc lớn nhất 2τ nhân với toàn bộ thời gian chuyển động 2τ, thu được 4τ².",
+        "why_plausible": "Học sinh có thể dùng vận tốc tại thời điểm chuyển giai đoạn như vận tốc không đổi của cả hành trình. Thực tế phải lấy tích phân vận tốc, cho kết quả 2τ²."
+      }
+    ],
+    "level_reason": "Toàn câu có mức VD do ý d yêu cầu thiết lập hai ràng buộc đối với một tham số điều khiển, tìm thời điểm khoảng cách nhỏ nhất trên toàn hành trình rồi xác định giao của hai miền tham số. Chỉ tính quãng đường ở từng giai đoạn hoặc kiểm tra khoảng cách lúc A dừng không đủ để kết luận. Các ý a, b, c thuộc TH.",
+    "prerequisites": [
+      "Tính quãng đường bằng tích phân vận tốc không âm",
+      "Hàm số xác định theo từng giai đoạn",
+      "Đạo hàm và giá trị lớn nhất trên một đoạn",
+      "Vận tốc tương đối và bất phương trình theo tham số"
+    ],
+    "variation_guidance": "Có thể thay khoảng cách ban đầu và yêu cầu quãng đường tối thiểu. Cần xác định lại cực đại của độ dịch chuyển tương đối trên toàn bộ hành trình, rồi kiểm tra miền tham số thỏa đồng thời hai yêu cầu.",
+    "uncertainties": [
+      "Cơ sở tham khảo cấu trúc chỉ gồm quan sát cấp tỉnh do bên thứ ba cung cấp, chưa có điểm neo đề chính thức. Đây là mẫu minh họa tổng hợp, không phải bằng chứng đề thi.",
+      "Yêu cầu lựa chọn tham số dưới hai ràng buộc là phần phát triển mới của mẫu; không được xem là cấu trúc đã được xác nhận từ nguồn tham khảo."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "bb0d7de178cdbf6c",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "VD"
+      }
+    ],
+    "solution": "a) Khi τ=2, quãng đường trong hai giây đầu là ∫₀²2t dt=4 m. b) Vận tốc dương khi 0<t<2τ và bằng 0 từ t=2τ trở đi, nên A bắt đầu đứng yên tại t=2τ. c) Tổng quãng đường là diện tích tam giác dưới đồ thị vận tốc: (1/2)·2τ·2τ=2τ² m, không phải 4τ² m. d) Đặt g(t)=x_B(t)−x_A(t). Trên [0;τ], g(t)=8+2t−t², có giá trị nhỏ nhất tại một trong hai đầu mút. Trên [τ;2τ], g(t)=8+2t−2τ²+(t−2τ)², đạt cực tiểu tại t=2τ−1 với giá trị 7+4τ−2τ². Sau 2τ, g tăng. Do đó điều kiện g(t)≥1 với mọi t≥0 tương đương 7+4τ−2τ²≥1, tức τ≤3 trong miền đã cho. Điều kiện tổng quãng đường ít nhất 18 m tương đương 2τ²≥18, tức τ≥3. Hai điều kiện đồng thời chỉ xảy ra khi τ=3.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a, b, c sử dụng trực tiếp đồ thị vận tốc hoặc phép tính tích phân quen thuộc. d cần lập hàm khoảng cách theo từng giai đoạn, xác định cực tiểu toàn cục rồi kết hợp hai ràng buộc để chứng minh tính duy nhất."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/toan/8920e95e23b4d699269cffb602861222b18b2ed31cea860fe07a553f8c7d220e.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/toan/8920e95e23b4d699269cffb602861222b18b2ed31cea860fe07a553f8c7d220e.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 0,
+  "source_rows_sha256": "863dd6885185956ed9dabede84bf529993a764e4871f75f25629503cf8f2731a"
+}

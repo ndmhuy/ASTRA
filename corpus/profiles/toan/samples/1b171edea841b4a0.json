@@ -1,0 +1,127 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "1b171edea841b4a0",
+    "topic": "Số đặc trưng của mẫu số liệu ghép nhóm",
+    "part": "P1",
+    "level": "NB",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Các ký hiệu biểu diễn những tứ phân vị của một mẫu số liệu.",
+        "task": "Chọn công thức khoảng tứ phân vị.",
+        "reasoning": [
+          "Nhớ định nghĩa khoảng tứ phân vị.",
+          "Đối chiếu thứ tự phép trừ và các tứ phân vị trong lựa chọn."
+        ],
+        "combines": [
+          "Tứ phân vị",
+          "Độ phân tán của mẫu số liệu ghép nhóm"
+        ],
+        "difficulty_source": "Nhớ trực tiếp định nghĩa của đại lượng phân tán.",
+        "evidence_uncertainty": "Thiếu khóa đáp án khớp mã đề; chưa phân loại phương án sai.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "ecd76ac672e5|P1|6|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "1b171edea841b4a0",
+    "stem": "Một mẫu số liệu ghép nhóm về thời gian luyện tập mỗi ngày có các tứ phân vị Q₁, Q₂, Q₃. Gọi ΔQ là khoảng tứ phân vị của mẫu. Công thức nào sau đây đúng?",
+    "options": [
+      {
+        "label": "A",
+        "text": "ΔQ = Q₂ − Q₁."
+      },
+      {
+        "label": "B",
+        "text": "ΔQ = Q₃ − Q₁."
+      },
+      {
+        "label": "C",
+        "text": "ΔQ = Q₃ − Q₂."
+      },
+      {
+        "label": "D",
+        "text": "ΔQ = (Q₃ − Q₁)/2."
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "NB"
+      }
+    ],
+    "solution": "Theo định nghĩa, khoảng tứ phân vị là ΔQ = Q₃ − Q₁. A chỉ lấy khoảng từ tứ phân vị thứ nhất đến trung vị. C chỉ lấy khoảng từ trung vị đến tứ phân vị thứ ba. D lấy một nửa khoảng tứ phân vị, không phải đại lượng được hỏi.",
+    "distractors": [
+      {
+        "label": "A",
+        "sub": null,
+        "mistake": "Lấy hiệu của hai tứ phân vị đầu tiên.",
+        "why_plausible": "Học sinh hiểu chữ khoảng là hiệu của hai mốc liên tiếp nhưng không nhớ đúng hai mốc trong định nghĩa."
+      },
+      {
+        "label": "C",
+        "sub": null,
+        "mistake": "Chỉ lấy khoảng từ trung vị đến tứ phân vị thứ ba.",
+        "why_plausible": "Học sinh nhớ phải sử dụng Q₃ nhưng chọn nhầm Q₂ làm mốc còn lại."
+      },
+      {
+        "label": "D",
+        "sub": null,
+        "mistake": "Chia đôi hiệu Q₃ − Q₁.",
+        "why_plausible": "Học sinh nhầm độ rộng của khoảng với một nửa độ rộng tính từ tâm trong trường hợp đối xứng."
+      }
+    ],
+    "level_reason": "Câu hỏi yêu cầu nhớ trực tiếp định nghĩa khoảng tứ phân vị; bối cảnh không tạo thêm yêu cầu xử lí số liệu.",
+    "prerequisites": [
+      "Kí hiệu các tứ phân vị.",
+      "Định nghĩa khoảng tứ phân vị."
+    ],
+    "variation_guidance": "Có thể đổi đại lượng được khảo sát hoặc kí hiệu khoảng tứ phân vị; giữ câu hỏi ở dạng nhận diện định nghĩa.",
+    "uncertainties": [
+      "Quan sát được cung cấp thuộc nguồn cấp tỉnh qua bên thứ ba, thiếu khóa đáp án khớp mã đề và không có điểm neo chính thức. Các phương án cùng giải thích ở đây được xây dựng mới."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "1b171edea841b4a0",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "NB"
+      }
+    ],
+    "solution": "Theo định nghĩa, khoảng tứ phân vị là ΔQ = Q₃ − Q₁.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Chỉ yêu cầu nhớ công thức định nghĩa khoảng tứ phân vị."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/f545107910d5cb96f8bd79c9b19a7980ff2bca8c220d075a1ca49c88887f7702.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/f545107910d5cb96f8bd79c9b19a7980ff2bca8c220d075a1ca49c88887f7702.resolve.json"
+}

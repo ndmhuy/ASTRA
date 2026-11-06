@@ -1,0 +1,42 @@
+[
+  {
+    "paper_id": "53f7e0c73214",
+    "severity": "info",
+    "page": null,
+    "part_id": null,
+    "index_within_part": null,
+    "description": "Bản đáp án cũ được liên kết từ nguồn bên ngoài ZIP, không có bảng đáp án trong PDF gốc để xác minh mã đề ở phiên này.",
+    "evidence": "AUDIT-20261102.json: matched_key_source; original PDF 4 trang chỉ có đề.",
+    "action_needed": "Giữ riêng unverified-existing-key.json; bổ sung bản khóa gốc nếu muốn xác thực."
+  },
+  {
+    "paper_id": "7090ca87e657",
+    "severity": "info",
+    "page": 4,
+    "part_id": null,
+    "index_within_part": null,
+    "description": "Không có bảng đáp án in đầy đủ được xác nhận trùng mã 0301; bản OCR hiện tại không tạo key.json.",
+    "evidence": "AUDIT-20261102.json: qa_key_failures; DOCX phần sau là lời giải.",
+    "action_needed": "Đối chiếu bảng đáp án gốc nếu cần khóa chính thức."
+  },
+  {
+    "paper_id": "02f028487a62",
+    "severity": "warning",
+    "page": null,
+    "part_id": null,
+    "index_within_part": null,
+    "description": "Số trang chứa câu hỏi khi render DOCX là 6, trong khi đầu đề ghi 4 trang; chưa chứng minh đây là thiếu trang vì thứ tự câu liên tục và PDF tiếp tục bằng lời giải.",
+    "evidence": "Đầu đề ghi 4 trang; PDF render DOCX có phần đề ở trang 1–6; toàn tệp 21 trang.",
+    "action_needed": "Kiểm tra lại trên Word/bản PDF xuất bản chính thức để phân biệt sai lệch phân trang và sai sót nguồn."
+  },
+  {
+    "paper_id": "126f1b46d648",
+    "severity": "warning",
+    "page": null,
+    "part_id": null,
+    "index_within_part": null,
+    "description": "Số trang chứa câu hỏi khi render DOCX là 5, trong khi đầu đề ghi 4 trang; chưa chứng minh đây là thiếu trang vì thứ tự câu liên tục và PDF tiếp tục bằng lời giải.",
+    "evidence": "Đầu đề ghi 4 trang; PDF render DOCX có phần đề ở trang 1–5; toàn tệp 13 trang.",
+    "action_needed": "Kiểm tra lại trên Word/bản PDF xuất bản chính thức để phân biệt sai lệch phân trang và sai sót nguồn."
+  }
+]

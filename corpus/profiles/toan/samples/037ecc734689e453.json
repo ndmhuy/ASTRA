@@ -1,0 +1,203 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "037ecc734689e453",
+    "topic": "Hàm số cơ bản",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một đa thức, một đối số và một giá trị hàm được đề xuất.",
+        "task": "Kiểm tra giá trị hàm tại đối số đã cho.",
+        "reasoning": [
+          "Thay đối số vào từng hạng tử.",
+          "Tính tổng có dấu và đối chiếu giá trị được đề xuất."
+        ],
+        "combines": [
+          "Khái niệm hàm số",
+          "Tính giá trị biểu thức"
+        ],
+        "difficulty_source": "Tính toán có dấu trực tiếp.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Một hàm phân thức với mẫu bậc nhất và nhận định về tập xác định.",
+        "task": "Kiểm tra tập xác định được nêu.",
+        "reasoning": [
+          "Tìm nghiệm của mẫu số.",
+          "Loại giá trị làm mẫu bằng không.",
+          "Đối chiếu nhận định."
+        ],
+        "combines": [
+          "Điều kiện xác định của phân thức",
+          "Tập xác định của hàm số"
+        ],
+        "difficulty_source": "Chỉ có một điều kiện mẫu số khác không.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một hàm phân thức và tọa độ giao điểm với trục tung được đề xuất.",
+        "task": "Kiểm tra tọa độ giao điểm.",
+        "reasoning": [
+          "Cho hoành độ bằng không.",
+          "Tính tung độ của hàm.",
+          "Đối chiếu điểm được nêu."
+        ],
+        "combines": [
+          "Giá trị hàm số",
+          "Giao điểm với trục tọa độ"
+        ],
+        "difficulty_source": "Một phép thế trực tiếp vào hàm số.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Biểu thức đa thức, một đối số và giá trị đề xuất.",
+        "task": "Kiểm tra giá trị hàm số.",
+        "reasoning": [
+          "Thay đối số vào biểu thức.",
+          "Tính theo thứ tự phép toán và đối chiếu."
+        ],
+        "combines": [
+          "Giá trị hàm số"
+        ],
+        "difficulty_source": "Thế trực tiếp và tính đúng các dấu.",
+        "evidence_uncertainty": "Chưa xác nhận được khóa đúng sai khớp mã; thao tác tính giá trị hàm số còn sử dụng kiến thức từ cấp học trước.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "163f20908cf7|P2|1|c",
+      "0968e8bc9e2d|P2|1|a",
+      "0968e8bc9e2d|P2|1|b",
+      "0ecb85132b84|P2|3|c",
+      "525d3542283a|P2|3|b",
+      "7ab78715480e|P2|3|a",
+      "beee25b53250|P2|4|a",
+      "ccae0b94a82d|P2|2|a",
+      "ccae0b94a82d|P2|2|b",
+      "ecd76ac672e5|P2|2|a",
+      "fc12a8146279|P2|1|a"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "037ecc734689e453",
+    "stem": "Cho hàm số f(x) = (2x + 3)/(x − 1). Xác định tính đúng hoặc sai của mỗi khẳng định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "f(−2) = −1/3."
+      },
+      {
+        "sub": "b",
+        "text": "Tập xác định của hàm số là ℝ \\ {1}."
+      },
+      {
+        "sub": "c",
+        "text": "Đồ thị hàm số cắt trục tung tại điểm (0; 3)."
+      },
+      {
+        "sub": "d",
+        "text": "Phương trình f(x) = 0 có nghiệm duy nhất x = −3/2."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) f(−2) = (−4 + 3)/(−2 − 1) = (−1)/(−3) = 1/3, nên khẳng định sai. b) Điều kiện xác định là x − 1 ≠ 0, tức x ≠ 1, nên khẳng định đúng. c) Trên trục tung, x = 0 và f(0) = 3/(−1) = −3. Giao điểm là (0; −3), nên khẳng định sai. d) Một phân thức xác định bằng 0 khi tử số bằng 0. Ta có 2x + 3 = 0 dẫn đến x = −3/2; giá trị này khác 1 nên được nhận. Khẳng định đúng.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "a",
+        "mistake": "Giữ dấu âm của tử số sau khi chia cho mẫu số âm, dẫn đến −1/3.",
+        "why_plausible": "Phép thế x = −2 tạo cả tử và mẫu âm, dễ gây nhầm quy tắc chia hai số âm."
+      },
+      {
+        "label": null,
+        "sub": "c",
+        "mistake": "Lấy tung độ bằng hệ số tự do của tử số và bỏ qua mẫu số tại x = 0.",
+        "why_plausible": "Học sinh có thể áp dụng máy móc cách đọc tung độ giao điểm của hàm bậc nhất cho một hàm phân thức."
+      }
+    ],
+    "level_reason": "Các ý đều yêu cầu thực hiện thao tác quen thuộc: thế giá trị, tìm điều kiện mẫu khác 0, xác định giao điểm với trục tọa độ và giải phương trình phân thức bằng 0. Mức cao nhất của toàn câu là TH.",
+    "prerequisites": [
+      "Tập xác định của hàm phân thức",
+      "Tính giá trị hàm số",
+      "Giao điểm của đồ thị với các trục tọa độ",
+      "Điều kiện để một phân thức bằng 0"
+    ],
+    "variation_guidance": "Có thể thay các hệ số của tử và mẫu, đồng thời giữ đủ bốn ý. Cần kiểm tra nghiệm của tử có thuộc tập xác định và tính lại dấu tại các đối số được chọn.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "037ecc734689e453",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) f(−2)=(−4+3)/(−2−1)=1/3 nên sai. b) Điều kiện x−1≠0 cho tập xác định ℝ\\{1}, nên đúng. c) f(0)=−3 nên giao điểm với trục tung là (0;−3), khẳng định sai. d) f(x)=0 tương đương 2x+3=0 với x≠1; nghiệm duy nhất là x=−3/2, nên đúng.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a) Tính giá trị hàm số bằng phép thế quen thuộc. b) Áp dụng điều kiện mẫu khác 0. c) Xác định giao điểm với trục tung bằng cách thế x=0. d) Giải phương trình phân thức bằng điều kiện tử bằng 0 và mẫu khác 0. Từng ý đều là thủ tục quen thuộc ở mức TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/2c5a16fb7418660f668cde3133455595d3cb33e9e79889191d929bcfdb5707c6.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/2c5a16fb7418660f668cde3133455595d3cb33e9e79889191d929bcfdb5707c6.resolve.json"
+}

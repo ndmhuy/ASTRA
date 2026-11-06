@@ -1,0 +1,762 @@
+{
+  "schema_version": "research-topic-pack-v1",
+  "origin": "mixed_abstract_evidence_and_explicit_synthetic_examples",
+  "subject": "toan",
+  "topic": {
+    "topic": "Quy tắc xác suất",
+    "display_topic": "Quy tắc xác suất",
+    "parent_topic_annotation": {},
+    "raw_topics": [
+      "Các quy tắc tính xác suất: phân chia trường hợp theo điều kiện tổng điểm",
+      "Các quy tắc tính xác suất: ít nhất một biến cố xảy ra",
+      "Công thức cộng và nhân xác suất: đúng một biến cố xảy ra",
+      "Xác suất của biến cố hợp qua các nhóm rời nhau"
+    ],
+    "grades": [
+      "11"
+    ],
+    "classes": {
+      "official": {
+        "distinct_papers": 1,
+        "rows": 1,
+        "parts": {
+          "P2": {
+            "papers": 1,
+            "questions": 1,
+            "rows": 1,
+            "discrimination": {
+              "medium": 1
+            }
+          }
+        }
+      },
+      "provincial_third_party": {
+        "distinct_papers": 2,
+        "rows": 3,
+        "parts": {
+          "P2": {
+            "papers": 2,
+            "questions": 2,
+            "rows": 3,
+            "discrimination": {
+              "low": 1,
+              "medium": 2
+            }
+          }
+        }
+      }
+    },
+    "patterns_by_class": {
+      "official": [
+        {
+          "part_kind": "true_false",
+          "topic": "Xác suất biên từ dữ liệu phân loại chéo",
+          "grade": null,
+          "construction": "Cho dữ liệu theo kết quả phân loại và trạng thái thực; gộp các nhánh rời nhau có cùng trạng thái bằng số lượng hoặc xác suất có trọng số rồi kiểm tra xác suất không điều kiện.",
+          "wrong_options": "Dùng xác suất kết quả phân loại thay cho xác suất trạng thái thực và bỏ qua các trường hợp phân loại lệch.",
+          "difficulty_source": "Theo dõi riêng các tiêu chí phân nhóm khi tổng hợp dữ liệu.",
+          "discrimination": "medium",
+          "typical_steps": 3,
+          "refs": [
+            "163f20908cf7|P2|4|c",
+            "023e74626dd8|P2|3|c"
+          ],
+          "paper_count": 2,
+          "row_count": 2,
+          "topic_support_refs": [
+            "023e74626dd8|P2|3|c"
+          ],
+          "display_topic": "Xác suất biên từ dữ liệu phân loại chéo"
+        }
+      ],
+      "provincial_third_party": [
+        {
+          "part_kind": "true_false",
+          "topic": "Biểu diễn biến cố và xác suất trong đúng không gian",
+          "grade": [
+            10,
+            11,
+            12
+          ],
+          "construction": "Xác định trạng thái, nhóm điều kiện và quy trình chọn; dùng tỉ lệ trực tiếp, phần bù trong cùng không gian, nhân khi có căn cứ độc lập và cộng các nhánh rời nhau với trọng số. Cập nhật thành phần khi không hoàn lại; khi đếm số lần thành công, đếm vị trí rồi nhân xác suất cấu hình.",
+          "wrong_options": "Phủ định sai, lẫn đúng một với ít nhất một, bỏ tổ hợp, đảo xác suất nhóm và có điều kiện, bỏ trọng số hoặc giữ dữ kiện trước cập nhật.",
+          "difficulty_source": "Giữ quần thể tham chiếu, trọng số và phụ thuộc qua từng thao tác.",
+          "discrimination": "medium",
+          "typical_steps": 4,
+          "evidence_status": "Tỉ lệ và phần bù trực tiếp nhẹ hơn phối hợp trạng thái, toàn phần hoặc cập nhật. Không tự suy độc lập; có cách đọc lời văn phụ thuộc khóa.",
+          "refs": [
+            "adb051fd8253|P2|4|a",
+            "85efdd1a7e54|P2|4|a",
+            "adb051fd8253|P2|4|b",
+            "85efdd1a7e54|P2|4|c",
+            "adb051fd8253|P2|4|c",
+            "85efdd1a7e54|P2|4|d",
+            "adb051fd8253|P2|4|d",
+            "85efdd1a7e54|P2|4|b",
+            "6aa30214ba7e|P2|3|b",
+            "6aa30214ba7e|P2|3|d",
+            "c6340827ba59|P2|2|d",
+            "fc12a8146279|P2|3|a",
+            "fc12a8146279|P2|3|b",
+            "54e9a2a276ca|P2|3|c",
+            "c6340827ba59|P2|2|a",
+            "c6340827ba59|P2|2|b",
+            "ccae0b94a82d|P2|1|a",
+            "ccae0b94a82d|P2|1|b",
+            "0968e8bc9e2d|P2|3|b",
+            "9ed45d16a975|P2|2|a",
+            "fc12a8146279|P2|3|c",
+            "54e9a2a276ca|P2|3|a",
+            "0968e8bc9e2d|P2|3|c",
+            "9ed45d16a975|P2|2|b",
+            "3f1b2aa3cb72|P2|2|c",
+            "7ab78715480e|P2|4|c",
+            "de5833d227dd|P2|4|a",
+            "11d88d9a96ad|P2|1|a",
+            "de5833d227dd|P2|4|b",
+            "0ecb85132b84|P2|2|a",
+            "0ecb85132b84|P2|2|b",
+            "de5833d227dd|P2|4|c",
+            "11d88d9a96ad|P2|1|b",
+            "0ecb85132b84|P2|2|c"
+          ],
+          "paper_count": 14,
+          "row_count": 34,
+          "topic_support_refs": [
+            "85efdd1a7e54|P2|4|b",
+            "adb051fd8253|P2|4|c",
+            "adb051fd8253|P2|4|d"
+          ],
+          "display_topic": "Biểu diễn biến cố và xác suất trong đúng không gian"
+        }
+      ]
+    },
+    "support_refs": [
+      "023e74626dd8|P2|3|c",
+      "85efdd1a7e54|P2|4|b",
+      "adb051fd8253|P2|4|c",
+      "adb051fd8253|P2|4|d"
+    ],
+    "cognitive_level_status": "abstract_classification_complete_pending_original_item_review",
+    "sample_status": "examples_published_pending_teacher",
+    "prototype_status": "no_mapped_case_not_evidence_of_absence",
+    "component_details": {
+      "reasoning_moves": [],
+      "cognitive_counts": [
+        {
+          "class": "official",
+          "part": "P2",
+          "topic": "Quy tắc xác suất",
+          "counts": {
+            "TH": 1
+          },
+          "display_topic": "Quy tắc xác suất"
+        },
+        {
+          "class": "provincial_third_party",
+          "part": "P2",
+          "topic": "Quy tắc xác suất",
+          "counts": {
+            "TH": 2,
+            "VD": 1
+          },
+          "display_topic": "Quy tắc xác suất"
+        }
+      ],
+      "containing_question_cognitive_counts": [
+        {
+          "class": "official",
+          "part": "P2",
+          "counts": {
+            "TH": 1
+          }
+        },
+        {
+          "class": "provincial_third_party",
+          "part": "P2",
+          "counts": {
+            "VD": 1,
+            "TH": 1
+          }
+        }
+      ],
+      "matrix_comparison": [
+        {
+          "part": "P2",
+          "topic": "Quy tắc xác suất",
+          "grades": [
+            11
+          ],
+          "default_count": 0,
+          "default_topics": [],
+          "official_papers": 1,
+          "provincial_papers": 2,
+          "official_ids": [
+            "023e74626dd8"
+          ],
+          "provincial_ids": [
+            "85efdd1a7e54",
+            "adb051fd8253"
+          ],
+          "official_mean_questions": 0.5,
+          "provincial_mean_questions": 0.1,
+          "display_topic": "Quy tắc xác suất"
+        }
+      ],
+      "prototype_cases": [],
+      "sample_ids": [
+        "799f93b2e19e4fe0",
+        "cf391033004a26be"
+      ],
+      "sample_cells_planned": 2
+    }
+  },
+  "construction_observations": [
+    {
+      "part": "P2",
+      "idx": 3,
+      "sub": "c",
+      "topic": "Xác suất của biến cố hợp qua các nhóm rời nhau",
+      "grade": 11,
+      "given": "Dữ liệu chéo giữa kết quả phân loại và trạng thái thực tế, cùng một xác suất biên được đề xuất.",
+      "task": "Kiểm tra xác suất của trạng thái khi không đặt điều kiện về kết quả phân loại.",
+      "reasoning": [
+        "Gộp các nhóm rời nhau có cùng trạng thái cần xét.",
+        "Chia tổng số phần tử thuận lợi cho kích thước quần thể.",
+        "Đối chiếu xác suất biên với nhận định."
+      ],
+      "steps": 3,
+      "combines": [
+        "Biến cố hợp rời nhau",
+        "Xác suất cổ điển",
+        "Đọc dữ liệu chéo"
+      ],
+      "wrong_options": "Nhận định sai dùng xác suất của kết quả phân loại thay cho xác suất trạng thái thực tế.",
+      "wrong_option_details": [
+        {
+          "label": "c",
+          "identifiable_error": true,
+          "mistake_kind": "Đồng nhất kết quả phân loại với trạng thái thực tế",
+          "reason": "Dùng quy mô nhóm mang một kết quả phân loại làm quy mô nhóm có trạng thái cần xét, bỏ qua các trường hợp phân loại lệch."
+        }
+      ],
+      "cue_use": "needed in reasoning",
+      "difficulty_source": "Phân biệt hai tiêu chí phân nhóm khi tính xác suất biên.",
+      "discrimination": "medium",
+      "evidence_uncertainty": null,
+      "optional_path": null,
+      "paper_id": "023e74626dd8",
+      "year": "2026",
+      "evidence_class": "official",
+      "ref": "023e74626dd8|P2|3|c",
+      "printed_idx": 3,
+      "display_topic": "Xác suất của biến cố hợp qua các nhóm rời nhau"
+    },
+    {
+      "part": "P2",
+      "idx": 4,
+      "sub": "c",
+      "topic": "Các quy tắc tính xác suất: ít nhất một biến cố xảy ra",
+      "grade": 11,
+      "given": "Một chuỗi phép thử độc lập với các xác suất thành công khác nhau.",
+      "task": "Kiểm tra xác suất có ít nhất một lần thành công.",
+      "reasoning": [
+        "Chuyển sang biến cố đối là thất bại ở toàn bộ phép thử.",
+        "Nhân các xác suất thất bại.",
+        "Lấy xác suất bù và đối chiếu."
+      ],
+      "steps": 3,
+      "combines": [
+        "Biến cố đối",
+        "Biến cố độc lập",
+        "Công thức nhân xác suất"
+      ],
+      "wrong_options": "Nhận định sai dùng phần bù của biến cố thành công toàn bộ thay cho phần bù của thất bại toàn bộ.",
+      "wrong_option_details": [
+        {
+          "label": "c",
+          "identifiable_error": true,
+          "mistake_kind": "Chọn sai biến cố đối",
+          "reason": "Đồng nhất ít nhất một lần thành công với không thành công ở toàn bộ phép thử."
+        }
+      ],
+      "cue_use": "needed in reasoning",
+      "difficulty_source": "Diễn đạt đúng biến cố đối của điều kiện ít nhất một.",
+      "discrimination": "low",
+      "evidence_uncertainty": null,
+      "optional_path": null,
+      "paper_id": "adb051fd8253",
+      "year": "2026",
+      "evidence_class": "provincial_third_party",
+      "ref": "adb051fd8253|P2|4|c",
+      "printed_idx": 4,
+      "display_topic": "Các quy tắc tính xác suất: ít nhất một biến cố xảy ra"
+    },
+    {
+      "part": "P2",
+      "idx": 4,
+      "sub": "d",
+      "topic": "Các quy tắc tính xác suất: phân chia trường hợp theo điều kiện tổng điểm",
+      "grade": 11,
+      "given": "Một lượt thi gồm các phép thử độc lập, điểm ban đầu, điểm đối thủ và quy tắc thưởng phạt có một phép thử được tăng trọng số.",
+      "task": "Kiểm tra xác suất tổng điểm cuối đủ để đứng đầu.",
+      "reasoning": [
+        "Chuyển điều kiện đứng đầu thành bất đẳng thức về tổng điểm.",
+        "Chia trường hợp theo kết quả phép thử được tăng trọng số.",
+        "Xác định những kết quả của các phép thử còn lại đủ thỏa bất đẳng thức trong từng trường hợp.",
+        "Tính xác suất các trường hợp thuận lợi bằng tính độc lập.",
+        "Cộng các xác suất của những trường hợp rời nhau rồi đối chiếu."
+      ],
+      "steps": 5,
+      "combines": [
+        "Mô hình tổng điểm",
+        "Bất đẳng thức",
+        "Biến cố độc lập",
+        "Công thức cộng xác suất",
+        "Công thức nhân xác suất"
+      ],
+      "wrong_options": "Nhận định đúng theo khóa khớp mã đề; không có phương án sai cần giải thích.",
+      "wrong_option_details": [],
+      "cue_use": "needed in reasoning",
+      "difficulty_source": "Từ quy tắc thưởng phạt suy ra đúng các nhóm kết quả đủ thắng.",
+      "discrimination": "medium",
+      "evidence_uncertainty": null,
+      "optional_path": null,
+      "paper_id": "adb051fd8253",
+      "year": "2026",
+      "evidence_class": "provincial_third_party",
+      "ref": "adb051fd8253|P2|4|d",
+      "printed_idx": 4,
+      "display_topic": "Các quy tắc tính xác suất: phân chia trường hợp theo điều kiện tổng điểm"
+    },
+    {
+      "part": "P2",
+      "idx": 4,
+      "sub": "b",
+      "topic": "Công thức cộng và nhân xác suất: đúng một biến cố xảy ra",
+      "grade": 11,
+      "given": "Xác suất hoạt động của các bộ phận độc lập và xác suất đúng một bộ phận hoạt động được đề xuất.",
+      "task": "Kiểm tra xác suất có đúng một bộ phận hoạt động.",
+      "reasoning": [
+        "Chia biến cố thành các trường hợp loại trừ nhau theo bộ phận hoạt động.",
+        "Dùng độc lập để tính xác suất từng trường hợp, có lấy biến cố đối.",
+        "Cộng các xác suất rồi đối chiếu."
+      ],
+      "steps": 3,
+      "combines": [
+        "Biến cố đối",
+        "Biến cố độc lập",
+        "Công thức cộng xác suất"
+      ],
+      "wrong_options": "Nhận định thăm dò việc phân biệt đúng một với ít nhất một và việc ghép đúng trạng thái đối; chưa xác định nhận định sai.",
+      "wrong_option_details": [
+        {
+          "label": "b",
+          "identifiable_error": null,
+          "mistake_kind": null,
+          "reason": "Thiếu khóa hợp lệ để phân loại nhận định."
+        }
+      ],
+      "cue_use": "needed in reasoning",
+      "difficulty_source": "Chọn đúng các trường hợp xung khắc cho yêu cầu đúng một.",
+      "discrimination": "medium",
+      "evidence_uncertainty": "Thiếu khóa đúng sai được xác nhận.",
+      "optional_path": null,
+      "paper_id": "85efdd1a7e54",
+      "year": "2026",
+      "evidence_class": "provincial_third_party",
+      "ref": "85efdd1a7e54|P2|4|b",
+      "printed_idx": 4,
+      "display_topic": "Công thức cộng và nhân xác suất: đúng một biến cố xảy ra"
+    }
+  ],
+  "level_assignments": [
+    {
+      "ref": "023e74626dd8|P2|3|c",
+      "level": "TH",
+      "confidence": "high",
+      "justification": "Gộp các nhóm phù hợp rồi tính tỉ số là xử lí dữ liệu thông thường, không có bằng chứng về suy luận tổ hợp không quen thuộc.",
+      "decisive_demand": "Tổng hợp các nhóm dữ liệu để xác định xác suất cần xét.",
+      "uncertainty": null
+    },
+    {
+      "ref": "adb051fd8253|P2|4|c",
+      "level": "TH",
+      "confidence": "high",
+      "justification": "Dùng biến cố đối rồi quy tắc nhân là cách xử lý quen thuộc cho dạng yêu cầu này.",
+      "decisive_demand": "Thực hiện quy trình xác suất bù kết hợp tính độc lập.",
+      "uncertainty": null
+    },
+    {
+      "ref": "adb051fd8253|P2|4|d",
+      "level": "VD",
+      "confidence": "high",
+      "justification": "Phải chuyển quy tắc thành điều kiện toán học, xác định các trường hợp thuận lợi phụ thuộc điều kiện ấy rồi tổ chức phép tính xác suất.",
+      "decisive_demand": "Xây dựng điều kiện của biến cố và phân hoạch các trường hợp để tính xác suất.",
+      "uncertainty": null
+    },
+    {
+      "ref": "85efdd1a7e54|P2|4|b",
+      "level": "TH",
+      "confidence": "medium",
+      "justification": "Phân chia trường hợp loại trừ nhau và áp dụng quy tắc cộng, nhân trong cấu trúc quen thuộc là quy trình xác suất chuẩn.",
+      "decisive_demand": "Phân rã biến cố theo các trường hợp và tính xác suất tương ứng.",
+      "uncertainty": "Chưa có khóa xác nhận; bản trích chưa thể hiện cấu trúc đếm hoặc mô hình hóa bất thường."
+    }
+  ],
+  "examples": [
+    {
+      "origin": "synthetic_not_corpus_evidence",
+      "model": "gpt-6.1-sol",
+      "target": {
+        "id": "799f93b2e19e4fe0",
+        "topic": "Quy tắc xác suất",
+        "part": "P2",
+        "level": "TH",
+        "qtype": "true_false",
+        "option_labels": [],
+        "slot_keys": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        "canonical_answer_alphabet": [
+          "D",
+          "S"
+        ],
+        "abstract_observations": [
+          {
+            "given": "Dữ liệu chéo giữa kết quả phân loại và trạng thái thực tế, cùng một xác suất biên được đề xuất.",
+            "task": "Kiểm tra xác suất của trạng thái khi không đặt điều kiện về kết quả phân loại.",
+            "reasoning": [
+              "Gộp các nhóm rời nhau có cùng trạng thái cần xét.",
+              "Chia tổng số phần tử thuận lợi cho kích thước quần thể.",
+              "Đối chiếu xác suất biên với nhận định."
+            ],
+            "combines": [
+              "Biến cố hợp rời nhau",
+              "Xác suất cổ điển",
+              "Đọc dữ liệu chéo"
+            ],
+            "difficulty_source": "Phân biệt hai tiêu chí phân nhóm khi tính xác suất biên.",
+            "evidence_uncertainty": null,
+            "evidence_class": "official"
+          },
+          {
+            "given": "Xác suất hoạt động của các bộ phận độc lập và xác suất đúng một bộ phận hoạt động được đề xuất.",
+            "task": "Kiểm tra xác suất có đúng một bộ phận hoạt động.",
+            "reasoning": [
+              "Chia biến cố thành các trường hợp loại trừ nhau theo bộ phận hoạt động.",
+              "Dùng độc lập để tính xác suất từng trường hợp, có lấy biến cố đối.",
+              "Cộng các xác suất rồi đối chiếu."
+            ],
+            "combines": [
+              "Biến cố đối",
+              "Biến cố độc lập",
+              "Công thức cộng xác suất"
+            ],
+            "difficulty_source": "Chọn đúng các trường hợp xung khắc cho yêu cầu đúng một.",
+            "evidence_uncertainty": "Thiếu khóa đúng sai được xác nhận.",
+            "evidence_class": "provincial_third_party"
+          },
+          {
+            "given": "Một chuỗi phép thử độc lập với các xác suất thành công khác nhau.",
+            "task": "Kiểm tra xác suất có ít nhất một lần thành công.",
+            "reasoning": [
+              "Chuyển sang biến cố đối là thất bại ở toàn bộ phép thử.",
+              "Nhân các xác suất thất bại.",
+              "Lấy xác suất bù và đối chiếu."
+            ],
+            "combines": [
+              "Biến cố đối",
+              "Biến cố độc lập",
+              "Công thức nhân xác suất"
+            ],
+            "difficulty_source": "Diễn đạt đúng biến cố đối của điều kiện ít nhất một.",
+            "evidence_uncertainty": null,
+            "evidence_class": "provincial_third_party"
+          }
+        ],
+        "support_refs": [
+          "023e74626dd8|P2|3|c",
+          "85efdd1a7e54|P2|4|b",
+          "adb051fd8253|P2|4|c"
+        ],
+        "official_anchor_available": true,
+        "display_topic": "Quy tắc xác suất"
+      },
+      "sample": {
+        "id": "799f93b2e19e4fe0",
+        "stem": "Một khu vườn dùng hai bộ điều khiển tưới A và B. Trong một buổi sáng, xác suất A hoạt động bình thường là 0,8; xác suất B hoạt động bình thường là 0,6. Trạng thái hoạt động của hai bộ điều khiển độc lập với nhau. Xét tính đúng sai của các nhận định sau.",
+        "options": [],
+        "statements": [
+          {
+            "sub": "a",
+            "text": "Xác suất cả hai bộ điều khiển hoạt động bình thường là 0,48."
+          },
+          {
+            "sub": "b",
+            "text": "Xác suất có đúng một bộ điều khiển hoạt động bình thường là 0,44."
+          },
+          {
+            "sub": "c",
+            "text": "Xác suất có ít nhất một bộ điều khiển hoạt động bình thường là 0,88."
+          },
+          {
+            "sub": "d",
+            "text": "Xác suất cả hai bộ điều khiển đều không hoạt động bình thường là 0,12."
+          }
+        ],
+        "answers": [
+          {
+            "sub": "a",
+            "answer": "D",
+            "level": "TH"
+          },
+          {
+            "sub": "b",
+            "answer": "D",
+            "level": "TH"
+          },
+          {
+            "sub": "c",
+            "answer": "S",
+            "level": "TH"
+          },
+          {
+            "sub": "d",
+            "answer": "S",
+            "level": "TH"
+          }
+        ],
+        "solution": "Gọi A, B lần lượt là biến cố hai bộ điều khiển hoạt động bình thường. a) Do độc lập, P(A∩B)=0,8×0,6=0,48 nên nhận định đúng. b) Hai trường hợp chỉ A hoạt động và chỉ B hoạt động xung khắc, nên xác suất cần tìm là 0,8×0,4+0,2×0,6=0,44; nhận định đúng. c) Xác suất ít nhất một bộ hoạt động là 1−0,2×0,4=0,92, không phải 0,88. d) Xác suất cả hai không hoạt động bình thường là 0,2×0,4=0,08, không phải 0,12.",
+        "distractors": [
+          {
+            "label": null,
+            "sub": "c",
+            "mistake": "Tính 1−0,2×0,6=0,88, chỉ lấy biến cố đối ở bộ điều khiển A.",
+            "why_plausible": "Học sinh nhớ cách lấy xác suất bù nhưng nhầm biến cố đối của 'ít nhất một hoạt động' với trường hợp chỉ B hoạt động."
+          },
+          {
+            "label": null,
+            "sub": "d",
+            "mistake": "Dùng 0,2×0,6 để tính xác suất cả hai không hoạt động bình thường.",
+            "why_plausible": "Học sinh lấy đúng xác suất A không hoạt động nhưng giữ nguyên xác suất B hoạt động, nên tính sang một trường hợp khác."
+          }
+        ],
+        "level_reason": "Mức cao nhất của các nhận định là TH: học sinh diễn giải các biến cố và thực hiện quy trình quen thuộc bằng công thức nhân cho hai biến cố độc lập, công thức cộng và biến cố đối.",
+        "prerequisites": [
+          "Biến cố đối",
+          "Hai biến cố độc lập",
+          "Công thức cộng xác suất cho các biến cố xung khắc"
+        ],
+        "variation_guidance": "Có thể thay xác suất hoạt động và bối cảnh thiết bị; phải nêu rõ tính độc lập và tính lại từng xác suất. Các nhận định về đúng một và ít nhất một chỉ tham khảo kiểu thao tác trong quan sát cấp tỉnh, không được xem là bằng chứng đề thi chính thức.",
+        "uncertainties": [
+          "Một quan sát cấp tỉnh về xác suất đúng một bộ phận hoạt động chưa có khóa đúng sai được xác nhận; các kết luận ở đây được suy ra từ dữ kiện tổng hợp của câu minh họa."
+        ],
+        "missing_assets": []
+      },
+      "independent_review": {
+        "id": "799f93b2e19e4fe0",
+        "answers": [
+          {
+            "sub": "a",
+            "answer": "D",
+            "level": "TH"
+          },
+          {
+            "sub": "b",
+            "answer": "D",
+            "level": "TH"
+          },
+          {
+            "sub": "c",
+            "answer": "S",
+            "level": "TH"
+          },
+          {
+            "sub": "d",
+            "answer": "S",
+            "level": "TH"
+          }
+        ],
+        "solution": "Do hai trạng thái độc lập: a) P(A∩B)=0,8×0,6=0,48. b) Xác suất đúng một bộ hoạt động bình thường là 0,8×0,4+0,2×0,6=0,44. c) Xác suất ít nhất một bộ hoạt động bình thường là 1−0,2×0,4=0,92. d) Xác suất cả hai bộ đều không hoạt động bình thường là 0,2×0,4=0,08.",
+        "confidence": "high",
+        "error_flags": [],
+        "level_reason": "Từng nhận định a, b, c, d đều chỉ yêu cầu áp dụng các quy tắc xác suất quen thuộc cho hai biến cố độc lập; các phép tính thường quy thuộc TH."
+      },
+      "key_agreement": true,
+      "level_agreement": true,
+      "status": "model_checks_passed_pending_teacher_review",
+      "generation_receipt": "audit/outputs/topic-samples/toan/d05ca70e548abf6592dc38a3527ea48a9dd6a784b29610cbb4e9bccbc1439b89.draft.json",
+      "resolve_receipt": "audit/outputs/topic-samples/toan/d05ca70e548abf6592dc38a3527ea48a9dd6a784b29610cbb4e9bccbc1439b89.resolve.json"
+    },
+    {
+      "origin": "synthetic_not_corpus_evidence",
+      "model": "gpt-6.1-sol",
+      "target": {
+        "id": "cf391033004a26be",
+        "topic": "Quy tắc xác suất",
+        "part": "P2",
+        "level": "VD",
+        "qtype": "true_false",
+        "option_labels": [],
+        "slot_keys": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        "canonical_answer_alphabet": [
+          "D",
+          "S"
+        ],
+        "abstract_observations": [
+          {
+            "given": "Một lượt thi gồm các phép thử độc lập, điểm ban đầu, điểm đối thủ và quy tắc thưởng phạt có một phép thử được tăng trọng số.",
+            "task": "Kiểm tra xác suất tổng điểm cuối đủ để đứng đầu.",
+            "reasoning": [
+              "Chuyển điều kiện đứng đầu thành bất đẳng thức về tổng điểm.",
+              "Chia trường hợp theo kết quả phép thử được tăng trọng số.",
+              "Xác định những kết quả của các phép thử còn lại đủ thỏa bất đẳng thức trong từng trường hợp.",
+              "Tính xác suất các trường hợp thuận lợi bằng tính độc lập.",
+              "Cộng các xác suất của những trường hợp rời nhau rồi đối chiếu."
+            ],
+            "combines": [
+              "Mô hình tổng điểm",
+              "Bất đẳng thức",
+              "Biến cố độc lập",
+              "Công thức cộng xác suất",
+              "Công thức nhân xác suất"
+            ],
+            "difficulty_source": "Từ quy tắc thưởng phạt suy ra đúng các nhóm kết quả đủ thắng.",
+            "evidence_uncertainty": null,
+            "evidence_class": "provincial_third_party"
+          }
+        ],
+        "support_refs": [
+          "adb051fd8253|P2|4|d"
+        ],
+        "official_anchor_available": false,
+        "display_topic": "Quy tắc xác suất"
+      },
+      "sample": {
+        "id": "cf391033004a26be",
+        "stem": "Trong một trò chơi, người chơi có sẵn 5 điểm rồi thực hiện bốn lượt độc lập. Ba lượt thường có xác suất thành công lần lượt là 1/2, 2/3 và 3/4; mỗi lượt thường thành công được cộng 2 điểm, thất bại bị trừ 1 điểm. Lượt đặc biệt có xác suất thành công 1/2; thành công được cộng 4 điểm, thất bại bị trừ 2 điểm. Đối thủ đã có 11 điểm và không chơi thêm. Người chơi chỉ thắng nếu tổng điểm cuối cùng lớn hơn 11. Xét tính đúng sai của các nhận định sau.",
+        "options": [],
+        "statements": [
+          {
+            "sub": "a",
+            "text": "Xác suất cả ba lượt thường đều thành công là 1/4."
+          },
+          {
+            "sub": "b",
+            "text": "Nếu lượt đặc biệt thành công và đúng một lượt thường thành công thì người chơi kết thúc với 12 điểm."
+          },
+          {
+            "sub": "c",
+            "text": "Nếu lượt đặc biệt thất bại thì người chơi không thể thắng đối thủ."
+          },
+          {
+            "sub": "d",
+            "text": "Xác suất người chơi thắng đối thủ là 11/48."
+          }
+        ],
+        "answers": [
+          {
+            "sub": "a",
+            "answer": "D",
+            "level": "TH"
+          },
+          {
+            "sub": "b",
+            "answer": "S",
+            "level": "TH"
+          },
+          {
+            "sub": "c",
+            "answer": "D",
+            "level": "TH"
+          },
+          {
+            "sub": "d",
+            "answer": "S",
+            "level": "VD"
+          }
+        ],
+        "solution": "a) Đúng. Tính độc lập cho xác suất bằng (1/2)(2/3)(3/4) = 1/4. b) Sai. Tổng điểm là 5 + 4 + 2 − 1 − 1 = 9. c) Đúng. Khi lượt đặc biệt thất bại, tổng điểm cao nhất là 5 − 2 + 3·2 = 9, không vượt 11. d) Sai. Gọi k là số lượt thường thành công và s bằng 1 khi lượt đặc biệt thành công, bằng 0 khi thất bại. Tổng điểm cuối là 5 + 2k − (3 − k) + 4s − 2(1 − s) = 3k + 6s. Điều kiện thắng là 3k + 6s > 11. Với 0 ≤ k ≤ 3, điều này tương đương s = 1 và k ≥ 2. Xác suất đúng hai lượt thường thành công là (1/2)(2/3)(1/4) + (1/2)(1/3)(3/4) + (1/2)(2/3)(3/4) = 11/24. Cộng xác suất cả ba thành công được 11/24 + 1/4 = 17/24. Do lượt đặc biệt độc lập với ba lượt thường, xác suất thắng là (1/2)(17/24) = 17/48.",
+        "distractors": [
+          {
+            "label": null,
+            "sub": "b",
+            "mistake": "Tính cả ba lượt thường như đều thành công dù chỉ có một lượt thành công.",
+            "why_plausible": "Giá trị 12 bằng 5 + 4 + 3·2 − 3, xuất hiện khi cộng thưởng cho cả ba lượt thường rồi lại trừ một điểm cho mỗi lượt, thay vì phân biệt thành công và thất bại."
+          },
+          {
+            "label": null,
+            "sub": "d",
+            "mistake": "Chỉ tính trường hợp lượt đặc biệt thành công và đúng hai lượt thường thành công, bỏ sót trường hợp cả ba lượt thường thành công.",
+            "why_plausible": "Hai lượt thường thành công là ngưỡng vừa đủ thắng khi lượt đặc biệt thành công; nhầm điều kiện ít nhất hai thành đúng hai sẽ cho (1/2)(11/24) = 11/48."
+          }
+        ],
+        "level_reason": "Mức cao nhất là VD ở ý d: học sinh phải mô hình hóa điểm có thưởng và phạt, chuyển điều kiện thắng thành ràng buộc kết quả, xác định đầy đủ các trường hợp thuận lợi rồi phối hợp quy tắc cộng và nhân xác suất. Các ý còn lại yêu cầu tính hoặc diễn giải trực tiếp.",
+        "prerequisites": [
+          "Biến cố độc lập",
+          "Quy tắc nhân xác suất",
+          "Quy tắc cộng cho các biến cố rời nhau",
+          "Phân biệt đúng hai và ít nhất hai",
+          "Biểu diễn tổng điểm bằng số lượt thành công"
+        ],
+        "variation_guidance": "Có thể thay xác suất, điểm ban đầu và mức thưởng phạt. Sau khi thay, cần suy lại điều kiện thắng, đặc biệt phân biệt thắng với hòa và liệt kê đủ các trường hợp rời nhau.",
+        "uncertainties": [
+          "Cấu trúc tham khảo chỉ dựa trên quan sát cấp tỉnh do bên thứ ba cung cấp; mẫu trò chơi này là dữ liệu tổng hợp tự biên soạn, chưa có neo đề chính thức."
+        ],
+        "missing_assets": []
+      },
+      "independent_review": {
+        "id": "cf391033004a26be",
+        "answers": [
+          {
+            "sub": "a",
+            "answer": "D",
+            "level": "TH"
+          },
+          {
+            "sub": "b",
+            "answer": "S",
+            "level": "TH"
+          },
+          {
+            "sub": "c",
+            "answer": "D",
+            "level": "TH"
+          },
+          {
+            "sub": "d",
+            "answer": "S",
+            "level": "VD"
+          }
+        ],
+        "solution": "a) Xác suất là (1/2)(2/3)(3/4)=1/4. b) Điểm cuối là 5+4+2−1−1=9, không phải 12. c) Nếu lượt đặc biệt thất bại, điểm cao nhất là 5−2+3·2=9 nên không thể thắng. d) Nếu lượt đặc biệt thành công và có k lượt thường thành công thì điểm cuối là 6+3k; thắng khi k≥2. Xác suất ít nhất hai lượt thường thành công là 1/12+1/8+1/4+1/4=17/24. Do đó xác suất thắng là (1/2)(17/24)=17/48, không phải 11/48.",
+        "confidence": "high",
+        "error_flags": [],
+        "level_reason": "a: TH vì áp dụng quy tắc nhân cho các lượt độc lập. b: TH vì tính điểm trực tiếp. c: TH vì xét điểm tối đa trong trường hợp đã cho. d: VD vì cần xây dựng điều kiện thắng từ cơ chế tính điểm, loại trường hợp đặc biệt thất bại và phân chia các biến cố thành công để tính xác suất."
+      },
+      "key_agreement": true,
+      "level_agreement": true,
+      "status": "model_checks_passed_pending_teacher_review",
+      "generation_receipt": "audit/outputs/topic-samples/toan/60df2dc43ad0ceca3a3a698dbe51e9473a290f7dca71335460a4c53cb0b65fd7.draft.json",
+      "resolve_receipt": "audit/outputs/topic-samples/toan/60df2dc43ad0ceca3a3a698dbe51e9473a290f7dca71335460a4c53cb0b65fd7.resolve.json"
+    }
+  ],
+  "unready_example_ids": [],
+  "missing_example_ids": [],
+  "teacher_approved": false,
+  "_terminology_provenance": {
+    "raw_source": "profiles/toan/topics/8fa23ed123c2.json",
+    "raw_source_sha256": "81c5dfa832ab1e944551b1910a69c3b4623db8cf4d9cb988d2a63241af7901bf",
+    "rules_sha256": "b5b26e5d616a0c7dde76b6bcf6e6321705c32421ded69fa2f493f269a64f7df2",
+    "not_a_new_blind_solve": true
+  }
+}

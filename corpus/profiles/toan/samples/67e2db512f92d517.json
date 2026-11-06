@@ -1,0 +1,145 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "67e2db512f92d517",
+    "topic": "Tọa độ vectơ",
+    "part": "P1",
+    "level": "TH",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Các vectơ không gian có tọa độ và một tổ hợp tuyến tính của chúng.",
+        "task": "Chọn tọa độ vectơ kết quả.",
+        "reasoning": [
+          "Nhân tọa độ vectơ với hệ số tương ứng.",
+          "Thực hiện phép trừ theo từng thành phần.",
+          "Đối chiếu bộ tọa độ kết quả."
+        ],
+        "combines": [
+          "Nhân vectơ với một số",
+          "Hiệu vectơ theo tọa độ"
+        ],
+        "difficulty_source": "Kiểm soát dấu khi trừ một tích có thành phần âm.",
+        "evidence_uncertainty": "Thiếu khóa đáp án khớp mã đề; chưa xác nhận lỗi của từng lựa chọn.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Tọa độ hai vectơ và một tổ hợp tuyến tính của chúng.",
+        "task": "Chọn độ dài của vectơ tạo thành.",
+        "reasoning": [
+          "Tính từng tọa độ của tổ hợp tuyến tính.",
+          "Tính tổng bình phương các tọa độ.",
+          "Lấy căn bậc hai và đối chiếu lựa chọn."
+        ],
+        "combines": [
+          "Phép toán vectơ theo tọa độ",
+          "Độ dài vectơ trong không gian"
+        ],
+        "difficulty_source": "Thực hiện đúng phép trừ có hệ số rồi chuyển từ tọa độ sang độ dài.",
+        "evidence_uncertainty": "Thiếu khóa đáp án khớp mã đề; chưa phân loại phương án sai.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "beee25b53250|P1|10|None",
+      "ecd76ac672e5|P1|11|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "67e2db512f92d517",
+    "stem": "Trong không gian Oxyz, cho hai vectơ u = (2; −3; 1) và v = (−1; 2; 4). Vectơ w = 3u − 2v có tọa độ nào sau đây?",
+    "options": [
+      {
+        "label": "A",
+        "text": "(4; −5; 11)"
+      },
+      {
+        "label": "B",
+        "text": "(8; −13; −5)"
+      },
+      {
+        "label": "C",
+        "text": "(7; −11; −1)"
+      },
+      {
+        "label": "D",
+        "text": "(8; −13; 5)"
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "TH"
+      }
+    ],
+    "solution": "Ta có 3u = (6; −9; 3), 2v = (−2; 4; 8). Do đó w = (6 − (−2); −9 − 4; 3 − 8) = (8; −13; −5). Chọn B. Phương án A là kết quả của 3u + 2v; phương án C là kết quả của 3u − v; phương án D sai dấu ở thành phần thứ ba.",
+    "distractors": [
+      {
+        "label": "A",
+        "sub": null,
+        "mistake": "Tính 3u + 2v thay cho 3u − 2v.",
+        "why_plausible": "Học sinh có thể thực hiện đúng phép nhân nhưng nhầm phép trừ hai vectơ thành phép cộng."
+      },
+      {
+        "label": "C",
+        "sub": null,
+        "mistake": "Bỏ hệ số 2 của v, tính 3u − v.",
+        "why_plausible": "Học sinh có thể chỉ nhân vectơ thứ nhất với hệ số rồi trừ trực tiếp tọa độ vectơ thứ hai."
+      },
+      {
+        "label": "D",
+        "sub": null,
+        "mistake": "Tính thành phần thứ ba thành 8 − 3 thay vì 3 − 8.",
+        "why_plausible": "Học sinh có thể đảo thứ tự phép trừ ở thành phần có kết quả âm."
+      }
+    ],
+    "level_reason": "Học sinh thực hiện quy trình quen thuộc: nhân vectơ với số và trừ theo từng tọa độ. Yêu cầu kiểm soát dấu thuộc mức TH, không đòi hỏi xây dựng mô hình.",
+    "prerequisites": [
+      "Nhân vectơ với một số theo tọa độ",
+      "Phép trừ hai vectơ theo tọa độ"
+    ],
+    "variation_guidance": "Thay các tọa độ và hệ số, giữ phép trừ có thành phần âm; xây dựng lại từng phương án sai từ một lỗi tính cụ thể và bảo đảm chỉ có một đáp án đúng.",
+    "uncertainties": [
+      "Đây là mẫu tổng hợp nguyên gốc; căn cứ về dạng bài chỉ từ quan sát cấp tỉnh qua nguồn bên thứ ba, chưa có mốc chính thức. Các lỗi dùng để tạo phương án nhiễu là giả định sư phạm, chưa được kiểm chứng thực nghiệm."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "67e2db512f92d517",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "TH"
+      }
+    ],
+    "solution": "Tính theo từng tọa độ: w = (6; −9; 3) − (−2; 4; 8) = (8; −13; −5).",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Thực hiện phép nhân vectơ với số và phép trừ vectơ theo quy trình quen thuộc."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/9a5142ac2d1a83ddbf73c979c77ca624065bf8a2bb04387ecff35056338d4c61.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/9a5142ac2d1a83ddbf73c979c77ca624065bf8a2bb04387ecff35056338d4c61.resolve.json"
+}

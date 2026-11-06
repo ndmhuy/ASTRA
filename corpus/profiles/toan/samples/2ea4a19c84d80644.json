@@ -1,0 +1,91 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "2ea4a19c84d80644",
+    "topic": "Đạo hàm và tích phân ứng dụng",
+    "part": "P3",
+    "level": "VD",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Một vật chứa dạng chóp cụt đều có tiết diện tam giác, các kích thước biên, lưu lượng không đổi và thời điểm cần xét; có hình minh họa.",
+        "task": "Xác định tham số biểu diễn tốc độ tăng mực chất lỏng tại thời điểm đã cho.",
+        "reasoning": [
+          "Dùng đồng dạng để biểu diễn cạnh tiết diện theo độ cao mực chất lỏng.",
+          "Lập diện tích tiết diện và thể tích chứa theo độ cao.",
+          "Đổi lưu lượng về đơn vị thể tích tương thích và tính lượng đã bơm.",
+          "Giải độ cao tương ứng, kiểm tra còn trong phạm vi vật chứa.",
+          "Dùng quan hệ tốc độ thể tích bằng diện tích tiết diện nhân tốc độ tăng độ cao.",
+          "Suy ra tham số được hỏi."
+        ],
+        "combines": [
+          "Đồng dạng",
+          "Thể tích chóp cụt",
+          "Tích phân tiết diện",
+          "Đạo hàm hàm hợp",
+          "Đổi đơn vị"
+        ],
+        "difficulty_source": "Liên hệ lưu lượng không đổi với tốc độ mực chất lỏng khi tiết diện thay đổi theo độ cao.",
+        "evidence_uncertainty": "Đề không nêu tường minh lượng chất lỏng ban đầu; cách xác định duy nhất theo thời gian bơm cần giả thiết vật chứa ban đầu rỗng.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "6aa30214ba7e|P3|4|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "2ea4a19c84d80644",
+    "stem": "Một bồn chứa có dạng hình chóp cụt tam giác đều, đặt đáy nhỏ nằm ngang ở dưới. Chiều cao bồn là 2 m; cạnh đáy nhỏ dài 2 m và cạnh miệng bồn dài 4 m. Mọi tiết diện song song với đáy là tam giác đều, có cạnh tăng tuyến tính theo độ cao tính từ đáy nhỏ. Bồn ban đầu rỗng. Nước được bơm vào với lưu lượng không đổi 250√3 lít/phút, không rò rỉ, mặt nước luôn nằm ngang. Sau đúng 6 phút bơm, tốc độ tăng độ cao mực nước bằng bao nhiêu cm/phút? Làm tròn kết quả đến hàng phần mười.",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "11,4",
+        "level": "VD"
+      }
+    ],
+    "solution": "Gọi h là độ cao mực nước tính bằng mét. Do cạnh tiết diện tăng tuyến tính từ 2 m đến 4 m trên chiều cao 2 m, cạnh tại độ cao h là a(h)=2+h. Diện tích tiết diện là S(h)=√3(2+h)²/4. Thể tích nước khi cao h bằng V(h)=∫₀ʰ S(u)du=√3[(2+h)³−8]/12, tính bằng m³. Đổi lưu lượng: Q=250√3/1000=√3/4 m³/phút. Sau 6 phút, V=3√3/2 m³, nên (2+h)³−8=18, hay 2+h=∛26. Vì 2<∛26<4 nên 0<h<2, nước chưa đầy bồn. Từ V(h(t))=Qt, lấy đạo hàm theo thời gian được S(h)h′(t)=Q. Tại phút thứ 6, h′=1/(∛26)² m/phút, tương đương 100/(∛26)²≈11,394 cm/phút. Làm tròn được 11,4 cm/phút. Quan hệ tốc độ được suy ra bằng đạo hàm hàm hợp và tích phân tiết diện trong phạm vi kiến thức phổ thông.",
+    "distractors": [],
+    "level_reason": "Học sinh phải dựng quan hệ giữa độ cao và kích thước tiết diện, chuyển sang thể tích, dùng lượng nước bơm để xác định trạng thái tại thời điểm cần xét, rồi nối lưu lượng với tốc độ mực nước bằng đạo hàm hàm hợp. Đây là chuỗi mô hình hóa và suy luận phụ thuộc, không chỉ thay số vào công thức có sẵn.",
+    "prerequisites": [
+      "Đồng dạng và quan hệ tuyến tính của kích thước tiết diện",
+      "Diện tích tam giác đều",
+      "Thể tích bằng tích phân diện tích tiết diện",
+      "Đạo hàm hàm hợp",
+      "Đổi đơn vị thể tích và độ dài"
+    ],
+    "variation_guidance": "Có thể đổi kích thước hai đáy, chiều cao và lưu lượng; cần giữ bồn ban đầu rỗng hoặc cho rõ lượng nước ban đầu. Kiểm tra thời điểm hỏi nằm trước lúc đầy bồn và tính lại đơn vị tốc độ sau khi đổi số liệu.",
+    "uncertainties": [
+      "Căn cứ cấu trúc chỉ từ nguồn bên thứ ba cấp tỉnh, không có neo chính thức. Mẫu sáng tác bổ sung rõ trạng thái ban đầu rỗng và mô tả đầy đủ hình học nên không phụ thuộc hình minh họa."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "2ea4a19c84d80644",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "11,4",
+        "level": "VD"
+      }
+    ],
+    "solution": "Gọi h là độ cao mực nước tính bằng mét và t là thời gian tính bằng phút. Cạnh tiết diện ở độ cao h là 2+h, nên diện tích tiết diện S(h)=√3(2+h)²/4. Thể tích nước là V(h)=∫₀ʰS(z)dz=√3[(2+h)³−8]/12. Lưu lượng 250√3 lít/phút bằng √3/4 m³/phút. Sau 6 phút, V=3√3/2 m³, suy ra (2+h)³=26. Từ dV/dt=S(h)·dh/dt, tại thời điểm này có dh/dt=1/26^(2/3) m/phút, tương đương 100/26^(2/3)≈11,394 cm/phút. Làm tròn được 11,4 cm/phút; mực nước khi đó khoảng 0,9625 m, vẫn trong bồn.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "VD: cần thiết lập mô hình diện tích theo độ cao, suy ra thể tích để xác định mực nước tại thời điểm đã cho, rồi kết nối lưu lượng với tốc độ tăng độ cao. Các công cụ sử dụng là diện tích tam giác đều, tích phân và đạo hàm hàm hợp trong kiến thức phổ thông."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/900f9593368ef63445c31acbab70694e75ce6da46f93b59628d6317c5bcec638.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/900f9593368ef63445c31acbab70694e75ce6da46f93b59628d6317c5bcec638.resolve.json"
+}

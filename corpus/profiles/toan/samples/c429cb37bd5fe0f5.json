@@ -1,0 +1,209 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "c429cb37bd5fe0f5",
+    "topic": "Nguyên hàm và tích lũy",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Đạo hàm dạng bậc nhất của một đại lượng tích lũy và công thức được đề xuất cho đại lượng đó.",
+        "task": "Kiểm tra công thức khôi phục đại lượng từ đạo hàm.",
+        "reasoning": [
+          "Lấy nguyên hàm từng hạng tử của biểu thức biên.",
+          "Giữ hằng số tích phân nếu chưa có điều kiện ban đầu.",
+          "So sánh hệ số hoặc lấy đạo hàm công thức đề xuất để kiểm tra."
+        ],
+        "combines": [
+          "Nguyên hàm đa thức",
+          "Ý nghĩa đạo hàm trong mô hình",
+          "Điều kiện ban đầu"
+        ],
+        "difficulty_source": "Phân biệt phép tăng bậc hình thức với phép tìm nguyên hàm đúng.",
+        "evidence_uncertainty": "Dữ kiện không nêu giá trị ban đầu để xác định duy nhất đại lượng tích lũy; sai hệ số vẫn đủ để bác bỏ nhận định.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Tốc độ thay đổi của doanh thu theo mức điều chỉnh giá và một giá trị doanh thu đã biết.",
+        "task": "Kiểm tra biểu thức doanh thu được đề xuất.",
+        "reasoning": [
+          "Lấy nguyên hàm của tốc độ thay đổi.",
+          "Thống nhất đơn vị và dùng giá trị đã biết để xác định hằng số.",
+          "Đối chiếu biểu thức thu được với nhận định."
+        ],
+        "combines": [
+          "Nguyên hàm",
+          "Điều kiện ban đầu",
+          "Đổi đơn vị tiền tệ"
+        ],
+        "difficulty_source": "Dùng dữ kiện mức doanh thu để xác định phần hằng sau khi lấy nguyên hàm.",
+        "evidence_uncertainty": "Không có khóa đúng sai khớp mã.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một tốc độ biến thiên gồm thành phần hằng và thành phần mũ, cùng ý nghĩa lượng tích lũy kể từ lúc bắt đầu.",
+        "task": "Kiểm tra công thức lượng tích lũy theo thời gian.",
+        "reasoning": [
+          "Lấy nguyên hàm của tốc độ theo thời gian.",
+          "Dùng điều kiện lượng tích lũy ban đầu để tìm hằng số.",
+          "Đối chiếu công thức được đề xuất."
+        ],
+        "combines": [
+          "Nguyên hàm hàm mũ",
+          "Điều kiện ban đầu",
+          "Mô hình lượng tích lũy"
+        ],
+        "difficulty_source": "Dùng ý nghĩa tích lũy để xác định hằng số nguyên hàm.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Mô hình của một đại lượng, quan hệ tỉ lệ giữa hai tốc độ thay đổi và giá trị ban đầu của đại lượng còn lại.",
+        "task": "Kiểm tra đại lượng còn lại có vượt một ngưỡng tại thời điểm chỉ định hay không.",
+        "reasoning": [
+          "Suy ra đạo hàm của đại lượng còn lại từ quan hệ tỉ lệ.",
+          "Lấy nguyên hàm và dùng giá trị ban đầu để xác định hằng số.",
+          "Tính giá trị tại thời điểm cần xét.",
+          "So sánh với ngưỡng trong nhận định."
+        ],
+        "combines": [
+          "Đạo hàm",
+          "Nguyên hàm",
+          "Điều kiện ban đầu",
+          "Hàm lôgarit"
+        ],
+        "difficulty_source": "Chuyển tỉ lệ đạo hàm thành quan hệ giữa các hàm có hằng số riêng.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "3b4cca11ea82|P2|3|a",
+      "3f1b2aa3cb72|P2|1|a",
+      "54e9a2a276ca|P2|2|a",
+      "7ab78715480e|P2|1|d",
+      "9ed45d16a975|P2|1|a",
+      "9ed45d16a975|P2|1|c"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "c429cb37bd5fe0f5",
+    "stem": "Một máy bơm đưa nước vào bể với lưu lượng r(t) = 4 + 6e^(−t) lít/phút, trong đó t ≥ 0 là thời gian tính bằng phút kể từ khi bật máy. Gọi Q(t) là lượng nước máy đã bơm vào bể trong khoảng từ thời điểm 0 đến thời điểm t, tính bằng lít; do đó Q(0) = 0 và Q′(t) = r(t). Máy hoạt động liên tục theo mô hình đã cho. Xét tính đúng sai của các khẳng định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Từ Q′(t) = r(t), suy ra Q(t) = 4t − 6e^(−t) + C, với C là hằng số."
+      },
+      {
+        "sub": "b",
+        "text": "Điều kiện Q(0) = 0 cho C = 0 trong biểu thức Q(t) = 4t − 6e^(−t) + C."
+      },
+      {
+        "sub": "c",
+        "text": "Sau 2 phút, máy đã bơm vào bể lượng nước bằng 14 − 6e^(−2) lít."
+      },
+      {
+        "sub": "d",
+        "text": "Vì lưu lượng r(t) giảm theo thời gian nên lượng nước tích lũy Q(t) cũng giảm theo thời gian."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Một nguyên hàm của 4 + 6e^(−t) là 4t − 6e^(−t), nên a đúng. Thay t = 0 vào biểu thức ở a: Q(0) = −6 + C = 0, suy ra C = 6; vì vậy b sai. Do đó Q(t) = 4t + 6 − 6e^(−t), và Q(2) = 14 − 6e^(−2) lít, nên c đúng. Với mọi t ≥ 0, Q′(t) = 4 + 6e^(−t) > 0, nên Q(t) tăng. Lưu lượng giảm chỉ có nghĩa lượng nước được bơm thêm trong mỗi đơn vị thời gian giảm; lượng tích lũy vẫn tăng, nên d sai.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Đồng nhất giá trị ban đầu Q(0) với hằng số tích phân C mà không thay t = 0 vào toàn bộ biểu thức.",
+        "why_plausible": "Trong nhiều bài nguyên hàm đa thức, các hạng chứa biến bằng 0 tại thời điểm đầu; học sinh có thể áp dụng thói quen đó dù hạng mũ ở đây bằng −6."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Nhầm sự giảm của tốc độ tích lũy với sự giảm của lượng tích lũy.",
+        "why_plausible": "Học sinh có thể dựa vào chiều biến thiên của r(t), thay vì dấu của Q′(t), để kết luận chiều biến thiên của Q(t)."
+      }
+    ],
+    "level_reason": "Mức cao nhất của toàn mẫu là TH. Học sinh tìm nguyên hàm quen thuộc của hàm mũ, sử dụng điều kiện ban đầu và phân biệt lượng tích lũy với tốc độ tích lũy thông qua dấu của đạo hàm.",
+    "prerequisites": [
+      "Nguyên hàm của hàm hằng và hàm mũ",
+      "Đạo hàm của e^(−t)",
+      "Xác định hằng số tích phân từ điều kiện ban đầu",
+      "Mối liên hệ giữa dấu đạo hàm và tính đơn điệu"
+    ],
+    "variation_guidance": "Có thể đổi thành phần lưu lượng hằng và thành phần suy giảm mũ. Cần giữ lưu lượng dương trên miền xét nếu muốn lượng tích lũy luôn tăng, đồng thời xác định rõ Q là lượng bơm thêm kể từ lúc bắt đầu.",
+    "uncertainties": [
+      "Đây là mẫu tổng hợp tự tạo, chỉ tham khảo cách xây dựng từ quan sát nguồn cấp tỉnh bên thứ ba; không phải bằng chứng đề thi thật và không có đối sánh chính thức được cung cấp."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "c429cb37bd5fe0f5",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Nguyên hàm của r(t) là Q(t)=4t−6e^(−t)+C. Điều kiện Q(0)=0 cho −6+C=0, tức C=6. Vì vậy Q(t)=4t+6−6e^(−t), suy ra Q(2)=14−6e^(−2) lít. Với mọi t≥0, Q′(t)=4+6e^(−t)>0 nên lượng nước tích lũy luôn tăng, dù lưu lượng giảm.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a) Thực hiện phép lấy nguyên hàm quen thuộc. b) Thay điều kiện đầu để tìm hằng số. c) Tính giá trị hàm lượng nước. d) Phân biệt lưu lượng với lượng tích lũy và xét dấu đạo hàm. Mỗi ý đều thuộc TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/c2c0667dd18f85a05c492558529d69590aaa3c9d0ec01e92ea871bba5e5afcd6.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/c2c0667dd18f85a05c492558529d69590aaa3c9d0ec01e92ea871bba5e5afcd6.resolve.json"
+}

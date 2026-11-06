@@ -1,0 +1,215 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "50d7db31bb89fb81",
+    "topic": "Vectơ và hệ trục tọa độ trong không gian",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Tọa độ các đầu mút của một chuyển động thẳng và một vectơ dịch chuyển được đề xuất.",
+        "task": "Kiểm tra tọa độ vectơ nối điểm xuất phát tới điểm kết thúc.",
+        "reasoning": [
+          "Lấy tọa độ điểm kết thúc trừ tọa độ điểm xuất phát.",
+          "Đối chiếu từng thành phần của vectơ."
+        ],
+        "combines": [
+          "Tọa độ điểm",
+          "Hiệu tọa độ"
+        ],
+        "difficulty_source": "Giữ đúng chiều của vectơ dịch chuyển.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Hình tọa độ nhìn thấy được mô tả vị trí không gian, hình chiếu xuống mặt phẳng và quy ước đơn vị.",
+        "task": "Kiểm tra khoảng cách từ vị trí không gian đến gốc tọa độ sau khi đổi đơn vị và làm tròn.",
+        "reasoning": [
+          "Đọc tọa độ vị trí từ dữ kiện và hình.",
+          "Tính chuẩn của vectơ vị trí.",
+          "Đổi đơn vị và làm tròn theo yêu cầu.",
+          "Đối chiếu nhận định."
+        ],
+        "combines": [
+          "Tọa độ không gian",
+          "Khoảng cách giữa hai điểm",
+          "Đổi đơn vị",
+          "Làm tròn"
+        ],
+        "difficulty_source": "Phân biệt khoảng cách không gian với khoảng cách hình chiếu.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Tọa độ của các vật tại cùng thời điểm và một giá trị khoảng cách đã làm tròn.",
+        "task": "Kiểm tra khoảng cách giữa các vật tại thời điểm được chỉ định.",
+        "reasoning": [
+          "Lập vectơ nối các vị trí đồng thời.",
+          "Tính độ dài vectơ trong không gian.",
+          "Làm tròn đúng yêu cầu và đối chiếu nhận định."
+        ],
+        "combines": [
+          "Hiệu tọa độ",
+          "Độ dài vectơ",
+          "Làm tròn"
+        ],
+        "difficulty_source": "Dùng đúng các vị trí đồng thời trong công thức khoảng cách.",
+        "evidence_uncertainty": "Không có khóa đúng sai khớp mã.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một cấu hình không gian gắn hệ trục, các độ dài, hướng đi xuống và góc với mặt phẳng ngang; có hình minh họa.",
+        "task": "Kiểm tra tọa độ hình chiếu của một đầu mút lên mặt phẳng tọa độ.",
+        "reasoning": [
+          "Xác định thành phần tọa độ được giữ nguyên từ quan hệ vuông góc.",
+          "Tính thành phần thẳng đứng từ độ dài và góc nghiêng, có xét dấu.",
+          "Cho thành phần vuông góc với mặt phẳng chiếu bằng không rồi đối chiếu nhận định."
+        ],
+        "combines": [
+          "Góc giữa đường thẳng và mặt phẳng",
+          "Tọa độ không gian",
+          "Hình chiếu vuông góc"
+        ],
+        "difficulty_source": "Chuyển độ dài và góc nghiêng thành tọa độ trước khi chiếu.",
+        "evidence_uncertainty": "Thiếu khóa đúng sai được xác nhận khớp mã đề.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "023e74626dd8|P2|4|a",
+      "3b4cca11ea82|P2|4|a",
+      "3f1b2aa3cb72|P2|3|b",
+      "525d3542283a|P2|1|a",
+      "525d3542283a|P2|1|b",
+      "525d3542283a|P2|1|d",
+      "6aa30214ba7e|P2|4|b",
+      "acc00d945397|P2|3|a",
+      "acc00d945397|P2|3|b",
+      "acc00d945397|P2|3|c",
+      "adb051fd8253|P2|3|a",
+      "de5833d227dd|P2|2|c",
+      "ecd76ac672e5|P2|3|a",
+      "ecd76ac672e5|P2|3|b",
+      "ecd76ac672e5|P2|3|c",
+      "ecd76ac672e5|P2|3|d"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "50d7db31bb89fb81",
+    "stem": "Trong một khu thử nghiệm, vị trí được biểu diễn bằng hệ tọa độ Oxyz, mỗi đơn vị tọa độ ứng với 10 m. Một thiết bị di chuyển từ A(1; -2; 2) đến B(4; 2; 2). Khi thiết bị đến B, một cảm biến đặt tại C(1; 2; 5). Xét tính đúng sai của các khẳng định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Vectơ dịch chuyển AB có tọa độ (3; 4; 0)."
+      },
+      {
+        "sub": "b",
+        "text": "Khoảng cách từ B đến O, làm tròn đến hàng phần mười mét, bằng 44,7 m."
+      },
+      {
+        "sub": "c",
+        "text": "Khoảng cách giữa thiết bị tại B và cảm biến tại C, làm tròn đến hàng phần mười mét, bằng 42,4 m."
+      },
+      {
+        "sub": "d",
+        "text": "Hình chiếu vuông góc của B lên mặt phẳng (Oxz) có tọa độ (4; 2; 0)."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) AB = (4 - 1; 2 - (-2); 2 - 2) = (3; 4; 0), nên đúng. b) OB = 10√(4² + 2² + 2²) = 10√24 ≈ 49,0 m, nên sai. c) BC = 10√((1 - 4)² + (2 - 2)² + (5 - 2)²) = 10√18 ≈ 42,4 m, nên đúng. d) Khi chiếu lên (Oxz), hoành độ và cao độ được giữ nguyên, tung độ bằng 0. Hình chiếu là (4; 0; 2), nên sai.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Bỏ thành phần cao độ và tính 10√(4² + 2²) ≈ 44,7 m.",
+        "why_plausible": "Học sinh nhầm khoảng cách trong không gian với khoảng cách từ hình chiếu của B trên (Oxy) đến O."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Đặt tọa độ z bằng 0 khi chiếu lên (Oxz).",
+        "why_plausible": "Học sinh áp dụng nhầm quy tắc chiếu lên (Oxy), thay vì xác định trục vuông góc với mặt phẳng đang xét."
+      }
+    ],
+    "level_reason": "Mức cao nhất là TH. Các ý yêu cầu thực hiện những quy trình quen thuộc: trừ tọa độ, tính khoảng cách, đổi đơn vị và xác định hình chiếu lên mặt phẳng tọa độ.",
+    "prerequisites": [
+      "Tọa độ vectơ nối hai điểm",
+      "Công thức khoảng cách trong không gian",
+      "Hình chiếu vuông góc lên mặt phẳng tọa độ",
+      "Đổi đơn vị và làm tròn số"
+    ],
+    "variation_guidance": "Thay tọa độ và quy ước đơn vị; có thể đổi mặt phẳng chiếu. Cần tính lại khoảng cách không gian và khoảng cách hình chiếu để giữ lỗi sai có ý nghĩa.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "50d7db31bb89fb81",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) AB = (4−1; 2−(−2); 2−2) = (3; 4; 0). b) BO = 10√(4²+2²+2²) = 10√24 ≈ 49,0 m. c) BC = 10√((1−4)²+(2−2)²+(5−2)²) = 10√18 ≈ 42,4 m. d) Hình chiếu lên (Oxz) giữ nguyên hoành độ, cao độ và cho tung độ bằng 0, nên có tọa độ (4; 0; 2).",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Cả bốn ý đều yêu cầu thực hiện quy trình tọa độ quen thuộc: trừ tọa độ, tính khoảng cách kèm đổi đơn vị hoặc xác định hình chiếu; đều thuộc TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/3dff3352432a7af02080668e259a61f1d0dcaaa7c094bb12df06bf5843b3b52c.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/3dff3352432a7af02080668e259a61f1d0dcaaa7c094bb12df06bf5843b3b52c.resolve.json"
+}

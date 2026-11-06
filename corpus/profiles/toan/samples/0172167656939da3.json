@@ -1,0 +1,150 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "0172167656939da3",
+    "topic": "Tọa độ và tích vô hướng",
+    "part": "P2",
+    "level": "NB",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một vectơ đơn vị trong không gian và các góc của nó với các vectơ đơn vị trục.",
+        "task": "Kiểm tra quan hệ giữa một tọa độ và côsin góc tương ứng.",
+        "reasoning": [
+          "Viết tích vô hướng của vectơ với vectơ đơn vị trục.",
+          "Dùng độ dài đơn vị để đồng nhất tọa độ với côsin góc."
+        ],
+        "combines": [
+          "Tọa độ vectơ",
+          "Tích vô hướng",
+          "Góc giữa hai vectơ"
+        ],
+        "difficulty_source": "Nhận ra ý nghĩa của điều kiện chuẩn hóa vectơ.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      }
+    ],
+    "support_refs": [
+      "163f20908cf7|P2|3|a"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "0172167656939da3",
+    "stem": "Trong hệ tọa độ trực chuẩn Oxyz, gọi i, j, k lần lượt là các vectơ đơn vị theo chiều dương của các trục Ox, Oy, Oz. Xét tính đúng sai của các khẳng định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Vectơ k có tọa độ (0; 0; 1)."
+      },
+      {
+        "sub": "b",
+        "text": "Tích vô hướng i · j bằng 0."
+      },
+      {
+        "sub": "c",
+        "text": "Tích vô hướng j · j bằng 0."
+      },
+      {
+        "sub": "d",
+        "text": "Góc giữa hai vectơ i và k bằng 180°."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "NB"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "NB"
+      }
+    ],
+    "solution": "a) Đúng, tọa độ của vectơ đơn vị theo chiều dương trục Oz là (0; 0; 1). b) Đúng, hai vectơ đơn vị theo hai trục khác nhau của hệ trực chuẩn vuông góc nên có tích vô hướng bằng 0. c) Sai, tích vô hướng của một vectơ với chính nó bằng bình phương độ dài; j · j = 1. d) Sai, hai trục Ox và Oz vuông góc nên góc giữa i và k bằng 90°.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "c",
+        "mistake": "Nhớ nhầm tính chất tích vô hướng bằng 0 của hai vectơ đơn vị theo hai trục khác nhau thành tính chất của một vectơ đơn vị với chính nó.",
+        "why_plausible": "Các hệ thức của bộ vectơ đơn vị thường được học cùng nhau nên học sinh có thể nhầm trường hợp hai vectơ trùng nhau và hai vectơ vuông góc."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Nhầm hai vectơ theo hai trục khác nhau với hai vectơ ngược hướng.",
+        "why_plausible": "Học sinh có thể nhớ các góc đặc biệt nhưng chưa gắn đúng góc 90° với tính trực chuẩn và góc 180° với hai hướng đối nhau."
+      }
+    ],
+    "level_reason": "Cả bốn ý chỉ yêu cầu nhận ra tọa độ hoặc tính chất cơ bản đã học của các vectơ đơn vị trong hệ trực chuẩn. Không cần tính toán hay diễn giải thêm điều kiện. Mức cao nhất của mẫu là NB.",
+    "prerequisites": [
+      "Các vectơ đơn vị của hệ tọa độ trực chuẩn",
+      "Tích vô hướng của hai vectơ vuông góc",
+      "Tích vô hướng của một vectơ với chính nó"
+    ],
+    "variation_guidance": "Có thể thay ý hỏi tọa độ bằng ý nhận biết độ dài của một vectơ đơn vị; giữ các khẳng định ở dạng tính chất trực tiếp, tránh các đẳng thức cần kết hợp nhiều điều kiện để xét.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "0172167656939da3",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "NB"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "NB"
+      }
+    ],
+    "solution": "Trong hệ trực chuẩn, k=(0;0;1). Các vectơ i, j, k đôi một vuông góc và có độ dài bằng 1 nên i·j=0, j·j=1 và góc giữa i với k bằng 90°.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Từng khẳng định chỉ yêu cầu nhận biết tọa độ, tích vô hướng hoặc góc của các vectơ đơn vị trong hệ trực chuẩn."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/toan/f7ee1ba193a3149f863e5d70019b81f59061c6305e96e3f545aeee761e37705f.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/toan/f7ee1ba193a3149f863e5d70019b81f59061c6305e96e3f545aeee761e37705f.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 0,
+  "source_rows_sha256": "863dd6885185956ed9dabede84bf529993a764e4871f75f25629503cf8f2731a"
+}

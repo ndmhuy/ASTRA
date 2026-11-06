@@ -1,0 +1,95 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "f60dac4e8d45323a",
+    "topic": "Xác suất cổ điển và hình học",
+    "part": "P3",
+    "level": "VD",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Các phép thử ngẫu nhiên độc lập tạo ra tổng điểm; những tổng ấy xác định độ dài cạnh và góc xen giữa của một tam giác.",
+        "task": "Tính xác suất tam giác tạo thành là tam giác vuông.",
+        "reasoning": [
+          "Xác định phân bố xác suất của tổng điểm từ các kết quả sơ cấp đồng khả năng.",
+          "Phân loại vị trí góc vuông có thể có trong tam giác.",
+          "Chuyển từng trường hợp thành điều kiện giữa góc xen giữa và tỉ số cạnh.",
+          "Tìm các bộ tổng điểm thỏa mãn điều kiện hình học.",
+          "Cộng xác suất các trường hợp rời nhau với đúng trọng số của từng tổng.",
+          "Làm tròn kết quả."
+        ],
+        "combines": [
+          "Xác suất cổ điển",
+          "Phân bố tổng điểm",
+          "Biến cố độc lập",
+          "Hệ thức lượng trong tam giác",
+          "Phân loại trường hợp"
+        ],
+        "difficulty_source": "Vừa xét đủ vị trí góc vuông vừa tránh coi các tổng điểm là đồng khả năng.",
+        "evidence_uncertainty": "Xếp lớp theo xác suất cổ điển và hệ thức lượng; công thức nhân cho các phép thử độc lập thuộc lớp sau.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "beee25b53250|P3|4|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "f60dac4e8d45323a",
+    "stem": "Một chương trình dựng tam giác bằng kết quả gieo ba xúc xắc cân đối, mỗi xúc xắc có sáu mặt ghi các số từ 1 đến 6. Các lần gieo độc lập. Gọi S là tổng số chấm của hai xúc xắc đầu. Chương trình đặt AB = S cm, AC = 5 cm và chọn góc BAC theo xúc xắc thứ ba: kết quả 1 cho góc 90°; kết quả 2, 3 hoặc 4 cho góc 60°; kết quả 5 hoặc 6 cho góc 120°. Xác suất tam giác ABC được dựng là tam giác vuông bằng bao nhiêu phần trăm? Làm tròn đến hàng phần mười và ghi kết quả bằng một số dùng dấu phẩy thập phân.",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "20,8",
+        "level": "VD"
+      }
+    ],
+    "solution": "Đặt a = BC, m = AB = S và n = AC = 5. Nếu góc A bằng 90° thì tam giác luôn vuông; trường hợp này có xác suất 1/6. Nếu góc A bằng 120° thì tam giác không thể vuông. Nếu góc A bằng 60°, định lý cosin cho a² = m² + n² − mn. Tam giác vuông tại B khi n² = m² + a², tương đương n = 2m; điều này đòi hỏi S = 2,5, không thể xảy ra. Tam giác vuông tại C khi m² = n² + a², tương đương m = 2n, tức S = 10. Trong 36 kết quả đồng khả năng của hai xúc xắc đầu, tổng 10 xuất hiện ở ba cặp (4;6), (5;5), (6;4), nên P(S = 10) = 3/36. Góc A bằng 60° có xác suất 3/6 và độc lập với S. Vậy xác suất cần tìm là 1/6 + (3/6)(3/36) = 5/24. Đổi sang phần trăm được 125/6%, làm tròn đến hàng phần mười là 20,8%.",
+    "distractors": [],
+    "level_reason": "Học sinh phải xét các vị trí có thể của góc vuông, kết hợp định lý cosin và định lý Pythagore để chuyển điều kiện hình học thành điều kiện của tổng điểm, loại trường hợp không thể xảy ra rồi đếm các kết quả sơ cấp với đúng trọng số. Chỉ dựa vào xác suất chọn góc 90° hoặc coi các tổng điểm đồng khả năng đều không đủ.",
+    "prerequisites": [
+      "Xác suất cổ điển với các kết quả sơ cấp đồng khả năng",
+      "Đếm kết quả tạo thành một tổng điểm xúc xắc",
+      "Quy tắc nhân xác suất cho các phép thử độc lập",
+      "Định lý cosin và định lý Pythagore",
+      "Tổng các góc trong tam giác"
+    ],
+    "variation_guidance": "Có thể thay cạnh cố định hoặc quy tắc chọn góc theo xúc xắc thứ ba. Phải xét lại cả ba vị trí góc vuông và đếm đúng số cặp tạo nên từng tổng điểm, thay vì coi các tổng là đồng khả năng.",
+    "uncertainties": [
+      "Cơ sở tham khảo cấu trúc chỉ là quan sát cấp tỉnh do bên thứ ba cung cấp, chưa có điểm neo đề chính thức. Đây là mẫu minh họa tự soạn, không phải bằng chứng đề thi.",
+      "Câu hỏi kết hợp hệ thức lượng với xác suất của các phép thử độc lập; cần đối chiếu phạm vi kiến thức của lớp dự kiến sử dụng."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "f60dac4e8d45323a",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "20,8",
+        "level": "VD"
+      }
+    ],
+    "solution": "Nếu góc A bằng 90° thì tam giác luôn vuông, trường hợp này có xác suất 1/6. Nếu góc A bằng 120° thì tam giác không thể vuông. Nếu góc A bằng 60°, tam giác vuông tại B đòi hỏi AB=AC·cos60°=2,5 cm, không thể xảy ra vì S nguyên; tam giác vuông tại C đòi hỏi AC=AB·cos60°, tức S=10. Hai xúc xắc đầu có ba kết quả có thứ tự cho tổng 10: (4;6), (5;5), (6;4), nên P(S=10)=3/36. Do tính độc lập, xác suất cần tìm là 1/6+(3/6)·(3/36)=5/24, tương ứng 20,833…%. Làm tròn đến hàng phần mười được 20,8%.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Cần phân chia theo góc được chọn, xác định các vị trí có thể của góc vuông, suy ra điều kiện cho tổng hai xúc xắc bằng kiến thức hình học rồi kết hợp xác suất độc lập."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/toan/8920e95e23b4d699269cffb602861222b18b2ed31cea860fe07a553f8c7d220e.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/toan/8920e95e23b4d699269cffb602861222b18b2ed31cea860fe07a553f8c7d220e.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 0,
+  "source_rows_sha256": "863dd6885185956ed9dabede84bf529993a764e4871f75f25629503cf8f2731a"
+}

@@ -1,0 +1,170 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "db678a565d6b8476",
+    "topic": "Tọa độ và đường thẳng",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Hai điểm xác định đường thẳng và một vectơ đề xuất.",
+        "task": "Kiểm tra vectơ chỉ phương.",
+        "reasoning": [
+          "Tính vectơ nối hai điểm.",
+          "Kiểm tra vectơ đề xuất có cùng phương và khác vectơ không."
+        ],
+        "combines": [
+          "Phép toán tọa độ vectơ",
+          "Vectơ chỉ phương"
+        ],
+        "difficulty_source": "Trừ đúng các thành phần của tọa độ.",
+        "evidence_uncertainty": "Chưa xác nhận được khóa đúng sai khớp mã; thứ tự phát biểu được lấy theo ảnh đề gốc vì bản chép hoán đổi hai ý giữa câu.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một hành trình thẳng giữa các điểm đã biết tọa độ trong mô hình không gian, kèm hình minh họa.",
+        "task": "Kiểm tra một vectơ chỉ phương của chặng đầu.",
+        "reasoning": [
+          "Lấy tọa độ điểm cuối trừ tọa độ điểm đầu.",
+          "Kiểm tra vectơ được nêu cùng phương với vectơ vừa tính."
+        ],
+        "combines": [
+          "Tọa độ vectơ nối các điểm",
+          "Vectơ chỉ phương"
+        ],
+        "difficulty_source": "Phép trừ tọa độ trực tiếp.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "0ecb85132b84|P2|4|c",
+      "11d88d9a96ad|P2|2|a"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "db678a565d6b8476",
+    "stem": "Trong không gian Oxyz, cho A(−2; 4; 1), B(−2; −2; 4), C(3; 1; −1), D(3; 5; −3). Gọi d là đường thẳng đi qua A, B và Δ là đường thẳng đi qua C, D. Xét tính đúng sai của các phát biểu sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Hai vectơ AB và CD ngược hướng."
+      },
+      {
+        "sub": "b",
+        "text": "Hai đường thẳng d và Δ trùng nhau."
+      },
+      {
+        "sub": "c",
+        "text": "Vectơ AC là một vectơ chỉ phương của Δ."
+      },
+      {
+        "sub": "d",
+        "text": "Đường thẳng d có phương trình tham số x = −2, y = 4 + 2t, z = 1 − t, với t thuộc R."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "Ta có AB = (0; −6; 3), CD = (0; 4; −2) và AC = (5; −3; −2). a) Vì AB = −3/2 CD nên hai vectơ ngược hướng; phát biểu đúng. b) Hai đường thẳng có các vectơ chỉ phương cùng phương, nhưng mọi điểm trên d có hoành độ −2, còn mọi điểm trên Δ có hoành độ 3. Do đó chúng song song và phân biệt; phát biểu sai. c) AC có thành phần thứ nhất bằng 5 nên không thể cùng phương với CD có thành phần thứ nhất bằng 0; phát biểu sai. d) Hệ phương trình đã cho đi qua A khi t = 0 và có vectơ chỉ phương (0; 2; −1). Vì AB = −3(0; 2; −1), đây là phương trình tham số của d; phát biểu đúng.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Kết luận hai đường thẳng trùng nhau chỉ từ việc các vectơ chỉ phương cùng phương.",
+        "why_plausible": "Học sinh đã kiểm tra được quan hệ phương nhưng bỏ qua điều kiện phải có một điểm chung để hai đường thẳng trùng nhau."
+      },
+      {
+        "label": null,
+        "sub": "c",
+        "mistake": "Cho rằng vectơ nối đến một điểm thuộc đường thẳng luôn là vectơ chỉ phương của đường thẳng ấy.",
+        "why_plausible": "C thuộc Δ nên học sinh có thể chọn AC mà không kiểm tra điểm A hoặc quan hệ cùng phương với CD."
+      }
+    ],
+    "level_reason": "Mức cao nhất là TH. Học sinh tính tọa độ vectơ, diễn giải dấu của hệ số tỉ lệ, phân biệt hai đường thẳng song song với trùng nhau và kiểm tra phương trình tham số bằng các quy trình quen thuộc. Không cần xây dựng mô hình hay lập chuỗi suy luận không quen thuộc.",
+    "prerequisites": [
+      "Tọa độ vectơ nối hai điểm",
+      "Quan hệ cùng phương, cùng hướng và ngược hướng của hai vectơ",
+      "Vectơ chỉ phương của đường thẳng",
+      "Phương trình tham số của đường thẳng",
+      "Điều kiện hai đường thẳng song song hoặc trùng nhau"
+    ],
+    "variation_guidance": "Có thể tạo hai đường thẳng nằm trong hai mặt phẳng x = p và x = q với p khác q, rồi chọn hai vectơ chỉ phương là các bội khác không của nhau. Khi thay dữ kiện, kiểm tra lại dấu của hệ số tỉ lệ và điểm đi qua trong phương trình tham số.",
+    "uncertainties": [
+      "Đây là mẫu minh họa tổng hợp nguyên gốc, không phải bằng chứng đề thi thật hoặc một đề thi đầy đủ.",
+      "Quan sát định hướng chỉ đến từ nguồn cấp tỉnh qua bên thứ ba, chưa có neo chính thức; một quan sát chưa xác nhận được khóa và thứ tự phát biểu. Việc mở rộng sang quan hệ giữa hai đường thẳng là lựa chọn biên soạn của mẫu này."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "db678a565d6b8476",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "Ta có AB = (0; −6; 3), CD = (0; 4; −2), AC = (5; −3; −2). a) AB = −3/2 CD nên hai vectơ ngược hướng. b) Mọi điểm trên d có hoành độ −2, mọi điểm trên Δ có hoành độ 3 nên hai đường thẳng không trùng nhau. c) AC không cùng phương với CD nên không là vectơ chỉ phương của Δ. d) Phương trình đã cho đi qua A và có vectơ chỉ phương (0; 2; −1) = −1/3 AB nên đúng là phương trình của d.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Cả bốn phát biểu đều ở mức TH: tính tọa độ vectơ, kiểm tra quan hệ cùng phương và ngược hướng, phân biệt hai đường thẳng qua tọa độ, kiểm tra phương trình tham số theo quy trình quen thuộc."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/toan/d7fac40b9edbc456a96aa8cf303d74317b509e2863998b2f7531e1595803a8ac.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/toan/d7fac40b9edbc456a96aa8cf303d74317b509e2863998b2f7531e1595803a8ac.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 0,
+  "source_rows_sha256": "863dd6885185956ed9dabede84bf529993a764e4871f75f25629503cf8f2731a"
+}

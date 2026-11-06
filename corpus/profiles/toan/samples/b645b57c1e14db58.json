@@ -1,0 +1,144 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "b645b57c1e14db58",
+    "topic": "Phương trình lượng giác",
+    "part": "P1",
+    "level": "NB",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một phương trình lượng giác cơ bản yêu cầu hàm tang triệt tiêu.",
+        "task": "Chọn tập nghiệm đầy đủ.",
+        "reasoning": [
+          "Nhận diện các vị trí hàm tang triệt tiêu trong một chu kì.",
+          "Viết nghiệm tổng quát theo chu kì của hàm tang."
+        ],
+        "combines": [
+          "Giá trị lượng giác",
+          "Chu kì hàm tang"
+        ],
+        "difficulty_source": "Nhớ đúng nghiệm cơ bản và chu kì của hàm tang.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một phương trình sin tại giá trị cực đại.",
+        "task": "Chọn tập nghiệm đầy đủ.",
+        "reasoning": [
+          "Xác định vị trí nghiệm trên đường tròn lượng giác.",
+          "Biểu diễn toàn bộ nghiệm bằng chu kỳ của hàm sin."
+        ],
+        "combines": [
+          "Đường tròn lượng giác",
+          "Tính tuần hoàn"
+        ],
+        "difficulty_source": "Nhớ đúng vị trí cực đại và chu kỳ.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "9ed45d16a975|P1|7|None",
+      "de5833d227dd|P1|6|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "b645b57c1e14db58",
+    "stem": "Tập nghiệm của phương trình sin x = −1 là tập nào sau đây? Các góc được tính bằng radian.",
+    "options": [
+      {
+        "label": "A",
+        "text": "x = −π/2 + 2kπ, k ∈ ℤ."
+      },
+      {
+        "label": "B",
+        "text": "x = π/2 + 2kπ, k ∈ ℤ."
+      },
+      {
+        "label": "C",
+        "text": "x = −π/2 + kπ, k ∈ ℤ."
+      },
+      {
+        "label": "D",
+        "text": "x = −π + 2kπ, k ∈ ℤ."
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "A",
+        "level": "NB"
+      }
+    ],
+    "solution": "Hàm sin nhận giá trị −1 tại góc −π/2 và lặp lại giá trị này sau mỗi chu kì 2π, nên nghiệm là x = −π/2 + 2kπ với k ∈ ℤ. B là tập nghiệm của sin x = 1. C dùng bước lặp π nên chứa cả những góc có sin bằng 1. D gồm các góc có sin bằng 0; đây là tập nghiệm của cos x = −1.",
+    "distractors": [
+      {
+        "label": "B",
+        "sub": null,
+        "mistake": "Nhớ vị trí sin đạt giá trị 1 thay cho −1.",
+        "why_plausible": "Hai vị trí tương ứng nằm ở hai đầu đường kính thẳng đứng trên đường tròn lượng giác."
+      },
+      {
+        "label": "C",
+        "sub": null,
+        "mistake": "Dùng chu kì π thay cho 2π.",
+        "why_plausible": "Học sinh có thể lẫn chu kì của sin với chu kì của tang."
+      },
+      {
+        "label": "D",
+        "sub": null,
+        "mistake": "Dùng nghiệm của cos x = −1 cho phương trình sin x = −1.",
+        "why_plausible": "Học sinh nhớ giá trị đặc biệt −1 nhưng nhầm hoành độ và tung độ trên đường tròn lượng giác."
+      }
+    ],
+    "level_reason": "Học sinh chỉ cần nhớ nghiệm của phương trình lượng giác cơ bản tại giá trị đặc biệt và chu kì của sin.",
+    "prerequisites": [
+      "Giá trị đặc biệt của hàm sin.",
+      "Chu kì của hàm sin.",
+      "Kí hiệu nghiệm tổng quát."
+    ],
+    "variation_guidance": "Đổi hàm lượng giác hoặc giá trị đặc biệt; tránh thêm biến đổi đối số hay điều kiện khoảng nếu muốn giữ yêu cầu nhận biết trực tiếp.",
+    "uncertainties": [
+      "Quan sát cấu trúc được cung cấp chỉ thuộc nguồn cấp tỉnh qua bên thứ ba và không có điểm neo chính thức. Câu này là minh họa tổng hợp mới."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "b645b57c1e14db58",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "A",
+        "level": "NB"
+      }
+    ],
+    "solution": "sin x = −1 khi và chỉ khi x = −π/2 + 2kπ, k ∈ ℤ.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Nhận biết tập nghiệm của phương trình lượng giác cơ bản tại giá trị đặc biệt −1."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/f545107910d5cb96f8bd79c9b19a7980ff2bca8c220d075a1ca49c88887f7702.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/f545107910d5cb96f8bd79c9b19a7980ff2bca8c220d075a1ca49c88887f7702.resolve.json"
+}

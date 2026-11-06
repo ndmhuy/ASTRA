@@ -13,32 +13,32 @@ Nguồn: /Users/huynguyen/Lecturing_Lab/wt-agent-runner/Grading_Tools/docs/proto
 
 | Phần/câu | Chủ đề/lớp | Phân hoá | Nhiễu và nghi vấn |
 |---|---|---|---|
-| P1/1 | Điều hòa biểu hiện gen ở sinh vật nhân sơ; lớp 12 | low | B: nhầm vị trí liên kết protein; C: nhầm nguồn tạo sản phẩm với đích tác động; D: nhầm đối tượng bị điều hòa với vùng điều khiển;  |
+| P1/1 | Điều hòa biểu hiện gene ở sinh vật nhân sơ; lớp 12 | low | B: nhầm vị trí liên kết protein; C: nhầm nguồn tạo sản phẩm với đích tác động; D: nhầm đối tượng bị điều hòa với vùng điều khiển;  |
 | P1/2 | Phiên mã và nguyên tắc bổ sung; lớp 12 | low | A: nhầm RNA với DNA; B: sai chiều phân tử; C: nhầm mạch khuôn với mạch mã hóa;  |
-| P1/3 | Đột biến cấu trúc nhiễm sắc thể; lớp 12 | low | A: nhầm trật tự gen với nhóm liên kết; C: nhầm mất gen với chuyển nhóm liên kết; D: nhầm số bản sao với nhóm liên kết;  |
+| P1/3 | Đột biến cấu trúc nhiễm sắc thể; lớp 12 | low | A: nhầm trật tự gene với nhóm liên kết; C: nhầm mất gene với chuyển nhóm liên kết; D: nhầm số bản sao với nhóm liên kết;  |
 | P1/4 | Bộ nhiễm sắc thể và trạng thái nhiễm sắc thể trong nguyên phân; lớp 12 | low | A: dùng số NST lưỡng bội ban đầu; B: nhầm NST với crômatit; C: không rõ lỗi;  |
 | P1/5 | Các nhân tố tiến hóa; lớp 12 | low | A: nhầm tạo biến dị với định hướng thích nghi; B: nhầm ngẫu nhiên với định hướng; C: nhầm hướng di chuyển với hướng chọn lọc;  |
 | P1/6 | Bằng chứng giải phẫu so sánh; lớp 12 | low | A: đồng nhất chức năng với nguồn gốc; C: đồng nhất tên và chức năng với nguồn gốc; D: nhầm cơ quan tương tự với tương đồng;  |
 | P1/7 | Quan hệ giữa các loài trong quần xã; lớp 12 | low | B: nhầm sống cùng với cùng có lợi; C: bỏ điều kiện cùng có lợi; D: nhầm bám cơ học với lấy dinh dưỡng;  |
-| P1/8 | Cấu trúc di truyền của quần thể tự thụ phấn; lớp 12 | low | A: đếm thừa thế hệ; C: bỏ một thế hệ; D: nhầm bảo toàn alen với bảo toàn kiểu gen;  |
+| P1/8 | Cấu trúc di truyền của quần thể tự thụ phấn; lớp 12 | low | A: đếm thừa thế hệ; C: bỏ một thế hệ; D: nhầm bảo toàn allele với bảo toàn kiểu gene;  |
 | P1/9 | Phân li độc lập và lai phân tích; lớp 12 | low | B: áp sai phép lai dị hợp hai bên; C: áp sai phân li một locus; D: dùng tỉ lệ lai một tính trạng;  |
-| P1/10 | Di truyền học người và xác suất kiểu gen có điều kiện; lớp 12 | medium | A: bỏ điều kiện kiểu hình; B: chọn biến cố đối; C: nhầm mang alen với mắc bệnh;  |
+| P1/10 | Di truyền học người và xác suất kiểu gene có điều kiện; lớp 12 | medium | A: bỏ điều kiện kiểu hình; B: chọn biến cố đối; C: nhầm mang allele với mắc bệnh;  |
 | P1/11 | Pha sáng của quang hợp; lớp 11 | low | A: nhầm nguồn oxygen với nguồn carbon; B: nhầm chất nhận CO2 với nguồn O2; C: nhầm sản phẩm hữu cơ với nguyên liệu giải phóng khí;  |
 | P1/12 | Di truyền liên kết giới tính; lớp 12 | low | A: sai mẫu số xác suất; B: sai đường truyền NST giới tính; C: áp tỉ lệ trội lặn không phù hợp;  |
-| P1/13 | Liên kết gen và hoán vị gen; lớp 12 | low | B: nhầm một lớp liên kết với tổng hoán vị; C: không rõ lỗi; D: nhầm tần số một lớp với tổng tái tổ hợp;  |
+| P1/13 | Liên kết gene và hoán vị gene; lớp 12 | low | B: nhầm một lớp liên kết với tổng hoán vị; C: không rõ lỗi; D: nhầm tần số một lớp với tổng tái tổ hợp;  |
 | P1/14 | Giới hạn sinh thái và phạm vi phân bố; lớp 12 | low | B: đảo đối tượng có khoảng rộng hơn; C: bỏ giới hạn dưới của một loài; D: đảo giới hạn trên giữa hai loài; Phương án A nên thêm xét riêng nhân tố nhiệt độ hoặc các điều kiện khác tương đương; khoảng chịu nhiệt không đủ xác định phân bố thực tế. |
 | P1/15 | Chuỗi thức ăn và bậc dinh dưỡng; lớp 12 | low | B: đếm lệch bậc tiêu thụ; C: đồng nhất bậc tiêu thụ với bậc dinh dưỡng; D: bỏ bậc sinh vật sản xuất;  |
 | P1/16 | Dòng năng lượng và hiệu suất sinh thái; lớp 12 | low | A: đảo tỉ số năng lượng; C: chọn sai bậc làm mẫu số; D: tính nhầm cặp bậc dinh dưỡng;  |
 | P1/17 | Cấu trúc DNA và đột biến thay thế cặp nucleotide; lớp 12 | low | A: đảo chiều thay thế; B: bỏ tác động của đột biến; D: đếm đôi biến đổi của một cặp base;  |
 | P1/18 | Cách li sinh sản và hình thành loài; lớp 12 | low | B: nhầm loại rào cản trước hợp tử; C: nhầm khác thời gian với khác không gian; D: nhầm thời điểm tác động của cách li;  |
-| P2/1 | Suy kiểu gen từ phân li độc lập và kiểm tra độ thuần chủng; lớp 12 | medium | ;  |
+| P2/1 | Suy kiểu gene từ phân li độc lập và kiểm tra độ thuần chủng; lớp 12 | medium | ;  |
 | P2/2 | Cấu trúc tuổi và xu hướng biến động quần thể; lớp 12 | medium | ; Ý a đồng nhất cấu trúc tuổi dạng phát triển với trạng thái đang tăng trưởng. Nên đổi thành có cấu trúc tuổi dạng phát triển hoặc có tiềm năng tăng trưởng theo mô hình. |
 | P2/3 | Đột biến số lượng nhiễm sắc thể; lớp 12 | low | ; Cần bổ sung thành phần từng loại NST hoặc giới hạn rõ các thể chỉ thuộc dạng lệch bội đơn giản và đa bội nguyên bộ để chấm a, b, d duy nhất. |
-| P2/4 | Chọn lọc tự nhiên đối với alen lặn gây chết; lớp 12 | medium | ;  |
+| P2/4 | Chọn lọc tự nhiên đối với allele lặn gây chết; lớp 12 | medium | ;  |
 | P3/1 | Cân bằng di truyền Hardy–Weinberg; lớp 12 | low | ;  |
 | P3/2 | Phân li độc lập và xác suất kiểu hình; lớp 12 | low | ;  |
-| P3/3 | Quan hệ giữa chiều dài gen và sản phẩm dịch mã; lớp 12 | low | ;  |
-| P3/4 | Liên kết gen và hoán vị gen; lớp 12 | medium | ;  |
+| P3/3 | Quan hệ giữa chiều dài gene và sản phẩm dịch mã; lớp 12 | low | ;  |
+| P3/4 | Liên kết gene và hoán vị gene; lớp 12 | medium | ;  |
 | P3/5 | Di truyền học người và xác suất có điều kiện; lớp 12 | medium | ;  |
 | P3/6 | Ước tính kích thước quần thể bằng bắt–thả–bắt lại; lớp 12 | low | ;  |
 

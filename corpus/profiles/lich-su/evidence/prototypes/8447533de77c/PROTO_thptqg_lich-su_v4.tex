@@ -1,0 +1,299 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{setspace}
+\setstretch{1.18}
+\usepackage{graphicx}
+\usepackage{ifthen}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, patterns}
+\IfFileExists{pgf-pie.sty}{\usepackage{pgf-pie}}{}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{chemfig}
+\usepackage{longtable,booktabs}
+\usepackage{adjustbox}
+\providecommand{\errorpart}[2]{$\underset{\textbf{#1}}{\underline{\text{#2}}}$}
+\usepackage[top=0.8in, left=0.75in, right=0.75in, bottom=0.85in, headheight=38pt, headsep=18pt, footskip=1.2cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue]{hyperref}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 2pt minus 1pt}
+
+\setlist[enumerate]{itemsep=4pt, parsep=2pt, topsep=4pt, partopsep=2pt}
+\setlist[itemize]{itemsep=4pt, parsep=2pt, topsep=4pt}
+
+\makeatletter
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{LecturingLastPage}{{}{\thepage}{}{}{}}}}
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{LecturingPageCount}{{}{\two@digits{\value{page}}}{}{}{}}}}
+\makeatother
+\pagestyle{fancy}
+\fancyhf{}
+\cfoot{\small Trang \thepage/\pageref*{LecturingLastPage} - Mã đề thi 8650}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\begin{document}
+
+\sloppy
+
+\noindent
+\begin{minipage}[t]{0.37\textwidth}
+    \small
+    \centering
+    \IfFileExists{logo.png}{\includegraphics[height=0.9cm]{logo.png}\\[0.1cm]}{%
+      \IfFileExists{logo.jpg}{\includegraphics[height=0.9cm]{logo.jpg}\\[0.1cm]}{}%
+    }
+    {\bfseries \mbox{}}\\[-0.2cm]
+    \rule{3cm}{0.5pt}\\[0.1cm]
+    {\bfseries ĐỀ LUYỆN TẬP}\\{\small (Đề thi có \pageref*{LecturingPageCount} trang)}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.62\textwidth}
+    \small
+    \centering
+    {\bfseries \sbox0{KỲ THI TỐT NGHIỆP TRUNG HỌC PHỔ THÔNG NĂM 2026}\ifdim\wd0>\linewidth KỲ THI TỐT NGHIỆP TRUNG HỌC PHỔ~THÔNG\\NĂM 2026\else\usebox0\fi}\\[0.15cm]
+    {\bfseries Môn thi: LỊCH SỬ}\\[0.15cm]
+    {\itshape Thời gian làm bài: 50 phút, không kể thời gian phát đề}
+\end{minipage}
+
+\vspace{0.4cm}
+\noindent
+\begin{minipage}[t]{0.68\textwidth}
+    Họ, tên thí sinh: \dotfill\\[0.15cm]
+    Số báo danh: \dotfill
+\end{minipage}%
+\hfill
+\fbox{\begin{minipage}{3.6cm}\centering\textbf{Mã đề: 8650}\end{minipage}}
+
+\vspace{0.5cm}
+
+% LECTURING-PART: P1
+\textbf{Phần I: Trắc nghiệm nhiều lựa chọn} \textit{Thí sinh trả lời từ câu 1 đến câu 24. Mỗi câu hỏi thí sinh chỉ chọn một phương án.}
+
+\noindent \textbf{Câu 1:} Năm 1949, Mỹ và nhiều nước Tây Âu thành lập tổ chức quân sự nào sau đây?\\
+% LECTURING-MATRIX: topic=Thế giới trong và sau Chiến tranh lạnh; level=NB\\
+\noindent\makebox[0.48\textwidth][l]{A. Hội đồng tương trợ kinh tế.}\makebox[0.48\textwidth][l]{B. Tổ chức Hiệp ước Bắc Đại Tây Dương.}\\
+\noindent\makebox[0.48\textwidth][l]{C. Liên minh châu Âu.}\makebox[0.48\textwidth][l]{D. Tổ chức Hiệp ước Vác-sa-va.}
+
+\noindent \textbf{Câu 2:} Năm 1967, Hiệp hội các quốc gia Đông Nam Á (ASEAN) được thành lập với năm nước sáng lập là In-đô-nê-xi-a, Ma-lai-xi-a, Phi-líp-pin, Xin-ga-po và\\
+% LECTURING-MATRIX: topic=ASEAN: những chặng đường lịch sử; level=NB\\
+\noindent\makebox[0.24\textwidth][l]{A. Bru-nây.}\makebox[0.24\textwidth][l]{B. Thái Lan.}\makebox[0.24\textwidth][l]{C. Mi-an-ma.}\makebox[0.24\textwidth][l]{D. Việt Nam.}
+
+\noindent \textbf{Câu 3:} Trong Cách mạng tháng Tám năm 1945, nhân dân Hà Nội khởi nghĩa giành chính quyền thắng lợi vào ngày\\
+% LECTURING-MATRIX: topic=Cách mạng tháng Tám và kháng chiến chống thực dân Pháp; level=NB\\
+\noindent\makebox[0.24\textwidth][l]{A. 25-8-1945.}\makebox[0.24\textwidth][l]{B. 2-9-1945.}\makebox[0.24\textwidth][l]{C. 23-8-1945.}\makebox[0.24\textwidth][l]{D. 19-8-1945.}
+
+\noindent \textbf{Câu 4:} Trong chiến lược ``Chiến tranh đặc biệt'' (1961 -- 1965) ở miền Nam Việt Nam, Mỹ và chính quyền Sài Gòn coi biện pháp nào sau đây là ``quốc sách''?\\
+% LECTURING-MATRIX: topic=Kháng chiến chống Mỹ và thống nhất đất nước; level=NB\\
+\noindent A. Dồn dân lập ``ấp chiến lược''.\\
+\noindent B. Tiến hành các cuộc hành quân ``tìm diệt''.\\
+\noindent C. Ném bom phá hoại miền Bắc Việt Nam.\\
+\noindent D. Đưa quân viễn chinh Mỹ vào trực tiếp tham chiến.
+
+\noindent \textbf{Câu 5:} Đại hội đại biểu toàn quốc lần thứ VIII (1996) của Đảng Cộng sản Việt Nam xác định đất nước chuyển sang thời kì đẩy mạnh\\
+% LECTURING-MATRIX: topic=Công cuộc Đổi mới ở Việt Nam từ năm 1986; level=NB\\
+\noindent A. khôi phục kinh tế sau chiến tranh.\\
+\noindent B. tập thể hóa nông nghiệp theo mô hình hợp tác xã.\\
+\noindent C. công nghiệp hóa, hiện đại hóa đất nước.\\
+\noindent D. cải cách ruộng đất ở nông thôn.
+
+\noindent \textbf{Câu 6:} Năm 2007, Việt Nam chính thức trở thành thành viên thứ 150 của tổ chức nào sau đây?\\
+% LECTURING-MATRIX: topic=Lịch sử đối ngoại Việt Nam; level=NB\\
+\noindent A. Tổ chức Thương mại Thế giới.\\
+\noindent B. Liên hợp quốc.\\
+\noindent C. Hiệp hội các quốc gia Đông Nam Á.\\
+\noindent D. Diễn đàn Hợp tác kinh tế châu Á -- Thái Bình Dương.
+
+\noindent \textbf{Câu 7:} Hội nghị I-an-ta (2-1945) có sự tham gia của nguyên thủ ba cường quốc nào sau đây?\\
+% LECTURING-MATRIX: topic=Thế giới trong và sau Chiến tranh lạnh; level=NB\\
+\noindent\makebox[0.48\textwidth][l]{A. Anh, Pháp, Liên Xô.}\makebox[0.48\textwidth][l]{B. Liên Xô, Mỹ, Trung Quốc.}\\
+\noindent\makebox[0.48\textwidth][l]{C. Mỹ, Anh, Pháp.}\makebox[0.48\textwidth][l]{D. Liên Xô, Mỹ, Anh.}
+
+\noindent \textbf{Câu 8:} Hiến chương ASEAN được các nước thành viên kí kết vào năm nào sau đây?\\
+% LECTURING-MATRIX: topic=ASEAN: những chặng đường lịch sử; level=NB\\
+\noindent\makebox[0.24\textwidth][l]{A. 1976.}\makebox[0.24\textwidth][l]{B. 1995.}\makebox[0.24\textwidth][l]{C. 1999.}\makebox[0.24\textwidth][l]{D. 2007.}
+
+\noindent \textbf{Câu 9:} Năm 1950, quân đội Việt Nam mở chiến dịch nào sau đây?\\
+% LECTURING-MATRIX: topic=Cách mạng tháng Tám và kháng chiến chống thực dân Pháp; level=NB\\
+\noindent\makebox[0.48\textwidth][l]{A. Chiến dịch Biên giới thu -- đông.}\makebox[0.48\textwidth][l]{B. Chiến dịch Việt Bắc thu -- đông.}\\
+\noindent\makebox[0.48\textwidth][l]{C. Chiến dịch Tây Nguyên.}\makebox[0.48\textwidth][l]{D. Chiến dịch Điện Biên Phủ.}
+
+\noindent \textbf{Câu 10:} Chiến dịch Hồ Chí Minh giành thắng lợi, giải phóng hoàn toàn Sài Gòn vào ngày\\
+% LECTURING-MATRIX: topic=Kháng chiến chống Mỹ và thống nhất đất nước; level=NB\\
+\noindent\makebox[0.24\textwidth][l]{A. 10-3-1975.}\makebox[0.24\textwidth][l]{B. 30-4-1975.}\makebox[0.24\textwidth][l]{C. 29-3-1975.}\makebox[0.24\textwidth][l]{D. 26-3-1975.}
+
+\noindent \textbf{Câu 11:} Nội dung nào sau đây phản ánh đúng đặc điểm của cuộc Chiến tranh lạnh (1947 -- 1989)?\\
+% LECTURING-MATRIX: topic=Thế giới trong và sau Chiến tranh lạnh; level=TH\\
+\noindent A. Bùng nổ ngay sau khi cuộc Chiến tranh thế giới thứ nhất kết thúc.\\
+\noindent B. Chỉ diễn ra trên lĩnh vực kinh tế giữa hai hệ thống xã hội đối lập.\\
+\noindent C. Hai phe đối đầu toàn diện nhưng Liên Xô và Mỹ không trực tiếp đụng độ quân sự.\\
+\noindent D. Liên Xô và Mỹ trực tiếp xung đột quân sự trên quy mô toàn cầu.
+
+\noindent \textbf{Câu 12:} Việc Chiến tranh lạnh chấm dứt (1989) đã tác động như thế nào đến tình hình thế giới?\\
+% LECTURING-MATRIX: topic=Thế giới trong và sau Chiến tranh lạnh; level=TH\\
+\noindent A. Làm cho mọi mâu thuẫn giữa các nước lớn được giải quyết triệt để.\\
+\noindent B. Tạo điều kiện giải quyết nhiều cuộc xung đột khu vực bằng biện pháp hòa bình.\\
+\noindent C. Dẫn tới việc các nước từ bỏ hoàn toàn việc xây dựng lực lượng quân sự.\\
+\noindent D. Làm cho Liên hợp quốc mất vai trò trong việc giữ gìn hòa bình thế giới.
+
+\noindent \textbf{Câu 13:} Một trong những nguyên nhân dẫn đến sự ra đời của Hiệp hội các quốc gia Đông Nam Á (1967) là\\
+% LECTURING-MATRIX: topic=ASEAN: những chặng đường lịch sử; level=TH\\
+\noindent A. yêu cầu xây dựng một liên minh quân sự chung để chống lại Liên Xô.\\
+\noindent B. tác động trực tiếp của việc Chiến tranh lạnh chấm dứt.\\
+\noindent C. sự ra đời của Liên minh châu Âu và xu thế toàn cầu hóa.\\
+\noindent D. nhu cầu hợp tác để cùng phát triển và hạn chế ảnh hưởng của các nước lớn.
+
+\noindent \textbf{Câu 14:} Việc kết nạp Cam-pu-chia vào Hiệp hội các quốc gia Đông Nam Á (4-1999) có ý nghĩa nào sau đây?\\
+% LECTURING-MATRIX: topic=ASEAN: những chặng đường lịch sử; level=TH\\
+\noindent A. Đánh dấu sự ra đời của Cộng đồng ASEAN.\\
+\noindent B. Mở đầu quá trình mở rộng thành viên của ASEAN.\\
+\noindent C. Hiện thực hóa ý tưởng về một ASEAN gồm mười quốc gia Đông Nam Á.\\
+\noindent D. Đưa ASEAN trở thành một tổ chức liên kết chính trị -- quân sự.
+
+\noindent \textbf{Câu 15:} Chiến thắng Điện Biên Phủ (1954) có ý nghĩa nào sau đây?\\
+% LECTURING-MATRIX: topic=Cách mạng tháng Tám và kháng chiến chống thực dân Pháp; level=TH\\
+\noindent A. Kết thúc thắng lợi cuộc kháng chiến chống Mỹ, cứu nước của nhân dân Việt Nam.\\
+\noindent B. Buộc thực dân Pháp lần đầu tiên chuyển từ ``đánh nhanh thắng nhanh'' sang đánh lâu dài.\\
+\noindent C. Giáng đòn quyết định vào ý chí xâm lược của Pháp, tạo cơ sở cho cuộc đấu tranh ngoại giao.\\
+\noindent D. Buộc thực dân Pháp phải kí với Việt Nam bản Hiệp định Sơ bộ.
+
+\noindent \textbf{Câu 16:} Điểm giống nhau giữa chiến lược ``Chiến tranh cục bộ'' (1965 -- 1968) và chiến lược ``Việt Nam hóa chiến tranh'' (1969 -- 1973) của Mỹ ở miền Nam Việt Nam là\\
+% LECTURING-MATRIX: topic=Kháng chiến chống Mỹ và thống nhất đất nước; level=TH\\
+\noindent A. đều là hình thức chiến tranh xâm lược thực dân mới của Mỹ.\\
+\noindent B. lực lượng quân viễn chinh Mỹ đều giữ vai trò chủ yếu.\\
+\noindent C. đều diễn ra trong bối cảnh Mỹ hòa hoãn với Liên Xô và Trung Quốc.\\
+\noindent D. phạm vi chiến tranh đều chỉ giới hạn ở miền Nam Việt Nam.
+
+\noindent \textbf{Câu 17:} Từ năm 1989, Việt Nam từ một nước thiếu lương thực đã trở thành nước xuất khẩu gạo. Điều đó chứng tỏ\\
+% LECTURING-MATRIX: topic=Công cuộc Đổi mới ở Việt Nam từ năm 1986; level=TH\\
+\noindent A. Việt Nam đã hoàn thành sự nghiệp công nghiệp hóa, hiện đại hóa đất nước.\\
+\noindent B. đường lối đổi mới trong nông nghiệp đã đi vào cuộc sống và mang lại hiệu quả.\\
+\noindent C. nông nghiệp Việt Nam đã đạt trình độ hiện đại hàng đầu thế giới.\\
+\noindent D. cơ chế quản lí kinh tế tập trung, bao cấp vẫn phát huy hiệu quả.
+
+\noindent \textbf{Câu 18:} Trong công cuộc Đổi mới, Việt Nam chủ trương phát triển nền kinh tế nhiều thành phần nhằm\\
+% LECTURING-MATRIX: topic=Công cuộc Đổi mới ở Việt Nam từ năm 1986; level=TH\\
+\noindent A. huy động mọi nguồn lực trong xã hội cho phát triển kinh tế.\\
+\noindent B. thu hẹp quan hệ kinh tế với các nước tư bản chủ nghĩa.\\
+\noindent C. xóa bỏ hoàn toàn vai trò của kinh tế nhà nước.\\
+\noindent D. khôi phục cơ chế quản lí kinh tế tập trung, bao cấp.
+
+\noindent \textbf{Câu 19:} Đầu năm 1950, Trung Quốc, Liên Xô và nhiều nước dân chủ nhân dân lần lượt công nhận và đặt quan hệ ngoại giao với Việt Nam Dân chủ Cộng hòa. Sự kiện đó có ý nghĩa nào sau đây?\\
+% LECTURING-MATRIX: topic=Lịch sử đối ngoại Việt Nam; level=TH\\
+\noindent A. Góp phần đưa Việt Nam thoát khỏi thế bị bao vây, cô lập.\\
+\noindent B. Chấm dứt hoàn toàn cuộc kháng chiến chống thực dân Pháp.\\
+\noindent C. Mở đầu quá trình bình thường hóa quan hệ giữa Việt Nam và Mỹ.\\
+\noindent D. Đưa Việt Nam trở thành thành viên của Liên hợp quốc.
+
+\noindent \textbf{Câu 20:} Việc Việt Nam được bầu làm Ủy viên không thường trực Hội đồng Bảo an Liên hợp quốc nhiệm kì 2008 -- 2009 và nhiệm kì 2020 -- 2021 phản ánh điều nào sau đây?\\
+% LECTURING-MATRIX: topic=Lịch sử đối ngoại Việt Nam; level=TH\\
+\noindent A. Vị thế và uy tín quốc tế của Việt Nam ngày càng được nâng cao.\\
+\noindent B. Việt Nam chỉ tập trung quan hệ với các nước lớn.\\
+\noindent C. Việt Nam có quyền phủ quyết các nghị quyết của Hội đồng Bảo an.\\
+\noindent D. Việt Nam đã hoàn thành quá trình hội nhập kinh tế quốc tế.
+
+\noindent \textbf{Câu 21:} Chủ trương ``vừa kháng chiến, vừa kiến quốc'' của Đảng Cộng sản Đông Dương trong cuộc kháng chiến chống thực dân Pháp (1945 -- 1954) để lại bài học nào sau đây cho sự nghiệp xây dựng và bảo vệ Tổ quốc hiện nay?\\
+% LECTURING-MATRIX: topic=Cách mạng tháng Tám và kháng chiến chống thực dân Pháp; level=VD\\
+\noindent A. Ưu tiên tuyệt đối cho đấu tranh quân sự trong mọi hoàn cảnh.\\
+\noindent B. Tập trung phát triển kinh tế, tạm gác nhiệm vụ quốc phòng.\\
+\noindent C. Dựa chủ yếu vào sự giúp đỡ từ bên ngoài để xây dựng đất nước.\\
+\noindent D. Kết hợp chặt chẽ nhiệm vụ xây dựng đất nước với bảo vệ Tổ quốc.
+
+\noindent \textbf{Câu 22:} Trong kế hoạch giải phóng miền Nam, Bộ Chính trị Trung ương Đảng Lao động Việt Nam nhấn mạnh: nếu thời cơ đến vào đầu hoặc cuối năm 1975 thì lập tức giải phóng miền Nam trong năm 1975. Chủ trương đó để lại bài học nào sau đây cho công cuộc xây dựng và bảo vệ Tổ quốc hiện nay?\\
+% LECTURING-MATRIX: topic=Kháng chiến chống Mỹ và thống nhất đất nước; level=VD\\
+\noindent A. Coi sức mạnh quân sự là yếu tố duy nhất quyết định thắng lợi.\\
+\noindent B. Kiên định thực hiện một kế hoạch duy nhất, không điều chỉnh.\\
+\noindent C. Chờ đợi điều kiện quốc tế hoàn toàn thuận lợi rồi mới hành động.\\
+\noindent D. Chủ động nắm bắt thời cơ, chỉ đạo chiến lược linh hoạt, kịp thời.
+
+\noindent \textbf{Câu 23:} Ở xã X, các hộ nông dân được giao quyền sử dụng ruộng đất lâu dài, tự chủ tổ chức sản xuất và tự tiêu thụ nông sản trên thị trường. Thực tế đó là kết quả của chủ trương nào sau đây trong công cuộc Đổi mới ở Việt Nam?\\
+% LECTURING-MATRIX: topic=Công cuộc Đổi mới ở Việt Nam từ năm 1986; level=VD\\
+\noindent A. Tập thể hóa nông nghiệp theo mô hình hợp tác xã bậc cao.\\
+\noindent B. Thu mua nông sản theo giá chỉ đạo của Nhà nước.\\
+\noindent C. Xác định hộ nông dân là đơn vị kinh tế tự chủ.\\
+\noindent D. Phân phối sản phẩm theo ngày công lao động.
+
+\noindent \textbf{Câu 24:} Việc Chính phủ Việt Nam Dân chủ Cộng hòa kí với Pháp bản Hiệp định Sơ bộ (6-3-1946) để lại bài học nào sau đây cho hoạt động đối ngoại của Việt Nam hiện nay?\\
+% LECTURING-MATRIX: topic=Lịch sử đối ngoại Việt Nam; level=VD\\
+\noindent A. Đặt lợi ích của các nước lớn lên trên lợi ích dân tộc.\\
+\noindent B. Kiên định về nguyên tắc, mềm dẻo về sách lược.\\
+\noindent C. Nhân nhượng không có nguyên tắc để giữ hòa bình.\\
+\noindent D. Dựa hoàn toàn vào một cường quốc để bảo vệ đất nước.
+
+\vspace{0.5cm}
+% LECTURING-PART: P2
+\textbf{Phần II: Trắc nghiệm đúng/sai} \textit{Thí sinh trả lời từ câu 1 đến câu 4. Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn đúng hoặc sai.}
+
+\noindent \textbf{Câu 1:} Cho đoạn tư liệu sau đây:\\
+\textit{``Chiến tranh thế giới thứ hai kết thúc với chiến thắng thuộc về Liên Xô và các nước đồng minh trước trục phát xít Đức - I-ta-li-a - Nhật Bản đã làm thay đổi căn bản tương quan sức mạnh giữa các nước, trung tâm quyền lực trong quan hệ quốc tế, đưa đến hình thành trật tự hai cực Y-an-ta dựa trên sức mạnh, phân chia khu vực ảnh hưởng giữa hai siêu cường Mỹ và Liên Xô đối nghịch nhau về ý thức hệ chính trị - tư tưởng, kinh tế và quân sự. Khác với các trật tự được thiết lập trước đó, trật tự thế giới hai cực Y-an-ta ra đời và tồn tại gần nửa thế kỷ (1945 - 1991) chủ yếu dựa trên thế cân bằng quyền lực, trước hết là quân sự và chính trị - ngoại giao, giữa hai siêu cường là Liên Xô và Mỹ, vượt ra ngoài khuôn khổ của khu vực, hướng tới một trật tự toàn cầu. [...] Tuy nhiên, sau khi Liên Xô - nhà nước xã hội chủ nghĩa đầu tiên trên thế giới - sụp đổ vào năm 1991, trật tự thế giới hai cực Y-an-ta cũng chấm dứt.''}\\
+\hspace*{\fill}(Trần Khánh: ``Vai trò của trật tự thế giới đối với an ninh, hợp tác và phát triển giữa các quốc gia, dân tộc'', \textit{Tạp chí Cộng sản}, ngày 27-3-2025)\\
+% LECTURING-MATRIX: topic=Thế giới trong và sau Chiến tranh lạnh; level=TH\\
+\noindent a) Trật tự thế giới hai cực I-an-ta được hình thành sau khi cuộc Chiến tranh thế giới thứ hai kết thúc.\\
+
+
+\noindent b) Theo đoạn tư liệu, trật tự thế giới hai cực I-an-ta chỉ có phạm vi tác động trong khuôn khổ khu vực châu Âu.\\
+
+
+\noindent c) Từ đoạn tư liệu có thể thấy, sự thay đổi tương quan sức mạnh giữa các cường quốc là nhân tố dẫn tới cả sự hình thành và sự sụp đổ của trật tự thế giới hai cực I-an-ta.\\
+
+
+\noindent d) Sự chấm dứt của trật tự thế giới hai cực I-an-ta (1991) đã chấm dứt hoàn toàn sự cạnh tranh, tranh giành ảnh hưởng giữa các nước lớn trên thế giới.
+
+\noindent \textbf{Câu 2:} Cho đoạn tư liệu sau đây:\\
+\textit{``Với Việt Nam, tham gia ASEAN là đột phá khẩu mở cánh cửa phá vỡ bao vây cấm vận và từng bước hội nhập vào đời sống khu vực và quốc tế. Trở thành thành viên ASEAN đã giúp thúc đẩy quan hệ hữu nghị, hòa bình hợp tác giữa Việt Nam với các nước láng giềng trong khu vực trên nhiều lĩnh vực như chính trị, ngoại giao, an ninh, kinh tế và văn hóa-xã hội, tạo cho chúng ta những cơ hội và triển vọng mới phát triển đất nước. [...] 20 năm tham gia ASEAN chứng kiến quá trình trưởng thành của Việt Nam trên sân chơi hội nhập, từ giai đoạn học hỏi, làm quen để vượt qua những bỡ ngỡ, e ngại ban đầu, đến hoàn thành đầy đủ nghĩa vụ của một thành viên và tiến tới vị thế hiện nay là một thành viên chủ động, tích cực tham gia định hình `luật chơi chung'.''}\\
+\hspace*{\fill}(Phạm Bình Minh: ``Cộng đồng ASEAN 2015 hình thành và dấu ấn đóng góp của Việt Nam'', \textit{Báo Điện tử Chính phủ}, ngày 30-11-2015)\\
+% LECTURING-MATRIX: topic=ASEAN: những chặng đường lịch sử; level=TH\\
+\noindent a) Việt Nam chính thức trở thành thành viên của Hiệp hội các quốc gia Đông Nam Á vào năm 1995.\\
+
+
+\noindent b) Theo đoạn tư liệu, việc trở thành thành viên ASEAN chỉ giúp Việt Nam thúc đẩy quan hệ hợp tác với các nước láng giềng trên lĩnh vực kinh tế.\\
+
+
+\noindent c) Từ đoạn tư liệu có thể thấy, ngay sau khi gia nhập ASEAN, Việt Nam đã giữ vai trò định hình ``luật chơi chung'' của Hiệp hội.\\
+
+
+\noindent d) Việc tham gia ASEAN đã góp phần giúp Việt Nam phá thế bị bao vây, cấm vận, tạo môi trường thuận lợi cho công cuộc Đổi mới và hội nhập quốc tế.
+
+\noindent \textbf{Câu 3:} Cho đoạn tư liệu sau đây về kết quả của Hội nghị Giơ-ne-vơ (1954) đối với Việt Nam:\\
+\textit{``[...] chúng ta đạt mục tiêu cơ bản là ngừng bắn, lập lại hòa bình; công nhận và tôn trọng các quyền dân tộc cơ bản (độc lập, chủ quyền, thống nhất, toàn vẹn lãnh thổ); cấm xây dựng căn cứ quân sự mới, gia nhập liên minh quân sự, cấm sử dụng mỗi miền phục vụ cho bất kỳ chính sách quân sự nào; tổng tuyển cử để thống nhất đất nước vào tháng 7/1956. Điều đặc biệt giá trị là lần đầu tiên các quyền dân tộc cơ bản của Việt Nam được một Điều ước quốc tế và các cường quốc công nhận tại một hội nghị quốc tế. [...] Đoàn Việt Nam chuẩn bị và giữ bí mật phương án (vĩ tuyến 13, 16), cuối cùng chấp nhận vĩ tuyến 17, nhưng kiên quyết bảo lưu, khẳng định đây chỉ là ranh giới tạm thời, không phải là giới tuyến chính trị, giới tuyến lãnh thổ.''}\\
+\hspace*{\fill}(Vũ Đăng Minh: ``Hiệp định Geneva: Tầm vóc lịch sử và ý nghĩa thời đại'', \textit{Báo điện tử Đảng Cộng sản Việt Nam}, ngày 19-7-2024)\\
+% LECTURING-MATRIX: topic=Cách mạng tháng Tám và kháng chiến chống thực dân Pháp; level=TH\\
+\noindent a) Theo đoạn tư liệu, Hiệp định Giơ-ne-vơ quy định Việt Nam sẽ tổ chức tổng tuyển cử để thống nhất đất nước vào tháng 7-1955.\\
+
+
+\noindent b) Theo đoạn tư liệu, vĩ tuyến 17 chỉ là ranh giới quân sự tạm thời, không phải là giới tuyến chính trị hay giới tuyến lãnh thổ.\\
+
+
+\noindent c) Hiệp định Giơ-ne-vơ là văn bản pháp lí quốc tế đầu tiên ghi nhận các quyền dân tộc cơ bản của Việt Nam, tạo cơ sở pháp lí cho cuộc đấu tranh thống nhất đất nước sau này.\\
+
+
+\noindent d) Việc chấp nhận vĩ tuyến 17 làm ranh giới tạm thời cho thấy Việt Nam đã từ bỏ mục tiêu thống nhất đất nước để đổi lấy hòa bình.
+
+\noindent \textbf{Câu 4:} Cho đoạn tư liệu sau đây:\\
+\textit{``Cuối năm 1972, dưới sự lãnh đạo của Đảng, quân và dân ta đã đánh bại cuộc tập kích đường không chiến lược bằng máy bay B-52 của đế quốc Mỹ trên bầu trời miền Bắc, lập nên chiến thắng `Hà Nội - Điện Biên Phủ trên không' [...]. Ngày 27-1-1973, Hiệp định Pa-ri được ký kết, Mỹ cam kết tôn trọng độc lập, chủ quyền, thống nhất và toàn vẹn lãnh thổ của Việt Nam, cam kết sẽ không dính líu về quân sự hoặc can thiệp vào công việc nội bộ của miền Nam Việt Nam, cam kết rút hết quân Mỹ và các nước đồng minh của Mỹ về nước. Mỹ `cút' tạo điều kiện hết sức thuận lợi cho nhân dân ta tiến lên đánh cho Ngụy `nhào', kết thúc trọn vẹn sự nghiệp đấu tranh giải phóng dân tộc.''}\\
+\hspace*{\fill}(Nguyễn Trung Thông: ``Một số bài học kinh nghiệm của chiến thắng Hà Nội - Điện Biên phủ trên không năm 1972'', \textit{Tạp chí Cộng sản}, ngày 26-12-2021)\\
+% LECTURING-MATRIX: topic=Kháng chiến chống Mỹ và thống nhất đất nước; level=TH\\
+\noindent a) Hiệp định Pa-ri về chấm dứt chiến tranh, lập lại hòa bình ở Việt Nam được kí kết trước chiến thắng ``Hà Nội -- Điện Biên Phủ trên không''.\\
+
+
+\noindent b) Theo đoạn tư liệu, Mỹ cam kết rút hết quân Mỹ và quân các nước đồng minh của Mỹ về nước, không dính líu về quân sự hoặc can thiệp vào công việc nội bộ của miền Nam Việt Nam.\\
+
+
+\noindent c) Thắng lợi trên bàn đàm phán ở Pa-ri là nhân tố trực tiếp quyết định chiến thắng của quân và dân Việt Nam trên bầu trời Hà Nội cuối năm 1972.\\
+
+
+\noindent d) Hiệp định Pa-ri (1973) đã tạo ra điều kiện thuận lợi để nhân dân Việt Nam tiến lên giải phóng hoàn toàn miền Nam, thống nhất đất nước.\vspace{0.6cm}
+\begin{center}
+{\bfseries -{}-{}-{}-{}-{}-}\ \textbf{HẾT}\ {\bfseries -{}-{}-{}-{}-{}-}
+\end{center}
+\vspace{0.15cm}
+{\small\itshape
+Thí sinh không được sử dụng tài liệu. Cán bộ coi thi không giải thích gì thêm.}
+
+\end{document}

@@ -1,0 +1,153 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "bf274dfc4e29bbfb",
+    "topic": "Dãy số, cấp số cộng và cấp số nhân",
+    "part": "P2",
+    "level": "VD",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Tuổi sinh sản, tuổi thọ, số con mỗi lần sinh và một quần thể ban đầu trong mô hình vòng đời xác định.",
+        "task": "Kiểm tra số cá thể còn sống tại một thời điểm.",
+        "reasoning": [
+          "Lập các mốc sinh của từng thế hệ từ tuổi sinh sản.",
+          "Tính quy mô từng thế hệ theo quy luật nhân.",
+          "Dùng tuổi thọ để loại các thế hệ đã chết tại thời điểm xét.",
+          "Cộng các thế hệ còn sống và đối chiếu nhận định."
+        ],
+        "combines": [
+          "Cấp số nhân",
+          "Mô hình thời gian rời rạc",
+          "Điều kiện tuổi thọ"
+        ],
+        "difficulty_source": "Phân biệt tổng số từng sinh với số còn sống ở thời điểm xét.",
+        "evidence_uncertainty": "Không có khóa đúng sai phù hợp. Xếp lớp theo công cụ cấp số nhân; mô hình vòng đời là phần diễn giải ngữ cảnh.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "6aa30214ba7e|P2|2|d"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "bf274dfc4e29bbfb",
+    "stem": "Một mô hình quần thể giả định được theo dõi tại các mốc tháng nguyên. Tại tháng 0 có 2 cá thể vừa sinh. Mỗi cá thể sinh đúng 2 con khi tròn 2 tháng tuổi và sinh tiếp đúng 2 con khi tròn 4 tháng tuổi; mỗi con mới sinh tuân theo cùng quy luật. Mỗi cá thể chết ngay khi tròn 5 tháng tuổi. Không có cá thể nhập vào hoặc rời quần thể vì nguyên nhân khác. Số cá thể tại một mốc được ghi nhận sau khi hoàn tất mọi sự kiện sinh và chết ở mốc đó. Xét tính đúng sai của các khẳng định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Tại tháng 2 có 4 cá thể mới sinh."
+      },
+      {
+        "sub": "b",
+        "text": "Tại tháng 4 có 8 cá thể mới sinh."
+      },
+      {
+        "sub": "c",
+        "text": "Tại tháng 6 có 32 cá thể mới sinh."
+      },
+      {
+        "sub": "d",
+        "text": "Ngay sau các sự kiện tại tháng 8, quần thể có 138 cá thể còn sống."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "VD"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "VD"
+      }
+    ],
+    "solution": "Gọi u_n là số cá thể sinh tại tháng 2n, trong đó u_0 = 2 là nhóm ban đầu. Không có cá thể sinh ở tháng lẻ. Tại tháng 2, nhóm ban đầu sinh được u_1 = 2 × 2 = 4 con, nên a đúng. Từ n ≥ 2, cá thể sinh tại tháng 2n có bố mẹ thuộc nhóm sinh ở tháng 2n − 2 hoặc tháng 2n − 4; các nhóm này đều còn sống và lần lượt tròn 2 hoặc 4 tháng tuổi. Vì vậy u_n = 2u_(n−1) + 2u_(n−2). Suy ra u_2 = 12, u_3 = 32 và u_4 = 88. Ý b sai vì bỏ sót 4 con do nhóm ban đầu sinh lần thứ hai; c đúng. Tại tháng 8, nhóm ban đầu đã chết ở tháng 5 và nhóm sinh tháng 2 đã chết ở tháng 7. Chỉ các nhóm sinh tháng 4, 6, 8 còn sống, tổng cộng 12 + 32 + 88 = 132 cá thể. Ý d sai: 138 = 2 + 4 + 12 + 32 + 88 là tổng số cá thể từng có, bao gồm các cá thể đã chết.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Chỉ tính 8 con do nhóm sinh tháng 2 sinh ra, bỏ lần sinh thứ hai của nhóm ban đầu.",
+        "why_plausible": "Học sinh áp dụng quy luật nhân đôi giữa các lứa kế tiếp và bỏ qua việc một cá thể sinh ở hai độ tuổi."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Cộng tất cả các nhóm từng xuất hiện mà không loại các nhóm đã chết.",
+        "why_plausible": "Các số hạng về số cá thể mới sinh đều đúng, nhưng học sinh nhầm tổng tích lũy với quy mô quần thể còn sống."
+      }
+    ],
+    "level_reason": "Các ý a, b xử lí trực tiếp những lần sinh đầu. Để xét c, d, học sinh phải tổ chức các nhóm theo thời điểm sinh, nhận ra hai nhóm cùng đóng góp vào một lứa mới, xây dựng quan hệ truy hồi rồi kết hợp tuổi thọ để xác định nhóm còn sống. Chuỗi suy luận phụ thuộc này tạo mức VD cho toàn mẫu.",
+    "prerequisites": [
+      "Dãy số và quan hệ truy hồi",
+      "Quy luật nhân khi mỗi cá thể sinh cùng số con",
+      "Tính tuổi từ thời điểm sinh",
+      "Phân biệt tổng tích lũy với số cá thể còn sống"
+    ],
+    "variation_guidance": "Có thể thay hai tuổi sinh sản và tuổi thọ, nhưng phải nêu rõ quy ước tại thời điểm sinh, chết. Giữ sự đóng góp chồng lấn của các nhóm tuổi để học sinh cần lập mô hình dãy số.",
+    "uncertainties": [
+      "Mẫu tổng hợp nguyên gốc này chỉ tham khảo kiểu cấu trúc được mô tả từ quan sát cấp tỉnh qua nguồn bên thứ ba; không có điểm tựa đề chính thức cho mục tiêu này.",
+      "Quy luật sinh sản và tuổi thọ là giả định toán học, không phải khẳng định về một loài sinh vật thực tế."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "bf274dfc4e29bbfb",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "VD"
+      }
+    ],
+    "solution": "Gọi B_t là số cá thể sinh tại tháng t. Có B_0=2, các tháng lẻ không có cá thể mới sinh. Theo quy luật sinh: B_2=2B_0=4; B_4=2B_2+2B_0=12; B_6=2B_4+2B_2=32; B_8=2B_6+2B_4=88. Sau các sự kiện tháng 8, các cá thể sinh tháng 0 và tháng 2 đều đã chết; các lứa sinh tháng 4, 6, 8 còn sống. Tổng số còn sống là 12+32+88=132.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a, b, c chỉ cần lần lượt thực hiện quy tắc sinh đã cho tại các mốc quen thuộc; số bước tính không tự tạo mức VD. d cần xây dựng cách theo dõi theo lứa tuổi, kết nối số sinh với thời điểm chết và chọn đúng các lứa còn sống sau mọi sự kiện."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/21df0cefa93e87dacca997b2a5466bc9eb2dec3dd2a9eda51579db1352794c8e.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/21df0cefa93e87dacca997b2a5466bc9eb2dec3dd2a9eda51579db1352794c8e.resolve.json"
+}

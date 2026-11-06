@@ -1,0 +1,164 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "37774f953f434344",
+    "topic": "Ứng dụng tích phân: tính diện tích và thể tích",
+    "part": "P3",
+    "level": "VD",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Một miền giới hạn bởi nửa elip và trục tọa độ được quay quanh trục, sau đó bỏ phần nằm trong một hình trụ đồng trục; có hình mặt cắt minh họa và yêu cầu làm tròn.",
+        "task": "Tính thể tích phần vật thể còn lại.",
+        "reasoning": [
+          "Biểu diễn bình phương bán kính ngoài theo tọa độ dọc trục từ phương trình elip.",
+          "Tìm giao điểm giữa biên elip và biên phần bị khoét để xác định miền còn vật liệu.",
+          "Lập diện tích thiết diện dạng vành khăn trên miền đó.",
+          "Tích phân diện tích thiết diện để tính thể tích.",
+          "Giữ độ chính xác trung gian và làm tròn kết quả cuối."
+        ],
+        "combines": [
+          "Phương trình elip",
+          "Thiết diện khối tròn xoay",
+          "Tích phân xác định",
+          "Làm tròn số"
+        ],
+        "difficulty_source": "Xác định đúng miền tích phân sau khi khoét thay vì trừ một hình trụ kéo dài hết vật thể.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Một khối chóp cụt đều đáy vuông bị khoét phần chỏm cầu; hình vẽ thể hiện phần chỏm nhỏ, với kích thước khối ban đầu, bán kính cầu và bán kính đường tròn mặt cắt.",
+        "task": "Tính thể tích vật thể còn lại và làm tròn theo yêu cầu trên ảnh gốc.",
+        "reasoning": [
+          "Tính thể tích khối chóp cụt từ diện tích các đáy và chiều cao.",
+          "Dùng quan hệ vuông góc giữa bán kính mặt cắt, khoảng cách đến tâm và bán kính cầu.",
+          "Dựa vào hình để chọn chỏm nhỏ và xác định miền tích phân.",
+          "Lập diện tích thiết diện của cầu rồi tích phân để tính thể tích phần khoét.",
+          "Lấy thể tích ban đầu trừ thể tích phần khoét.",
+          "Giữ độ chính xác trung gian và làm tròn ở bước cuối."
+        ],
+        "combines": [
+          "Thể tích khối chóp cụt",
+          "Hình học mặt cầu",
+          "Định lý Pythagore",
+          "Ứng dụng tích phân",
+          "Phép trừ thể tích"
+        ],
+        "difficulty_source": "Đọc đúng phần cầu bị lấy đi và chuyển mặt cắt tròn thành giới hạn tích phân.",
+        "evidence_uncertainty": "Bản OCR ghi mức làm tròn khác ảnh gốc; ảnh gốc yêu cầu đến hàng phần mười và khóa cũng dùng mức đó. Hình gốc đủ rõ để nhận diện chỏm cầu nhỏ.",
+        "evidence_class": "official"
+      },
+      {
+        "given": "Một hình chữ nhật, hai nhánh đường cong phân thức, khoảng cách tới các tiệm cận, một giao điểm trên cạnh và hình vùng tô.",
+        "task": "Tính diện tích phần tô giới hạn bởi các cạnh và đường cong.",
+        "reasoning": [
+          "Chọn hệ trục theo các cạnh hình chữ nhật và đọc vị trí tiệm cận từ hình.",
+          "Viết hàm dưới dạng tổng của hằng số với một phân thức đơn giản.",
+          "Dùng giao điểm đã cho để xác định hệ số còn lại.",
+          "Tìm các giao điểm cần thiết với những cạnh khác.",
+          "Chia miền theo từng nhánh, lập tích phân cho phần cần lấy hoặc phần bù và tránh khoảng chứa tiệm cận.",
+          "Tính diện tích rồi làm tròn."
+        ],
+        "combines": [
+          "Hệ tọa độ phẳng",
+          "Tiệm cận của hàm phân thức",
+          "Xác định hàm từ điều kiện",
+          "Diện tích bằng tích phân"
+        ],
+        "difficulty_source": "Khôi phục đường cong từ tiệm cận và chia đúng miền diện tích giữa hai nhánh.",
+        "evidence_uncertainty": "Việc xác định phía của các tiệm cận và phần diện tích cần lấy dựa vào hình cắt; hình đọc được nhưng ranh giới cắt chưa được kiểm chứng độc lập.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một đồ thị đa thức, một cát tuyến qua gốc tọa độ, một đường thẳng khác và hình vẽ phân biệt các miền kín.",
+        "task": "Tính hiệu diện tích của các miền được chỉ định.",
+        "reasoning": [
+          "Xác định phương trình cát tuyến và các giao điểm tuyến tính cần thiết.",
+          "Đọc các biên của từng miền trên hình.",
+          "Nhận ra có thể cộng trừ các miền để triệt tiêu phần phụ thuộc giao điểm đường cong với đường thẳng.",
+          "Biểu diễn hiệu cần tìm bằng các diện tích đơn giản và một tích phân trên đoạn đã biết.",
+          "Tính các thành phần và ghép kết quả với đúng dấu."
+        ],
+        "combines": [
+          "Phương trình đường thẳng",
+          "Đọc hình miền phẳng",
+          "Tính cộng của diện tích",
+          "Tích phân đa thức"
+        ],
+        "difficulty_source": "Chọn phép ghép miền để tránh giải giao điểm đại số không cần thiết.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "023e74626dd8|P3|1|None",
+      "163f20908cf7|P3|6|None",
+      "0968e8bc9e2d|P3|6|None",
+      "0ecb85132b84|P3|6|None",
+      "11d88d9a96ad|P3|1|None",
+      "3b4cca11ea82|P3|5|None",
+      "3f1b2aa3cb72|P3|1|None",
+      "525d3542283a|P3|1|None",
+      "54e9a2a276ca|P3|5|None",
+      "7ab78715480e|P3|1|None",
+      "acc00d945397|P3|3|None",
+      "adb051fd8253|P3|5|None",
+      "c6340827ba59|P3|6|None",
+      "ccae0b94a82d|P3|3|None",
+      "de5833d227dd|P3|6|None",
+      "fc12a8146279|P3|5|None"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "37774f953f434344",
+    "stem": "Một phôi đặc được tạo bằng cách quay miền phẳng giới hạn bởi trục Oz và đường cong r² + 2z = 12, với r ≥ 0 và 0 ≤ z ≤ 6, quanh trục Oz. Các tọa độ được tính bằng centimét; r là khoảng cách đến trục quay. Người ta khoét phôi bằng một dụng cụ hình nón đồng trục: tại độ cao z, dụng cụ chiếm vùng cách trục không quá z/2 centimét, với 0 ≤ z ≤ 6. Chỉ phần giao giữa dụng cụ và phôi bị lấy đi. Tính thể tích vật liệu còn lại, theo đơn vị cm³, làm tròn đến hàng phần mười.",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "83,8",
+        "level": "VD"
+      }
+    ],
+    "solution": "Ở độ cao z, thiết diện phôi là hình tròn có bán kính R(z) = √(12 − 2z), còn dụng cụ có bán kính ρ(z) = z/2. Vật liệu chỉ còn khi R(z) > ρ(z), tương đương 12 − 2z > z²/4 hay (z − 4)(z + 12) < 0. Kết hợp 0 ≤ z ≤ 6, phần có vật liệu còn lại ứng với 0 ≤ z < 4; từ z = 4 đến z = 6, dụng cụ phủ kín thiết diện phôi. Do đó V = π∫₀⁴(12 − 2z − z²/4) dz = π[12z − z² − z³/12]₀⁴ = 80π/3 ≈ 83,8 cm³.",
+    "distractors": [],
+    "level_reason": "Học sinh phải mô hình hóa phần giao giữa phôi và dụng cụ qua các thiết diện, xác định nơi dụng cụ phủ kín phôi rồi mới lập tích phân. Việc chọn miền còn vật liệu đòi hỏi kết nối hình học không gian, bất phương trình và tích phân, vượt quá thay số vào một công thức thể tích quen thuộc.",
+    "prerequisites": [
+      "Bán kính và diện tích thiết diện vuông góc với trục quay",
+      "Thể tích tính bằng tích phân diện tích thiết diện",
+      "Giải bất phương trình bậc hai",
+      "Làm tròn số"
+    ],
+    "variation_guidance": "Có thể thay phương trình biên ngoài và độ mở của dụng cụ, nhưng cần kiểm tra có giao điểm nằm trong chiều cao phôi. Giữ yêu cầu xác định phần giao thực sự để tránh biến câu hỏi thành phép trừ hai thể tích có sẵn.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "37774f953f434344",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "83,8",
+        "level": "VD"
+      }
+    ],
+    "solution": "Bán kính phôi tại độ cao z là √(12−2z), bán kính dụng cụ là z/2. Hai bán kính bằng nhau khi 12−2z=z²/4, cho z=4 trong đoạn [0;6]. Với 0≤z≤4, tiết diện còn lại là vành khăn; với 4≤z≤6, toàn bộ tiết diện phôi bị lấy đi. Vì vậy V=π∫₀⁴(12−2z−z²/4)dz=80π/3≈83,8 cm³.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Phải mô hình hóa phần giao của hai khối, xác định độ cao chuyển tiếp và phân biệt các dạng tiết diện trước khi lập tích phân."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/2c5a16fb7418660f668cde3133455595d3cb33e9e79889191d929bcfdb5707c6.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/2c5a16fb7418660f668cde3133455595d3cb33e9e79889191d929bcfdb5707c6.resolve.json"
+}

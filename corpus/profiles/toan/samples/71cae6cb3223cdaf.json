@@ -1,0 +1,125 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "71cae6cb3223cdaf",
+    "topic": "Quy tắc đạo hàm",
+    "part": "P1",
+    "level": "TH",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Các biểu thức đạo hàm của những hàm số khả vi.",
+        "task": "Xác định đạo hàm của tổng các hàm số.",
+        "reasoning": [
+          "Áp dụng quy tắc đạo hàm của tổng.",
+          "Cộng các biểu thức đạo hàm đã biết."
+        ],
+        "combines": [
+          "Quy tắc đạo hàm của tổng"
+        ],
+        "difficulty_source": "Nhận ra dữ kiện đã cho đạo hàm sẵn.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      }
+    ],
+    "support_refs": [
+      "023e74626dd8|P1|2|None"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "71cae6cb3223cdaf",
+    "stem": "Cho hai hàm số f và g khả vi trên R, có f′(x)=3x²−4x và g′(x)=2x+5 với mọi x thuộc R. Đặt h(x)=f(x)+g(x). Biểu thức nào sau đây bằng h′(x)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "3x²−6x−5"
+      },
+      {
+        "label": "B",
+        "text": "3x²−2x+5"
+      },
+      {
+        "label": "C",
+        "text": "3x²−6x+5"
+      },
+      {
+        "label": "D",
+        "text": "6x−2"
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "TH"
+      }
+    ],
+    "solution": "Theo quy tắc đạo hàm của tổng, h′(x)=f′(x)+g′(x)=3x²−4x+2x+5=3x²−2x+5. A là kết quả lấy f′−g′. C gộp sai −4x+2x thành −6x. D là đạo hàm của biểu thức f′+g′, tức đã lấy đạo hàm thêm một lần.",
+    "distractors": [
+      {
+        "label": "A",
+        "sub": null,
+        "mistake": "Lấy hiệu hai đạo hàm thay vì tổng.",
+        "why_plausible": "Học sinh có thể nhầm dấu phép toán khi áp dụng quy tắc cho hai hàm số."
+      },
+      {
+        "label": "C",
+        "sub": null,
+        "mistake": "Tính −4x+2x=−6x.",
+        "why_plausible": "Học sinh cộng độ lớn của hai hệ số khác dấu rồi giữ dấu âm."
+      },
+      {
+        "label": "D",
+        "sub": null,
+        "mistake": "Lấy đạo hàm thêm một lần từ các biểu thức đạo hàm đã cho.",
+        "why_plausible": "Học sinh đọc nhầm f′ và g′ thành các hàm ban đầu cần lấy đạo hàm."
+      }
+    ],
+    "level_reason": "Học sinh phải hiểu dữ kiện đã cho là các đạo hàm, áp dụng quy tắc đạo hàm của tổng rồi thu gọn biểu thức. Đây là thao tác quen thuộc ở mức TH.",
+    "prerequisites": [
+      "Quy tắc đạo hàm của tổng",
+      "Thu gọn các hạng tử đồng dạng",
+      "Ý nghĩa kí hiệu đạo hàm"
+    ],
+    "variation_guidance": "Thay các đa thức biểu diễn f′ và g′; xây dựng phương án sai từ lỗi dấu, lỗi thu gọn hoặc lấy đạo hàm thêm một lần, đồng thời bảo đảm các phương án khác nhau.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "71cae6cb3223cdaf",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "TH"
+      }
+    ],
+    "solution": "h′(x)=f′(x)+g′(x)=3x²−4x+2x+5=3x²−2x+5. Chọn B.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Áp dụng quy tắc đạo hàm của tổng và thu gọn biểu thức là quy trình thường quy thuộc TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/d05ca70e548abf6592dc38a3527ea48a9dd6a784b29610cbb4e9bccbc1439b89.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/d05ca70e548abf6592dc38a3527ea48a9dd6a784b29610cbb4e9bccbc1439b89.resolve.json"
+}

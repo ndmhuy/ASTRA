@@ -1,0 +1,152 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "a3096318b991ede5",
+    "topic": "Phép thử lặp",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Xác suất kết quả kiểm tra của một cá thể và việc chọn ngẫu nhiên nhiều cá thể.",
+        "task": "Kiểm tra xác suất có đúng số kết quả dương tính được chỉ định.",
+        "reasoning": [
+          "Tính xác suất dương tính của một cá thể từ các nhánh trạng thái.",
+          "Đếm các cách đặt kết quả dương tính trong dãy kiểm tra.",
+          "Nhân các xác suất thành phần, cộng các cấu hình tương đương và làm tròn."
+        ],
+        "combines": [
+          "Xác suất toàn phần",
+          "Phép thử độc lập",
+          "Tổ hợp"
+        ],
+        "difficulty_source": "Nhận ra cần tính xác suất dương tính chung trước khi đếm các kết quả lặp.",
+        "evidence_uncertainty": "Chủ đề phép thử độc lập thuộc lớp được ghi; bước tính xác suất thành công huy động xác suất toàn phần ở lớp sau. Tính độc lập giữa các lần chọn được ngầm giả định theo mô hình của đề.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "c6340827ba59|P2|2|d"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "a3096318b991ede5",
+    "stem": "Một dây chuyền có tỉ lệ sản phẩm lỗi là 20%. Thiết bị kiểm tra báo dương tính với xác suất 90% nếu sản phẩm bị lỗi và với xác suất 15% nếu sản phẩm không bị lỗi. Trong mô hình này, ba lượt kiểm tra độc lập; mỗi lượt chọn một sản phẩm mới với các xác suất nêu trên. Gọi X là số lượt báo dương tính trong ba lượt. Xét tính đúng, sai của các khẳng định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Xác suất báo dương tính trong một lượt là 0,30."
+      },
+      {
+        "sub": "b",
+        "text": "Xác suất cả ba lượt đều không báo dương tính là 0,343."
+      },
+      {
+        "sub": "c",
+        "text": "Xác suất có đúng một lượt báo dương tính là 0,147."
+      },
+      {
+        "sub": "d",
+        "text": "Xác suất có ít nhất hai lượt báo dương tính là 0,027."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) Theo công thức xác suất toàn phần, xác suất dương tính của một lượt là p=0,20·0,90+0,80·0,15=0,30. b) Xác suất không dương tính trong một lượt là 0,70. Do độc lập, P(X=0)=0,70³=0,343. c) Có ba vị trí cho lượt dương tính duy nhất, nên P(X=1)=3·0,30·0,70²=0,441; khẳng định sai. d) Sự kiện có ít nhất hai lượt dương tính gồm hai trường hợp rời nhau: đúng hai lượt và đúng ba lượt. Vì vậy P(X≥2)=3·0,30²·0,70+0,30³=0,216. Giá trị 0,027 chỉ là xác suất cả ba lượt đều dương tính.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "c",
+        "mistake": "Chỉ tính một thứ tự cụ thể gồm một lượt dương tính và hai lượt không dương tính, bỏ hệ số 3.",
+        "why_plausible": "Tích 0,30·0,70² đúng cho một cấu hình nên dễ bị nhầm là xác suất của toàn bộ sự kiện có đúng một lượt dương tính."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Đồng nhất sự kiện có ít nhất hai lượt dương tính với sự kiện cả ba lượt đều dương tính.",
+        "why_plausible": "Trường hợp ba lượt dương tính thuộc sự kiện cần tính, nhưng học sinh có thể bỏ sót các cấu hình có đúng hai lượt dương tính."
+      }
+    ],
+    "level_reason": "Mức cao nhất của các ý là TH. Các nhánh trạng thái, xác suất có điều kiện và tính độc lập đều được nêu rõ; học sinh áp dụng xác suất toàn phần rồi đếm các cấu hình trong ba phép thử theo quy trình quen thuộc.",
+    "prerequisites": [
+      "Xác suất có điều kiện và xác suất toàn phần",
+      "Quy tắc nhân cho các phép thử độc lập",
+      "Đếm vị trí của kết quả trong ba phép thử",
+      "Cộng xác suất của các sự kiện rời nhau"
+    ],
+    "variation_guidance": "Có thể thay bối cảnh kiểm tra và các xác suất thành phần; giữ giả thiết độc lập tường minh, tính lại xác suất dương tính chung trước khi xây dựng các phát biểu về phép thử lặp.",
+    "uncertainties": [
+      "Đây là mẫu minh họa tổng hợp dựa trên quan sát cấp tỉnh qua nguồn bên thứ ba; không có neo đề chính thức hoặc khóa đúng sai tương ứng.",
+      "Xác suất toàn phần và phép thử độc lập có thể được bố trí ở các giai đoạn học khác nhau; cần giáo viên rà soát sự phù hợp với lớp và tiến độ cụ thể."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "a3096318b991ede5",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) Xác suất dương tính mỗi lượt là p=0,2×0,9+0,8×0,15=0,30. b) Do các lượt độc lập, P(X=0)=0,7³=0,343. c) Có ba vị trí cho lượt dương tính duy nhất, nên P(X=1)=3×0,3×0,7²=0,441. d) P(X≥2)=3×0,3²×0,7+0,3³=0,216.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a) Áp dụng công thức xác suất toàn phần trong tình huống chuẩn. b) Nhân xác suất các lượt độc lập. c) Đếm ba trường hợp rời nhau và nhân xác suất. d) Cộng các trường hợp có đúng hai hoặc ba lượt dương tính. Từng ý đều là quy trình xác suất quen thuộc, mức TH; không cần giả định đã học phân phối nhị thức."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/6e56a3c325b185cbeee3fecc43660d5c401ace967d81f8ef1c9d4e79a5c538fb.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/6e56a3c325b185cbeee3fecc43660d5c401ace967d81f8ef1c9d4e79a5c538fb.resolve.json"
+}

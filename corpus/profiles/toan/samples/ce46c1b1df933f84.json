@@ -1,0 +1,181 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "ce46c1b1df933f84",
+    "topic": "Tích phân xác định",
+    "part": "P1",
+    "level": "TH",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Giá trị tích phân của hiệu giữa một hàm chưa biết và một hàm lẻ trên đoạn đối xứng.",
+        "task": "Suy ra tích phân của hàm chưa biết trên cùng đoạn.",
+        "reasoning": [
+          "Tách tích phân của hiệu.",
+          "Nhận ra tích phân hàm lẻ trên đoạn đối xứng triệt tiêu.",
+          "Suy ra giá trị cần tìm."
+        ],
+        "combines": [
+          "Tính tuyến tính của tích phân",
+          "Tính đối xứng của hàm lẻ"
+        ],
+        "difficulty_source": "Nhận ra sự triệt tiêu trên đoạn đối xứng.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Giá trị của một hàm tại hai đầu đoạn và điều kiện liên tục của đạo hàm.",
+        "task": "Tính tích phân của đạo hàm trên đoạn.",
+        "reasoning": [
+          "Nhận ra hàm đã cho là một nguyên hàm của biểu thức dưới dấu tích phân.",
+          "Lấy giá trị tại đầu trên trừ giá trị tại đầu dưới.",
+          "Đối chiếu kết quả."
+        ],
+        "combines": [
+          "Quan hệ đạo hàm và nguyên hàm",
+          "Tích phân xác định"
+        ],
+        "difficulty_source": "Nhận ra trực tiếp nguyên hàm đã có trong dữ kiện.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Giá trị tích phân của một hàm số trên đoạn và một biểu thức tuyến tính theo hàm đó.",
+        "task": "Tính tích phân của biểu thức mới trên cùng đoạn.",
+        "reasoning": [
+          "Tách tích phân của tổng và đưa hệ số ra ngoài.",
+          "Tính tích phân của hằng số theo độ dài đoạn.",
+          "Cộng các kết quả."
+        ],
+        "combines": [
+          "Tính tuyến tính của tích phân",
+          "Tích phân của hằng số"
+        ],
+        "difficulty_source": "Nhớ tích phân của hằng số còn phụ thuộc độ dài đoạn.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một nguyên hàm của hàm liên tục và giá trị nguyên hàm tại hai đầu khoảng.",
+        "task": "Tính tích phân xác định của hàm số trên khoảng đó.",
+        "reasoning": [
+          "Dùng công thức liên hệ tích phân với nguyên hàm.",
+          "Lấy giá trị tại cận trên trừ giá trị tại cận dưới."
+        ],
+        "combines": [
+          "Nguyên hàm",
+          "Tích phân xác định"
+        ],
+        "difficulty_source": "Dữ kiện đã cho sẵn toàn bộ giá trị cần dùng trong công thức.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "0968e8bc9e2d|P1|3|None",
+      "3b4cca11ea82|P1|5|None",
+      "54e9a2a276ca|P1|8|None",
+      "7ab78715480e|P1|8|None",
+      "acc00d945397|P1|8|None",
+      "aceb17d936f5|P1|12|None",
+      "c6340827ba59|P1|6|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "ce46c1b1df933f84",
+    "stem": "Cho hàm số f liên tục trên đoạn [1;4] và ∫ từ 1 đến 4 của f(x)dx=5. Giá trị của I=∫ từ 1 đến 4 của [2f(x)−3]dx bằng bao nhiêu?",
+    "options": [
+      {
+        "label": "A",
+        "text": "7"
+      },
+      {
+        "label": "B",
+        "text": "−4"
+      },
+      {
+        "label": "C",
+        "text": "1"
+      },
+      {
+        "label": "D",
+        "text": "19"
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "C",
+        "level": "TH"
+      }
+    ],
+    "solution": "Theo tính tuyến tính của tích phân, I=2∫ từ 1 đến 4 của f(x)dx−∫ từ 1 đến 4 của 3dx=2×5−3(4−1)=1. Chọn C.",
+    "distractors": [
+      {
+        "label": "A",
+        "sub": null,
+        "mistake": "Tính tích phân của hằng số −3 bằng −3, dẫn đến I=2×5−3=7.",
+        "why_plausible": "Học sinh nhớ tách tích phân nhưng quên nhân hằng số với độ dài đoạn lấy tích phân."
+      },
+      {
+        "label": "B",
+        "sub": null,
+        "mistake": "Bỏ hệ số 2 trước f(x), dẫn đến I=5−3×3=−4.",
+        "why_plausible": "Học sinh có thể dùng ngay giá trị tích phân đã cho mà không giữ hệ số của biểu thức mới."
+      },
+      {
+        "label": "D",
+        "sub": null,
+        "mistake": "Đổi phép trừ thành phép cộng khi tách tích phân, dẫn đến I=2×5+3×3=19.",
+        "why_plausible": "Sai dấu là lỗi có thể xảy ra khi áp dụng tính tuyến tính cho một hiệu."
+      }
+    ],
+    "level_reason": "Học sinh áp dụng tính tuyến tính và tính tích phân của hằng số trong một bài tập tiêu chuẩn. Đây là thực hiện thủ tục quen thuộc ở mức TH.",
+    "prerequisites": [
+      "Tính tuyến tính của tích phân xác định",
+      "Công thức tích phân của hằng số trên một đoạn"
+    ],
+    "variation_guidance": "Đây là mẫu minh họa tự biên soạn, không phải bằng chứng đề thi thực hay một đề thi đầy đủ. Có thể thay đoạn tích phân, giá trị tích phân đã biết và các hệ số; xây dựng lại phương án nhiễu từ lỗi quên độ dài đoạn, bỏ hệ số hoặc sai dấu.",
+    "uncertainties": [
+      "Các quan sát cấu trúc được cung cấp thuộc nguồn cấp tỉnh qua bên thứ ba; không có mốc đối sánh chính thức để suy rộng về đề thi chính thức."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "ce46c1b1df933f84",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "C",
+        "level": "TH"
+      }
+    ],
+    "solution": "Theo tính tuyến tính của tích phân, I=2×5−3(4−1)=1. Chọn C.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Áp dụng trực tiếp tính tuyến tính của tích phân xác định và tính tích phân của hằng số trong một bài tập chuẩn."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/92ebcf2d68f94d6d1ca6b5d27f07efd3b6feb2ca1288f5a2f691c88e8dfa5d6c.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/92ebcf2d68f94d6d1ca6b5d27f07efd3b6feb2ca1288f5a2f691c88e8dfa5d6c.resolve.json"
+}

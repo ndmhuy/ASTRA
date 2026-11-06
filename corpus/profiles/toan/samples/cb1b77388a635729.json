@@ -1,0 +1,150 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "cb1b77388a635729",
+    "topic": "Quy hoạch tuyến tính",
+    "part": "P3",
+    "level": "VD",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Các gói bán hàng tiêu hao những nguồn lực chung theo mức khác nhau, giá bán từng gói và giới hạn nguồn lực.",
+        "task": "Tìm doanh thu lớn nhất trong miền phương án khả thi.",
+        "reasoning": [
+          "Đặt biến đếm số gói từng loại và điều kiện không âm, nguyên.",
+          "Lập các bất phương trình giới hạn nguồn lực.",
+          "Biểu diễn doanh thu bằng hàm mục tiêu tuyến tính.",
+          "Xác định các đỉnh miền nghiệm và so sánh giá trị mục tiêu.",
+          "Kiểm tra phương án tối ưu đáp ứng điều kiện nguyên."
+        ],
+        "combines": [
+          "Hệ bất phương trình bậc nhất hai ẩn",
+          "Miền nghiệm hình học",
+          "Tối ưu tuyến tính",
+          "Mô hình doanh thu"
+        ],
+        "difficulty_source": "Chuyển mức tiêu hao tài nguyên thành miền khả thi rồi chọn đỉnh tối ưu.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Hai loại sản phẩm có thời gian thực hiện và doanh thu khác nhau, giới hạn tổng thời gian cùng yêu cầu tối thiểu về sản lượng.",
+        "task": "Tìm doanh thu lớn nhất có thể đạt.",
+        "reasoning": [
+          "Đặt các ẩn là số lượng từng loại và ghi điều kiện không âm, nguyên.",
+          "Lập ràng buộc thời gian và tổng sản lượng.",
+          "Viết hàm doanh thu tuyến tính.",
+          "Tìm các điểm biên ứng viên của miền khả thi.",
+          "So sánh doanh thu và kiểm tra tính nguyên của phương án tối ưu."
+        ],
+        "combines": [
+          "Mô hình hóa bằng bất phương trình",
+          "Miền nghiệm hệ bất phương trình",
+          "Tối ưu tuyến tính",
+          "Điều kiện nguyên"
+        ],
+        "difficulty_source": "Chuyển yêu cầu tối thiểu và giới hạn tối đa thành đúng miền khả thi.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Các loại sản phẩm, định mức tiêu hao nhiều nguồn lực, giới hạn nguồn lực và mức lợi ích tương ứng.",
+        "task": "Tìm tổng lợi ích lớn nhất có thể đạt được.",
+        "reasoning": [
+          "Đặt biến số lượng sản phẩm với điều kiện không âm và nguyên.",
+          "Chuyển giới hạn nguồn lực thành hệ bất phương trình.",
+          "Lập biểu thức lợi ích tuyến tính.",
+          "Xác định các đỉnh của miền khả thi và so sánh giá trị mục tiêu.",
+          "Kiểm tra tính nguyên của phương án đạt cực đại."
+        ],
+        "combines": [
+          "Mô hình hóa bằng hệ bất phương trình",
+          "Miền nghiệm hình học",
+          "Tối ưu tuyến tính",
+          "Điều kiện biến đếm"
+        ],
+        "difficulty_source": "Chuyển bảng định mức thành đúng ràng buộc và hàm mục tiêu.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Hai loại sản phẩm có mức tiêu hao các nguồn lực và lợi ích khác nhau, cùng lượng nguồn lực hữu hạn.",
+        "task": "Tìm lợi ích lớn nhất khi số sản phẩm thuộc miền khả thi.",
+        "reasoning": [
+          "Đặt các biến nguyên không âm cho số sản phẩm từng loại.",
+          "Lập các bất phương trình nguồn lực và hàm lợi ích.",
+          "Dùng miền nghiệm liên tục để định hướng vùng tối ưu.",
+          "Kiểm tra các phương án nguyên cạnh vùng tối ưu và chứng minh không có phương án tốt hơn."
+        ],
+        "combines": [
+          "Mô hình hóa hệ bất phương trình",
+          "Hàm mục tiêu tuyến tính",
+          "Điều kiện nguyên"
+        ],
+        "difficulty_source": "Không dừng ở giao điểm tối ưu liên tục khi sản phẩm phải được đếm nguyên.",
+        "evidence_uncertainty": "Điều kiện nguyên được suy từ đối tượng đếm, không được viết thành ràng buộc riêng; phần kiểm tra tối ưu nguyên mở rộng công thức tối ưu tuyến tính cơ bản.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "163f20908cf7|P3|3|None",
+      "0968e8bc9e2d|P3|2|None",
+      "3b4cca11ea82|P3|4|None",
+      "54e9a2a276ca|P3|1|None",
+      "7ab78715480e|P3|4|None",
+      "beee25b53250|P3|3|None",
+      "ccae0b94a82d|P3|6|None"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "cb1b77388a635729",
+    "stem": "Một xưởng làm hai loại bộ mô hình A và B. Mỗi bộ A cần 2 giờ sử dụng máy cắt và 1 giờ lắp ráp, đem lại lãi 500 nghìn đồng. Mỗi bộ B cần 1 giờ sử dụng máy cắt và 3 giờ lắp ráp, đem lại lãi 700 nghìn đồng. Trong một đợt sản xuất, xưởng có tối đa 17 giờ sử dụng máy cắt và 19 giờ lắp ráp. Các công đoạn được bố trí để hai giới hạn thời gian này là những ràng buộc duy nhất; số bộ mỗi loại phải là số nguyên không âm. Xưởng chỉ ghi nhận lãi từ các bộ hoàn thành và bán được toàn bộ các bộ đó. Tổng lãi lớn nhất trong đợt sản xuất là bao nhiêu triệu đồng?",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "5,8",
+        "level": "VD"
+      }
+    ],
+    "solution": "Gọi x, y lần lượt là số bộ A, B. Các ràng buộc là 2x + y ≤ 17, x + 3y ≤ 19 và x, y nguyên không âm. Tính lãi theo đơn vị 100 nghìn đồng, ta cần tối đa hóa F = 5x + 7y. Chia các phương án theo số nguyên y. Nếu y ≤ 3 thì F = (5/2)(2x + y) + (9/2)y ≤ 42,5 + 13,5 = 56. Nếu y ≥ 5 thì F = 5(x + 3y) − 8y ≤ 95 − 40 = 55. Nếu y = 4 thì 2x + 4 ≤ 17 suy ra x ≤ 6, nên F ≤ 58. Phương án x = 6, y = 4 thỏa 2x + y = 16 ≤ 17 và x + 3y = 18 ≤ 19, đạt F = 58. Vậy tổng lãi lớn nhất là 5,8 triệu đồng.",
+    "distractors": [],
+    "level_reason": "Học sinh phải lập miền phương án từ hai nguồn lực, xây dựng hàm mục tiêu và chứng minh tối ưu trên các phương án nguyên. Việc chia miền theo y rồi dùng các ràng buộc khác nhau để chặn hàm mục tiêu tạo thành chuỗi suy luận phụ thuộc, vượt quá việc chỉ tính giao điểm hai đường thẳng.",
+    "prerequisites": [
+      "Hệ bất phương trình bậc nhất hai ẩn",
+      "Hàm mục tiêu tuyến tính",
+      "Điều kiện nguyên của biến đếm",
+      "Chứng minh giá trị lớn nhất bằng chặn trên và phương án đạt được"
+    ],
+    "variation_guidance": "Đây là mẫu tổng hợp minh họa, không phải bằng chứng đề thi thật. Khi thay định mức hoặc mức lãi, cần kiểm tra lại tối ưu nguyên và cung cấp một lập luận bao quát mọi phương án khả thi; không tự động làm tròn nghiệm tối ưu liên tục.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "cb1b77388a635729",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "5,8",
+        "level": "VD"
+      }
+    ],
+    "solution": "Gọi a,b lần lượt là số bộ A,B. Ta có 2a+b≤17, a+3b≤19 và a,b là các số nguyên không âm. Lãi tính bằng triệu đồng là P=0,5a+0,7b. Vì b≤6, xét b=0,1,2,3,4,5,6; giá trị a lớn nhất tương ứng là 8,8,7,7,6,4,1. Lãi lớn nhất tương ứng là 4; 4,7; 4,9; 5,6; 5,8; 5,5; 4,7 triệu đồng. Do đó lãi tối đa là 5,8 triệu đồng, đạt khi sản xuất 6 bộ A và 4 bộ B.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Cần xây dựng mô hình tối ưu với hai ràng buộc tài nguyên và biến nguyên, rồi xác định phương án tối ưu trên miền khả thi rời rạc."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/5e6c635d98eb6f814d35e53267596ad6ab037f76b127f28353864ec3671675c4.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/5e6c635d98eb6f814d35e53267596ad6ab037f76b127f28353864ec3671675c4.resolve.json"
+}

@@ -1,0 +1,164 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "34843477cb2e4039",
+    "topic": "Hình học không gian: góc, khoảng cách và thể tích",
+    "part": "P3",
+    "level": "VD",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Một hình chóp có đáy hình thoi, dữ kiện cạnh và góc đáy, chân đường cao là trọng tâm một tam giác trong đáy và độ dài đường cao.",
+        "task": "Tính khoảng cách giữa một đường chéo đáy và một cạnh bên rồi làm tròn theo yêu cầu.",
+        "reasoning": [
+          "Khai thác hình thoi và góc đáy để xác định các quan hệ độ dài, vuông góc trong đáy.",
+          "Chọn hệ tọa độ hoặc mặt phẳng phụ thuận lợi cho hai đường cần xét.",
+          "Xác định vị trí đỉnh từ chân đường cao và tính chất trọng tâm.",
+          "Tính khoảng cách bằng công thức tọa độ hoặc phép dựng đoạn vuông góc chung tương đương.",
+          "Kiểm tra các độ dài trung gian và làm tròn kết quả cuối."
+        ],
+        "combines": [
+          "Hình thoi",
+          "Trọng tâm tam giác",
+          "Quan hệ vuông góc",
+          "Khoảng cách trong không gian"
+        ],
+        "difficulty_source": "Chọn biểu diễn làm lộ quan hệ vuông góc giữa hai đường chéo nhau.",
+        "evidence_uncertainty": "Xếp lớp theo bài khoảng cách trong hình học không gian; lời giải dùng công thức tọa độ có thể huy động thêm kiến thức lớp sau.",
+        "evidence_class": "official"
+      },
+      {
+        "given": "Một điểm phát tia ngoài mặt phẳng tọa độ, góc cố định của phương tia với trục vuông góc mặt phẳng và yêu cầu tia hướng tới mặt phẳng.",
+        "task": "Tìm khoảng cách lớn nhất từ giao điểm của tia với mặt phẳng tới gốc tọa độ.",
+        "reasoning": [
+          "Chiếu vuông góc điểm phát lên mặt phẳng.",
+          "Dùng góc cố định và khoảng cách tới mặt phẳng để xác định bán kính quỹ tích tròn.",
+          "Tính khoảng cách từ tâm quỹ tích tới gốc tọa độ.",
+          "Dùng bất đẳng thức tam giác và điều kiện đạt dấu bằng để tìm khoảng cách lớn nhất."
+        ],
+        "combines": [
+          "Góc giữa các phương",
+          "Hình chiếu vuông góc",
+          "Quỹ tích đường tròn",
+          "Tối ưu khoảng cách"
+        ],
+        "difficulty_source": "Chuyển họ tia trong không gian thành đường tròn trong mặt phẳng rồi chọn vị trí xa nhất.",
+        "evidence_uncertainty": "Cách diễn đạt góc của tia với trục cần hiểu theo góc giữa các đường thẳng; chiều hướng tới mặt phẳng được dùng để chọn nhánh giao phù hợp.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một lăng trụ có đáy đều, đỉnh của đáy kia cách đều các đỉnh đáy, biết góc cạnh bên với đáy và một điểm giữa cạnh bên.",
+        "task": "Tính khoảng cách từ điểm đã chỉ định đến một mặt phẳng xiên.",
+        "reasoning": [
+          "Suy ra hình chiếu của đỉnh cách đều các đỉnh đáy là tâm của tam giác đáy.",
+          "Dùng góc cạnh bên với đáy để xác định chiều cao lăng trụ.",
+          "Chọn tọa độ thuận lợi và xác định các đỉnh cần dùng.",
+          "Dùng tính chất các cạnh bên của lăng trụ để xác định điểm giữa cạnh bên.",
+          "Lập phương trình mặt phẳng rồi tính khoảng cách từ điểm và làm tròn."
+        ],
+        "combines": [
+          "Tâm tam giác đều",
+          "Góc giữa đường thẳng và mặt phẳng",
+          "Phép tịnh tiến trong lăng trụ",
+          "Khoảng cách từ điểm đến mặt phẳng"
+        ],
+        "difficulty_source": "Suy vị trí đỉnh từ điều kiện cách đều và giữ đúng hình học của lăng trụ xiên.",
+        "evidence_uncertainty": "Chủ đề khoảng cách thuộc lớp được ghi; lời giải tọa độ huy động thêm phương trình mặt phẳng của lớp sau.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một hình chóp có các tam giác đều và một mặt bên vuông góc với đáy; hình học chỉ được mô tả bằng văn bản, không có hình kèm theo.",
+        "task": "Tính bình phương cosin của góc phẳng nhị diện được chỉ định.",
+        "reasoning": [
+          "Dùng tính chất tam giác đều và các mặt phẳng vuông góc để xác định chân đường cao cùng các độ dài theo cạnh chung.",
+          "Dựng mặt phẳng cắt vuông góc với cạnh nhị diện để nhận diện góc phẳng cần tính.",
+          "Biểu diễn các đoạn trong thiết diện theo cùng một độ dài chuẩn.",
+          "Tính cosin của góc và lấy bình phương, kiểm tra kết quả không phụ thuộc kích thước."
+        ],
+        "combines": [
+          "Tam giác đều",
+          "Mặt phẳng vuông góc",
+          "Góc nhị diện",
+          "Hệ thức lượng trong tam giác"
+        ],
+        "difficulty_source": "Dựng đúng góc phẳng nhị diện bằng các đường cùng vuông góc với cạnh giao tuyến.",
+        "evidence_uncertainty": "Không có hình kèm theo; cấu hình được xác định bằng các quan hệ hình học trong văn bản.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "163f20908cf7|P3|4|None",
+      "0ecb85132b84|P3|2|None",
+      "11d88d9a96ad|P3|2|None",
+      "3f1b2aa3cb72|P3|5|None",
+      "54e9a2a276ca|P3|2|None",
+      "6aa30214ba7e|P3|3|None",
+      "7ab78715480e|P3|6|None",
+      "85efdd1a7e54|P3|4|None",
+      "beee25b53250|P3|2|None",
+      "beee25b53250|P3|6|None",
+      "c6340827ba59|P3|5|None",
+      "ccae0b94a82d|P3|1|None",
+      "ecd76ac672e5|P3|5|None",
+      "fc12a8146279|P3|1|None"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "34843477cb2e4039",
+    "stem": "Trên một mặt phẳng sân, hai điểm O và H cách nhau 5 m. Điểm A ở phía trên sân, có hình chiếu vuông góc xuống sân là H và AH=8 m. Điểm K thuộc đoạn OH, với OK=2 m. Trong mặt phẳng sân, đường thẳng ℓ đi qua K và vuông góc với OH. Một tia xuất phát từ A, hướng tới sân và tạo với đường thẳng AH góc 45°, gặp sân tại P. Chỉ xét những tia có P thuộc nửa mặt phẳng bờ ℓ chứa O, kể cả bờ. Khoảng cách OP lớn nhất bằng bao nhiêu mét? Làm tròn đến hàng phần trăm.",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "7,68",
+        "level": "VD"
+      }
+    ],
+    "solution": "Vì AH vuông góc với sân và góc giữa AP với AH bằng 45°, tam giác AHP vuông tại H cho HP=AH·tan45°=8 m. Do đó P chạy trên đường tròn tâm H, bán kính 8 trong mặt phẳng sân, đồng thời phải nằm về phía O của ℓ. Chọn hệ trục vuông góc trong sân với O=(0;0), H=(5;0). Khi đó ℓ có phương trình x=2. Viết P=(x;y), ta có (x−5)²+y²=64 và x≤2. Suy ra OP²=x²+y²=39+10x≤59. Cận này đạt được vì tại x=2, phương trình đường tròn cho y²=55, có nghiệm thực. Vậy OP lớn nhất bằng √59≈7,68 m.",
+    "distractors": [],
+    "level_reason": "Học sinh phải chuyển họ tia trong không gian thành quỹ tích tròn trên sân, biểu diễn điều kiện vùng tiếp nhận thành nửa mặt phẳng, rồi liên hệ hai khoảng cách để tối ưu trên phần quỹ tích được phép và kiểm tra khả năng đạt cận. Điểm xa O nhất của cả đường tròn không thuộc vùng được phép, nên công thức cộng khoảng cách hai tâm với bán kính không giải quyết được yêu cầu.",
+    "prerequisites": [
+      "Góc giữa hai đường thẳng",
+      "Hình chiếu vuông góc",
+      "Hệ thức lượng trong tam giác vuông",
+      "Phương trình đường tròn trong mặt phẳng",
+      "Biểu diễn nửa mặt phẳng và tìm giá trị lớn nhất"
+    ],
+    "variation_guidance": "Thay độ cao AH, khoảng cách OH hoặc vị trí K để tạo các phần quỹ tích được phép khác nhau. Luôn kiểm tra đường tròn có giao với vùng tiếp nhận và vị trí đạt cực trị có thực sự được phép.",
+    "uncertainties": [
+      "Mẫu này phát triển từ cấu trúc họ tia và quỹ tích được mô tả trong quan sát cấp tỉnh qua bên thứ ba; không coi cấu trúc riêng này là đã có neo đề chính thức.",
+      "Lời giải dùng tọa độ trong mặt phẳng và lượng giác phổ thông, không cần công thức khoảng cách trong không gian."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "34843477cb2e4039",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "7.68",
+        "level": "VD"
+      }
+    ],
+    "solution": "Chọn hệ tọa độ trên sân với O=(0;0), H=(5;0), K=(2;0). Tam giác AHP vuông tại H và góc giữa AP với AH bằng 45° nên HP=AH=8 m. Vì vậy P=(x;y) thỏa (x-5)²+y²=64; điều kiện nửa mặt phẳng là x≤2. Suy ra OP²=x²+y²=39+10x≤59. Dấu bằng đạt khi x=2, y=±√55. Khoảng cách lớn nhất là √59≈7,68 m.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "VD vì cần xác lập quỹ tích điểm P từ điều kiện góc trong không gian, biểu diễn miền giới hạn trên sân rồi liên kết các điều kiện để tìm cực trị."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/toan/7a92b6651e15140ec965a82e5b996cea14001b987c61f757a5be16708a8cbe4c.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/toan/7a92b6651e15140ec965a82e5b996cea14001b987c61f757a5be16708a8cbe4c.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 0,
+  "source_rows_sha256": "863dd6885185956ed9dabede84bf529993a764e4871f75f25629503cf8f2731a"
+}

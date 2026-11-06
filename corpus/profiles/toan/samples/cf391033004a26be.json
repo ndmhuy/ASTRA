@@ -1,0 +1,156 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "cf391033004a26be",
+    "topic": "Quy tắc xác suất",
+    "part": "P2",
+    "level": "VD",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một lượt thi gồm các phép thử độc lập, điểm ban đầu, điểm đối thủ và quy tắc thưởng phạt có một phép thử được tăng trọng số.",
+        "task": "Kiểm tra xác suất tổng điểm cuối đủ để đứng đầu.",
+        "reasoning": [
+          "Chuyển điều kiện đứng đầu thành bất đẳng thức về tổng điểm.",
+          "Chia trường hợp theo kết quả phép thử được tăng trọng số.",
+          "Xác định những kết quả của các phép thử còn lại đủ thỏa bất đẳng thức trong từng trường hợp.",
+          "Tính xác suất các trường hợp thuận lợi bằng tính độc lập.",
+          "Cộng các xác suất của những trường hợp rời nhau rồi đối chiếu."
+        ],
+        "combines": [
+          "Mô hình tổng điểm",
+          "Bất đẳng thức",
+          "Biến cố độc lập",
+          "Công thức cộng xác suất",
+          "Công thức nhân xác suất"
+        ],
+        "difficulty_source": "Từ quy tắc thưởng phạt suy ra đúng các nhóm kết quả đủ thắng.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "adb051fd8253|P2|4|d"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "cf391033004a26be",
+    "stem": "Trong một trò chơi, người chơi có sẵn 5 điểm rồi thực hiện bốn lượt độc lập. Ba lượt thường có xác suất thành công lần lượt là 1/2, 2/3 và 3/4; mỗi lượt thường thành công được cộng 2 điểm, thất bại bị trừ 1 điểm. Lượt đặc biệt có xác suất thành công 1/2; thành công được cộng 4 điểm, thất bại bị trừ 2 điểm. Đối thủ đã có 11 điểm và không chơi thêm. Người chơi chỉ thắng nếu tổng điểm cuối cùng lớn hơn 11. Xét tính đúng sai của các nhận định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Xác suất cả ba lượt thường đều thành công là 1/4."
+      },
+      {
+        "sub": "b",
+        "text": "Nếu lượt đặc biệt thành công và đúng một lượt thường thành công thì người chơi kết thúc với 12 điểm."
+      },
+      {
+        "sub": "c",
+        "text": "Nếu lượt đặc biệt thất bại thì người chơi không thể thắng đối thủ."
+      },
+      {
+        "sub": "d",
+        "text": "Xác suất người chơi thắng đối thủ là 11/48."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "VD"
+      }
+    ],
+    "solution": "a) Đúng. Tính độc lập cho xác suất bằng (1/2)(2/3)(3/4) = 1/4. b) Sai. Tổng điểm là 5 + 4 + 2 − 1 − 1 = 9. c) Đúng. Khi lượt đặc biệt thất bại, tổng điểm cao nhất là 5 − 2 + 3·2 = 9, không vượt 11. d) Sai. Gọi k là số lượt thường thành công và s bằng 1 khi lượt đặc biệt thành công, bằng 0 khi thất bại. Tổng điểm cuối là 5 + 2k − (3 − k) + 4s − 2(1 − s) = 3k + 6s. Điều kiện thắng là 3k + 6s > 11. Với 0 ≤ k ≤ 3, điều này tương đương s = 1 và k ≥ 2. Xác suất đúng hai lượt thường thành công là (1/2)(2/3)(1/4) + (1/2)(1/3)(3/4) + (1/2)(2/3)(3/4) = 11/24. Cộng xác suất cả ba thành công được 11/24 + 1/4 = 17/24. Do lượt đặc biệt độc lập với ba lượt thường, xác suất thắng là (1/2)(17/24) = 17/48.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Tính cả ba lượt thường như đều thành công dù chỉ có một lượt thành công.",
+        "why_plausible": "Giá trị 12 bằng 5 + 4 + 3·2 − 3, xuất hiện khi cộng thưởng cho cả ba lượt thường rồi lại trừ một điểm cho mỗi lượt, thay vì phân biệt thành công và thất bại."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Chỉ tính trường hợp lượt đặc biệt thành công và đúng hai lượt thường thành công, bỏ sót trường hợp cả ba lượt thường thành công.",
+        "why_plausible": "Hai lượt thường thành công là ngưỡng vừa đủ thắng khi lượt đặc biệt thành công; nhầm điều kiện ít nhất hai thành đúng hai sẽ cho (1/2)(11/24) = 11/48."
+      }
+    ],
+    "level_reason": "Mức cao nhất là VD ở ý d: học sinh phải mô hình hóa điểm có thưởng và phạt, chuyển điều kiện thắng thành ràng buộc kết quả, xác định đầy đủ các trường hợp thuận lợi rồi phối hợp quy tắc cộng và nhân xác suất. Các ý còn lại yêu cầu tính hoặc diễn giải trực tiếp.",
+    "prerequisites": [
+      "Biến cố độc lập",
+      "Quy tắc nhân xác suất",
+      "Quy tắc cộng cho các biến cố rời nhau",
+      "Phân biệt đúng hai và ít nhất hai",
+      "Biểu diễn tổng điểm bằng số lượt thành công"
+    ],
+    "variation_guidance": "Có thể thay xác suất, điểm ban đầu và mức thưởng phạt. Sau khi thay, cần suy lại điều kiện thắng, đặc biệt phân biệt thắng với hòa và liệt kê đủ các trường hợp rời nhau.",
+    "uncertainties": [
+      "Cấu trúc tham khảo chỉ dựa trên quan sát cấp tỉnh do bên thứ ba cung cấp; mẫu trò chơi này là dữ liệu tổng hợp tự biên soạn, chưa có neo đề chính thức."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "cf391033004a26be",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "VD"
+      }
+    ],
+    "solution": "a) Xác suất là (1/2)(2/3)(3/4)=1/4. b) Điểm cuối là 5+4+2−1−1=9, không phải 12. c) Nếu lượt đặc biệt thất bại, điểm cao nhất là 5−2+3·2=9 nên không thể thắng. d) Nếu lượt đặc biệt thành công và có k lượt thường thành công thì điểm cuối là 6+3k; thắng khi k≥2. Xác suất ít nhất hai lượt thường thành công là 1/12+1/8+1/4+1/4=17/24. Do đó xác suất thắng là (1/2)(17/24)=17/48, không phải 11/48.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a: TH vì áp dụng quy tắc nhân cho các lượt độc lập. b: TH vì tính điểm trực tiếp. c: TH vì xét điểm tối đa trong trường hợp đã cho. d: VD vì cần xây dựng điều kiện thắng từ cơ chế tính điểm, loại trường hợp đặc biệt thất bại và phân chia các biến cố thành công để tính xác suất."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/60df2dc43ad0ceca3a3a698dbe51e9473a290f7dca71335460a4c53cb0b65fd7.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/60df2dc43ad0ceca3a3a698dbe51e9473a290f7dca71335460a4c53cb0b65fd7.resolve.json"
+}

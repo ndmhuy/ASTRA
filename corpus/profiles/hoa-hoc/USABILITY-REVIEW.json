@@ -1,0 +1,370 @@
+{
+  "schema": "subject-usability-adjudication-v1",
+  "subject": "hoa-hoc",
+  "date": "2026-11-06",
+  "base_commit": "d4775052245007378969612b6cf61671f522eb26",
+  "branch": "data/usable-hoa-hoc-20261106",
+  "reviewer": "gpt-6.1-sol",
+  "policy": {
+    "axes_separate": true,
+    "validity": [
+      "supported",
+      "conditional",
+      "undetermined",
+      "contradicted"
+    ],
+    "evidence": [
+      "independent_reasoning_and_source_check",
+      "existing_unkeyed_review",
+      "limited_observation",
+      "insufficient_essential_figure"
+    ],
+    "rule": "Only demonstrated incorrect content is excluded as written. Insufficient frequency, empirical calibration, curriculum linkage or source figures does not imply scientific falsity. Fix a demonstrated error rather than discard an entire method/sample.",
+    "teacher_review_required": false,
+    "teacher_approved": false,
+    "empirical_difficulty_calibrated": false
+  },
+  "input_hashes": {
+    "samples.json": "72b135a3a139e012f6310033e28c388ec16bb9f75705df043a32b7d83570de03",
+    "data/scoped-final-bank.json": "113ce262ffb5e1b9c16d05295f88598ccbd9b74318d792b3bd51c04cb681cf87",
+    "data/samples-current.json": "b76a75011cba2b6b9657881c163043976e90bce416ac09e3fc742e71e6cf84b9",
+    "data/scoped-coverage.json": "66726697e840c9a14896d920c1b1e3f3c3ebc97b57aa61e58226fb640f611f3d",
+    "completion.json": "8781672159a82b129a4b7b1cde0da514035fc60c68ed16ab180445c203448218",
+    "prototype-revised/prototype.tex": "ecd142e85960757196be73ba0057c04ddab58ef4b651aebea7339bc79a626581",
+    "prototype-revised/prototype_Answers.json": "c7c43aa3e182d890de357acd0469a467e45e6e71e1e1cfb2d26f854cd916dc8b",
+    "prototype-revised/prototype.pdf": "6230db7d8d2aa7369fae85c0640c7e9b7e87371136b153841e0057f1fad7f1a8",
+    "prototype-revised/verification.json": "703ac0d35f10bbfa146e3b8966622ef8f1cef5caff04ec4f18162d0c7244e619"
+  },
+  "scope": {
+    "topics": 25,
+    "samples": 116,
+    "coverage_cells": 124,
+    "source_rows": 320,
+    "source_corpus_re_solved_in_this_pass": false,
+    "prototype_atomic_units_newly_solved": 40,
+    "source_keys_all_validated": false
+  },
+  "samples": {
+    "usage": "agent_reviewed_usable_with_stated_assumptions",
+    "basis": "Reused all116 existing unkeyed independent reviews, checked key/level agreement and unique-answer fields, read all their issue notes; post-edit independently solved four corrected samples. No claim of a new116-sample blind pass.",
+    "retained": 116,
+    "removed": 0,
+    "revised_ids": [
+      "HH-M08",
+      "HH-M30",
+      "HH-S08",
+      "HH-T02"
+    ],
+    "checks": {
+      "all_existing_independent_reviews_present": true,
+      "all_unique_answer_flags": true,
+      "all_key_agreement": true,
+      "all_level_agreement": true,
+      "all_current_bank_wrappers_match": true,
+      "all124_cells_have_samples": true
+    },
+    "current_revisions": [
+      {
+        "id": "HH-S08",
+        "field": "stem",
+        "before": "Trong 20,0 mL mẫu nước xử lí chỉ chứa Na₂CO₃ và NaHCO₃, người ta chuẩn độ hai aliquot độc lập 20,0 mL bằng HCl 0,100 M.",
+        "after": "Từ một mẫu nước xử lí đồng nhất có thể tích đủ lớn, chỉ chứa hai chất tan Na₂CO₃ và NaHCO₃, lấy hai phần riêng biệt A và B, mỗi phần 20,0 mL, rồi chuẩn độ bằng HCl 0,100 M.",
+        "key_changed": false,
+        "level_changed": false
+      },
+      {
+        "id": "HH-T02",
+        "field": "statements.d",
+        "before": "Nếu 16,2 g tinh bột chỉ được thủy phân 80% theo số mắt xích thì thu được 14,4 g glucose.",
+        "after": "Trong một thí nghiệm khác, từ 16,2 g tinh bột tinh khiết, 80,0% số mắt xích ban đầu được chuyển thành glucose tự do và được thu hồi hoàn toàn; phần còn lại không tạo thêm glucose tự do. Khi đó thu được 14,4 g glucose.",
+        "key_changed": false,
+        "level_changed": false
+      },
+      {
+        "id": "HH-M30",
+        "field": "stem",
+        "before": "Ion nào sau đây là acid liên hợp của ammonia (NH₃) khi nó nhận một proton?",
+        "after": "Tiểu phân nào sau đây là acid liên hợp của ammonia (NH₃) khi nó nhận một proton?",
+        "key_changed": false,
+        "level_changed": false
+      },
+      {
+        "id": "HH-M08",
+        "field": "options.C/options.D",
+        "before": {
+          "A": "H₂N–CH₂–COOH",
+          "B": "H₃N⁺–CH₂–COO⁻",
+          "C": "H₃N⁺–CH₂–COOH₂⁺",
+          "D": "HN=CH₂–COO⁻"
+        },
+        "after": {
+          "A": "H₂N–CH₂–COOH",
+          "B": "H₃N⁺–CH₂–COO⁻",
+          "C": "H₃N⁺–CH₂–COOH",
+          "D": "H₂N–CH₂–COO⁻"
+        },
+        "key_changed": false,
+        "level_changed": false,
+        "reason": "Thay biểu diễn vi phạm hóa trị và dạng quá proton hóa bằng hai dạng glycine hợp lệ ở pH khác."
+      },
+      {
+        "id": "HH-M30",
+        "field": "options.A/options.C/options.D",
+        "before": {
+          "A": "NO₃⁻",
+          "B": "NH₄⁺",
+          "C": "NO₂⁻",
+          "D": "N₂H₄"
+        },
+        "after": {
+          "A": "NH₂⁻",
+          "B": "NH₄⁺",
+          "C": "NH₃",
+          "D": "NH₂OH"
+        },
+        "key_changed": false,
+        "level_changed": false,
+        "reason": "Các lựa chọn đều là tiểu phân có nghĩa; bảo toàn N/H khi nhận H+ cho NH4+ duy nhất."
+      }
+    ],
+    "post_revision_checks": {
+      "HH-S08": {
+        "solution": "Mỗi phần20,0mL riêng: nCO3=0,100×0,00500=0,000500mol; nHCO3=0,100×0,01300−2×0,000500=0,000300mol; c=0,000300/0,0200=0,015mol/L. Mẫu ban đầu đủ lớn nên lấy hai phần là khả thi.",
+        "resolved": "Sửa mâu thuẫn thể tích tổng mẫu/aliquot; số liệu và khóa giữ nguyên."
+      },
+      "HH-T02": {
+        "solution": "aD:bản chấtpolysaccharide;bS:sucrosekhôngkhử;cD:16,2×180/162=18,0g;dD:0,8×18,0=14,4g khi80%đơnvịtạo glucose tự do và thu hồi hết. d là thí nghiệm khác, không mâu thuẫn giả thiết thủy phân hoàn toàn của đoạn dẫn.",
+        "resolved": "Nêu rõ thí nghiệm riêng, mức chuyển thành glucose tự do và thu hồi; không suy từ phần trăm liên kết bị cắt."
+      },
+      "HH-M08": {
+        "solution": "B: H3N+CH2COO− có tổng điện tích0. C là dạngcationtrongacid;D làaniontrongbase;AkhôngphảidạngchiếmưuthếgầnpI. Các carbonđềucóhóatrị4.",
+        "resolved": "Thay nhiễu C/D, giữ duy nhấtB và mứcNB."
+      },
+      "HH-M30": {
+        "solution": "NH3+H+→NH4+. A=NH2−làconjugatebase;Ckhôngđổi;DthêmO. ChỉB nhận đúngmộtproton.",
+        "resolved": "Sửa phạm vi tiểu phân và làm nhiễu có nghĩa, giữB/NB."
+      }
+    },
+    "remaining_notes": {
+      "HH-M05": {
+        "validity": "supported",
+        "issue_class": "editorial_distractor_strength_not_incorrect_key",
+        "notes": [
+          {
+            "kind": "distractor",
+            "detail": "Phương án D (C₂H₄O₂) là nhiễu yếu: không thể hiện rõ một nhầm lẫn quen thuộc về monomer, disaccharide hay mắt xích cellulose như A và B.",
+            "severity": "note"
+          }
+        ],
+        "usage": "usable_for_basic_practice; no empirical claim"
+      },
+      "HH-M09": {
+        "validity": "supported",
+        "issue_class": "editorial_distractor_strength_not_incorrect_key",
+        "notes": [
+          {
+            "kind": "distractor",
+            "detail": "D viện dẫn nhiệt độ sôi, không phải dữ kiện cần thiết cho phép so sánh này, nên dễ bị loại mà không hiểu bản chất độ base. Từ tuyệt đối 'luôn' trong A cũng tạo dấu hiệu loại đáp án.",
+            "severity": "note"
+          }
+        ],
+        "usage": "usable_for_basic_practice; no empirical claim"
+      },
+      "HH-M11": {
+        "validity": "supported",
+        "issue_class": "editorial_distractor_strength_not_incorrect_key",
+        "notes": [
+          {
+            "kind": "distractor",
+            "detail": "Cả ba phương án nhiễu đều là khí hiếm, rất khó tạo cầu nối hóa học trong điều kiện lưu hóa. Chúng quá dễ loại và không đại diện tốt cho các nhầm lẫn thường gặp về polymer.",
+            "severity": "note"
+          }
+        ],
+        "usage": "usable_for_basic_practice; no empirical claim"
+      },
+      "HH-M15": {
+        "validity": "supported",
+        "issue_class": "editorial_distractor_strength_not_incorrect_key",
+        "notes": [
+          {
+            "kind": "distractor",
+            "detail": "B phản ánh nhầm lẫn hợp lý giữa dẫn điện trong kim loại và trong chất điện li. A dùng mô hình phân tử kim loại có liên kết hydrogen, còn D nói electron cố định trên hạt nhân; cả hai khá dễ loại và diễn đạt mô hình sai quá thô.",
+            "severity": "note"
+          },
+          {
+            "kind": "terminology",
+            "detail": "“Delocalized” là thuật ngữ tiếng Anh đúng; nên viết “electron hóa trị phi định xứ (delocalized electrons)” để thống nhất và rõ nghĩa.",
+            "severity": "note"
+          }
+        ],
+        "usage": "usable_for_basic_practice; no empirical claim"
+      },
+      "HH-M18": {
+        "validity": "supported",
+        "issue_class": "editorial_distractor_strength_not_incorrect_key",
+        "notes": [
+          {
+            "kind": "distractor",
+            "detail": "C tạo kim loại Ca bằng cách đun nước là phương án quá phi thực tế trong môi trường nước. B đưa thêm chloride không có trong hệ; D cũng thiếu cơ sở phản ứng. Bộ nhiễu yếu dù đáp án A duy nhất.",
+            "severity": "note"
+          }
+        ],
+        "usage": "usable_for_basic_practice; no empirical claim"
+      },
+      "HH-M24": {
+        "validity": "supported",
+        "issue_class": "editorial_distractor_strength_not_incorrect_key",
+        "notes": [
+          {
+            "kind": "distractor",
+            "detail": "A và C có thể phản ánh nhầm hệ số electron; D = 0,0800 mol khó gắn với một ngộ nhận hóa học cụ thể trong dữ kiện này.",
+            "severity": "note"
+          }
+        ],
+        "usage": "usable_for_basic_practice; no empirical claim"
+      },
+      "HH-M25": {
+        "validity": "supported",
+        "issue_class": "editorial_distractor_strength_not_incorrect_key",
+        "notes": [
+          {
+            "kind": "distractor",
+            "detail": "B, C và D đều yếu: kim loại mất tính dẫn điện, biến thành hợp chất không tan ngay lập tức, hoặc ion ngừng chuyển động không phải các cơ chế cạnh tranh hợp lí. Có thể chọn A bằng cách loại các phát biểu phi lí mà không hiểu rõ bảo vệ điện hóa.",
+            "severity": "note"
+          }
+        ],
+        "usage": "usable_for_basic_practice; no empirical claim"
+      },
+      "HH-M32": {
+        "validity": "supported",
+        "issue_class": "editorial_distractor_strength_not_incorrect_key",
+        "notes": [
+          {
+            "kind": "distractor",
+            "detail": "Nhiệt kế là nhiễu quá dễ loại vì không có chức năng chứa hoặc tháo chất lỏng để phân tách; burette và bình định mức là các nhiễu hợp lí hơn trong nhóm dụng cụ thí nghiệm.",
+            "severity": "note"
+          }
+        ],
+        "usage": "usable_for_basic_practice; no empirical claim"
+      }
+    }
+  },
+  "prototype": {
+    "usage": "agent_reviewed_usable_for_mixed_practice",
+    "content_checks": "prototype-revised/content-review-20261106.json",
+    "all40_keys_match": true,
+    "teacher_review_required": false,
+    "level_counts": {
+      "NB": 13,
+      "TH": 23,
+      "VD": 4
+    },
+    "level_changes": [
+      {
+        "ref": "P1|5|None",
+        "before": "NB",
+        "after": "TH",
+        "reason": "CH3COOC2H5+NaOH→CH3COONa+C2H5OH;gốcacylvàalkoxyxácđịnhhai sảnphẩm."
+      },
+      {
+        "ref": "P1|11|None",
+        "before": "TH",
+        "after": "NB",
+        "reason": "Anodetrơoxihoánước:2H2O→O2+4H++4e−;Cu2+khửởcathode."
+      },
+      {
+        "ref": "P2|1|b",
+        "before": "TH",
+        "after": "NB",
+        "reason": "Anodegraphiteoxihoánướctạooxygen,khônghydrogen."
+      },
+      {
+        "ref": "P2|2|c",
+        "before": "TH",
+        "after": "NB",
+        "reason": "Sucrosekhôngcóđầukhửtựdo,khôngtạoAgtheoquytrìnhtrungtính/kiềmnêu."
+      },
+      {
+        "ref": "P2|4|a",
+        "before": "NB",
+        "after": "TH",
+        "reason": "Chuẩnđộbasebằngacid:phenolphthaleinhồng→khôngmàubềnkhoảng20s,endpointhợplý."
+      },
+      {
+        "ref": "P2|4|d",
+        "before": "TH",
+        "after": "NB",
+        "reason": "Acidchuẩnđộđượcnhỏcóđiềukhiểntừburette;pipetteđịnhlượngaliquot,kphảidụngcụchuẩnđộnhỏdần."
+      },
+      {
+        "ref": "P3|1|None",
+        "before": "TH",
+        "after": "NB",
+        "reason": "PE,PVC,PANtrùnghợp;tổng3.Nylon-6,6trùngngưng,cellulosetựnhiênkhôngthuộcnhómđượcđiềuchếbằngtrùnghợpcộngtrongmôhìnhnêu."
+      }
+    ],
+    "unchanged_pdf_sha256": "6230db7d8d2aa7369fae85c0640c7e9b7e87371136b153841e0057f1fad7f1a8",
+    "empirical_discrimination": "not_measured; not a use blocker for practice",
+    "exact_default_matrix_compliance": "not_claimed"
+  },
+  "source_items_with_insufficient_evidence": [
+    {
+      "ref": "02f028487a62|P1|14|-",
+      "validity": "undetermined",
+      "evidence": "insufficient_essential_figure",
+      "usage": "retained_with_uncertainty",
+      "exclude_as_written": false,
+      "reason": "Ảnh có các vạch phía khối lượng lớn nhưng không đánh dấu ion phân tử hay peak đồng vị. Vị trí và cường độ các vạch cuối phổ chưa cho phép đối chiếu chắc chắn với các công thức lựa chọn theo quy tắc đọc phổ thông thường; cần bản hình hoặc chú giải được xác minh."
+    },
+    {
+      "ref": "02f028487a62|P1|16|-",
+      "validity": "undetermined",
+      "evidence": "insufficient_essential_figure",
+      "usage": "retained_with_uncertainty",
+      "exclude_as_written": false,
+      "reason": "Tiểu phân thứ ba trong ảnh thể hiện hai nét nối hướng tới hydrogen, không thấy rõ dấu điện tích âm trên carbon. Biểu diễn này không đủ rõ về hóa trị và điện tích để xác định số carbanion; không tự sửa hình theo phương án trả lời."
+    },
+    {
+      "ref": "126f1b46d648|P2|4|a",
+      "validity": "undetermined",
+      "evidence": "insufficient_essential_figure",
+      "usage": "retained_with_uncertainty",
+      "exclude_as_written": false,
+      "reason": "Ảnh được dẫn cho đoạn mạch thực tế chứa nội dung câu ăn mòn. Ảnh còn lại chỉ hiển thị một phần đoạn polyisoprene, với các liên kết đôi ở mép bị cắt. Không dùng tính chất quen thuộc của cao su thiên nhiên để thay thế việc kiểm tra toàn bộ hình được hỏi."
+    }
+  ],
+  "excluded_source_items_as_proven_wrong": [],
+  "retained_assumptions": [
+    "Synthetic samples use their explicitly stated ideal models, constants, conversion yields, separation/collection assumptions; these are not unconditional claims about real industrial or medical systems.",
+    "No full reproof of320sourceitems or every provincial key in this pass; treat source frequency as evidence of observed constructions, not an endorsed answer bank.",
+    "Nine weak-distractor review notes remain editorial observations rather than proof a question is invalid."
+  ],
+  "checks": {
+    "prototype_all40_key_match": true,
+    "integer_resource_optimisation_enumerated": {
+      "best_R": 7,
+      "best_H": 3,
+      "max_silver_mol": 0.2032,
+      "whole_plates": 116
+    },
+    "raw_sources_changed": false,
+    "source_keys_changed": false,
+    "teacher_approved": false,
+    "runtime_tested": false,
+    "current_bank_wrappers_source_records_and_markdown_all_match": true,
+    "prototype_tex_pdf_key_byte_unchanged": true
+  },
+  "tool_boundary": {
+    "custom_usability_metadata_exported": false,
+    "sample_status_exported": true,
+    "critical_conditions_in_exported_stem_statements": true,
+    "current_four_revision_notes_also_in_variation_guidance": true,
+    "runtime_automatic_filtering_tested": false
+  },
+  "current_hashes": {
+    "samples.json": "617197bb895a361152716ea89ab38de098d1ca84b83c468337a30fb1a802eabf",
+    "data/scoped-final-bank.json": "019a2f9a15af3d47e2d54fa30c989548215329b71053e7bcbb2e2a75627f44d8",
+    "data/samples-current.json": "9df353d8de113241c33095fdd220bf71754279a407242506ec1b6da113146795",
+    "prototype-revised/content-review-20261106.json": "6b717e12e7040d923113bb8cd639ac85599ff5a29e05e82851642106122d4d63"
+  }
+}

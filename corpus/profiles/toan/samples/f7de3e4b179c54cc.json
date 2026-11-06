@@ -1,0 +1,207 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "f7de3e4b179c54cc",
+    "topic": "Xác suất cổ điển và tổ hợp",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Thành phần màu của các hộp và quy trình chuyển vật ngẫu nhiên; ảnh hộp chỉ mang tính minh họa.",
+        "task": "Kiểm tra xác suất của một thành phần màu trong lượt chuyển.",
+        "reasoning": [
+          "Đếm số cách chọn nhóm vật có màu yêu cầu từ hộp xuất phát.",
+          "Chia cho tổng số cách chọn nhóm chuyển đi.",
+          "Đối chiếu xác suất với nhận định."
+        ],
+        "combines": [
+          "Tổ hợp",
+          "Xác suất cổ điển"
+        ],
+        "difficulty_source": "Áp dụng trực tiếp tỉ số các số tổ hợp.",
+        "evidence_uncertainty": "Không có khóa khớp mã; ảnh minh họa không thể hiện thành phần màu để kiểm chứng độc lập, dữ kiện tính toán lấy từ văn bản.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một tập vật chia theo màu với số lượng từng nhóm, phép chọn đồng thời và nhận định về xác suất có đủ màu.",
+        "task": "Kiểm tra xác suất biến cố mẫu chọn có đủ các màu.",
+        "reasoning": [
+          "Lập không gian mẫu bằng tổ hợp.",
+          "Phân loại các cách phân bố số vật theo màu để mọi màu đều xuất hiện.",
+          "Đếm các trường hợp bằng tích tổ hợp rồi cộng.",
+          "Chia cho số phần tử không gian mẫu và đối chiếu."
+        ],
+        "combines": [
+          "Tổ hợp",
+          "Quy tắc cộng và nhân",
+          "Xác suất cổ điển"
+        ],
+        "difficulty_source": "Cần liệt kê đủ các kiểu phân bố màu trong mẫu chọn.",
+        "evidence_uncertainty": "Thiếu khóa đúng sai được xác nhận khớp mã đề.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một tập vật phân màu và phép chọn mẫu không xét thứ tự.",
+        "task": "Kiểm tra xác suất mẫu có đúng số màu được yêu cầu.",
+        "reasoning": [
+          "Lập số cách chọn mẫu bất kỳ.",
+          "Chọn các nhóm màu có mặt và bảo đảm mỗi nhóm được chọn đều xuất hiện, hoặc dùng biến cố đối.",
+          "Đếm các mẫu thuận lợi, loại các mẫu đơn sắc nếu dùng phép đếm gộp.",
+          "Lập xác suất và đối chiếu."
+        ],
+        "combines": [
+          "Tổ hợp",
+          "Phân loại trường hợp",
+          "Biến cố đối",
+          "Xác suất cổ điển"
+        ],
+        "difficulty_source": "Phải kiểm soát các trường hợp bị đếm thừa khi dùng phần bù.",
+        "evidence_uncertainty": "Thiếu khóa đúng sai được xác nhận khớp mã đề.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một tập vật chia nhóm và nhận định về xác suất toàn bộ mẫu thuộc một nhóm chỉ định.",
+        "task": "Kiểm tra xác suất chọn được mẫu thuần một nhóm.",
+        "reasoning": [
+          "Đếm các mẫu thuận lợi bằng tổ hợp trong nhóm chỉ định.",
+          "Đếm toàn bộ mẫu bằng tổ hợp trên tập ban đầu.",
+          "Lập tỉ số và đối chiếu."
+        ],
+        "combines": [
+          "Tổ hợp",
+          "Xác suất cổ điển"
+        ],
+        "difficulty_source": "Áp dụng trực tiếp tỉ số số cách chọn thuận lợi và số cách chọn bất kỳ.",
+        "evidence_uncertainty": "Thiếu khóa đúng sai được xác nhận khớp mã đề.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "3f1b2aa3cb72|P2|2|a",
+      "525d3542283a|P2|4|a",
+      "525d3542283a|P2|4|c",
+      "525d3542283a|P2|4|d"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "f7de3e4b179c54cc",
+    "stem": "Hộp A chứa 4 viên bi đỏ, 3 viên bi xanh và 2 viên bi vàng. Các viên bi có cùng kích thước và phân biệt được với nhau. Chọn ngẫu nhiên đồng thời 3 viên từ hộp A rồi chuyển sang hộp B đang rỗng; mọi nhóm 3 viên đều có cùng khả năng được chọn. Xét tính đúng sai của các nhận định sau về nhóm bi được chuyển.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Xác suất cả 3 viên đều màu đỏ là 1/21."
+      },
+      {
+        "sub": "b",
+        "text": "Xác suất nhóm bi có đủ cả ba màu là 2/7."
+      },
+      {
+        "sub": "c",
+        "text": "Xác suất nhóm bi có đúng hai màu là 5/7."
+      },
+      {
+        "sub": "d",
+        "text": "Xác suất cả 3 viên đều màu xanh là 1/28."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Có C(9,3) = 84 nhóm bi đồng khả năng. a) Có C(4,3) = 4 nhóm toàn đỏ nên xác suất là 4/84 = 1/21; nhận định đúng. b) Nhóm đủ ba màu phải có mỗi màu một viên, có 4 × 3 × 2 = 24 nhóm; xác suất là 24/84 = 2/7, nên nhận định đúng. c) Nhóm một màu có C(4,3) + C(3,3) = 5 cách; không thể chọn 3 viên vàng. Vì vậy nhóm đúng hai màu có 84 − 24 − 5 = 55 cách, xác suất là 55/84; nhận định sai. d) Có C(3,3) = 1 nhóm toàn xanh nên xác suất là 1/84, không phải 1/28; nhận định sai.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "c",
+        "mistake": "Lấy biến cố đối của nhóm đủ ba màu và cho rằng mọi nhóm còn lại đều có đúng hai màu.",
+        "why_plausible": "Phép tính 1 − 2/7 = 5/7 bỏ sót việc phần bù còn chứa các nhóm chỉ có một màu."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Dùng số viên xanh là 3 làm số nhóm thuận lợi, được 3/84 = 1/28.",
+        "why_plausible": "Học sinh nhầm số phần tử của nhóm màu với số cách chọn cả nhóm 3 viên từ màu đó."
+      }
+    ],
+    "level_reason": "Các nhận định yêu cầu đếm tổ hợp trực tiếp hoặc dùng phân hoạch quen thuộc theo số màu xuất hiện. Mức cao nhất của các nhận định là TH, nên mức của toàn mẫu là TH.",
+    "prerequisites": [
+      "Tổ hợp",
+      "Quy tắc cộng và quy tắc nhân",
+      "Biến cố đối",
+      "Xác suất cổ điển"
+    ],
+    "variation_guidance": "Có thể thay thành phần màu và số viên chuyển; khi tính đúng hai màu phải loại cả nhóm một màu lẫn nhóm đủ ba màu nếu dùng phần bù.",
+    "uncertainties": [
+      "Mẫu được xây dựng mới từ cấu trúc quan sát nguồn cấp tỉnh qua bên thứ ba; không phải bằng chứng đề thi thật và không có điểm neo chính thức.",
+      "Quan sát đầu vào thiếu khóa đúng sai được xác nhận khớp mã. Mọi dữ kiện của mẫu này được nêu bằng văn bản, không phụ thuộc hình minh họa."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "f7de3e4b179c54cc",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Có C(9,3) = 84 nhóm đồng khả năng. a) Cả ba đỏ: C(4,3)/84 = 1/21. b) Đủ ba màu: 4×3×2/84 = 2/7. c) Nhóm một màu có C(4,3) + C(3,3) = 5 cách; nhóm đủ ba màu có 24 cách. Vì vậy nhóm đúng hai màu có 84 − 5 − 24 = 55 cách, xác suất là 55/84, khác 5/7. d) Cả ba xanh: C(3,3)/84 = 1/84, khác 1/28.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a), b), d) dùng đếm tổ hợp hoặc quy tắc nhân trong quy trình tính xác suất quen thuộc. c) dùng phân hoạch theo số màu và biến cố đối; các bước đếm, trừ và chia vẫn là thủ tục thông thường, không đòi hỏi mô hình hay lập luận vận dụng mới."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/4bd5b28e3334083c8835ca84c644639e88ac061f0bd0d08e6f3044381f874145.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/4bd5b28e3334083c8835ca84c644639e88ac061f0bd0d08e6f3044381f874145.resolve.json"
+}

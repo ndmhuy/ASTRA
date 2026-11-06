@@ -1,0 +1,152 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "b211197de9a035fc",
+    "topic": "Vectơ phẳng",
+    "part": "P2",
+    "level": "VD",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Tọa độ các đỉnh đã biết, điều kiện hình thang vuông và diện tích hình; nhận định về tổng tọa độ đỉnh còn lại.",
+        "task": "Kiểm tra đại lượng suy ra từ tọa độ đỉnh chưa biết.",
+        "reasoning": [
+          "Nhận diện các cạnh đáy song song và cạnh biểu diễn chiều cao hình thang.",
+          "Dùng tọa độ tính chiều cao và độ dài đáy đã biết.",
+          "Từ diện tích suy ra độ dài đáy còn lại.",
+          "Biểu diễn đỉnh chưa biết bằng vectơ cùng hướng với đáy đối diện.",
+          "Tính tổng tọa độ và đối chiếu nhận định."
+        ],
+        "combines": [
+          "Tọa độ vectơ",
+          "Quan hệ song song và vuông góc",
+          "Diện tích hình thang"
+        ],
+        "difficulty_source": "Chuyển đồng thời điều kiện hình dạng và diện tích thành vị trí một đỉnh.",
+        "evidence_uncertainty": "Thiếu khóa đáp án khớp mã đề; chủ đề xếp lớp theo công cụ tọa độ không gian, kết hợp hình học từ lớp trước.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "beee25b53250|P2|1|b"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "b211197de9a035fc",
+    "stem": "Trong mặt phẳng Oxy, xét các hình thang lồi ABCD có các đỉnh theo thứ tự quanh hình, AB song song CD, AD vuông góc AB và diện tích bằng 50. Hai đỉnh cố định là A(1;1), D(−2;5). Đỉnh B nằm trên tia xuất phát từ A có vectơ chỉ phương (4;3), B khác A. Hai đường chéo AC và BD cắt nhau tại O. Xét tính đúng, sai của các nhận định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Độ dài AD bằng 5."
+      },
+      {
+        "sub": "b",
+        "text": "Tổng độ dài hai đáy AB và CD bằng 20."
+      },
+      {
+        "sub": "c",
+        "text": "Nếu AB=5 thì C có tọa độ (6;11)."
+      },
+      {
+        "sub": "d",
+        "text": "Giá trị lớn nhất có thể đạt được của hoành độ O là 233/64."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "VD"
+      }
+    ],
+    "solution": "Ta có AD=(−3;4), nên AD=5; a đúng. Vì AD vuông góc hai đáy, công thức diện tích cho 50=(AB+CD)×5/2, suy ra AB+CD=20; b đúng. Đặt e=(4;3), có |e|=5. Viết B=A+ue với u>0. Tính lồi và thứ tự đỉnh cho phép viết C=D+ve với v>0. Khi đó AB=5u, CD=5v và u+v=4. Nếu AB=5 thì u=1, v=3, do đó C=D+3e=(10;14); c sai. Để xét d, đặt O=A+s(C−A). Vì O cũng nằm trên BD, so sánh hệ số theo hai vectơ độc lập AD và e được s=u/(u+v)=u/4. Do đó O=A+(u/4)AD+(uv/4)e. Hoành độ của O là xO=1−3u/4+uv=1+13u/4−u²=233/64−(u−13/8)², với 0<u<4. Giá trị lớn nhất là 233/64, đạt tại u=13/8, v=19/8. Hai tham số đều dương và hai đáy có độ dài khác nhau, nên cấu hình đạt được là hình thang hợp lệ; d đúng.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "c",
+        "mistake": "Suy ra CD=10 khi AB=5.",
+        "why_plausible": "Tọa độ (6;11) tương ứng DC=2(4;3), tức CD=10. Học sinh có thể nhầm diện tích hình thang thành AB×AD+CD×AD, bỏ hệ số 1/2 của cả tổng hai đáy; cặp độ dài này chỉ cho diện tích 37,5."
+      }
+    ],
+    "level_reason": "Mức toàn câu là VD do ý d. Học sinh phải mô tả cả họ hình thang bằng tham số có ràng buộc diện tích, suy ra vị trí giao điểm từ hai biểu diễn vectơ, rồi thiết lập và tối ưu hoành độ, đồng thời kiểm tra cấu hình đạt cực đại. Các ý a, b, c chỉ yêu cầu các quy trình quen thuộc ở mức TH.",
+    "prerequisites": [
+      "Tọa độ, độ dài và phép cộng vectơ phẳng",
+      "Quan hệ song song và vuông góc",
+      "Diện tích hình thang",
+      "Biểu diễn điểm trên đoạn thẳng bằng vectơ",
+      "Tìm giá trị lớn nhất của tam thức bậc hai"
+    ],
+    "variation_guidance": "Có thể thay vectơ chỉ phương của đáy, vectơ chiều cao và diện tích. Khi hỏi cực trị một tọa độ của giao điểm, cần kiểm tra tham số cực trị nằm trong miền tạo thành hình thang lồi và giá trị đó thực sự đạt được.",
+    "uncertainties": [
+      "Đây là mẫu minh họa tổng hợp nguyên gốc, chỉ kế thừa cấu trúc từ quan sát cấp tỉnh do bên thứ ba cung cấp; không có khóa nguồn phù hợp hoặc neo đề chính thức.",
+      "Cấu hình đạt cực đại có hai đáy không bằng nhau, nên kết quả không phụ thuộc việc quy ước hình thang có bao gồm hình bình hành hay không."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "b211197de9a035fc",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "VD"
+      }
+    ],
+    "solution": "AD=√((−2−1)²+(5−1)²)=5. Đây là chiều cao hình thang nên 50=(AB+CD)×5/2, suy ra AB+CD=20. Đặt p=AB, q=CD, với p,q>0 và p+q=20. Vectơ đơn vị theo hướng AB là e=(4/5;3/5). Tính lồi và thứ tự các đỉnh cho B=A+pe, C=D+qe. Khi p=5 thì q=15, do đó C=(10;14), khác tọa độ đã nêu. Giao điểm hai đường chéo thỏa AO/OC=p/q, nên O=A+(p/20)(C−A). Suy ra x_O=1+13p/20−p²/25=233/64−(p−65/8)²/25. Giá trị lớn nhất là 233/64, đạt tại p=65/8 thuộc (0;20).",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a tính khoảng cách; b thay số vào công thức diện tích; c tính độ dài đáy còn lại và tọa độ theo hướng đã cho: đều là TH. d cần tham số hóa họ hình thang, liên kết tỉ số giao điểm đường chéo với tọa độ rồi tối ưu và kiểm tra khả năng đạt, nên là VD."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/toan/6c85110f945e94e07413b0bb3c97cb4db59979d6ba4a6f3a4d5270113849f771.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/toan/6c85110f945e94e07413b0bb3c97cb4db59979d6ba4a6f3a4d5270113849f771.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 0,
+  "source_rows_sha256": "863dd6885185956ed9dabede84bf529993a764e4871f75f25629503cf8f2731a"
+}

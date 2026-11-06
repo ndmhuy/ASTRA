@@ -1,0 +1,90 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "cd0c085d32a03ece",
+    "topic": "Hệ thức lượng và tối ưu phẳng",
+    "part": "P3",
+    "level": "VD",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Một tứ giác dạng cánh diều có các cặp cạnh kề bằng nhau, đường chéo vuông góc và độ dài cạnh được cho trên ảnh.",
+        "task": "Tính tổng độ dài các đường chéo tại cấu hình có diện tích lớn nhất.",
+        "reasoning": [
+          "Chia tứ giác theo đường chéo thành các tam giác có cạnh cố định.",
+          "Dùng công thức diện tích theo góc xen giữa để tìm điều kiện đạt cực đại.",
+          "Suy ra quan hệ vuông góc hoặc cấu hình tam giác tại cực đại.",
+          "Tính các đường chéo bằng hệ thức lượng và tính đối xứng.",
+          "Cộng độ dài rồi làm tròn."
+        ],
+        "combines": [
+          "Diện tích tam giác",
+          "Bất đẳng thức lượng giác",
+          "Định lý Pythagore",
+          "Đối xứng hình học"
+        ],
+        "difficulty_source": "Chọn cách chia hình làm điều kiện diện tích lớn nhất trở thành điều kiện góc đơn giản.",
+        "evidence_uncertainty": "Một số nhãn độ dài trong ảnh cắt mờ; bản chép xác định rõ các cặp cạnh và ảnh thể hiện dấu vuông góc. Phạm vi cắt chưa được kiểm chứng độc lập.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "de5833d227dd|P3|4|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "cd0c085d32a03ece",
+    "stem": "Một bờ kênh thẳng được biểu diễn bởi đường thẳng d. Hai trạm A và B nằm cùng phía đối với d. Gọi H và K lần lượt là hình chiếu vuông góc của A và B lên d, biết AH=3 m, BK=7 m và HK=24 m. Cần chọn điểm lấy nước M trên đoạn HK để tổng chiều dài hai ống thẳng AM và BM nhỏ nhất. Do có công trình ngầm, M chỉ được nằm trên phần của HK thỏa mãn HM≤5 m hoặc HM≥12 m. Tổng chiều dài nhỏ nhất của hai ống bằng bao nhiêu mét? Làm tròn đến hàng phần mười.",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "26,1",
+        "level": "VD"
+      }
+    ],
+    "solution": "Chọn hệ trục trong mặt phẳng với H=(0;0), K=(24;0), A=(0;3), B=(24;7). Đặt M=(x;0), khi đó x thuộc [0;5] hoặc [12;24] và tổng chiều dài là f(x)=√(x²+9)+√((24-x)²+49). Phản xạ A qua d được A'=(0;-3). Đường thẳng A'B cắt d tại điểm có hoành độ x_0=24·3/(3+7)=7,2; đây là vị trí tối ưu khi chưa có vùng cấm, nhưng không được phép chọn. Để xét miền cho phép, ta có f'(x)=x/√(x²+9)-(24-x)/√((24-x)²+49). Trên [0;24], so sánh hai số không âm trong biểu thức này cho thấy f'(x)<0 khi 7x<3(24-x), tức x<7,2, và f'(x)>0 khi x>7,2. Vì vậy chỉ cần so sánh x=5 và x=12. Ta có f(5)=√34+√410≈26,0794 m; f(12)=√153+√193≈26,2618 m. Giá trị nhỏ nhất đạt tại HM=5 m, làm tròn được 26,1 m.",
+    "distractors": [],
+    "level_reason": "Học sinh phải mô hình hóa chiều dài, tìm vị trí tối ưu không ràng buộc, phát hiện vị trí đó thuộc vùng cấm, rồi xác định và so sánh các ứng viên hợp lệ. Điều kiện vị trí buộc phải kết nối hình học phản xạ với lập luận tối ưu trên miền bị chia tách.",
+    "prerequisites": [
+      "Định lí Pythagore",
+      "Phép đối xứng qua đường thẳng",
+      "Tam giác đồng dạng",
+      "Đạo hàm và tính đơn điệu",
+      "Tối ưu trên miền có ràng buộc"
+    ],
+    "variation_guidance": "Thay khoảng cách từ hai trạm đến bờ và khoảng cách giữa hai hình chiếu. Đặt vùng cấm chứa vị trí tối ưu không ràng buộc để học sinh phải xét các đầu mút hợp lệ; tránh chọn số liệu khiến hai phương án bằng nhau ngoài chủ đích.",
+    "uncertainties": [
+      "Đây là mẫu minh họa tổng hợp mới; căn cứ cấu trúc được cung cấp chỉ thuộc nhóm quan sát cấp tỉnh qua bên thứ ba, không có neo đề chính thức.",
+      "Bờ kênh và đường ống được lí tưởng hóa thành đường thẳng và đoạn thẳng trong cùng một mặt phẳng."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "cd0c085d32a03ece",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "26,1",
+        "level": "VD"
+      }
+    ],
+    "solution": "Đặt x=HM, tổng chiều dài là f(x)=√(x²+9)+√((24-x)²+49), với x∈[0;5]∪[12;24]. Phản xạ A qua d thành A'. Đường thẳng A'B cắt HK tại điểm có x=24·3/(3+7)=7,2. Hàm f giảm đến x=7,2 rồi tăng, nên chỉ cần so sánh hai vị trí x=5 và x=12. Có f(5)=√34+√410≈26,0794; f(12)=√153+√193≈26,2618. Tổng nhỏ nhất làm tròn đến hàng phần mười là 26,1 mét.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Cần thiết lập mô hình chiều dài, xác định vị trí tối ưu khi chưa có ràng buộc và xét hai miền khả thi để chọn cực tiểu toàn cục."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/fba521216ddda27abcd107d7a4263285c0f96bc3188521513f56ea1b673967ab.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/fba521216ddda27abcd107d7a4263285c0f96bc3188521513f56ea1b673967ab.resolve.json"
+}

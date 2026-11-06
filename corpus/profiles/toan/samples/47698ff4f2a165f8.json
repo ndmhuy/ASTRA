@@ -1,0 +1,168 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "47698ff4f2a165f8",
+    "topic": "Xác suất độc lập",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Xác suất hoạt động độc lập của các bộ phận và xác suất tất cả cùng không hoạt động được đề xuất.",
+        "task": "Kiểm tra xác suất đồng thời không hoạt động.",
+        "reasoning": [
+          "Tính xác suất không hoạt động của từng bộ phận bằng biến cố đối.",
+          "Nhân các xác suất nhờ tính độc lập rồi đối chiếu."
+        ],
+        "combines": [
+          "Biến cố đối",
+          "Công thức nhân xác suất"
+        ],
+        "difficulty_source": "Nhận đúng giao của các trạng thái không hoạt động.",
+        "evidence_uncertainty": "Thiếu khóa đúng sai được xác nhận.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Các xác suất thành công riêng và giả thiết độc lập giữa các phép thử.",
+        "task": "Kiểm tra xác suất thành công ở toàn bộ phép thử.",
+        "reasoning": [
+          "Biểu diễn thành công toàn bộ bằng giao các biến cố.",
+          "Nhân các xác suất thành phần theo giả thiết độc lập.",
+          "Đối chiếu kết quả."
+        ],
+        "combines": [
+          "Biến cố giao",
+          "Biến cố độc lập",
+          "Công thức nhân xác suất"
+        ],
+        "difficulty_source": "Nhận ra điều kiện độc lập cho phép dùng phép nhân trực tiếp.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "85efdd1a7e54|P2|4|c",
+      "adb051fd8253|P2|4|b"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "47698ff4f2a165f8",
+    "stem": "Trong một lần kiểm tra, ba cảm biến A, B, C có xác suất gửi tín hiệu thành công lần lượt là 0,8; 0,75; 0,6. Mỗi cảm biến chỉ có hai trạng thái: gửi thành công hoặc gửi thất bại. Kết quả của ba cảm biến độc lập với nhau. Xét tính đúng sai của các nhận định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Xác suất cả ba cảm biến đều gửi thất bại là 0,02."
+      },
+      {
+        "sub": "b",
+        "text": "Xác suất cả ba cảm biến đều gửi thành công là 0,36."
+      },
+      {
+        "sub": "c",
+        "text": "Xác suất có ít nhất một cảm biến gửi thành công là 0,64."
+      },
+      {
+        "sub": "d",
+        "text": "Xác suất chỉ cảm biến A gửi thành công là 0,20."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Xác suất gửi thất bại của A, B, C lần lượt là 0,2; 0,25; 0,4. Nhờ tính độc lập: a) Xác suất cả ba thất bại là 0,2 × 0,25 × 0,4 = 0,02, nên nhận định đúng. b) Xác suất cả ba thành công là 0,8 × 0,75 × 0,6 = 0,36, nên nhận định đúng. c) Biến cố đối của ít nhất một cảm biến thành công là cả ba thất bại, nên xác suất cần tìm là 1 − 0,02 = 0,98; nhận định sai. d) Chỉ A thành công nghĩa là A thành công đồng thời B và C thất bại, có xác suất 0,8 × 0,25 × 0,4 = 0,08; nhận định sai.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "c",
+        "mistake": "Tính 1 − 0,36 = 0,64, tức xác suất có ít nhất một cảm biến thất bại.",
+        "why_plausible": "Học sinh nhầm biến cố đối của ít nhất một thành công với biến cố cả ba thành công."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Chỉ tính A thành công và B thất bại: 0,8 × 0,25 = 0,20, bỏ điều kiện C thất bại.",
+        "why_plausible": "Học sinh có thể biểu diễn chưa đủ các điều kiện đồng thời trong cụm chỉ cảm biến A."
+      }
+    ],
+    "level_reason": "Học sinh diễn giải các trạng thái thành biến cố giao hoặc biến cố đối rồi dùng công thức nhân theo giả thiết độc lập. Mức cao nhất của các nhận định là TH, nên mức toàn mẫu là TH.",
+    "prerequisites": [
+      "Biến cố đối",
+      "Biến cố giao",
+      "Các biến cố độc lập",
+      "Công thức nhân xác suất"
+    ],
+    "variation_guidance": "Có thể đổi xác suất thành công hoặc thay cảm biến bằng các thiết bị khác; phải nêu rõ tính độc lập và đủ các trạng thái cần xét.",
+    "uncertainties": [
+      "Các xác suất là dữ kiện giả định của mẫu tổng hợp, không phải số liệu đo thực tế.",
+      "Cấu trúc tham khảo chỉ dựa trên quan sát nguồn cấp tỉnh qua bên thứ ba, không có điểm neo chính thức; một quan sát thiếu khóa đúng sai được xác nhận."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "47698ff4f2a165f8",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Xác suất thất bại của A, B, C lần lượt là 0,2; 0,25; 0,4. Do độc lập: a) Cả ba thất bại: 0,2×0,25×0,4 = 0,02. b) Cả ba thành công: 0,8×0,75×0,6 = 0,36. c) Ít nhất một thành công: 1 − 0,02 = 0,98, khác 0,64. d) Chỉ A thành công: 0,8×0,25×0,4 = 0,08, khác 0,20.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Từng nhận định đều chỉ yêu cầu áp dụng quen thuộc quy tắc nhân cho các kết quả độc lập; a), c), d) kết hợp xác suất biến cố đối ở mức thủ tục thông thường."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/4bd5b28e3334083c8835ca84c644639e88ac061f0bd0d08e6f3044381f874145.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/4bd5b28e3334083c8835ca84c644639e88ac061f0bd0d08e6f3044381f874145.resolve.json"
+}
