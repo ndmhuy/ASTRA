@@ -34,7 +34,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, index, onE
           <div className="review-content">
             {flagged ? <>
               <p>Đáp án dự kiến: {question.key}{question.writerKey ? ` · Người soạn: ${question.writerKey}` : ''}{question.solverKey ? ` · Giải độc lập: ${question.solverKey}` : ''}</p>
-              <p>{question.auditNotes || 'Câu hỏi cần được kiểm tra trước khi sử dụng.'}</p>
+              <p><MathRenderer content={question.auditNotes || 'Câu hỏi cần được kiểm tra trước khi sử dụng.'} /></p>
             </> : <p>Đáp án: {question.key}</p>}
             {question.explanation && <MathRenderer content={question.explanation} />}
             {onEdit && <button className="button-secondary" onClick={onEdit}>Sửa câu hỏi</button>}

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Paperclip, Globe, ArrowUp } from 'lucide-react';
 
 interface ModernChatBarProps {
@@ -25,13 +25,15 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
     el.style.height = Math.min(el.scrollHeight, 130) + 'px';
   }, []);
 
+  useEffect(adjustHeight, [text, adjustHeight]);
+
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(e.target.value);
     adjustHeight();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
       e.preventDefault();
       handleSend();
     }
