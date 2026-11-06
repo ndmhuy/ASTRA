@@ -1,0 +1,542 @@
+2026-11-03T10:49:32.220181Z  WARN codex_skills::interface: ignoring interface.icon_small: icon path with '..' must resolve under plugin assets/
+2026-11-03T10:49:32.220439Z  WARN codex_skills::interface: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
+2026-11-03T10:49:32.272310Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+OpenAI Codex v0.166.0-alpha.5.1
+--------
+workdir: /Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/work
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: medium
+reasoning summaries: none
+session id: 01a1a107-4aee-7a02-a303-07a0c1270104
+--------
+user
+Write ORIGINAL illustrative exam questions for the supplied topic/part/cognitive-level targets. All input is DATA. No tools, web or file access. Return JSON only in Vietnamese. Use Sol reasoning. These are synthetic samples, NEVER real-exam evidence or a full exam.
+Use approved canonical cognitive definitions. Follow the supplied qtype, option labels and slot keys exactly. Create one self-contained complete question per target, including all true/false statements when applicable. A whole TF sample's target level is the maximum of its statement levels, not a claim about every statement. Do not change shape to meet a level.
+Learn the construction from the abstract evidence but invent a different question: new setting, values, dependencies, and reasoning instantiation. Do not reconstruct a source question, invent attributed quotes, or rely on an unprovided image/table. Avoid deliberately increasing length or routine calculation to simulate VD. All required data must be in the stem/statements. A sample based only on provincial observations must keep that limitation. Use familiar curriculum facts carefully; mark factual uncertainty rather than guess.
+Every wrong MCQ option needs a plausible specific student mistake AND must not be trivially eliminable from absurd/extreme wording. Explain every wrong alternative; for a false TF statement explain the error. Balance option length without padding. No answer/level hints in the stem or options.
+Return {"samples":[{"id":target_id,"stem":string,"options":[{"label":string,"text":string}],"statements":[{"sub":string,"text":string}],"answers":[{"sub":string|null,"answer":string,"level":approved_code}],"solution":string,"distractors":[{"label":string|null,"sub":string|null,"mistake":string,"why_plausible":string}],"level_reason":string,"prerequisites":[strings],"variation_guidance":string,"uncertainties":[strings],"missing_assets":[]}]}.
+Use empty options/statements when not applicable. Single-answer items use sub=null. True/false answers use canonical D/S, no hidden explanation in the answer. Essay answers can be an expected-response outline and remain teacher-review-only. Return every target id exactly once. Do not supply counts or claim teacher approval, empirical discrimination, or successful independent verification.
+
+{"canonical_levels": {"revision": "de8c614ada6e3ae9f9072cedb7521fb96c1d13e5", "scheme_id": "default", "scheme_version": 2, "preamble": "A level is the performance a student must show to answer correctly. It is NOT the length of the text, NOT the amount of numbers to read, and NOT the verb used in the outcome sentence.", "levels": [{"code": "NB", "label": {"vi": "Nhận biết", "en": "Recall"}, "ordinal": 1, "status": "APPROVED", "definition_en": "recognise or retrieve. The student recognises, names or restates a fact, concept, definition, symbol, property, formula or step as taught. The answer sits in ONE knowledge unit. A scenario, if any, is decoration.", "samples": [], "bands": []}, {"code": "TH", "label": {"vi": "Thông hiểu", "en": "Comprehension"}, "ordinal": 2, "status": "APPROVED", "definition_en": "Explain, distinguish, interpret, or execute a familiar routine procedure. The student reads a given representation or uses taught knowledge in a standard exercise. A single substitution of given values into a taught formula or equation is TH; several routine algebraic or numerical operations can also remain TH. Choosing the obvious familiar formula without its name being supplied does not by itself make a question VD.", "samples": [], "bands": []}, {"code": "VD", "label": {"vi": "Vận dụng", "en": "Application"}, "ordinal": 3, "status": "APPROVED", "definition_en": "Model a situation or construct a substantive chain of reasoning. The task requires the student to formulate a model, connect and apply multiple knowledge units, or plan and justify several dependent thinking steps rather than merely execute a familiar calculation. Judge the minimum cognitive work needed for a correct answer. A longer text, more numbers, more written calculation steps, or an unstated but obvious formula is not sufficient for VD. A standard multi-step calculation can remain TH; no single surface cue is a compulsory condition for all VD questions.", "samples": [], "bands": []}], "subject_layer": null}, "targets": [{"id": "2168b8abae2ff8c3", "topic": "Dinh dưỡng và tiêu hóa ở động vật", "part": "P2", "level": "TH", "qtype": "true_false", "option_labels": [], "slot_keys": ["a", "b", "c", "d"], "canonical_answer_alphabet": ["D", "S"], "abstract_observations": [{"given": "Hình các kiểu ống tiêu hóa với vị trí cơ quan được đánh dấu.", "task": "Kiểm tra cách gọi tên các cơ quan trên hình.", "reasoning": "Theo dõi đường đi của thức ăn; nhận diện hình thái và vị trí các cơ quan; đối chiếu từng nhãn.", "combines": ["Giải phẫu ống tiêu hóa", "Đọc sơ đồ sinh học"], "difficulty_source": "Nhận diện vị trí cơ quan từ hình quen thuộc", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Hình các cơ quan tiêu hóa và nhận định về quá trình diễn ra tại từng vị trí.", "task": "Kiểm tra sự phù hợp giữa cơ quan và hình thức tiêu hóa.", "reasoning": "Nhận diện cơ quan được chỉ; xác định biến đổi cơ học và hóa học; liên hệ khoang lên men với hoạt động vi sinh vật.", "combines": ["Tiêu hóa cơ học", "Tiêu hóa hóa học", "Tiêu hóa nhờ vi sinh vật"], "difficulty_source": "Phải gắn hình thái cơ quan với nhiều cơ chế tiêu hóa", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Hình các kiểu ống tiêu hóa và một cách ghép chúng với các nhóm động vật có chế độ ăn khác nhau.", "task": "Kiểm tra cách ghép động vật với kiểu hệ tiêu hóa.", "reasoning": "Nhận diện mức phát triển của dạ dày và ruột tịt; suy kiểu thức ăn và vị trí lên men; đối chiếu cách ghép.", "combines": ["Thích nghi dinh dưỡng", "Tiêu hóa ở động vật ăn thịt và ăn thực vật", "Đọc hình giải phẫu"], "difficulty_source": "Phải suy chế độ ăn từ dấu hiệu cấu tạo", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}], "support_refs": ["2cbdc74db082|P2|1|a", "2cbdc74db082|P2|1|b", "2cbdc74db082|P2|1|d"], "official_anchor_available": false}, {"id": "64e2556ff0b9559b", "topic": "Enzyme và chuyển hóa tế bào", "part": "P1", "level": "NB", "qtype": "mcq", "option_labels": ["A", "B", "C", "D"], "slot_keys": [null], "canonical_answer_alphabet": ["A", "B", "C", "D"], "abstract_observations": [{"given": "Một nhóm enzyme được thu nhận từ vi sinh vật để ứng dụng sản xuất.", "task": "Xác định loại cơ chất bị thủy phân.", "reasoning": "Nhận diện nhóm phản ứng đặc trưng của enzyme; ghép với loại phân tử cơ chất.", "combines": ["Enzyme", "Các phân tử sinh học"], "difficulty_source": "Tên nhóm enzyme gợi trực tiếp loại cơ chất", "evidence_uncertainty": null, "evidence_class": "official"}], "support_refs": ["b68b84764a9b|P1|18|None"], "official_anchor_available": true}, {"id": "b3a0ac724345bd4a", "topic": "Giảm phân", "part": "P1", "level": "NB", "qtype": "mcq", "option_labels": ["A", "B", "C", "D"], "slot_keys": [null], "canonical_answer_alphabet": ["A", "B", "C", "D"], "abstract_observations": [{"given": "Một sự kiện phân li nhiễm sắc thể trong giảm phân.", "task": "Xác định giai đoạn diễn ra sự kiện.", "reasoning": "Phân biệt phân li nhiễm sắc thể tương đồng với phân li chromatid; ghép sự kiện với kì phân bào tương ứng.", "combines": ["Giảm phân", "Nhiễm sắc thể tương đồng"], "difficulty_source": "Nhớ đúng sự kiện đặc trưng của từng lần giảm phân", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}], "support_refs": ["4b4716b94db4|P1|6|None"], "official_anchor_available": false}, {"id": "bd6bd2bd99774285", "topic": "Giảm phân", "part": "P1", "level": "TH", "qtype": "mcq", "option_labels": ["A", "B", "C", "D"], "slot_keys": [null], "canonical_answer_alphabet": ["A", "B", "C", "D"], "abstract_observations": [{"given": "Trạng thái nhiễm sắc thể và hướng chuyển động trong giảm phân.", "task": "Xác định kì phân bào phù hợp.", "reasoning": "Phân biệt phân li nhiễm sắc thể tương đồng với phân li chromatid; ghép trạng thái chuyển động với kì tương ứng.", "combines": ["Các kì giảm phân", "Trạng thái đơn và kép của nhiễm sắc thể"], "difficulty_source": "Dấu hiệu nhiễm sắc thể còn kép quyết định kì phân bào", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}], "support_refs": ["2cbdc74db082|P1|17|None"], "official_anchor_available": false}]}
+2026-11-03T10:49:32.626631Z  WARN codex_skills::interface: ignoring interface.icon_small: icon path with '..' must resolve under plugin assets/
+2026-11-03T10:49:32.626650Z  WARN codex_skills::interface: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
+codex
+{
+  "samples": [
+    {
+      "id": "2168b8abae2ff8c3",
+      "stem": "Xét hai kiểu ống tiêu hóa được mô tả bằng lời: kiểu I có dạ dày đơn, ruột tịt nhỏ; kiểu II có dạ dày đơn, ruột tịt phát triển chứa vi sinh vật phân giải cellulose. Ở cả hai kiểu, thức ăn đi từ miệng qua thực quản, dạ dày, ruột non rồi đến ruột già; ruột tịt thông với vùng tiếp giáp giữa ruột non và ruột già. Xác định mỗi nhận định sau là đúng hay sai.",
+      "options": [],
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Ở cả hai kiểu, thức ăn đi qua dạ dày trước khi đến ruột non."
+        },
+        {
+          "sub": "b",
+          "text": "Hoạt động co bóp làm thức ăn nhỏ hơn trong dạ dày được xếp vào tiêu hóa hóa học."
+        },
+        {
+          "sub": "c",
+          "text": "Sự phát triển của ruột tịt ở kiểu II phù hợp với việc sử dụng thức ăn thực vật giàu cellulose."
+        },
+        {
+          "sub": "d",
+          "text": "Vì ruột tịt của kiểu II chứa vi sinh vật phân giải cellulose, quá trình lên men tại đây diễn ra trước khi thức ăn đi qua ruột non."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "answer": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "answer": "S",
+          "level": "TH"
+        }
+      ],
+      "solution": "a đúng: đọc trình tự đã cho thấy dạ dày nằm trước ruột non trên đường đi của thức ăn. b sai: co bóp làm nhỏ thức ăn là biến đổi cơ học; tiêu hóa hóa học làm biến đổi các phân tử thức ăn nhờ phản ứng hóa học. c đúng: ruột tịt phát triển tạo điều kiện cho vi sinh vật phân giải cellulose trong thức ăn thực vật. d sai: ruột tịt thông với vùng tiếp giáp ruột non và ruột già, nên sự lên men ở ruột tịt diễn ra sau khi thức ăn đã đi qua ruột non.",
+      "distractors": [
+        {
+          "label": null,
+          "sub": "b",
+          "mistake": "Đồng nhất mọi hoạt động tiêu hóa diễn ra trong dạ dày với tiêu hóa hóa học.",
+          "why_plausible": "Học sinh nhớ dạ dày có dịch tiêu hóa nhưng chưa phân biệt tác dụng của co bóp với tác dụng của enzyme."
+        },
+        {
+          "label": null,
+          "sub": "d",
+          "mistake": "Đặt mọi khoang lên men nhờ vi sinh vật ở phía trước ruột non.",
+          "why_plausible": "Học sinh có thể áp dụng vị trí lên men ở dạ cỏ cho cả động vật lên men ở ruột tịt."
+        }
+      ],
+      "level_reason": "Học sinh cần diễn giải mô tả cấu tạo, phân biệt biến đổi cơ học với hóa học và liên hệ ruột tịt với chức năng lên men theo kiến thức quen thuộc. Mức cao nhất của các nhận định là TH.",
+      "prerequisites": [
+        "Trình tự các bộ phận chính của ống tiêu hóa",
+        "Phân biệt tiêu hóa cơ học và tiêu hóa hóa học",
+        "Vai trò của vi sinh vật phân giải cellulose"
+      ],
+      "variation_guidance": "Có thể thay mô tả bằng sơ đồ chữ đầy đủ hoặc đổi vị trí khoang lên men; phải cung cấp rõ đường đi của thức ăn và điều chỉnh các nhận định tương ứng.",
+      "uncertainties": [
+        "Mẫu tổng hợp chỉ tham khảo kiểu cấu trúc được mô tả trong quan sát nguồn bên thứ ba cấp tỉnh; chưa có mốc đối chiếu chính thức cho mục tiêu này."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "64e2556ff0b9559b",
+      "stem": "Lipase xúc tác sự thủy phân loại chất nào sau đây?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Protein."
+        },
+        {
+          "label": "B",
+          "text": "Tinh bột."
+        },
+        {
+          "label": "C",
+          "text": "Triglyceride."
+        },
+        {
+          "label": "D",
+          "text": "Acid nucleic."
+        }
+      ],
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "answer": "C",
+          "level": "NB"
+        }
+      ],
+      "solution": "Chọn C. Lipase xúc tác thủy phân các liên kết ester trong triglyceride. Protein là cơ chất của protease; tinh bột là cơ chất của amylase; acid nucleic là cơ chất của nuclease.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Nhầm cơ chất của lipase với cơ chất của protease.",
+          "why_plausible": "Học sinh nhớ enzyme thường có bản chất protein rồi nhầm bản chất của enzyme với cơ chất mà enzyme tác động."
+        },
+        {
+          "label": "B",
+          "sub": null,
+          "mistake": "Nhầm lipase với amylase.",
+          "why_plausible": "Cả hai đều là enzyme tiêu hóa quen thuộc, dễ bị ghép sai với chất dinh dưỡng tương ứng."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Nhầm lipase với nuclease.",
+          "why_plausible": "Học sinh nhớ các nhóm enzyme thủy phân phân tử sinh học nhưng chưa nhớ đúng cặp enzyme và cơ chất."
+        }
+      ],
+      "level_reason": "Chỉ cần nhớ và nhận ra cơ chất đặc trưng của lipase trong một đơn vị kiến thức; không cần diễn giải dữ liệu hay thực hiện quy trình.",
+      "prerequisites": [
+        "Tính đặc hiệu của enzyme",
+        "Cơ chất của một số enzyme thủy phân thông dụng"
+      ],
+      "variation_guidance": "Có thể thay lipase bằng một enzyme thủy phân khác đã học và xây dựng phương án nhiễu từ những cặp enzyme và cơ chất thường bị nhầm.",
+      "uncertainties": [],
+      "missing_assets": []
+    },
+    {
+      "id": "b3a0ac724345bd4a",
+      "stem": "Trong giảm phân bình thường, các chromatid chị em tách nhau tại tâm động và phân li về hai cực tế bào ở kì nào?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Kì sau I."
+        },
+        {
+          "label": "B",
+          "text": "Kì sau II."
+        },
+        {
+          "label": "C",
+          "text": "Kì giữa II."
+        },
+        {
+          "label": "D",
+          "text": "Kì cuối II."
+        }
+      ],
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "answer": "B",
+          "level": "NB"
+        }
+      ],
+      "solution": "Chọn B. Ở kì sau II, các chromatid chị em tách nhau tại tâm động, trở thành các nhiễm sắc thể đơn và phân li về hai cực. Kì sau I phân li các nhiễm sắc thể tương đồng; kì giữa II là giai đoạn xếp nhiễm sắc thể trên mặt phẳng xích đạo; đến kì cuối II, sự phân li về hai cực đã hoàn tất.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Nhầm phân li nhiễm sắc thể tương đồng với phân li chromatid chị em.",
+          "why_plausible": "Cả hai kì sau đều có sự di chuyển vật chất di truyền về hai cực."
+        },
+        {
+          "label": "C",
+          "sub": null,
+          "mistake": "Nhầm giai đoạn chuẩn bị phân li với giai đoạn thực sự tách chromatid.",
+          "why_plausible": "Ở kì giữa II, nhiễm sắc thể đã gắn với thoi phân bào nên học sinh có thể cho rằng sự phân li đã diễn ra."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Nhầm thời điểm nhiễm sắc thể đã đến cực với thời điểm chúng đang phân li.",
+          "why_plausible": "Học sinh gắn việc hình thành các nhân con ở cuối giảm phân với sự tách chromatid."
+        }
+      ],
+      "level_reason": "Học sinh chỉ cần nhớ sự kiện đặc trưng của kì sau II và gọi đúng tên kì, phù hợp mức NB.",
+      "prerequisites": [
+        "Chromatid chị em và tâm động",
+        "Diễn biến chính của hai lần phân bào trong giảm phân"
+      ],
+      "variation_guidance": "Có thể thay bằng sự phân li của nhiễm sắc thể tương đồng ở lần phân bào thứ nhất; giữ yêu cầu nhận ra trực tiếp một sự kiện đã học.",
+      "uncertainties": [
+        "Mẫu tổng hợp chỉ tham khảo kiểu yêu cầu được mô tả trong quan sát nguồn bên thứ ba cấp tỉnh; chưa có mốc đối chiếu chính thức cho mục tiêu này."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "bd6bd2bd99774285",
+      "stem": "Một loài có bộ nhiễm sắc thể 2n = 8. Quan sát một tế bào đang giảm phân bình thường, người ta thấy các nhiễm sắc thể đang di chuyển về hai cực; nhóm đi về mỗi cực gồm 4 nhiễm sắc thể, mỗi nhiễm sắc thể vẫn có hai chromatid gắn nhau tại tâm động. Tế bào đang ở kì nào?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Kì giữa I."
+        },
+        {
+          "label": "B",
+          "text": "Kì sau II."
+        },
+        {
+          "label": "C",
+          "text": "Kì cuối I."
+        },
+        {
+          "label": "D",
+          "text": "Kì sau I."
+        }
+      ],
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "answer": "D",
+          "level": "TH"
+        }
+      ],
+      "solution": "Chọn D. Mỗi cực nhận 4 nhiễm sắc thể, bằng n của loài. Các nhiễm sắc thể đang di chuyển và vẫn ở trạng thái kép, cho thấy các nhiễm sắc thể tương đồng đang phân li trong khi chromatid chị em chưa tách nhau: đó là kì sau I. Kì giữa I chưa có sự phân li về hai cực; kì sau II có sự tách chromatid tạo nhiễm sắc thể đơn; ở kì cuối I, các nhiễm sắc thể đã đến hai cực.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Dựa vào trạng thái kép để chọn kì giữa I và bỏ qua hướng chuyển động.",
+          "why_plausible": "Nhiễm sắc thể ở cả kì giữa I và kì sau I đều gồm hai chromatid."
+        },
+        {
+          "label": "B",
+          "sub": null,
+          "mistake": "Chỉ dựa vào việc mỗi cực nhận n nhiễm sắc thể mà bỏ qua trạng thái đơn hay kép.",
+          "why_plausible": "Ở kì sau II, mỗi cực cũng nhận n nhiễm sắc thể nhưng các nhiễm sắc thể đó ở trạng thái đơn."
+        },
+        {
+          "label": "C",
+          "sub": null,
+          "mistake": "Đồng nhất trạng thái đang di chuyển về cực với trạng thái đã đến cực.",
+          "why_plausible": "Số lượng và trạng thái kép của nhiễm sắc thể ở mỗi cực khi kết thúc kì sau I được duy trì sang kì cuối I."
+        }
+      ],
+      "level_reason": "Học sinh cần diễn giải đồng thời trạng thái kép và sự di chuyển của nhiễm sắc thể để đối chiếu với các kì giảm phân. Đây là đọc biểu hiện của một quá trình quen thuộc, phù hợp TH.",
+      "prerequisites": [
+        "Ý nghĩa của bộ nhiễm sắc thể 2n và n",
+        "Phân biệt nhiễm sắc thể đơn với nhiễm sắc thể kép",
+        "Diễn biến của kì giữa, kì sau và kì cuối trong giảm phân"
+      ],
+      "variation_guidance": "Có thể đổi bộ nhiễm sắc thể hoặc mô tả nhiễm sắc thể đơn đang đi về cực để chuyển đáp án sang kì sau II; phải giữ số lượng và trạng thái nhiễm sắc thể nhất quán.",
+      "uncertainties": [
+        "Mẫu tổng hợp chỉ tham khảo kiểu yêu cầu được mô tả trong quan sát nguồn bên thứ ba cấp tỉnh; chưa có mốc đối chiếu chính thức cho mục tiêu này."
+      ],
+      "missing_assets": []
+    }
+  ]
+}
+tokens used
+13,345
+{
+  "samples": [
+    {
+      "id": "2168b8abae2ff8c3",
+      "stem": "Xét hai kiểu ống tiêu hóa được mô tả bằng lời: kiểu I có dạ dày đơn, ruột tịt nhỏ; kiểu II có dạ dày đơn, ruột tịt phát triển chứa vi sinh vật phân giải cellulose. Ở cả hai kiểu, thức ăn đi từ miệng qua thực quản, dạ dày, ruột non rồi đến ruột già; ruột tịt thông với vùng tiếp giáp giữa ruột non và ruột già. Xác định mỗi nhận định sau là đúng hay sai.",
+      "options": [],
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Ở cả hai kiểu, thức ăn đi qua dạ dày trước khi đến ruột non."
+        },
+        {
+          "sub": "b",
+          "text": "Hoạt động co bóp làm thức ăn nhỏ hơn trong dạ dày được xếp vào tiêu hóa hóa học."
+        },
+        {
+          "sub": "c",
+          "text": "Sự phát triển của ruột tịt ở kiểu II phù hợp với việc sử dụng thức ăn thực vật giàu cellulose."
+        },
+        {
+          "sub": "d",
+          "text": "Vì ruột tịt của kiểu II chứa vi sinh vật phân giải cellulose, quá trình lên men tại đây diễn ra trước khi thức ăn đi qua ruột non."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "answer": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "answer": "S",
+          "level": "TH"
+        }
+      ],
+      "solution": "a đúng: đọc trình tự đã cho thấy dạ dày nằm trước ruột non trên đường đi của thức ăn. b sai: co bóp làm nhỏ thức ăn là biến đổi cơ học; tiêu hóa hóa học làm biến đổi các phân tử thức ăn nhờ phản ứng hóa học. c đúng: ruột tịt phát triển tạo điều kiện cho vi sinh vật phân giải cellulose trong thức ăn thực vật. d sai: ruột tịt thông với vùng tiếp giáp ruột non và ruột già, nên sự lên men ở ruột tịt diễn ra sau khi thức ăn đã đi qua ruột non.",
+      "distractors": [
+        {
+          "label": null,
+          "sub": "b",
+          "mistake": "Đồng nhất mọi hoạt động tiêu hóa diễn ra trong dạ dày với tiêu hóa hóa học.",
+          "why_plausible": "Học sinh nhớ dạ dày có dịch tiêu hóa nhưng chưa phân biệt tác dụng của co bóp với tác dụng của enzyme."
+        },
+        {
+          "label": null,
+          "sub": "d",
+          "mistake": "Đặt mọi khoang lên men nhờ vi sinh vật ở phía trước ruột non.",
+          "why_plausible": "Học sinh có thể áp dụng vị trí lên men ở dạ cỏ cho cả động vật lên men ở ruột tịt."
+        }
+      ],
+      "level_reason": "Học sinh cần diễn giải mô tả cấu tạo, phân biệt biến đổi cơ học với hóa học và liên hệ ruột tịt với chức năng lên men theo kiến thức quen thuộc. Mức cao nhất của các nhận định là TH.",
+      "prerequisites": [
+        "Trình tự các bộ phận chính của ống tiêu hóa",
+        "Phân biệt tiêu hóa cơ học và tiêu hóa hóa học",
+        "Vai trò của vi sinh vật phân giải cellulose"
+      ],
+      "variation_guidance": "Có thể thay mô tả bằng sơ đồ chữ đầy đủ hoặc đổi vị trí khoang lên men; phải cung cấp rõ đường đi của thức ăn và điều chỉnh các nhận định tương ứng.",
+      "uncertainties": [
+        "Mẫu tổng hợp chỉ tham khảo kiểu cấu trúc được mô tả trong quan sát nguồn bên thứ ba cấp tỉnh; chưa có mốc đối chiếu chính thức cho mục tiêu này."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "64e2556ff0b9559b",
+      "stem": "Lipase xúc tác sự thủy phân loại chất nào sau đây?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Protein."
+        },
+        {
+          "label": "B",
+          "text": "Tinh bột."
+        },
+        {
+          "label": "C",
+          "text": "Triglyceride."
+        },
+        {
+          "label": "D",
+          "text": "Acid nucleic."
+        }
+      ],
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "answer": "C",
+          "level": "NB"
+        }
+      ],
+      "solution": "Chọn C. Lipase xúc tác thủy phân các liên kết ester trong triglyceride. Protein là cơ chất của protease; tinh bột là cơ chất của amylase; acid nucleic là cơ chất của nuclease.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Nhầm cơ chất của lipase với cơ chất của protease.",
+          "why_plausible": "Học sinh nhớ enzyme thường có bản chất protein rồi nhầm bản chất của enzyme với cơ chất mà enzyme tác động."
+        },
+        {
+          "label": "B",
+          "sub": null,
+          "mistake": "Nhầm lipase với amylase.",
+          "why_plausible": "Cả hai đều là enzyme tiêu hóa quen thuộc, dễ bị ghép sai với chất dinh dưỡng tương ứng."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Nhầm lipase với nuclease.",
+          "why_plausible": "Học sinh nhớ các nhóm enzyme thủy phân phân tử sinh học nhưng chưa nhớ đúng cặp enzyme và cơ chất."
+        }
+      ],
+      "level_reason": "Chỉ cần nhớ và nhận ra cơ chất đặc trưng của lipase trong một đơn vị kiến thức; không cần diễn giải dữ liệu hay thực hiện quy trình.",
+      "prerequisites": [
+        "Tính đặc hiệu của enzyme",
+        "Cơ chất của một số enzyme thủy phân thông dụng"
+      ],
+      "variation_guidance": "Có thể thay lipase bằng một enzyme thủy phân khác đã học và xây dựng phương án nhiễu từ những cặp enzyme và cơ chất thường bị nhầm.",
+      "uncertainties": [],
+      "missing_assets": []
+    },
+    {
+      "id": "b3a0ac724345bd4a",
+      "stem": "Trong giảm phân bình thường, các chromatid chị em tách nhau tại tâm động và phân li về hai cực tế bào ở kì nào?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Kì sau I."
+        },
+        {
+          "label": "B",
+          "text": "Kì sau II."
+        },
+        {
+          "label": "C",
+          "text": "Kì giữa II."
+        },
+        {
+          "label": "D",
+          "text": "Kì cuối II."
+        }
+      ],
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "answer": "B",
+          "level": "NB"
+        }
+      ],
+      "solution": "Chọn B. Ở kì sau II, các chromatid chị em tách nhau tại tâm động, trở thành các nhiễm sắc thể đơn và phân li về hai cực. Kì sau I phân li các nhiễm sắc thể tương đồng; kì giữa II là giai đoạn xếp nhiễm sắc thể trên mặt phẳng xích đạo; đến kì cuối II, sự phân li về hai cực đã hoàn tất.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Nhầm phân li nhiễm sắc thể tương đồng với phân li chromatid chị em.",
+          "why_plausible": "Cả hai kì sau đều có sự di chuyển vật chất di truyền về hai cực."
+        },
+        {
+          "label": "C",
+          "sub": null,
+          "mistake": "Nhầm giai đoạn chuẩn bị phân li với giai đoạn thực sự tách chromatid.",
+          "why_plausible": "Ở kì giữa II, nhiễm sắc thể đã gắn với thoi phân bào nên học sinh có thể cho rằng sự phân li đã diễn ra."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Nhầm thời điểm nhiễm sắc thể đã đến cực với thời điểm chúng đang phân li.",
+          "why_plausible": "Học sinh gắn việc hình thành các nhân con ở cuối giảm phân với sự tách chromatid."
+        }
+      ],
+      "level_reason": "Học sinh chỉ cần nhớ sự kiện đặc trưng của kì sau II và gọi đúng tên kì, phù hợp mức NB.",
+      "prerequisites": [
+        "Chromatid chị em và tâm động",
+        "Diễn biến chính của hai lần phân bào trong giảm phân"
+      ],
+      "variation_guidance": "Có thể thay bằng sự phân li của nhiễm sắc thể tương đồng ở lần phân bào thứ nhất; giữ yêu cầu nhận ra trực tiếp một sự kiện đã học.",
+      "uncertainties": [
+        "Mẫu tổng hợp chỉ tham khảo kiểu yêu cầu được mô tả trong quan sát nguồn bên thứ ba cấp tỉnh; chưa có mốc đối chiếu chính thức cho mục tiêu này."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "bd6bd2bd99774285",
+      "stem": "Một loài có bộ nhiễm sắc thể 2n = 8. Quan sát một tế bào đang giảm phân bình thường, người ta thấy các nhiễm sắc thể đang di chuyển về hai cực; nhóm đi về mỗi cực gồm 4 nhiễm sắc thể, mỗi nhiễm sắc thể vẫn có hai chromatid gắn nhau tại tâm động. Tế bào đang ở kì nào?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Kì giữa I."
+        },
+        {
+          "label": "B",
+          "text": "Kì sau II."
+        },
+        {
+          "label": "C",
+          "text": "Kì cuối I."
+        },
+        {
+          "label": "D",
+          "text": "Kì sau I."
+        }
+      ],
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "answer": "D",
+          "level": "TH"
+        }
+      ],
+      "solution": "Chọn D. Mỗi cực nhận 4 nhiễm sắc thể, bằng n của loài. Các nhiễm sắc thể đang di chuyển và vẫn ở trạng thái kép, cho thấy các nhiễm sắc thể tương đồng đang phân li trong khi chromatid chị em chưa tách nhau: đó là kì sau I. Kì giữa I chưa có sự phân li về hai cực; kì sau II có sự tách chromatid tạo nhiễm sắc thể đơn; ở kì cuối I, các nhiễm sắc thể đã đến hai cực.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Dựa vào trạng thái kép để chọn kì giữa I và bỏ qua hướng chuyển động.",
+          "why_plausible": "Nhiễm sắc thể ở cả kì giữa I và kì sau I đều gồm hai chromatid."
+        },
+        {
+          "label": "B",
+          "sub": null,
+          "mistake": "Chỉ dựa vào việc mỗi cực nhận n nhiễm sắc thể mà bỏ qua trạng thái đơn hay kép.",
+          "why_plausible": "Ở kì sau II, mỗi cực cũng nhận n nhiễm sắc thể nhưng các nhiễm sắc thể đó ở trạng thái đơn."
+        },
+        {
+          "label": "C",
+          "sub": null,
+          "mistake": "Đồng nhất trạng thái đang di chuyển về cực với trạng thái đã đến cực.",
+          "why_plausible": "Số lượng và trạng thái kép của nhiễm sắc thể ở mỗi cực khi kết thúc kì sau I được duy trì sang kì cuối I."
+        }
+      ],
+      "level_reason": "Học sinh cần diễn giải đồng thời trạng thái kép và sự di chuyển của nhiễm sắc thể để đối chiếu với các kì giảm phân. Đây là đọc biểu hiện của một quá trình quen thuộc, phù hợp TH.",
+      "prerequisites": [
+        "Ý nghĩa của bộ nhiễm sắc thể 2n và n",
+        "Phân biệt nhiễm sắc thể đơn với nhiễm sắc thể kép",
+        "Diễn biến của kì giữa, kì sau và kì cuối trong giảm phân"
+      ],
+      "variation_guidance": "Có thể đổi bộ nhiễm sắc thể hoặc mô tả nhiễm sắc thể đơn đang đi về cực để chuyển đáp án sang kì sau II; phải giữ số lượng và trạng thái nhiễm sắc thể nhất quán.",
+      "uncertainties": [
+        "Mẫu tổng hợp chỉ tham khảo kiểu yêu cầu được mô tả trong quan sát nguồn bên thứ ba cấp tỉnh; chưa có mốc đối chiếu chính thức cho mục tiêu này."
+      ],
+      "missing_assets": []
+    }
+  ]
+}

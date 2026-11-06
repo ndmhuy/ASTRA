@@ -1,0 +1,183 @@
+{
+  "input": {
+    "subject": "hoa-hoc",
+    "kind": "paper",
+    "year": 2025,
+    "source": "official/2025-web/hoa-hoc-2025-ma-0301.pdf",
+    "slug": "hoa-hoc-2025-ma-0301"
+  },
+  "verification": {
+    "checked_addresses": [
+      "Page 1: header, exam code and duration; Part I questions 1–10, including all answer choices and formulas",
+      "Page 2: Part I questions 11–18, including all answer choices, ion charges in question 12, electron configurations, and the coordination-complex figure in question 15",
+      "Page 3: Part II question 1 reaction scheme, values, and IR table; question 2 titration procedure, volumes, formula, and apparatus figure; question 3 prompt and caprolactam reaction figure",
+      "Page 4: Part II question 3 statements and question 4 reaction/electrolysis statements; Part III questions 1–6, including peptide structure and combustion-enthalpy table"
+    ],
+    "disagreements": [
+      {
+        "location": "Part I, question 12: four listed intermediates",
+        "before": "$(\\mathrm{CH_3})_3\\mathrm{C}$, $(\\mathrm{CH_3})_2\\mathrm{CH}$, $\\mathrm{CH_3}$ và $(\\mathrm{CH_3})_2\\mathrm{CH}$? Các tiểu phân được in kèm dấu điện tích trên ảnh nguồn; dấu điện tích không xác định chắc chắn ở bản ảnh này: [?].",
+        "after": "$(\\mathrm{CH_3})_3\\mathrm{C}^+$, $(\\mathrm{CH_3})_2\\mathrm{CH}^+$, $\\mathrm{CH_3}^-$ và $(\\mathrm{CH_3})_2\\mathrm{CH}^-$?",
+        "reason": "The source prints + on the first two carbon species and − on the last two; the transcript omits these signs and substitutes an uncertainty note.",
+        "settled_by_image": true
+      },
+      {
+        "location": "Part I, question 15: alternate complex formula",
+        "before": "(hay $[\\mathrm{Cu(H_2O)_6}]^{2+}$)",
+        "after": "(hay $[\\mathrm{Cu(H_2O)_6}]^{2+}$)",
+        "reason": "The source gives the alternate notation $[\\mathrm{Cu(H_2O)_6}]^{2+}$? Image reads $[\\mathrm{Cu(H_2O)_6}]^{2+}$, so no correction is established.",
+        "settled_by_image": false
+      },
+      {
+        "location": "Part I, question 13, option A",
+        "before": "$1s^22s^22p^63s^23s^2$",
+        "after": "$1s^22s^22p^63s^2$",
+        "reason": "The source option A ends at 3s²; it does not repeat 3s².",
+        "settled_by_image": true
+      },
+      {
+        "location": "Part I, question 13, option D",
+        "before": "$1s^22s^22p^63s^23p^1$",
+        "after": "$1s^22s^22p^63s^23p^1$",
+        "reason": "The source option D reads 1s²2s²2p⁶3s²3p¹, matching the transcript; this is not a disagreement.",
+        "settled_by_image": false
+      },
+      {
+        "location": "Part II, question 2(a)",
+        "before": "dụng cụ kí hiệu là (B)",
+        "after": "dụng cụ kí hiệu là (A)",
+        "reason": "The source statement itself names (B); the apparatus drawing labels the burette (A) and beaker (B). The transcript accurately reproduces the printed statement, so no correction is needed.",
+        "settled_by_image": false
+      }
+    ],
+    "missing_figures": [],
+    "unreadable": [],
+    "independent_key": null,
+    "limitations": [
+      "Only exam pages 1–4 are attached; no printed key page is present, so the printed key cannot be independently transcribed or checked.",
+      "Same-model independence cannot be established from the provided context; this pass uses Luna."
+    ],
+    "pass": false
+  },
+  "failures": [],
+  "model": "gpt-6-luna",
+  "verification_model": "gpt-6-luna",
+  "calls": "/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/outputs/calls/ocr-hoa-hoc--hoa-hoc-2025-ma-0301",
+  "matched_key_source": {
+    "path": "/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/transcriptions/hoa-hoc/2025-answer/key.json",
+    "exact_code": "0301",
+    "note": "Existing official answer table; not solved or inferred."
+  },
+  "key_coverage": {
+    "mismatches": [],
+    "incomplete": [],
+    "basis": "exact year/code join to existing official-answer transcription",
+    "source": {
+      "path": "/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/transcriptions/hoa-hoc/2025-answer/key.json",
+      "exact_code": "0301",
+      "note": "Existing official answer table; not solved or inferred."
+    },
+    "new_independent_key_read": false
+  },
+  "qa_failures": [],
+  "source_readability_resolution": {
+    "reviewer": "Sol parent visual review",
+    "source_images": [
+      {
+        "path": "/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/outputs/source-reviews/hoa-hoc-2025-page1.jpg",
+        "sha256": "e8acd4203ff9141d4e3acfe66f1aa0d383e8d3ac43f3374cc09d21f0bed884b4",
+        "derived_from": "/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/work/hoa-hoc--hoa-hoc-2025-ma-0301/p1-1.jpg"
+      },
+      {
+        "path": "/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/outputs/source-reviews/hoa-hoc-2025-page2.jpg",
+        "sha256": "7f86837cc29c2dded4a5171a8ec39b5c7c4c60893513c21853ed86c4db7cf115",
+        "derived_from": "/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/work/hoa-hoc--hoa-hoc-2025-ma-0301/p2-2.jpg"
+      }
+    ],
+    "reason": "Đã phóng vùng điện tích/dấu chấm gốc tự do và cấu hình electron. Lượt hai đã đọc sai một số ký hiệu, nên sửa trực tiếp theo hình; giữ các phương án sai như nguồn, không đổi chúng thành phương án hợp lý hơn. Các vị trí ban đầu được gắn cờ đã được giải quyết, không suy từ đáp án khoanh.",
+    "original_structure": {
+      "subject": "hoa-hoc",
+      "province": null,
+      "exam": "Kỳ thi tốt nghiệp trung học phổ thông năm 2025 — đề thi chính thức",
+      "round": null,
+      "ma_de": "0301",
+      "pages": 4,
+      "parts": [
+        {
+          "part": "I",
+          "type": "mcq",
+          "count": 18
+        },
+        {
+          "part": "II",
+          "type": "true_false",
+          "count": 4
+        },
+        {
+          "part": "III",
+          "type": "short_answer",
+          "count": 6
+        }
+      ],
+      "total_cau": 28,
+      "unreadable_count": 1,
+      "answer_key_present": false,
+      "figures": [
+        {
+          "cau": "15",
+          "file": "images/cau_15.png",
+          "page": 2,
+          "box": [
+            718,
+            338,
+            818,
+            433
+          ]
+        },
+        {
+          "cau": "2 phần II",
+          "file": "images/cau_2_phan_2.png",
+          "page": 3,
+          "box": [
+            769,
+            243,
+            867,
+            452
+          ]
+        },
+        {
+          "cau": "3 phần II",
+          "file": "images/cau_3_phan_2.png",
+          "page": 3,
+          "box": [
+            178,
+            758,
+            642,
+            939
+          ]
+        },
+        {
+          "cau": "3 phần III",
+          "file": "images/cau_3_phan_3.png",
+          "page": 4,
+          "box": [
+            149,
+            350,
+            642,
+            424
+          ]
+        }
+      ],
+      "figure_count": 4,
+      "missing_pages": []
+    },
+    "original_failures": [
+      "Lượt hai chưa đạt",
+      "Có chỗ không đọc được"
+    ],
+    "corrections_count": 4,
+    "no_teacher_approval": true
+  },
+  "qa_content_failures": [],
+  "qa_key_failures": []
+}

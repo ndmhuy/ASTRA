@@ -1,0 +1,182 @@
+status: ocr-draft
+source: official/2026-provincial-toan/de-khao-sat-chat-luong-toan-12-nam-2025-2026-so-gddt-ha-noi/paper.pdf; đề khảo sát chất lượng học sinh lớp 12 cấp THPT, Hà Nội, năm học 2025–2026; mã đề 1307
+
+# PHẦN I. Câu trắc nghiệm nhiều phương án lựa chọn
+Thí sinh trả lời từ câu 1 đến câu 12. Mỗi câu hỏi, thí sinh chỉ chọn một phương án.
+
+## Câu 1
+Kết quả kiểm tra Toán của 40 học sinh lớp 12A được cho bởi bảng sau:
+
+| Khoảng điểm | [0;2) | [2;4) | [4;6) | [6;8) | [8;10] |
+|---|---:|---:|---:|---:|---:|
+| Số học sinh | 0 | 8 | 15 | 10 | 7 |
+
+Mốt của mẫu số liệu ghép nhóm trên thuộc khoảng điểm nào sau đây?
+
+A. [2;4).  B. [6;8).  C. [4;6).  D. [8;10).
+
+## Câu 2
+Cho hàm số $y=f(x)$ liên tục và không âm trên đoạn $[0;2]$. Thể tích khối tròn xoay sinh ra khi quay quanh trục $Ox$ hình phẳng giới hạn bởi đồ thị hàm số $y=f(x)$, trục hoành và hai đường thẳng $x=0, x=2$ là
+
+A. $\int_0^2 [f(x)]^2\,dx$.  B. $\pi\int_0^2 [f(x)]^2\,dx$.  C. $\pi\int_0^2 f(x)\,dx$.  D. $\int_0^2 f(x)\,dx$.
+
+## Câu 3
+Tập nghiệm của bất phương trình $\log_2(x-1)\le 3$ là
+
+A. [1;9].  B. (1;9].  C. (-∞;9].  D. (1;9).
+
+## Câu 4
+Cho hàm số $y=f(x)$ có đạo hàm trên $\mathbb R$ và có bảng xét dấu của $f'(x)$ như sau:
+
+| $x$ | $-\infty$ | $-3$ | $1$ | $2$ | $+\infty$ |
+|---|---:|---:|---:|---:|---:|
+| $f'(x)$ | $-$ | 0 | $+$ | 0 | $+$ | 0 | $-$ |
+
+Số điểm cực trị của hàm số $y=f(x)$ là
+
+A. 2.  B. 1.  C. 3.  D. 0.
+
+## Câu 5
+Trong không gian với hệ trục tọa độ $Oxyz$, cho mặt phẳng $(P):x-2y+2z-1=0$. Một vectơ pháp tuyến của mặt phẳng $(P)$ có tọa độ là
+
+A. (1;−2;2).  B. (−1;−2;2).  C. (1;2;2).  D. (−1;1;2).
+
+## Câu 6
+Cho cấp số nhân $(u_n)$ có số hạng đầu tiên $u_1=3$ và công bội $q=-2$. Số hạng thứ tư của cấp số nhân đã cho là
+
+A. $u_4=-48$.  B. $u_4=-24$.  C. $u_4=-4$.  D. $u_4=48$.
+
+## Câu 7
+Cho hình hộp $ABCD.A'B'C'D'$ (tham khảo hình vẽ). Khi đó, tổng $\overrightarrow{AB}+\overrightarrow{AD}+\overrightarrow{DD'}$ bằng
+
+[HÌNH: Hình hộp $ABCD.A'B'C'D'$ với các đỉnh được ghi nhãn.]
+![](images/cau_7.png)
+
+A. $\overrightarrow{AD'}$.  B. $\overrightarrow{C'A}$.  C. $\overrightarrow{AC'}$.  D. $\overrightarrow{D'A}$.
+
+## Câu 8
+Họ nguyên hàm của hàm số $f(x)=x^7$ là
+
+A. $\frac{x^8}{8}+C$.  B. $7x^6+C$.  C. $8x^8+C$.  D. $\frac{x^7}{7}+C$.
+
+## Câu 9
+Cho hình chóp $O.ABC$ có $OA, OB, OC$ đôi một vuông góc với nhau và $OA=a, OB=b, OC=c$. Thể tích của khối chóp $O.ABC$ bằng
+
+A. $abc$.  B. $\frac{abc}{3}$.  C. $\frac{abc}{2}$.  D. $\frac{abc}{6}$.
+
+## Câu 10
+Tập xác định của hàm số $y=\tan x$ là
+
+A. $\mathbb R\setminus\{\frac\pi2+2k\pi\mid k\in\mathbb Z\}$.  B. $\mathbb R\setminus\{k\pi\mid k\in\mathbb Z\}$.  C. $\mathbb R\setminus\{2k\pi\mid k\in\mathbb Z\}$.  D. $\mathbb R\setminus\{\frac\pi2+k\pi\mid k\in\mathbb Z\}$.
+
+## Câu 11
+Trong không gian với hệ trục tọa độ $Oxyz$, cho vectơ $\vec u=3\vec i-2\vec j+\vec k$. Tọa độ của vectơ $\vec u$ là
+
+A. (1;3;−2).  B. (3;1;−2).  C. (3;−2;1).  D. (−2;3;1).
+
+## Câu 12
+Cho hàm số $y=f(x)$ có đồ thị như hình vẽ. Tổng của giá trị lớn nhất và giá trị nhỏ nhất của hàm số đã cho trên đoạn $[-2;2]$ bằng
+
+[HÌNH: Đồ thị hàm số trên đoạn $[-2;2]$, có cực đại $-1$ và giá trị nhỏ nhất $-5$.]
+![](images/cau_12.png)
+
+A. 0.  B. −1.  C. −5.  D. −6.
+
+# PHẦN II. Câu trắc nghiệm đúng sai
+Thí sinh trả lời từ câu 1 đến câu 4. Trong mỗi ý a), b), c), d) ở mỗi câu hỏi, thí sinh chọn đúng hoặc sai.
+
+## Câu 1
+Một người đang điều khiển ô tô chạy trên đường cao tốc. Khi cách trạm thu phí 1000 m, tốc độ của ô tô là 90 km/h. Sau đó 20 giây, người điều khiển ô tô bắt đầu giảm tốc với tốc độ $v(t)=at+b$ (m/s), trong đó $t$ là thời gian tính bằng giây kể từ khi bắt đầu giảm tốc và $v(t)>0$ với mọi $t\in[0;30]$. Sau 30 giây kể từ khi bắt đầu giảm tốc, ô tô đến trạm thu phí.
+
+a) Quãng đường từ vị trí ô tô bắt đầu giảm tốc đến trạm thu phí là 500 m.
+
+b) Giá trị của $b$ là 90.
+
+c) Giá trị của $a$ là $-\frac59$.
+
+d) Tốc độ tối đa cho phép của phương tiện khi qua trạm thu phí là 30 km/h. Người điều khiển ô tô đó đã tuân thủ đúng tốc độ quy định khi đi qua trạm thu phí.
+
+## Câu 2
+Cho hàm số $y=\frac{ax^2+bx+c}{x+d}$ $(a\ne0)$ có đồ thị là đường cong $(C)$. Các đường thẳng $d_1,d_2$ lần lượt là tiệm cận đứng và tiệm cận xiên của đường cong $(C)$ như hình vẽ.
+
+[HÌNH: Đồ thị phân thức với tiệm cận đứng $d_1$ và tiệm cận xiên $d_2$, các giao điểm trục tọa độ được đánh dấu.]
+![](images/cau_2.png)
+
+a) Đồ thị $(C)$ đi qua điểm có tọa độ (0;2).
+
+b) Đồ thị $(C)$ có tiệm cận đứng là đường thẳng $x=-1$.
+
+c) Đồ thị $(C)$ có tiệm cận xiên là đường thẳng $y=x$.
+
+d) Giá trị của tổng $a+b+c+d$ là một số âm.
+
+## Câu 3
+Cho hình hộp chữ nhật $ABCD.A'B'C'D'$ có $AB=4, AD=3$ và $AA'=12$. Chọn hệ trục tọa độ $Oxyz$ với gốc $O$ trùng với điểm $A'$; các tia $A'B', A'D', A'A$ lần lượt trùng với các tia $Ox, Oy, Oz$ (tham khảo hình vẽ). Gọi $M$ là trung điểm của đoạn thẳng $AB$.
+
+[HÌNH: Hình hộp chữ nhật $ABCD.A'B'C'D'$ với các cạnh kích thước và hệ trục tọa độ gốc tại $A'$.]
+![](images/cau_3.png)
+
+a) Tọa độ của điểm $D$ là (0;3;12).
+
+b) Tọa độ của vectơ $\overrightarrow{MD}$ là (2;−3;0).
+
+c) Một vectơ pháp tuyến của mặt phẳng $(MDC')$ có tọa độ là (3;2;1).
+
+d) Khoảng cách từ điểm $A'$ đến mặt phẳng $(MDC')$ lớn hơn 5.
+
+## Câu 4
+Trong vòng chung kết của cuộc thi ĐƯỜNG ĐẾN VINH QUANG có 4 thí sinh An, Bình, Toàn và Phương tham gia thi đấu. Sau khi An, Bình và Toàn hoàn thành phần thi cuối của mình, điểm số của ba bạn đạt được lần lượt là 180 điểm, 200 điểm và 170 điểm. Bạn Phương là thí sinh cuối cùng bước vào phần thi cuối với điểm số hiện có là 190 điểm.
+
+Tại phần thi cuối, mỗi thí sinh phải trả lời 3 câu hỏi thuộc ba lĩnh vực: Tự nhiên, Xã hội và Tiếng Anh. Mỗi câu trả lời đúng được 20 điểm, trả lời sai hoặc không trả lời bị trừ 10 điểm. Thí sinh có quyền sử dụng “Ngôi sao hy vọng” tối đa một lần cho một trong ba câu hỏi, nếu trả lời đúng nhận được 40 điểm, trả lời sai hoặc không trả lời bị trừ 20 điểm.
+
+Biết xác suất Phương trả lời đúng câu hỏi thuộc lĩnh vực Tự nhiên, Xã hội và Tiếng Anh lần lượt là 0,7; 0,4 và 0,3. Giả thiết rằng việc trả lời đúng mỗi câu hỏi không làm thay đổi xác suất trả lời đúng hoặc sai các câu hỏi còn lại.
+
+a) Xác suất để Phương trả lời sai câu hỏi thuộc lĩnh vực Tự nhiên là 0,3.
+
+b) Xác suất để Phương trả lời đúng cả ba câu hỏi là 0,084.
+
+c) Xác suất để Phương trả lời đúng ít nhất một trong ba câu hỏi là 0,916.
+
+d) Nếu Phương chọn “Ngôi sao hy vọng” ở câu hỏi thuộc lĩnh vực Tự nhiên thì xác suất để Phương trở thành quán quân của cuộc thi này là 0,736.
+
+# PHẦN III. Câu trắc nghiệm trả lời ngắn
+Thí sinh trả lời từ câu 1 đến câu 6.
+
+## Câu 1
+Anh Tú vay ngân hàng 300 triệu đồng để mua xe ô tô với lãi suất cố định 7,2%/năm theo hình thức trả góp hằng tháng, trong thời hạn 12 tháng (ứng với 12 kì trả nợ). Trong thời hạn đó, cuối mỗi kì trả nợ, anh Tú phải trả 25 triệu đồng tiền gốc (ứng với 300 triệu đồng chia đều cho 12 tháng) và một khoản tiền lãi được tính theo số tiền dư nợ còn lại. Sau 12 tháng, tổng số tiền lãi anh Tú phải trả ngân hàng là bao nhiêu triệu đồng (kết quả làm tròn đến hàng phần mười)?
+
+## Câu 2
+Cho hình vuông $ABCD$ có độ dài cạnh bằng 1. Cung $AC$ là một phần tư đường tròn tâm $D$, bán kính $DA$ (tham khảo hình vẽ). Giả sử $P$ là điểm thay đổi trên cung $AC$ ($P$ khác $A$ và $C$). Tiếp tuyến tại điểm $P$ của cung $AC$ cắt các đoạn thẳng $AB, BC$ theo thứ tự tại các điểm $M,N$. Diện tích lớn nhất của tam giác $BMN$ bằng bao nhiêu (kết quả làm tròn đến hàng phần trăm)?
+
+[HÌNH: Hình vuông $ABCD$, cung tròn $AC$ tâm $D$, tiếp tuyến tại $P$ cắt $AB$ tại $M$ và $BC$ tại $N$.]
+![](images/cau_2_p3.png)
+
+## Câu 3
+Người ta trang trí một bảng ô vuông $4\times4$ (như hình 1) bởi các ngôi sao và các bông hoa giống nhau. Mỗi ô vuông nhỏ được dán một ngôi sao hoặc một bông hoa, sao cho trong mỗi hàng hoặc mỗi cột của bảng ô vuông đều có 2 ngôi sao và 2 bông hoa (tham khảo một cách dán trong hình 2). Có tất cả bao nhiêu cách trang trí bảng ô vuông thỏa mãn yêu cầu trên?
+
+[HÌNH: Hai bảng ô vuông 4×4: bảng trống và một cách xếp xen kẽ ngôi sao, bông hoa.]
+![](images/cau_3_p4.png)
+
+## Câu 4
+Cho hình chóp tứ giác $S.ABCD$ có đáy $ABCD$ là hình vuông cạnh bằng 2. Biết rằng $SA$ vuông góc với mặt phẳng $(ABCD)$ và $SA=\sqrt6$ (tham khảo hình vẽ). Góc phẳng nhị diện $[S,BD,C]$ có số đo bằng bao nhiêu độ?
+
+[HÌNH: Hình chóp $S.ABCD$ có đáy hình vuông, cạnh bên $SA$ vuông góc đáy.]
+![](images/cau_4_p4.png)
+
+## Câu 5
+Trong lưới ô vuông có hai đường parabol như hình vẽ. Biết rằng mỗi ô vuông nhỏ có cạnh bằng 1 cm. Diện tích của hình phẳng trong lưới ô vuông được giới hạn bởi hai đường parabol (phần gạch chéo) bằng bao nhiêu centimet vuông (kết quả làm tròn đến hàng phần trăm)?
+
+[HÌNH: Hai parabol trên lưới ô vuông; phần diện tích giữa hai đường được gạch chéo.]
+![](images/cau_5_p4.png)
+
+## Câu 6
+Sau khi một loại thuốc kháng sinh được tiêm vào cơ thể thì nồng độ của thuốc trong máu sẽ giảm dần theo thời gian do quá trình chuyển hóa. Nồng độ thuốc trong máu sau $t$ giờ kể từ khi tiêm được mô hình hóa bởi công thức $C(t)=C_0e^{-rt}$ (mg/lít).
+
+Trong đó: $C_0$ là nồng độ thuốc trong máu ngay sau khi tiêm; $r$ là hằng số dương đo tốc độ phân hủy của thuốc; $e\approx2,718$.
+
+Biết rằng ngay sau khi tiêm, nồng độ thuốc trong máu là 15 mg/lít và sau đó 4 giờ nồng độ thuốc giảm còn 10 mg/lít. Để đạt hiệu quả điều trị, bác sĩ sẽ tiêm lại một liều mới khi nồng độ thuốc trong máu của bệnh nhân giảm xuống và còn ít nhất 6 mg/lít. Theo mô hình trên, để đạt hiệu quả điều trị thì khoảng thời gian nhiều nhất giữa hai lần tiêm thuốc là bao nhiêu giờ (kết quả làm tròn đến hàng đơn vị)?
+
+HẾT
+
+- Học sinh không được sử dụng tài liệu.
+- Giám thị không giải thích gì thêm.

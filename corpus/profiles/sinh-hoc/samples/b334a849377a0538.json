@@ -1,0 +1,125 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "b334a849377a0538",
+    "topic": "Sinh thái học",
+    "part": "P3",
+    "level": "TH",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Mô tả bằng lời sơ đồ bố trí ô mẫu cùng diện tích vùng khảo sát, kích thước ô và số cá thể đếm được.",
+        "task": "Ước tính tổng số cá thể của quần thể từ các ô mẫu.",
+        "reasoning": "Tổng hợp số cá thể và diện tích đã lấy mẫu; tính mật độ trung bình; nhân mật độ với diện tích toàn vùng; làm tròn theo yêu cầu.",
+        "combines": [
+          "Phương pháp ô mẫu",
+          "Mật độ quần thể",
+          "Ước tính kích thước quần thể"
+        ],
+        "difficulty_source": "Ngoại suy tuyến tính theo diện tích bằng quy trình lấy mẫu quen thuộc",
+        "evidence_uncertainty": "Sơ đồ chỉ được mô tả bằng lời; đủ số liệu để tính. Kết quả là ước tính theo mật độ mẫu, chưa có bằng chứng độc lập về mức đại diện của các ô.",
+        "evidence_class": "official"
+      },
+      {
+        "given": "Bảng diện tích phân bố và mật độ của các quần thể cùng loài.",
+        "task": "Tính kích thước các quần thể và báo giá trị lớn nhất.",
+        "reasoning": "Đổi mật độ thành số cá thể bằng diện tích tương ứng; so sánh các tích và chọn giá trị lớn nhất.",
+        "combines": [
+          "Mật độ quần thể",
+          "Kích thước quần thể",
+          "Đọc bảng"
+        ],
+        "difficulty_source": "Áp dụng trực tiếp một quan hệ định lượng rồi so sánh",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Bảng tỉ lệ các quá trình bổ sung và mất cá thể tại các thời điểm.",
+        "task": "Tính tỉ lệ tăng trưởng ròng ở thời điểm được yêu cầu.",
+        "reasoning": "Chọn đúng cột thời điểm; cộng các nguồn bổ sung cá thể; trừ các nguồn mất cá thể và biểu diễn theo đơn vị yêu cầu.",
+        "combines": [
+          "Sinh sản và tử vong",
+          "Nhập cư và xuất cư",
+          "Đọc bảng"
+        ],
+        "difficulty_source": "Chọn đúng thời điểm và gán đúng dấu cho các dòng số liệu",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Bảng liên hệ dạng cơ quan kiếm ăn với loại thức ăn và một thay đổi làm giảm nguồn tài nguyên.",
+        "task": "Xác định nhóm sinh vật chịu tác động bất lợi trực tiếp nhất.",
+        "reasoning": [
+          "Xác định nguồn thức ăn bị giảm bởi thay đổi môi trường.",
+          "Ghép nguồn đó với nhóm sử dụng chuyên biệt trong bảng."
+        ],
+        "combines": [
+          "Ổ sinh thái dinh dưỡng",
+          "Quan hệ sinh vật với nguồn sống"
+        ],
+        "difficulty_source": "Quan hệ nguồn thức ăn được cung cấp trực tiếp",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "b68b84764a9b|P3|6|None",
+      "55c12f561006|P3|4|None",
+      "55c12f561006|P3|5|None",
+      "61a0198fbfda|P3|3|None"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "b334a849377a0538",
+    "stem": "Để ước tính số cây mã đề trong một bãi cỏ rộng 720 m², một nhóm khảo sát đặt ngẫu nhiên sáu ô mẫu không chồng lấn, mỗi ô rộng 2 m². Số cây đếm được trong từng ô lần lượt là 5, 8, 6, 7, 4 và 6. Dùng mật độ trung bình của các ô mẫu để ước tính số cây mã đề trong toàn bãi cỏ. Kết quả là bao nhiêu cây?",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "2160",
+        "level": "TH"
+      }
+    ],
+    "solution": "Tổng số cây trong các ô mẫu là 5 + 8 + 6 + 7 + 4 + 6 = 36 cây. Tổng diện tích lấy mẫu là 6 × 2 = 12 m². Mật độ trung bình mẫu là 36/12 = 3 cây/m². Số cây ước tính trong toàn bãi là 3 × 720 = 2160 cây.",
+    "distractors": [],
+    "level_reason": "Học sinh thực hiện quy trình ô mẫu quen thuộc: tính mật độ trung bình rồi nhân với diện tích khảo sát. Các bước tính liên tiếp vẫn thuộc TH vì cách ước tính đã được chỉ rõ, không đòi hỏi xây dựng phương án hay mô hình mới.",
+    "prerequisites": [
+      "Mật độ quần thể",
+      "Phương pháp lấy mẫu bằng ô",
+      "Quan hệ giữa mật độ, diện tích và kích thước quần thể"
+    ],
+    "variation_guidance": "Có thể thay diện tích bãi, diện tích mỗi ô và số cây đếm được. Phải cho đủ diện tích lấy mẫu và nêu rõ các ô không chồng lấn.",
+    "uncertainties": [
+      "Đây là số liệu giả định phục vụ câu hỏi minh họa, không phải kết quả khảo sát thật.",
+      "2160 là giá trị ước tính theo mật độ mẫu; đề bài chưa cung cấp bằng chứng độc lập về mức độ đại diện của các ô hoặc sai số ước tính."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "b334a849377a0538",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "2160",
+        "level": "TH"
+      }
+    ],
+    "solution": "Tổng số cây trong sáu ô là 5 + 8 + 6 + 7 + 4 + 6 = 36 cây. Tổng diện tích mẫu là 6 × 2 = 12 m². Mật độ trung bình là 36/12 = 3 cây/m². Số cây ước tính trên toàn bãi là 3 × 720 = 2160 cây.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Thực hiện quy trình quen thuộc: tính mật độ trung bình trong các ô mẫu rồi nhân với diện tích toàn bãi. Các phép tính liên tiếp vẫn thuộc TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/sinh-hoc/fcaf3fdbc7cbd9c08f3bdc72dd589a46e658d47182db703d3afad0f3629989f1.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/sinh-hoc/fcaf3fdbc7cbd9c08f3bdc72dd589a46e658d47182db703d3afad0f3629989f1.resolve.json"
+}

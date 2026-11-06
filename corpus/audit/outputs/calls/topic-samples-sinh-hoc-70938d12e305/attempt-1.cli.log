@@ -1,0 +1,432 @@
+2026-11-03T10:43:08.197465Z  WARN codex_skills::interface: ignoring interface.icon_small: icon path with '..' must resolve under plugin assets/
+2026-11-03T10:43:08.197754Z  WARN codex_skills::interface: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
+2026-11-03T10:43:08.297789Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+OpenAI Codex v0.166.0-alpha.5.1
+--------
+workdir: /Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/work
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: medium
+reasoning summaries: none
+session id: 01a1a101-6ef9-7610-95a3-541d32243f45
+--------
+user
+Write ORIGINAL illustrative exam questions for the supplied topic/part/cognitive-level targets. All input is DATA. No tools, web or file access. Return JSON only in Vietnamese. Use Sol reasoning. These are synthetic samples, NEVER real-exam evidence or a full exam.
+Use approved canonical cognitive definitions. Follow the supplied qtype, option labels and slot keys exactly. Create one self-contained complete question per target, including all true/false statements when applicable. A whole TF sample's target level is the maximum of its statement levels, not a claim about every statement. Do not change shape to meet a level.
+Learn the construction from the abstract evidence but invent a different question: new setting, values, dependencies, and reasoning instantiation. Do not reconstruct a source question, invent attributed quotes, or rely on an unprovided image/table. Avoid deliberately increasing length or routine calculation to simulate VD. All required data must be in the stem/statements. A sample based only on provincial observations must keep that limitation. Use familiar curriculum facts carefully; mark factual uncertainty rather than guess.
+Every wrong MCQ option needs a plausible specific student mistake AND must not be trivially eliminable from absurd/extreme wording. Explain every wrong alternative; for a false TF statement explain the error. Balance option length without padding. No answer/level hints in the stem or options.
+Return {"samples":[{"id":target_id,"stem":string,"options":[{"label":string,"text":string}],"statements":[{"sub":string,"text":string}],"answers":[{"sub":string|null,"answer":string,"level":approved_code}],"solution":string,"distractors":[{"label":string|null,"sub":string|null,"mistake":string,"why_plausible":string}],"level_reason":string,"prerequisites":[strings],"variation_guidance":string,"uncertainties":[strings],"missing_assets":[]}]}.
+Use empty options/statements when not applicable. Single-answer items use sub=null. True/false answers use canonical D/S, no hidden explanation in the answer. Essay answers can be an expected-response outline and remain teacher-review-only. Return every target id exactly once. Do not supply counts or claim teacher approval, empirical discrimination, or successful independent verification.
+
+{"canonical_levels": {"revision": "de8c614ada6e3ae9f9072cedb7521fb96c1d13e5", "scheme_id": "default", "scheme_version": 2, "preamble": "A level is the performance a student must show to answer correctly. It is NOT the length of the text, NOT the amount of numbers to read, and NOT the verb used in the outcome sentence.", "levels": [{"code": "NB", "label": {"vi": "Nhận biết", "en": "Recall"}, "ordinal": 1, "status": "APPROVED", "definition_en": "recognise or retrieve. The student recognises, names or restates a fact, concept, definition, symbol, property, formula or step as taught. The answer sits in ONE knowledge unit. A scenario, if any, is decoration.", "samples": [], "bands": []}, {"code": "TH", "label": {"vi": "Thông hiểu", "en": "Comprehension"}, "ordinal": 2, "status": "APPROVED", "definition_en": "Explain, distinguish, interpret, or execute a familiar routine procedure. The student reads a given representation or uses taught knowledge in a standard exercise. A single substitution of given values into a taught formula or equation is TH; several routine algebraic or numerical operations can also remain TH. Choosing the obvious familiar formula without its name being supplied does not by itself make a question VD.", "samples": [], "bands": []}, {"code": "VD", "label": {"vi": "Vận dụng", "en": "Application"}, "ordinal": 3, "status": "APPROVED", "definition_en": "Model a situation or construct a substantive chain of reasoning. The task requires the student to formulate a model, connect and apply multiple knowledge units, or plan and justify several dependent thinking steps rather than merely execute a familiar calculation. Judge the minimum cognitive work needed for a correct answer. A longer text, more numbers, more written calculation steps, or an unstated but obvious formula is not sufficient for VD. A standard multi-step calculation can remain TH; no single surface cue is a compulsory condition for all VD questions.", "samples": [], "bands": []}], "subject_layer": null}, "targets": [{"id": "cd84229cfb128aac", "topic": "Di truyền phân tử", "part": "P1", "level": "NB", "qtype": "mcq", "option_labels": ["A", "B", "C", "D"], "slot_keys": [null], "canonical_answer_alphabet": ["A", "B", "C", "D"], "abstract_observations": [{"given": "Quan hệ liên kết giữa các đơn phân thuộc hai mạch của phân tử di truyền.", "task": "Gọi tên loại liên kết giữ hai mạch với nhau.", "reasoning": "Xác định vị trí liên kết được hỏi; phân biệt liên kết giữa hai mạch với liên kết trong mạch và trong phân tử khác.", "combines": ["Cấu trúc DNA", "Liên kết hóa học trong phân tử sinh học"], "difficulty_source": "Phân biệt vị trí của các liên kết cơ bản", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Các nhóm phân tử sinh học và một chức năng cần nhận diện.", "task": "Chọn nhóm phân tử đảm nhiệm lưu giữ thông tin di truyền.", "reasoning": "Nhớ chức năng cơ bản của các nhóm phân tử; đối chiếu với chức năng được hỏi.", "combines": ["Thành phần hóa học tế bào", "Vật chất di truyền"], "difficulty_source": "Kiến thức chức năng phân tử ở mức nhận biết", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Tên một quá trình truyền đạt thông tin và các loại phân tử có thể tham gia.", "task": "Xác định phân tử cung cấp mạch khuôn.", "reasoning": "Nhớ chiều truyền thông tin trong phiên mã; phân biệt khuôn với sản phẩm và các loại RNA chức năng.", "combines": ["Phiên mã", "Chức năng các loại nucleic acid"], "difficulty_source": "Nhớ trực tiếp quan hệ khuôn và sản phẩm", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Hình các công thức cấu tạo thuộc những nhóm phân tử sinh học khác nhau.", "task": "Nhận diện đơn phân của DNA.", "reasoning": "Tìm cấu trúc gồm đường, base và phosphate; kiểm tra loại đường phù hợp với DNA; chọn hình tương ứng.", "combines": ["Cấu trúc nucleotide", "Nhận dạng công thức hóa học"], "difficulty_source": "Nhận dạng bộ phận cấu tạo trên hình hóa học", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}], "support_refs": ["2cbdc74db082|P1|5|None", "4b4716b94db4|P1|14|None", "4b4716b94db4|P1|17|None", "55c12f561006|P1|17|None", "8bbf9eea6d33|P1|6|None"], "official_anchor_available": false}, {"id": "c2f5b33ca5c05ad4", "topic": "Di truyền phân tử", "part": "P1", "level": "TH", "qtype": "mcq", "option_labels": ["A", "B", "C", "D"], "slot_keys": [null], "canonical_answer_alphabet": ["A", "B", "C", "D"], "abstract_observations": [{"given": "Trình tự DNA hai mạch có định hướng, vị trí đánh dấu, thông tin mã hóa một số amino acid và quy ước xử lí sản phẩm dịch mã.", "task": "Chọn nhận định sai về mạch khuôn, trình tự sản phẩm, độ dài sản phẩm hoặc tác động của thay thế nucleotide.", "reasoning": "Xác định chiều phiên mã và bộ ba mở đầu; thiết lập khung đọc; đối chiếu các bộ ba với thông tin mã hóa; xác định điểm kết thúc và loại các thành phần không còn trong sản phẩm hoàn chỉnh; kiểm tra bộ ba sau đột biến.", "combines": ["Phiên mã", "Mã di truyền", "Dịch mã", "Đột biến gene"], "difficulty_source": "Phải duy trì nhất quán chiều đọc và khung đọc khi chuyển giữa nhiều biểu diễn", "evidence_uncertainty": "Bản chép trình tự có các mốc vị trí nhưng cách căn mốc trên hình gốc chưa được kiểm tra độc lập; chi tiết sai lệch khi đếm độ dài không thể xác nhận chỉ từ đáp án.", "evidence_class": "official"}, {"given": "Một đoạn mạch khuôn có chiều đọc, bảng đối chiếu bộ ba với sản phẩm và các nhận định về biến đổi trình tự.", "task": "Xác định số nhận định đúng về sản phẩm ban đầu và sản phẩm sau đột biến.", "reasoning": "Lập trình tự phiên mã theo chiều bổ sung; chuyển các bộ ba thành chuỗi sản phẩm; kiểm tra tác động của thay thế lên bộ ba và điểm dừng; lập lại khung đọc sau thêm nucleotide; tổng hợp các kết luận.", "combines": ["Nguyên tắc bổ sung", "Phiên mã và dịch mã", "Đột biến thay thế", "Đột biến dịch khung"], "difficulty_source": "Phải giữ đúng chiều bổ sung và khung đọc qua nhiều kiểu đột biến", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Hình cấu trúc gene có các vùng chức năng và các đoạn mã hóa xen kẽ đoạn không mã hóa.", "task": "Chọn nhận định phù hợp về loại gene hoặc chức năng các đoạn.", "reasoning": "Nhận diện cấu trúc phân mảnh trên hình; liên hệ với gene trong nhân và quá trình xử lí RNA; đối chiếu các nhận định.", "combines": ["Cấu trúc gene", "Tổ chức hệ gene", "Xử lí RNA"], "difficulty_source": "Dấu hiệu phân mảnh trên hình dẫn trực tiếp tới kiến thức cơ bản", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}], "support_refs": ["b68b84764a9b|P1|13|None", "4b4716b94db4|P1|3|None", "55c12f561006|P1|9|None"], "official_anchor_available": true}, {"id": "e70446b3b412b94d", "topic": "Di truyền phân tử", "part": "P2", "level": "NB", "qtype": "true_false", "option_labels": [], "slot_keys": ["a", "b", "c", "d"], "canonical_answer_alphabet": ["D", "S"], "abstract_observations": [{"given": "Hình nhiều ribosome đồng thời gắn trên cùng một mRNA và mang chuỗi đang tổng hợp.", "task": "Xác định mô hình tổ chức dịch mã.", "reasoning": "Nhận diện các ribosome dùng chung khuôn; đối chiếu với khái niệm polysome.", "combines": ["Dịch mã", "Polysome"], "difficulty_source": "Hình thể hiện trực tiếp dấu hiệu định nghĩa", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}], "support_refs": ["55c12f561006|P2|2|a"], "official_anchor_available": false}, {"id": "56a1a5325cd05074", "topic": "Di truyền phân tử", "part": "P2", "level": "TH", "qtype": "true_false", "option_labels": [], "slot_keys": ["a", "b", "c", "d"], "canonical_answer_alphabet": ["D", "S"], "abstract_observations": [{"given": "Mô tả bằng lời cấu trúc gene, tiền mRNA và các sản phẩm cắt nối khác nhau theo giới.", "task": "So sánh độ dài tiền mRNA giữa các giới.", "reasoning": "Phân biệt tiền mRNA với mRNA trưởng thành; xác định giai đoạn bắt đầu có khác biệt; so sánh cấu trúc trước cắt nối.", "combines": ["Phiên mã", "Xử lí RNA"], "difficulty_source": "Phân biệt đúng các giai đoạn xử lí thông tin di truyền", "evidence_uncertainty": "Chỉ có mô tả sơ đồ; quan hệ giữa các bản RNA được nêu rõ bằng lời.", "evidence_class": "official"}, {"given": "Mô tả bằng lời các tổ hợp exon trong mRNA trưởng thành của các giới.", "task": "Đánh giá sự giống hoặc khác nhau về trình tự mRNA trưởng thành.", "reasoning": "Đối chiếu thành phần exon được giữ lại; suy ra hệ quả đối với trình tự phân tử RNA.", "combines": ["Cấu trúc gene phân mảnh", "Cắt nối thay thế"], "difficulty_source": "Khác biệt trình tự được chỉ ra trực tiếp bằng thành phần exon", "evidence_uncertainty": "Hình chỉ được mô tả bằng lời; đủ thông tin để so sánh thành phần exon.", "evidence_class": "official"}, {"given": "Mô tả bằng lời sơ đồ exon có độ dài và vị trí tín hiệu mở đầu, kết thúc, kèm quy ước loại amino acid mở đầu.", "task": "Kiểm tra độ chênh lệch chiều dài polypeptide hoàn chỉnh giữa các giới.", "reasoning": "Xác định tổ hợp exon của mỗi mRNA; tìm tín hiệu kết thúc đầu tiên trong khung đọc; tính độ dài vùng được dịch; loại bộ ba kết thúc và amino acid mở đầu rồi so sánh.", "combines": ["Cắt nối thay thế", "Khung đọc", "Kết thúc dịch mã", "Tính độ dài polypeptide"], "difficulty_source": "Phải xác định điểm dừng dịch mã thay vì cộng toàn bộ độ dài mRNA", "evidence_uncertainty": "Chỉ có mô tả sơ đồ; các độ dài và vị trí tín hiệu cần thiết đã được chép lại.", "evidence_class": "official"}, {"given": "Mô tả bằng lời mRNA có nhiều tín hiệu kết thúc và một biến đổi tại tín hiệu nằm phía sau.", "task": "Đánh giá liệu biến đổi đó có làm thay đổi chiều dài polypeptide ở giới được xét.", "reasoning": "Xác định tín hiệu kết thúc đang được sử dụng; định vị đột biến so với điểm dừng đó; kiểm tra ribosome có dịch tới vị trí bị đổi hay không.", "combines": ["Đột biến thay thế nucleotide", "Kết thúc dịch mã", "Cắt nối thay thế"], "difficulty_source": "Kiểm tra tác động của đột biến trong toàn bộ ngữ cảnh dịch mã", "evidence_uncertainty": "Hình chỉ được mô tả bằng lời; thứ tự các tín hiệu kết thúc được cung cấp.", "evidence_class": "official"}], "support_refs": ["b68b84764a9b|P2|4|a", "b68b84764a9b|P2|4|b", "b68b84764a9b|P2|4|c", "b68b84764a9b|P2|4|d", "2cbdc74db082|P2|2|a", "2cbdc74db082|P2|2|b", "2cbdc74db082|P2|2|d", "4b4716b94db4|P2|4|a", "55c12f561006|P2|2|b", "55c12f561006|P2|2|c", "55c12f561006|P2|2|d", "61a0198fbfda|P2|1|b", "61a0198fbfda|P2|1|d", "8bbf9eea6d33|P2|4|a"], "official_anchor_available": true}]}
+2026-11-03T10:43:08.546736Z  WARN codex_skills::interface: ignoring interface.icon_small: icon path with '..' must resolve under plugin assets/
+2026-11-03T10:43:08.546777Z  WARN codex_skills::interface: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
+codex
+{
+  "samples": [
+    {
+      "id": "cd84229cfb128aac",
+      "stem": "Trong quá trình dịch mã, loại phân tử nào mang bộ ba đối mã và vận chuyển amino acid đến ribosome?",
+      "options": [
+        {"label": "A", "text": "RNA thông tin (mRNA)."},
+        {"label": "B", "text": "RNA vận chuyển (tRNA)."},
+        {"label": "C", "text": "RNA ribosome (rRNA)."},
+        {"label": "D", "text": "DNA của gene mã hóa."}
+      ],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "B", "level": "NB"}
+      ],
+      "solution": "Chọn B. tRNA mang bộ ba đối mã và vận chuyển amino acid tương ứng đến ribosome. mRNA cung cấp các bộ ba mã hóa; rRNA tham gia cấu tạo và hoạt động của ribosome; DNA lưu giữ thông tin di truyền.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Nhầm bộ ba mã hóa trên mRNA với bộ ba đối mã trên tRNA.",
+          "why_plausible": "Hai loại RNA đều tham gia dịch mã và có sự nhận biết bổ sung giữa các bộ ba."
+        },
+        {
+          "label": "C",
+          "sub": null,
+          "mistake": "Gán chức năng vận chuyển amino acid cho RNA cấu tạo ribosome.",
+          "why_plausible": "Ribosome là nơi tổng hợp chuỗi polypeptide nên học sinh có thể nhầm chức năng của rRNA với tRNA."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Cho rằng phân tử chứa thông tin mã hóa cũng trực tiếp vận chuyển amino acid.",
+          "why_plausible": "Học sinh nhớ vai trò của gene đối với protein nhưng chưa phân biệt chức năng của các phân tử trung gian."
+        }
+      ],
+      "level_reason": "Chỉ cần nhớ và nhận diện chức năng đặc trưng của tRNA trong một đơn vị kiến thức; không cần xử lí tình huống hay suy luận qua nhiều bước.",
+      "prerequisites": [
+        "Chức năng của các loại RNA",
+        "Khái niệm bộ ba mã hóa và bộ ba đối mã"
+      ],
+      "variation_guidance": "Có thể đổi sang nhận diện phân tử mang bộ ba mã hóa hoặc thành phần RNA của ribosome, đồng thời giữ yêu cầu nhớ trực tiếp một chức năng. Đây là mẫu minh họa tổng hợp, không phải câu hỏi lấy từ đề thi.",
+      "uncertainties": [
+        "Cơ sở quan sát cho mục tiêu này chỉ thuộc nhóm nguồn cấp tỉnh qua bên thứ ba; mẫu không thể hiện sự đối chiếu với đề chính thức."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "c2f5b33ca5c05ad4",
+      "stem": "Một gene giả định tạo ra tiền mRNA gồm các đoạn theo thứ tự: exon E1 dài 90 nucleotide, intron I1 dài 120 nucleotide, exon E2 dài 60 nucleotide, intron I2 dài 150 nucleotide và exon E3 dài 90 nucleotide. Trong quá trình tạo mRNA trưởng thành, cả hai intron bị loại bỏ và cả ba exon được giữ lại nguyên vẹn. Không tính mũ 5′ và đuôi poly(A), mRNA trưởng thành dài bao nhiêu nucleotide?",
+      "options": [
+        {"label": "A", "text": "240 nucleotide."},
+        {"label": "B", "text": "270 nucleotide."},
+        {"label": "C", "text": "390 nucleotide."},
+        {"label": "D", "text": "510 nucleotide."}
+      ],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "A", "level": "TH"}
+      ],
+      "solution": "Chọn A. mRNA trưởng thành giữ ba exon nên có độ dài 90 + 60 + 90 = 240 nucleotide. Tổng độ dài hai intron là 270 nucleotide; tiền mRNA dài 510 nucleotide. Nếu chỉ loại intron I1 thì còn 390 nucleotide, chưa phải sản phẩm được mô tả.",
+      "distractors": [
+        {
+          "label": "B",
+          "sub": null,
+          "mistake": "Cộng độ dài các intron thay vì các exon.",
+          "why_plausible": "Học sinh đảo ngược vai trò của phần bị loại bỏ và phần được giữ lại khi cắt nối."
+        },
+        {
+          "label": "C",
+          "sub": null,
+          "mistake": "Lấy tổng độ dài tiền mRNA trừ riêng intron I1.",
+          "why_plausible": "Học sinh hiểu cần loại intron nhưng chỉ thực hiện với đoạn intron đầu tiên."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Cộng toàn bộ exon và intron, dùng độ dài tiền mRNA làm độ dài mRNA trưởng thành.",
+          "why_plausible": "Học sinh chưa phân biệt sản phẩm trước và sau cắt nối."
+        }
+      ],
+      "level_reason": "Học sinh diễn giải cấu trúc tiền mRNA, xác định các đoạn còn lại sau cắt nối rồi thực hiện phép cộng quen thuộc. Đây là quy trình thông thường ở mức TH.",
+      "prerequisites": [
+        "Phân biệt exon và intron",
+        "Quá trình tạo mRNA trưởng thành từ tiền mRNA"
+      ],
+      "variation_guidance": "Thay đổi độ dài các đoạn hoặc số intron nhưng giữ rõ quy tắc cắt nối. Không tăng số phép cộng để gán mức VD. Các dữ kiện là giả định được tạo mới cho mẫu minh họa.",
+      "uncertainties": [],
+      "missing_assets": []
+    },
+    {
+      "id": "e70446b3b412b94d",
+      "stem": "Một mô hình minh họa dịch mã thể hiện nhiều ribosome đồng thời hoạt động trên cùng một phân tử mRNA; mỗi ribosome mang một chuỗi polypeptide đang được tổng hợp. Hãy xác định mỗi phát biểu sau là đúng hay sai.",
+      "options": [],
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Tập hợp nhiều ribosome cùng dịch mã trên một mRNA được gọi là polysome."
+        },
+        {
+          "sub": "b",
+          "text": "Trong dịch mã, ribosome di chuyển trên mRNA theo chiều 3′ → 5′."
+        },
+        {
+          "sub": "c",
+          "text": "tRNA có chức năng vận chuyển amino acid đến ribosome trong quá trình dịch mã."
+        },
+        {
+          "sub": "d",
+          "text": "Phiên mã là tên của quá trình ribosome tổng hợp chuỗi polypeptide."
+        }
+      ],
+      "answers": [
+        {"sub": "a", "answer": "D", "level": "NB"},
+        {"sub": "b", "answer": "S", "level": "NB"},
+        {"sub": "c", "answer": "D", "level": "NB"},
+        {"sub": "d", "answer": "S", "level": "NB"}
+      ],
+      "solution": "a đúng theo định nghĩa polysome. b sai vì ribosome đọc mRNA theo chiều 5′ → 3′. c đúng theo chức năng của tRNA. d sai vì tổng hợp chuỗi polypeptide tại ribosome là dịch mã; phiên mã là quá trình tổng hợp RNA trên khuôn DNA.",
+      "distractors": [
+        {
+          "label": null,
+          "sub": "b",
+          "mistake": "Đảo chiều đọc mRNA của ribosome thành 3′ → 5′.",
+          "why_plausible": "Học sinh dễ nhầm chiều đọc mRNA với chiều đọc mạch khuôn DNA trong phiên mã."
+        },
+        {
+          "label": null,
+          "sub": "d",
+          "mistake": "Đồng nhất phiên mã với dịch mã.",
+          "why_plausible": "Cả hai đều thuộc quá trình biểu hiện gene nên tên quá trình và sản phẩm có thể bị nhầm lẫn."
+        }
+      ],
+      "level_reason": "Mỗi ý chỉ yêu cầu nhận diện một định nghĩa, chức năng hoặc chiều hoạt động đã học. Mức cao nhất trong các ý là NB, nên toàn mẫu ở mức NB.",
+      "prerequisites": [
+        "Khái niệm polysome",
+        "Chiều đọc mRNA trong dịch mã",
+        "Chức năng tRNA",
+        "Phân biệt phiên mã và dịch mã"
+      ],
+      "variation_guidance": "Có thể thay mô tả mô hình bằng một tình huống minh họa khác nhưng phải cung cấp trực tiếp dấu hiệu nhiều ribosome dùng chung một mRNA. Không suy ra tốc độ hay hiệu suất khi chưa có dữ kiện.",
+      "uncertainties": [
+        "Cơ sở quan sát cho mục tiêu này chỉ thuộc nhóm nguồn cấp tỉnh qua bên thứ ba; mẫu là minh họa tổng hợp, không phải bằng chứng từ đề thi thực."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "56a1a5325cd05074",
+      "stem": "Trong một mô hình gene nhân tạo, tiền mRNA gồm các đoạn theo thứ tự E1–I1–E2–I2–E3–I3–E4. Các exon E1, E2, E3, E4 lần lượt dài 60, 30, 45, 90 nucleotide; các intron I1, I2, I3 lần lượt dài 50, 40, 70 nucleotide. Hai điều kiện nuôi cấy X và Y tạo tiền mRNA có cùng trình tự và cùng điểm đầu, điểm cuối. Sau cắt nối, mRNA ở X gồm E1–E2–E4, còn mRNA ở Y gồm E1–E3–E4. Bộ ba đầu tiên của E1 là AUG và là vị trí bắt đầu dịch mã duy nhất được sử dụng. Các đoạn được nối đúng khung đọc; từ AUG đến hết E2 hoặc E3 không có bộ ba kết thúc. Ba nucleotide đầu tiên của E4 là UAA; các nucleotide thứ 61–63 của E4 là UAG, cùng khung đọc với AUG. Dịch mã dừng tại bộ ba kết thúc đầu tiên gặp được và chuỗi polypeptide không bị cắt bỏ amino acid sau tổng hợp. Không xét mũ 5′ và đuôi poly(A). Hãy xác định mỗi phát biểu sau là đúng hay sai.",
+      "options": [],
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Tiền mRNA ở hai điều kiện X và Y đều dài 385 nucleotide."
+        },
+        {
+          "sub": "b",
+          "text": "mRNA trưởng thành ở X và Y có cùng độ dài."
+        },
+        {
+          "sub": "c",
+          "text": "Chuỗi polypeptide được tổng hợp ở Y dài hơn chuỗi được tổng hợp ở X là 5 amino acid."
+        },
+        {
+          "sub": "d",
+          "text": "Nếu chỉ thay UAG tại các nucleotide thứ 61–63 của E4 thành CAG, chuỗi polypeptide được tổng hợp ở X sẽ dài hơn trước đột biến."
+        }
+      ],
+      "answers": [
+        {"sub": "a", "answer": "D", "level": "TH"},
+        {"sub": "b", "answer": "S", "level": "TH"},
+        {"sub": "c", "answer": "D", "level": "TH"},
+        {"sub": "d", "answer": "S", "level": "TH"}
+      ],
+      "solution": "a đúng: tổng độ dài các exon là 225 nucleotide, tổng độ dài các intron là 160 nucleotide, nên mỗi tiền mRNA dài 385 nucleotide. b sai: mRNA ở X dài 60 + 30 + 90 = 180 nucleotide, còn ở Y dài 60 + 45 + 90 = 195 nucleotide. c đúng: dịch mã dừng ngay tại UAA đầu E4, nên chuỗi ở X có (60 + 30)/3 = 30 amino acid, chuỗi ở Y có (60 + 45)/3 = 35 amino acid; chênh lệch là 5 amino acid. Bộ ba kết thúc không mã hóa amino acid. d sai: ribosome đã dừng ở UAA đầu E4 nên không dịch đến UAG tại vị trí 61–63; thay đổi riêng bộ ba phía sau này không làm chuỗi dài thêm.",
+      "distractors": [
+        {
+          "label": null,
+          "sub": "b",
+          "mistake": "Cho rằng cùng tiền mRNA thì các mRNA trưởng thành phải có cùng độ dài.",
+          "why_plausible": "Học sinh bỏ qua việc hai cách cắt nối giữ lại các exon có độ dài khác nhau."
+        },
+        {
+          "label": null,
+          "sub": "d",
+          "mistake": "Cho rằng biến đổi bất kỳ bộ ba kết thúc nào thành bộ ba mã hóa đều kéo dài chuỗi polypeptide.",
+          "why_plausible": "Học sinh nhớ tác động có thể có của mất bộ ba kết thúc nhưng không kiểm tra ribosome có dịch đến vị trí đó hay không."
+        }
+      ],
+      "level_reason": "Các ý yêu cầu phân biệt tiền mRNA với mRNA trưởng thành, cộng các đoạn được giữ lại và áp dụng quy tắc dừng tại bộ ba kết thúc đầu tiên. Cấu trúc và quy tắc đã được cung cấp trực tiếp, nên các thao tác thuộc quy trình quen thuộc ở mức TH; mức cao nhất của toàn mẫu là TH.",
+      "prerequisites": [
+        "Cắt nối thay thế",
+        "Khung đọc và bộ ba mở đầu",
+        "Bộ ba kết thúc không mã hóa amino acid",
+        "Quan hệ giữa vùng được dịch và độ dài chuỗi polypeptide"
+      ],
+      "variation_guidance": "Có thể đổi tổ hợp exon hoặc vị trí bộ ba kết thúc, nhưng phải kiểm tra lại khung đọc và điểm dừng đầu tiên của từng sản phẩm. Bối cảnh, độ dài và vị trí tín hiệu trong mẫu đều được đặt mới cho mô hình giả định, không mô tả một gene tự nhiên hay một câu hỏi đề thi.",
+      "uncertainties": [],
+      "missing_assets": []
+    }
+  ]
+}
+tokens used
+15,796
+{
+  "samples": [
+    {
+      "id": "cd84229cfb128aac",
+      "stem": "Trong quá trình dịch mã, loại phân tử nào mang bộ ba đối mã và vận chuyển amino acid đến ribosome?",
+      "options": [
+        {"label": "A", "text": "RNA thông tin (mRNA)."},
+        {"label": "B", "text": "RNA vận chuyển (tRNA)."},
+        {"label": "C", "text": "RNA ribosome (rRNA)."},
+        {"label": "D", "text": "DNA của gene mã hóa."}
+      ],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "B", "level": "NB"}
+      ],
+      "solution": "Chọn B. tRNA mang bộ ba đối mã và vận chuyển amino acid tương ứng đến ribosome. mRNA cung cấp các bộ ba mã hóa; rRNA tham gia cấu tạo và hoạt động của ribosome; DNA lưu giữ thông tin di truyền.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Nhầm bộ ba mã hóa trên mRNA với bộ ba đối mã trên tRNA.",
+          "why_plausible": "Hai loại RNA đều tham gia dịch mã và có sự nhận biết bổ sung giữa các bộ ba."
+        },
+        {
+          "label": "C",
+          "sub": null,
+          "mistake": "Gán chức năng vận chuyển amino acid cho RNA cấu tạo ribosome.",
+          "why_plausible": "Ribosome là nơi tổng hợp chuỗi polypeptide nên học sinh có thể nhầm chức năng của rRNA với tRNA."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Cho rằng phân tử chứa thông tin mã hóa cũng trực tiếp vận chuyển amino acid.",
+          "why_plausible": "Học sinh nhớ vai trò của gene đối với protein nhưng chưa phân biệt chức năng của các phân tử trung gian."
+        }
+      ],
+      "level_reason": "Chỉ cần nhớ và nhận diện chức năng đặc trưng của tRNA trong một đơn vị kiến thức; không cần xử lí tình huống hay suy luận qua nhiều bước.",
+      "prerequisites": [
+        "Chức năng của các loại RNA",
+        "Khái niệm bộ ba mã hóa và bộ ba đối mã"
+      ],
+      "variation_guidance": "Có thể đổi sang nhận diện phân tử mang bộ ba mã hóa hoặc thành phần RNA của ribosome, đồng thời giữ yêu cầu nhớ trực tiếp một chức năng. Đây là mẫu minh họa tổng hợp, không phải câu hỏi lấy từ đề thi.",
+      "uncertainties": [
+        "Cơ sở quan sát cho mục tiêu này chỉ thuộc nhóm nguồn cấp tỉnh qua bên thứ ba; mẫu không thể hiện sự đối chiếu với đề chính thức."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "c2f5b33ca5c05ad4",
+      "stem": "Một gene giả định tạo ra tiền mRNA gồm các đoạn theo thứ tự: exon E1 dài 90 nucleotide, intron I1 dài 120 nucleotide, exon E2 dài 60 nucleotide, intron I2 dài 150 nucleotide và exon E3 dài 90 nucleotide. Trong quá trình tạo mRNA trưởng thành, cả hai intron bị loại bỏ và cả ba exon được giữ lại nguyên vẹn. Không tính mũ 5′ và đuôi poly(A), mRNA trưởng thành dài bao nhiêu nucleotide?",
+      "options": [
+        {"label": "A", "text": "240 nucleotide."},
+        {"label": "B", "text": "270 nucleotide."},
+        {"label": "C", "text": "390 nucleotide."},
+        {"label": "D", "text": "510 nucleotide."}
+      ],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "A", "level": "TH"}
+      ],
+      "solution": "Chọn A. mRNA trưởng thành giữ ba exon nên có độ dài 90 + 60 + 90 = 240 nucleotide. Tổng độ dài hai intron là 270 nucleotide; tiền mRNA dài 510 nucleotide. Nếu chỉ loại intron I1 thì còn 390 nucleotide, chưa phải sản phẩm được mô tả.",
+      "distractors": [
+        {
+          "label": "B",
+          "sub": null,
+          "mistake": "Cộng độ dài các intron thay vì các exon.",
+          "why_plausible": "Học sinh đảo ngược vai trò của phần bị loại bỏ và phần được giữ lại khi cắt nối."
+        },
+        {
+          "label": "C",
+          "sub": null,
+          "mistake": "Lấy tổng độ dài tiền mRNA trừ riêng intron I1.",
+          "why_plausible": "Học sinh hiểu cần loại intron nhưng chỉ thực hiện với đoạn intron đầu tiên."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Cộng toàn bộ exon và intron, dùng độ dài tiền mRNA làm độ dài mRNA trưởng thành.",
+          "why_plausible": "Học sinh chưa phân biệt sản phẩm trước và sau cắt nối."
+        }
+      ],
+      "level_reason": "Học sinh diễn giải cấu trúc tiền mRNA, xác định các đoạn còn lại sau cắt nối rồi thực hiện phép cộng quen thuộc. Đây là quy trình thông thường ở mức TH.",
+      "prerequisites": [
+        "Phân biệt exon và intron",
+        "Quá trình tạo mRNA trưởng thành từ tiền mRNA"
+      ],
+      "variation_guidance": "Thay đổi độ dài các đoạn hoặc số intron nhưng giữ rõ quy tắc cắt nối. Không tăng số phép cộng để gán mức VD. Các dữ kiện là giả định được tạo mới cho mẫu minh họa.",
+      "uncertainties": [],
+      "missing_assets": []
+    },
+    {
+      "id": "e70446b3b412b94d",
+      "stem": "Một mô hình minh họa dịch mã thể hiện nhiều ribosome đồng thời hoạt động trên cùng một phân tử mRNA; mỗi ribosome mang một chuỗi polypeptide đang được tổng hợp. Hãy xác định mỗi phát biểu sau là đúng hay sai.",
+      "options": [],
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Tập hợp nhiều ribosome cùng dịch mã trên một mRNA được gọi là polysome."
+        },
+        {
+          "sub": "b",
+          "text": "Trong dịch mã, ribosome di chuyển trên mRNA theo chiều 3′ → 5′."
+        },
+        {
+          "sub": "c",
+          "text": "tRNA có chức năng vận chuyển amino acid đến ribosome trong quá trình dịch mã."
+        },
+        {
+          "sub": "d",
+          "text": "Phiên mã là tên của quá trình ribosome tổng hợp chuỗi polypeptide."
+        }
+      ],
+      "answers": [
+        {"sub": "a", "answer": "D", "level": "NB"},
+        {"sub": "b", "answer": "S", "level": "NB"},
+        {"sub": "c", "answer": "D", "level": "NB"},
+        {"sub": "d", "answer": "S", "level": "NB"}
+      ],
+      "solution": "a đúng theo định nghĩa polysome. b sai vì ribosome đọc mRNA theo chiều 5′ → 3′. c đúng theo chức năng của tRNA. d sai vì tổng hợp chuỗi polypeptide tại ribosome là dịch mã; phiên mã là quá trình tổng hợp RNA trên khuôn DNA.",
+      "distractors": [
+        {
+          "label": null,
+          "sub": "b",
+          "mistake": "Đảo chiều đọc mRNA của ribosome thành 3′ → 5′.",
+          "why_plausible": "Học sinh dễ nhầm chiều đọc mRNA với chiều đọc mạch khuôn DNA trong phiên mã."
+        },
+        {
+          "label": null,
+          "sub": "d",
+          "mistake": "Đồng nhất phiên mã với dịch mã.",
+          "why_plausible": "Cả hai đều thuộc quá trình biểu hiện gene nên tên quá trình và sản phẩm có thể bị nhầm lẫn."
+        }
+      ],
+      "level_reason": "Mỗi ý chỉ yêu cầu nhận diện một định nghĩa, chức năng hoặc chiều hoạt động đã học. Mức cao nhất trong các ý là NB, nên toàn mẫu ở mức NB.",
+      "prerequisites": [
+        "Khái niệm polysome",
+        "Chiều đọc mRNA trong dịch mã",
+        "Chức năng tRNA",
+        "Phân biệt phiên mã và dịch mã"
+      ],
+      "variation_guidance": "Có thể thay mô tả mô hình bằng một tình huống minh họa khác nhưng phải cung cấp trực tiếp dấu hiệu nhiều ribosome dùng chung một mRNA. Không suy ra tốc độ hay hiệu suất khi chưa có dữ kiện.",
+      "uncertainties": [
+        "Cơ sở quan sát cho mục tiêu này chỉ thuộc nhóm nguồn cấp tỉnh qua bên thứ ba; mẫu là minh họa tổng hợp, không phải bằng chứng từ đề thi thực."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "56a1a5325cd05074",
+      "stem": "Trong một mô hình gene nhân tạo, tiền mRNA gồm các đoạn theo thứ tự E1–I1–E2–I2–E3–I3–E4. Các exon E1, E2, E3, E4 lần lượt dài 60, 30, 45, 90 nucleotide; các intron I1, I2, I3 lần lượt dài 50, 40, 70 nucleotide. Hai điều kiện nuôi cấy X và Y tạo tiền mRNA có cùng trình tự và cùng điểm đầu, điểm cuối. Sau cắt nối, mRNA ở X gồm E1–E2–E4, còn mRNA ở Y gồm E1–E3–E4. Bộ ba đầu tiên của E1 là AUG và là vị trí bắt đầu dịch mã duy nhất được sử dụng. Các đoạn được nối đúng khung đọc; từ AUG đến hết E2 hoặc E3 không có bộ ba kết thúc. Ba nucleotide đầu tiên của E4 là UAA; các nucleotide thứ 61–63 của E4 là UAG, cùng khung đọc với AUG. Dịch mã dừng tại bộ ba kết thúc đầu tiên gặp được và chuỗi polypeptide không bị cắt bỏ amino acid sau tổng hợp. Không xét mũ 5′ và đuôi poly(A). Hãy xác định mỗi phát biểu sau là đúng hay sai.",
+      "options": [],
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Tiền mRNA ở hai điều kiện X và Y đều dài 385 nucleotide."
+        },
+        {
+          "sub": "b",
+          "text": "mRNA trưởng thành ở X và Y có cùng độ dài."
+        },
+        {
+          "sub": "c",
+          "text": "Chuỗi polypeptide được tổng hợp ở Y dài hơn chuỗi được tổng hợp ở X là 5 amino acid."
+        },
+        {
+          "sub": "d",
+          "text": "Nếu chỉ thay UAG tại các nucleotide thứ 61–63 của E4 thành CAG, chuỗi polypeptide được tổng hợp ở X sẽ dài hơn trước đột biến."
+        }
+      ],
+      "answers": [
+        {"sub": "a", "answer": "D", "level": "TH"},
+        {"sub": "b", "answer": "S", "level": "TH"},
+        {"sub": "c", "answer": "D", "level": "TH"},
+        {"sub": "d", "answer": "S", "level": "TH"}
+      ],
+      "solution": "a đúng: tổng độ dài các exon là 225 nucleotide, tổng độ dài các intron là 160 nucleotide, nên mỗi tiền mRNA dài 385 nucleotide. b sai: mRNA ở X dài 60 + 30 + 90 = 180 nucleotide, còn ở Y dài 60 + 45 + 90 = 195 nucleotide. c đúng: dịch mã dừng ngay tại UAA đầu E4, nên chuỗi ở X có (60 + 30)/3 = 30 amino acid, chuỗi ở Y có (60 + 45)/3 = 35 amino acid; chênh lệch là 5 amino acid. Bộ ba kết thúc không mã hóa amino acid. d sai: ribosome đã dừng ở UAA đầu E4 nên không dịch đến UAG tại vị trí 61–63; thay đổi riêng bộ ba phía sau này không làm chuỗi dài thêm.",
+      "distractors": [
+        {
+          "label": null,
+          "sub": "b",
+          "mistake": "Cho rằng cùng tiền mRNA thì các mRNA trưởng thành phải có cùng độ dài.",
+          "why_plausible": "Học sinh bỏ qua việc hai cách cắt nối giữ lại các exon có độ dài khác nhau."
+        },
+        {
+          "label": null,
+          "sub": "d",
+          "mistake": "Cho rằng biến đổi bất kỳ bộ ba kết thúc nào thành bộ ba mã hóa đều kéo dài chuỗi polypeptide.",
+          "why_plausible": "Học sinh nhớ tác động có thể có của mất bộ ba kết thúc nhưng không kiểm tra ribosome có dịch đến vị trí đó hay không."
+        }
+      ],
+      "level_reason": "Các ý yêu cầu phân biệt tiền mRNA với mRNA trưởng thành, cộng các đoạn được giữ lại và áp dụng quy tắc dừng tại bộ ba kết thúc đầu tiên. Cấu trúc và quy tắc đã được cung cấp trực tiếp, nên các thao tác thuộc quy trình quen thuộc ở mức TH; mức cao nhất của toàn mẫu là TH.",
+      "prerequisites": [
+        "Cắt nối thay thế",
+        "Khung đọc và bộ ba mở đầu",
+        "Bộ ba kết thúc không mã hóa amino acid",
+        "Quan hệ giữa vùng được dịch và độ dài chuỗi polypeptide"
+      ],
+      "variation_guidance": "Có thể đổi tổ hợp exon hoặc vị trí bộ ba kết thúc, nhưng phải kiểm tra lại khung đọc và điểm dừng đầu tiên của từng sản phẩm. Bối cảnh, độ dài và vị trí tín hiệu trong mẫu đều được đặt mới cho mô hình giả định, không mô tả một gene tự nhiên hay một câu hỏi đề thi.",
+      "uncertainties": [],
+      "missing_assets": []
+    }
+  ]
+}

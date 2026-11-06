@@ -1,0 +1,187 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "ccf2cf96286b8066",
+    "topic": "Hô hấp và vận chuyển khí ở động vật",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Đồ thị độ bão hòa chất vận chuyển khí theo phân áp oxygen trong các điều kiện có và không có chất cạnh tranh liên kết.",
+        "task": "Kiểm tra sự tương đương độ bão hòa tại một vị trí trên trục hoành.",
+        "reasoning": "Xác định vị trí phân áp được xét; đọc tung độ của các đường tại cùng vị trí; so sánh độ bão hòa.",
+        "combines": [
+          "Vận chuyển khí hô hấp",
+          "Đọc đồ thị"
+        ],
+        "difficulty_source": "Đọc giao điểm của các đường biểu diễn",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Đồ thị bão hòa oxygen khi xuất hiện một chất có khả năng chiếm vị trí liên kết trên chất vận chuyển.",
+        "task": "Kiểm tra suy luận về phần chất vận chuyển còn tự do.",
+        "reasoning": "Đọc mức bão hòa oxygen trong điều kiện được xét; phân biệt phần không gắn oxygen với phần chưa gắn bất kì chất nào; xét khả năng vị trí liên kết đã bị chất cạnh tranh chiếm giữ.",
+        "combines": [
+          "Đọc đồ thị",
+          "Trạng thái liên kết của hemoglobin",
+          "Cạnh tranh vận chuyển khí"
+        ],
+        "difficulty_source": "Phải phân biệt đại lượng đo với trạng thái phân tử suy ra",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Thông tin về một khí cản trở vận chuyển oxygen và đồ thị thay đổi khả năng bão hòa.",
+        "task": "Đánh giá cơ chế cạnh tranh liên kết được đề xuất.",
+        "reasoning": "Nhớ sự khác biệt ái lực liên kết giữa các khí; liên hệ việc chiếm vị trí với giảm khả năng vận chuyển oxygen.",
+        "combines": [
+          "Ái lực liên kết",
+          "Vận chuyển khí trong máu"
+        ],
+        "difficulty_source": "Nhận biết cơ chế độc đã học",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Bối cảnh một chất cạnh tranh tác động lên protein vận chuyển khí.",
+        "task": "Đánh giá ảnh hưởng lên phần oxygen hòa tan trong dịch máu.",
+        "reasoning": "Phân biệt oxygen hòa tan với oxygen liên kết; xác định tác động trực tiếp của chất cạnh tranh; xét lượng hòa tan khi các điều kiện vật lí liên quan được giữ nguyên.",
+        "combines": [
+          "Các dạng vận chuyển oxygen",
+          "Phân áp khí",
+          "Liên kết với hemoglobin"
+        ],
+        "difficulty_source": "Tách hai dạng tồn tại của cùng một chất khí",
+        "evidence_uncertainty": "Khóa chấp nhận phát biểu dưới giả định phân áp oxygen và các điều kiện quyết định độ hòa tan không đổi; đề không nêu riêng giả định này.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "4b4716b94db4|P2|1|a",
+      "4b4716b94db4|P2|1|b",
+      "4b4716b94db4|P2|1|c",
+      "4b4716b94db4|P2|1|d"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "ccf2cf96286b8066",
+    "stem": "Trong thí nghiệm giả định với hemoglobin (Hb), chất X có thể chiếm vị trí liên kết O₂ trên Hb. Mỗi vị trí được xếp vào một trong ba trạng thái: gắn O₂, gắn X hoặc còn trống. Tỉ lệ vị trí gắn O₂ được tính trên tổng số vị trí liên kết, kể cả những vị trí bị X chiếm. Ở phân áp O₂ bằng 50 mmHg, mẫu không có X có 80% vị trí gắn O₂; mẫu có X có 55% vị trí gắn O₂ và 30% vị trí gắn X. Hai mẫu có cùng lượng Hb, nhiệt độ và thành phần dung môi. Trong mô hình này, X không phản ứng với O₂ và không làm thay đổi độ hòa tan của O₂. Xét các phát biểu sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Ở phân áp O₂ đã cho, tỉ lệ vị trí gắn O₂ của mẫu có X thấp hơn mẫu không có X 25 điểm phần trăm."
+      },
+      {
+        "sub": "b",
+        "text": "Trong mẫu có X, 45% tổng số vị trí liên kết còn trống."
+      },
+      {
+        "sub": "c",
+        "text": "Việc X chiếm một phần vị trí liên kết làm giảm số vị trí có thể dành cho O₂."
+      },
+      {
+        "sub": "d",
+        "text": "Nồng độ O₂ hòa tan trong mẫu có X thấp hơn vì tỉ lệ vị trí Hb gắn O₂ thấp hơn."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) Đúng: 80 − 55 = 25 điểm phần trăm. b) Sai: phần còn trống là 100 − 55 − 30 = 15%; 45% là phần không gắn O₂, bao gồm cả phần gắn X. c) Đúng: các vị trí đang bị X chiếm không đồng thời dành cho O₂ theo mô hình đã cho. d) Sai: ở cùng phân áp O₂, nhiệt độ và thành phần dung môi, với độ hòa tan không bị X làm thay đổi, nồng độ O₂ hòa tan của hai mẫu bằng nhau. Tỉ lệ O₂ gắn Hb là đại lượng khác với nồng độ O₂ hòa tan.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Lấy 100% trừ tỉ lệ gắn O₂ rồi coi toàn bộ phần còn lại là vị trí trống.",
+        "why_plausible": "Học sinh có thể bỏ qua trạng thái thứ ba là vị trí đã gắn X."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Suy trực tiếp từ lượng O₂ gắn Hb giảm sang nồng độ O₂ hòa tan giảm.",
+        "why_plausible": "Hai dạng tồn tại đều liên quan đến O₂ trong mẫu máu nên dễ bị đồng nhất."
+      }
+    ],
+    "level_reason": "Mức cao nhất là TH: học sinh diễn giải tỉ lệ, phân biệt các trạng thái liên kết và áp dụng quan hệ quen thuộc giữa O₂ hòa tan với điều kiện vật lí đã được giữ cố định.",
+    "prerequisites": [
+      "O₂ có thể tồn tại ở dạng hòa tan hoặc liên kết với Hb.",
+      "Phân biệt vị trí không gắn O₂ với vị trí còn trống.",
+      "Ở cùng điều kiện dung môi và nhiệt độ, nồng độ khí hòa tan phụ thuộc phân áp khí."
+    ],
+    "variation_guidance": "Có thể thay đổi phân áp và các tỉ lệ liên kết, bảo đảm tổng tỉ lệ không vượt 100%. Nếu tiếp tục hỏi về O₂ hòa tan, cần nêu rõ các điều kiện quyết định độ hòa tan được giữ nguyên.",
+    "uncertainties": [
+      "X là chất giả định trong mô hình đơn giản hóa, không đại diện đầy đủ cho tác động của một khí độc cụ thể.",
+      "Các quan sát định hướng chỉ có nguồn cấp tỉnh qua bên thứ ba, chưa có đối chiếu chính thức."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "ccf2cf96286b8066",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) Mức giảm là 80 − 55 = 25 điểm phần trăm. b) Tỉ lệ vị trí còn trống là 100 − 55 − 30 = 15%. c) Những vị trí đang gắn X không thể đồng thời gắn O₂ nên số vị trí có thể dành cho O₂ giảm. d) Hai mẫu có cùng phân áp O₂, nhiệt độ và độ hòa tan O₂ nên có cùng nồng độ O₂ hòa tan; tỉ lệ Hb gắn O₂ thấp hơn không chứng minh nồng độ O₂ hòa tan thấp hơn.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a và b dùng phép tính tỉ lệ quen thuộc; c diễn giải sự chiếm chỗ theo mô hình ba trạng thái; d phân biệt O₂ hòa tan với O₂ gắn Hb và áp dụng quan hệ quen thuộc giữa nồng độ khí hòa tan với phân áp. Từng ý đều ở mức TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/sinh-hoc/d7041c26c54eea3213a5f7fd83ada5e9396198628cf8826a862f1cc24aaa2cee.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/sinh-hoc/d7041c26c54eea3213a5f7fd83ada5e9396198628cf8826a862f1cc24aaa2cee.resolve.json"
+}

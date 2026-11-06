@@ -1,0 +1,10 @@
+{
+  "purpose": "Kiểm focused trên dữ liệu thật; không chạy test suite product",
+  "cases": [
+    {"case":"OCR","inputs":"audit/outputs/stage1-manifest.json","outputs":"transcriptions/**/AUDIT-20261102.json","checks":["đúng số câu/ý","khóa khớp mã","hình tồn tại và không trống","lượt hai","trang thiếu không được đoán"]},
+    {"case":"Địa chỉ prototype","inputs":"audit/outputs/prototype-inventory.json","checks":["Câu và Question","Câu có ngoặc mô tả","part-scoped, gồm V-ACT","số câu so key JSON"]},
+    {"case":"Profile","inputs":"registry/papers.csv","outputs":"profiles/*/verification.json","checks":["một extraction model mỗi môn","không reference/app output","refs hợp lệ","hai lớp bằng chứng tách riêng","quét trùng mười từ/chữ số"]},
+    {"case":"Ma trận","inputs":"audit/outputs/defaults-snapshot.json","outputs":"audit/proposed-matrices.json","checks":["đề xuất đúng số câu từng phần","chủ đề có bằng chứng","Toán cần ít nhất hai mươi đề tỉnh","không sửa product"]},
+    {"case":"Prototype mới","outputs":"prototypes/*/verification.json","checks":["đúng block/count","tự giải độc lập","compile đúng engine/preamble","không missing glyph","render và mở trang","chờ giáo viên duyệt"]}
+  ]
+}

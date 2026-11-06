@@ -1,0 +1,28 @@
+PASS json loads through upgrade_matrix_document, no row dropped  [39 rows]
+PASS is_matrix_document
+PASS levels equal DEFAULT_LEVELS  [['NB', 'TH', 'VD']]
+PASS every row level is a DEFAULT_LEVELS word
+PASS every cell count is an integer (or a statement row addressed by references)
+PASS every reference index is an integer
+PASS part totals equal the registered format  [matrix {'P1': 18, 'P2': 4, 'P3': 6} / format {'P1': 18, 'P2': 4, 'P3': 6}]
+PASS matrix_validation verdict ok (published layout)  [ok/published]
+PASS matrix_conflicts empty
+PASS SKELETON: the registered layout has a slot list  [40 slots]
+PASS SKELETON: the sample is slot-addressed (a `slots` list exists)  [40 slots]
+PASS SKELETON: slot count equals the layout's  [sample 40 / layout 40]
+PASS SKELETON: no missing, no extra, no duplicate slot  [missing [] extra [] dup 0]
+PASS SKELETON: same slots in the same order as the layout
+PASS SKELETON: part order equals the layout's
+PASS SKELETON: every slot names part, position, level, topic and requirement
+PASS SKELETON: blocks of part P1  [no block layout is registered for this part, so there is no block order to check (not invented)]
+PASS SKELETON: blocks of part P2  [no block layout is registered for this part, so there is no block order to check (not invented)]
+PASS SKELETON: blocks of part P3  [no block layout is registered for this part, so there is no block order to check (not invented)]
+PASS SKELETON: rows are exactly the distribution of the slots (nothing added or dropped)  [39 cells / 39 rows]
+PASS marks equal the format total  [matrix 10.0 / format 10.0]
+PASS docx parses by the deterministic reader (source=table)  [table]
+PASS docx parse leaves nothing unread  [[]]
+PASS docx rows equal json rows (part, topic, level, references)  [39 vs 39]
+PASS part totals read from the docx equal the format
+PASS level units read from the docx equal the json totals  [{'NB': 14, 'VD': 13, 'TH': 13}]
+PASS every statement-row group is complete (a-d per câu)
+27/27 passed

@@ -1,0 +1,109 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "6bb2e9d73b206ce7",
+    "topic": "Tiến hoá",
+    "part": "P3",
+    "level": "TH",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Bối cảnh thay đổi khả năng kháng một tác nhân và các sự kiện tiến hóa chưa sắp xếp.",
+        "task": "Sắp xếp các sự kiện theo quan hệ nhân quả.",
+        "reasoning": "Xác định biến dị phải xuất hiện trước khi được chọn lọc; đặt sự di truyền và phát tán biến dị sau phát sinh; xác định vai trò sàng lọc của môi trường; đặt sự phổ biến của đặc điểm thích nghi ở kết quả cuối.",
+        "combines": [
+          "Đột biến",
+          "Sinh sản và di truyền",
+          "Chọn lọc tự nhiên",
+          "Thích nghi quần thể"
+        ],
+        "difficulty_source": "Phân biệt nguồn gốc biến dị với tác động sàng lọc của môi trường",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Cây phân nhánh có các đặc điểm phát sinh gắn tại những vị trí trên nhánh và một loài đích.",
+        "task": "Liệt kê các mã đặc điểm được loài đích thừa hưởng theo thứ tự yêu cầu.",
+        "reasoning": "Xác định nhánh tận cùng của loài đích; lần ngược đường nối về gốc; thu các đặc điểm xuất hiện trên đường tổ tiên; sắp mã theo quy cách trả lời.",
+        "combines": [
+          "Cây phát sinh chủng loại",
+          "Đặc điểm chung có nguồn gốc",
+          "Đọc sơ đồ"
+        ],
+        "difficulty_source": "Theo đúng đường tổ tiên thay vì lấy đặc điểm ở nhánh nằm gần",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Cây phát sinh trực quan có gốc, các nhánh và mã của những nhóm cần so sánh.",
+        "task": "Sắp xếp các nhóm theo mức độ gần gũi với nhóm tham chiếu.",
+        "reasoning": "Xác định tổ tiên chung gần nhất của từng nhóm với nhóm tham chiếu; so thứ tự các điểm phân nhánh; chuyển thứ tự quan hệ thành chuỗi mã.",
+        "combines": [
+          "Tổ tiên chung",
+          "Đọc cây phát sinh"
+        ],
+        "difficulty_source": "Đọc thứ tự phân nhánh thay vì nhớ khoảng cách hay tên nhóm",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "2cbdc74db082|P3|4|None",
+      "4b4716b94db4|P3|1|None",
+      "8bbf9eea6d33|P3|4|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "6bb2e9d73b206ce7",
+    "stem": "Một cây phát sinh có gốc của bốn loài giả định được mô tả như sau: từ gốc O, một nhánh dẫn đến loài 1, nhánh còn lại dẫn đến nút N. Tại N, một nhánh dẫn đến loài 3, nhánh còn lại dẫn đến nút K. Tại K, hai nhánh lần lượt dẫn đến loài 2 và loài 4. Dựa vào tổ tiên chung gần nhất trên cây, hãy sắp xếp các loài 1, 2, 3 theo mức độ họ hàng từ gần đến xa với loài 4. Trả lời bằng chuỗi mã loài, không có dấu cách.",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "231",
+        "level": "TH"
+      }
+    ],
+    "solution": "Loài 2 và loài 4 có tổ tiên chung gần nhất tại K. Loài 3 và loài 4 có tổ tiên chung gần nhất tại N, là tổ tiên của K. Loài 1 và loài 4 có tổ tiên chung gần nhất tại gốc O. Vì vậy, thứ tự từ gần đến xa là 2, 3, 1; đáp án là 231.",
+    "distractors": [],
+    "level_reason": "Học sinh đọc cấu trúc phân nhánh được cung cấp bằng lời, xác định các tổ tiên chung gần nhất rồi chuyển thứ tự quan hệ thành chuỗi mã. Đây là thao tác diễn giải cây phát sinh quen thuộc.",
+    "prerequisites": [
+      "Cây phát sinh có gốc.",
+      "Tổ tiên chung gần nhất.",
+      "Đánh giá quan hệ họ hàng bằng thứ tự phân nhánh."
+    ],
+    "variation_guidance": "Có thể hoán đổi mã loài và vị trí nhánh, nhưng phải giữ quan hệ phân nhánh rõ ràng và tránh tạo các nhóm đồng hạng khi yêu cầu một thứ tự duy nhất. Cấu trúc minh họa này chỉ dựa trên dạng quan sát cấp tỉnh được cung cấp.",
+    "uncertainties": [
+      "Không có điểm neo chính thức cho mục tiêu này; cơ sở về dạng câu hỏi chỉ giới hạn ở các quan sát cấp tỉnh được cung cấp.",
+      "Cây và mã loài được sáng tác cho mẫu minh họa tổng hợp, không tái hiện câu hỏi đề thi thật."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "6bb2e9d73b206ce7",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "231",
+        "level": "TH"
+      }
+    ],
+    "solution": "Loài 2 có tổ tiên chung gần nhất với loài 4 tại K; loài 3 chung tổ tiên với loài 4 tại N; loài 1 chung tổ tiên với loài 4 tại O. Thứ tự từ gần đến xa là 2, 3, 1.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Đọc cấu trúc cây đã mô tả và so sánh các tổ tiên chung gần nhất theo quy tắc quen thuộc."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/sinh-hoc/21a69d0b8e145710ccd9942f78edb0b731f36e403dbc533c7ed8c53e5437c0c1.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/sinh-hoc/21a69d0b8e145710ccd9942f78edb0b731f36e403dbc533c7ed8c53e5437c0c1.resolve.json"
+}

@@ -1,0 +1,190 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "9a8a8c12a2bc00ff",
+    "topic": "Di truyền nhiễm sắc thể và quy luật di truyền",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Bảng biểu hiện các tính trạng ở bố mẹ và con trong các gia đình, kèm giả thiết di truyền đơn gene.",
+        "task": "Xác định một dạng kiểu hình có do allele lặn quy định hay không.",
+        "reasoning": "Tìm cặp bố mẹ cùng kiểu hình sinh con khác kiểu hình; áp dụng giả thiết trội hoàn toàn; suy ra quan hệ trội lặn.",
+        "combines": [
+          "Quy luật phân li",
+          "Phân tích thông tin gia đình"
+        ],
+        "difficulty_source": "Mẫu phân li gia đình cung cấp dấu hiệu trội lặn điển hình",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Sơ đồ sinh hóa phân nhánh và bảng cho thấy điều kiện môi trường có thể che lấp khác biệt màu sắc.",
+        "task": "Kiểm tra một dự đoán tỉ lệ kiểu hình trong điều kiện che lấp.",
+        "reasoning": "Đọc điều kiện biểu hiện màu trong bảng; xác định kiểu hình khi các sản phẩm đều không tạo màu; đối chiếu dự đoán với tác động môi trường.",
+        "combines": [
+          "Tương tác gene",
+          "Ảnh hưởng môi trường lên kiểu hình"
+        ],
+        "difficulty_source": "Điều kiện môi trường phải được xét trước phép lai",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Mô hình các locus phân li độc lập và bảng biểu hiện màu theo môi trường.",
+        "task": "Kiểm tra số loại kiểu gene và kiểu hình tối đa.",
+        "reasoning": "Đếm trạng thái kiểu gene ở từng locus; kết hợp giữa các locus; dùng sơ đồ và bảng môi trường để gộp các trạng thái có cùng kiểu hình.",
+        "combines": [
+          "Số loại kiểu gene",
+          "Tương tác gene",
+          "Quan hệ kiểu gene và môi trường"
+        ],
+        "difficulty_source": "Phân biệt số tổ hợp di truyền với số biểu hiện quan sát được",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Sơ đồ tổng hợp sản phẩm qua nhiều enzyme cùng thông tin về một gene ức chế.",
+        "task": "Đánh giá cơ chế nhiều gene cùng chi phối một tính trạng.",
+        "reasoning": "Theo dõi sự phụ thuộc của sản phẩm cuối vào các enzyme; nhận ra nhiều locus cùng tác động đến một biểu hiện; phân loại là tương tác gene không allele.",
+        "combines": [
+          "Gene và enzyme",
+          "Con đường chuyển hóa",
+          "Tương tác gene"
+        ],
+        "difficulty_source": "Nhận ra nhiều locus cùng tham gia một con đường sinh hóa",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "b68b84764a9b|P2|3|a",
+      "2cbdc74db082|P2|4|a",
+      "2cbdc74db082|P2|4|d",
+      "55c12f561006|P2|1|a",
+      "61a0198fbfda|P2|2|a",
+      "61a0198fbfda|P2|2|b",
+      "61a0198fbfda|P2|2|c",
+      "8bbf9eea6d33|P2|4|c"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "9a8a8c12a2bc00ff",
+    "stem": "Ở một loài cây giả định, dạng mép lá do một gene có hai allele nằm trên nhiễm sắc thể thường quy định, trội hoàn toàn. Lai hai cây đều có lá mép nguyên, thu được cả cây lá mép nguyên và cây lá mép khía. Không có đột biến; kiểu hình biểu hiện đầy đủ và các kiểu gene có sức sống như nhau. Quy ước A là allele trội, a là allele lặn. Hãy xác định mỗi phát biểu sau đúng hay sai.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Lá mép khía là kiểu hình do allele lặn quy định."
+      },
+      {
+        "sub": "b",
+        "text": "Hai cây bố mẹ đều có kiểu gene Aa."
+      },
+      {
+        "sub": "c",
+        "text": "Mọi cây con có lá mép nguyên đều có kiểu gene AA."
+      },
+      {
+        "sub": "d",
+        "text": "Theo lí thuyết, xác suất một cây con có lá mép khía là 1/2."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Nếu lá mép nguyên là kiểu hình lặn thì hai cây bố mẹ cùng kiểu hình này không thể sinh cây lá mép khía theo các giả thiết đã cho. Vì vậy, lá mép nguyên là tính trạng trội, lá mép khía là tính trạng lặn. Cây con mép khía có kiểu gene aa nên mỗi cây bố mẹ phải cho giao tử a; cả hai bố mẹ đều là Aa. Phép lai Aa × Aa cho tỉ lệ kiểu gene 1 AA : 2 Aa : 1 aa. Do đó, cây con mép nguyên có thể là AA hoặc Aa, còn xác suất cây con mép khía là 1/4.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "c",
+        "mistake": "Đồng nhất kiểu hình trội với kiểu gene đồng hợp trội.",
+        "why_plausible": "Học sinh có thể bỏ qua việc kiểu gene dị hợp Aa cũng biểu hiện lá mép nguyên."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Lấy xác suất một bố hoặc mẹ truyền allele a làm xác suất con có kiểu gene aa.",
+        "why_plausible": "Mỗi cây bố mẹ cho giao tử a với xác suất 1/2, nhưng cây con mép khía phải nhận a từ cả hai bố mẹ."
+      }
+    ],
+    "level_reason": "Các phát biểu yêu cầu giải thích một dấu hiệu phân li điển hình và thực hiện phép lai một gene quen thuộc. Mức cao nhất của mẫu là TH.",
+    "prerequisites": [
+      "Quan hệ trội hoàn toàn",
+      "Quy luật phân li",
+      "Quan hệ giữa kiểu gene và kiểu hình"
+    ],
+    "variation_guidance": "Có thể thay dạng mép lá bằng một tính trạng giả định khác, nhưng phải giữ giả thiết một gene, trội hoàn toàn và dữ kiện bố mẹ cùng kiểu hình sinh con khác kiểu hình.",
+    "uncertainties": [
+      "Đây là mẫu minh họa tổng hợp ở loài giả định, không phải dữ kiện thực nghiệm hoặc bằng chứng đề thi thật."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "9a8a8c12a2bc00ff",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Hai cây mép nguyên sinh cây mép khía nên mép nguyên là tính trạng trội, mép khía là tính trạng lặn; bố mẹ đều Aa. Phép lai Aa × Aa cho tỉ lệ 1/4 AA : 1/2 Aa : 1/4 aa. Cây mép nguyên có thể là AA hoặc Aa; xác suất cây mép khía là 1/4.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Các ý đều được xác định bằng suy luận và phép lai một gene quen thuộc; không đòi hỏi xây dựng mô hình hay chuỗi lập luận phức hợp."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/sinh-hoc/07ad15b26cfa1854874a4b90be537ffece245a3db4291e4a36e7820da9a319c7.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/sinh-hoc/07ad15b26cfa1854874a4b90be537ffece245a3db4291e4a36e7820da9a319c7.resolve.json"
+}

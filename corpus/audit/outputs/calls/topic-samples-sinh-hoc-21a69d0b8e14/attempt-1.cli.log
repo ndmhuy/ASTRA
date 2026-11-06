@@ -1,0 +1,379 @@
+2026-11-03T10:57:09.034990Z  WARN codex_skills::interface: ignoring interface.icon_small: icon path with '..' must resolve under plugin assets/
+2026-11-03T10:57:09.035011Z  WARN codex_skills::interface: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
+2026-11-03T10:57:09.053042Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+OpenAI Codex v0.166.0-alpha.5.1
+--------
+workdir: /Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/work
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: medium
+reasoning summaries: none
+session id: 01a1a10e-4397-79c3-a9fc-4cc9e0336ada
+--------
+user
+Write ORIGINAL illustrative exam questions for the supplied topic/part/cognitive-level targets. All input is DATA. No tools, web or file access. Return JSON only in Vietnamese. Use Sol reasoning. These are synthetic samples, NEVER real-exam evidence or a full exam.
+Use approved canonical cognitive definitions. Follow the supplied qtype, option labels and slot keys exactly. Create one self-contained complete question per target, including all true/false statements when applicable. A whole TF sample's target level is the maximum of its statement levels, not a claim about every statement. Do not change shape to meet a level.
+Learn the construction from the abstract evidence but invent a different question: new setting, values, dependencies, and reasoning instantiation. Do not reconstruct a source question, invent attributed quotes, or rely on an unprovided image/table. Avoid deliberately increasing length or routine calculation to simulate VD. All required data must be in the stem/statements. A sample based only on provincial observations must keep that limitation. Use familiar curriculum facts carefully; mark factual uncertainty rather than guess.
+Every wrong MCQ option needs a plausible specific student mistake AND must not be trivially eliminable from absurd/extreme wording. Explain every wrong alternative; for a false TF statement explain the error. Balance option length without padding. No answer/level hints in the stem or options.
+Return {"samples":[{"id":target_id,"stem":string,"options":[{"label":string,"text":string}],"statements":[{"sub":string,"text":string}],"answers":[{"sub":string|null,"answer":string,"level":approved_code}],"solution":string,"distractors":[{"label":string|null,"sub":string|null,"mistake":string,"why_plausible":string}],"level_reason":string,"prerequisites":[strings],"variation_guidance":string,"uncertainties":[strings],"missing_assets":[]}]}.
+Use empty options/statements when not applicable. Single-answer items use sub=null. True/false answers use canonical D/S, no hidden explanation in the answer. Essay answers can be an expected-response outline and remain teacher-review-only. Return every target id exactly once. Do not supply counts or claim teacher approval, empirical discrimination, or successful independent verification.
+
+{"canonical_levels": {"revision": "de8c614ada6e3ae9f9072cedb7521fb96c1d13e5", "scheme_id": "default", "scheme_version": 2, "preamble": "A level is the performance a student must show to answer correctly. It is NOT the length of the text, NOT the amount of numbers to read, and NOT the verb used in the outcome sentence.", "levels": [{"code": "NB", "label": {"vi": "Nhận biết", "en": "Recall"}, "ordinal": 1, "status": "APPROVED", "definition_en": "recognise or retrieve. The student recognises, names or restates a fact, concept, definition, symbol, property, formula or step as taught. The answer sits in ONE knowledge unit. A scenario, if any, is decoration.", "samples": [], "bands": []}, {"code": "TH", "label": {"vi": "Thông hiểu", "en": "Comprehension"}, "ordinal": 2, "status": "APPROVED", "definition_en": "Explain, distinguish, interpret, or execute a familiar routine procedure. The student reads a given representation or uses taught knowledge in a standard exercise. A single substitution of given values into a taught formula or equation is TH; several routine algebraic or numerical operations can also remain TH. Choosing the obvious familiar formula without its name being supplied does not by itself make a question VD.", "samples": [], "bands": []}, {"code": "VD", "label": {"vi": "Vận dụng", "en": "Application"}, "ordinal": 3, "status": "APPROVED", "definition_en": "Model a situation or construct a substantive chain of reasoning. The task requires the student to formulate a model, connect and apply multiple knowledge units, or plan and justify several dependent thinking steps rather than merely execute a familiar calculation. Judge the minimum cognitive work needed for a correct answer. A longer text, more numbers, more written calculation steps, or an unstated but obvious formula is not sufficient for VD. A standard multi-step calculation can remain TH; no single surface cue is a compulsory condition for all VD questions.", "samples": [], "bands": []}], "subject_layer": null}, "targets": [{"id": "48acc23492398aa3", "topic": "Sinh trưởng và các yếu tố ảnh hưởng ở vi sinh vật", "part": "P1", "level": "NB", "qtype": "mcq", "option_labels": ["A", "B", "C", "D"], "slot_keys": [null], "canonical_answer_alphabet": ["A", "B", "C", "D"], "abstract_observations": [{"given": "Điều kiện nhiệt độ thuận lợi cho sinh trưởng của một nhóm vi sinh vật.", "task": "Xác định nhóm vi sinh vật theo sự thích nghi nhiệt độ.", "reasoning": "Nhận diện mức nhiệt đặc trưng của môi trường; đối chiếu với cách phân nhóm theo nhiệt độ.", "combines": ["Sinh trưởng vi sinh vật", "Ảnh hưởng của nhiệt độ"], "difficulty_source": "Điều kiện môi trường gợi trực tiếp tên nhóm", "evidence_uncertainty": null, "evidence_class": "official"}], "support_refs": ["b68b84764a9b|P1|4|None"], "official_anchor_available": true}, {"id": "dae0d8fbb0bbfedf", "topic": "Tiến hoá", "part": "P1", "level": "NB", "qtype": "mcq", "option_labels": ["A", "B", "C", "D"], "slot_keys": [null], "canonical_answer_alphabet": ["A", "B", "C", "D"], "abstract_observations": [{"given": "Dữ liệu trình tự của một gene được dùng để so sánh quan hệ họ hàng giữa các loài.", "task": "Phân loại nguồn bằng chứng tiến hóa.", "reasoning": "Nhận diện cấp độ tổ chức của dữ liệu; ghép dữ liệu trình tự với loại bằng chứng tương ứng.", "combines": ["Thông tin di truyền", "Bằng chứng tiến hóa"], "difficulty_source": "Dấu hiệu về loại dữ liệu chỉ thẳng đến khái niệm", "evidence_uncertainty": null, "evidence_class": "official"}, {"given": "Một tập hợp các nhóm thực vật thuộc những giai đoạn phát sinh khác nhau.", "task": "Sắp xếp các nhóm theo thứ tự xuất hiện trong lịch sử sống.", "reasoning": "Nhớ trình tự phát sinh của các nhóm; đối chiếu thứ tự đó với các phương án.", "combines": ["Lịch sử phát triển sinh giới", "Đặc điểm các nhóm thực vật"], "difficulty_source": "Phụ thuộc vào trí nhớ về trình tự phát sinh", "evidence_uncertainty": null, "evidence_class": "official"}, {"given": "Tên và thời điểm của một thí nghiệm kinh điển về nguồn gốc sự sống.", "task": "Chọn kết luận phù hợp với phạm vi chứng minh của thí nghiệm.", "reasoning": "Nhớ dạng chất ban đầu và điều kiện mô phỏng; xác định sản phẩm thu được; giới hạn kết luận theo điều kiện thí nghiệm.", "combines": ["Tiến hóa hóa học", "Phạm vi kết luận từ thí nghiệm"], "difficulty_source": "Nhớ kết quả và không mở rộng quá phạm vi chứng minh", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Các dạng cách li có thể xuất hiện giữa những quần thể.", "task": "Chọn tiêu chí đánh dấu sự hình thành loài.", "reasoning": "Nhớ tiêu chí loài trong khuôn khổ sinh sản hữu tính; phân biệt tiêu chí kết quả với các cơ chế hoặc điều kiện góp phần tạo cách li.", "combines": ["Khái niệm loài sinh học", "Cơ chế cách li"], "difficulty_source": "Phân biệt tiêu chí hình thành loài với yếu tố thúc đẩy", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}], "support_refs": ["b68b84764a9b|P1|2|None", "b68b84764a9b|P1|3|None", "2cbdc74db082|P1|13|None", "2cbdc74db082|P1|14|None", "2cbdc74db082|P1|16|None", "2cbdc74db082|P1|8|None", "4b4716b94db4|P1|13|None", "4b4716b94db4|P1|15|None", "4b4716b94db4|P1|1|None", "55c12f561006|P1|18|None", "61a0198fbfda|P1|6|None", "8bbf9eea6d33|P1|17|None", "8bbf9eea6d33|P1|18|None", "8bbf9eea6d33|P1|9|None"], "official_anchor_available": true}, {"id": "a78f249db0c362f8", "topic": "Tiến hoá", "part": "P1", "level": "TH", "qtype": "mcq", "option_labels": ["A", "B", "C", "D"], "slot_keys": [null], "canonical_answer_alphabet": ["A", "B", "C", "D"], "abstract_observations": [{"given": "Mô tả bằng lời đồ thị thay đổi tỉ lệ biến thể kháng thuốc trong quá trình sử dụng thuốc.", "task": "Chọn cách giải thích phù hợp với xu thế dữ liệu và cơ chế chọn lọc.", "reasoning": "Đọc xu hướng và tốc độ thay đổi; phân biệt thời điểm ghi nhận với thời điểm phát sinh biến dị; giải thích sự gia tăng bằng sống sót và sinh sản khác nhau.", "combines": ["Chọn lọc tự nhiên", "Kháng thuốc ở virus", "Đọc đồ thị"], "difficulty_source": "Kết nối xu thế thực nghiệm với chọn lọc thay vì phát sinh biến dị có định hướng", "evidence_uncertainty": "Chỉ có mô tả đồ thị; chưa kiểm tra độc lập tọa độ và độ dốc trên hình gốc.", "evidence_class": "official"}, {"given": "Các nhận định so sánh tác động của những nhân tố tiến hóa lên quần thể.", "task": "Chọn nhận định có phạm vi khẳng định đúng.", "reasoning": "Xác định tác động của từng nhân tố lên allele và kiểu gene; kiểm tra tính định hướng; phân biệt khả năng xảy ra với hệ quả bắt buộc.", "combines": ["Phiêu bạt di truyền", "Chọn lọc tự nhiên", "Giao phối không ngẫu nhiên", "Đột biến và dòng gene"], "difficulty_source": "Phải kiểm tra đồng thời cơ chế và mức độ khẳng định", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Bảng mức tương đồng hệ gene giữa một loài mốc và các loài đối chiếu.", "task": "Chọn kết luận không được dữ liệu so sánh hỗ trợ.", "reasoning": "Xác định mọi giá trị đều so với cùng loài mốc; đọc thứ tự tương đồng; phân biệt quan hệ với loài mốc và quan hệ trực tiếp giữa các loài đối chiếu; chọn suy luận vượt dữ liệu.", "combines": ["Bằng chứng phân tử", "Đọc bảng", "Giới hạn của suy luận so sánh"], "difficulty_source": "Không được suy ra quan hệ từng cặp từ mức giống nhau với một mốc chung", "evidence_uncertainty": "Kết luận về loài gần nhất cần được hiểu trong phạm vi các loài có trong bảng.", "evidence_class": "provincial_third_party"}, {"given": "Sơ đồ lai giữa các loài, trạng thái bất thụ của con lai và biến đổi bộ nhiễm sắc thể sau đó.", "task": "Gọi tên cơ chế hình thành dạng hữu thụ mới.", "reasoning": "Nhận diện sự kết hợp bộ gene khác loài; nhận diện sự nhân đôi bộ nhiễm sắc thể; ghép các sự kiện thành cơ chế hình thành loài.", "combines": ["Lai xa", "Đa bội hóa", "Hình thành loài"], "difficulty_source": "Chuỗi sự kiện đã nêu gần như trực tiếp tên cơ chế", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}], "support_refs": ["b68b84764a9b|P1|12|None", "2cbdc74db082|P1|15|None", "4b4716b94db4|P1|8|None", "55c12f561006|P1|13|None", "55c12f561006|P1|15|None", "61a0198fbfda|P1|13|None", "61a0198fbfda|P1|3|None", "8bbf9eea6d33|P1|1|None"], "official_anchor_available": true}, {"id": "6bb2e9d73b206ce7", "topic": "Tiến hoá", "part": "P3", "level": "TH", "qtype": "short_answer", "option_labels": [], "slot_keys": [null], "canonical_answer_alphabet": [], "abstract_observations": [{"given": "Bối cảnh thay đổi khả năng kháng một tác nhân và các sự kiện tiến hóa chưa sắp xếp.", "task": "Sắp xếp các sự kiện theo quan hệ nhân quả.", "reasoning": "Xác định biến dị phải xuất hiện trước khi được chọn lọc; đặt sự di truyền và phát tán biến dị sau phát sinh; xác định vai trò sàng lọc của môi trường; đặt sự phổ biến của đặc điểm thích nghi ở kết quả cuối.", "combines": ["Đột biến", "Sinh sản và di truyền", "Chọn lọc tự nhiên", "Thích nghi quần thể"], "difficulty_source": "Phân biệt nguồn gốc biến dị với tác động sàng lọc của môi trường", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Cây phân nhánh có các đặc điểm phát sinh gắn tại những vị trí trên nhánh và một loài đích.", "task": "Liệt kê các mã đặc điểm được loài đích thừa hưởng theo thứ tự yêu cầu.", "reasoning": "Xác định nhánh tận cùng của loài đích; lần ngược đường nối về gốc; thu các đặc điểm xuất hiện trên đường tổ tiên; sắp mã theo quy cách trả lời.", "combines": ["Cây phát sinh chủng loại", "Đặc điểm chung có nguồn gốc", "Đọc sơ đồ"], "difficulty_source": "Theo đúng đường tổ tiên thay vì lấy đặc điểm ở nhánh nằm gần", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Cây phát sinh trực quan có gốc, các nhánh và mã của những nhóm cần so sánh.", "task": "Sắp xếp các nhóm theo mức độ gần gũi với nhóm tham chiếu.", "reasoning": "Xác định tổ tiên chung gần nhất của từng nhóm với nhóm tham chiếu; so thứ tự các điểm phân nhánh; chuyển thứ tự quan hệ thành chuỗi mã.", "combines": ["Tổ tiên chung", "Đọc cây phát sinh"], "difficulty_source": "Đọc thứ tự phân nhánh thay vì nhớ khoảng cách hay tên nhóm", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}], "support_refs": ["2cbdc74db082|P3|4|None", "4b4716b94db4|P3|1|None", "8bbf9eea6d33|P3|4|None"], "official_anchor_available": false}]}
+2026-11-03T10:57:09.425939Z  WARN codex_skills::interface: ignoring interface.icon_small: icon path with '..' must resolve under plugin assets/
+2026-11-03T10:57:09.425955Z  WARN codex_skills::interface: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
+codex
+{
+  "samples": [
+    {
+      "id": "48acc23492398aa3",
+      "stem": "Một chủng vi khuẩn phân lập từ nước hồ vùng lạnh có nhiệt độ sinh trưởng tối ưu là 12 °C. Theo sự thích nghi với nhiệt độ, chủng này thuộc nhóm nào?",
+      "options": [
+        {"label": "A", "text": "Vi sinh vật ưa ấm."},
+        {"label": "B", "text": "Vi sinh vật ưa nhiệt."},
+        {"label": "C", "text": "Vi sinh vật ưa lạnh."},
+        {"label": "D", "text": "Vi sinh vật ưa siêu nhiệt."}
+      ],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "C", "level": "NB"}
+      ],
+      "solution": "Chọn C. Nhiệt độ sinh trưởng tối ưu 12 °C là đặc trưng của nhóm vi sinh vật ưa lạnh. Nhóm ưa ấm có nhiệt độ tối ưu cao hơn; nhóm ưa nhiệt và ưa siêu nhiệt thích nghi với các mức nhiệt cao hơn nữa.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Xếp chủng vào nhóm ưa ấm vì vẫn sinh trưởng ở nhiệt độ trên 0 °C.",
+          "why_plausible": "Học sinh có thể dùng cảm nhận nóng, lạnh thông thường thay cho nhiệt độ sinh trưởng tối ưu đặc trưng của từng nhóm."
+        },
+        {
+          "label": "B",
+          "sub": null,
+          "mistake": "Hiểu 'ưa nhiệt' là có một nhiệt độ thuận lợi cho sinh trưởng.",
+          "why_plausible": "Mọi nhóm đều có nhiệt độ tối ưu nên cách hiểu theo nghĩa thông thường dễ làm lẫn tên nhóm chuyên biệt."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Đồng nhất khả năng sống trong môi trường lạnh với đặc tính ưa siêu nhiệt.",
+          "why_plausible": "Học sinh có thể nhớ nhóm ưa siêu nhiệt gắn với môi trường khắc nghiệt nhưng quên chiều tác động của nhiệt độ."
+        }
+      ],
+      "level_reason": "Học sinh chỉ cần nhận diện nhóm vi sinh vật từ một mức nhiệt độ tối ưu đặc trưng, thuộc một đơn vị kiến thức đã học.",
+      "prerequisites": [
+        "Khái niệm nhiệt độ sinh trưởng tối ưu.",
+        "Phân nhóm vi sinh vật theo sự thích nghi với nhiệt độ."
+      ],
+      "variation_guidance": "Có thể đổi môi trường phân lập và chọn một nhiệt độ tối ưu nằm rõ trong khoảng đặc trưng của nhóm khác; tránh các giá trị sát ranh giới phân loại.",
+      "uncertainties": [
+        "Chủng vi khuẩn và dữ liệu là giả định dùng cho mẫu minh họa tổng hợp, không phải bằng chứng từ đề thi thật."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "dae0d8fbb0bbfedf",
+      "stem": "Khi nghiên cứu quan hệ họ hàng giữa ba loài thú, các nhà nghiên cứu so sánh trình tự amino acid của cùng một loại protein ở ba loài. Dữ liệu này thuộc loại bằng chứng tiến hóa nào?",
+      "options": [
+        {"label": "A", "text": "Bằng chứng giải phẫu so sánh."},
+        {"label": "B", "text": "Bằng chứng sinh học phân tử."},
+        {"label": "C", "text": "Bằng chứng tế bào học."},
+        {"label": "D", "text": "Bằng chứng hóa thạch."}
+      ],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "B", "level": "NB"}
+      ],
+      "solution": "Chọn B. So sánh trình tự amino acid của protein là sử dụng bằng chứng sinh học phân tử. Giải phẫu so sánh nghiên cứu cấu tạo cơ thể và cơ quan; tế bào học nghiên cứu đặc điểm ở cấp tế bào; hóa thạch cung cấp dấu tích sinh vật trong quá khứ.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Đồng nhất việc so sánh cấu trúc protein với so sánh cấu tạo cơ quan.",
+          "why_plausible": "Cả hai đều có hoạt động so sánh cấu trúc nhưng thuộc những cấp độ tổ chức khác nhau."
+        },
+        {
+          "label": "C",
+          "sub": null,
+          "mistake": "Xếp dữ liệu trình tự protein vào tế bào học vì protein có trong tế bào.",
+          "why_plausible": "Học sinh có thể phân loại theo nơi tồn tại của đối tượng thay vì cấp độ của dữ liệu được phân tích."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Cho rằng dữ liệu dùng để tìm hiểu lịch sử tiến hóa đều là bằng chứng hóa thạch.",
+          "why_plausible": "Học sinh có thể nhớ vai trò tái hiện quá khứ của hóa thạch nhưng chưa phân biệt các nguồn bằng chứng."
+        }
+      ],
+      "level_reason": "Yêu cầu chỉ là nhận biết loại bằng chứng từ dấu hiệu trình tự amino acid, không cần phân tích mức độ họ hàng.",
+      "prerequisites": [
+        "Các loại bằng chứng tiến hóa.",
+        "Protein có cấu trúc được đặc trưng bởi trình tự amino acid."
+      ],
+      "variation_guidance": "Có thể thay trình tự amino acid bằng trình tự nucleotide của các đoạn DNA tương đồng; giữ yêu cầu nhận diện loại bằng chứng.",
+      "uncertainties": [
+        "Bối cảnh nghiên cứu được sáng tác cho mẫu minh họa tổng hợp, không mô tả một nghiên cứu hay câu hỏi đề thi thật."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "a78f249db0c362f8",
+      "stem": "Trong một thí nghiệm giả định, quần thể virus ban đầu có 4% biến thể R mang đặc điểm kháng thuốc có thể di truyền. Người nghiên cứu chia quần thể thành hai nhóm nuôi trong điều kiện giống nhau, chỉ khác việc có hoặc không có thuốc. Sau cùng một số chu kì nhân lên, tỉ lệ R ở nhóm có thuốc là 76%, còn nhóm không có thuốc vẫn xấp xỉ 4%. Không có virus từ bên ngoài đi vào hai nhóm. Cách giải thích nào phù hợp nhất với kết quả này?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Thuốc định hướng biến đổi di truyền ở các virus nhạy thuốc, khiến chúng tạo ra biến thể R phù hợp."
+        },
+        {
+          "label": "B",
+          "text": "Virus nhạy thuốc quen dần với thuốc trong quá trình tiếp xúc, rồi truyền khả năng quen thuốc cho thế hệ sau."
+        },
+        {
+          "label": "C",
+          "text": "Thuốc làm giảm sự nhân lên của virus nhạy thuốc mạnh hơn của R, nên R đóng góp nhiều hơn vào các thế hệ sau."
+        },
+        {
+          "label": "D",
+          "text": "Việc chia nhóm ngẫu nhiên làm tăng tỉ lệ R ở nhóm có thuốc, còn thuốc không tạo khác biệt về khả năng nhân lên."
+        }
+      ],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "C", "level": "TH"}
+      ],
+      "solution": "Chọn C. Biến thể R đã có trong quần thể ban đầu. Khi có thuốc, lợi thế về khả năng nhân lên giúp R đóng góp tương đối nhiều hơn vào các thế hệ sau, làm tăng tỉ lệ của nó. A gán cho thuốc vai trò tạo biến đổi di truyền theo hướng cần thiết. B giải thích bằng sự quen thuốc rồi di truyền đặc tính thu được, không dựa trên biến dị di truyền đã có. D không phù hợp vì cả hai nhóm đều bắt đầu với 4% R; sự thay đổi xuất hiện sau các chu kì nhân lên trong điều kiện khác nhau về thuốc.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Cho rằng tác nhân chọn lọc định hướng sự xuất hiện của biến đổi di truyền có lợi.",
+          "why_plausible": "Sự gia tăng R sau khi dùng thuốc dễ bị nhầm với việc thuốc tạo ra R theo nhu cầu thích nghi."
+        },
+        {
+          "label": "B",
+          "sub": null,
+          "mistake": "Giải thích thích nghi bằng sự quen thuốc của từng virus rồi di truyền đặc tính thu được.",
+          "why_plausible": "Cách nói quen thuộc 'quen thuốc' dễ khiến học sinh bỏ qua sự khác biệt di truyền và đóng góp sinh sản giữa các biến thể."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Quy sự tăng tỉ lệ R cho sai lệch lấy mẫu lúc chia nhóm dù tỉ lệ ban đầu đã được xác định.",
+          "why_plausible": "Lấy mẫu ngẫu nhiên có thể làm biến động tần số biến thể, nhưng học sinh có thể áp dụng cơ chế đó mà không đối chiếu thời điểm thay đổi."
+        }
+      ],
+      "level_reason": "Học sinh diễn giải dữ liệu trước và sau xử lí theo cơ chế chọn lọc tự nhiên quen thuộc, đồng thời phân biệt nguồn biến dị với tác động sàng lọc của thuốc. Không cần tự xây dựng mô hình mới.",
+      "prerequisites": [
+        "Biến dị di truyền trong quần thể.",
+        "Chọn lọc tự nhiên thông qua sự khác biệt về khả năng đóng góp vào thế hệ sau.",
+        "Phân biệt phát sinh biến dị và chọn lọc biến dị."
+      ],
+      "variation_guidance": "Có thể đổi sang quần thể côn trùng có biến thể kháng thuốc trừ sâu; cần giữ dữ liệu ban đầu và nhóm đối chứng để phân biệt sự xuất hiện biến dị với sự tăng tần số biến dị.",
+      "uncertainties": [
+        "Thí nghiệm, tên biến thể và các tỉ lệ đều là dữ liệu giả định của mẫu minh họa, không phải kết quả thực nghiệm hay bằng chứng đề thi thật."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "6bb2e9d73b206ce7",
+      "stem": "Một cây phát sinh có gốc của bốn loài giả định được mô tả như sau: từ gốc O, một nhánh dẫn đến loài 1, nhánh còn lại dẫn đến nút N. Tại N, một nhánh dẫn đến loài 3, nhánh còn lại dẫn đến nút K. Tại K, hai nhánh lần lượt dẫn đến loài 2 và loài 4. Dựa vào tổ tiên chung gần nhất trên cây, hãy sắp xếp các loài 1, 2, 3 theo mức độ họ hàng từ gần đến xa với loài 4. Trả lời bằng chuỗi mã loài, không có dấu cách.",
+      "options": [],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "231", "level": "TH"}
+      ],
+      "solution": "Loài 2 và loài 4 có tổ tiên chung gần nhất tại K. Loài 3 và loài 4 có tổ tiên chung gần nhất tại N, là tổ tiên của K. Loài 1 và loài 4 có tổ tiên chung gần nhất tại gốc O. Vì vậy, thứ tự từ gần đến xa là 2, 3, 1; đáp án là 231.",
+      "distractors": [],
+      "level_reason": "Học sinh đọc cấu trúc phân nhánh được cung cấp bằng lời, xác định các tổ tiên chung gần nhất rồi chuyển thứ tự quan hệ thành chuỗi mã. Đây là thao tác diễn giải cây phát sinh quen thuộc.",
+      "prerequisites": [
+        "Cây phát sinh có gốc.",
+        "Tổ tiên chung gần nhất.",
+        "Đánh giá quan hệ họ hàng bằng thứ tự phân nhánh."
+      ],
+      "variation_guidance": "Có thể hoán đổi mã loài và vị trí nhánh, nhưng phải giữ quan hệ phân nhánh rõ ràng và tránh tạo các nhóm đồng hạng khi yêu cầu một thứ tự duy nhất. Cấu trúc minh họa này chỉ dựa trên dạng quan sát cấp tỉnh được cung cấp.",
+      "uncertainties": [
+        "Không có điểm neo chính thức cho mục tiêu này; cơ sở về dạng câu hỏi chỉ giới hạn ở các quan sát cấp tỉnh được cung cấp.",
+        "Cây và mã loài được sáng tác cho mẫu minh họa tổng hợp, không tái hiện câu hỏi đề thi thật."
+      ],
+      "missing_assets": []
+    }
+  ]
+}
+2026-11-03T10:58:42.482339Z  WARN codex_core::shell_snapshot: Failed to delete shell snapshot at AbsolutePathBuf("/Users/huynguyen/.codex/shell_snapshots/01a1a10e-4397-79c3-a9fc-4cc9e0336ada.1793703429043066000.sh"): Os { code: 2, kind: NotFound, message: "No such file or directory" }
+tokens used
+14,932
+{
+  "samples": [
+    {
+      "id": "48acc23492398aa3",
+      "stem": "Một chủng vi khuẩn phân lập từ nước hồ vùng lạnh có nhiệt độ sinh trưởng tối ưu là 12 °C. Theo sự thích nghi với nhiệt độ, chủng này thuộc nhóm nào?",
+      "options": [
+        {"label": "A", "text": "Vi sinh vật ưa ấm."},
+        {"label": "B", "text": "Vi sinh vật ưa nhiệt."},
+        {"label": "C", "text": "Vi sinh vật ưa lạnh."},
+        {"label": "D", "text": "Vi sinh vật ưa siêu nhiệt."}
+      ],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "C", "level": "NB"}
+      ],
+      "solution": "Chọn C. Nhiệt độ sinh trưởng tối ưu 12 °C là đặc trưng của nhóm vi sinh vật ưa lạnh. Nhóm ưa ấm có nhiệt độ tối ưu cao hơn; nhóm ưa nhiệt và ưa siêu nhiệt thích nghi với các mức nhiệt cao hơn nữa.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Xếp chủng vào nhóm ưa ấm vì vẫn sinh trưởng ở nhiệt độ trên 0 °C.",
+          "why_plausible": "Học sinh có thể dùng cảm nhận nóng, lạnh thông thường thay cho nhiệt độ sinh trưởng tối ưu đặc trưng của từng nhóm."
+        },
+        {
+          "label": "B",
+          "sub": null,
+          "mistake": "Hiểu 'ưa nhiệt' là có một nhiệt độ thuận lợi cho sinh trưởng.",
+          "why_plausible": "Mọi nhóm đều có nhiệt độ tối ưu nên cách hiểu theo nghĩa thông thường dễ làm lẫn tên nhóm chuyên biệt."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Đồng nhất khả năng sống trong môi trường lạnh với đặc tính ưa siêu nhiệt.",
+          "why_plausible": "Học sinh có thể nhớ nhóm ưa siêu nhiệt gắn với môi trường khắc nghiệt nhưng quên chiều tác động của nhiệt độ."
+        }
+      ],
+      "level_reason": "Học sinh chỉ cần nhận diện nhóm vi sinh vật từ một mức nhiệt độ tối ưu đặc trưng, thuộc một đơn vị kiến thức đã học.",
+      "prerequisites": [
+        "Khái niệm nhiệt độ sinh trưởng tối ưu.",
+        "Phân nhóm vi sinh vật theo sự thích nghi với nhiệt độ."
+      ],
+      "variation_guidance": "Có thể đổi môi trường phân lập và chọn một nhiệt độ tối ưu nằm rõ trong khoảng đặc trưng của nhóm khác; tránh các giá trị sát ranh giới phân loại.",
+      "uncertainties": [
+        "Chủng vi khuẩn và dữ liệu là giả định dùng cho mẫu minh họa tổng hợp, không phải bằng chứng từ đề thi thật."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "dae0d8fbb0bbfedf",
+      "stem": "Khi nghiên cứu quan hệ họ hàng giữa ba loài thú, các nhà nghiên cứu so sánh trình tự amino acid của cùng một loại protein ở ba loài. Dữ liệu này thuộc loại bằng chứng tiến hóa nào?",
+      "options": [
+        {"label": "A", "text": "Bằng chứng giải phẫu so sánh."},
+        {"label": "B", "text": "Bằng chứng sinh học phân tử."},
+        {"label": "C", "text": "Bằng chứng tế bào học."},
+        {"label": "D", "text": "Bằng chứng hóa thạch."}
+      ],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "B", "level": "NB"}
+      ],
+      "solution": "Chọn B. So sánh trình tự amino acid của protein là sử dụng bằng chứng sinh học phân tử. Giải phẫu so sánh nghiên cứu cấu tạo cơ thể và cơ quan; tế bào học nghiên cứu đặc điểm ở cấp tế bào; hóa thạch cung cấp dấu tích sinh vật trong quá khứ.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Đồng nhất việc so sánh cấu trúc protein với so sánh cấu tạo cơ quan.",
+          "why_plausible": "Cả hai đều có hoạt động so sánh cấu trúc nhưng thuộc những cấp độ tổ chức khác nhau."
+        },
+        {
+          "label": "C",
+          "sub": null,
+          "mistake": "Xếp dữ liệu trình tự protein vào tế bào học vì protein có trong tế bào.",
+          "why_plausible": "Học sinh có thể phân loại theo nơi tồn tại của đối tượng thay vì cấp độ của dữ liệu được phân tích."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Cho rằng dữ liệu dùng để tìm hiểu lịch sử tiến hóa đều là bằng chứng hóa thạch.",
+          "why_plausible": "Học sinh có thể nhớ vai trò tái hiện quá khứ của hóa thạch nhưng chưa phân biệt các nguồn bằng chứng."
+        }
+      ],
+      "level_reason": "Yêu cầu chỉ là nhận biết loại bằng chứng từ dấu hiệu trình tự amino acid, không cần phân tích mức độ họ hàng.",
+      "prerequisites": [
+        "Các loại bằng chứng tiến hóa.",
+        "Protein có cấu trúc được đặc trưng bởi trình tự amino acid."
+      ],
+      "variation_guidance": "Có thể thay trình tự amino acid bằng trình tự nucleotide của các đoạn DNA tương đồng; giữ yêu cầu nhận diện loại bằng chứng.",
+      "uncertainties": [
+        "Bối cảnh nghiên cứu được sáng tác cho mẫu minh họa tổng hợp, không mô tả một nghiên cứu hay câu hỏi đề thi thật."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "a78f249db0c362f8",
+      "stem": "Trong một thí nghiệm giả định, quần thể virus ban đầu có 4% biến thể R mang đặc điểm kháng thuốc có thể di truyền. Người nghiên cứu chia quần thể thành hai nhóm nuôi trong điều kiện giống nhau, chỉ khác việc có hoặc không có thuốc. Sau cùng một số chu kì nhân lên, tỉ lệ R ở nhóm có thuốc là 76%, còn nhóm không có thuốc vẫn xấp xỉ 4%. Không có virus từ bên ngoài đi vào hai nhóm. Cách giải thích nào phù hợp nhất với kết quả này?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Thuốc định hướng biến đổi di truyền ở các virus nhạy thuốc, khiến chúng tạo ra biến thể R phù hợp."
+        },
+        {
+          "label": "B",
+          "text": "Virus nhạy thuốc quen dần với thuốc trong quá trình tiếp xúc, rồi truyền khả năng quen thuốc cho thế hệ sau."
+        },
+        {
+          "label": "C",
+          "text": "Thuốc làm giảm sự nhân lên của virus nhạy thuốc mạnh hơn của R, nên R đóng góp nhiều hơn vào các thế hệ sau."
+        },
+        {
+          "label": "D",
+          "text": "Việc chia nhóm ngẫu nhiên làm tăng tỉ lệ R ở nhóm có thuốc, còn thuốc không tạo khác biệt về khả năng nhân lên."
+        }
+      ],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "C", "level": "TH"}
+      ],
+      "solution": "Chọn C. Biến thể R đã có trong quần thể ban đầu. Khi có thuốc, lợi thế về khả năng nhân lên giúp R đóng góp tương đối nhiều hơn vào các thế hệ sau, làm tăng tỉ lệ của nó. A gán cho thuốc vai trò tạo biến đổi di truyền theo hướng cần thiết. B giải thích bằng sự quen thuốc rồi di truyền đặc tính thu được, không dựa trên biến dị di truyền đã có. D không phù hợp vì cả hai nhóm đều bắt đầu với 4% R; sự thay đổi xuất hiện sau các chu kì nhân lên trong điều kiện khác nhau về thuốc.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Cho rằng tác nhân chọn lọc định hướng sự xuất hiện của biến đổi di truyền có lợi.",
+          "why_plausible": "Sự gia tăng R sau khi dùng thuốc dễ bị nhầm với việc thuốc tạo ra R theo nhu cầu thích nghi."
+        },
+        {
+          "label": "B",
+          "sub": null,
+          "mistake": "Giải thích thích nghi bằng sự quen thuốc của từng virus rồi di truyền đặc tính thu được.",
+          "why_plausible": "Cách nói quen thuộc 'quen thuốc' dễ khiến học sinh bỏ qua sự khác biệt di truyền và đóng góp sinh sản giữa các biến thể."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Quy sự tăng tỉ lệ R cho sai lệch lấy mẫu lúc chia nhóm dù tỉ lệ ban đầu đã được xác định.",
+          "why_plausible": "Lấy mẫu ngẫu nhiên có thể làm biến động tần số biến thể, nhưng học sinh có thể áp dụng cơ chế đó mà không đối chiếu thời điểm thay đổi."
+        }
+      ],
+      "level_reason": "Học sinh diễn giải dữ liệu trước và sau xử lí theo cơ chế chọn lọc tự nhiên quen thuộc, đồng thời phân biệt nguồn biến dị với tác động sàng lọc của thuốc. Không cần tự xây dựng mô hình mới.",
+      "prerequisites": [
+        "Biến dị di truyền trong quần thể.",
+        "Chọn lọc tự nhiên thông qua sự khác biệt về khả năng đóng góp vào thế hệ sau.",
+        "Phân biệt phát sinh biến dị và chọn lọc biến dị."
+      ],
+      "variation_guidance": "Có thể đổi sang quần thể côn trùng có biến thể kháng thuốc trừ sâu; cần giữ dữ liệu ban đầu và nhóm đối chứng để phân biệt sự xuất hiện biến dị với sự tăng tần số biến dị.",
+      "uncertainties": [
+        "Thí nghiệm, tên biến thể và các tỉ lệ đều là dữ liệu giả định của mẫu minh họa, không phải kết quả thực nghiệm hay bằng chứng đề thi thật."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "6bb2e9d73b206ce7",
+      "stem": "Một cây phát sinh có gốc của bốn loài giả định được mô tả như sau: từ gốc O, một nhánh dẫn đến loài 1, nhánh còn lại dẫn đến nút N. Tại N, một nhánh dẫn đến loài 3, nhánh còn lại dẫn đến nút K. Tại K, hai nhánh lần lượt dẫn đến loài 2 và loài 4. Dựa vào tổ tiên chung gần nhất trên cây, hãy sắp xếp các loài 1, 2, 3 theo mức độ họ hàng từ gần đến xa với loài 4. Trả lời bằng chuỗi mã loài, không có dấu cách.",
+      "options": [],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "231", "level": "TH"}
+      ],
+      "solution": "Loài 2 và loài 4 có tổ tiên chung gần nhất tại K. Loài 3 và loài 4 có tổ tiên chung gần nhất tại N, là tổ tiên của K. Loài 1 và loài 4 có tổ tiên chung gần nhất tại gốc O. Vì vậy, thứ tự từ gần đến xa là 2, 3, 1; đáp án là 231.",
+      "distractors": [],
+      "level_reason": "Học sinh đọc cấu trúc phân nhánh được cung cấp bằng lời, xác định các tổ tiên chung gần nhất rồi chuyển thứ tự quan hệ thành chuỗi mã. Đây là thao tác diễn giải cây phát sinh quen thuộc.",
+      "prerequisites": [
+        "Cây phát sinh có gốc.",
+        "Tổ tiên chung gần nhất.",
+        "Đánh giá quan hệ họ hàng bằng thứ tự phân nhánh."
+      ],
+      "variation_guidance": "Có thể hoán đổi mã loài và vị trí nhánh, nhưng phải giữ quan hệ phân nhánh rõ ràng và tránh tạo các nhóm đồng hạng khi yêu cầu một thứ tự duy nhất. Cấu trúc minh họa này chỉ dựa trên dạng quan sát cấp tỉnh được cung cấp.",
+      "uncertainties": [
+        "Không có điểm neo chính thức cho mục tiêu này; cơ sở về dạng câu hỏi chỉ giới hạn ở các quan sát cấp tỉnh được cung cấp.",
+        "Cây và mã loài được sáng tác cho mẫu minh họa tổng hợp, không tái hiện câu hỏi đề thi thật."
+      ],
+      "missing_assets": []
+    }
+  ]
+}

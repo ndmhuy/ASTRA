@@ -1,0 +1,126 @@
+{
+  "input": {
+    "subject": "hoa-hoc",
+    "kind": "provincial",
+    "year": 2026,
+    "source": "official/2026-provincial-hoa-hoc/de-thi-thu-tn-thpt-nam-2026-mon-hoa-so-gd-nghe-an-lan-2/paper.docx",
+    "slug": "de-thi-thu-tn-thpt-nam-2026-mon-hoa-so-gd-nghe-an-lan-2",
+    "selection_reason": "Dự phòng để đủ số đề đọc được sau khi loại nguồn dở."
+  },
+  "verification": {
+    "checked_addresses": [
+      "Page 1: Câu 1–8, including all options and formulas",
+      "Page 1–2: Câu 9–16, including experimental quantities and options",
+      "Page 2–3: methyl salicylate structure, Câu 17–18, and reaction equation",
+      "Page 3: Phần II Câu 1 table, all five rows and four time-point cells",
+      "Page 3–4: Phần II Câu 2–4, formulas, statements, and figures",
+      "Page 5: Phần III Câu 1–6, including electrode-potential and enthalpy tables",
+      "Page 6: printed answer key, all Part I, Part II, and Part III cells"
+    ],
+    "disagreements": [],
+    "missing_figures": [],
+    "unreadable": [],
+    "pass": true,
+    "key_disagreements": [],
+    "independent_key": {
+      "part1": [
+        "D",
+        "A",
+        "B",
+        "B",
+        "D",
+        "A",
+        "A",
+        "D",
+        "A",
+        "A",
+        "C",
+        "A",
+        "D",
+        "D",
+        "A",
+        "D",
+        "B",
+        "C"
+      ],
+      "part2": [
+        [
+          "Sai",
+          "Đúng",
+          "Sai",
+          "Sai"
+        ],
+        [
+          "Sai",
+          "Đúng",
+          "Sai",
+          "Đúng"
+        ],
+        [
+          "Sai",
+          "Đúng",
+          "Sai",
+          "Sai"
+        ],
+        [
+          "Đúng",
+          "Đúng",
+          "Đúng",
+          "Sai"
+        ]
+      ],
+      "part3": [
+        "2",
+        "3",
+        "1, 2, 4",
+        "1, 3, 4",
+        "77,1°C",
+        "65,6%"
+      ]
+    },
+    "limitations": [
+      "The first-pass model is not supplied, so cross-model independence cannot be assessed."
+    ]
+  },
+  "failures": [],
+  "model": "gpt-6-luna",
+  "verification_model": "gpt-6-luna",
+  "calls": "/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/outputs/calls/ocr-hoa-hoc--de-thi-thu-tn-thpt-nam-2026-mon-hoa-so-gd-nghe-an-lan-2",
+  "manual_image_review": {
+    "reviewer": "Luna visual inspection",
+    "source_pages": [
+      {
+        "page": 1,
+        "path": "audit/work/hoa-hoc--de-thi-thu-tn-thpt-nam-2026-mon-hoa-so-gd-nghe-an-lan-2/p1-01.jpg",
+        "sha256": "2e9360a0440ea296da1ccf0c79164dbd42b2d0b63c36aeae2232f504f64f9315",
+        "checked": "Header/code 0401 and Questions 1–5; wording, formulas, options, table values and printed numbering match de.md."
+      },
+      {
+        "page": 6,
+        "path": "audit/work/hoa-hoc--de-thi-thu-tn-thpt-nam-2026-mon-hoa-so-gd-nghe-an-lan-2/p6-06.jpg",
+        "sha256": "504906fafd278ebf178d1fca349ace64601d98db123dafa1812098077118bd85",
+        "checked": "All printed answer cells in Parts I–III match key.json. Worked solutions after the key were excluded from de.md. For PartIII Q5, source-exact key spelling is 77,1°C; previous key.json had 77,1 °C (same numeric value/unit, whitespace only), corrected without changing number or unit.",
+        "key_spelling_before": "77,1°C",
+        "key_spelling_source_exact": "77,1°C"
+      }
+    ],
+    "result": "Questions 1–5 and complete printed key visually agree with source."
+  },
+  "key_coverage": {
+    "mismatches": [],
+    "incomplete": [],
+    "source_resolution_error": "supplemental_visual_key_review not recorded",
+    "format_normalizations": [],
+    "supplemental_visual_pages": []
+  },
+  "qa_failures": [],
+  "qa_content_failures": [],
+  "qa_key_failures": [],
+  "page_boundary_omission_correction": {
+    "evidence_file": "audit/outputs/targeted-hoa-gap-20261103.json",
+    "address": "Phần II, Câu 2 (quy trình Pidgeon)",
+    "ocr_reviewer": "Luna",
+    "parent_visual_confirmed": true,
+    "before_sha256": "4998e0186590d836290f56e12a87264ddddc25f018ef5052d518e9c555e89fe1"
+  }
+}

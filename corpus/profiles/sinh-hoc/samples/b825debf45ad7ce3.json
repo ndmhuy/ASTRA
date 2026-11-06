@@ -1,0 +1,157 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "b825debf45ad7ce3",
+    "topic": "Di truyền quần thể và ứng dụng",
+    "part": "P2",
+    "level": "NB",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Vector có gene đích và một gene tạo khả năng sống trong điều kiện chọn lọc.",
+        "task": "Đánh giá vai trò nhận biết tế bào đã nhận vector.",
+        "reasoning": "Nhận diện tính trạng chọn lọc do gene phụ tạo ra; liên hệ tính trạng đó với việc sàng lọc tế bào nhận vector.",
+        "combines": [
+          "Gene đánh dấu",
+          "Chọn lọc dòng tế bào"
+        ],
+        "difficulty_source": "Nhận biết trực tiếp chức năng gene đánh dấu trên sơ đồ",
+        "evidence_uncertainty": "Dấu chuẩn nhận biết tế bào mang vector; khả năng phân biệt vector có đoạn chèn với vector không có đoạn chèn không được trình bày riêng.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một enzyme tham gia bước xử lí DNA trong quy trình tạo DNA tái tổ hợp.",
+        "task": "Đánh giá sự tương ứng giữa các tên gọi enzyme.",
+        "reasoning": "Nhớ thuật ngữ đồng nghĩa của enzyme; đối chiếu với tên gọi được nêu.",
+        "combines": [
+          "Enzyme giới hạn",
+          "Thuật ngữ công nghệ gene"
+        ],
+        "difficulty_source": "Nhớ trực tiếp tên gọi tương đương",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "8bbf9eea6d33|P2|1|b",
+      "8bbf9eea6d33|P2|1|d"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "b825debf45ad7ce3",
+    "stem": "Trong công nghệ gene, plasmid được dùng làm thể truyền mang gene cần chuyển và gene đánh dấu kháng một loại kháng sinh. Xác định mỗi phát biểu sau là đúng hay sai.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Gene đánh dấu kháng kháng sinh được dùng để chọn lọc tế bào nhận thể truyền."
+      },
+      {
+        "sub": "b",
+        "text": "Enzyme giới hạn còn được gọi là enzyme cắt giới hạn."
+      },
+      {
+        "sub": "c",
+        "text": "DNA ligase là enzyme có chức năng chủ yếu cắt DNA tại trình tự nhận biết đặc hiệu."
+      },
+      {
+        "sub": "d",
+        "text": "Thể truyền có vai trò phân giải protein do gene cần chuyển mã hóa."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "NB"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "NB"
+      }
+    ],
+    "solution": "a đúng: khả năng kháng kháng sinh là tính trạng đánh dấu phục vụ chọn lọc tế bào nhận thể truyền. b đúng: hai tên gọi chỉ cùng loại enzyme. c sai: DNA ligase xúc tác nối các đoạn DNA; enzyme cắt giới hạn mới nhận biết và cắt DNA tại trình tự đặc hiệu. d sai: thể truyền mang gene cần chuyển vào tế bào nhận, không có chức năng phân giải protein.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "c",
+        "mistake": "Đổi chức năng của DNA ligase với enzyme cắt giới hạn.",
+        "why_plausible": "Cả hai enzyme đều tham gia xử lí DNA trong quy trình tạo DNA tái tổ hợp."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Gán chức năng của enzyme phân giải protein cho thể truyền.",
+        "why_plausible": "Học sinh có thể nhớ các thành phần cùng xuất hiện trong công nghệ gene nhưng chưa phân biệt vai trò của chúng."
+      }
+    ],
+    "level_reason": "Mỗi ý chỉ yêu cầu nhớ một chức năng hoặc một tên gọi đã học. Mức cao nhất của cả mẫu là NB.",
+    "prerequisites": [
+      "Vai trò của thể truyền và gene đánh dấu",
+      "Chức năng của enzyme cắt giới hạn và DNA ligase"
+    ],
+    "variation_guidance": "Có thể thay tính trạng đánh dấu hoặc loại thể truyền, nhưng giữ yêu cầu nhận biết trực tiếp và không suy diễn rằng gene kháng kháng sinh tự phân biệt được vector có đoạn chèn với vector không có đoạn chèn.",
+    "uncertainties": [
+      "Mẫu tổng hợp minh họa; căn cứ xây dựng được cung cấp chỉ là quan sát từ nguồn cấp tỉnh bên thứ ba, không có neo đề chính thức."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "b825debf45ad7ce3",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "NB"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "NB"
+      }
+    ],
+    "solution": "a) Gene kháng kháng sinh giúp chọn lọc tế bào nhận thể truyền trên môi trường có kháng sinh tương ứng. b) Enzyme giới hạn còn gọi là enzyme cắt giới hạn. c) DNA ligase nối các đoạn DNA; enzyme cắt giới hạn mới cắt DNA tại trình tự nhận biết đặc hiệu. d) Thể truyền mang gene cần chuyển vào tế bào nhận, không có chức năng phân giải protein.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Cả bốn phát biểu chỉ yêu cầu nhớ chức năng hoặc tên gọi của các thành phần trong công nghệ gene."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/sinh-hoc/cf5c53ca6a39db40db7fc32e23fb95578a0afb810667be46a21171b8f4f3082d.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/sinh-hoc/cf5c53ca6a39db40db7fc32e23fb95578a0afb810667be46a21171b8f4f3082d.resolve.json"
+}

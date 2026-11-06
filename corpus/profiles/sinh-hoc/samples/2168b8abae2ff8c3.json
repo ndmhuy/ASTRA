@@ -1,0 +1,173 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "2168b8abae2ff8c3",
+    "topic": "Dinh dưỡng và tiêu hóa ở động vật",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Hình các kiểu ống tiêu hóa với vị trí cơ quan được đánh dấu.",
+        "task": "Kiểm tra cách gọi tên các cơ quan trên hình.",
+        "reasoning": "Theo dõi đường đi của thức ăn; nhận diện hình thái và vị trí các cơ quan; đối chiếu từng nhãn.",
+        "combines": [
+          "Giải phẫu ống tiêu hóa",
+          "Đọc sơ đồ sinh học"
+        ],
+        "difficulty_source": "Nhận diện vị trí cơ quan từ hình quen thuộc",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Hình các cơ quan tiêu hóa và nhận định về quá trình diễn ra tại từng vị trí.",
+        "task": "Kiểm tra sự phù hợp giữa cơ quan và hình thức tiêu hóa.",
+        "reasoning": "Nhận diện cơ quan được chỉ; xác định biến đổi cơ học và hóa học; liên hệ khoang lên men với hoạt động vi sinh vật.",
+        "combines": [
+          "Tiêu hóa cơ học",
+          "Tiêu hóa hóa học",
+          "Tiêu hóa nhờ vi sinh vật"
+        ],
+        "difficulty_source": "Phải gắn hình thái cơ quan với nhiều cơ chế tiêu hóa",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Hình các kiểu ống tiêu hóa và một cách ghép chúng với các nhóm động vật có chế độ ăn khác nhau.",
+        "task": "Kiểm tra cách ghép động vật với kiểu hệ tiêu hóa.",
+        "reasoning": "Nhận diện mức phát triển của dạ dày và ruột tịt; suy kiểu thức ăn và vị trí lên men; đối chiếu cách ghép.",
+        "combines": [
+          "Thích nghi dinh dưỡng",
+          "Tiêu hóa ở động vật ăn thịt và ăn thực vật",
+          "Đọc hình giải phẫu"
+        ],
+        "difficulty_source": "Phải suy chế độ ăn từ dấu hiệu cấu tạo",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "2cbdc74db082|P2|1|a",
+      "2cbdc74db082|P2|1|b",
+      "2cbdc74db082|P2|1|d"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "2168b8abae2ff8c3",
+    "stem": "Xét hai kiểu ống tiêu hóa được mô tả bằng lời: kiểu I có dạ dày đơn, ruột tịt nhỏ; kiểu II có dạ dày đơn, ruột tịt phát triển chứa vi sinh vật phân giải cellulose. Ở cả hai kiểu, thức ăn đi từ miệng qua thực quản, dạ dày, ruột non rồi đến ruột già; ruột tịt thông với vùng tiếp giáp giữa ruột non và ruột già. Xác định mỗi nhận định sau là đúng hay sai.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Ở cả hai kiểu, thức ăn đi qua dạ dày trước khi đến ruột non."
+      },
+      {
+        "sub": "b",
+        "text": "Hoạt động co bóp làm thức ăn nhỏ hơn trong dạ dày được xếp vào tiêu hóa hóa học."
+      },
+      {
+        "sub": "c",
+        "text": "Sự phát triển của ruột tịt ở kiểu II phù hợp với việc sử dụng thức ăn thực vật giàu cellulose."
+      },
+      {
+        "sub": "d",
+        "text": "Vì ruột tịt của kiểu II chứa vi sinh vật phân giải cellulose, quá trình lên men tại đây diễn ra trước khi thức ăn đi qua ruột non."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a đúng: đọc trình tự đã cho thấy dạ dày nằm trước ruột non trên đường đi của thức ăn. b sai: co bóp làm nhỏ thức ăn là biến đổi cơ học; tiêu hóa hóa học làm biến đổi các phân tử thức ăn nhờ phản ứng hóa học. c đúng: ruột tịt phát triển tạo điều kiện cho vi sinh vật phân giải cellulose trong thức ăn thực vật. d sai: ruột tịt thông với vùng tiếp giáp ruột non và ruột già, nên sự lên men ở ruột tịt diễn ra sau khi thức ăn đã đi qua ruột non.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Đồng nhất mọi hoạt động tiêu hóa diễn ra trong dạ dày với tiêu hóa hóa học.",
+        "why_plausible": "Học sinh nhớ dạ dày có dịch tiêu hóa nhưng chưa phân biệt tác dụng của co bóp với tác dụng của enzyme."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Đặt mọi khoang lên men nhờ vi sinh vật ở phía trước ruột non.",
+        "why_plausible": "Học sinh có thể áp dụng vị trí lên men ở dạ cỏ cho cả động vật lên men ở ruột tịt."
+      }
+    ],
+    "level_reason": "Học sinh cần diễn giải mô tả cấu tạo, phân biệt biến đổi cơ học với hóa học và liên hệ ruột tịt với chức năng lên men theo kiến thức quen thuộc. Mức cao nhất của các nhận định là TH.",
+    "prerequisites": [
+      "Trình tự các bộ phận chính của ống tiêu hóa",
+      "Phân biệt tiêu hóa cơ học và tiêu hóa hóa học",
+      "Vai trò của vi sinh vật phân giải cellulose"
+    ],
+    "variation_guidance": "Có thể thay mô tả bằng sơ đồ chữ đầy đủ hoặc đổi vị trí khoang lên men; phải cung cấp rõ đường đi của thức ăn và điều chỉnh các nhận định tương ứng.",
+    "uncertainties": [
+      "Mẫu tổng hợp chỉ tham khảo kiểu cấu trúc được mô tả trong quan sát nguồn bên thứ ba cấp tỉnh; chưa có mốc đối chiếu chính thức cho mục tiêu này."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "2168b8abae2ff8c3",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) Đúng: đường đi đã cho đặt dạ dày trước ruột non. b) Sai: co bóp làm nhỏ thức ăn là tiêu hóa cơ học, không phải tiêu hóa hóa học. c) Đúng: vi sinh vật ở ruột tịt phát triển giúp phân giải cellulose trong thức ăn thực vật. d) Sai: ruột tịt thông với vùng tiếp giáp ruột non và ruột già nên lên men tại đây diễn ra sau khi thức ăn đã đi qua ruột non.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a) Đọc và diễn giải trình tự đã cho. b) Phân biệt tiêu hóa cơ học với tiêu hóa hóa học. c) Giải thích sự phù hợp giữa cấu tạo, vi sinh vật cộng sinh và loại thức ăn. d) Đối chiếu vị trí ruột tịt với trình tự vận chuyển thức ăn. Các thao tác đều ở mức TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/sinh-hoc/675d259d357bad3aeeb985adabf91b427da9a089a3937083eb70e7b0dc529d9f.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/sinh-hoc/675d259d357bad3aeeb985adabf91b427da9a089a3937083eb70e7b0dc529d9f.resolve.json"
+}

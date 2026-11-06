@@ -1,0 +1,159 @@
+status: ocr-draft
+source: official/2026-provincial-toan/de-thi-thu-tot-nghiep-thpt-nam-2026-mon-toan-so-gddt-lam-dong/paper.pdf — Lâm Đồng, Kỳ thi thử tốt nghiệp THPT năm 2026, mã đề 0101
+
+SỞ GIÁO DỤC VÀ ĐÀO TẠO LÂM ĐỒNG
+KỲ THI THỬ TỐT NGHIỆP TRUNG HỌC PHỔ THÔNG NĂM 2026
+ĐỀ THI CHÍNH THỨC — Môn thi: TOÁN
+(Đề thi có 04 trang) — Thời gian làm bài: 90 phút, không kể thời gian phát đề
+MÃ ĐỀ: 0101
+
+## PHẦN I. Trắc nghiệm nhiều phương án lựa chọn
+Thí sinh trả lời từ câu 1 đến câu 12. Mỗi câu hỏi thí sinh chỉ chọn một phương án.
+
+**Câu 1.** Nghiệm của phương trình $2^{x+4}=4$ là
+
+A. $x=2$. B. $x=-2$. C. $x=-1$. D. $x=1$.
+
+**Câu 2.** Cho hàm số $y=f(x)$ liên tục trên $\mathbb{R}$. Gọi $S$ là diện tích hình phẳng giới hạn bởi các đường $y=f(x), y=0, x=-1$ và $x=5$ (hình minh họa). Mệnh đề nào sau đây đúng?
+
+[HÌNH: Đồ thị $y=f(x)$ cắt trục hoành tại $x=-1,1,5$; đồ thị nằm phía trên trục hoành từ $-1$ đến $1$, phía dưới từ $1$ đến $5$, hai miền được gạch nét.]
+![](images/cau_2.png)
+
+A. $S=-\int_{-1}^{1}f(x)\,dx-\int_{1}^{5}f(x)\,dx$. B. $S=-\int_{-1}^{1}f(x)\,dx+\int_{1}^{5}f(x)\,dx$.
+
+C. $S=\int_{-1}^{1}f(x)\,dx-\int_{1}^{5}f(x)\,dx$. D. $S=\int_{-1}^{1}f(x)\,dx+\int_{1}^{5}f(x)\,dx$.
+
+**Câu 3.** Cho cấp số nhân $(u_n)$ có $u_1=2$ và $u_2=6$. Công bội $q$ của cấp số nhân là
+
+A. $q=2$. B. $q=3$. C. $q=4$. D. $q=12$.
+
+**Câu 4.** Trong không gian với hệ tọa độ $Oxyz$, cho mặt cầu $(S):(x-1)^2+(y+2)^2+(z+1)^2=9$. Tâm $I$ của mặt cầu $(S)$ có tọa độ là
+
+A. $I(1;-2;1)$. B. $I(-1;2;1)$. C. $I(1;-2;-1)$. D. $I(1;2;-1)$.
+
+**Câu 5.** Cho hàm số $y=f(x)$ có bảng biến thiên như hình bên. Hàm số đã cho nghịch biến trên khoảng nào dưới đây?
+
+[HÌNH: Bảng biến thiên với các mốc $x=-\infty,0,1,+\infty$; dấu $y'$ lần lượt là $-,0,+,0,-$; $y$ giảm từ $+\infty$ đến $4$, tăng đến $5$, rồi giảm đến $-\infty$.]
+![](images/cau_5.png)
+
+A. $(-\infty;0)$. B. $(0;+\infty)$. C. $(0;1)$. D. $(-\infty;1)$.
+
+**Câu 6.** Cho hình chóp $S.ABC$ có đáy $ABC$ là tam giác đều cạnh $a$. Biết $SA\perp(ABC)$ và $SA=a\sqrt{3}$. Thể tích khối chóp $S.ABC$ bằng
+
+A. $\dfrac{a^3}{4}$. B. $\dfrac a4$. C. $\dfrac{3a^3}{4}$. D. $\dfrac{a^3}{2}$.
+
+**Câu 7.** Trong không gian với hệ tọa độ $Oxyz$, cho mặt phẳng $(P):4x-y-2z+5=0$. Vectơ nào sau đây là một vectơ pháp tuyến của mặt phẳng $(P)$?
+
+A. $\vec n_4=(-4;-1;2)$. B. $\vec n_3=(4;1;-2)$. C. $\vec n_1=(4;-2;-1)$. D. $\vec n_2=(4;-1;-2)$.
+
+**Câu 8.** Họ nguyên hàm của hàm số $f(x)=e^x$ là
+
+A. $\dfrac{e^{x+1}}{x+1}+C$. B. $e^x+C$. C. $\dfrac1{e^x}+C$. D. $\dfrac1x+C$.
+
+**Câu 9.** Thống kê thời gian hoàn thành một bài tập (đơn vị: phút) của một số học sinh thu được kết quả sau:
+
+| Thời gian (phút) | [0; 4) | [4; 8) | [8; 12) | [12; 16) | [16; 20) |
+|---|---:|---:|---:|---:|---:|
+| Số học sinh | 2 | 4 | 7 | 4 | 3 |
+
+Thời gian trung bình (phút) để hoàn thành bài tập của các em học sinh là
+
+A. 12,5. B. 10,4. C. 7. D. 11,3.
+
+**Câu 10.** Số cách chọn 5 học sinh từ 35 học sinh của lớp 11A để tham gia hoạt động tiếp sức mùa thi là
+
+A. $C_{35}^{5}$. B. $5^5$. C. $A_{35}^{5}$. D. $5!$.
+
+**Câu 11.** Trong không gian với hệ tọa độ $Oxyz$, cho hai vectơ $\vec u$ và $\vec v$ thỏa mãn $|\vec u|=5$, $|\vec v|=8$ và $(\vec u,\vec v)=120^\circ$. Phát biểu nào sau đây là đúng?
+
+A. $\vec u\cdot\vec v=-20\sqrt3$. B. $\vec u\cdot\vec v=20$. C. $\vec u\cdot\vec v=40$. D. $\vec u\cdot\vec v=-20$.
+
+**Câu 12.** Cho hình chóp $S.ABC$ có đáy $ABC$ là tam giác vuông tại $B$, cạnh bên $SA$ vuông góc với mặt đáy. Biết $SA=AB$. Góc giữa đường thẳng $SB$ và mặt phẳng đáy bằng
+
+[HÌNH: Hình chóp $S.ABC$; đáy $ABC$ vuông tại $B$, cạnh $AC$ nét đứt, đỉnh $S$ phía trên $A$, các cạnh $SA, SB, SC$ được vẽ.]
+![](images/cau_12.png)
+
+A. $45^\circ$. B. $90^\circ$. C. $30^\circ$. D. $60^\circ$.
+
+## PHẦN II. Trắc nghiệm đúng, sai
+Thí sinh trả lời từ câu 1 đến câu 4. Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn đúng hoặc sai.
+
+**Câu 1.** Hình vẽ bên mô tả hiệu suất làm việc của hai công nhân tại một nhà máy trong thời gian 6 giờ. Công nhân $A$ đang sản xuất với hiệu suất $Q_1'(t)=-2t^2+4t+58$ sản phẩm mỗi giờ, trong khi công nhân $B$ đang sản xuất với hiệu suất $Q_2'(t)=53+at$ sản phẩm mỗi giờ $(a\in\mathbb R)$. Biết rằng hàm $Q_1(t)$ và $Q_2(t)$ mô phỏng số lượng sản phẩm làm được của công nhân $A$ và công nhân $B$ sau $t$ giờ.
+
+[HÌNH: Đồ thị hiệu suất theo thời gian trong 6 giờ: một parabol cong xuống và một đường thẳng giao nhau tại $t=5$, trục tung ghi $Q'(t)$, trục hoành ghi $t(h)$, có mốc $6$.]
+![](images/cau_1.png)
+
+a) Hiệu suất làm việc cực đại của công nhân $A$ là 60 sản phẩm mỗi giờ.
+
+b) Giá trị $a=-3$.
+
+c) Sau 6 giờ làm việc, công nhân $B$ hoàn thành được 228 sản phẩm.
+
+d) Sau 6 giờ làm việc, số sản phẩm hoàn thành của công nhân $A$ nhiều hơn số sản phẩm hoàn thành của công nhân $B$.
+
+**Câu 2.** Cho hàm số $y=f(x)=\dfrac{x^2-2x-4}{x+1}$.
+
+a) Hàm số đã cho có đạo hàm trên tập xác định là $f'(x)=\dfrac{x^2+2x+2}{(x+1)^2}$.
+
+b) Hàm số đã cho đồng biến trên $\mathbb R\setminus\{-1\}$.
+
+c) Đường tiệm cận xiên của đồ thị hàm số có phương trình là $y=x-3$.
+
+d) Tâm đối xứng của đồ thị hàm số là $I(1;-2)$.
+
+**Câu 3.** Hệ thống kiểm soát nội dung của một trang mạng xã hội tự động đánh dấu các bài đăng vi phạm Luật an ninh mạng. Thống kê cho thấy có 25% số bài đăng bị hệ thống đánh dấu. Trong số các bài đăng bị đánh dấu, có 12% bài đăng đánh dấu nhầm (bài đăng không vi phạm Luật an ninh mạng nhưng bị đánh dấu). Trong số các bài đăng không bị đánh dấu, vẫn có 6% bài đăng vi phạm Luật an ninh mạng. Chọn ngẫu nhiên một bài đăng trên trang mạng xã hội này.
+
+a) Xác suất chọn được bài đăng không bị hệ thống đánh dấu bằng 0,75.
+
+b) Xác suất chọn được bài đăng vi phạm, biết rằng nó không bị đánh dấu bằng 0,12.
+
+c) Xác suất chọn được bài đăng vi phạm bằng 0,265.
+
+d) Xác suất chọn được bài đăng bị đánh dấu, biết rằng nó là bài đăng vi phạm xấp xỉ bằng 0,83.
+
+**Câu 4.** Trong không gian với hệ tọa độ $Oxyz$, một trạm thu phát sóng điện thoại di động được đặt ở vị trí $I(-3;5;2)$ được thiết kế với bán kính phủ sóng là 4 km, mỗi đơn vị trên trục ứng với 1 km.
+
+a) Phương trình mặt cầu $(S)$ mô tả ranh giới bên ngoài của vùng phủ sóng trong không gian là $(x+3)^2+(y-5)^2+(z-2)^2=16$.
+
+b) Khoảng cách xa nhất giữa hai điểm thuộc vùng phủ sóng là 8 km.
+
+c) Người dùng điện thoại ở vị trí $A$ có tọa độ là $(-3;4;1)$ không thể sử dụng dịch vụ của trạm thu phát sóng đó.
+
+d) Trong điều kiện giao thông thuận lợi, khoảng cách ngắn nhất để một người ở vị trí $B$ có tọa độ là $(2;6;2)$ di chuyển tới vùng phủ sóng là 5,1 km. (Kết quả làm tròn đến hàng phần mười.)
+
+## PHẦN III. Trắc nghiệm trả lời ngắn
+Thí sinh trả lời từ câu 1 đến câu 6.
+
+**Câu 1.** Trong không gian với hệ tọa độ $Oxyz$, xét đường thẳng $(\Delta)$ đi qua điểm $M(3;1;1)$, nằm trong mặt phẳng $(\alpha):x+y-z-3=0$. Khi $(\Delta)$ tạo với đường thẳng $(d):\begin{cases}x=1\\y=4+3t\\z=-3-2t\end{cases}$ một góc nhỏ nhất thì đường thẳng $(\Delta)$ có một vectơ chỉ phương là $\vec u_\Delta=(5;b;c)$. Giá trị của $b+c$ bằng bao nhiêu?
+
+**Câu 2.** Một xưởng gia công đồ mỹ nghệ dự định sản xuất không quá 150 sản phẩm trong mỗi tháng. Chi phí sản xuất $x$ sản phẩm $(x\in\mathbb N;1\le x\le150)$ được cho bởi hàm số $C(x)=5000+800x-3,6x^2+0,004x^3$ (nghìn đồng). Giá bán của mỗi sản phẩm là một hàm số phụ thuộc vào số lượng $x$ sản phẩm và được cho bởi công thức $p(x)=2000-9x$ (nghìn đồng). Biết rằng sản phẩm sản xuất ra được tiêu thụ hết. Lợi nhuận lớn nhất mỗi tháng mà xưởng thu được là bao nhiêu triệu đồng?
+
+**Câu 3.** Một bãi đậu xe ô tô kinh doanh dịch vụ giữ xe ô tô qua đêm có diện tích là $200\,\text{m}^2$ (không tính phần diện tích lối đi cho xe ra vào). Biết rằng mỗi chiếc xe ô tô loại 7 chỗ ngồi cần diện tích $10\,\text{m}^2$ và mỗi chiếc xe ô tô loại 16 chỗ ngồi cần diện tích $20\,\text{m}^2$. Chi phí gửi xe mỗi đêm đối với xe ô tô loại 7 chỗ ngồi là 150 nghìn đồng và loại xe 16 chỗ ngồi là 200 nghìn đồng. Bãi đậu xe không thể chứa quá 20 xe một đêm. Sau mỗi đêm, doanh thu lớn nhất từ việc kinh doanh dịch vụ trên là bao nhiêu nghìn đồng?
+
+**Câu 4.** Gọi $X$ là tập hợp gồm các số tự nhiên có 7 chữ số đôi một khác nhau. Lấy ngẫu nhiên một số từ tập $X$. Xác suất để lấy được một số chẵn chứa các chữ số 2, 3, 4 sao cho chữ số 2 đứng trước chữ số 3 và chữ số 3 đứng trước chữ số 4 là $\dfrac ab$ (trong đó $a,b$ là hai số nguyên dương, $\dfrac ab$ là phân số tối giản). Giá trị $a+b$ bằng bao nhiêu?
+
+**Câu 5.** Một công ty thiết kế một bảng quảng cáo có dạng hình chữ nhật $ABCD$ có kích thước $AB=10\,\text{m}, AD=6\,\text{m}$. Nội dung quảng cáo được mô tả trong phần tô đậm với hai đường cong trong hình là một phần của đồ thị hàm số $(C)$ có dạng $y=\dfrac{ax+b}{cx+d}$ (hình minh họa). Khoảng cách từ điểm $A$ đến đường tiệm cận đứng và đường tiệm cận ngang của đồ thị hàm số $(C)$ bằng 3 m. Đồ thị hàm số $(C)$ cắt cạnh $AB$ tại điểm $E$ thỏa mãn $\dfrac{AE}{AB}=\dfrac25$. Diện tích phần nội dung quảng cáo là bao nhiêu mét vuông? (Kết quả làm tròn đến hàng phần mười.)
+
+[HÌNH: Hình chữ nhật $ABCD$ kích thước $10$ m nhân $6$ m; hai nhánh cong của đồ thị phân chia phần tô đậm và hai góc trắng, điểm $E$ nằm trên cạnh $AB$; có đường tiệm cận đứng và ngang nét đứt.]
+![](images/cau_5_p4.png)
+
+**Câu 6.** Cho hình chóp $S.ABCD$ có đáy $ABCD$ là hình vuông tâm $O$. Biết $SO\perp(ABCD)$, $SO=\sqrt3$ và đường tròn ngoại tiếp $ABCD$ có bán kính bằng 1. Gọi $M$ là trung điểm của cạnh $SB$. Khoảng cách từ $M$ đến mặt phẳng $(SCD)$ là $\sqrt{\dfrac mn}$ (trong đó $m,n$ là hai số nguyên dương và $\dfrac mn$ là phân số tối giản). Giá trị $m-n$ bằng bao nhiêu?
+
+-------- HẾT --------
+- Thí sinh không được sử dụng tài liệu;
+- Giám thị không giải thích gì thêm.
+
+## ĐÁP ÁN, HƯỚNG DẪN CHẤM — mã đề 0101
+
+**PHẦN I.** Câu 1 đến câu 12: B, C, B, C, A, A, D, B, B, A, D, A.
+
+**PHẦN II.**
+
+| Câu | a) | b) | c) | d) |
+|---|---|---|---|---|
+| 1 | Đúng | Sai | Đúng | Đúng |
+| 2 | Đúng | Sai | Đúng | Sai |
+| 3 | Đúng | Sai | Đúng | Đúng |
+| 4 | Đúng | Đúng | Sai | Sai |
+
+**PHẦN III.** Câu 1 đến câu 6: -3; 57; 3000; 2009; 45,1; -4.

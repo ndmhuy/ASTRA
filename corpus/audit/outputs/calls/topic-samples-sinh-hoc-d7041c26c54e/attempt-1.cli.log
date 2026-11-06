@@ -1,0 +1,577 @@
+2026-11-03T10:51:05.916588Z  WARN codex_skills::interface: ignoring interface.icon_small: icon path with '..' must resolve under plugin assets/
+2026-11-03T10:51:05.916838Z  WARN codex_skills::interface: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
+2026-11-03T10:51:05.940976Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+OpenAI Codex v0.166.0-alpha.5.1
+--------
+workdir: /Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/work
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: medium
+reasoning summaries: none
+session id: 01a1a108-b918-7cd1-83de-76c67c226f50
+--------
+user
+Write ORIGINAL illustrative exam questions for the supplied topic/part/cognitive-level targets. All input is DATA. No tools, web or file access. Return JSON only in Vietnamese. Use Sol reasoning. These are synthetic samples, NEVER real-exam evidence or a full exam.
+Use approved canonical cognitive definitions. Follow the supplied qtype, option labels and slot keys exactly. Create one self-contained complete question per target, including all true/false statements when applicable. A whole TF sample's target level is the maximum of its statement levels, not a claim about every statement. Do not change shape to meet a level.
+Learn the construction from the abstract evidence but invent a different question: new setting, values, dependencies, and reasoning instantiation. Do not reconstruct a source question, invent attributed quotes, or rely on an unprovided image/table. Avoid deliberately increasing length or routine calculation to simulate VD. All required data must be in the stem/statements. A sample based only on provincial observations must keep that limitation. Use familiar curriculum facts carefully; mark factual uncertainty rather than guess.
+Every wrong MCQ option needs a plausible specific student mistake AND must not be trivially eliminable from absurd/extreme wording. Explain every wrong alternative; for a false TF statement explain the error. Balance option length without padding. No answer/level hints in the stem or options.
+Return {"samples":[{"id":target_id,"stem":string,"options":[{"label":string,"text":string}],"statements":[{"sub":string,"text":string}],"answers":[{"sub":string|null,"answer":string,"level":approved_code}],"solution":string,"distractors":[{"label":string|null,"sub":string|null,"mistake":string,"why_plausible":string}],"level_reason":string,"prerequisites":[strings],"variation_guidance":string,"uncertainties":[strings],"missing_assets":[]}]}.
+Use empty options/statements when not applicable. Single-answer items use sub=null. True/false answers use canonical D/S, no hidden explanation in the answer. Essay answers can be an expected-response outline and remain teacher-review-only. Return every target id exactly once. Do not supply counts or claim teacher approval, empirical discrimination, or successful independent verification.
+
+{"canonical_levels": {"revision": "de8c614ada6e3ae9f9072cedb7521fb96c1d13e5", "scheme_id": "default", "scheme_version": 2, "preamble": "A level is the performance a student must show to answer correctly. It is NOT the length of the text, NOT the amount of numbers to read, and NOT the verb used in the outcome sentence.", "levels": [{"code": "NB", "label": {"vi": "Nhận biết", "en": "Recall"}, "ordinal": 1, "status": "APPROVED", "definition_en": "recognise or retrieve. The student recognises, names or restates a fact, concept, definition, symbol, property, formula or step as taught. The answer sits in ONE knowledge unit. A scenario, if any, is decoration.", "samples": [], "bands": []}, {"code": "TH", "label": {"vi": "Thông hiểu", "en": "Comprehension"}, "ordinal": 2, "status": "APPROVED", "definition_en": "Explain, distinguish, interpret, or execute a familiar routine procedure. The student reads a given representation or uses taught knowledge in a standard exercise. A single substitution of given values into a taught formula or equation is TH; several routine algebraic or numerical operations can also remain TH. Choosing the obvious familiar formula without its name being supplied does not by itself make a question VD.", "samples": [], "bands": []}, {"code": "VD", "label": {"vi": "Vận dụng", "en": "Application"}, "ordinal": 3, "status": "APPROVED", "definition_en": "Model a situation or construct a substantive chain of reasoning. The task requires the student to formulate a model, connect and apply multiple knowledge units, or plan and justify several dependent thinking steps rather than merely execute a familiar calculation. Judge the minimum cognitive work needed for a correct answer. A longer text, more numbers, more written calculation steps, or an unstated but obvious formula is not sufficient for VD. A standard multi-step calculation can remain TH; no single surface cue is a compulsory condition for all VD questions.", "samples": [], "bands": []}], "subject_layer": null}, "targets": [{"id": "214d589d012d4eee", "topic": "Hô hấp và trao đổi khí ở động vật", "part": "P2", "level": "TH", "qtype": "true_false", "option_labels": [], "slot_keys": ["a", "b", "c", "d"], "canonical_answer_alphabet": ["D", "S"], "abstract_observations": [{"given": "Sơ đồ cấu tạo bề mặt hô hấp thủy sinh có mũi tên chỉ dòng môi trường và dòng tuần hoàn.", "task": "Kiểm tra quan hệ chiều chuyển động của các dòng trên bề mặt trao đổi.", "reasoning": ["Theo dõi các mũi tên tương ứng trên sơ đồ.", "So sánh chiều chuyển động của các dòng."], "combines": ["Cấu tạo mang", "Đọc sơ đồ sinh lí"], "difficulty_source": "Có thể đọc trực tiếp chiều dòng trên hình", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Sơ đồ các dòng chuyển động ngược chiều qua bề mặt hô hấp.", "task": "Đánh giá tác dụng của cách bố trí dòng chảy đối với chênh lệch khí.", "reasoning": ["Liên hệ dòng ngược chiều với thành phần khí của các phần dịch tiếp xúc.", "Xác định khả năng duy trì chênh lệch để khuếch tán dọc bề mặt trao đổi."], "combines": ["Cơ chế ngược dòng", "Khuếch tán khí"], "difficulty_source": "Hiểu tác dụng chức năng của cấu trúc ngược dòng", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Sơ đồ dòng máu trước và sau khi đi qua bề mặt trao đổi khí.", "task": "Kiểm tra chiều thay đổi hàm lượng khí trong máu.", "reasoning": ["Xác định khí được nhận và khí được thải tại cơ quan hô hấp.", "Suy ra xu hướng biến đổi dọc đường đi của máu."], "combines": ["Trao đổi khí", "Chức năng tuần hoàn"], "difficulty_source": "Phân biệt trao đổi khí ở cơ quan hô hấp với ở mô", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Một ứng dụng trao đổi khí nhân tạo được liên hệ với cơ chế ở cơ quan hô hấp.", "task": "Đánh giá mục tiêu sinh lí được gán cho cách bố trí dòng chảy.", "reasoning": ["Xác định điều kiện để khí tiếp tục khuếch tán qua màng.", "Phân biệt duy trì chênh lệch với đạt cân bằng tại từng vị trí.", "Kiểm tra mục tiêu nêu trong phát biểu có phù hợp với điều kiện trao đổi liên tục hay không."], "combines": ["Nguyên lí ngược dòng", "Khuếch tán qua màng", "Ứng dụng sinh lí học"], "difficulty_source": "Kiểm tra cơ chế thay vì chấp nhận thuật ngữ ứng dụng quen thuộc", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}], "support_refs": ["61a0198fbfda|P2|3|a", "61a0198fbfda|P2|3|b", "61a0198fbfda|P2|3|c", "61a0198fbfda|P2|3|d"], "official_anchor_available": false}, {"id": "ccf2cf96286b8066", "topic": "Hô hấp và vận chuyển khí ở động vật", "part": "P2", "level": "TH", "qtype": "true_false", "option_labels": [], "slot_keys": ["a", "b", "c", "d"], "canonical_answer_alphabet": ["D", "S"], "abstract_observations": [{"given": "Đồ thị độ bão hòa chất vận chuyển khí theo phân áp oxygen trong các điều kiện có và không có chất cạnh tranh liên kết.", "task": "Kiểm tra sự tương đương độ bão hòa tại một vị trí trên trục hoành.", "reasoning": "Xác định vị trí phân áp được xét; đọc tung độ của các đường tại cùng vị trí; so sánh độ bão hòa.", "combines": ["Vận chuyển khí hô hấp", "Đọc đồ thị"], "difficulty_source": "Đọc giao điểm của các đường biểu diễn", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Đồ thị bão hòa oxygen khi xuất hiện một chất có khả năng chiếm vị trí liên kết trên chất vận chuyển.", "task": "Kiểm tra suy luận về phần chất vận chuyển còn tự do.", "reasoning": "Đọc mức bão hòa oxygen trong điều kiện được xét; phân biệt phần không gắn oxygen với phần chưa gắn bất kì chất nào; xét khả năng vị trí liên kết đã bị chất cạnh tranh chiếm giữ.", "combines": ["Đọc đồ thị", "Trạng thái liên kết của hemoglobin", "Cạnh tranh vận chuyển khí"], "difficulty_source": "Phải phân biệt đại lượng đo với trạng thái phân tử suy ra", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Thông tin về một khí cản trở vận chuyển oxygen và đồ thị thay đổi khả năng bão hòa.", "task": "Đánh giá cơ chế cạnh tranh liên kết được đề xuất.", "reasoning": "Nhớ sự khác biệt ái lực liên kết giữa các khí; liên hệ việc chiếm vị trí với giảm khả năng vận chuyển oxygen.", "combines": ["Ái lực liên kết", "Vận chuyển khí trong máu"], "difficulty_source": "Nhận biết cơ chế độc đã học", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Bối cảnh một chất cạnh tranh tác động lên protein vận chuyển khí.", "task": "Đánh giá ảnh hưởng lên phần oxygen hòa tan trong dịch máu.", "reasoning": "Phân biệt oxygen hòa tan với oxygen liên kết; xác định tác động trực tiếp của chất cạnh tranh; xét lượng hòa tan khi các điều kiện vật lí liên quan được giữ nguyên.", "combines": ["Các dạng vận chuyển oxygen", "Phân áp khí", "Liên kết với hemoglobin"], "difficulty_source": "Tách hai dạng tồn tại của cùng một chất khí", "evidence_uncertainty": "Khóa chấp nhận phát biểu dưới giả định phân áp oxygen và các điều kiện quyết định độ hòa tan không đổi; đề không nêu riêng giả định này.", "evidence_class": "provincial_third_party"}], "support_refs": ["4b4716b94db4|P2|1|a", "4b4716b94db4|P2|1|b", "4b4716b94db4|P2|1|c", "4b4716b94db4|P2|1|d"], "official_anchor_available": false}, {"id": "9fe9c03e0efe0b5e", "topic": "Nhập môn sinh học và công nghệ sinh học", "part": "P1", "level": "NB", "qtype": "mcq", "option_labels": ["A", "B", "C", "D"], "slot_keys": [null], "canonical_answer_alphabet": ["A", "B", "C", "D"], "abstract_observations": [{"given": "Một định nghĩa về lĩnh vực ứng dụng hệ sống để tạo sản phẩm.", "task": "Chọn tên lĩnh vực có phạm vi phù hợp.", "reasoning": "Nhận diện phạm vi bao quát của định nghĩa; phân biệt ngành tổng quát với các công nghệ thành phần.", "combines": ["Khái niệm công nghệ sinh học"], "difficulty_source": "Ghép định nghĩa với tên gọi bao quát", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}], "support_refs": ["2cbdc74db082|P1|10|None"], "official_anchor_available": false}, {"id": "d06868f8bacffa8a", "topic": "Quang hợp và năng suất cây trồng", "part": "P2", "level": "TH", "qtype": "true_false", "option_labels": [], "slot_keys": ["a", "b", "c", "d"], "canonical_answer_alphabet": ["D", "S"], "abstract_observations": [{"given": "Định nghĩa chỉ số diện tích lá, thông tin về vai trò của chỉ số và mô tả chú giải đồ thị của thí nghiệm dinh dưỡng khoáng.", "task": "Đánh giá mối liên hệ giữa bộ lá và năng suất cơ quan thu hoạch.", "reasoning": "Nhận diện diện tích lá là yếu tố liên quan quang hợp; liên hệ sản phẩm quang hợp với tích lũy vào cơ quan thu hoạch.", "combines": ["Quang hợp", "Năng suất cây trồng"], "difficulty_source": "Quan hệ được gợi trực tiếp trong phần giới thiệu thí nghiệm", "evidence_uncertainty": "Đồ thị chỉ có mô tả chú giải, thiếu diễn biến đường; riêng nhận định này có thể xét từ thông tin bằng lời.", "evidence_class": "official"}], "support_refs": ["b68b84764a9b|P2|1|a"], "official_anchor_available": true}]}
+2026-11-03T10:51:06.257024Z  WARN codex_skills::interface: ignoring interface.icon_small: icon path with '..' must resolve under plugin assets/
+2026-11-03T10:51:06.257040Z  WARN codex_skills::interface: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
+codex
+{
+  "samples": [
+    {
+      "id": "214d589d012d4eee",
+      "stem": "Trong một mô hình trao đổi khí qua mang cá, hai đầu của bề mặt trao đổi được kí hiệu là M và N. Nước chảy từ M đến N, máu chảy từ N đến M. Phân áp O₂ của nước tại M, điểm giữa và N lần lượt là 140, 105 và 70 mmHg; phân áp O₂ của máu tại các vị trí tương ứng lần lượt là 110, 75 và 40 mmHg. Màng trao đổi cho phép O₂ khuếch tán từ nơi có phân áp cao đến nơi có phân áp thấp. Xét các phát biểu sau.",
+      "options": [],
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Nước và máu chuyển động ngược chiều nhau dọc bề mặt trao đổi."
+        },
+        {
+          "sub": "b",
+          "text": "Tại cả ba vị trí được cung cấp số liệu, O₂ có chiều khuếch tán từ nước vào máu."
+        },
+        {
+          "sub": "c",
+          "text": "Máu giảm phân áp O₂ từ 110 xuống 40 mmHg trong quá trình đi qua mang."
+        },
+        {
+          "sub": "d",
+          "text": "Nếu điều chỉnh để phân áp O₂ của nước và máu bằng nhau tại điểm giữa, tốc độ khuếch tán thuần O₂ tại điểm đó sẽ tăng."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "answer": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "answer": "S",
+          "level": "TH"
+        }
+      ],
+      "solution": "a) Đúng: nước đi M → N, còn máu đi N → M. b) Đúng: tại mỗi vị trí, phân áp O₂ của nước cao hơn của máu 30 mmHg nên O₂ khuếch tán vào máu. c) Sai: phải đọc số liệu theo chiều máu chảy; máu đi từ N đến M nên phân áp O₂ tăng từ 40 lên 110 mmHg. d) Sai: khi phân áp hai bên bằng nhau, chênh lệch phân áp bằng 0 nên không còn dòng khuếch tán thuần O₂ tại vị trí đó.",
+      "distractors": [
+        {
+          "label": null,
+          "sub": "c",
+          "mistake": "Đọc dãy số theo thứ tự M đến N rồi coi đó là chiều biến đổi của máu.",
+          "why_plausible": "Các số liệu được trình bày theo cùng thứ tự vị trí, trong khi hai dòng chuyển động ngược chiều."
+        },
+        {
+          "label": null,
+          "sub": "d",
+          "mistake": "Cho rằng cân bằng phân áp giúp O₂ đi qua màng nhanh hơn.",
+          "why_plausible": "Học sinh có thể nhầm trạng thái cân bằng với điều kiện thuận lợi cho trao đổi khí liên tục."
+        }
+      ],
+      "level_reason": "Mức cao nhất là TH: học sinh đọc mô tả không gian, theo dõi chiều dòng và giải thích khuếch tán bằng chênh lệch phân áp theo kiến thức quen thuộc.",
+      "prerequisites": [
+        "Chiều khuếch tán khí phụ thuộc chênh lệch phân áp.",
+        "Máu nhận O₂ khi đi qua bề mặt hô hấp của mang.",
+        "Phân biệt thứ tự trình bày số liệu với chiều chuyển động của dòng."
+      ],
+      "variation_guidance": "Có thể đổi kí hiệu hai đầu và các giá trị phân áp, nhưng phải giữ sự nhất quán giữa chiều máu chảy, chiều nước chảy và chênh lệch phân áp tại từng vị trí.",
+      "uncertainties": [
+        "Đây là mẫu tổng hợp với số liệu giả định; các quan sát định hướng chỉ có nguồn cấp tỉnh qua bên thứ ba, chưa có đối chiếu chính thức."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "ccf2cf96286b8066",
+      "stem": "Trong thí nghiệm giả định với hemoglobin (Hb), chất X có thể chiếm vị trí liên kết O₂ trên Hb. Mỗi vị trí được xếp vào một trong ba trạng thái: gắn O₂, gắn X hoặc còn trống. Tỉ lệ vị trí gắn O₂ được tính trên tổng số vị trí liên kết, kể cả những vị trí bị X chiếm. Ở phân áp O₂ bằng 50 mmHg, mẫu không có X có 80% vị trí gắn O₂; mẫu có X có 55% vị trí gắn O₂ và 30% vị trí gắn X. Hai mẫu có cùng lượng Hb, nhiệt độ và thành phần dung môi. Trong mô hình này, X không phản ứng với O₂ và không làm thay đổi độ hòa tan của O₂. Xét các phát biểu sau.",
+      "options": [],
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Ở phân áp O₂ đã cho, tỉ lệ vị trí gắn O₂ của mẫu có X thấp hơn mẫu không có X 25 điểm phần trăm."
+        },
+        {
+          "sub": "b",
+          "text": "Trong mẫu có X, 45% tổng số vị trí liên kết còn trống."
+        },
+        {
+          "sub": "c",
+          "text": "Việc X chiếm một phần vị trí liên kết làm giảm số vị trí có thể dành cho O₂."
+        },
+        {
+          "sub": "d",
+          "text": "Nồng độ O₂ hòa tan trong mẫu có X thấp hơn vì tỉ lệ vị trí Hb gắn O₂ thấp hơn."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "answer": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "answer": "S",
+          "level": "TH"
+        }
+      ],
+      "solution": "a) Đúng: 80 − 55 = 25 điểm phần trăm. b) Sai: phần còn trống là 100 − 55 − 30 = 15%; 45% là phần không gắn O₂, bao gồm cả phần gắn X. c) Đúng: các vị trí đang bị X chiếm không đồng thời dành cho O₂ theo mô hình đã cho. d) Sai: ở cùng phân áp O₂, nhiệt độ và thành phần dung môi, với độ hòa tan không bị X làm thay đổi, nồng độ O₂ hòa tan của hai mẫu bằng nhau. Tỉ lệ O₂ gắn Hb là đại lượng khác với nồng độ O₂ hòa tan.",
+      "distractors": [
+        {
+          "label": null,
+          "sub": "b",
+          "mistake": "Lấy 100% trừ tỉ lệ gắn O₂ rồi coi toàn bộ phần còn lại là vị trí trống.",
+          "why_plausible": "Học sinh có thể bỏ qua trạng thái thứ ba là vị trí đã gắn X."
+        },
+        {
+          "label": null,
+          "sub": "d",
+          "mistake": "Suy trực tiếp từ lượng O₂ gắn Hb giảm sang nồng độ O₂ hòa tan giảm.",
+          "why_plausible": "Hai dạng tồn tại đều liên quan đến O₂ trong mẫu máu nên dễ bị đồng nhất."
+        }
+      ],
+      "level_reason": "Mức cao nhất là TH: học sinh diễn giải tỉ lệ, phân biệt các trạng thái liên kết và áp dụng quan hệ quen thuộc giữa O₂ hòa tan với điều kiện vật lí đã được giữ cố định.",
+      "prerequisites": [
+        "O₂ có thể tồn tại ở dạng hòa tan hoặc liên kết với Hb.",
+        "Phân biệt vị trí không gắn O₂ với vị trí còn trống.",
+        "Ở cùng điều kiện dung môi và nhiệt độ, nồng độ khí hòa tan phụ thuộc phân áp khí."
+      ],
+      "variation_guidance": "Có thể thay đổi phân áp và các tỉ lệ liên kết, bảo đảm tổng tỉ lệ không vượt 100%. Nếu tiếp tục hỏi về O₂ hòa tan, cần nêu rõ các điều kiện quyết định độ hòa tan được giữ nguyên.",
+      "uncertainties": [
+        "X là chất giả định trong mô hình đơn giản hóa, không đại diện đầy đủ cho tác động của một khí độc cụ thể.",
+        "Các quan sát định hướng chỉ có nguồn cấp tỉnh qua bên thứ ba, chưa có đối chiếu chính thức."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "9fe9c03e0efe0b5e",
+      "stem": "Lĩnh vực sử dụng sinh vật, tế bào hoặc các thành phần của chúng để tạo ra sản phẩm và quy trình phục vụ đời sống được gọi là gì?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Công nghệ sinh học."
+        },
+        {
+          "label": "B",
+          "text": "Công nghệ tế bào."
+        },
+        {
+          "label": "C",
+          "text": "Công nghệ gene."
+        },
+        {
+          "label": "D",
+          "text": "Công nghệ enzyme."
+        }
+      ],
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "answer": "A",
+          "level": "NB"
+        }
+      ],
+      "solution": "Chọn A. Công nghệ sinh học là tên lĩnh vực có phạm vi phù hợp với định nghĩa. B sai vì công nghệ tế bào tập trung vào các kĩ thuật khai thác và thao tác với tế bào. C sai vì công nghệ gene tập trung vào vật chất di truyền. D sai vì công nghệ enzyme tập trung vào việc khai thác enzyme. Ba lĩnh vực này có phạm vi hẹp hơn định nghĩa đã nêu.",
+      "distractors": [
+        {
+          "label": "B",
+          "sub": null,
+          "mistake": "Đồng nhất toàn bộ công nghệ sinh học với công nghệ tế bào.",
+          "why_plausible": "Tế bào được nhắc trực tiếp trong định nghĩa và là đối tượng quan trọng của công nghệ sinh học."
+        },
+        {
+          "label": "C",
+          "sub": null,
+          "mistake": "Coi công nghệ gene là tên gọi bao quát cho mọi ứng dụng của hệ sống.",
+          "why_plausible": "Các sản phẩm từ công nghệ gene là những ví dụ quen thuộc khi học về công nghệ sinh học."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Thu hẹp các thành phần của hệ sống thành enzyme.",
+          "why_plausible": "Enzyme được ứng dụng rộng rãi để tạo sản phẩm và thực hiện các quy trình sản xuất."
+        }
+      ],
+      "level_reason": "NB: chỉ cần nhận ra tên gọi tương ứng với một định nghĩa đã học trong một đơn vị kiến thức.",
+      "prerequisites": [
+        "Khái niệm công nghệ sinh học."
+      ],
+      "variation_guidance": "Có thể diễn đạt lại định nghĩa bằng các từ tương đương, giữ phạm vi bao quát của lĩnh vực và dùng các công nghệ thành phần làm phương án nhiễu.",
+      "uncertainties": [
+        "Các quan sát định hướng chỉ có nguồn cấp tỉnh qua bên thứ ba, chưa có đối chiếu chính thức."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "d06868f8bacffa8a",
+      "stem": "Chỉ số diện tích lá được tính bằng tổng diện tích một mặt của các lá chia cho diện tích đất trồng tương ứng. Trong một thí nghiệm giả định trên cùng giống khoai lang, các lô có cùng mật độ trồng và chế độ tưới nhưng nhận các mức dinh dưỡng khoáng khác nhau. Kết quả tại cùng thời điểm thu hoạch: lô K có chỉ số diện tích lá 2,0 và khối lượng chất khô của củ 360 g/m² đất; lô L tương ứng là 3,2 và 470 g/m² đất; lô M tương ứng là 4,4 và 440 g/m² đất. Lá là cơ quan quang hợp chủ yếu; một phần sản phẩm quang hợp được vận chuyển đến củ và tích lũy ở đó. Xét các phát biểu sau.",
+      "options": [],
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Trên 1 m² đất của lô L, tổng diện tích một mặt của các lá là 3,2 m²."
+        },
+        {
+          "sub": "b",
+          "text": "Bộ lá có liên quan đến sự tích lũy chất khô ở củ thông qua việc cung cấp sản phẩm quang hợp."
+        },
+        {
+          "sub": "c",
+          "text": "Lô M có khối lượng chất khô của củ trên mỗi mét vuông đất cao hơn lô L vì có chỉ số diện tích lá lớn hơn."
+        },
+        {
+          "sub": "d",
+          "text": "Kết quả từ lô L và lô M cho thấy tăng chỉ số diện tích lá trong khoảng đã xét không đi kèm với tăng khối lượng chất khô của củ."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "answer": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "answer": "D",
+          "level": "TH"
+        }
+      ],
+      "solution": "a) Đúng: diện tích lá bằng chỉ số diện tích lá nhân diện tích đất, tức 3,2 × 1 = 3,2 m². b) Đúng: lá tạo sản phẩm quang hợp, trong đó một phần được vận chuyển và tích lũy ở củ. c) Sai: lô M có chỉ số diện tích lá lớn hơn nhưng khối lượng chất khô của củ chỉ đạt 440 g/m², thấp hơn mức 470 g/m² của lô L. d) Đúng: từ L đến M, chỉ số diện tích lá tăng từ 3,2 lên 4,4 còn khối lượng chất khô của củ giảm từ 470 xuống 440 g/m². Các số liệu này mô tả mối liên hệ trong thí nghiệm, chưa tách riêng tác động nhân quả của diện tích lá khỏi dinh dưỡng khoáng.",
+      "distractors": [
+        {
+          "label": null,
+          "sub": "c",
+          "mistake": "Cho rằng chỉ số diện tích lá lớn hơn tất yếu tạo ra khối lượng củ lớn hơn.",
+          "why_plausible": "Học sinh biết lá quang hợp và cung cấp chất hữu cơ cho củ nhưng có thể suy rộng quan hệ đó thành quan hệ tăng đồng thời trong mọi trường hợp."
+        }
+      ],
+      "level_reason": "Mức cao nhất là TH: học sinh diễn giải chỉ số theo định nghĩa, liên hệ quang hợp với tích lũy chất khô và so sánh trực tiếp số liệu. Không cần xây dựng mô hình hay xác định nguyên nhân của sự khác biệt giữa các lô.",
+      "prerequisites": [
+        "Khái niệm chỉ số diện tích lá.",
+        "Vai trò của quang hợp trong tạo chất hữu cơ.",
+        "Sự vận chuyển sản phẩm quang hợp đến cơ quan tích lũy.",
+        "Cách so sánh số liệu giữa các nghiệm thức."
+      ],
+      "variation_guidance": "Có thể thay cây trồng có cơ quan tích lũy và điều chỉnh số liệu. Cần cung cấp đầy đủ kết quả, đồng thời tránh suy ra quan hệ nhân quả riêng của diện tích lá khi các lô còn khác nhau về dinh dưỡng.",
+      "uncertainties": [
+        "Số liệu là giả định phục vụ minh họa, không phải kết quả thực nghiệm.",
+        "Quan sát định hướng chỉ hỗ trợ mối liên hệ giữa bộ lá, quang hợp và cơ quan thu hoạch; các phát biểu còn lại được xây dựng mới từ dữ liệu đầy đủ trong câu hỏi."
+      ],
+      "missing_assets": []
+    }
+  ]
+}
+2026-11-03T10:52:28.164675Z  WARN codex_core::shell_snapshot: Failed to delete shell snapshot at AbsolutePathBuf("/Users/huynguyen/.codex/shell_snapshots/01a1a108-b918-7cd1-83de-76c67c226f50.1793703065930180000.sh"): Os { code: 2, kind: NotFound, message: "No such file or directory" }
+tokens used
+14,858
+{
+  "samples": [
+    {
+      "id": "214d589d012d4eee",
+      "stem": "Trong một mô hình trao đổi khí qua mang cá, hai đầu của bề mặt trao đổi được kí hiệu là M và N. Nước chảy từ M đến N, máu chảy từ N đến M. Phân áp O₂ của nước tại M, điểm giữa và N lần lượt là 140, 105 và 70 mmHg; phân áp O₂ của máu tại các vị trí tương ứng lần lượt là 110, 75 và 40 mmHg. Màng trao đổi cho phép O₂ khuếch tán từ nơi có phân áp cao đến nơi có phân áp thấp. Xét các phát biểu sau.",
+      "options": [],
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Nước và máu chuyển động ngược chiều nhau dọc bề mặt trao đổi."
+        },
+        {
+          "sub": "b",
+          "text": "Tại cả ba vị trí được cung cấp số liệu, O₂ có chiều khuếch tán từ nước vào máu."
+        },
+        {
+          "sub": "c",
+          "text": "Máu giảm phân áp O₂ từ 110 xuống 40 mmHg trong quá trình đi qua mang."
+        },
+        {
+          "sub": "d",
+          "text": "Nếu điều chỉnh để phân áp O₂ của nước và máu bằng nhau tại điểm giữa, tốc độ khuếch tán thuần O₂ tại điểm đó sẽ tăng."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "answer": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "answer": "S",
+          "level": "TH"
+        }
+      ],
+      "solution": "a) Đúng: nước đi M → N, còn máu đi N → M. b) Đúng: tại mỗi vị trí, phân áp O₂ của nước cao hơn của máu 30 mmHg nên O₂ khuếch tán vào máu. c) Sai: phải đọc số liệu theo chiều máu chảy; máu đi từ N đến M nên phân áp O₂ tăng từ 40 lên 110 mmHg. d) Sai: khi phân áp hai bên bằng nhau, chênh lệch phân áp bằng 0 nên không còn dòng khuếch tán thuần O₂ tại vị trí đó.",
+      "distractors": [
+        {
+          "label": null,
+          "sub": "c",
+          "mistake": "Đọc dãy số theo thứ tự M đến N rồi coi đó là chiều biến đổi của máu.",
+          "why_plausible": "Các số liệu được trình bày theo cùng thứ tự vị trí, trong khi hai dòng chuyển động ngược chiều."
+        },
+        {
+          "label": null,
+          "sub": "d",
+          "mistake": "Cho rằng cân bằng phân áp giúp O₂ đi qua màng nhanh hơn.",
+          "why_plausible": "Học sinh có thể nhầm trạng thái cân bằng với điều kiện thuận lợi cho trao đổi khí liên tục."
+        }
+      ],
+      "level_reason": "Mức cao nhất là TH: học sinh đọc mô tả không gian, theo dõi chiều dòng và giải thích khuếch tán bằng chênh lệch phân áp theo kiến thức quen thuộc.",
+      "prerequisites": [
+        "Chiều khuếch tán khí phụ thuộc chênh lệch phân áp.",
+        "Máu nhận O₂ khi đi qua bề mặt hô hấp của mang.",
+        "Phân biệt thứ tự trình bày số liệu với chiều chuyển động của dòng."
+      ],
+      "variation_guidance": "Có thể đổi kí hiệu hai đầu và các giá trị phân áp, nhưng phải giữ sự nhất quán giữa chiều máu chảy, chiều nước chảy và chênh lệch phân áp tại từng vị trí.",
+      "uncertainties": [
+        "Đây là mẫu tổng hợp với số liệu giả định; các quan sát định hướng chỉ có nguồn cấp tỉnh qua bên thứ ba, chưa có đối chiếu chính thức."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "ccf2cf96286b8066",
+      "stem": "Trong thí nghiệm giả định với hemoglobin (Hb), chất X có thể chiếm vị trí liên kết O₂ trên Hb. Mỗi vị trí được xếp vào một trong ba trạng thái: gắn O₂, gắn X hoặc còn trống. Tỉ lệ vị trí gắn O₂ được tính trên tổng số vị trí liên kết, kể cả những vị trí bị X chiếm. Ở phân áp O₂ bằng 50 mmHg, mẫu không có X có 80% vị trí gắn O₂; mẫu có X có 55% vị trí gắn O₂ và 30% vị trí gắn X. Hai mẫu có cùng lượng Hb, nhiệt độ và thành phần dung môi. Trong mô hình này, X không phản ứng với O₂ và không làm thay đổi độ hòa tan của O₂. Xét các phát biểu sau.",
+      "options": [],
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Ở phân áp O₂ đã cho, tỉ lệ vị trí gắn O₂ của mẫu có X thấp hơn mẫu không có X 25 điểm phần trăm."
+        },
+        {
+          "sub": "b",
+          "text": "Trong mẫu có X, 45% tổng số vị trí liên kết còn trống."
+        },
+        {
+          "sub": "c",
+          "text": "Việc X chiếm một phần vị trí liên kết làm giảm số vị trí có thể dành cho O₂."
+        },
+        {
+          "sub": "d",
+          "text": "Nồng độ O₂ hòa tan trong mẫu có X thấp hơn vì tỉ lệ vị trí Hb gắn O₂ thấp hơn."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "answer": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "answer": "S",
+          "level": "TH"
+        }
+      ],
+      "solution": "a) Đúng: 80 − 55 = 25 điểm phần trăm. b) Sai: phần còn trống là 100 − 55 − 30 = 15%; 45% là phần không gắn O₂, bao gồm cả phần gắn X. c) Đúng: các vị trí đang bị X chiếm không đồng thời dành cho O₂ theo mô hình đã cho. d) Sai: ở cùng phân áp O₂, nhiệt độ và thành phần dung môi, với độ hòa tan không bị X làm thay đổi, nồng độ O₂ hòa tan của hai mẫu bằng nhau. Tỉ lệ O₂ gắn Hb là đại lượng khác với nồng độ O₂ hòa tan.",
+      "distractors": [
+        {
+          "label": null,
+          "sub": "b",
+          "mistake": "Lấy 100% trừ tỉ lệ gắn O₂ rồi coi toàn bộ phần còn lại là vị trí trống.",
+          "why_plausible": "Học sinh có thể bỏ qua trạng thái thứ ba là vị trí đã gắn X."
+        },
+        {
+          "label": null,
+          "sub": "d",
+          "mistake": "Suy trực tiếp từ lượng O₂ gắn Hb giảm sang nồng độ O₂ hòa tan giảm.",
+          "why_plausible": "Hai dạng tồn tại đều liên quan đến O₂ trong mẫu máu nên dễ bị đồng nhất."
+        }
+      ],
+      "level_reason": "Mức cao nhất là TH: học sinh diễn giải tỉ lệ, phân biệt các trạng thái liên kết và áp dụng quan hệ quen thuộc giữa O₂ hòa tan với điều kiện vật lí đã được giữ cố định.",
+      "prerequisites": [
+        "O₂ có thể tồn tại ở dạng hòa tan hoặc liên kết với Hb.",
+        "Phân biệt vị trí không gắn O₂ với vị trí còn trống.",
+        "Ở cùng điều kiện dung môi và nhiệt độ, nồng độ khí hòa tan phụ thuộc phân áp khí."
+      ],
+      "variation_guidance": "Có thể thay đổi phân áp và các tỉ lệ liên kết, bảo đảm tổng tỉ lệ không vượt 100%. Nếu tiếp tục hỏi về O₂ hòa tan, cần nêu rõ các điều kiện quyết định độ hòa tan được giữ nguyên.",
+      "uncertainties": [
+        "X là chất giả định trong mô hình đơn giản hóa, không đại diện đầy đủ cho tác động của một khí độc cụ thể.",
+        "Các quan sát định hướng chỉ có nguồn cấp tỉnh qua bên thứ ba, chưa có đối chiếu chính thức."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "9fe9c03e0efe0b5e",
+      "stem": "Lĩnh vực sử dụng sinh vật, tế bào hoặc các thành phần của chúng để tạo ra sản phẩm và quy trình phục vụ đời sống được gọi là gì?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Công nghệ sinh học."
+        },
+        {
+          "label": "B",
+          "text": "Công nghệ tế bào."
+        },
+        {
+          "label": "C",
+          "text": "Công nghệ gene."
+        },
+        {
+          "label": "D",
+          "text": "Công nghệ enzyme."
+        }
+      ],
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "answer": "A",
+          "level": "NB"
+        }
+      ],
+      "solution": "Chọn A. Công nghệ sinh học là tên lĩnh vực có phạm vi phù hợp với định nghĩa. B sai vì công nghệ tế bào tập trung vào các kĩ thuật khai thác và thao tác với tế bào. C sai vì công nghệ gene tập trung vào vật chất di truyền. D sai vì công nghệ enzyme tập trung vào việc khai thác enzyme. Ba lĩnh vực này có phạm vi hẹp hơn định nghĩa đã nêu.",
+      "distractors": [
+        {
+          "label": "B",
+          "sub": null,
+          "mistake": "Đồng nhất toàn bộ công nghệ sinh học với công nghệ tế bào.",
+          "why_plausible": "Tế bào được nhắc trực tiếp trong định nghĩa và là đối tượng quan trọng của công nghệ sinh học."
+        },
+        {
+          "label": "C",
+          "sub": null,
+          "mistake": "Coi công nghệ gene là tên gọi bao quát cho mọi ứng dụng của hệ sống.",
+          "why_plausible": "Các sản phẩm từ công nghệ gene là những ví dụ quen thuộc khi học về công nghệ sinh học."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Thu hẹp các thành phần của hệ sống thành enzyme.",
+          "why_plausible": "Enzyme được ứng dụng rộng rãi để tạo sản phẩm và thực hiện các quy trình sản xuất."
+        }
+      ],
+      "level_reason": "NB: chỉ cần nhận ra tên gọi tương ứng với một định nghĩa đã học trong một đơn vị kiến thức.",
+      "prerequisites": [
+        "Khái niệm công nghệ sinh học."
+      ],
+      "variation_guidance": "Có thể diễn đạt lại định nghĩa bằng các từ tương đương, giữ phạm vi bao quát của lĩnh vực và dùng các công nghệ thành phần làm phương án nhiễu.",
+      "uncertainties": [
+        "Các quan sát định hướng chỉ có nguồn cấp tỉnh qua bên thứ ba, chưa có đối chiếu chính thức."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "d06868f8bacffa8a",
+      "stem": "Chỉ số diện tích lá được tính bằng tổng diện tích một mặt của các lá chia cho diện tích đất trồng tương ứng. Trong một thí nghiệm giả định trên cùng giống khoai lang, các lô có cùng mật độ trồng và chế độ tưới nhưng nhận các mức dinh dưỡng khoáng khác nhau. Kết quả tại cùng thời điểm thu hoạch: lô K có chỉ số diện tích lá 2,0 và khối lượng chất khô của củ 360 g/m² đất; lô L tương ứng là 3,2 và 470 g/m² đất; lô M tương ứng là 4,4 và 440 g/m² đất. Lá là cơ quan quang hợp chủ yếu; một phần sản phẩm quang hợp được vận chuyển đến củ và tích lũy ở đó. Xét các phát biểu sau.",
+      "options": [],
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Trên 1 m² đất của lô L, tổng diện tích một mặt của các lá là 3,2 m²."
+        },
+        {
+          "sub": "b",
+          "text": "Bộ lá có liên quan đến sự tích lũy chất khô ở củ thông qua việc cung cấp sản phẩm quang hợp."
+        },
+        {
+          "sub": "c",
+          "text": "Lô M có khối lượng chất khô của củ trên mỗi mét vuông đất cao hơn lô L vì có chỉ số diện tích lá lớn hơn."
+        },
+        {
+          "sub": "d",
+          "text": "Kết quả từ lô L và lô M cho thấy tăng chỉ số diện tích lá trong khoảng đã xét không đi kèm với tăng khối lượng chất khô của củ."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "answer": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "answer": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "answer": "D",
+          "level": "TH"
+        }
+      ],
+      "solution": "a) Đúng: diện tích lá bằng chỉ số diện tích lá nhân diện tích đất, tức 3,2 × 1 = 3,2 m². b) Đúng: lá tạo sản phẩm quang hợp, trong đó một phần được vận chuyển và tích lũy ở củ. c) Sai: lô M có chỉ số diện tích lá lớn hơn nhưng khối lượng chất khô của củ chỉ đạt 440 g/m², thấp hơn mức 470 g/m² của lô L. d) Đúng: từ L đến M, chỉ số diện tích lá tăng từ 3,2 lên 4,4 còn khối lượng chất khô của củ giảm từ 470 xuống 440 g/m². Các số liệu này mô tả mối liên hệ trong thí nghiệm, chưa tách riêng tác động nhân quả của diện tích lá khỏi dinh dưỡng khoáng.",
+      "distractors": [
+        {
+          "label": null,
+          "sub": "c",
+          "mistake": "Cho rằng chỉ số diện tích lá lớn hơn tất yếu tạo ra khối lượng củ lớn hơn.",
+          "why_plausible": "Học sinh biết lá quang hợp và cung cấp chất hữu cơ cho củ nhưng có thể suy rộng quan hệ đó thành quan hệ tăng đồng thời trong mọi trường hợp."
+        }
+      ],
+      "level_reason": "Mức cao nhất là TH: học sinh diễn giải chỉ số theo định nghĩa, liên hệ quang hợp với tích lũy chất khô và so sánh trực tiếp số liệu. Không cần xây dựng mô hình hay xác định nguyên nhân của sự khác biệt giữa các lô.",
+      "prerequisites": [
+        "Khái niệm chỉ số diện tích lá.",
+        "Vai trò của quang hợp trong tạo chất hữu cơ.",
+        "Sự vận chuyển sản phẩm quang hợp đến cơ quan tích lũy.",
+        "Cách so sánh số liệu giữa các nghiệm thức."
+      ],
+      "variation_guidance": "Có thể thay cây trồng có cơ quan tích lũy và điều chỉnh số liệu. Cần cung cấp đầy đủ kết quả, đồng thời tránh suy ra quan hệ nhân quả riêng của diện tích lá khi các lô còn khác nhau về dinh dưỡng.",
+      "uncertainties": [
+        "Số liệu là giả định phục vụ minh họa, không phải kết quả thực nghiệm.",
+        "Quan sát định hướng chỉ hỗ trợ mối liên hệ giữa bộ lá, quang hợp và cơ quan thu hoạch; các phát biểu còn lại được xây dựng mới từ dữ liệu đầy đủ trong câu hỏi."
+      ],
+      "missing_assets": []
+    }
+  ]
+}

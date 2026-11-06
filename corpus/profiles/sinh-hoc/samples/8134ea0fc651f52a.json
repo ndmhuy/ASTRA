@@ -1,0 +1,104 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "8134ea0fc651f52a",
+    "topic": "Di truyền phân tử",
+    "part": "P3",
+    "level": "VD",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "DNA được đánh dấu đồng vị, lịch sử nhân đôi qua các môi trường khác nhau và số phân tử thuộc một lớp đồng vị ở giai đoạn trung gian.",
+        "task": "Tính số phân tử chỉ chứa loại đồng vị được yêu cầu sau giai đoạn cuối.",
+        "reasoning": "Áp dụng tái bản bán bảo tồn để phân loại DNA sau giai đoạn đầu; suy ra lượng DNA ban đầu từ lớp phân tử đã biết; theo dõi các mạch cũ khi đổi môi trường; đếm hoặc lấy bù để xác định lớp DNA đích.",
+        "combines": [
+          "Tái bản bán bảo tồn",
+          "Bảo toàn mạch DNA",
+          "Tăng số lượng phân tử"
+        ],
+        "difficulty_source": "Phải theo dõi lịch sử từng loại mạch khi môi trường cung cấp nguyên liệu thay đổi",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Sơ đồ DNA đang được phiên mã, RNA đang được dịch mã, ký hiệu các mạch và một vị trí biến đổi trên DNA.",
+        "task": "Chọn các nhận định đúng về cơ chế đang diễn ra và tác động tức thời của can thiệp.",
+        "reasoning": [
+          "Nhận diện sự phối hợp giữa tổng hợp RNA và tổng hợp protein trong cùng hình.",
+          "Dùng chiều hoạt động và quan hệ bổ sung để xác định mạch khuôn.",
+          "Suy loại tổ chức tế bào từ khả năng phối hợp trực tiếp các quá trình.",
+          "Xác định vị trí biến đổi nằm trước hay sau phần đã được phiên mã.",
+          "Phân biệt tác động lên sản phẩm đang tổng hợp với tác động lên các lượt biểu hiện về sau.",
+          "Tổng hợp các nhận định đúng theo yêu cầu."
+        ],
+        "combines": [
+          "Phiên mã",
+          "Dịch mã",
+          "Tổ chức tế bào nhân sơ",
+          "Đột biến dịch khung",
+          "Quan hệ thời điểm giữa DNA và sản phẩm"
+        ],
+        "difficulty_source": "Theo dõi vị trí và thời điểm truyền thông tin để phân biệt sản phẩm hiện tại với sản phẩm tương lai",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "55c12f561006|P3|3|None",
+      "61a0198fbfda|P3|6|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "8134ea0fc651f52a",
+    "stem": "Một nhóm phân tử DNA ban đầu đều có hai mạch chứa đồng vị ¹⁵N. Người ta cho toàn bộ nhóm DNA nhân đôi hai lần liên tiếp trong môi trường chỉ cung cấp nitơ ¹⁴N. Sau giai đoạn này, có 24 phân tử chứa một mạch ¹⁵N và một mạch ¹⁴N. Tiếp theo, toàn bộ DNA được chuyển sang môi trường chỉ cung cấp nitơ ¹⁵N và nhân đôi một lần. Người ta loại bỏ tất cả phân tử có cả hai mạch chứa ¹⁵N, giữ lại toàn bộ các phân tử còn lại. Nhóm được giữ lại tiếp tục nhân đôi hai lần trong môi trường chỉ cung cấp nitơ ¹⁴N. Biết DNA nhân đôi theo nguyên tắc bán bảo tồn; mọi phân tử đều hoàn tất mỗi lần nhân đôi, không có trao đổi đoạn mạch hoặc thất thoát DNA ngoài bước loại bỏ đã nêu. Cuối cùng có bao nhiêu phân tử DNA có cả hai mạch chứa ¹⁴N?",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "144",
+        "level": "VD"
+      }
+    ],
+    "solution": "Kí hiệu H là mạch chứa ¹⁵N, L là mạch chứa ¹⁴N và n là số phân tử HH ban đầu. Sau hai lần nhân đôi trong môi trường ¹⁴N, nhóm DNA gồm 2n phân tử HL và 2n phân tử LL. Vì có 24 phân tử HL nên n = 12; lúc này có 24 HL và 24 LL. Khi nhân đôi một lần trong môi trường ¹⁵N, mỗi HL tạo một HH và một HL, còn mỗi LL tạo hai HL. Vì vậy thu được 24 HH và 72 HL. Loại bỏ HH thì còn 72 HL. Trong môi trường ¹⁴N, lần nhân đôi tiếp theo tạo 72 HL và 72 LL; lần cuối tạo 144 HL và 144 LL. Số phân tử có cả hai mạch chứa ¹⁴N là 144.",
+    "distractors": [],
+    "level_reason": "Học sinh phải lập mô hình các lớp DNA theo thành phần hai mạch, suy ngược quy mô nhóm ban đầu từ lớp lai, rồi điều chỉnh nhóm được theo dõi sau bước loại bỏ chọn lọc. Kết quả cuối phụ thuộc vào việc nối đúng lịch sử bảo toàn mạch với sự thay đổi thành phần nhóm qua từng môi trường; không thể chỉ dùng tổng số lần nhân đôi trong một công thức tăng số lượng.",
+    "prerequisites": [
+      "Nguyên tắc bán bảo tồn trong tái bản DNA",
+      "Mạch mới nhận nitơ từ môi trường đang cung cấp nguyên liệu",
+      "Phân biệt DNA có hai mạch nặng, hai mạch nhẹ và một mạch mỗi loại",
+      "Bảo toàn mạch DNA qua các lần nhân đôi"
+    ],
+    "variation_guidance": "Có thể thay lớp DNA được loại bỏ hoặc đổi đồng vị cung cấp ở giai đoạn cuối. Khi thay đổi phải theo dõi lại từng loại mạch qua bước chọn lọc, không chỉ thay số trong đáp án.",
+    "uncertainties": [
+      "Cấu trúc minh họa chỉ tham khảo quan sát trừu tượng từ nguồn đề cấp tỉnh do bên thứ ba cung cấp; chưa có điểm neo chính thức để đối chiếu."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "8134ea0fc651f52a",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "216",
+        "level": "VD"
+      }
+    ],
+    "solution": "Gọi H là mạch chứa ¹⁵N, L là mạch chứa ¹⁴N. Sau hai lần nhân đôi trong môi trường L, mỗi DNA HH ban đầu tạo 2 HL và 2 LL. Vì có 24 HL nên ban đầu có 12 DNA; lúc này có 24 HL và 24 LL. Nhân đôi trong môi trường H: 24 HL tạo 24 HH và 24 HL; 24 LL tạo 48 HL. Loại HH, còn 72 HL. Sau hai lần nhân đôi trong môi trường L, mỗi HL tạo 1 HL và 3 LL. Số DNA LL cuối cùng là 72 × 3 = 216.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "VD: Cần xây dựng và nối các chuyển đổi thành phần mạch qua nhiều giai đoạn, xác định nhóm còn lại sau bước loại chọn lọc rồi dùng nhóm đó làm đầu vào cho giai đoạn cuối."
+  },
+  "key_agreement": false,
+  "level_agreement": true,
+  "status": "needs_teacher_review_with_flags",
+  "generation_receipt": "audit/outputs/topic-samples/sinh-hoc/b92b73f247ce7db8a4db5c5917d7dfdec0245bab0a276c097577aff87ee5d30c.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/sinh-hoc/b92b73f247ce7db8a4db5c5917d7dfdec0245bab0a276c097577aff87ee5d30c.resolve.json"
+}

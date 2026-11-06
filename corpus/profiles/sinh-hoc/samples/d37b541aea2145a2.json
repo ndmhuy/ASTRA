@@ -1,0 +1,133 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "d37b541aea2145a2",
+    "topic": "Di truyền nhiễm sắc thể và quy luật di truyền",
+    "part": "P3",
+    "level": "VD",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Mô tả bằng lời sơ đồ các nhánh tạo sắc tố, giả thiết phân li độc lập và phân bố kiểu hình đời con của một phép lai.",
+        "task": "Tính tỉ lệ đời con vừa có kiểu hình phối hợp vừa dị hợp tại các locus được xét.",
+        "reasoning": "Lập ánh xạ giữa tổ hợp allele và kiểu hình từ sơ đồ; phân tách phân bố kiểu hình thành phân li ở từng locus; suy ra các dạng phép lai phù hợp; nhân xác suất tạo dị hợp ở từng locus và xác định đúng mẫu số của tỉ lệ.",
+        "combines": [
+          "Tương tác gene",
+          "Phân li độc lập",
+          "Suy ngược kiểu gene bố mẹ",
+          "Xác suất di truyền"
+        ],
+        "difficulty_source": "Phải chuyển sơ đồ sinh hóa thành nhóm kiểu gene rồi suy ngược từ phân bố kiểu hình",
+        "evidence_uncertainty": "Sơ đồ chỉ được mô tả bằng lời. Khóa tương ứng với tỉ lệ trên toàn bộ đời con; cần phân biệt với tỉ lệ có điều kiện chỉ trong nhóm mang kiểu hình phối hợp.",
+        "evidence_class": "official"
+      },
+      {
+        "given": "Hình phân bào có các nhiễm sắc thể đang tách về cực và kí hiệu gene giúp nhận diện quan hệ tương đồng.",
+        "task": "Suy số nhiễm sắc thể của tế bào lưỡng bội ban đầu.",
+        "reasoning": "Nhận diện giai đoạn phân li từ trạng thái nhiễm sắc thể; dùng các tổ hợp allele để phân biệt nhóm tương đồng; phát hiện số nhiễm sắc thể trong tế bào quan sát không thể được suy máy móc thành bộ đơn bội; suy bộ lưỡng bội từ số nhóm tương đồng.",
+        "combines": [
+          "Giảm phân",
+          "Nhận diện nhiễm sắc thể tương đồng",
+          "Rối loạn phân li",
+          "Bộ nhiễm sắc thể lưỡng bội"
+        ],
+        "difficulty_source": "Phải dùng nhãn gene để nhận ra quan hệ tương đồng thay vì nhân đôi số nhiễm sắc thể nhìn thấy ở cực",
+        "evidence_uncertainty": "Đề không nêu rõ có rối loạn phân li; cấu hình allele trong hình và đáp án đòi hỏi cách đọc này. Lời giải tham khảo chỉ nêu số nhóm tương đồng, chưa giải thích bất thường.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Quan hệ trội lặn, kiểu hình bố mẹ, phân bố kiểu hình đời con và việc chọn một nhóm cho tự thụ phấn.",
+        "task": "Tính tỉ lệ kiểu hình lặn đồng thời trong thế hệ tạo từ nhóm được chọn.",
+        "reasoning": "Phân tích tỉ lệ riêng để suy trạng thái dị hợp của bố mẹ; đối chiếu tỉ lệ chung để nhận diện liên kết; suy pha liên kết và tần số hoán vị; xác định thành phần kiểu gene có điều kiện trong nhóm được chọn; tính xác suất tạo kiểu hình đích từ từng kiểu gene; lấy trung bình có trọng số và làm tròn.",
+        "combines": [
+          "Phân li Mendel",
+          "Liên kết và hoán vị gene",
+          "Xác suất có điều kiện",
+          "Tự thụ phấn",
+          "Trung bình có trọng số"
+        ],
+        "difficulty_source": "Phải suy cấu trúc liên kết rồi chuẩn hóa nhóm bố mẹ được chọn trước khi tổng hợp kết quả tự thụ",
+        "evidence_uncertainty": "Lời giải tham khảo bỏ qua phép tính thành phần kiểu gene trong nhóm được chọn; mức suy luận được đánh giá từ dữ kiện đề. Cách tính theo khóa ngầm dùng cùng cơ chế tạo giao tử cho các cây tham gia.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Phả hệ có biểu hiện phụ thuộc giới tính, quy tắc biểu hiện của các kiểu gene và thông tin cân bằng di truyền của quần thể xuất thân người phối ngẫu.",
+        "task": "Tính xác suất sinh con thuộc giới và kiểu hình được yêu cầu.",
+        "reasoning": "Đổi kiểu hình từng giới thành các khả năng kiểu gene; dùng quan hệ huyết thống để xác định trọng số kiểu gene của người trong phả hệ; suy tần số allele từ tỉ lệ kiểu hình quần thể dưới giả định cơ cấu giới; điều kiện hóa kiểu gene người phối ngẫu theo giới và kiểu hình; kết hợp các khả năng bố mẹ với xác suất giới tính và làm tròn.",
+        "combines": [
+          "Đọc phả hệ",
+          "Tính trạng chịu ảnh hưởng giới tính",
+          "Cân bằng Hardy–Weinberg",
+          "Xác suất có điều kiện",
+          "Xác suất tổ hợp"
+        ],
+        "difficulty_source": "Phải kết hợp bất định kiểu gene từ phả hệ với phân bố có điều kiện của người phối ngẫu",
+        "evidence_uncertainty": "Kết quả khóa phù hợp khi coi tần số allele giữa các giới như nhau và cơ cấu giới cân bằng; đề không nêu riêng cơ cấu giới khi cho tỉ lệ kiểu hình chung của quần thể.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "b68b84764a9b|P3|3|None",
+      "2cbdc74db082|P3|2|None",
+      "2cbdc74db082|P3|5|None",
+      "4b4716b94db4|P3|6|None",
+      "55c12f561006|P3|1|None",
+      "61a0198fbfda|P3|4|None",
+      "8bbf9eea6d33|P3|6|None"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "d37b541aea2145a2",
+    "stem": "Ở một loài cây giả định, hai gene A/a và B/b nằm trên hai cặp nhiễm sắc thể khác nhau. Trong điều kiện nuôi trồng đang xét, A tạo enzyme giúp tổng hợp sắc tố đỏ, còn aa không tạo sắc tố đỏ; B tạo enzyme giúp tổng hợp sắc tố xanh, còn bb không tạo sắc tố xanh. Hai nhánh tổng hợp hoạt động độc lập. Hoa có cả hai sắc tố mang màu tím, chỉ có sắc tố đỏ mang màu đỏ, chỉ có sắc tố xanh mang màu xanh, không có cả hai sắc tố mang màu trắng. Lai hai cây chưa biết kiểu gene, đời con có tỉ lệ kiểu hình lí thuyết là 3 hoa tím : 3 hoa đỏ : 1 hoa xanh : 1 hoa trắng. Chọn toàn bộ cây hoa tím ở đời con cho từng cây tự thụ phấn; mỗi cây đóng góp số hạt như nhau vào lô hạt chung. Không có đột biến, các kiểu gene có sức sống và khả năng sinh sản như nhau. Tính tỉ lệ phần trăm cây hoa trắng dự kiến khi gieo lô hạt chung, làm tròn đến hai chữ số sau dấu phẩy.",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "4,17%",
+        "level": "VD"
+      }
+    ],
+    "solution": "Quy ước kiểu hình: A_B_ tím, A_bb đỏ, aaB_ xanh, aabb trắng. Tỉ lệ có sắc tố đỏ là (3 + 3)/8 = 3/4, còn không có sắc tố đỏ là 1/4, suy ra phép lai tại locus A là Aa × Aa. Tỉ lệ có sắc tố xanh là (3 + 1)/8 = 1/2, còn không có sắc tố xanh là 1/2, suy ra phép lai tại locus B là Bb × bb. Vì hai gene phân li độc lập, trong nhóm cây hoa tím, mọi cây đều là Bb; tại locus A, tỉ lệ AA : Aa là 1 : 2. Do đó, nhóm được chọn gồm 1/3 AABb và 2/3 AaBb. Cây AABb tự thụ không sinh cây aabb. Cây AaBb tự thụ sinh cây aabb với xác suất 1/16. Mỗi cây đóng góp số hạt như nhau nên tỉ lệ hoa trắng trong lô chung là (1/3) × 0 + (2/3) × (1/16) = 1/24, tương đương khoảng 4,17%.",
+    "distractors": [],
+    "level_reason": "Học sinh phải chuyển cơ chế tạo sắc tố thành nhóm kiểu gene, suy ngược phép lai từ phân bố kiểu hình, xác định lại thành phần kiểu gene trong nhóm hoa tím được chọn và tổng hợp kết quả tự thụ theo trọng số. Chuỗi suy luận phụ thuộc này đạt mức VD.",
+    "prerequisites": [
+      "Quan hệ giữa gene, enzyme và sắc tố",
+      "Quy luật phân li",
+      "Phân li độc lập",
+      "Xác suất có điều kiện khi chọn nhóm kiểu hình",
+      "Tự thụ phấn và trung bình có trọng số"
+    ],
+    "variation_guidance": "Có thể đổi nhánh tạo sắc tố, phân bố đời con hoặc nhóm cây được chọn. Khi thay đổi, cần suy lại thành phần kiểu gene của nhóm được chọn và nêu rõ cách các cây đóng góp hạt.",
+    "uncertainties": [
+      "Cơ chế sắc tố là mô hình giả định được quy định đầy đủ trong đề; không khẳng định cơ chế này ở một loài cây thực tế."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "d37b541aea2145a2",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "4,17%",
+        "level": "VD"
+      }
+    ],
+    "solution": "Gộp theo từng sắc tố, đời con có A_ : aa = 3 : 1 và B_ : bb = 1 : 1, suy ra các phép lai thành phần là Aa × Aa và Bb × bb. Trong nhóm hoa tím A_B_, tất cả đều Bb; tại locus A, tỉ lệ AA : Aa = 1 : 2. Vì vậy nhóm được chọn gồm 1/3 AABb và 2/3 AaBb. Cây AABb tự thụ không sinh hoa trắng; cây AaBb tự thụ sinh aabb với xác suất 1/16. Mỗi cây đóng góp số hạt như nhau nên tỉ lệ hoa trắng trong lô chung là (2/3) × (1/16) = 1/24, tương ứng 4,17%.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Cần suy ngược phép lai từ tỉ lệ kiểu hình, xác định phân bố kiểu gene có điều kiện trong nhóm hoa tím rồi kết hợp kết quả tự thụ theo trọng số đóng góp hạt. Đây là chuỗi lập luận phụ thuộc kết nối nhiều đơn vị kiến thức."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/sinh-hoc/07ad15b26cfa1854874a4b90be537ffece245a3db4291e4a36e7820da9a319c7.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/sinh-hoc/07ad15b26cfa1854874a4b90be537ffece245a3db4291e4a36e7820da9a319c7.resolve.json"
+}

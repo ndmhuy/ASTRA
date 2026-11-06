@@ -1,0 +1,105 @@
+Transcribed by gpt-6-luna, 2026-11-02; second pass separate fresh context by gpt-6-luna; teacher verification no. Third-party copy; private internal evidence only.
+
+## OCR draft, second pass completed
+- Không phát hiện sai khác chưa giải quyết trong lượt hai.
+
+Route: source PDF/photo -> text + rendered images
+
+Second-pass pages: [2, 4]; checked addresses: ['p1: header, exam code 0101, duration 90 minutes', 'p1: Part I Q1 integral and answer options', 'p1: Part I Q2 plane names and perpendicularity options', 'p1: Part I Q3 line equations and direction-vector options', 'p1: Part I Q4 grouped-data intervals and frequencies', 'p1: Part I Q5 area integral options', 'p1: Part I Q8 exponent equation and options', 'p1: Part I Q9 sphere equation and center options', 'p1-p2: Part I Q10 variation table, asymptotes, and options', 'p2: Part I Q11 vectors and dot-product options', 'p2: Part I Q12 pyramid dimensions, figure, and volume options', 'p2: Part II Q1 functions, graph, and four statements', 'p3: Part II Q2 probabilities and four statements', 'p3: Part II Q3 coordinates, ray path, rail, and four statements', 'p3: Part II Q4 function and derivative statements', 'p3-p4: Part III Q1 plane, sphere, cone angle, and requested area', 'p4: Part III Q2 cost function, domain, and sale price', 'p4: Part III Q3 sequence notation, selection rules, and probability', 'p4: Part III Q4 prism dimensions and distance', 'p4: Part III Q5 ellipse dimensions, figure, and material costs', 'p4: Part III Q6 TV price, down payment, rate, term, and payment', 'p5: printed answer key, exam-code row 0101, all Part I, Part II, and Part III cells']
+
+{
+  "notes": [
+    "Tài liệu chứa đầy đủ đề mã 0101 trên 4 trang in, tiếp theo là bảng đáp án mã đề và các mã đề/đáp án giải khác; chỉ dùng bảng đáp án in mã 0101.",
+    "Các ảnh hình được trỏ bằng tên tệp theo yêu cầu; trong phiên này không tạo được các ảnh crop thực tế.",
+    "Sau đề và bảng đáp án, tài liệu tiếp tục bằng đề mã 0102 và lời giải; không có phần lời giải riêng cho mã đề 0101."
+  ],
+  "second_pass": {
+    "checked_addresses": [
+      "p1: header, exam code 0101, duration 90 minutes",
+      "p1: Part I Q1 integral and answer options",
+      "p1: Part I Q2 plane names and perpendicularity options",
+      "p1: Part I Q3 line equations and direction-vector options",
+      "p1: Part I Q4 grouped-data intervals and frequencies",
+      "p1: Part I Q5 area integral options",
+      "p1: Part I Q8 exponent equation and options",
+      "p1: Part I Q9 sphere equation and center options",
+      "p1-p2: Part I Q10 variation table, asymptotes, and options",
+      "p2: Part I Q11 vectors and dot-product options",
+      "p2: Part I Q12 pyramid dimensions, figure, and volume options",
+      "p2: Part II Q1 functions, graph, and four statements",
+      "p3: Part II Q2 probabilities and four statements",
+      "p3: Part II Q3 coordinates, ray path, rail, and four statements",
+      "p3: Part II Q4 function and derivative statements",
+      "p3-p4: Part III Q1 plane, sphere, cone angle, and requested area",
+      "p4: Part III Q2 cost function, domain, and sale price",
+      "p4: Part III Q3 sequence notation, selection rules, and probability",
+      "p4: Part III Q4 prism dimensions and distance",
+      "p4: Part III Q5 ellipse dimensions, figure, and material costs",
+      "p4: Part III Q6 TV price, down payment, rate, term, and payment",
+      "p5: printed answer key, exam-code row 0101, all Part I, Part II, and Part III cells"
+    ],
+    "disagreements": [],
+    "missing_figures": [],
+    "unreadable": [],
+    "pass": true,
+    "independent_key": {
+      "part1": [
+        "C",
+        "A",
+        "C",
+        "B",
+        "B",
+        "B",
+        "A",
+        "A",
+        "D",
+        "D",
+        "A",
+        "C"
+      ],
+      "part2": [
+        [
+          "D",
+          "S",
+          "D",
+          "S"
+        ],
+        [
+          "D",
+          "D",
+          "D",
+          "S"
+        ],
+        [
+          "D",
+          "S",
+          "D",
+          "S"
+        ],
+        [
+          "S",
+          "D",
+          "S",
+          "D"
+        ]
+      ],
+      "part3": [
+        "26,2",
+        "10",
+        "1781",
+        "—",
+        "329",
+        "19"
+      ]
+    },
+    "key_disagreements": [],
+    "limitations": []
+  },
+  "key_pages": [
+    5
+  ],
+  "solutions_from_page": null
+}
+
+## QA STOPPED / incomplete
+- Khóa hai lượt khác nhau tại part1.12, part2.2, part2.3, part2.4, part3.4, part3.6; cần xem lại ảnh, không tự chọn khóa

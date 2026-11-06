@@ -1,0 +1,134 @@
+{
+  "input": {
+    "subject": "vat-li",
+    "kind": "paper",
+    "year": 2025,
+    "source": "official/2025-web/vat-li-2025-ma-0201.pdf",
+    "slug": "vat-li-2025-ma-0201"
+  },
+  "verification": {
+    "checked_addresses": [
+      "Trang 1: đầu đề và dữ kiện cho biết",
+      "Phần I: câu 1–8, câu chữ và phương án A–D",
+      "Trang 2: Phần I câu 9–18, câu chữ và phương án A–D",
+      "Trang 3: Phần II câu 1–3, các ý a–d và hình minh họa",
+      "Trang 4: Phần II câu 4, Phần III câu 1–6, công thức và dữ kiện số"
+    ],
+    "disagreements": [
+      {
+        "location": "Phần II, câu 2, đoạn mô tả",
+        "before": "Cảm ứng từ $\\vec{B}$ của từ trường có phương nằm ngang và của nam châm (hình bên). Cảm ứng từ $\\vec{B}$ của từ trường có phương nằm ngang và có độ lớn là $B$.",
+        "after": "Cảm ứng từ $\\vec{B}$ của từ trường có phương nằm ngang và có độ lớn là $B$.",
+        "reason": "Bản chép lặp và làm sai cụm chữ; ảnh ghi một lần rằng cảm ứng từ của từ trường do nam châm có phương nằm ngang và độ lớn B.",
+        "settled_by_image": true
+      },
+      {
+        "location": "Phần II, câu 2, mô tả hình",
+        "before": "đầu dây nối với rang mạch ngoài.",
+        "after": "đầu dây nối với mạch ngoài.",
+        "reason": "Ảnh minh họa không có phần chữ này; cụm “rang mạch ngoài” là lỗi chép. Mô tả hình nên chỉ nói các thành phần thấy rõ trong hình.",
+        "settled_by_image": true
+      },
+      {
+        "location": "Phần II, câu 2, ý a",
+        "before": "Cảm ứng từ $\\vec{B}$ có hướng từ cực N sang cực S của nam châm.",
+        "after": "Cảm ứng từ $\\vec{B}$ có hướng từ cực N sang cực S của nam châm.",
+        "reason": "Không có bất đồng; ảnh ghi đúng câu này.",
+        "settled_by_image": true
+      }
+    ],
+    "missing_figures": [],
+    "unreadable": [],
+    "pass": false,
+    "limitations": [
+      "Chỉ kiểm tra được bốn trang đề đính kèm. Không có trang đáp án in kèm, nên không thể đối chiếu khóa chính thức hoặc tạo independent_key. Không suy ra đáp án từ chữ viết tay trên đề."
+    ]
+  },
+  "failures": [],
+  "model": "gpt-6-luna",
+  "verification_model": "gpt-6-luna",
+  "calls": "/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/outputs/calls/ocr-vat-li--vat-li-2025-ma-0201",
+  "source_readability_resolution": {
+    "reviewer": "Sol parent visual review",
+    "source_images": [
+      {
+        "path": "/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/outputs/source-reviews/vat-li-2025-page1.jpg",
+        "sha256": "417a11591353693eb709910e13883fc44c857568fd172c8c6de99c0cce09cd59",
+        "derived_from": "/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/work/vat-li--vat-li-2025-ma-0201/p1-1.jpg"
+      },
+      {
+        "path": "/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/outputs/source-reviews/vat-li-2025-page3.jpg",
+        "sha256": "b62d667e4940ee555cc5a68ff9cb8b459ed09814f76909987babeadccd4fa842",
+        "derived_from": "/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/work/vat-li--vat-li-2025-ma-0201/p3-3.jpg"
+      }
+    ],
+    "reason": "Đã so các câu đầu và đoạn/hình Phần II câu 2 với nguồn. Cụm mô tả bị lặp đã được lượt hai sửa; phần chữ rang là lỗi trong mô tả hình tự thêm, đã bỏ. Source được đọc rõ tại vùng từng bị gắn cờ; không lấy nét viết tay làm đáp án.",
+    "original_structure": {
+      "subject": "vat-li",
+      "province": "toàn quốc",
+      "exam": "Kỳ thi tốt nghiệp trung học phổ thông năm 2025",
+      "round": "chính thức",
+      "ma_de": "0201",
+      "pages": 4,
+      "parts": [
+        {
+          "part": "I",
+          "type": "mcq",
+          "count": 18
+        },
+        {
+          "part": "II",
+          "type": "true_false",
+          "count": 4
+        },
+        {
+          "part": "III",
+          "type": "short_answer",
+          "count": 6
+        }
+      ],
+      "total_cau": 28,
+      "unreadable_count": 1,
+      "answer_key_present": false,
+      "figures": [
+        {
+          "cau": "Phần II Câu 1",
+          "file": "images/cau_1.png",
+          "page": 3,
+          "box": [
+            797,
+            95,
+            886,
+            263
+          ]
+        },
+        {
+          "cau": "Phần II Câu 2",
+          "file": "images/cau_2.png",
+          "page": 3,
+          "box": [
+            758,
+            534,
+            901,
+            740
+          ]
+        }
+      ],
+      "figure_count": 2,
+      "missing_pages": []
+    },
+    "original_failures": [
+      "Lượt hai chưa đạt",
+      "Có chỗ không đọc được"
+    ],
+    "corrections_count": 0,
+    "no_teacher_approval": true
+  },
+  "qa_failures": [
+    "Không có khóa khớp mã được xác nhận"
+  ],
+  "qa_content_failures": [],
+  "qa_key_failures": [
+    "Không có khóa khớp mã được xác nhận"
+  ]
+}

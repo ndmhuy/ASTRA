@@ -1,0 +1,248 @@
+status: ocr-draft
+source: official/2026-provincial-sinh-hoc/de-thi-thu-tn-thpt-2026-mon-sinh-so-gd-ninh-binh-lan-1/paper.docx
+
+# SỞ GIÁO DỤC VÀ ĐÀO TẠO NINH BÌNH
+
+**ĐỀ KHẢO SÁT, ĐÁNH GIÁ CHẤT LƯỢNG GIÁO DỤC LỚP 12 THPT**  
+**LẦN THỨ NHẤT - NĂM HỌC 2025-2026**  
+**ĐỀ CHÍNH THỨC**  
+**MÃ ĐỀ: 0401**  
+**MÔN THI: SINH HỌC - THPT, GDTX**  
+(Thời gian làm bài: 50 phút)  
+Đề khảo sát gồm 04 trang.
+
+Họ và tên học sinh: ………………………………………  
+Số báo danh: ………………………………………
+
+## PHẦN I
+
+Thí sinh trả lời từ câu 1 đến câu 18. Mỗi câu hỏi thí sinh chỉ chọn 1 phương án.
+
+**Câu 1:** Trong quy trình tách chiết DNA, chất tẩy rửa được sử dụng nhằm mục đích
+
+A. phá huỷ màng tế bào.  
+B. phân giải RNA.  
+C. phân giải protein.  
+D. kết tủa DNA.
+
+**Câu 2:** Để tạo thành công con la có sức làm việc cao, các nhà tạo giống đã cho lai con ngựa cái với lừa đực. Con la đã được tạo ra bằng phương pháp
+
+A. lai xa.  
+B. lai thuận nghịch.  
+C. tạo dòng thuần.  
+D. đa bội hóa.
+
+**Câu 3:** Một số giống cây ăn quả như: nho, dưa hấu... có quả to, không hạt được tạo ra bằng phương pháp đột biến. Trong tế bào sinh dưỡng của những giống cây trên có bộ NST thuộc dạng
+
+A. $2n - 1$.  
+B. $3n$.  
+C. $4n$.  
+D. $2n + 1$.
+
+**Câu 4:** Dạng đột biến điểm làm tăng số liên kết hydrogen của gene là
+
+A. thêm 1 cặp G – C.  
+B. mất 1 cặp G – C.  
+C. mất 1 cặp A – T.  
+D. thay thế 1 cặp nucleotide.
+
+**Câu 5:** Ở người, bệnh cơ ti thể (*Mitochondrial myopathy*) do đột biến gene ở bào quan ti thể gây ra và di truyền theo quy luật
+
+A. liên kết giới tính.  
+B. liên kết gene.  
+C. gene ngoài nhân.  
+D. phân li độc lập.
+
+**Câu 6:** Phân tử không tham gia trực tiếp vào quá trình dịch mã là
+
+A. rRNA.  
+B. tRNA.  
+C. mRNA.  
+D. DNA.
+
+**Câu 7:** Mendel với công trình nghiên cứu trên đậu Hà Lan, ông đã sử dụng phép lai nào sau đây để kiểm tra giả thuyết của mình?
+
+A. Cho các cây $F_1$ tự thụ phấn.  
+B. Phép lai phân tích.  
+C. Phép lai khác dòng.  
+D. Phép lai thuận nghịch.
+
+**Câu 8:** Loài cáo tuyết bắc cực (*Vulpes lagopus*) thường có lông màu trắng vào mùa đông lạnh, lông màu sẫm hơn khi ở mùa hè. Sự thay đổi màu sắc lông của cáo tuyết bắc cực theo mùa chủ yếu do yếu tố
+
+A. nhiệt độ.  
+B. thức ăn.  
+C. kiểu gene.  
+D. ánh sáng.
+
+**Câu 9:** Hình dưới đây là sơ đồ mô tả sự di truyền gene ngoài nhân trong thí nghiệm của Correns trên cây hoa phấn (hoa bốn giờ).
+
+[HÌNH: Sơ đồ tế bào trứng cây lá đốm với các lục lạp mang gene không đột biến và đột biến; sau khi thụ tinh với hạt phấn bất kì, hợp tử có thể phát triển thành cây lá xanh, lá đốm hoặc lá trắng.]
+![](images/cau_9.png)
+
+Nhận định nào **không đúng** về sự di truyền gene ngoài nhân trong thí nghiệm của Correns?
+
+A. Trong giảm phân, lục lạp được phân chia đồng đều về các tế bào trứng.  
+B. Trong quá trình thụ tinh, gene trong lục lạp ở tế bào chất của hợp tử chủ yếu nhận từ tế bào trứng.  
+C. Lá màu đốm hoặc màu trắng là do gene quy định tổng hợp diệp lục trong lục lạp bị đột biến tạo nên.  
+D. Trong tế bào chất của tế bào trứng có thể chỉ chứa lục lạp mang gene đột biến hoặc gene không đột biến hoặc chứa cả hai loại lục lạp này.
+
+**Câu 10:** Mức phản ứng là tập hợp…(1)…của các cá thể có…(2)…trong các điều kiện môi trường khác nhau. (1) và (2) lần lượt là
+
+A. kiểu hình và kiểu gene khác nhau.  
+B. kiểu gene và kiểu hình giống nhau.  
+C. kiểu gene và kiểu hình khác nhau.  
+D. kiểu hình và kiểu gene giống nhau.
+
+**Câu 11:** Sinh vật nào sau đây là thành tựu của tạo giống bằng lai hữu tính?
+
+A. Giống ngô mang gene Bt và gene GT có khả năng kháng sâu đục thân và kháng thuốc diệt cỏ.  
+B. Bò lai Sind là giống bò lai giữa bò đực Red Sindhi thuần chủng với bò cái vàng Việt Nam.  
+C. Giống “lúa vàng” mang gene tổng hợp nên tiền chất của Vitamin A.  
+D. Chuột mang gene mã hóa albumin huyết thanh của người.
+
+**Câu 12:** Các codon UUA, UUG, CUU, CUC, CUA, CUG cùng mã hóa cho amino acid leucine, khi đó mã di truyền có
+
+A. tính thoái hóa.  
+B. tính đặc hiệu.  
+C. tính liên tục.  
+D. tính phổ biến.
+
+**Câu 13:** Gà mái có cặp NST giới tính là
+
+A. ZZ.  
+B. XY.  
+C. ZW.  
+D. XX.
+
+**Câu 14:** Quá trình tổng hợp DNA dựa trên mạch khuôn RNA được gọi là
+
+A. dịch mã.  
+B. phiên mã.  
+C. phiên mã ngược.  
+D. tái bản.
+
+**Câu 15:** Trên một cây hoa phù dung (*Hibiscus mutabilis*) có màu sắc hoa thay đổi trong ngày (buổi sáng hoa nở có màu trắng, đến trưa sẽ chuyển sang màu hồng và buổi tối lại đổi thành màu đỏ sẫm). Hiện tượng trên là
+
+A. biến dị tổ hợp.  
+B. đột biến.  
+C. thường biến.  
+D. mức phản ứng.
+
+**Câu 16:** Một nhóm nghiên cứu tiến hành trồng các cây có cùng kiểu gene của một giống hoa cẩm tú cầu (*Mophead Hydrangea*) ở đất có pH khác nhau, thu được kết quả:
+
+| pH đất | 4,5 – 5,0 | 6,5 | >7,0 |
+|---|---|---|---|
+| Màu sắc hoa | Màu xanh | Hồng và đỏ | Tím |
+
+Nhận định nào sau đây là đúng về giống hoa cẩm tú cầu trên?
+
+A. Màu sắc hoa của giống hoa cẩm tú cầu này hoàn toàn do độ pH đất quy định.  
+B. Giống hoa cẩm tú cầu này có nhiều mức phản ứng khác nhau về tính trạng màu sắc hoa.  
+C. Tập hợp các màu sắc hoa khác nhau (xanh, tím, hồng, đỏ) là mức phản ứng của kiểu gene quy định tính trạng màu sắc hoa.  
+D. Độ pH đất thay đổi đã làm cho kiểu gene của giống hoa cẩm tú cầu thay đổi.
+
+**Câu 17:** Khi nghiên cứu 1 dòng đột biến ở 1 loài côn trùng được tạo ra từ phòng thí nghiệm, người ta quan sát thấy trên NST số 2 có số lượng gene tăng lên, các NST khác bình thường. Hiện tượng trên là do đột biến
+
+A. mất đoạn.  
+B. lặp đoạn.  
+C. chuyển đoạn trong 1 NST.  
+D. đảo đoạn.
+
+**Câu 18:** Ở ruồi giấm, tính trạng màu mắt do 1 gene có 2 allele nằm trên NST giới tính X không có allele tương ứng trên Y quy định. Sự di truyền tính trạng màu mắt trên tuân theo quy luật
+
+A. trội lặn hoàn toàn.  
+B. di truyền liên kết.  
+C. di truyền giới tính.  
+D. di truyền liên kết với giới tính.
+
+## PHẦN II
+
+Thí sinh trả lời từ câu 1 đến câu 4. Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn đúng hoặc sai.
+
+**Câu 1.** Hình bên mô tả khái quát cơ chế truyền thông tin di truyền ở cấp độ phân tử của sinh vật nhân thực.
+
+[HÌNH: Sơ đồ DNA tự nhân đôi ở quá trình (1), gene X phiên mã thành mRNA ở quá trình (2), rồi dịch mã thành polypeptide ở quá trình (3).]
+![](images/cau_1.png)
+
+a) Quá trình (1), (2), (3) lần lượt là tự nhân đôi DNA, phiên mã, dịch mã.  
+b) Quá trình (1) được thực hiện theo nguyên tắc bổ sung và nguyên tắc bán bảo toàn.  
+c) Quá trình (1), (2) và (3) diễn ra đồng thời.  
+d) Nếu chuỗi polypeptide trong hình có 15 loại amino acid thì quá trình (3) có 15 loại tRNA tham gia hoạt động.
+
+**Câu 2.** Ở một loài vi khuẩn, trên phân tử DNA nằm ở vùng nhân có các gene E, F, G, H, K, R trong đó các gene cấu trúc E, F, G thuộc cùng 1 operon với vùng P (Promoter) và O (Operator) chịu sự điều khiển của gene R như hình bên.
+
+[HÌNH: Bản đồ DNA vòng của vi khuẩn, có các gene E, F, G trong operon cùng vùng P và O, và các gene H, K, R ở những vị trí khác.]
+![](images/cau_2.png)
+
+a) P là nơi liên kết với Protein ức chế.  
+b) Khi gene K nhân đôi 3 lần thì gene G cũng nhân đôi 3 lần.  
+c) Các gene E, F, G được phiên mã sẽ tạo ra 3 loại mRNA khác nhau để tổng hợp ra 3 loại protein khác nhau.  
+d) Nếu gene R bị đột biến thì sản phẩm protein của gene G tạo ra có thể nhiều hơn.
+
+**Câu 3.** Trong giờ thực hành, một nhóm học sinh của trường THPT A của tỉnh Ninh Bình đã tiến hành quan sát NST trên 2 tiêu bản cố định tế bào của người như sau:
+
+Bước 1: Đưa từng tiêu bản lên kính hiển vi điều chỉnh vùng có mẫu vật, quan sát ở độ phóng đại 10x, đến 40x, đến 100x.  
+Bước 2: Vẽ hình ảnh bộ NST quan sát được ở 2 tiêu bản (hình vẽ được thể hiện trong hình dưới đây H1- tiêu bản 1, H2- tiêu bản 2).
+
+[HÌNH: Hai bộ nhiễm sắc thể người, tiêu bản H1 có bộ NST thường và giới tính; tiêu bản H2 có ba NST ở cặp 21.]
+![](images/cau_3.png)
+
+Bước 3: So sánh hình ảnh quan sát vẽ được và đưa ra các nhận xét, kết luận.
+
+a) Tiêu bản 1 là tế bào bình thường, tiêu bản 2 là tế bào đột biến số lượng NST.  
+b) Tiêu bản 2 là tế bào của người mắc hội chứng Klinefelter.  
+c) Nếu 1 tế bào có bộ NST giống tiêu bản 1 phân bào bị rối loạn phân chia ở tất cả các cặp NST thì tạo ra tế bào có bộ NST giống tiêu bản 2.  
+d) Một người nam có bộ NST giống tiêu bản 2 kết hôn với người vợ bình thường có khả năng sinh con bình thường với xác suất cao.
+
+**Câu 4.** Dựa trên thí nghiệm của Morgan để nghiên cứu sự di truyền của các tính trạng. Một nhóm nghiên cứu tiến hành các phép lai trên ruồi giấm trong phòng thí nghiệm và thu được kết quả sau:
+
+| Phép lai | Bố, mẹ | Kết quả kiểu hình đời con |
+|---|---|---|
+| 1 | ♂ thân xám, cánh cụt × ♀ thân đen, cánh dài | 100% thân xám, cánh dài |
+| 2 | ♀ $F_1$ của phép lai 1 ($F_{1-1}$) × ♂ thân đen, cánh cụt | 239 con thân xám, cánh cụt; 242 con thân đen, cánh dài; 59 con thân đen, cánh cụt; 61 con thân xám, cánh dài |
+| 3 | ♂ $F_1$ của phép lai 1 ($F_{1-1}$) × ♀ thân đen, cánh cụt | 442 con thân xám, cánh cụt; 439 con thân đen, cánh dài |
+| 4 | ♀ $F_{1-1}$ × ♂ thân xám, cánh dài | 4 loại kiểu hình, trong đó kiểu hình thân đen, cánh cụt chiếm tỉ lệ 5% |
+
+Biết rằng mỗi tính trạng do một gene có 2 allele trội lặn hoàn toàn, nằm trên NST thường quy định.
+
+a) Các phép lai nhằm mục đích xác định quy luật di truyền chi phối các tính trạng.  
+b) Tần số hoán vị gene giữa các gene quy định tính trạng đang xét chỉ xác định được từ kết quả phép lai 4.  
+c) Từ kết quả phép lai 3 cho phép nhận định ở con ♂ $F_{1-1}$ các gene quy định các tính trạng đang xét liên kết gen.  
+d) Nếu dựa vào kết quả của các phép lai để xây dựng bản đồ di truyền thì khoảng cách giữa gene quy định màu thân và gene quy định dạng cánh là 10cM.
+
+## PHẦN III
+
+Thí sinh trả lời từ câu 1 đến câu 6. Thí sinh điền kết quả mỗi câu vào mỗi ô trả lời tương ứng theo hướng dẫn của phiếu trả lời.
+
+**Câu 1:** Bò được chuyển gene tổng hợp r-protein của người, gene này được biểu hiện ở tuyến sữa, có thể cho sản phẩm với số lượng lớn và được dùng để sản xuất ra protein C chữa bệnh máu vón cục gây tắc mạch ở người. Tạo bò chuyển gene được thực hiện dựa trên nguyên lí chung tạo sinh vật biến đổi gene. Cho các bước chính trong quy trình tạo bò chuyển gene trên:
+
+1. Thụ tinh *in vitro* (trong ống nghiệm).  
+2. Cấy phôi vào ống dẫn trứng của con bò mẹ.  
+3. Tiêm gene sản xuất r-protein của người vào hợp tử.  
+4. Cho hợp tử phát triển thành phôi.
+
+Hãy viết trình tự đúng các bước của quy trình tạo bò chuyển gene. (Viết liền các chữ số chỉ bước thực hiện).
+
+**Câu 2.** Bảng sau đây cho biết các codon mã hóa các amino acid tương ứng (đánh số từ 1 đến 6):
+
+| Codon | 5’GGG3’ | 5’CCC3’ | 5’GCU3’ | 5’CGA3’ | 5’UCG3’ | 5’AGC3’ |
+|---|---:|---:|---:|---:|---:|---:|
+| Amino acid | 1 | 2 | 3 | 4 | 5 | 6 |
+
+Một đoạn mạch khuôn của một gene ở vi khuẩn có trình tự nucleotide là 3’-GGGCCCAGCCGA-5’. Nếu đoạn mạch khuôn này mang thông tin mã hóa cho đoạn polypeptide có 4 amino acid thì trình tự các amino acid đó sẽ như thế nào? (Viết liền các chữ số tương ứng với trình tự các amino acid).
+
+**Câu 3.** Ở một loài thực vật lưỡng bội, xét 2 cặp gene A, a; B, b nằm trên 2 cặp NST tương đồng khác nhau. Trong đó, allele A bị đột biến thành allele a, allele b bị đột biến thành allele B. Biết các gene trội là trội hoàn toàn. Cho các cá thể có kiểu gene sau: 1. AABB; 2. AABb; 3. AaBb; 4. Aabb; 5. aabb; 6. AAbb. Những cá thể nào là thể đột biến? (Viết liền các chữ số từ bé đến lớn).
+
+**Câu 4.** Ở đậu Hà Lan, allele A quy định hoa tím trội hoàn toàn so với allele a quy định hoa trắng. Cho cây hoa tím thuần chủng lai với cây hoa trắng thu được $F_1$. Cho cây $F_1$ tự thụ phấn, thu được 4800 cây $F_2$ với tỉ lệ phân ly kiểu hình 75% hoa tím: 25% hoa trắng. Trong số các cây hoa tím ở $F_2$, số lượng cây khi tự thụ phấn cho $F_3$ không xuất hiện cây hoa trắng là bao nhiêu?
+
+**Câu 5.** Một loài thực vật, hình dạng quả là do sự tác động của 2 cặp gene (A, a và B, b) phân li độc lập. Allele A và allele B tác động đến sự hình thành hình dạng quả theo sơ đồ hình bên. Allele a và allele b không tạo được các enzyme tương ứng. Khi cho cây quả dạng dẹt dị hợp 2 cặp gene giao phấn với cây quả dài, đời con thu được tỉ lệ cây quả dạng dẹt là bao nhiêu? (Viết kết quả dưới dạng số thập phân, hai chữ số sau dấu phẩy)
+
+[HÌNH: Sơ đồ chuyển hóa tiền chất quả dài thành chất X và chất Y, lần lượt cần enzyme A do allele A tạo và enzyme B do allele B tạo; cả hai chất đều dẫn đến chất Z, quả dạng dẹt.]
+![](images/cau_5.png)
+
+**Câu 6.** Cho 5 hình dưới đây (được đánh số từ 1 đến 5), mỗi hình mô tả 1 cặp NST với các chữ cái X, Y, Z là các gene nằm trên NST. Em hãy chỉ ra những hình mô tả **không đúng** trình tự các gene nằm trên cặp NST tương đồng của tế bào sinh dưỡng bình thường? (Viết liền các chữ số chỉ hình từ nhỏ đến lớn).
+
+[HÌNH: Năm sơ đồ cặp nhiễm sắc thể tương đồng, mỗi chiếc có thứ tự gene X, Y, Z khác nhau; các hình được đánh số 1–5.]
+![](images/cau_6.png)
+
+------ HẾT ------

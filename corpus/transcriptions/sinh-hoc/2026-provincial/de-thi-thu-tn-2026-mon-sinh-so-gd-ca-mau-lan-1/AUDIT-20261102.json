@@ -1,0 +1,169 @@
+{
+  "input": {
+    "subject": "sinh-hoc",
+    "kind": "provincial",
+    "year": 2026,
+    "source": "official/2026-provincial-sinh-hoc/de-thi-thu-tn-2026-mon-sinh-so-gd-ca-mau-lan-1/paper.docx",
+    "slug": "de-thi-thu-tn-2026-mon-sinh-so-gd-ca-mau-lan-1"
+  },
+  "verification": {
+    "checked_addresses": [
+      "Trang 1: thông tin kỳ thi, ngày 25/4/2026, mã đề 0401, thời gian 50 phút.",
+      "Phần I, Câu 1–3: nội dung, tên loài, công thức NST và toàn bộ phương án.",
+      "Phần I, Câu 4: hai đường quang hợp C3/C4, điểm bù, điểm bão hòa CO2 và phương án A–D.",
+      "Phần I, Câu 5: bốn hàng số liệu 8000/0,004; 2000/0,015; 1500/0,1; 3000/0,01 và phương án A–D.",
+      "Phần I, Câu 8: NO3^- thành N2 và bốn phương án trên hai trang.",
+      "Phần I, Câu 13: bảng lai thuận/nghịch, giới tính, màu mắt và kiểu gene Z^A Z^a.",
+      "Phần I, Câu 14: sơ đồ bốn loài, chú giải tác động và phương án A–D.",
+      "Phần II, Câu 1: sơ đồ plasmid, gene insulin, enzyme và bốn nhận định.",
+      "Phần II, Câu 2: hai biểu đồ El Nino, các chú giải Tv., Ro., Ar., Di., Cl. và bốn nhận định.",
+      "Phần II, Câu 3: hình tim đánh số 1–9, biểu đồ áp lực và bốn nhận định.",
+      "Phần II, Câu 4: phả hệ, điện di DNA/protein G, các mức 502/300/200 bp, số 2004 và kiểu gene AA_1.",
+      "Phần III, Câu 1: sáu mã quần thể và sáu ô tỉ lệ kiểu hình lặn.",
+      "Phần III, Câu 2: cả bốn phép lai và tỉ lệ 3 : 3 : 1 : 1.",
+      "Phần III, Câu 3–4: bốn đồ thị DNA và thứ tự nhánh cây phát sinh chủng loại.",
+      "Phần III, Câu 5: vùng bảng được dẫn chiếu thực sự trống trên ảnh nguồn.",
+      "Phần III, Câu 6: tỉ lệ F2, bốn kiểu gene và tần số hoán vị.",
+      "Trang 5, khóa in Phần I: C,C,C,D,B,B,B,D,B,C,B,A,A,A,A,B,C,D.",
+      "Trang 5, khóa in Phần II: ĐĐSĐ; SĐĐĐ; ĐĐSĐ; ĐĐĐS.",
+      "Trang 5, khóa in Phần III: 8054; 14; 2; 132; 1; 3."
+    ],
+    "disagreements": [],
+    "key_disagreements": [],
+    "missing_figures": [
+      "Phần I, Câu 5: transcript chưa biểu diễn hình minh họa rái cá nằm bên phải bảng trong nguồn."
+    ],
+    "unreadable": [],
+    "limitations": [
+      "Đây là lượt đọc mới nhưng cùng model gpt-6.1-sol với lượt phiên âm đầu; tính độc lập bị giới hạn.",
+      "Không có bản key riêng trong transcript để đối chiếu; các ô khóa in đã được đọc độc lập và ghi tại checked_addresses.",
+      "Không kiểm tra được nội dung các tệp images/*.png chỉ từ đường dẫn trong transcript.",
+      "Bảng Phần III, Câu 5 thiếu ngay trong nguồn; transcript đã ghi nhận đúng tình trạng này."
+    ],
+    "pass": false
+  },
+  "failures": [],
+  "model": "gpt-6.1-sol",
+  "calls": "/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/outputs/calls/ocr-sinh-hoc--de-thi-thu-tn-2026-mon-sinh-so-gd-ca-mau-lan-1",
+  "qa_failures": [],
+  "key_coverage": {
+    "mismatches": [],
+    "incomplete": [],
+    "source_resolution_error": "exact_code does not match structure.ma_de",
+    "format_normalizations": [],
+    "supplemental_visual_pages": [
+      5
+    ]
+  },
+  "failure_history": [
+    {
+      "date": "2026-11-02",
+      "failures": [
+        "Lượt hai chưa đạt",
+        "Lượt hai phát hiện thiếu hình"
+      ],
+      "resolution": "Source page 1 was visually inspected and the omitted printed otter figure was cropped and inserted; full printed key on source page 5 was visually compared to key.json. Verification.pass remains false as historical evidence."
+    }
+  ],
+  "resolved_failures": [
+    {
+      "failure": "Lượt hai chưa đạt",
+      "active": false,
+      "reason": "The only verified missing figure was added from source page 1; no key disagreements were reported; full printed key page 5 was manually compared."
+    },
+    {
+      "failure": "Lượt hai phát hiện thiếu hình",
+      "active": false,
+      "reason": "Added exact source crop for the otter illustration in Part I Question 5."
+    }
+  ],
+  "supplemental_visual_key_review": {
+    "reviewer": "Luna visual inspection",
+    "pages": [
+      5
+    ],
+    "source_images": [
+      {
+        "path": "audit/work/sinh-hoc--de-thi-thu-tn-2026-mon-sinh-so-gd-ca-mau-lan-1/p5-05.jpg",
+        "sha256": "f69bf4496e33e33d61bf160292a2dcd2a428556b549e0cce71b839de578aa976"
+      }
+    ],
+    "key": {
+      "part1": [
+        "C",
+        "C",
+        "C",
+        "D",
+        "B",
+        "B",
+        "B",
+        "D",
+        "B",
+        "C",
+        "B",
+        "A",
+        "A",
+        "A",
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "part2": [
+        [
+          "Đ",
+          "Đ",
+          "S",
+          "Đ"
+        ],
+        [
+          "S",
+          "Đ",
+          "Đ",
+          "Đ"
+        ],
+        [
+          "Đ",
+          "Đ",
+          "S",
+          "Đ"
+        ],
+        [
+          "Đ",
+          "Đ",
+          "Đ",
+          "S"
+        ]
+      ],
+      "part3": [
+        "8054",
+        "14",
+        "2",
+        "132",
+        "1",
+        "3"
+      ]
+    },
+    "notes": "Every printed cell in Parts I–III was compared to key.json. The page continues with worked solutions, which were not added to de.md."
+  },
+  "manual_image_review": {
+    "reviewer": "Luna visual inspection",
+    "source_pages": [
+      {
+        "page": 1,
+        "path": "audit/work/sinh-hoc--de-thi-thu-tn-2026-mon-sinh-so-gd-ca-mau-lan-1/p1-01.jpg",
+        "sha256": "dc00acad3886e339dcfbe0d06bec72bce4abead807a0d5524cd6e96538152909",
+        "checked": "Header/code 0401 and Questions 1–5; wording, options, data table and the source figure were checked against de.md. The missing otter figure was cropped from this page."
+      },
+      {
+        "page": 5,
+        "path": "audit/work/sinh-hoc--de-thi-thu-tn-2026-mon-sinh-so-gd-ca-mau-lan-1/p5-05.jpg",
+        "sha256": "f69bf4496e33e33d61bf160292a2dcd2a428556b549e0cce71b839de578aa976",
+        "checked": "All printed key cells for Parts I–III match key.json; adjacent worked solutions omitted."
+      }
+    ],
+    "result": "Source-backed figure correction and complete printed-key review."
+  },
+  "qa_content_failures": [],
+  "qa_key_failures": []
+}

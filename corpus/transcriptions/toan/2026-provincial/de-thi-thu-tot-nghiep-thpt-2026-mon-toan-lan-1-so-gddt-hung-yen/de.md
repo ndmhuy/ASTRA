@@ -1,0 +1,212 @@
+status: ocr-draft
+source: official/2026-provincial-toan/de-thi-thu-tot-nghiep-thpt-2026-mon-toan-lan-1-so-gddt-hung-yen/paper.pdf
+
+## Trang 1/4
+
+SỞ GIÁO DỤC VÀ ĐÀO TẠO HƯNG YÊN
+
+KỲ THI THỬ TỐT NGHIỆP THPT LẦN 1 — NĂM HỌC 2025-2026
+
+Môn: TOÁN
+
+Thời gian làm bài: 90 phút, không kể thời gian phát đề
+
+**ĐỀ CHÍNH THỨC** (Đề có 04 trang)
+
+Họ tên thí sinh: ..................................................... Số báo danh: ....................
+
+Mã đề thi **0101**
+
+### PHẦN I. Câu trắc nghiệm nhiều phương án lựa chọn
+
+Thí sinh trả lời từ câu 1 đến câu 12. Mỗi câu hỏi thí sinh chỉ chọn một phương án.
+
+**Câu 1.** Trong không gian với hệ tọa độ $Oxyz$, phương trình mặt phẳng $(P)$ đi qua điểm $I(2;-1;3)$ và có vectơ pháp tuyến $\vec n=(2;-2;1)$ là:
+
+A. $2x-y+3z-9=0$.  
+B. $2x-y+3z+9=0$.  
+C. $2x-2y+z+9=0$.  
+D. $2x-2y+z-9=0$.
+
+**Câu 2.** Họ nguyên hàm của hàm số $f(x)=\sin x$ là:
+
+A. $-\cos x+C$.  
+B. $\sin x+C$.  
+C. $-\sin x+C$.  
+D. $\cos x+C$.
+
+**Câu 3.** Trong không gian với hệ tọa độ $Oxyz$, khoảng cách giữa hai điểm $A(-2;-3;9)$ và $B(-2;3;1)$ bằng:
+
+A. $10$.  
+B. $8$.  
+C. $100$.  
+D. $6$.
+
+**Câu 4.** Bảng dưới đây biểu diễn mẫu số liệu ghép nhóm về chiều cao (đơn vị: cm) của 40 cây cà chua trong vườn ươm:
+
+| Nhóm | $[20;25)$ | $[25;30)$ | $[30;35)$ | $[35;40)$ |
+|---|---:|---:|---:|---:|
+| Tần số | 5 | 9 | 25 | 1 |
+
+Tứ phân vị thứ ba $Q_3$ (đơn vị: cm) của mẫu số liệu ghép nhóm trên bằng:
+
+A. $33,1$.  
+B. $33$.  
+C. $33,2$.  
+D. $33,4$.
+
+**Câu 5.** Cho hàm số $y=ax^3+bx^2+cx+d$ $(a\ne0)$ có đồ thị như hình vẽ bên dưới. Điểm cực tiểu của hàm số đã cho là:
+
+[HÌNH: Đồ thị hàm bậc ba có cực đại tại $(-1,3)$ và cực tiểu tại $(1,-1)$, với các đường nét đứt chiếu lên hai trục.]
+
+![](images/cau_5.png)
+
+A. $x=1$.  
+B. $y=-1$.  
+C. $y=3$.  
+D. $x=-1$.
+
+**Câu 6.** Trong không gian với hệ tọa độ $Oxyz$, cho mặt phẳng $(P)$ có phương trình $x+2y-z-2=0$. Vectơ nào sau đây là một vectơ pháp tuyến của mặt phẳng $(P)$?
+
+A. $\vec c=(1;2;-1)$.  
+B. $\vec a=(1;2;1)$.  
+C. $\vec d=(1;-2;1)$.  
+D. $\vec b=(1;-2;-1)$.
+
+**Câu 7.** Đường tiệm cận đứng của đồ thị hàm số $y=\dfrac{2x+3}{x-2}$ có phương trình là:
+
+A. $x=-\dfrac32$.  
+B. $x=2$.  
+C. $y=2$.  
+D. $y=-\dfrac32$.
+
+### Trang 2/4
+
+**Câu 8.** Cho hàm số $y=f(x)$ liên tục trên $\mathbb R$, thỏa mãn $\int_{17}^{2026}f(x)\,dx=8$ và $\int_{89}^{2026}f(x)\,dx=10$. Giá trị của biểu thức $\int_{17}^{89}f(x)\,dx$ bằng:
+
+A. $18$.  
+B. $2026$.  
+C. $2$.  
+D. $-2$.
+
+**Câu 9.** Cho hình chóp $S.ABC$ có đáy $ABC$ là tam giác vuông tại $B$, $SA\perp(ABC)$, $SA=AB=a$ (hình vẽ bên dưới). Tính số đo của góc nhị diện $[S,BC,A]$.
+
+[HÌNH: Hình chóp $S.ABC$ với $SA$ vuông góc mặt phẳng đáy; tam giác $ABC$ vuông tại $B$, cạnh $AC$ nét đứt.]
+
+![](images/cau_9.png)
+
+A. $90^\circ$.  
+B. $45^\circ$.  
+C. $30^\circ$.  
+D. $60^\circ$.
+
+**Câu 10.** Kết quả kiểm tra môn Toán của học sinh lớp 12B được thống kê như sau:
+
+| Điểm | $[0;2)$ | $[2;4)$ | $[4;6)$ | $[6;8)$ | $[8;10)$ |
+|---|---:|---:|---:|---:|---:|
+| Số học sinh | 1 | 4 | 15 | 16 | 4 |
+
+Số trung bình cộng của mẫu số liệu ghép nhóm trên bằng:
+
+A. $6,1$.  
+B. $5,8$.  
+C. $6$.  
+D. $5,9$.
+
+**Câu 11.** Cho $\log_a b=5$. Giá trị của biểu thức $\log_a(a^2b)$ bằng:
+
+A. $7$.  
+B. $20$.  
+C. $25$.  
+D. $10$.
+
+**Câu 12.** Hàm số $y=x^3-3x+2026$ nghịch biến trên khoảng nào dưới đây?
+
+A. $(-1;1)$.  
+B. $(1;+\infty)$.  
+C. $(-\infty;1)$.  
+D. $(-2;2)$.
+
+### PHẦN II. Câu trắc nghiệm đúng sai
+
+Thí sinh trả lời từ câu 1 đến câu 4. Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn đúng hoặc sai.
+
+**Câu 1.** Cho hàm số $f(x)=\sin x+2x$. Hàm số $F(x)$ là một nguyên hàm của hàm số $f(x)$ trên $\mathbb R$ và thỏa mãn $F(0)=4$.
+
+a) $F(x)=-\cos x+x^2+4$.
+
+b) Họ nguyên hàm của hàm số $f(x)$ là $-\cos x+x^2+C$ (với $C$ là hằng số).
+
+c) Tiếp tuyến của đồ thị hàm số $y=F(x)$ tại điểm có hoành độ $x=\pi$ có hệ số góc $k=2\pi$.
+
+d) Thể tích khối tròn xoay sinh bởi miền phẳng $D$ giới hạn bởi đồ thị hàm số $y=f(x)$, trục hoành và hai đường thẳng có phương trình $x=0$; $x=\dfrac\pi2$ bằng $31$ (đvtt) (không làm tròn kết quả các phép toán trung gian, chỉ làm tròn kết quả phép toán cuối cùng đến hàng đơn vị).
+
+**Câu 2.** Một hộ gia đình muốn xây dựng một bể chứa nước có dạng hình hộp chữ nhật không nắp, thể tích $V=12\,m^3$. Đáy bể là hình chữ nhật có chiều dài gấp đôi chiều rộng. Giá thuê nhân công và vật liệu xây đáy là 500 nghìn đồng/$m^2$, xây thành bể là 300 nghìn đồng/$m^2$. Gọi $x$ là chiều rộng của đáy bể, $h$ là chiều cao của bể ($x>0,h>0$, đơn vị: m).
+
+a) Chiều cao của bể nước tính theo $x$ là $h=\dfrac{6}{x^2}\,(m)$.
+
+b) Tổng chi phí tối thiểu để xây dựng bể là 9234 (nghìn đồng) (không làm tròn kết quả các phép toán trung gian, chỉ làm tròn kết quả phép toán cuối cùng đến hàng đơn vị).
+
+### Trang 3/4
+
+c) Thể tích của bể được tính bằng công thức $V=2x^2h\,(m^3)$.
+
+d) Tổng chi phí xây dựng bể nước là $T(x)=500x^2+\dfrac{10800}{x}$ (nghìn đồng).
+
+**Câu 3.** Trong không gian với hệ tọa độ $Oxyz$, cho hình hộp $ABCD.A'B'C'D'$ có tọa độ các đỉnh $A(1;-1;3)$, $B(0;2;4)$, $D(2;-1;1)$ và $A'(0;1;2)$.
+
+a) Góc giữa hai vectơ $\overrightarrow{AB}$ và $\overrightarrow{AD}$ là góc nhọn.
+
+b) Tọa độ đỉnh $B'(-1;4;3)$.
+
+c) Tọa độ của vectơ $\overrightarrow{AD}=(1;0;-2)$.
+
+d) Phương trình mặt phẳng $(CB'D')$ có dạng $ax+by+cz-7=0$. Khi đó: $a+b-c=10$.
+
+**Câu 4.** Một xưởng sơn dự định sản xuất hai loại sơn là sơn nội thất và sơn ngoài trời. Nguyên liệu để sản xuất gồm hai loại A và B với trữ lượng lần lượt là 6 tấn và 8 tấn. Để sản xuất một tấn sơn nội thất cần 2 tấn nguyên liệu A và 1 tấn nguyên liệu B. Để sản xuất một tấn sơn ngoài trời cần 1 tấn nguyên liệu A và 2 tấn nguyên liệu B. Kết quả nghiên cứu thị trường cho thấy nhu cầu sơn nội thất không quá 2 tấn và không nhiều hơn nhu cầu sơn ngoài trời 1 tấn. Giá bán một tấn sơn nội thất là 60 triệu đồng, một tấn sơn ngoài trời là 30 triệu đồng (giả sử rằng số sơn sản xuất ra đều được bán hết).
+
+a) Biểu thức doanh thu $F(x,y)=30x+60y$ (triệu đồng).
+
+b) Gọi $x;y$ lần lượt là số tấn sơn nội thất và sơn ngoài trời cần sản xuất, $x\ge0, y\ge0$.
+
+c) Trong các phương án sản xuất đem lại doanh thu lớn nhất, biết rằng tổng số lượng sơn cả hai loại dự định sản xuất không quá 4,5 tấn. Khi đó lượng sơn nội thất cần sản xuất ít nhất là 1,4 tấn.
+
+d) Doanh thu lớn nhất của xưởng là 180 triệu đồng.
+
+### PHẦN III. Câu trắc nghiệm trả lời ngắn
+
+Thí sinh trả lời từ câu 1 đến câu 6.
+
+**Câu 1.** Trong trò chơi mô phỏng xây dựng công viên giải trí *Roller Coaster Tycoon*, một kỹ sư thiết kế một đoạn đường ray hình lượn sóng. Trong hệ trục tọa độ $Oxy$, đoạn đường ray này được mô hình hóa bởi đồ thị của hàm số $y=x^3-6x^2+9x+1$, với $0\le x\le4$. Biết hệ trục tọa độ được thiết lập sao cho trục $Ox$ nằm ngang (đóng vai trò là mặt sàn kỹ thuật) và mỗi đơn vị độ dài trên các trục tọa độ tương ứng với 2 mét trên thực tế. Để kiểm tra độ ổn định của cấu trúc, kỹ sư sử dụng thiết bị laser để đo khoảng cách trực tiếp giữa hai điểm chốt kỹ thuật đặt tại điểm cực đại $A$ và điểm cực tiểu $B$ của đồ thị hàm số trên. Hãy tính độ dài thực tế của khoảng cách giữa hai điểm $A$ và $B$. (không làm tròn các phép tính trung gian, chỉ làm tròn kết quả cuối cùng đến hàng phần trăm theo đơn vị mét).
+
+[HÌNH: Ảnh tàu lượn siêu tốc với đường ray lượn sóng, đặt dưới bài toán mô hình đường ray.]
+
+![](images/cau_13.png)
+
+**Câu 2.** Trong không gian với hệ trục tọa độ $Oxyz$, cho $(P)$ qua điểm $M(2;4;8)$ và cắt các tia $Ox,Oy,Oz$ lần lượt tại $A(a;0;0),B(0;b;0),C(0;0;c)$ sao cho $OA=2OB=4OC$. Tính $T=a+b+c$.
+
+**Câu 3.** Để chuẩn bị cho lễ hội, một đơn vị thi công dựng một cổng chào dạng vòm Parabol có chiều cao 4 m và chiều rộng chân cổng là 4 m. Ở chính giữa cổng, người ta thiết kế một lối đi hình chữ nhật cao 2 m và rộng 2 m. Phần diện tích mặt trước của cổng Parabol (sau khi trừ đi lối đi hình chữ nhật) được chia thành 8 lớp ngang, mỗi lớp cao 0,5 m để ốp tấm nhôm Alu trang trí có màu khác nhau (như bản vẽ thiết kế hình bên dưới).
+
+### Trang 4/4
+
+[HÌNH: Sơ đồ vòm Parabol rộng 4 m, cao 4 m, có lối đi hình chữ nhật giữa rộng 2 m, cao 2 m và phần mặt trước chia thành tám lớp ngang, mỗi lớp cao 0,5 m.]
+
+![](images/cau_15.png)
+
+Đơn giá thi công lắp tấm nhôm Alu cho cổng được tính như sau:
+
+- Lớp dưới cùng có giá là 400 nghìn đồng/$m^2$.
+- Càng lên cao, giá thi công mỗi lớp tiếp theo tăng thêm 50 nghìn đồng/$m^2$ so với lớp ngay dưới nó.
+
+Tính tổng chi phí (đơn vị: nghìn đồng) ốp Alu cho phần diện tích còn lại của cổng sau khi đã loại bỏ lối đi (không làm tròn kết quả các phép toán trung gian, chỉ làm tròn kết quả phép toán cuối cùng đến hàng đơn vị).
+
+**Câu 4.** Chỉ số giá tiêu dùng CPI là chỉ số tính theo phần trăm phản ánh mức thay đổi của giá hàng hóa tiêu dùng theo thời gian. Giả sử tại một quốc gia, chỉ số CPI sau $n$ năm được dự báo theo công thức: $CPI_n=CPI_0(1+g)^n$. Trong đó $CPI_0$ là chỉ số tại thời điểm bắt đầu dự báo và $g$ là tỉ lệ lạm phát trung bình hằng năm. Biết rằng vào tháng 1 năm 2020 chỉ số CPI của quốc gia này là 118,09 và tỉ lệ lạm phát duy trì ổn định ở mức $g=3,21\%$/năm. Hãy tính chỉ số CPI dự báo của quốc gia này vào tháng 1 năm 2030 (không làm tròn kết quả các phép toán trung gian, chỉ làm tròn kết quả phép toán cuối cùng đến hàng đơn vị).
+
+**Câu 5.** Một quần thể vi khuẩn được nuôi cấy trong phòng thí nghiệm. Nồng độ dinh dưỡng $S$ (đơn vị: $mg/l$) thay đổi theo thời gian $t$ giờ ($t\ge0$) được mô hình hóa bởi hàm số: $S(t)=\dfrac{10t+5}{t+1}$. Biết rằng tốc độ sinh trưởng $V$ của vi khuẩn phụ thuộc vào nồng độ dinh dưỡng theo hàm số $V(S)=\dfrac{5S}{S+2}$. Khi thời gian $t$ kéo dài, tốc độ sinh trưởng $V$ tăng dần và ổn định quanh một ngưỡng $K$ nhất định. Hỏi sau bao nhiêu phút thì tốc độ sinh trưởng của vi khuẩn đạt 90% của ngưỡng $K$ đó?
+
+**Câu 6.** Cho tập hợp $X=\{1;2;3;4;5;6;7;8\}$. Gọi $S$ là tập hợp tất cả các số tự nhiên có 4 chữ số được lập từ các chữ số thuộc tập $X$. Chọn ngẫu nhiên một số từ tập hợp $S$. Xác suất để chọn được một số chia hết cho 3 bằng $\dfrac{a}{b}$ (với $a,b\in\mathbb N^*$, $\dfrac ab$ là phân số tối giản). Tính $T=a+b$.
+
+---------------- HẾT ----------------
+
+- Thí sinh không được sử dụng tài liệu;
+- Cán bộ coi thi không giải thích gì thêm.

@@ -1,0 +1,168 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "eed7fc5eaefb9466",
+    "topic": "Di truyền nhiễm sắc thể và quy luật di truyền",
+    "part": "P1",
+    "level": "TH",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Vị trí của gene trên nhiễm sắc thể giới tính và các cặp kiểu gene bố mẹ.",
+        "task": "Chọn phép lai tạo đủ các tổ hợp kiểu gene được yêu cầu.",
+        "reasoning": "Liệt kê loại giao tử của mỗi giới; tổ hợp giao tử; phân biệt các kiểu gene ở con đực và con cái.",
+        "combines": [
+          "Di truyền liên kết giới tính",
+          "Tổ hợp giao tử"
+        ],
+        "difficulty_source": "Liệt kê tổ hợp giao tử theo quy trình quen thuộc",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Quan hệ trội lặn của một tính trạng và các cặp kiểu gene bố mẹ.",
+        "task": "Chọn phép lai bảo đảm toàn bộ đời con biểu hiện tính trạng lặn.",
+        "reasoning": "Suy ra kiểu gene bắt buộc của kiểu hình lặn; xác định bố mẹ chỉ tạo loại giao tử phù hợp.",
+        "combines": [
+          "Quan hệ trội lặn",
+          "Phân li allele"
+        ],
+        "difficulty_source": "Điều kiện kiểu gene lặn xác định ngay phép lai",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Quy luật di truyền của bệnh và biểu hiện bệnh qua các thế hệ trong gia đình.",
+        "task": "Chọn kết luận di truyền chắc chắn phù hợp.",
+        "reasoning": "Xác định nguồn nhiễm sắc thể giới tính của người con mắc bệnh; suy ra trạng thái mang allele của mẹ; kiểm tra khả năng truyền allele cho hậu duệ.",
+        "combines": [
+          "Di truyền liên kết với giới tính",
+          "Quan hệ kiểu gene và kiểu hình"
+        ],
+        "difficulty_source": "Phải tách trạng thái mang allele khỏi biểu hiện bệnh",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một phép lai cùng kiểu hình và tỉ lệ phân li của các nhóm kiểu hình ở đời con.",
+        "task": "Nhận diện dạng tương tác di truyền giải thích sự phân li.",
+        "reasoning": "Nhận ra dấu hiệu nhiều locus cùng chi phối một tính trạng; đối chiếu cách gộp nhóm kiểu gene với các mô hình tương tác; chọn tên quy luật theo cách phân loại của đáp án.",
+        "combines": [
+          "Phân li kiểu gene",
+          "Tương tác gene",
+          "Quan hệ kiểu gene và kiểu hình"
+        ],
+        "difficulty_source": "Nhận dạng mô hình tương tác từ tỉ lệ phân li quen thuộc",
+        "evidence_uncertainty": "Tên gọi dạng tương tác trong khóa có thể khác cách phân loại ở một số tài liệu; không nên dùng riêng lựa chọn giữa các tên gần nhau để suy ra năng lực cơ chế.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "b68b84764a9b|P1|15|None",
+      "b68b84764a9b|P1|8|None",
+      "2cbdc74db082|P1|7|None",
+      "4b4716b94db4|P1|10|None",
+      "4b4716b94db4|P1|12|None",
+      "4b4716b94db4|P1|2|None",
+      "55c12f561006|P1|1|None",
+      "55c12f561006|P1|7|None",
+      "55c12f561006|P1|8|None"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "eed7fc5eaefb9466",
+    "stem": "Ở một loài động vật, con cái có cặp nhiễm sắc thể giới tính XX, con đực có cặp XY. Gene quy định màu mắt có hai alen M và m, nằm trên vùng không tương đồng của nhiễm sắc thể X. Giảm phân và thụ tinh diễn ra bình thường. Phép lai nào sau đây có thể tạo đời con gồm đủ bốn kiểu gene X^M X^M, X^M X^m, X^M Y và X^m Y?",
+    "options": [
+      {
+        "label": "A",
+        "text": "♀ X^M X^M × ♂ X^m Y"
+      },
+      {
+        "label": "B",
+        "text": "♀ X^M X^m × ♂ X^M Y"
+      },
+      {
+        "label": "C",
+        "text": "♀ X^M X^m × ♂ X^m Y"
+      },
+      {
+        "label": "D",
+        "text": "♀ X^m X^m × ♂ X^M Y"
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "TH"
+      }
+    ],
+    "solution": "Đáp án B. Con cái X^M X^m tạo trứng mang X^M hoặc X^m; con đực X^M Y tạo tinh trùng mang X^M hoặc Y. Tổ hợp các giao tử cho đúng bốn kiểu gene yêu cầu. Phép lai A chỉ tạo X^M X^m và X^M Y. Phép lai C tạo X^M X^m, X^m X^m, X^M Y và X^m Y, thiếu X^M X^M. Phép lai D chỉ tạo X^M X^m và X^m Y.",
+    "distractors": [
+      {
+        "label": "A",
+        "sub": null,
+        "mistake": "Cho rằng bố mẹ mang đủ hai alen M và m thì đời con sẽ có đủ bốn kiểu gene yêu cầu.",
+        "why_plausible": "Học sinh chú ý sự có mặt của hai alen nhưng bỏ qua việc mẹ chỉ tạo một loại trứng."
+      },
+      {
+        "label": "C",
+        "sub": null,
+        "mistake": "Thấy phép lai tạo bốn kiểu gene rồi đồng nhất chúng với bốn kiểu gene được yêu cầu.",
+        "why_plausible": "Phép lai này cũng tạo bốn kiểu gene, nhưng alen trên X của bố làm thay đổi các kiểu gene ở con cái."
+      },
+      {
+        "label": "D",
+        "sub": null,
+        "mistake": "Cho rằng alen M của bố có thể truyền cho cả con trai và con gái.",
+        "why_plausible": "Học sinh áp dụng cách tổ hợp alen của gene trên nhiễm sắc thể thường, quên rằng con trai nhận Y từ bố."
+      }
+    ],
+    "level_reason": "Học sinh thực hiện quy trình quen thuộc: xác định giao tử, tổ hợp giao tử và đối chiếu các kiểu gene đời con. Đây là thông hiểu, không đòi hỏi xây dựng mô hình di truyền mới.",
+    "prerequisites": [
+      "Gene trên vùng không tương đồng của nhiễm sắc thể X",
+      "Sự truyền nhiễm sắc thể giới tính từ bố mẹ",
+      "Lập sơ đồ lai"
+    ],
+    "variation_guidance": "Có thể thay kí hiệu alen hoặc tập kiểu gene cần tạo; cần kiểm tra từng phép lai để bảo đảm chỉ một phương án đáp ứng đầy đủ yêu cầu.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "eed7fc5eaefb9466",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "TH"
+      }
+    ],
+    "solution": "Mẹ X^M X^m tạo giao tử X^M và X^m; bố X^M Y tạo giao tử X^M và Y. Thụ tinh cho đủ bốn kiểu gene X^M X^M, X^M X^m, X^M Y và X^m Y.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Thực hiện phép lai liên kết với nhiễm sắc thể X theo quy trình quen thuộc."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/sinh-hoc/d4e2339592ec823e9120976d7a8b9c6b964708bdae152ecccf6f2e373fc6b913.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/sinh-hoc/d4e2339592ec823e9120976d7a8b9c6b964708bdae152ecccf6f2e373fc6b913.resolve.json"
+}

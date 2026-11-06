@@ -1,0 +1,358 @@
+{
+  "evidence_limits": {
+    "scope": "Hồ sơ chỉ khái quát trong tập dữ liệu đề địa phương do bên thứ ba cung cấp.",
+    "recurrence": "Chỉ đưa vào patterns những cấu trúc có bằng chứng từ các paper_id khác nhau. Không kéo dài danh sách đến độ dài yêu cầu bằng cách coi các ý trong cùng đề là bằng chứng lặp lại độc lập hoặc tách vụn cùng một cấu trúc.",
+    "uncertainty": "Thiếu khóa khớp mã thì chỉ mô tả điểm nhận định kiểm tra, không xác nhận phương án sai. Các động tác phân hóa dựa trên mô tả suy luận của những hàng được đánh giá high, chưa phải kết quả đo lường thực nghiệm."
+  },
+  "patterns": [
+    {
+      "part_kind": "multiple_choice",
+      "topic": "Tứ phân vị của số liệu ghép nhóm",
+      "grade": 11,
+      "construction": "Cho bảng khoảng lớp và tần số; yêu cầu xác định tứ phân vị. Tìm vị trí trong mẫu, dùng tần số tích lũy xác định lớp chứa rồi nội suy và đối chiếu lựa chọn.",
+      "wrong_options": "Dùng mốc lớp hoặc trung điểm thay cho kết quả nội suy, chọn lệch lớp. Cơ chế đã được mô tả ở đề có khóa; đề thiếu khóa chỉ hỗ trợ nhận diện những điểm cần kiểm tra.",
+      "difficulty_source": "Phải xác định đúng lớp chứa trước khi áp dụng công thức.",
+      "discrimination": "low",
+      "typical_steps": 3,
+      "refs": [
+        "7ab78715480e|P1|7|None",
+        "3f1b2aa3cb72|P1|1|None"
+      ]
+    },
+    {
+      "part_kind": "multiple_choice",
+      "topic": "Đọc tiệm cận ngang từ đồ thị",
+      "grade": 12,
+      "construction": "Cho đồ thị có nhánh tiến gần các đường song song với trục tọa độ; yêu cầu phương trình tiệm cận ngang. Nhận diện xu hướng khi hoành độ đi xa, đọc tung độ rồi viết phương trình tương ứng.",
+      "wrong_options": "Hoán đổi tiệm cận đứng với tiệm cận ngang, lấy nhầm tọa độ hoặc viết sai biến trong phương trình. Không gán lỗi cho từng lựa chọn ở đề thiếu khóa.",
+      "difficulty_source": "Phân biệt hướng của đường thẳng với tọa độ dùng để biểu diễn nó.",
+      "discrimination": "low",
+      "typical_steps": 2,
+      "refs": [
+        "7ab78715480e|P1|2|None",
+        "3f1b2aa3cb72|P1|10|None"
+      ]
+    },
+    {
+      "part_kind": "multiple_choice",
+      "topic": "Đọc tính đơn điệu từ đồ thị",
+      "grade": 12,
+      "construction": "Cho đồ thị có điểm đổi chiều; yêu cầu chọn khoảng tăng hoặc giảm. Đọc đồ thị theo chiều hoành độ tăng và kiểm tra toàn bộ khoảng lựa chọn có giữ cùng chiều biến thiên hay không.",
+      "wrong_options": "Chọn nhánh có chiều ngược yêu cầu hoặc kéo khoảng qua điểm đổi chiều. Khả năng nhầm tính đơn điệu với dấu của hàm chỉ được nêu như điểm cần kiểm tra ở hàng thiếu khóa.",
+      "difficulty_source": "Đánh giá tính chất trên toàn khoảng thay vì nhìn một vị trí riêng lẻ.",
+      "discrimination": "low",
+      "typical_steps": 3,
+      "refs": [
+        "7ab78715480e|P1|5|None",
+        "3f1b2aa3cb72|P1|11|None"
+      ]
+    },
+    {
+      "part_kind": "multiple_choice",
+      "topic": "Giá trị nhỏ nhất của đa thức trên đoạn",
+      "grade": 12,
+      "construction": "Cho đa thức và đoạn đóng; yêu cầu giá trị nhỏ nhất. Tìm điểm dừng thuộc đoạn, tính giá trị tại các điểm đó và đầu mút rồi so sánh.",
+      "wrong_options": "Bỏ điểm dừng bên trong hoặc bỏ thành phần của hàm khi tính giá trị. Nhầm hoành độ với giá trị cực trị chỉ là khả năng khảo sát trong hàng chưa có khóa.",
+      "difficulty_source": "Lập đủ tập điểm cần so sánh và trả lời bằng giá trị hàm.",
+      "discrimination": "low",
+      "typical_steps": 3,
+      "refs": [
+        "7ab78715480e|P1|11|None",
+        "3f1b2aa3cb72|P1|5|None"
+      ]
+    },
+    {
+      "part_kind": "multiple_choice",
+      "topic": "Bất phương trình lôgarit với đối số bậc nhất",
+      "grade": 11,
+      "construction": "Cho bất phương trình lôgarit; yêu cầu tập nghiệm. Đặt điều kiện dương của đối số, chuyển sang bất phương trình đại số theo tính đơn điệu của cơ số, rồi giao nghiệm và xét đầu mút.",
+      "wrong_options": "Bỏ phần dịch chuyển của đối số, xử lý sai chiều bất phương trình hoặc coi miền xác định là tập nghiệm. Với đề thiếu khóa, chưa xác nhận cơ chế của từng lựa chọn.",
+      "difficulty_source": "Kiểm soát đồng thời điều kiện xác định, chiều biến đổi và việc lấy biên.",
+      "discrimination": "low",
+      "typical_steps": 3,
+      "refs": [
+        "7ab78715480e|P1|10|None",
+        "3f1b2aa3cb72|P1|8|None"
+      ]
+    },
+    {
+      "part_kind": "true_false",
+      "topic": "Kiểm tra giá trị hàm số bằng phép thế",
+      "grade": [
+        10,
+        11
+      ],
+      "construction": "Cho sẵn công thức hàm và nhận định về giá trị tại đối số hoặc mốc ban đầu. Xác định đúng đối số, thế vào công thức rồi đối chiếu giá trị hay quan hệ được nêu.",
+      "wrong_options": "Hàng chưa có khóa chỉ cho thấy việc kiểm tra phép thế và dấu; hàng có khóa là nhận định đúng, không cung cấp cơ chế tạo nhận định sai.",
+      "difficulty_source": "Đọc đúng mốc của biến và tính đúng biểu thức có dấu hoặc lôgarit.",
+      "discrimination": "low",
+      "typical_steps": 3,
+      "refs": [
+        "525d3542283a|P2|3|b",
+        "7ab78715480e|P2|1|a"
+      ]
+    },
+    {
+      "part_kind": "true_false",
+      "topic": "Kiểm tra công thức đạo hàm",
+      "grade": 11,
+      "construction": "Cho hàm số và biểu thức đạo hàm được đề nghị. Áp dụng quy tắc đạo hàm theo cấu trúc hàm, giữ đúng hệ số và dấu rồi đối chiếu.",
+      "wrong_options": "Hàng đa thức chưa có khóa nên chỉ xác định quy tắc đang được kiểm tra; hàng lôgarit có khóa là nhận định đúng. Chưa đủ bằng chứng mô tả một cơ chế nhận định sai lặp lại.",
+      "difficulty_source": "Áp dụng đúng quy tắc cho từng thành phần hoặc hàm hợp đơn giản.",
+      "discrimination": "low",
+      "typical_steps": 2,
+      "refs": [
+        "525d3542283a|P2|3|a",
+        "7ab78715480e|P2|1|b"
+      ]
+    },
+    {
+      "part_kind": "true_false",
+      "topic": "Khôi phục đại lượng từ tốc độ thay đổi",
+      "grade": 12,
+      "construction": "Cho tốc độ thay đổi trực tiếp hoặc thông qua quan hệ giữa các đạo hàm, kèm giá trị tại một mốc. Lấy nguyên hàm, xác định hằng số bằng điều kiện đã cho, rồi kiểm tra biểu thức hoặc giá trị và ngưỡng được đề nghị.",
+      "wrong_options": "Có bằng chứng về việc nhầm quan hệ giữa các đạo hàm với quan hệ giữa giá trị các hàm, bỏ qua điều kiện ban đầu. Các hàng thiếu khóa chỉ hỗ trợ kiểm tra hệ số nguyên hàm, hằng số và đơn vị; không xác nhận nhận định sai.",
+      "difficulty_source": "Phân biệt tốc độ thay đổi với mức đại lượng và giữ điều kiện ban đầu khi chuyển giữa chúng.",
+      "discrimination": "medium",
+      "typical_steps": 3,
+      "refs": [
+        "525d3542283a|P2|2|c",
+        "7ab78715480e|P2|1|d",
+        "3f1b2aa3cb72|P2|1|a",
+        "3f1b2aa3cb72|P2|1|b"
+      ]
+    },
+    {
+      "part_kind": "short_answer",
+      "topic": "Dựng biên hình học rồi tích phân diện tích",
+      "grade": 12,
+      "construction": "Cho hình có miền cần tính nhưng chưa cho trực tiếp đầy đủ hàm biên. Chọn hệ tọa độ, dùng các ràng buộc hình học để xác định hàm và điểm chuyển biên, chia miền rồi lập tích phân diện tích.",
+      "wrong_options": null,
+      "difficulty_source": "Khó ở việc dựng đúng mô hình và phân chia miền trước khi thực hiện tích phân; đối xứng hoặc phần bù có thể giúp rút gọn.",
+      "discrimination": "high",
+      "typical_steps": 5,
+      "refs": [
+        "525d3542283a|P3|1|None",
+        "7ab78715480e|P3|1|None"
+      ]
+    },
+    {
+      "part_kind": "short_answer",
+      "topic": "Tối ưu đại lượng được suy ra từ mô hình",
+      "grade": 12,
+      "construction": "Cho dữ kiện mô hình và miền biến thiên hữu hạn; yêu cầu giá trị lớn nhất của đại lượng phải lập thêm. Biểu diễn đúng đại lượng mục tiêu, tìm điểm có thể tối ưu, kiểm tra miền và biên rồi tính giá trị.",
+      "wrong_options": null,
+      "difficulty_source": "Đại lượng cần tối ưu có thể là đạo hàm của hàm đã cho hoặc hiệu giữa các thành phần của mô hình; phải lập đúng mục tiêu trước khi tối ưu.",
+      "discrimination": "medium",
+      "typical_steps": 4,
+      "refs": [
+        "525d3542283a|P3|2|None",
+        "525d3542283a|P3|5|None",
+        "7ab78715480e|P3|3|None"
+      ],
+      "qualification": "Mức phân hóa của mẫu là đánh giá thận trọng cho cấu trúc chung. Hàng có dữ kiện văn bản và hình không thống nhất chưa hỗ trợ kết luận riêng về phân hóa."
+    },
+    {
+      "part_kind": "short_answer",
+      "topic": "Khoảng cách không gian sau khi dựng biểu diễn",
+      "grade": 11,
+      "construction": "Cho cấu hình không gian với quan hệ vuông góc, vị trí điểm và độ dài hoặc góc; yêu cầu khoảng cách. Suy ra dữ kiện còn thiếu, chọn hệ tọa độ hoặc dựng đoạn vuông góc thích hợp, rồi chuyển yêu cầu thành phép tính khoảng cách.",
+      "wrong_options": null,
+      "difficulty_source": "Phải chọn biểu diễn phù hợp với đối tượng cần đo; công thức cuối phụ thuộc việc đo từ điểm đến mặt phẳng hay giữa các đường chéo nhau.",
+      "discrimination": "medium",
+      "typical_steps": 4,
+      "refs": [
+        "525d3542283a|P3|4|None",
+        "7ab78715480e|P3|6|None"
+      ],
+      "qualification": "Sự lặp lại nằm ở chuỗi dựng biểu diễn rồi tính khoảng cách; không coi các công thức khoảng cách khác nhau là đồng nhất. Cấu hình đường chéo nhau có đánh giá phân hóa cao hơn."
+    }
+  ],
+  "discrimination_moves": [
+    {
+      "move": "Giấu hàm cần tính sau các ràng buộc hình học",
+      "how_to_apply": "Cho quan hệ đủ để xác định hàm nhưng yêu cầu người làm tự chọn tọa độ, dịch các ràng buộc thành phương trình và tìm hệ số trước khi tính đại lượng đích.",
+      "refs": [
+        "525d3542283a|P3|1|None",
+        "7ab78715480e|P3|1|None"
+      ]
+    },
+    {
+      "move": "Buộc nhận ra nơi thay đổi biên của miền",
+      "how_to_apply": "Dùng miền có biên do các đoạn hoặc nhánh khác nhau đảm nhiệm. Độ khó nằm ở xác định điểm chuyển biên và lập các tích phân phù hợp.",
+      "refs": [
+        "525d3542283a|P3|1|None",
+        "7ab78715480e|P3|1|None"
+      ]
+    },
+    {
+      "move": "Đặt lựa chọn biểu diễn trước công thức",
+      "how_to_apply": "Cho dữ kiện dưới dạng hình học; yêu cầu tự nhận ra hình chiếu, tọa độ hoặc mặt phẳng phụ giúp nối dữ kiện với đại lượng đích. Không cho sẵn toàn bộ thành phần để thế vào công thức.",
+      "refs": [
+        "525d3542283a|P3|1|None",
+        "7ab78715480e|P3|1|None",
+        "7ab78715480e|P3|6|None"
+      ]
+    },
+    {
+      "move": "Chuyển quy tắc vận hành thành điều kiện khả thi toàn cục",
+      "how_to_apply": "Mô tả cơ chế phân bổ tuần tự, sau đó yêu cầu tìm tiêu chuẩn cần và đủ cho toàn bộ đầu vào được xử lý trước khi đếm. Đây là quan sát riêng, chưa phải cấu trúc lặp lại giữa các đề.",
+      "refs": [
+        "525d3542283a|P3|3|None"
+      ]
+    },
+    {
+      "move": "Phối hợp phân loại khả thi với xử lý phần tử lặp",
+      "how_to_apply": "Sau khi xác định các cấu hình hợp lệ, yêu cầu đếm thứ tự của từng cấu hình, loại sự phân biệt giả giữa các phần tử cùng loại và kiểm tra không đếm trùng. Đây là quan sát riêng.",
+      "refs": [
+        "525d3542283a|P3|3|None"
+      ]
+    }
+  ],
+  "easy_vs_hard": [
+    {
+      "topic": "Tích phân diện tích",
+      "easy": "Nguyên hàm và các giá trị cần dùng đã được cung cấp; chỉ cần áp dụng quan hệ giữa tích phân và giá trị nguyên hàm.",
+      "hard": "Hàm biên còn ẩn trong hình; phải dựng mô hình, tìm điểm chuyển biên và chia miền trước khi tích phân.",
+      "easy_refs": [
+        "7ab78715480e|P1|8|None"
+      ],
+      "hard_refs": [
+        "525d3542283a|P3|1|None",
+        "7ab78715480e|P3|1|None"
+      ]
+    },
+    {
+      "topic": "Khoảng cách trong không gian",
+      "easy": "Tọa độ hoặc quan hệ trục đã rõ; chủ yếu thực hiện phép toán tọa độ trực tiếp.",
+      "hard": "Phải suy chiều cao từ hình chiếu và góc, rồi chọn biểu diễn phù hợp cho khoảng cách giữa các đường chéo nhau.",
+      "easy_refs": [
+        "525d3542283a|P2|1|b",
+        "3f1b2aa3cb72|P1|3|None"
+      ],
+      "hard_refs": [
+        "7ab78715480e|P3|6|None"
+      ]
+    },
+    {
+      "topic": "Tổ hợp",
+      "easy": "Phép chọn không xét thứ tự đã rõ; đếm mẫu thuận lợi và mẫu bất kỳ bằng tổ hợp.",
+      "hard": "Phải suy điều kiện khả thi từ cơ chế tuần tự, phân loại cấu hình rồi đếm thứ tự có phần tử lặp.",
+      "easy_refs": [
+        "525d3542283a|P2|4|d",
+        "3f1b2aa3cb72|P1|6|None"
+      ],
+      "hard_refs": [
+        "525d3542283a|P3|3|None"
+      ]
+    },
+    {
+      "topic": "Tối ưu hàm số",
+      "easy": "Cho trực tiếp hàm mục tiêu và đoạn xét; chỉ cần tìm điểm dừng, xét đầu mút và so sánh.",
+      "hard": "Phải lập hàm mục tiêu từ các đại lượng khác nhau, giữ đúng ý nghĩa và đơn vị rồi mới tối ưu trong miền hợp lệ.",
+      "easy_refs": [
+        "525d3542283a|P2|3|d",
+        "7ab78715480e|P1|11|None",
+        "3f1b2aa3cb72|P1|5|None"
+      ],
+      "hard_refs": [
+        "7ab78715480e|P3|3|None"
+      ],
+      "qualification": "Dạng khó hơn trong đối chiếu này được đánh giá medium, không phải high."
+    },
+    {
+      "topic": "Xác suất",
+      "easy": "Đọc trực tiếp thông số có điều kiện hoặc dùng biến cố đối.",
+      "hard": "Phải tổng hợp các nhánh theo tỉ lệ nền rồi đảo chiều điều kiện bằng tỉ số xác suất.",
+      "easy_refs": [
+        "7ab78715480e|P2|4|a",
+        "7ab78715480e|P2|4|b"
+      ],
+      "hard_refs": [
+        "7ab78715480e|P2|4|c",
+        "7ab78715480e|P2|4|d"
+      ],
+      "qualification": "Đây là đối chiếu nội bộ cùng đề; chưa chứng minh sự lặp lại giữa các đề."
+    }
+  ],
+  "fact_use": {
+    "common": [
+      {
+        "use": "Kiến thức nhớ được chủ yếu là công thức, định nghĩa và quy tắc toán học: nhận dạng nguyên hàm, công thức thể tích, nghiệm lượng giác hoặc quan hệ giữa tích phân với nguyên hàm.",
+        "refs": [
+          "3f1b2aa3cb72|P1|4|None",
+          "3f1b2aa3cb72|P1|9|None",
+          "7ab78715480e|P1|12|None",
+          "7ab78715480e|P1|8|None"
+        ]
+      },
+      {
+        "use": "Các số liệu là đầu vào được cung cấp để tính toán, nội suy, dựng mô hình hoặc so sánh; không đòi nhớ số liệu của bối cảnh ngoài đề.",
+        "refs": [
+          "7ab78715480e|P1|7|None",
+          "3f1b2aa3cb72|P1|1|None",
+          "7ab78715480e|P3|3|None",
+          "7ab78715480e|P2|4|c"
+        ]
+      },
+      {
+        "use": "Có nhận định chỉ yêu cầu đọc lại đúng thông số đã cho; không phải mọi nhận định đều buộc suy luận dài.",
+        "refs": [
+          "7ab78715480e|P2|4|b"
+        ]
+      },
+      {
+        "use": "Ở các hàng phân hóa cao, công thức quen thuộc phục vụ chuỗi dựng mô hình; nhớ công thức riêng lẻ chưa đủ giải quyết yêu cầu.",
+        "refs": [
+          "525d3542283a|P3|1|None",
+          "525d3542283a|P3|3|None",
+          "7ab78715480e|P3|1|None",
+          "7ab78715480e|P3|6|None"
+        ]
+      }
+    ],
+    "not_observed": [
+      {
+        "use": "Không thấy yêu cầu nhớ niên đại, tên riêng hoặc số liệu thực tế ngoài dữ kiện đề để xác định đáp án. Đây là giới hạn quan sát của tập hàng được cung cấp.",
+        "refs": [
+          "7ab78715480e|P2|1|a",
+          "7ab78715480e|P2|4|b",
+          "7ab78715480e|P3|3|None",
+          "3f1b2aa3cb72|P2|1|a"
+        ]
+      }
+    ]
+  },
+  "anti_patterns": [
+    {
+      "avoid": "Đặt kiến thức thực tế ngoài đề làm điều kiện ngầm để giải mô hình.",
+      "basis": "Các hàng ứng dụng cung cấp quy luật, thông số và ràng buộc cần dùng; không quan sát thấy yêu cầu tra cứu hoặc nhớ dữ kiện của bối cảnh.",
+      "refs": [
+        "525d3542283a|P2|2|a",
+        "7ab78715480e|P2|4|c",
+        "7ab78715480e|P3|3|None",
+        "3f1b2aa3cb72|P2|1|a"
+      ]
+    },
+    {
+      "avoid": "Thay đáp án toán học xác định bằng bình luận mở hoặc đánh giá chủ quan.",
+      "basis": "Các nhiệm vụ được mô tả yêu cầu chọn phương án, kiểm tra nhận định hoặc trả kết quả tính toán; không thấy yêu cầu nghị luận tự do.",
+      "refs": [
+        "7ab78715480e|P1|11|None",
+        "7ab78715480e|P2|4|d",
+        "525d3542283a|P3|3|None",
+        "7ab78715480e|P3|6|None"
+      ]
+    },
+    {
+      "avoid": "Dùng kiến thức ngoài chuỗi công cụ được thể hiện để tạo độ khó giả.",
+      "basis": "Những hàng được đánh giá phân hóa cao tạo khó bằng dựng biểu diễn, phối hợp kiến thức và kiểm soát trường hợp; không thể hiện yêu cầu gọi tên một định lý chuyên biệt ngoài chuỗi suy luận đã mô tả.",
+      "refs": [
+        "525d3542283a|P3|1|None",
+        "525d3542283a|P3|3|None",
+        "7ab78715480e|P3|1|None",
+        "7ab78715480e|P3|6|None"
+      ]
+    }
+  ]
+}

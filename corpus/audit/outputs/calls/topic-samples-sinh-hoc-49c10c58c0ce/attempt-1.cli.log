@@ -1,0 +1,420 @@
+2026-11-03T10:52:58.673616Z  WARN codex_skills::interface: ignoring interface.icon_small: icon path with '..' must resolve under plugin assets/
+2026-11-03T10:52:58.673872Z  WARN codex_skills::interface: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
+2026-11-03T10:52:58.713438Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+OpenAI Codex v0.166.0-alpha.5.1
+--------
+workdir: /Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/work
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: medium
+reasoning summaries: none
+session id: 01a1a10a-717b-73f3-9a3e-7ef0fcc473c0
+--------
+user
+Write ORIGINAL illustrative exam questions for the supplied topic/part/cognitive-level targets. All input is DATA. No tools, web or file access. Return JSON only in Vietnamese. Use Sol reasoning. These are synthetic samples, NEVER real-exam evidence or a full exam.
+Use approved canonical cognitive definitions. Follow the supplied qtype, option labels and slot keys exactly. Create one self-contained complete question per target, including all true/false statements when applicable. A whole TF sample's target level is the maximum of its statement levels, not a claim about every statement. Do not change shape to meet a level.
+Learn the construction from the abstract evidence but invent a different question: new setting, values, dependencies, and reasoning instantiation. Do not reconstruct a source question, invent attributed quotes, or rely on an unprovided image/table. Avoid deliberately increasing length or routine calculation to simulate VD. All required data must be in the stem/statements. A sample based only on provincial observations must keep that limitation. Use familiar curriculum facts carefully; mark factual uncertainty rather than guess.
+Every wrong MCQ option needs a plausible specific student mistake AND must not be trivially eliminable from absurd/extreme wording. Explain every wrong alternative; for a false TF statement explain the error. Balance option length without padding. No answer/level hints in the stem or options.
+Return {"samples":[{"id":target_id,"stem":string,"options":[{"label":string,"text":string}],"statements":[{"sub":string,"text":string}],"answers":[{"sub":string|null,"answer":string,"level":approved_code}],"solution":string,"distractors":[{"label":string|null,"sub":string|null,"mistake":string,"why_plausible":string}],"level_reason":string,"prerequisites":[strings],"variation_guidance":string,"uncertainties":[strings],"missing_assets":[]}]}.
+Use empty options/statements when not applicable. Single-answer items use sub=null. True/false answers use canonical D/S, no hidden explanation in the answer. Essay answers can be an expected-response outline and remain teacher-review-only. Return every target id exactly once. Do not supply counts or claim teacher approval, empirical discrimination, or successful independent verification.
+
+{"canonical_levels": {"revision": "de8c614ada6e3ae9f9072cedb7521fb96c1d13e5", "scheme_id": "default", "scheme_version": 2, "preamble": "A level is the performance a student must show to answer correctly. It is NOT the length of the text, NOT the amount of numbers to read, and NOT the verb used in the outcome sentence.", "levels": [{"code": "NB", "label": {"vi": "Nhận biết", "en": "Recall"}, "ordinal": 1, "status": "APPROVED", "definition_en": "recognise or retrieve. The student recognises, names or restates a fact, concept, definition, symbol, property, formula or step as taught. The answer sits in ONE knowledge unit. A scenario, if any, is decoration.", "samples": [], "bands": []}, {"code": "TH", "label": {"vi": "Thông hiểu", "en": "Comprehension"}, "ordinal": 2, "status": "APPROVED", "definition_en": "Explain, distinguish, interpret, or execute a familiar routine procedure. The student reads a given representation or uses taught knowledge in a standard exercise. A single substitution of given values into a taught formula or equation is TH; several routine algebraic or numerical operations can also remain TH. Choosing the obvious familiar formula without its name being supplied does not by itself make a question VD.", "samples": [], "bands": []}, {"code": "VD", "label": {"vi": "Vận dụng", "en": "Application"}, "ordinal": 3, "status": "APPROVED", "definition_en": "Model a situation or construct a substantive chain of reasoning. The task requires the student to formulate a model, connect and apply multiple knowledge units, or plan and justify several dependent thinking steps rather than merely execute a familiar calculation. Judge the minimum cognitive work needed for a correct answer. A longer text, more numbers, more written calculation steps, or an unstated but obvious formula is not sufficient for VD. A standard multi-step calculation can remain TH; no single surface cue is a compulsory condition for all VD questions.", "samples": [], "bands": []}], "subject_layer": null}, "targets": [{"id": "fd4d00d248fad1f9", "topic": "Quang hợp ở thực vật", "part": "P1", "level": "NB", "qtype": "mcq", "option_labels": ["A", "B", "C", "D"], "slot_keys": [null], "canonical_answer_alphabet": ["A", "B", "C", "D"], "abstract_observations": [{"given": "Các chất thuộc những quá trình trao đổi chất khác nhau.", "task": "Chọn chất được tạo ra trong quang hợp.", "reasoning": "Nhớ sản phẩm của quang hợp; phân biệt sản phẩm với nguyên liệu và chất thuộc chuyển hóa khác.", "combines": ["Quang hợp ở thực vật"], "difficulty_source": "Nhớ trực tiếp sản phẩm của quá trình quen thuộc", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Một sản phẩm khí của quang hợp và các chất có thể được xem là nguồn tạo sản phẩm.", "task": "Xác định nguồn nguyên tử tạo nên sản phẩm khí.", "reasoning": "Nhớ phản ứng giải phóng khí trong pha sáng; phân biệt nguồn nguyên tử với chất tham gia cố định carbon.", "combines": ["Pha sáng quang hợp", "Nguồn gốc nguyên tử trong sản phẩm"], "difficulty_source": "Phân biệt nguồn oxygen với nguồn carbon", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Sản phẩm khí được giải phóng trong quang hợp và các chất có thể làm nguồn nguyên tử.", "task": "Xác định chất cung cấp oxygen cho sản phẩm khí.", "reasoning": "Nhớ phản ứng quang phân li; xác định chất bị phân giải tạo khí.", "combines": ["Pha sáng của quang hợp"], "difficulty_source": "Nhớ một kết luận cơ bản của pha sáng", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Nhóm thực vật và loại tế bào thực hiện quá trình cố định carbon.", "task": "Chọn chất nhận khí nguyên liệu ở bước đầu.", "reasoning": "Xác định con đường cố định carbon của nhóm thực vật; phân biệt chất nhận với sản phẩm tạo thành.", "combines": ["Các con đường quang hợp", "Vai trò chất trung gian"], "difficulty_source": "Nhớ đúng vai trò chất trong con đường quang hợp", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}], "support_refs": ["2cbdc74db082|P1|1|None", "4b4716b94db4|P1|18|None", "55c12f561006|P1|12|None", "8bbf9eea6d33|P1|16|None"], "official_anchor_available": false}, {"id": "d557f674cf359a82", "topic": "Quang hợp ở thực vật", "part": "P1", "level": "TH", "qtype": "mcq", "option_labels": ["A", "B", "C", "D"], "slot_keys": [null], "canonical_answer_alphabet": ["A", "B", "C", "D"], "abstract_observations": [{"given": "Điều kiện môi trường thuận lợi cho hô hấp sáng và danh sách các thực vật thuộc những nhóm quang hợp khác nhau.", "task": "Chọn thực vật điển hình xảy ra hô hấp sáng trong điều kiện đã nêu.", "reasoning": "Phân loại các thực vật theo con đường cố định carbon; liên hệ điều kiện môi trường với hoạt tính của enzyme cố định carbon; chọn nhóm dễ xảy ra hô hấp sáng.", "combines": ["Các nhóm thực vật quang hợp", "Hô hấp sáng", "Ảnh hưởng của môi trường"], "difficulty_source": "Cần nhớ nhóm quang hợp của các thực vật được liệt kê", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Đồ thị trực quan so sánh đáp ứng quang hợp của các nhóm thực vật theo nồng độ khí nguyên liệu.", "task": "Chọn nhận định phù hợp với các đường biểu diễn.", "reasoning": "Xác định giao điểm với trục nồng độ; xác định vùng đường cong tiến tới bão hòa; so sánh các nhóm ở từng vùng nồng độ; kiểm tra nhận định tổng hợp.", "combines": ["Sinh lí quang hợp", "Đọc đồ thị", "So sánh giới hạn đáp ứng"], "difficulty_source": "Phân biệt các đặc trưng của đường cong và giới hạn của nhận định khái quát", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}], "support_refs": ["4b4716b94db4|P1|16|None", "8bbf9eea6d33|P1|4|None"], "official_anchor_available": false}, {"id": "547ab7a24ad434f0", "topic": "Sinh thái học", "part": "P1", "level": "NB", "qtype": "mcq", "option_labels": ["A", "B", "C", "D"], "slot_keys": [null], "canonical_answer_alphabet": ["A", "B", "C", "D"], "abstract_observations": [{"given": "Một loài sử dụng cá thể của loài khác làm thức ăn.", "task": "Phân loại quan hệ sinh thái giữa các loài.", "reasoning": "Xác định sự tiêu thụ trực tiếp sinh vật; ghép với nhóm quan hệ tương ứng.", "combines": ["Quan hệ giữa các loài"], "difficulty_source": "Quan hệ dinh dưỡng được nêu trực tiếp", "evidence_uncertainty": null, "evidence_class": "official"}, {"given": "Một sinh vật quen thuộc có môi trường sống điển hình.", "task": "Xác định loại môi trường sống của sinh vật.", "reasoning": "Nhớ nơi sống điển hình; ghép với nhóm môi trường tương ứng.", "combines": ["Môi trường sống"], "difficulty_source": "Nhận biết nơi sống từ kiến thức phổ thông", "evidence_uncertainty": null, "evidence_class": "official"}, {"given": "Mô tả một khoảng tác động của nhân tố môi trường đối với sinh vật.", "task": "Chọn thuật ngữ sinh thái tương ứng.", "reasoning": "Nhận diện đối tượng là khoảng giá trị của một nhân tố; phân biệt toàn khoảng tồn tại với các miền thành phần.", "combines": ["Giới hạn sinh thái"], "difficulty_source": "Phân biệt thuật ngữ có quan hệ bao hàm gần nhau", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Một mô tả định nghĩa phạm vi chịu đựng đối với nhân tố môi trường.", "task": "Chọn thuật ngữ sinh thái tương ứng.", "reasoning": "Nhận diện phạm vi giá trị của một nhân tố; phân biệt với không gian sống và phạm vi sử dụng nguồn sống.", "combines": ["Giới hạn sinh thái", "Thuật ngữ sinh thái cơ bản"], "difficulty_source": "Đối chiếu định nghĩa với thuật ngữ", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}], "support_refs": ["b68b84764a9b|P1|11|None", "b68b84764a9b|P1|5|None", "2cbdc74db082|P1|11|None", "4b4716b94db4|P1|11|None", "4b4716b94db4|P1|7|None", "4b4716b94db4|P1|9|None", "55c12f561006|P1|3|None", "61a0198fbfda|P1|11|None", "61a0198fbfda|P1|1|None", "8bbf9eea6d33|P1|10|None", "8bbf9eea6d33|P1|11|None", "8bbf9eea6d33|P1|3|None", "8bbf9eea6d33|P1|8|None"], "official_anchor_available": true}, {"id": "a0267e4bbbfb69f6", "topic": "Sinh thái học", "part": "P1", "level": "TH", "qtype": "mcq", "option_labels": ["A", "B", "C", "D"], "slot_keys": [null], "canonical_answer_alphabet": ["A", "B", "C", "D"], "abstract_observations": [{"given": "Các biện pháp tác động đến sinh vật và sinh cảnh.", "task": "Chọn biện pháp góp phần bảo vệ đa dạng sinh học.", "reasoning": "Xác định tác động của mỗi biện pháp lên quần thể và sinh cảnh; chọn tác động bảo vệ hoặc phục hồi.", "combines": ["Bảo tồn đa dạng sinh học", "Bảo vệ sinh cảnh"], "difficulty_source": "Sự đối lập rõ giữa bảo vệ sinh cảnh và khai thác phá hủy", "evidence_uncertainty": null, "evidence_class": "official"}, {"given": "Khoảng biến thiên của một nhân tố môi trường và đồ thị giới hạn chịu đựng của các loài dự kiến nuôi.", "task": "Chọn loài có thể tồn tại trong toàn bộ khoảng điều kiện được xét.", "reasoning": "Đọc các khoảng chịu đựng trên đồ thị; đối chiếu toàn bộ khoảng môi trường với từng khoảng chịu đựng; giữ lại loài thỏa điều kiện bao chứa.", "combines": ["Giới hạn sinh thái", "Đọc đồ thị", "Lựa chọn đối tượng nuôi"], "difficulty_source": "Phải xét toàn khoảng môi trường thay vì một điểm thuận lợi", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Các tập hợp sinh vật được mô tả theo nhóm sinh vật và nơi sống.", "task": "Chọn tập hợp phù hợp với khái niệm quần thể.", "reasoning": "Kiểm tra tính cùng loài của từng tập hợp; đối chiếu điều kiện cùng khu vực với định nghĩa quần thể.", "combines": ["Khái niệm loài", "Khái niệm quần thể"], "difficulty_source": "Kiểm tra tiêu chí cùng loài trong các ví dụ quen thuộc", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}, {"given": "Các ứng dụng sinh vật trong xử lí môi trường và bảo tồn nguồn gene.", "task": "Phân biệt hoạt động ngoài phạm vi cải tạo sinh học.", "reasoning": ["Xác định mục tiêu của cải tạo sinh học.", "Phân loại từng hoạt động theo tác động trực tiếp lên ô nhiễm môi trường."], "combines": ["Cải tạo sinh học", "Bảo tồn đa dạng sinh vật"], "difficulty_source": "Phân biệt mục tiêu phục hồi môi trường với nhân giống bảo tồn", "evidence_uncertainty": null, "evidence_class": "provincial_third_party"}], "support_refs": ["b68b84764a9b|P1|9|None", "4b4716b94db4|P1|4|None", "55c12f561006|P1|14|None", "61a0198fbfda|P1|12|None", "61a0198fbfda|P1|15|None", "61a0198fbfda|P1|16|None", "8bbf9eea6d33|P1|5|None", "8bbf9eea6d33|P1|7|None"], "official_anchor_available": true}]}
+2026-11-03T10:52:59.118517Z  WARN codex_skills::interface: ignoring interface.icon_small: icon path with '..' must resolve under plugin assets/
+2026-11-03T10:52:59.118536Z  WARN codex_skills::interface: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
+codex
+{
+  "samples": [
+    {
+      "id": "fd4d00d248fad1f9",
+      "stem": "Trong pha sáng của quang hợp ở thực vật, NADP⁺ nhận electron và H⁺ để tạo thành chất nào sau đây?",
+      "options": [
+        {"label": "A", "text": "NADH."},
+        {"label": "B", "text": "NADPH."},
+        {"label": "C", "text": "FADH₂."},
+        {"label": "D", "text": "NADP⁺."}
+      ],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "B", "level": "NB"}
+      ],
+      "solution": "Chọn B. Trong pha sáng, NADP⁺ nhận electron và H⁺, tạo NADPH. NADPH cung cấp khả năng khử cho quá trình tổng hợp chất hữu cơ trong chu trình Calvin.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Nhầm dạng khử của NADP⁺ với dạng khử của NAD⁺.",
+          "why_plausible": "NADH và NADPH có tên gần giống nhau và đều là chất mang electron."
+        },
+        {
+          "label": "C",
+          "sub": null,
+          "mistake": "Nhầm sản phẩm khử của NADP⁺ với sản phẩm khử của FAD.",
+          "why_plausible": "FADH₂ cũng là chất mang electron dạng khử được học trong chuyển hóa năng lượng."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Giữ nguyên chất nhận electron thay vì xác định sản phẩm sau khi nhận electron.",
+          "why_plausible": "Học sinh nhớ NADP⁺ tham gia pha sáng nhưng chưa phân biệt dạng oxi hóa và dạng khử."
+        }
+      ],
+      "level_reason": "Học sinh chỉ cần nhớ một quan hệ kiến thức đã học: NADP⁺ được khử thành NADPH trong pha sáng. Không cần suy luận từ dữ liệu hay kết nối nhiều đơn vị kiến thức.",
+      "prerequisites": [
+        "Vai trò của NADP⁺ và NADPH trong quang hợp.",
+        "Các sản phẩm của pha sáng."
+      ],
+      "variation_guidance": "Có thể đổi cách hỏi sang nhận diện chất cung cấp khả năng khử cho chu trình Calvin; tránh đặt đồng thời nhiều sản phẩm đúng trong các phương án.",
+      "uncertainties": [
+        "Mẫu tự biên soạn; định hướng cấu trúc chỉ dựa trên các quan sát từ nguồn cấp tỉnh do bên thứ ba cung cấp, chưa có neo đề chính thức."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "d557f674cf359a82",
+      "stem": "Trong một thí nghiệm giả định, người ta đo tốc độ quang hợp thuần của hai nhóm cây X và Y ở cùng điều kiện ánh sáng và nhiệt độ. Khi nồng độ CO₂ lần lượt là 100, 300 và 600 µmol/mol, tốc độ quang hợp thuần của X lần lượt là 4, 10 và 16; của Y lần lượt là 8, 14 và 14, cùng tính bằng µmol CO₂/m²/s. Nhận xét nào phù hợp với số liệu?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Ở nồng độ CO₂ bằng 100 µmol/mol, tốc độ quang hợp thuần của X gấp đôi Y."
+        },
+        {
+          "label": "B",
+          "text": "Khi CO₂ tăng từ 300 lên 600 µmol/mol, tốc độ quang hợp thuần của cả hai nhóm đều tăng."
+        },
+        {
+          "label": "C",
+          "text": "Ở nồng độ CO₂ bằng 600 µmol/mol, tốc độ quang hợp thuần của Y cao hơn X."
+        },
+        {
+          "label": "D",
+          "text": "Khi CO₂ tăng từ 300 lên 600 µmol/mol, tốc độ quang hợp thuần của Y giữ nguyên, còn X tăng."
+        }
+      ],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "D", "level": "TH"}
+      ],
+      "solution": "Chọn D. Từ mức CO₂ 300 lên 600 µmol/mol, tốc độ quang hợp thuần của Y giữ ở 14, còn X tăng từ 10 lên 16 µmol CO₂/m²/s. Ở mức 100, X có tốc độ bằng một nửa Y. Ở mức 600, X có tốc độ cao hơn Y. Kết luận chỉ áp dụng cho các mức đo và điều kiện thí nghiệm đã cho.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Đảo chiều tỉ số khi so sánh 4 với 8.",
+          "why_plausible": "Học sinh nhận ra quan hệ gấp đôi nhưng gán nhầm nhóm có giá trị lớn hơn."
+        },
+        {
+          "label": "B",
+          "sub": null,
+          "mistake": "Khái quát xu hướng tăng của X sang Y mà không kiểm tra từng dãy số.",
+          "why_plausible": "CO₂ là nguyên liệu quang hợp nên học sinh dễ cho rằng tăng CO₂ luôn làm cả hai nhóm tăng tốc độ."
+        },
+        {
+          "label": "C",
+          "sub": null,
+          "mistake": "Kéo dài thứ tự Y cao hơn X ở các mức CO₂ thấp sang mức 600 µmol/mol.",
+          "why_plausible": "Y cao hơn X ở hai mức đo đầu, dễ khiến học sinh bỏ qua sự thay đổi thứ tự ở mức cuối."
+        }
+      ],
+      "level_reason": "Học sinh đọc các dãy số và so sánh đáp ứng của hai nhóm ở những mức CO₂ đã cho. Đây là diễn giải trực tiếp một biểu diễn dữ liệu, không đòi hỏi xây dựng mô hình hay suy luận về cơ chế chưa được cung cấp.",
+      "prerequisites": [
+        "Ý nghĩa của tốc độ quang hợp thuần.",
+        "Cách so sánh số liệu giữa các điều kiện thí nghiệm."
+      ],
+      "variation_guidance": "Có thể thay các mức CO₂ và tốc độ giả định, đồng thời giữ một nhóm có hai giá trị cuối bằng nhau. Không suy ra con đường C₃ hoặc C₄ chỉ từ bộ số liệu ngắn này.",
+      "uncertainties": [
+        "Số liệu là giả định phục vụ minh họa, không phải kết quả thực nghiệm.",
+        "Định hướng cấu trúc chỉ dựa trên các quan sát từ nguồn cấp tỉnh do bên thứ ba cung cấp, chưa có neo đề chính thức."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "547ab7a24ad434f0",
+      "stem": "Khoảng giá trị xác định của một nhân tố sinh thái mà trong đó sinh vật có thể tồn tại và phát triển ổn định theo thời gian được gọi là gì?",
+      "options": [
+        {"label": "A", "text": "Khoảng thuận lợi."},
+        {"label": "B", "text": "Ổ sinh thái."},
+        {"label": "C", "text": "Giới hạn sinh thái."},
+        {"label": "D", "text": "Nơi ở."}
+      ],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "C", "level": "NB"}
+      ],
+      "solution": "Chọn C. Giới hạn sinh thái là khoảng giá trị xác định của một nhân tố sinh thái mà trong đó sinh vật có thể tồn tại và phát triển ổn định theo thời gian. Khoảng thuận lợi chỉ là phần thích hợp nhất trong giới hạn đó; ổ sinh thái và nơi ở không đồng nghĩa với khoảng chịu đựng đối với một nhân tố.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Đồng nhất toàn bộ giới hạn chịu đựng với phần điều kiện thuận lợi nhất.",
+          "why_plausible": "Cả hai thuật ngữ đều nói đến khoảng tác động của nhân tố sinh thái đối với sinh vật."
+        },
+        {
+          "label": "B",
+          "sub": null,
+          "mistake": "Nhầm giới hạn đối với một nhân tố với không gian sinh thái gồm nhiều chiều điều kiện và nguồn sống.",
+          "why_plausible": "Ổ sinh thái cũng liên quan đến các điều kiện sinh thái phù hợp với loài."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Nhầm phạm vi giá trị của nhân tố môi trường với địa điểm sinh sống.",
+          "why_plausible": "Học sinh có thể hiểu từ 'khoảng' theo nghĩa không gian địa lí."
+        }
+      ],
+      "level_reason": "Yêu cầu nhận diện trực tiếp một thuật ngữ từ định nghĩa đã học, thuộc một đơn vị kiến thức về giới hạn sinh thái.",
+      "prerequisites": [
+        "Khái niệm giới hạn sinh thái.",
+        "Phân biệt giới hạn sinh thái, khoảng thuận lợi, ổ sinh thái và nơi ở."
+      ],
+      "variation_guidance": "Có thể thay định nghĩa bằng mô tả phạm vi chịu đựng đối với một nhân tố cụ thể, nhưng không thêm yêu cầu phân tích số liệu nếu vẫn giữ mức NB.",
+      "uncertainties": [],
+      "missing_assets": []
+    },
+    {
+      "id": "a0267e4bbbfb69f6",
+      "stem": "Một bể nuôi có nhiệt độ nước dao động từ 19°C đến 29°C. Trong mô hình lựa chọn này, nhiệt độ là yếu tố duy nhất cần xét; loài được chọn phải có khoảng chịu đựng bao gồm toàn bộ khoảng nhiệt độ của bể. Bốn loài cá giả định A, B, C và D có khoảng chịu đựng tương ứng là 17–27°C, 21–31°C, 18–30°C và 23–28°C. Loài nào đáp ứng yêu cầu?",
+      "options": [
+        {"label": "A", "text": "Loài A."},
+        {"label": "B", "text": "Loài B."},
+        {"label": "C", "text": "Loài C."},
+        {"label": "D", "text": "Loài D."}
+      ],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "C", "level": "TH"}
+      ],
+      "solution": "Chọn C. Khoảng 18–30°C của loài C chứa toàn bộ khoảng 19–29°C của bể. Loài A không chịu được phần nhiệt độ trên 27°C; loài B không chịu được phần dưới 21°C; loài D không chịu được cả phần dưới 23°C và phần trên 28°C. Đây là lựa chọn theo điều kiện của mô hình, chưa phải kết luận về hiệu quả nuôi thực tế.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Chỉ kiểm tra khả năng chịu nhiệt độ thấp mà bỏ qua nhiệt độ cao nhất của bể.",
+          "why_plausible": "Giới hạn dưới 17°C thấp hơn mức thấp nhất của bể, và phần lớn khoảng nhiệt độ có sự chồng lấp."
+        },
+        {
+          "label": "B",
+          "sub": null,
+          "mistake": "Chỉ kiểm tra khả năng chịu nhiệt độ cao mà bỏ qua nhiệt độ thấp nhất của bể.",
+          "why_plausible": "Giới hạn trên 31°C cao hơn mức cao nhất của bể, dễ tạo cảm giác khoảng chịu đựng đã đủ rộng."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Đảo chiều quan hệ bao chứa, chọn khoảng chịu đựng nằm trong khoảng nhiệt độ của bể.",
+          "why_plausible": "Cả hai đầu mút 23°C và 28°C đều thuộc khoảng 19–29°C nên học sinh có thể nhầm là đáp ứng yêu cầu."
+        }
+      ],
+      "level_reason": "Học sinh đối chiếu các khoảng đã cho và kiểm tra quan hệ bao chứa theo tiêu chí nêu sẵn. Đây là vận dụng kiến thức theo một quy trình quen thuộc ở mức TH, không yêu cầu tự xây dựng mô hình lựa chọn.",
+      "prerequisites": [
+        "Ý nghĩa của giới hạn chịu đựng đối với nhiệt độ.",
+        "Cách xác định một khoảng giá trị có chứa trọn một khoảng khác."
+      ],
+      "variation_guidance": "Có thể đổi nhân tố thành độ mặn và thay các khoảng giả định. Cần giữ duy nhất một phương án chứa trọn khoảng môi trường và nêu rõ các yếu tố khác được coi là phù hợp.",
+      "uncertainties": [
+        "Các loài và khoảng chịu đựng đều là giả định, không dùng làm hướng dẫn chọn loài nuôi thực tế.",
+        "Cấu trúc đối chiếu toàn khoảng trong mẫu này dựa trên quan sát cấp tỉnh do bên thứ ba cung cấp; không coi cấu trúc này đã có neo đề chính thức."
+      ],
+      "missing_assets": []
+    }
+  ]
+}
+tokens used
+8,004
+{
+  "samples": [
+    {
+      "id": "fd4d00d248fad1f9",
+      "stem": "Trong pha sáng của quang hợp ở thực vật, NADP⁺ nhận electron và H⁺ để tạo thành chất nào sau đây?",
+      "options": [
+        {"label": "A", "text": "NADH."},
+        {"label": "B", "text": "NADPH."},
+        {"label": "C", "text": "FADH₂."},
+        {"label": "D", "text": "NADP⁺."}
+      ],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "B", "level": "NB"}
+      ],
+      "solution": "Chọn B. Trong pha sáng, NADP⁺ nhận electron và H⁺, tạo NADPH. NADPH cung cấp khả năng khử cho quá trình tổng hợp chất hữu cơ trong chu trình Calvin.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Nhầm dạng khử của NADP⁺ với dạng khử của NAD⁺.",
+          "why_plausible": "NADH và NADPH có tên gần giống nhau và đều là chất mang electron."
+        },
+        {
+          "label": "C",
+          "sub": null,
+          "mistake": "Nhầm sản phẩm khử của NADP⁺ với sản phẩm khử của FAD.",
+          "why_plausible": "FADH₂ cũng là chất mang electron dạng khử được học trong chuyển hóa năng lượng."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Giữ nguyên chất nhận electron thay vì xác định sản phẩm sau khi nhận electron.",
+          "why_plausible": "Học sinh nhớ NADP⁺ tham gia pha sáng nhưng chưa phân biệt dạng oxi hóa và dạng khử."
+        }
+      ],
+      "level_reason": "Học sinh chỉ cần nhớ một quan hệ kiến thức đã học: NADP⁺ được khử thành NADPH trong pha sáng. Không cần suy luận từ dữ liệu hay kết nối nhiều đơn vị kiến thức.",
+      "prerequisites": [
+        "Vai trò của NADP⁺ và NADPH trong quang hợp.",
+        "Các sản phẩm của pha sáng."
+      ],
+      "variation_guidance": "Có thể đổi cách hỏi sang nhận diện chất cung cấp khả năng khử cho chu trình Calvin; tránh đặt đồng thời nhiều sản phẩm đúng trong các phương án.",
+      "uncertainties": [
+        "Mẫu tự biên soạn; định hướng cấu trúc chỉ dựa trên các quan sát từ nguồn cấp tỉnh do bên thứ ba cung cấp, chưa có neo đề chính thức."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "d557f674cf359a82",
+      "stem": "Trong một thí nghiệm giả định, người ta đo tốc độ quang hợp thuần của hai nhóm cây X và Y ở cùng điều kiện ánh sáng và nhiệt độ. Khi nồng độ CO₂ lần lượt là 100, 300 và 600 µmol/mol, tốc độ quang hợp thuần của X lần lượt là 4, 10 và 16; của Y lần lượt là 8, 14 và 14, cùng tính bằng µmol CO₂/m²/s. Nhận xét nào phù hợp với số liệu?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Ở nồng độ CO₂ bằng 100 µmol/mol, tốc độ quang hợp thuần của X gấp đôi Y."
+        },
+        {
+          "label": "B",
+          "text": "Khi CO₂ tăng từ 300 lên 600 µmol/mol, tốc độ quang hợp thuần của cả hai nhóm đều tăng."
+        },
+        {
+          "label": "C",
+          "text": "Ở nồng độ CO₂ bằng 600 µmol/mol, tốc độ quang hợp thuần của Y cao hơn X."
+        },
+        {
+          "label": "D",
+          "text": "Khi CO₂ tăng từ 300 lên 600 µmol/mol, tốc độ quang hợp thuần của Y giữ nguyên, còn X tăng."
+        }
+      ],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "D", "level": "TH"}
+      ],
+      "solution": "Chọn D. Từ mức CO₂ 300 lên 600 µmol/mol, tốc độ quang hợp thuần của Y giữ ở 14, còn X tăng từ 10 lên 16 µmol CO₂/m²/s. Ở mức 100, X có tốc độ bằng một nửa Y. Ở mức 600, X có tốc độ cao hơn Y. Kết luận chỉ áp dụng cho các mức đo và điều kiện thí nghiệm đã cho.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Đảo chiều tỉ số khi so sánh 4 với 8.",
+          "why_plausible": "Học sinh nhận ra quan hệ gấp đôi nhưng gán nhầm nhóm có giá trị lớn hơn."
+        },
+        {
+          "label": "B",
+          "sub": null,
+          "mistake": "Khái quát xu hướng tăng của X sang Y mà không kiểm tra từng dãy số.",
+          "why_plausible": "CO₂ là nguyên liệu quang hợp nên học sinh dễ cho rằng tăng CO₂ luôn làm cả hai nhóm tăng tốc độ."
+        },
+        {
+          "label": "C",
+          "sub": null,
+          "mistake": "Kéo dài thứ tự Y cao hơn X ở các mức CO₂ thấp sang mức 600 µmol/mol.",
+          "why_plausible": "Y cao hơn X ở hai mức đo đầu, dễ khiến học sinh bỏ qua sự thay đổi thứ tự ở mức cuối."
+        }
+      ],
+      "level_reason": "Học sinh đọc các dãy số và so sánh đáp ứng của hai nhóm ở những mức CO₂ đã cho. Đây là diễn giải trực tiếp một biểu diễn dữ liệu, không đòi hỏi xây dựng mô hình hay suy luận về cơ chế chưa được cung cấp.",
+      "prerequisites": [
+        "Ý nghĩa của tốc độ quang hợp thuần.",
+        "Cách so sánh số liệu giữa các điều kiện thí nghiệm."
+      ],
+      "variation_guidance": "Có thể thay các mức CO₂ và tốc độ giả định, đồng thời giữ một nhóm có hai giá trị cuối bằng nhau. Không suy ra con đường C₃ hoặc C₄ chỉ từ bộ số liệu ngắn này.",
+      "uncertainties": [
+        "Số liệu là giả định phục vụ minh họa, không phải kết quả thực nghiệm.",
+        "Định hướng cấu trúc chỉ dựa trên các quan sát từ nguồn cấp tỉnh do bên thứ ba cung cấp, chưa có neo đề chính thức."
+      ],
+      "missing_assets": []
+    },
+    {
+      "id": "547ab7a24ad434f0",
+      "stem": "Khoảng giá trị xác định của một nhân tố sinh thái mà trong đó sinh vật có thể tồn tại và phát triển ổn định theo thời gian được gọi là gì?",
+      "options": [
+        {"label": "A", "text": "Khoảng thuận lợi."},
+        {"label": "B", "text": "Ổ sinh thái."},
+        {"label": "C", "text": "Giới hạn sinh thái."},
+        {"label": "D", "text": "Nơi ở."}
+      ],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "C", "level": "NB"}
+      ],
+      "solution": "Chọn C. Giới hạn sinh thái là khoảng giá trị xác định của một nhân tố sinh thái mà trong đó sinh vật có thể tồn tại và phát triển ổn định theo thời gian. Khoảng thuận lợi chỉ là phần thích hợp nhất trong giới hạn đó; ổ sinh thái và nơi ở không đồng nghĩa với khoảng chịu đựng đối với một nhân tố.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Đồng nhất toàn bộ giới hạn chịu đựng với phần điều kiện thuận lợi nhất.",
+          "why_plausible": "Cả hai thuật ngữ đều nói đến khoảng tác động của nhân tố sinh thái đối với sinh vật."
+        },
+        {
+          "label": "B",
+          "sub": null,
+          "mistake": "Nhầm giới hạn đối với một nhân tố với không gian sinh thái gồm nhiều chiều điều kiện và nguồn sống.",
+          "why_plausible": "Ổ sinh thái cũng liên quan đến các điều kiện sinh thái phù hợp với loài."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Nhầm phạm vi giá trị của nhân tố môi trường với địa điểm sinh sống.",
+          "why_plausible": "Học sinh có thể hiểu từ 'khoảng' theo nghĩa không gian địa lí."
+        }
+      ],
+      "level_reason": "Yêu cầu nhận diện trực tiếp một thuật ngữ từ định nghĩa đã học, thuộc một đơn vị kiến thức về giới hạn sinh thái.",
+      "prerequisites": [
+        "Khái niệm giới hạn sinh thái.",
+        "Phân biệt giới hạn sinh thái, khoảng thuận lợi, ổ sinh thái và nơi ở."
+      ],
+      "variation_guidance": "Có thể thay định nghĩa bằng mô tả phạm vi chịu đựng đối với một nhân tố cụ thể, nhưng không thêm yêu cầu phân tích số liệu nếu vẫn giữ mức NB.",
+      "uncertainties": [],
+      "missing_assets": []
+    },
+    {
+      "id": "a0267e4bbbfb69f6",
+      "stem": "Một bể nuôi có nhiệt độ nước dao động từ 19°C đến 29°C. Trong mô hình lựa chọn này, nhiệt độ là yếu tố duy nhất cần xét; loài được chọn phải có khoảng chịu đựng bao gồm toàn bộ khoảng nhiệt độ của bể. Bốn loài cá giả định A, B, C và D có khoảng chịu đựng tương ứng là 17–27°C, 21–31°C, 18–30°C và 23–28°C. Loài nào đáp ứng yêu cầu?",
+      "options": [
+        {"label": "A", "text": "Loài A."},
+        {"label": "B", "text": "Loài B."},
+        {"label": "C", "text": "Loài C."},
+        {"label": "D", "text": "Loài D."}
+      ],
+      "statements": [],
+      "answers": [
+        {"sub": null, "answer": "C", "level": "TH"}
+      ],
+      "solution": "Chọn C. Khoảng 18–30°C của loài C chứa toàn bộ khoảng 19–29°C của bể. Loài A không chịu được phần nhiệt độ trên 27°C; loài B không chịu được phần dưới 21°C; loài D không chịu được cả phần dưới 23°C và phần trên 28°C. Đây là lựa chọn theo điều kiện của mô hình, chưa phải kết luận về hiệu quả nuôi thực tế.",
+      "distractors": [
+        {
+          "label": "A",
+          "sub": null,
+          "mistake": "Chỉ kiểm tra khả năng chịu nhiệt độ thấp mà bỏ qua nhiệt độ cao nhất của bể.",
+          "why_plausible": "Giới hạn dưới 17°C thấp hơn mức thấp nhất của bể, và phần lớn khoảng nhiệt độ có sự chồng lấp."
+        },
+        {
+          "label": "B",
+          "sub": null,
+          "mistake": "Chỉ kiểm tra khả năng chịu nhiệt độ cao mà bỏ qua nhiệt độ thấp nhất của bể.",
+          "why_plausible": "Giới hạn trên 31°C cao hơn mức cao nhất của bể, dễ tạo cảm giác khoảng chịu đựng đã đủ rộng."
+        },
+        {
+          "label": "D",
+          "sub": null,
+          "mistake": "Đảo chiều quan hệ bao chứa, chọn khoảng chịu đựng nằm trong khoảng nhiệt độ của bể.",
+          "why_plausible": "Cả hai đầu mút 23°C và 28°C đều thuộc khoảng 19–29°C nên học sinh có thể nhầm là đáp ứng yêu cầu."
+        }
+      ],
+      "level_reason": "Học sinh đối chiếu các khoảng đã cho và kiểm tra quan hệ bao chứa theo tiêu chí nêu sẵn. Đây là vận dụng kiến thức theo một quy trình quen thuộc ở mức TH, không yêu cầu tự xây dựng mô hình lựa chọn.",
+      "prerequisites": [
+        "Ý nghĩa của giới hạn chịu đựng đối với nhiệt độ.",
+        "Cách xác định một khoảng giá trị có chứa trọn một khoảng khác."
+      ],
+      "variation_guidance": "Có thể đổi nhân tố thành độ mặn và thay các khoảng giả định. Cần giữ duy nhất một phương án chứa trọn khoảng môi trường và nêu rõ các yếu tố khác được coi là phù hợp.",
+      "uncertainties": [
+        "Các loài và khoảng chịu đựng đều là giả định, không dùng làm hướng dẫn chọn loài nuôi thực tế.",
+        "Cấu trúc đối chiếu toàn khoảng trong mẫu này dựa trên quan sát cấp tỉnh do bên thứ ba cung cấp; không coi cấu trúc này đã có neo đề chính thức."
+      ],
+      "missing_assets": []
+    }
+  ]
+}

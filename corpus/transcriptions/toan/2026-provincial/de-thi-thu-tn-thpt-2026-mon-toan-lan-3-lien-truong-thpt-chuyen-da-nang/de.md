@@ -1,0 +1,160 @@
+Đề: Sở GD&ĐT TP. Đà Nẵng - THPT Chuyên Nguyễn Bỉnh Khiêm & THPT Chuyên Lê Thánh Tông, Lần 3, mã đề 1016
+
+SỞ GD&ĐT TP. ĐÀ NẴNG
+TRƯỜNG THPT CHUYÊN NGUYỄN BỈNH KHIÊM
+TRƯỜNG THPT CHUYÊN LÊ THÁNH TÔNG
+
+KỲ THI THỬ TN THPT NĂM 2026 - LẦN 3
+Môn: TOÁN
+Thời gian: 90 phút (không kể thời gian giao đề)
+
+ĐỀ CHÍNH THỨC
+(Đề gồm có 4 trang)
+MÃ ĐỀ: 1016
+
+PHẦN I. Câu trắc nghiệm nhiều phương án lựa chọn. Thí sinh trả lời từ câu 1 đến câu 12. Mỗi câu hỏi thí sinh chỉ chọn một phương án.
+
+Câu 1. Cho hình phẳng $(H)$ được giới hạn bởi đồ thị hàm số $y = \tan x$, trục hoành và các đường thẳng $x = 0$, $x = \frac{\pi}{3}$. Khối tròn xoay tạo thành khi quay $(H)$ quanh trục hoành có thể tích bằng
+A. $\pi\sqrt{3} + \frac{\pi^2}{3}$.
+B. $\pi\sqrt{3} - \frac{\pi^2}{3}$.
+C. $\pi\sqrt{3}$.
+D. $\sqrt{3} - \frac{\pi}{3}$.
+
+Câu 2. Tập xác định $D$ của hàm số $y = \sqrt{\log_{0,3} x}$ là
+A. $D = (-\infty; 1]$.
+B. $D = [0; 1]$.
+C. $D = (0; 1]$.
+D. $D = (1; +\infty)$.
+
+Câu 3. Cho hình chóp $S.ABCD$ có đáy $ABCD$ là hình vuông, tam giác $SAC$ vuông cân tại $A$, có diện tích bằng $a^2$ và nằm trong mặt phẳng vuông góc với đáy. Thể tích $V$ của khối chóp $S.ABD$ bằng
+A. $V = \frac{a^3\sqrt{2}}{3}$.
+B. $V = \frac{a^3}{3}$.
+C. $V = \frac{a^3}{6}$.
+D. $V = \frac{a^3\sqrt{2}}{6}$.
+
+Câu 4. Cho hình hộp chữ nhật $ABCD.A'B'C'D'$ có $AB = 2$, $BC = 4$, $CC' = 5$. Độ dài của vectơ $\vec{u} = \vec{AB} - \vec{DA} + \vec{DD'}$ bằng
+[HÌNH: Hình hộp chữ nhật ABCD.A'B'C'D' với các đỉnh A, B, C, D ở mặt trên và A', B', C', D' ở mặt dưới]
+![](images/cau_4.png)
+A. $\sqrt{41}$.
+B. $3\sqrt{5}$.
+C. $\sqrt{29}$.
+D. $2\sqrt{5}$.
+
+Câu 5. Biết $\int f(x)\,\mathrm{d}x = 2026^x + C$. Mệnh đề nào sau đây đúng?
+A. $f(x) = 2026^x \cdot \ln 2026$.
+B. $f(x) = x \cdot 2026^{x-1}$.
+C. $f(x) = \frac{2026^{x+1}}{x+1}$.
+D. $f(x) = \frac{2026^x}{\ln 2026}$.
+
+Câu 6. Trong mặt phẳng tọa độ $(Oxy)$, cho elip $(E)$ có phương trình chính tắc $\frac{x^2}{16} + \frac{y^2}{4} = 1$. Tiêu cự của elip $(E)$ bằng
+A. $4\sqrt{3}$.
+B. $4\sqrt{5}$.
+C. $8$.
+D. $2\sqrt{3}$.
+
+Câu 7. Tập nghiệm của phương trình $\tan x = 0$ là
+A. $S = \left\{\frac{\pi}{2} + k\pi,\, k \in \mathbb{Z}\right\}$.
+B. $S = \left\{\frac{\pi}{2} + k2\pi,\, k \in \mathbb{Z}\right\}$.
+C. $S = \{k2\pi,\, k \in \mathbb{Z}\}$.
+D. $S = \{k\pi,\, k \in \mathbb{Z}\}$.
+
+Câu 8. Cho $A$, $B$ là hai biến cố thỏa mãn $P(A) = 0,4$; $P(B) = 0,5$ và $P(A \cup B) = 0,76$. Tính $P(A \mid B)$.
+A. $P(A \mid B) = 0,28$.
+B. $P(A \mid B) = 0,7$.
+C. $P(A \mid B) = 0,14$.
+D. $P(A \mid B) = 0,35$.
+
+Câu 9. Cho biết đồ thị hàm số $y = \frac{2x^2 + x - 5}{x + 3}$ có đường tiệm cận xiên là đường thẳng $y = ax + b$ với $a, b \in \mathbb{R}$. Giá trị $a - b$ bằng
+A. $-3$.
+B. $-7$.
+C. $3$.
+D. $7$.
+
+Câu 10. Thư viện ghi lại số giờ đọc sách của $50$ sinh viên trong một ngày và thu được mẫu số liệu ghép nhóm sau:
+
+| Nhóm giờ | $[0;1)$ | $[1;2)$ | $[2;3)$ | $[3;4)$ | $[4;5)$ |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| Số sinh viên | $0$ | $15$ | $20$ | $9$ | $6$ |
+
+Khoảng biến thiên của mẫu số liệu ghép nhóm trên bằng
+A. $6$.
+B. $3$.
+C. $4$.
+D. $5$.
+
+Câu 11. Cho cấp số cộng $(u_n)$ biết $u_2 = 4u_1$ và $u_3 = 14$. Tính $u_{2026}$.
+A. $u_{2026} = 4058$.
+B. $u_{2026} = 4056$.
+C. $u_{2026} = 12158$.
+D. $u_{2026} = 12152$.
+
+Câu 12. Trong không gian với hệ tọa độ $Oxyz$, cho đường thẳng $d$ vuông góc với mặt phẳng $(Oyz)$. Một vectơ chỉ phương của đường thẳng $d$ là
+A. $\vec{u_2} = (1; 0; 0)$.
+B. $\vec{u_4} = (0; 1; 1)$.
+C. $\vec{u_1} = (0; 1; 0)$.
+D. $\vec{u_3} = (0; 0; 1)$.
+
+PHẦN II. Câu trắc nghiệm đúng sai. Thí sinh trả lời từ câu 1 đến câu 4. Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn đúng hoặc sai.
+
+Câu 1. Một trung tâm y tế được cấp một lô 10000 liều vắc-xin viêm não Nhật Bản để tiêm cho người dân trong vòng 30 ngày. Gọi $M(t)$ là số liều vắc-xin còn lại chưa sử dụng sau $t$ ngày, với $0 \le t \le 30$. Sau đúng 30 ngày, trung tâm còn lại 280 liều vắc-xin để dự phòng. Qua thống kê, tốc độ tiêm chủng tại thời điểm $t$ tỉ lệ thuận với bình phương thời gian còn lại, tức là $-M'(t) = k(30-t)^2,\, k > 0$.
+[HÌNH: Hộp thuốc vắc-xin JEVAX ghi dòng chữ VẮC-XIN VIÊM NÃO NHẬT BẢN và ba lọ vắc-xin nhỏ bên cạnh]
+![](images/cau_p2_1.png)
+a) Hàm số $M(t)$ có dạng $M(t) = \frac{k}{3}(30-t)^3 + C$.
+b) $k = 1,08$.
+c) Sau 20 ngày, trung tâm còn lại 460 liều vắc-xin chưa sử dụng.
+d) Tốc độ tiêm chủng trung bình trong 15 ngày đầu tiên là 567 liều/ngày.
+
+Câu 2. Lớp 12/1 có 25 bạn nam và 10 bạn nữ; lớp 12/2 có 20 bạn nam và 15 bạn nữ. Để chuẩn bị cho buổi sinh hoạt giao lưu với đơn vị kết nghĩa, Đoàn trường chọn ngẫu nhiên từ hai lớp trên mỗi lớp 2 học sinh. Sau khi nhóm 4 bạn đã tập hợp, cả nhóm bầu ngẫu nhiên một bạn trong số đó làm nhóm trưởng.
+a) Biết rằng nhóm trưởng là học sinh lớp 12/1, xác suất để bạn đó là nữ bằng $\frac{3}{7}$.
+b) Xác suất để bạn nhóm trưởng được bầu là một bạn nữ bằng $\frac{5}{14}$.
+c) Biết rằng nhóm trưởng là một bạn nữ, xác suất để bạn đó đến từ lớp 12/1 bằng $\frac{2}{5}$.
+d) Biết rằng nhóm trưởng là một bạn nữ, xác suất để ba bạn còn lại đều là nam bằng $\frac{550}{2023}$.
+
+Câu 3. Trong không gian với hệ trục tọa độ $Oxyz$, đơn vị trên mỗi trục tương ứng với $100\text{ m}$. Một trạm kiểm soát ven biển có vùng nhận diện tín hiệu là một khối cầu bán kính $800\text{ m}$, tâm của trạm đặt tại $I(1; 2; 1,2)$. Vào lúc 8 giờ 00 phút sáng, một tàu đánh cá di chuyển thẳng đều từ vị trí $A(16; -13; 0)$ đến vị trí $B(-14; 17; 0)$ và đến nơi lúc 8 giờ 30 phút sáng cùng ngày.
+[HÌNH: Trạm kiểm soát phát sóng tín hiệu hình khối cầu bao quanh và tàu thuyền di chuyển trên mặt biển]
+![](images/cau_p2_3.png)
+a) Phương trình mặt cầu ranh giới vùng tín hiệu là $(x - 1)^2 + (y - 2)^2 + (z - 1,2)^2 = 640000$.
+b) Tại thời điểm 8 giờ 10 phút sáng, tàu nằm trong vùng nhận diện tín hiệu của trạm.
+c) Vào lúc 8 giờ 20 phút, tàu ở vị trí gần trạm kiểm soát nhất.
+d) Khoảng thời gian tàu nằm trong vùng nhận diện tín hiệu của trạm không quá 12 phút.
+
+Câu 4. Cho hàm số $y = \frac{x+2}{x-1}$ có đồ thị $(C)$ và điểm $A(2; -3)$.
+a) Hàm số đã cho nghịch biến trên $\mathbb{R}$.
+b) Đồ thị $(C)$ có tâm đối xứng là điểm $I(1; 1)$.
+c) Tiếp tuyến của đồ thị $(C)$ tại giao điểm của $(C)$ và trục tung không đi qua điểm $A$.
+d) Gọi $\Delta$ là đường thẳng thay đổi nhưng luôn đi qua tâm đối xứng của $(C)$ và cắt $(C)$ tại hai điểm $M$, $N$. Diện tích nhỏ nhất của tam giác $AMN$ bằng $4\sqrt{3}$ (đvdt).
+
+PHẦN III. Câu trắc nghiệm trả lời ngắn. Thí sinh trả lời từ câu 1 đến câu 6.
+
+Câu 1. Tuyến đường sắt cao tốc sau khi đưa vào hoạt động đã đem lại nhiều thuận lợi, thúc đẩy phát triển kinh tế - xã hội của khu vực. Biết rằng sau khi khai trương, thời gian giữa hai chuyến tàu liên tiếp là $t$ (đơn vị: phút), với $2 \le t \le 20$, $t \in \mathbb{N}^*$. Sức chở của tàu cao tốc có liên hệ với $t$ như sau:
+• Khi $10 \le t \le 20$, tàu ở trạng thái đầy, sức chở là 1200 người.
+• Khi $2 \le t < 10$, sức chở giảm so với mức đầy; số người giảm tỉ lệ thuận với $(10 - t)^2$. Biết rằng khi $t = 5$ phút thì sức chở là 950 người.
+Gọi $P(t)$ (người) là sức chở của tàu khi thời gian giữa hai chuyến là $t$ phút. Giả sử lợi nhuận ròng của tuyến khi đó là $Q(t) = \frac{t}{5}P(t) - 40t^2 + 660t - 1372$ (triệu đồng). Hỏi khi $t$ bằng bao nhiêu phút thì lợi nhuận ròng trung bình mỗi phút $\frac{Q(t)}{t}$ đạt giá trị lớn nhất?
+[HÌNH: Đoàn tàu cao tốc chạy trên tuyến đường sắt trên cao qua đô thị]
+![](images/cau_p3_1.png)
+
+Câu 2. Cho một hình tam giác đều cạnh $a = 40\text{ cm}$ (Hình a). Chia mỗi cạnh của tam giác đó thành 3 đoạn thẳng có độ dài bằng nhau và vẽ ra phía ngoài một tam giác đều nhận đoạn ở giữa làm cạnh đồng thời bỏ đi đoạn ở giữa đó, ta được Hình b). Tiếp tục chia mỗi cạnh của Hình b) thành 3 đoạn thẳng có độ dài bằng nhau và vẽ ra phía ngoài một tam giác đều nhận đoạn ở giữa làm cạnh đồng thời bỏ đi đoạn ở giữa đó, ta được Hình c). Lặp lại quá trình trên; từ Hình c) ta tạo nên Hình d); từ Hình d) ta tạo nên Hình e); ... và cứ thế ta sẽ được một dãy các hình, được gọi là dãy hình Bông tuyết Koch.
+[HÌNH: Dãy hình bông tuyết Koch qua các bước tạo hình được đánh số a), b), c), d), e), ...]
+![](images/cau_p3_2.png)
+Gọi $S_n$ là diện tích của hình ở bước thứ $n$ ($S_0$ là diện tích tam giác đều ban đầu). Tính giới hạn của diện tích hình thu được khi quá trình trên lặp lại vô hạn lần, tức là tính $\lim_{n \to +\infty} S_n$ (làm tròn kết quả đến hàng đơn vị).
+
+Câu 3. Có 3 hộp đựng bi: Hộp I có 3 bi trắng và 2 bi đen. Hộp II có 1 bi trắng và 4 bi đen. Hộp III có 4 bi đen.
+[HÌNH: Ba chiếc hộp hình khối lập phương trong suốt: Hộp I chứa 3 bi trắng và 2 bi đen; Hộp II chứa 1 bi trắng và 4 bi đen; Hộp III chứa 4 bi đen]
+![](images/cau_p3_3.png)
+Người ta gieo một con xúc xắc cân đối, đồng chất.
+• Nếu con xúc xắc xuất hiện mặt chẵn thì lấy ngẫu nhiên đồng thời 2 viên bi từ hộp I bỏ vào hộp II; sau đó lắc đều hộp II và lấy ngẫu nhiên đồng thời ra 2 viên bi.
+• Nếu con xúc xắc xuất hiện mặt lẻ thì lấy ngẫu nhiên đồng thời 2 viên bi từ hộp I bỏ vào hộp III; sau đó lắc đều hộp III và lấy ngẫu nhiên đồng thời ra 2 viên bi.
+Biết rằng 2 viên bi lấy ra ở bước cuối cùng là 2 viên bi màu đen. Tính xác suất để con xúc xắc xuất hiện mặt chẵn (kết quả làm tròn đến hàng phần trăm).
+
+Câu 4. Cho hình chóp cụt tứ giác đều $ABCD.A'B'C'D'$ có độ dài các cạnh $AB = 8$, $A'B' = 4$ và $AA' = 5$. Hỏi khoảng cách giữa hai đường thẳng $AA'$ và $CD$ bằng bao nhiêu (làm tròn kết quả đến hàng phần chục)?
+[HÌNH: Hình chóp cụt tứ giác đều ABCD.A'B'C'D' có đáy lớn ABCD, đáy nhỏ A'B'C'D']
+![](images/cau_p3_4.png)
+
+Câu 5. Cho đồ thị của các hàm số $f(x) = -x^4 + x$, $g(x) = x^4 - x^3$ và $h(x) = a(x - x^2)$ ($a \in \mathbb{R}$) tạo thành hai miền hình phẳng có diện tích $S_1$, $S_2$ như hình vẽ ($S_1$ là phần màu trắng, $S_2$ là phần được tô màu). Biết $S_1 = 2S_2$, hỏi giá trị của biểu thức $1 - 30a$ bằng bao nhiêu?
+[HÌNH: Đồ thị hàm số y = f(x), y = h(x), y = g(x) trên hệ trục tọa độ Oxy với hai miền S_1 màu trắng và S_2 tô màu]
+![](images/cau_p3_5.png)
+
+Câu 6. Trong sảnh một trung tâm hội nghị, các kiến trúc sư lắp đặt một khối cầu trang trí phản quang có mặt ngoài được mô phỏng bởi phương trình $x^2 + y^2 + z^2 = 9$ (đơn vị: mét). Một đèn chiếu điểm (spotlight) di chuyển dọc theo trục ray thẳng có phương trình $d: x - 1 = \frac{y - 1}{2} = \frac{z - 2}{-3}$. Khi đèn ở vị trí $M$, các tia sáng phát ra tiếp xúc với khối cầu. Tập hợp các tiếp điểm tạo thành một đường tròn nằm trên mặt phẳng $(P)$, là ranh giới giữa vùng sáng và vùng tối (tham khảo hình vẽ bên).
+[HÌNH: Đèn chiếu điểm M trên đường ray d phát chùm tia tiếp xúc khối cầu tâm O, tạo thành đường tròn tiếp xúc trên mặt phẳng (P), vị trí cảm biến D]
+![](images/cau_p3_6.png)
+Khi đèn $M$ di chuyển đến vị trí sao cho mặt phẳng $(P)$ đi qua mắt cảm biến cố định tại $D(2; 0; 1)$, hãy tính khoảng cách từ đèn $M$ đến tâm khối cầu (làm tròn đến hàng phần chục của mét).

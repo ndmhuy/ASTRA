@@ -1,0 +1,153 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "c2f5b33ca5c05ad4",
+    "topic": "Di truyền phân tử",
+    "part": "P1",
+    "level": "TH",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Trình tự DNA hai mạch có định hướng, vị trí đánh dấu, thông tin mã hóa một số amino acid và quy ước xử lí sản phẩm dịch mã.",
+        "task": "Chọn nhận định sai về mạch khuôn, trình tự sản phẩm, độ dài sản phẩm hoặc tác động của thay thế nucleotide.",
+        "reasoning": "Xác định chiều phiên mã và bộ ba mở đầu; thiết lập khung đọc; đối chiếu các bộ ba với thông tin mã hóa; xác định điểm kết thúc và loại các thành phần không còn trong sản phẩm hoàn chỉnh; kiểm tra bộ ba sau đột biến.",
+        "combines": [
+          "Phiên mã",
+          "Mã di truyền",
+          "Dịch mã",
+          "Đột biến gene"
+        ],
+        "difficulty_source": "Phải duy trì nhất quán chiều đọc và khung đọc khi chuyển giữa nhiều biểu diễn",
+        "evidence_uncertainty": "Bản chép trình tự có các mốc vị trí nhưng cách căn mốc trên hình gốc chưa được kiểm tra độc lập; chi tiết sai lệch khi đếm độ dài không thể xác nhận chỉ từ đáp án.",
+        "evidence_class": "official"
+      },
+      {
+        "given": "Một đoạn mạch khuôn có chiều đọc, bảng đối chiếu bộ ba với sản phẩm và các nhận định về biến đổi trình tự.",
+        "task": "Xác định số nhận định đúng về sản phẩm ban đầu và sản phẩm sau đột biến.",
+        "reasoning": "Lập trình tự phiên mã theo chiều bổ sung; chuyển các bộ ba thành chuỗi sản phẩm; kiểm tra tác động của thay thế lên bộ ba và điểm dừng; lập lại khung đọc sau thêm nucleotide; tổng hợp các kết luận.",
+        "combines": [
+          "Nguyên tắc bổ sung",
+          "Phiên mã và dịch mã",
+          "Đột biến thay thế",
+          "Đột biến dịch khung"
+        ],
+        "difficulty_source": "Phải giữ đúng chiều bổ sung và khung đọc qua nhiều kiểu đột biến",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Hình cấu trúc gene có các vùng chức năng và các đoạn mã hóa xen kẽ đoạn không mã hóa.",
+        "task": "Chọn nhận định phù hợp về loại gene hoặc chức năng các đoạn.",
+        "reasoning": "Nhận diện cấu trúc phân mảnh trên hình; liên hệ với gene trong nhân và quá trình xử lí RNA; đối chiếu các nhận định.",
+        "combines": [
+          "Cấu trúc gene",
+          "Tổ chức hệ gene",
+          "Xử lí RNA"
+        ],
+        "difficulty_source": "Dấu hiệu phân mảnh trên hình dẫn trực tiếp tới kiến thức cơ bản",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "b68b84764a9b|P1|13|None",
+      "4b4716b94db4|P1|3|None",
+      "55c12f561006|P1|9|None"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "c2f5b33ca5c05ad4",
+    "stem": "Một gene giả định tạo ra tiền mRNA gồm các đoạn theo thứ tự: exon E1 dài 90 nucleotide, intron I1 dài 120 nucleotide, exon E2 dài 60 nucleotide, intron I2 dài 150 nucleotide và exon E3 dài 90 nucleotide. Trong quá trình tạo mRNA trưởng thành, cả hai intron bị loại bỏ và cả ba exon được giữ lại nguyên vẹn. Không tính mũ 5′ và đuôi poly(A), mRNA trưởng thành dài bao nhiêu nucleotide?",
+    "options": [
+      {
+        "label": "A",
+        "text": "240 nucleotide."
+      },
+      {
+        "label": "B",
+        "text": "270 nucleotide."
+      },
+      {
+        "label": "C",
+        "text": "390 nucleotide."
+      },
+      {
+        "label": "D",
+        "text": "510 nucleotide."
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "A",
+        "level": "TH"
+      }
+    ],
+    "solution": "Chọn A. mRNA trưởng thành giữ ba exon nên có độ dài 90 + 60 + 90 = 240 nucleotide. Tổng độ dài hai intron là 270 nucleotide; tiền mRNA dài 510 nucleotide. Nếu chỉ loại intron I1 thì còn 390 nucleotide, chưa phải sản phẩm được mô tả.",
+    "distractors": [
+      {
+        "label": "B",
+        "sub": null,
+        "mistake": "Cộng độ dài các intron thay vì các exon.",
+        "why_plausible": "Học sinh đảo ngược vai trò của phần bị loại bỏ và phần được giữ lại khi cắt nối."
+      },
+      {
+        "label": "C",
+        "sub": null,
+        "mistake": "Lấy tổng độ dài tiền mRNA trừ riêng intron I1.",
+        "why_plausible": "Học sinh hiểu cần loại intron nhưng chỉ thực hiện với đoạn intron đầu tiên."
+      },
+      {
+        "label": "D",
+        "sub": null,
+        "mistake": "Cộng toàn bộ exon và intron, dùng độ dài tiền mRNA làm độ dài mRNA trưởng thành.",
+        "why_plausible": "Học sinh chưa phân biệt sản phẩm trước và sau cắt nối."
+      }
+    ],
+    "level_reason": "Học sinh diễn giải cấu trúc tiền mRNA, xác định các đoạn còn lại sau cắt nối rồi thực hiện phép cộng quen thuộc. Đây là quy trình thông thường ở mức TH.",
+    "prerequisites": [
+      "Phân biệt exon và intron",
+      "Quá trình tạo mRNA trưởng thành từ tiền mRNA"
+    ],
+    "variation_guidance": "Thay đổi độ dài các đoạn hoặc số intron nhưng giữ rõ quy tắc cắt nối. Không tăng số phép cộng để gán mức VD. Các dữ kiện là giả định được tạo mới cho mẫu minh họa.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "c2f5b33ca5c05ad4",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "A",
+        "level": "TH"
+      }
+    ],
+    "solution": "mRNA trưởng thành chỉ giữ ba exon nên có độ dài 90 + 60 + 90 = 240 nucleotide.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Áp dụng quy tắc cắt nối đã học và cộng độ dài các exon là thao tác quen thuộc."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/sinh-hoc/70938d12e305ec1d5bcd09c53b7e67d7e6dcc2833f82ac6bb94268fc270d055e.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/sinh-hoc/70938d12e305ec1d5bcd09c53b7e67d7e6dcc2833f82ac6bb94268fc270d055e.resolve.json"
+}

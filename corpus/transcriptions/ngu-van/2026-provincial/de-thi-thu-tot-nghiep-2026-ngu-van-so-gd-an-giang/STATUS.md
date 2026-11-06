@@ -1,0 +1,1 @@
+Transcribed by subagent (Claude / Gemini), date 2026-10-31, route: docx -> pdf, pages: 2, câu count: 7, figure count: 0, unreadable count: 0, second pass done: yes, solutions from page 3 not transcribed. Provincial exam, copy from a third-party host; internal evidence only.

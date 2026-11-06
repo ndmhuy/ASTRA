@@ -1,0 +1,61 @@
+{
+  "rows": [
+    {
+      "qid": "q021",
+      "topic": "Khoảng cách giữa hai đường thẳng chéo nhau",
+      "grade": 11,
+      "part": "P3",
+      "idx": 5,
+      "solved_answer": "1,4",
+      "solved_statements": {},
+      "solution": "Đặt A(0;0;0), B(3;0;0), C(3/2;3√3/2;0), B'(3;0;4), C'(3/2;3√3/2;4). Hai vectơ chỉ phương là u=(3;0;4), v=(-3/2;3√3/2;4). Khi đó u×v=(-6√3;-18;9√3/2). Khoảng cách bằng |AB·(u×v)|/|u×v|=12/√73≈1,4045, làm tròn được 1,4.",
+      "confidence": "high",
+      "discrimination": "medium",
+      "steps": 5,
+      "routine": true,
+      "direct_recall": false,
+      "cue_use": "Tính đứng của lăng trụ và đáy đều xác định tọa độ; phải dựng hai hướng rồi tính khoảng cách.",
+      "alternatives": [],
+      "statements": [],
+      "error_flags": [],
+      "coverage_comment": "Phù hợp dạng trả lời ngắn về khoảng cách trong profile chính thức. Cấu hình trực tiếp, ít ràng buộc gián tiếp hơn các mẫu phân hóa cao; lời giải tọa độ huy động kiến thức lớp 12.",
+      "stimulus_use": {
+        "depends_on_shared_context": false,
+        "context_available": true,
+        "reason": "Giả thiết riêng của câu đủ xác định hình; không cần hình vẽ hoặc dữ kiện từ câu khác."
+      }
+    },
+    {
+      "qid": "q022",
+      "topic": "Ứng dụng cấp số nhân trong bài toán trả góp",
+      "grade": 11,
+      "part": "P3",
+      "idx": 6,
+      "solved_answer": "51",
+      "solved_statements": {},
+      "solution": "Tính bằng triệu đồng. Gọi D_n là dư nợ sau lần trả thứ n, khi chưa tất toán: D_0=500, D_n=1,008D_{n-1}-12. Suy ra D_n=500·1,008^n-12(1,008^n-1)/0,008=1500-1000·1,008^n. Điều kiện tất toán là 1,008^n≥1,5, tức n≥ln(1,5)/ln(1,008)≈50,886. Vì số tháng nguyên nên cần ít nhất 51 tháng; tháng 50 chưa đủ, tháng 51 trả phần còn lại.",
+      "confidence": "high",
+      "discrimination": "medium",
+      "steps": 5,
+      "routine": true,
+      "direct_recall": false,
+      "cue_use": "Lãi được cộng trước khoản trả cuối tháng; mốc trả đầu tiên xác định chỉ số truy hồi. Yêu cầu ít nhất buộc lấy số nguyên lớn hơn hoặc bằng ngưỡng.",
+      "alternatives": [],
+      "statements": [],
+      "error_flags": [],
+      "coverage_comment": "Dạng trả lời ngắn phù hợp. Phải kết hợp tăng trưởng nợ với khoản trả và ngưỡng nguyên; không chỉ tính lãi kép trên vốn ban đầu. Yêu cầu làm tròn là thừa vì kết quả vốn là số tháng nguyên.",
+      "stimulus_use": {
+        "depends_on_shared_context": false,
+        "context_available": true,
+        "reason": "Lãi suất, vốn vay, khoản trả và lịch trả đều có trong câu; không phụ thuộc câu khác."
+      }
+    }
+  ],
+  "calibration_limits": [
+    "Chỉ đánh giá hai qid được yêu cầu. Mức phân hóa là ước lượng chuyên gia theo cấu trúc suy luận, lấy profile chính thức làm chuẩn; không phải chỉ số thực nghiệm.",
+    "Profile chính thức chỉ gồm hai đề và chưa có mẫu trả góp trực tiếp; không dùng mức khó của profile tỉnh để thay chuẩn chính thức.",
+    "Thứ tự quan sát P1–P2–P3 khớp dữ liệu đối chiếu. Registry không quy định thứ tự khối, thứ tự chuẩn hay nhóm tự do vị trí; chưa đủ căn cứ khẳng định một trình tự bắt buộc.",
+    "Không thấy nhánh tự chọn, phạm vi câu in mâu thuẫn hoặc ngữ cảnh chung bị thiếu ở hai câu đích. Các ý đúng/sai trong tài liệu thuộc từng câu, không phải cụm nhiều câu.",
+    "Đánh giá từ mã nguồn được cung cấp; chưa kiểm tra bố cục trang sau khi kết xuất."
+  ]
+}

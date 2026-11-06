@@ -1,0 +1,275 @@
+status: ocr-draft
+source: official/2026-provincial-sinh-hoc/de-thi-thu-tot-nghiep-2026-mon-sinh-so-gd-hai-phong-lan-2/paper.docx | Hải Phòng | mã đề 0401
+
+SỞ GIÁO DỤC VÀ ĐÀO TẠO — HẢI PHÒNG
+ĐỀ KHẢO SÁT KỲ THI TỐT NGHIỆP THPT
+Năm học 2025-2026
+ĐỀ CHÍNH THỨC (Đề thi có 05 trang)
+Môn: SINH HỌC
+Thời gian làm bài: 50 phút (không tính thời gian phát đề)
+Họ tên thí sinh: ………………………………………. Số báo danh: ………. Mã đề thi: 0401
+
+## Phần I. Câu trắc nghiệm nhiều phương án lựa chọn (4,5 điểm)
+*(Thí sinh trả lời từ câu 1 đến câu 18. Mỗi câu hỏi thí sinh chỉ chọn một phương án.)*
+
+**Câu 1.** Trong rừng nguyên sinh, Voọc Cát Bà (*Trachypithecus poliocephalus*) là loài quý hiếm có nguy cơ tuyệt chủng cao nhất, hiện chỉ còn 60-70 cá thể phân bố duy nhất ở Cát Bà (Hải Phòng) và không có ở bất cứ nơi nào trên thế giới. Voọc Cát Bà (*Trachypithecus poliocephalus*) trong quần xã rừng nguyên sinh được gọi là
+
+A. loài ngoại lai.  B. loài ưu thế.  C. loài đặc trưng.  D. loài chủ chốt.
+
+**Câu 2.** Lipid không có đặc điểm nào dưới đây?
+
+A. Tan trong dung môi hữu cơ.  B. Kị nước.
+
+C. Có vai trò dự trữ năng lượng cho tế bào.  D. Cấu tạo theo nguyên tắc đa phân.
+
+**Câu 3.** Theo thuyết tiến hóa tổng hợp hiện đại, chọn lọc tự nhiên dẫn tới hiện tượng nào sau đây?
+
+A. Tạo ra các kiểu gene thích nghi.  B. Tạo ra các allele mới.
+
+C. Hình thành quần thể thích nghi.  D. Hình thành các kiểu hình mới.
+
+**Câu 4.** Trong nông nghiệp, khi trồng các giống cây biến đổi gene mang gene kháng thuốc diệt cỏ, một mối lo ngại lớn về môi trường sinh thái là hạt phấn mang gene kháng thuốc có thể bay theo gió, thụ phấn cho các loài cỏ dại họ hàng và vô tình tạo ra “siêu cỏ dại” cũng có khả năng kháng thuốc. Giải pháp tối ưu để cây trồng vẫn có đặc tính kháng thuốc nhưng hoàn toàn không thể truyền gene này cho loài khác thông qua giao phấn. Biện pháp đó là gì?
+
+A. Chuyển gene kháng thuốc diệt cỏ vào phân tử DNA trong lục lạp của giống cây trồng.
+
+B. Chuyển gene kháng thuốc diệt cỏ vào DNA nhiễm sắc thể trong nhân của giống cây trồng.
+
+C. Lai giống cây mang gene kháng thuốc diệt cỏ với một dòng cây có ti thể bị đột biến.
+
+D. Gây đột biến nhân tạo để loại bỏ hoàn toàn tế bào chất trong quá trình hình thành hạt phấn.
+
+**Câu 5.** Dạng đột biến nào sau đây có thể làm tăng số lượng gene trên một nhiễm sắc thể?
+
+A. Lặp đoạn.  B. Lệch bội.  C. Đa bội.  D. Đảo đoạn.
+
+**Câu 6.** Bằng chứng nào sau đây được xem là bằng chứng tiến hóa trực tiếp?
+
+A. Cơ quan thoái hóa.  B. Cơ quan tương tự.  C. Cơ quan tương đồng.  D. Xương khủng long.
+
+**Câu 7.** Một quần thể cân bằng di truyền có tần số allele R là 0,3 và r là 0,7. Tổng tần số kiểu gene RR và Rr trong quần thể trên là
+
+A. 0,51.  B. 0,42.  C. 0,49.  D. 0,09.
+
+**Câu 8.** Hình bên mô tả hình thái nhiễm sắc thể của một tế bào rễ hành trong quá trình nguyên phân. Theo lý thuyết, hình thái NST trong hình bên đang ở kì nào?
+
+A. Kì giữa.  B. Kì sau.  C. Kì đầu.  D. Kì cuối.
+
+[HÌNH: Các nhiễm sắc thể đơn đang phân li về hai cực tế bào.]
+![](images/cau_8.png)
+
+**Câu 9.** Thực vật hấp thụ nitrogen dưới dạng nào sau đây?
+
+A. $N_2$ và $NO_2$.  B. Nitrogen hữu cơ.
+
+C. $NH_4^+$ và $NO_3^-$.  D. $NH_4^+$ và $NO$.
+
+**Câu 10.** Cấu trúc siêu hiển vi của nhiễm sắc thể được mô tả như hình bên, hai thành phần (A) và (B) lần lượt là cấu trúc nào sau đây?
+
+A. Nucleosome và histone.
+
+B. Nucleosome và lipid.
+
+C. Sợi cơ bản và histone.
+
+D. Histone và RNA.
+
+[HÌNH: Sơ đồ DNA quấn quanh các lõi protein, cuộn thành nhiễm sắc thể; ký hiệu (A), (B), 1 và 2.]
+![](images/cau_10.png)
+
+**Câu 11.** Sinh vật nào sau đây thuộc bậc dinh dưỡng thấp nhất trong chuỗi thức ăn?
+
+A. Lúa.  B. Rắn.  C. Châu chấu.  D. Nhái.
+
+**Câu 12.** Biện pháp nào sau đây không phải là biện pháp cải tạo sinh học?
+
+A. Dùng nấm để xử lý chất thải công nghiệp.
+
+B. Trồng cỏ Vetiver (*Chrysopogon zizanioides*) hấp thụ kim loại nặng và các chất ô nhiễm trong đất.
+
+C. Nhân bản vô tính loài động vật quí hiếm có nguy cơ tuyệt chủng.
+
+D. Sử dụng vi khuẩn xử lý nước thải.
+
+**Câu 13.** Hình bên minh họa quá trình phân hoá loài của các loài (1), (2), (3) và (4). Biết rằng, cách ly địa lí chỉ xảy ra do sự hình thành dãy núi và sự tách biệt của các đảo, không có hiện tượng di – nhập cư. Theo lí thuyết, nhận định nào dưới đây đúng?
+
+A. Loài (4) được hình thành từ loài (3) theo cơ chế hình thành loài khác khu vực địa lí.
+
+B. Loài (2) và (3) được hình thành từ loài (1) đều theo cơ chế hình thành loài khác khu vực địa lí.
+
+C. Loài (2) và loài (3) có quan hệ họ hàng gần hơn so với loài (1) và loài (3).
+
+D. Cách li địa lí là nguyên nhân trực tiếp gây ra những biến đổi trên cơ thể sinh vật, tạo ra sự khác biệt vốn gene so với quần thể gốc trên đảo ban đầu.
+
+[HÌNH: Sơ đồ phân hóa loài trên đảo và sau khi hình thành dãy núi; chú giải ký hiệu các loài (1)–(4).]
+![](images/cau_13.png)
+
+**Câu 14.** Chứng lùn bẩm sinh ở người là do suy giảm nồng độ hormone tăng trưởng. Nghiên cứu sự di truyền tính trạng bệnh này ở một gia đình, người ta đã xây dựng được sơ đồ phả hệ ở Hình c. Tiến hành lấy mẫu DNA của 5 thành viên trong phả hệ đem đi xử lí với cùng một loại enzyme cắt giới hạn, sau đó sử dụng mẫu dò để lai DNA và đem đi điện di trên gel. Độ dày mỏng của các băng điện di thể hiện số lượng bản sao của đoạn DNA có kích thước đó. Kết quả được thể hiện ở Hình d. Dựa vào thông tin trên, hãy cho biết phát biểu nào dưới đây không đúng?
+
+[HÌNH: Phả hệ Hình c và gel điện di Hình d gồm các mẫu II-1, III-2, III-3, III-4, III-5 và đối chứng; gel đánh dấu các băng 26 kb, 23 kb, 18,5 kb, 16 kb.]
+![](images/cau_14.png)
+
+A. Gene mã hóa hormone tăng trưởng của III-2 bị mất một đoạn có kích thước 7,5 kb so với người bình thường không mang đột biến.
+
+B. Theo lý thuyết, nếu người III-4 kết hôn và sinh con với người kiểu hình bình thường thì xác suất sinh con bị chứng lùn bẩm sinh cao nhất là 25%.
+
+C. Phân đoạn 26kb trong bản gel điện di có khả năng cao mang gene mã hoá hormone tăng trưởng.
+
+D. Gene mã hóa hormone tăng trưởng nằm trên nhiễm sắc thể thường.
+
+**Câu 15.** Ở vùng ven biển phía đông Châu Phi, nhiệt độ nước dao động từ 12°C-20°C, tảo bẹ vàng (*Laminaria ochroleuca*) là loài sinh vật có ảnh hưởng lớn trong hệ sinh thái. Vào thời điểm chuyển mùa, hàm lượng dinh dưỡng trong nước cao, tảo bẹ vàng phát triển mạnh gây ra hiện tượng phú dưỡng. Đánh giá ảnh hưởng của các nhân tố sinh thái lên khả năng sống sót và sinh trưởng của tảo bẹ vàng (*Laminaria ochroleuca*) qua hình bên, kết luận sau đây không đúng?
+
+A. Nhiệt độ và hàm lượng dinh dưỡng đều là các nhân tố sinh thái vô sinh có thể đồng thời ảnh hưởng đến tốc độ sinh trưởng của quần thể tảo này.
+
+B. Khi nhiệt độ môi trường tăng lên 28°C, quần thể tảo bẹ vàng vượt quá giới hạn sinh thái trên về nhiệt độ.
+
+C. Kết quả thí nghiệm cho thấy hiện tượng phú dưỡng thường diễn ra khi nhiệt độ xuống thấp.
+
+D. Việc cung cấp lượng dinh dưỡng cao có thể bù đắp hoàn toàn sự suy giảm tốc độ tăng trưởng do nhiệt độ cao (24°C) gây ra.
+
+[HÌNH: Đồ thị tỉ lệ sống sót theo nhiệt độ, LC50 = 24,6°C, và biểu đồ tốc độ tăng trưởng ở mức dinh dưỡng thấp/cao theo nhiệt độ.]
+![](images/cau_15.png)
+
+**Câu 16.** Hình bên thể hiện sự phân bố cá thể của 3 quần thể sinh vật trong một khu vực khảo sát. Nhận xét nào sau đây là đúng về mỗi quần thể trên?
+
+A. Kích thước của quần thể Z là nhỏ nhất.
+
+B. Sự phân bố cá thể của quần thể X giống kiểu phân bố của quần thể chim hải âu lông mày đen (*Thalassarche melanophris*) khi làm tổ.
+
+C. Mối quan hệ phổ biến giữa các cá thể trong quần thể Z là cạnh tranh.
+
+D. Quần thể Y có mật độ cá thể cao nhất.
+
+[HÌNH: Các dấu tròn, hình thoi, tam giác phân bố trong ô khảo sát 5 m × 3 m; chú giải tương ứng quần thể X, Y, Z.]
+![](images/cau_16.png)
+
+**Câu 17.** Trong một thí nghiệm nghiên cứu quá trình quang hợp của một loài thực vật (P) thuộc nhóm thực vật $C_4$, người ta sử dụng phương pháp theo dõi đồng vị phóng xạ $^{14}C$ đánh dấu trong phân tử $CO_2$. Đầu tiên, bổ sung một lượng $^{14}CO_2$ vào một bình kín và chiếu sáng liên tục. Mẫu được lấy ra xử lý làm ngừng quá trình chuyển hóa ngay lập tức, sau đó tiến hành đo hoạt độ carbon phóng xạ trong một số hợp chất (A, B, C, D, E) tại các thời điểm khác nhau: bắt đầu từ khi bổ sung carbon phóng xạ và sau đó 10 giây - 20 giây - 40 giây - … - 140 giây. Kết quả thể hiện ở hình bên. Theo lý thuyết, mỗi chất từ A–E tương ứng là:
+
+[HÌNH: Đồ thị hoạt độ phóng xạ của năm chất A–E theo thời gian từ 0 đến 140 giây.]
+![](images/cau_17.png)
+
+A. A – Sucrose, B – PEP, C – Oxaloacetate, D - RuBP, E – 3-PGA.
+
+B. A – Sucrose, B – PEP, C – Oxaloacetate, D - 3-PGA, E – RuBP.
+
+C. A – PEP, B – Sucrose, C – Oxaloacetate, D - RuBP, E - 3-PGA.
+
+D. A – Sucrose, B – PEP, C – 3-PGA, D – Oxaloacetate, E – RuBP.
+
+**Câu 18.** Để tạo plasmid có chứa gene mã hoá insulin, nhiều bản sao của gene này đã được xử lí và trộn với các plasmid đã được cắt. Trong quá trình này, chỉ một số plasmid được vi khuẩn chủ tiếp nhận có thể sản xuất được insulin. Hình bên cho thấy 3 loại plasmid (X, Y và Z) khác nhau đã được hình thành trong quá trình trên. Theo lý thuyết, trường hợp nào dưới đây đều là những chủng vi khuẩn tiếp nhận plasmid không có khả năng sinh tổng hợp insulin?
+
+[HÌNH: Sơ đồ promoter, gene chỉ thị, gene insulin và chiều phiên mã; ba plasmid tái tổ hợp X, Y, Z.]
+![](images/cau_18.png)
+
+A. X và Y.  B. Y và Z.  C. X, Y và Z.  D. X và Z.
+
+## Phần II. Câu trắc nghiệm đúng sai (4,0 điểm)
+*(Thí sinh trả lời từ câu 1 đến câu 4. Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn đúng hoặc sai.)*
+
+**Câu 1.** Bệnh tan máu bẩm sinh (Thalassemia) là một trong những bệnh lý di truyền phổ biến nhất trên thế giới cũng như tại Việt Nam. Bệnh β-thalassemia do các đột biến trên gene HBB nằm trên nhiễm sắc thể số 11 gây ra, làm giảm hoặc mất khả năng tổng hợp chuỗi β-globin của phân tử Hemoglobin. Phân tích phân tử trên một gia đình ở Việt Nam có hai vợ chồng đều không biểu hiện bệnh nhưng sinh ra một bé gái bị β-thalassemia thể nặng. Kết quả giải trình tự gene HBB cho thấy bé gái mang đột biến đồng hợp tử ở codon 17. Đây là đột biến điểm dạng thay thế nucleotide loại T bằng nucleotide loại A trên mạch khuôn của gene dẫn tới biến đổi bộ ba mã hóa amino acid thành bộ kết thúc UAG trên mRNA. Cả bố và mẹ của em bé đều được xác định mang kiểu gene dị hợp tử về đột biến này.
+
+a) Bệnh β-thalassemia do đột biến gene HBB di truyền theo quy luật di truyền liên kết với giới tính.
+
+b) Đột biến có thể xảy ra ở cặp nucleotide thứ 51 trên gene và là đột biến lặn.
+
+c) Sàng lọc người lành mang gene bệnh để tư vấn di truyền trước hôn nhân là biện pháp phòng bệnh cấp 1 hiệu quả nhất đối với Thalassemia.
+
+d) Xét trong một tế bào của người mẹ, giả sử cặp allele HBB tiến hành phiên mã 5 lần. Tổng số nucleotide loại Adenine (A) tự do mà môi trường nội bào cần cung cấp riêng cho đoạn trình tự nucleotide (tương ứng với codon 17) trên các phân tử mRNA tạo ra là 15.
+
+**Câu 2.** Ở người, bệnh galactosemia là bệnh rối loạn chuyển hóa di truyền, bệnh do các allele lặn a, b, d nằm trên NST thường phân li độc lập gây nên. Trong kiểu gene có đầy đủ 3 loại allele trội A, B, D thì cơ thể phát triển bình thường; các kiểu gene còn lại quy định kiểu hình bệnh galactosemia. Cho sơ đồ tóm tắt như hình bên:
+
+[HÌNH: Sơ đồ chuyển hóa galactose thành chất A, chất B, sản phẩm G; các allele A, B, D quy định enzyme cho các bước.]
+![](images/cau_2_phan_ii.png)
+
+a) Đường galactose không được chuyển hóa thành sản phẩm G sẽ gây bệnh galactosemia.
+
+**Câu 3.** Cá xương là đại diện có hệ hô hấp tiến hóa và thích nghi cao nhất với môi trường nước nhờ cơ chế trao đổi khí chuyên biệt. Hình dưới đây mô tả chi tiết cấu tạo và hoạt động trao đổi khí ở mang cá.
+
+[HÌNH: Cá và sơ đồ dòng nước, dòng máu ngược chiều qua các phiến mang, có chú thích máu giàu/nghèo $O_2$.]
+![](images/cau_3_phan_ii.png)
+
+a) Trên các phiến mang, chiều của dòng máu chảy trong mạng lưới mao mạch ngược với chiều của dòng nước đi qua mang.
+
+b) Hiện tượng dòng chảy ngược chiều giúp duy trì sự chênh lệch nồng độ khí $O_2$ và $CO_2$ dọc theo toàn bộ chiều dài của mao mạch.
+
+c) Khi máu di chuyển dọc theo mao mạch từ đầu đến cuối phiến mang, nồng độ $O_2$ trong máu giảm dần để nhường chỗ cho $CO_2$.
+
+d) Ứng dụng nguyên lý ở mang cá vào thiết bị ECMO (tim phổi nhân tạo) điều trị suy hô hấp, dòng máu và dòng khí được bố trí chảy ngược chiều nhau nhằm mục đích giúp nồng độ $O_2$ trong máu nhanh chóng đạt trạng thái cân bằng với nồng độ $O_2$ của dòng khí nhân tạo tại mọi điểm trên màng trao đổi.
+
+**Câu 4.** Để nghiên cứu sự thay đổi trong quần xã tảo có khả năng sinh trưởng trên đá theo thời gian, các nhà khoa học đã tiến hành một thí nghiệm theo dõi diễn thế sinh thái của các loài tảo bằng cách đánh giá mức độ bao phủ của chúng trên bề mặt đá nhân tạo. Trong thí nghiệm này, các bề mặt đá nhân tạo được đặt trong môi trường tự nhiên, và tỷ lệ che phủ của các loài tảo được đo lường định kỳ trong khoảng thời gian hai năm. Kết quả thu được được thể hiện dưới dạng đồ thị ở hình bên, phản ánh sự biến động của từng loài trong quá trình diễn thế, bao gồm sự xuất hiện, cạnh tranh và thay thế giữa các nhóm tảo theo thời gian.
+
+[HÌNH: Đồ thị tỷ lệ che phủ của bốn loài tảo theo thời gian (tháng), từ tháng 3 đến tháng 24.]
+![](images/cau_4_phan_ii.png)
+
+a) Loài tảo *Ulva lactuca* là loài tiên phong trong quá trình diễn thế trên.
+
+b) Trong năm đầu tiên, loài tảo *G. leptorrhynchos* đóng vai trò là loài chủ chốt.
+
+c) Để đánh giá độ giàu loài của các loài tảo thì phương pháp các nhà khoa học sử dụng là tỷ lệ che phủ.
+
+d) Sau 2 năm, tất cả các loài tảo đều đạt tỷ lệ che phủ tối đa và ổn định, không còn biến động.
+
+## Phần III. Câu trắc nghiệm trả lời ngắn (1,5 điểm)
+*(Thí sinh trả lời từ câu 1 đến câu 6.)*
+
+**Câu 1.** Để xác định tần số các allele của locus A nằm trên NST thường ở một loài thú, người ta đã tiến hành thu mẫu DNA của 15 cá thể ngẫu nhiên trong quần thể, chia làm 3 nhóm, mỗi nhóm có 5 cá thể. Mẫu DNA của mỗi cá thể được xử lý với enzyme cắt giới hạn để cắt locus A ra khỏi hệ gene, sau đó khuếch đại bằng phương pháp PCR. Các sản phẩm PCR được tinh sạch (chỉ còn các bản sao của locus A) và tiến hành phân tích bằng phương pháp điện di. Kết quả điện di được mô tả ở hình bên. Biết rằng allele 1 là allele kiểu dại, các allele 2, 3 đều là các allele đột biến. Hãy dự đoán tần số allele 3 trong quần thể là bao nhiêu (làm tròn kết quả cuối cùng đến hàng phần trăm)?
+
+[HÌNH: Ba nhóm điện di, mỗi nhóm gồm năm cá thể; các băng được phân theo allele 1, allele 2 và allele 3.]
+![](images/cau_1_phan_iii.png)
+
+**Câu 2.** Phương pháp mô phỏng mô hình sinh thái về sự biến đổi kích thước quần thể của 3 loài chim, chuột và mèo rừng được thực hiện trên một hòn đảo với số lượng cá thể ban đầu của mỗi loài lần lượt là 100 000, 100 và 10. Biến động số lượng cá thể mỗi loài sau một thời gian được biểu thị ở Hình g (Thí nghiệm 1). Biết rằng, chim là thức ăn của chuột; cả chim và chuột là thức ăn của mèo rừng. Khi quần xã trong Thí nghiệm 1 đạt trạng thái ổn định, người ta tiến hành loại bỏ hoàn toàn các cá thể mèo rừng và thu được số liệu về sự biến động số lượng cá thể các loài trong quần xã như biểu thị ở Hình h (Thí nghiệm 2).
+
+[HÌNH: Hai đồ thị biến động kích thước quần thể chim, mèo rừng, chuột theo thời gian trong thí nghiệm 1 (Hình g) và thí nghiệm 2 (Hình h).]
+![](images/cau_2_phan_iii.png)
+
+1. Mối quan hệ sinh thái giữa chuột và mèo rừng là dạng quan hệ đối kháng.
+
+2. Mèo rừng là loài chủ chốt trong quần xã.
+
+3. Trong thí nghiệm 1, tổng số cá thể của quần xã đạt giá trị cao nhất khi quần xã đạt trạng thái ổn định.
+
+4. Kết quả nghiên cứu cho thấy việc loại bỏ một loài có thể xác định được vai trò sinh thái của loài đó trong quần xã.
+
+Hãy viết các nhận định đúng theo thứ tự từ nhỏ tới lớn.
+
+**Câu 3.** Bảng dưới mô tả 5 dạng mỏ của 5 loài chim sống trong cùng một hệ sinh thái đảo, với nguồn thức ăn khác nhau.
+
+| Dạng mỏ | 1 | 2 | 3 | 4 | 5 |
+|---|---|---|---|---|---|
+| Đặc điểm mỏ | Ngắn, dày | Cong, sắc | Dài, cứng | Dài, mỏng | Dài, dẹt |
+| Nguồn thức ăn chính | Hạt | Thịt | Côn trùng trong thân cây | Mật hoa | Sinh vật nhỏ trong nước |
+
+Nếu môi trường thay đổi làm cho các loài cây khó ra hoa, loài chim có dạng mỏ nào sẽ bị giảm số lượng nhiều nhất?
+
+**Câu 4.** Một loài thực vật, sự biểu hiện kiểu hình của các kiểu gene ở các nhiệt độ khác nhau được mô tả tóm tắt trong bảng sau:
+
+| Kiểu gene | Kiểu hình ở $20^\circ C$ | Kiểu hình ở $35^\circ C$ | Kiểu gene | Kiểu hình ở $20^\circ C$ | Kiểu hình ở $35^\circ C$ |
+|---|---|---|---|---|---|
+| AA | Đỏ | Trắng | BB | Quả tròn | Quả tròn |
+| Aa | Hồng | Hồng | Bb | Quả tròn | Quả tròn |
+| aa | Trắng | Trắng | bb | Quả dài | Quả dài |
+
+Cho cây (P) có kiểu hình hoa hồng, quả tròn tự thụ phấn, thu được một lượng lớn hạt F$_1$. Các hạt này trồng ở $35^\circ C$ thì thu được 42% cây hoa hồng, quả tròn. Biết quá trình giảm phân là bình thường và giống nhau giữa các cây. Theo lý thuyết, khi đem những cây hoa hồng, quả tròn F$_1$ giao phấn ngẫu nhiên, lấy hạt F$_2$ trồng ở $20^\circ C$ thì tỷ lệ cây trắng, quả dài ở F$_2$ chiếm tỉ lệ ít nhất là khoảng bao nhiêu phần trăm (làm tròn kết quả cuối cùng đến hàng phần trăm)?
+
+**Câu 5.** Các nhà khoa học tiến hành nghiên cứu hai quần thể ốc sên biển (A và B) sinh sống ở vùng triều (vị trí X) thuộc bờ biển Ursholmen. Hằng năm, nhóm nghiên cứu xác định tần số allele mã hóa enzyme aspartate aminotransferase và biểu diễn kết quả bằng biểu đồ như hình bên. Năm đầu tiên khảo sát là 1987. Tuy nhiên, đến năm 1988, hiện tượng nở hoa của một loài tảo độc đã tiêu diệt toàn bộ ốc sên ở vùng gian triều trên đảo, khiến không thu thập được dữ liệu trong hai năm 1988 và 1989. Nhân tố nào sau đây là nguyên nhân trực tiếp làm thay đổi tần số allele của các quần thể ốc sên năm 1988-1989?
+
+1. Đột biến. 2. Dòng gene. 3. Chọn lọc tự nhiên. 4. Phiêu bạt di truyền. 5. Giao phối ngẫu nhiên.
+
+[HÌNH: Hai biểu đồ tần số allele theo năm 1987–1993 cho quần thể ốc sên A và B, cùng cột “Tảo độc”.]
+![](images/cau_5_phan_iii.png)
+
+**Câu 6.** Hình bên minh họa cho quá trình sinh học xảy ra bên trong một tế bào của một loài sinh vật. Các số (1), (2) là kí hiệu các mạch đơn của gene.
+
+[HÌNH: DNA đang được phiên mã bởi RNA polymerase; mRNA liên kết với ribosome đang dịch mã polypeptide; vị trí X được đánh dấu trên DNA.]
+![](images/cau_6_phan_iii.png)
+
+1. Hình ảnh minh họa sự diễn ra đồng thời của quá trình phiên mã và quá trình dịch mã.
+
+2. Mạch (1) của phân tử DNA đang đóng vai trò là mạch khuôn.
+
+3. Nếu xử lý tế bào này bằng một loại enzyme có khả năng phân giải màng nhân, thì các quá trình sinh học trên hình sẽ bị ngừng lại ngay lập tức.
+
+4. Giả sử tại đúng thời điểm đang quan sát trên hình, một đột biến mất 1 cặp nucleotide T-A xảy ra trên phân tử DNA ở vị trí X. Đột biến này sẽ làm dịch khung đọc mã và thay đổi cấu trúc của chuỗi polypeptide đang được tổng hợp trên hình.
+
+Hãy viết các nhận định đúng theo thứ tự từ nhỏ tới lớn.
+
+------ HẾT ------

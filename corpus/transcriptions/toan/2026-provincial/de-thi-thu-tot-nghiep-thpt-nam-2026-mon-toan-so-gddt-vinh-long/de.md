@@ -1,0 +1,140 @@
+status: ocr-draft
+source: Sở GD&ĐT Vĩnh Long — Kỳ thi thử tốt nghiệp THPT năm 2026, môn Toán, mã đề 0101
+
+# SỞ GIÁO DỤC VÀ ĐÀO TẠO VĨNH LONG
+## KỲ THI THỬ TỐT NGHIỆP THPT NĂM 2026 — MÔN: TOÁN
+**ĐỀ THI CHÍNH THỨC** — Thời gian làm bài: 90 phút (không kể thời gian phát đề). Đề thi có 4 trang.
+
+Họ và tên: ................................................................. Số báo danh: ........ Mã đề 0101
+
+## PHẦN I. Câu trắc nghiệm với nhiều phương án lựa chọn
+Thí sinh trả lời từ câu 1 đến câu 12. Mỗi câu hỏi, thí sinh chỉ chọn một phương án.
+
+**Câu 1.** Cho $\int_0^2 f(x)\,dx=3$. Tính $I=\int_0^2(1+2f(x))\,dx$.
+
+A. $I=7$.  B. $I=4$.  C. $I=8$.  D. $I=6$.
+
+**Câu 2.** Cho hình chóp $S.ABCD$ có đáy $ABCD$ là hình chữ nhật tâm $I$ và cạnh bên $SA$ vuông góc với đáy. Khẳng định nào sau đây đúng?
+
+A. $(SCD)\perp(SAD)$.  B. $(SBD)\perp(SAC)$.  C. $(SBC)\perp(SIA)$.  D. $(SDC)\perp(SAI)$.
+
+**Câu 3.** Trong không gian $Oxyz$, đường thẳng $d:\begin{cases}x=5+t\\y=7+2t\\z=9+3t\end{cases}$ có một vectơ chỉ phương là:
+
+A. $\vec u_4=(5;7;9)$.  B. $\vec u_2=(3;2;1)$.  C. $\vec u_3=(1;2;3)$.  D. $\vec u_1=(1;3;2)$.
+
+**Câu 4.** Cho bảng số liệu sau đây.
+
+| Nhóm | [1,5; 2,5) | [2,5; 3,5) | [3,5; 4,5) | [4,5; 5,5) | [5,5; 6,5) |
+|---|---:|---:|---:|---:|---:|
+| Tần số | 2 | 3 | 7 | 2 | 1 |
+
+Khoảng biến thiên của mẫu số liệu cho bởi bảng trên là:
+
+A. 2.  B. 5.  C. 3.  D. 4.
+
+**Câu 5.** Diện tích $S$ của hình phẳng giới hạn bởi đồ thị hàm số $y=f(x)$ liên tục trên $[a;b]$, trục hoành và hai đường thẳng $x=a$, $x=b$ ($a<b$) được cho bởi công thức nào sau đây?
+
+A. $S=\pi\int_a^b f^2(x)\,dx$.  B. $S=\int_a^b f(x)\,dx$.  C. $S=\int_a^b|f(x)|\,dx$.  D. $S=\pi\int_a^b|f(x)|\,dx$.
+
+**Câu 6.** Cho cấp số cộng $(u_n)$ có số hạng đầu $u_1=2$ và công sai $d=5$. Giá trị của $u_4$ bằng:
+
+A. 22.  B. 17.  C. 12.  D. 250.
+
+**Câu 7.** Với mọi số thực dương $a$, $\log_3(27a)-\log_3a$ bằng:
+
+A. 3.  B. $3-2\log_3a$.  C. 9.  D. $\log_3(26a)$.
+
+**Câu 8.** Nghiệm của phương trình $\left(\frac15\right)^{x^2-2x-3}=5^{x+1}$ là:
+
+A. $x=-1; x=2$.  B. Vô nghiệm.  C. $x=1; x=2$.  D. $x=1; x=-2$.
+
+**Câu 9.** Trong không gian với hệ trục tọa độ $Oxyz$, cho mặt cầu $(S):(x-1)^2+(y-2)^2+(z+3)^2=9$. Tọa độ tâm của mặt cầu $(S)$ là:
+
+A. $(1;-2;3)$.  B. $(1;2;3)$.  C. $(1;-2;-3)$.  D. $(1;2;-3)$.
+
+**Câu 10.** Cho hàm số $y=\frac{ax+b}{cx+d}$ ($ac\ne0,\ ad-bc\ne0$) có bảng biến thiên như dưới đây.
+
+[HÌNH: Bảng biến thiên của hàm phân thức; có tiệm cận đứng tại $x=-2$ và tiệm cận ngang $y=1$.]
+![](images/cau_10.png)
+
+Đường tiệm cận đứng của đồ thị hàm số đã cho có phương trình là:
+
+A. $y=1$.  B. $x=1$.  C. $y=-2$.  D. $x=-2$.
+
+**Câu 11.** Trong không gian $Oxyz$, cho hai vectơ $\vec a=(-1;0;2)$ và $\vec b=(2;3;2)$. Giá trị của $\vec a\cdot\vec b$ bằng:
+
+A. 2.  B. $-6$.  C. $-3$.  D. $-4$.
+
+**Câu 12.** Cho hình chóp $S.ABC$ có đáy là tam giác vuông cân tại $B$, $SA\perp(ABC)$, $AB=BC=a$, $SA=a\sqrt3$. Tính thể tích $V$ của khối chóp nói trên.
+
+[HÌNH: Hình chóp $S.ABC$, tam giác đáy vuông cân tại $B$, cạnh $SA$ vuông góc với mặt đáy.]
+![](images/cau_12.png)
+
+A. $V=\frac{a^3}{6}$.  B. $V=\frac{a^3\sqrt3}{2}$.  C. $V=\frac{a^3\sqrt3}{6}$.  D. $V=a^3\sqrt3$.
+
+## PHẦN II. Câu trắc nghiệm đúng sai
+Thí sinh trả lời từ câu 1 đến câu 4. Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn đúng hoặc sai.
+
+**Câu 1.** Một chuyên gia kinh tế nghiên cứu tốc độ thay đổi lượng điện tiêu thụ của hai khu vực công nghiệp $A$ và $B$ từ đầu năm 2020 đến đầu năm 2024. Tốc độ thay đổi lượng điện tiêu thụ (đơn vị: triệu kWh/năm) của khu vực $A$ và khu vực $B$ lần lượt được mô tả bởi các hàm số: $E'_A(t)=2^t+8$ và $E'_B(t)=3{,}75t+n$ ($n$ là một hằng số), trong đó $t$ là số năm kể từ đầu năm 2020 ($0\le t\le4$). Biết rằng tại thời điểm bắt đầu khảo sát ($t=0$) và đầu năm 2024 ($t=4$), tốc độ thay đổi lượng điện tiêu thụ của cả hai khu vực là bằng nhau (như hình vẽ).
+
+[HÌNH: Đồ thị hai tốc độ thay đổi theo thời gian từ $t=0$ đến $t=4$, kèm vùng giữa hai đường và các mốc giao nhau.]
+![](images/cau_13.png)
+
+a) Tổng lượng điện tiêu thụ tăng thêm của khu vực $A$ sau 4 năm đầu khảo sát xấp xỉ bằng 53,64 triệu kWh.
+
+b) Gọi $t_0$ là mốc thời gian mà tại đó tốc độ thay đổi lượng điện tiêu thụ của khu vực $A$ đạt 12 triệu kWh/năm. Khi đó $t_0=2{,}5$.
+
+c) Tại thời điểm $t=3$, tốc độ thay đổi lượng điện tiêu thụ của khu vực $A$ là 16 triệu kWh/năm.
+
+d) Trong giai đoạn 4 năm đầu khảo sát (từ đầu năm 2020 đến đầu năm 2024), tổng lượng điện tiêu thụ tăng thêm của khu vực $B$ nhiều hơn khu vực $A$ một lượng xấp xỉ 10,93 triệu kWh.
+
+**Câu 2.** Trong một đợt khảo sát về hành vi người dùng trên ứng dụng ngân hàng số của một ngân hàng thương mại, bộ phận dữ liệu nhận thấy: xác suất để một khách hàng có sử dụng dịch vụ thanh toán hóa đơn bằng mã QR là 0,7; xác suất để khách hàng có sử dụng dịch vụ gửi tiết kiệm trực tuyến là 0,5 và xác suất để khách hàng sử dụng cả hai dịch vụ này là 0,3.
+
+a) Khảo sát ngẫu nhiên 10 khách hàng, xác suất để có đúng 3 người sử dụng cả hai dịch vụ xấp xỉ bằng 0,27.
+
+b) Chọn ngẫu nhiên một khách hàng, xác suất để khách hàng này sử dụng dịch vụ thanh toán hóa đơn bằng mã QR, biết rằng khách hàng này có sử dụng dịch vụ gửi tiết kiệm trực tuyến, bằng 0,6.
+
+c) Nghiên cứu thêm về tính năng “Hoàn tiền” (Cashback), ngân hàng nhận thấy: tỷ lệ khách hàng được hoàn tiền nếu sử dụng cả hai dịch vụ là 60%, còn với nhóm khách hàng không sử dụng đồng thời cả hai dịch vụ này thì tỷ lệ được hoàn tiền chỉ là 10%. Biết rằng một khách hàng vừa nhận được tin nhắn hoàn tiền từ hệ thống, xác suất để khách hàng đó thuộc nhóm sử dụng cả hai dịch vụ là 0,25.
+
+d) Chọn ngẫu nhiên một khách hàng, xác suất để khách hàng này có sử dụng ít nhất một trong hai dịch vụ trên là 0,9.
+
+**Câu 3.** Để thực hiện công tác bảo trì cầu Mỹ Thuận 2, các kỹ sư sử dụng hệ thống máy bay không người lái (UAV) tích hợp công nghệ Bathymetric LiDAR. Hệ thống này phát ra các xung laser xanh lá (green laser) theo đường thẳng từ điểm $C(20;60;50)$ nằm trên đỉnh tháp cầu, đi qua phao tiêu quan trắc $B(a;b;c)$ trên mặt nước và chiếu đến mục tiêu $A(15;10;-50)$ nằm trên bề mặt lớp cát bồi lắng ở chân trụ cầu. Hệ trục tọa độ $Oxyz$ có gốc $O$ tại mặt nước, mặt phẳng $(Oxy)$ là mặt nước sông, trục $Oz$ hướng thẳng đứng lên trên (đơn vị: mét).
+
+a) Đường thẳng $AC$ biểu diễn quỹ đạo của tia laser có phương trình chính tắc là:
+$$\frac{x-20}{1}=\frac{y-60}{10}=\frac{z-50}{20}.$$
+
+b) Sau khi xác định mục tiêu $A$, các kỹ sư vận hành một robot dò tìm chạy trên một thanh ray bảo trì $d$ nằm song song với mặt nước, cách mặt nước 5 m. Biết rằng hình chiếu vuông góc của thanh ray $d$ lên mặt nước là một đường thẳng đi qua phao tiêu $B$ và có vectơ chỉ phương $\vec u=(2;1;0)$. Để nhận được tín hiệu mạnh nhất từ mục tiêu $A$, robot cần di chuyển đến vị trí $M(a';b';c')$ trên thanh ray $d$ sao cho khoảng cách $AM$ ngắn nhất. Khi đó $a'+b'-c'=34$.
+
+c) Tọa độ phao tiêu $B$ thỏa mãn $a+b+c=52{,}5$.
+
+d) Khi xung laser truyền trong nước, vận tốc của nó thay đổi theo thời gian $t$ (đơn vị: ns) bởi hàm số $v(t)=0{,}22+0{,}01t$ (m/ns), với $t\ge0$ là thời gian tính từ thời điểm xung laser chạm mặt nước. Khi đó, quãng đường tia laser đã đi được trong nước sau 10 ns kể từ khi chạm mặt nước là 2,475 mét.
+
+**Câu 4.** Cho hàm số $f(x)=\frac4x+x+1$ với $x\ne0$.
+
+a) $f'(-4)=2$.
+
+b) Đạo hàm của hàm số đã cho là $f'(x)=\frac{x^2-4}{x^2}$ với $x\ne0$.
+
+c) Hàm số $f(x)$ có giá trị lớn nhất và giá trị nhỏ nhất trên đoạn $[1;3]$ lần lượt bằng $M,m$. Khi đó $M-m=1$.
+
+d) Tổng các nghiệm của phương trình $f'(x)=0$ bằng 4.
+
+## PHẦN III. Câu trắc nghiệm trả lời ngắn
+Thí sinh trả lời từ câu 1 đến câu 6.
+
+**Câu 1.** Trong không gian $Oxyz$ (đơn vị trên các trục là mét), một kiến trúc sư cần lắp đặt một đèn chiếu sáng tại vị trí $A$ cho một phòng triển lãm. Điểm $A$ thay đổi trên một khung thép hình tròn là giao tuyến của mặt phẳng $(\alpha):x+y-z+4=0$ và mặt cầu $(S):(x-1)^2+(y-1)^2+(z-2)^2=6$. Đèn phát ra luồng sáng có dạng hình nón với góc ở đỉnh bằng $60^\circ$, trục của hình nón luôn vuông góc với mặt sàn $(P):x-2y+2z+10=0$. Để đảm bảo mật độ ánh sáng tập trung cao nhất cho khu vực trưng bày dưới sàn, kiến trúc sư cần điều chỉnh đèn đến vị trí sao cho diện tích vùng chiếu sáng trên mặt sàn $(P)$ là nhỏ nhất. Hãy tính diện tích vùng chiếu sáng nhỏ nhất đó. (Không làm tròn các kết quả trung gian, chỉ làm tròn kết quả cuối cùng đến hàng phần mười của $m^2$.)
+
+**Câu 2.** Một nghệ nhân làm gốm thủ công tại địa phương đang sản xuất một dòng bình hoa gốm đặc biệt. Mỗi ngày, nghệ nhân này có thể sản xuất $x$ chiếc bình hoa ($1\le x\le18$, $x\in\mathbb N$). Tổng chi phí sản xuất $x$ bình hoa trong một ngày (bao gồm nguyên liệu, công thợ và lò nung), tính bằng đơn vị nghìn đồng, được xác định bởi hàm chi phí: $C(x)=x^3-3x^2+40x+500$. Giả sử toàn bộ số bình hoa sản xuất ra trong ngày đều được các cửa hàng lưu niệm thu mua hết với giá cố định là 280 nghìn đồng/bình. Để đạt được lợi nhuận cao nhất, nghệ nhân này nên sản xuất bao nhiêu bình hoa mỗi ngày?
+
+**Câu 3.** Cho dãy số $(u_n)$ với $u_n=C_{n+3}^4$ ($n=1,2,\ldots,80$). Người ta chọn ngẫu nhiên lần lượt hai bộ $A$ và $B$, mỗi bộ gồm ba số hạng liên tiếp của dãy số trên sao cho hai bộ không có chỉ số chung. Bộ $A$ được điền vào cột 1 và bộ $B$ được điền vào cột 2 của một bảng ô vuông kích thước $3\times2$ sao cho các số hạng trong mỗi cột có chỉ số tăng dần từ trên xuống dưới. Biết xác suất để tổng các số hạng ở mỗi cột đều là số lẻ bằng $\frac ab$ ($\frac ab$ là phân số tối giản), hãy tính $a+b$.
+
+**Câu 4.** Một khối đá có dạng hình lăng trụ tam giác đều $ABC.A'B'C'$ với cạnh đáy bằng 2 dm, khoảng cách từ điểm $A'$ đến mặt phẳng $(AB'C')$ bằng $\frac{\sqrt3}{2}$ dm. Tìm khoảng cách giữa hai mặt phẳng đáy của khối đá hình lăng trụ đã cho theo đơn vị dm.
+
+**Câu 5.** Để chuẩn bị quà tặng sinh nhật đặc biệt cho các thành viên trong câu lạc bộ nghệ thuật, người ta đặt hàng chế tác một vật phẩm chặn giấy bằng hợp kim cao cấp. Bề mặt của vật phẩm có dạng hai hình elip bằng nhau xếp chồng lên nhau. Biết mỗi elip có độ dài trục lớn bằng 8 cm, độ dài trục nhỏ bằng $\frac8{\sqrt3}$ cm; trục lớn của elip này vuông góc với trục lớn của elip kia tại giao điểm $O$ của chúng. Đường tròn $(O)$ đi qua các giao điểm của hai elip được vẽ lên bề mặt để phân chia các khu vực trang trí (như hình vẽ). Phần lõi bên trong đường tròn được dát đồng để khắc tên và lời chúc sinh nhật với chi phí 5.000 đồng/cm$^2$. Các phần cánh hoa nằm phía ngoài đường tròn được đính đá Sapphire nhân tạo với chi phí 15.000 đồng/cm$^2$. Hỏi tổng chi phí nguyên vật liệu để chế tác một vật phẩm quà tặng này là bao nhiêu nghìn đồng? (Không làm tròn các kết quả trung gian, chỉ làm tròn kết quả cuối cùng đến hàng đơn vị).
+
+[HÌNH: Hai hình elip vuông góc chồng lên nhau, đường tròn tâm $O$ bao quanh phần lõi; bốn cánh hoa nằm ngoài đường tròn.]
+![](images/cau_17.png)
+
+**Câu 6.** Bác Minh mua một chiếc ti vi tại một cửa hàng với giá 21,5 triệu đồng và đã trả trước 10 triệu đồng ngay khi nhận ti vi. Số tiền còn lại bác lựa chọn trả góp trong vòng 12 tháng với lãi suất 3,5%/tháng theo hình thức lãi kép trên dư nợ giảm dần, tiền lãi được tính dựa trên số dư nợ thực tế tại thời điểm tính lãi. Biết rằng, vào cuối mỗi tháng, bác Minh phải trả cho cửa hàng một số tiền không đổi là $m$ triệu đồng để sau đúng 12 tháng thì hết nợ. Giá trị của $m$ bằng bao nhiêu? (Không làm tròn các kết quả trung gian, chỉ làm tròn kết quả cuối cùng đến hàng phần trăm).
+
+------ HẾT ------
