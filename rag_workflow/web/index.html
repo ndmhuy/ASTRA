@@ -5,7 +5,9 @@
 <main>
   <header><div><h1>ASTRA · Retrieval prototype</h1><p class="muted">Subject + scope → matching source passages</p></div><button id="add">+ Add a document</button></header>
   <form id="search-form" class="search-panel">
-    <label for="query">Query — include subject, grade, and chapter / lesson / topic</label>
+    <label for="collection-kind">Search in <select id="collection-kind"><option value="curriculum">Curriculum / lesson map</option><option value="exam">Exam transcriptions</option></select></label>
+    <p id="corpus-note" class="muted small"></p>
+    <label for="query">Query — subject and scope / topic</label>
     <textarea id="query" required maxlength="2000" rows="2">Tìm tài liệu Vật lí lớp 11 chương 4 về định luật Ohm</textarea>
     <div class="search-bottom"><label class="limit">Edition <select id="edition"><option value="">Auto</option></select></label><span class="query-hint"></span><label class="limit">Results <select id="top-k"><option>3</option><option selected>5</option><option>10</option><option>20</option></select></label><button id="search-button" class="primary" type="submit">Retrieve documents <span>↗</span></button></div>
   </form>

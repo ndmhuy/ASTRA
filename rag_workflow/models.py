@@ -39,7 +39,7 @@ class RetrievalRequest:
 @dataclass(frozen=True)
 class ResolvedScope:
     subject: str
-    grade: int
+    grade: int | None
     range_type: str
     start: int | None
     end: int | None

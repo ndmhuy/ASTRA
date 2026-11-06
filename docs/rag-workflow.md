@@ -6,13 +6,61 @@ source locators, versions, and explicit gaps. Python 3.11.1, standard library on
 The implementation is a proposal for this feature; it does not settle the open
 team stack or data decisions in [mvp-plan.md](mvp-plan.md).
 
-## Local UI app
+## Existing corpus search (2026-11-06)
+
+The default `python -m rag_workflow.app` now reads the existing private corpus
+from the local `origin/staging/rag` snapshot. It needs Git installed and the branch
+fetched locally; it makes no network call at startup. `--corpus-ref <commit>` pins
+an exact release. Missing snapshots fail explicitly. The adapter reads a Git
+archive into memory, without checking out files or copying source text into this
+branch. The snapshot SHA appears in collection metadata and each response.
+
+Observed at `8b8fb7b09182b3d9d1eee0b95818027f52ab004d`: 687 curriculum
+records, 134 registry papers, 108 searchable papers and 26 excluded papers.
+`existing_corpus.py` builds two search views:
+
+- **Curriculum:** source titles, keywords and supplied outcomes, retaining draft
+  status, original row provenance and KNTT mapping. Exact grade/range filters use
+  explicit parent links and unit identifiers; unknown scope stays null. Example:
+  `Vật lí lớp 11 chương 1 về dao động`.
+- **Exam transcriptions:** only registry-listed `de.md` with
+  `usable_as_content_evidence=True`, classified official or provincial. Reference,
+  excluded and incomplete papers are omitted. The view preserves the original
+  registry class separately from source authority (`third_party` copies), source
+  card, status note and path. Search is by subject/topic, e.g. `Vật lí dao động`.
+  Grade/chapter/lesson filters return `unmapped_exam_scope` because item mappings
+  are unavailable; graduation papers are not silently labelled grade 12.
+
+Both views reuse BM25 passage ranking and exact character offsets. They are
+internal prototype views, not publication of approved knowledge. Curriculum draft
+status remains draft; exam text is conservatively labelled `ocr-draft` with the
+source STATUS preserved. Registry usability is not teacher approval. Full paper
+text provides parent context, but figures are not rendered; figure-dependent
+passages need source review. Keys, audit/model calls, profiles and generated
+papers are never indexed. No external model processing or embeddings occurs.
+The approved JSONL workflow below retains its existing approval checks.
+
+```powershell
+python -m rag_workflow.app
+python -m rag_workflow.cli --existing --query "Vật lí lớp 11 chương 1 dao động"
+python -m rag_workflow.cli --existing --collection exam --query "Vật lí dao động"
+python scripts/browser_smoke.py --existing-corpus
+```
+
+For the HTTP API, add `"collection": "curriculum"` (default) or `"exam"` to
+`POST /api/search`. `GET /api/collection` includes `corpus_info` counts and SHA.
+Existing-corpus mode disables session imports; use `--demo` for those.
+Unit checks use synthetic source snapshots, including key exclusion, provenance,
+range boundaries, missing mappings and broken parent links. Live corpus search
+is a functional check; retrieval quality has not been benchmarked.
+
+## Demo UI app
 
 Start the application from the project root; no install, GitHub access or API key
 is required:
 
 ```powershell
-python -m rag_workflow.app
+python -m rag_workflow.app --demo
 ```
 
 Open <http://127.0.0.1:8765>. The app starts with 12 original demo study notes

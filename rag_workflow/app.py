@@ -12,13 +12,14 @@ import uuid
 
 from .demo import demo_documents, fingerprint, make_document
 from .document_loader import load_documents
+from .existing_corpus import load_existing_corpus, search_existing
 from .models import CONFIG
 from .workflow import run_documents
 
 WEB = Path(__file__).with_name("web")
 
 
-def create_server(port=8765, documents=None):
+def create_server(port=8765, documents=None, corpus_info=None):
     collection = list(demo_documents() if documents is None else documents)
     lock = threading.Lock()
 
@@ -43,7 +44,9 @@ def create_server(port=8765, documents=None):
                 with lock:
                     snapshot = list(collection)
                 self.send(200, {"documents": [dict(document_id=d.document_id, title=d.title, subject=d.subject,
-                                                  grade=d.grade, chapter=d.chapter, evidence_class=d.evidence_class) for d in snapshot],
+                                                  grade=d.grade, chapter=d.chapter, evidence_class=d.evidence_class,
+                                                  content_kind=d.content_kind, approval_status=d.approval_status) for d in snapshot],
+                                 "corpus_info": corpus_info,
                                  "subjects": CONFIG["subjects"], "editions": sorted({d.edition for d in snapshot}),
                                  "max_top_k": CONFIG["max_top_k"]})
             elif route.startswith("/api/documents/"):
@@ -68,11 +71,14 @@ def create_server(port=8765, documents=None):
                     started = time.perf_counter()
                     with lock:
                         snapshot = list(collection)
-                    result = run_documents(payload, snapshot, fingerprint(snapshot)).to_dict()
+                    result = (search_existing(payload, snapshot, corpus_info["snapshot"]) if corpus_info
+                              else run_documents(payload, snapshot, fingerprint(snapshot))).to_dict()
                     result["elapsed_ms"] = round((time.perf_counter() - started) * 1000, 1)
                     result["collection_size"] = len(snapshot)
                     return self.send(200, result)
                 if self.path == "/api/documents":
+                    if corpus_info:
+                        raise ValueError("Use --demo or --corpus for session note imports.")
                     if payload.get("permission_confirmed") is not True:
                         raise ValueError("Confirm permission to use this text locally.")
                     document = make_document(payload["subject"], payload["grade"], payload.get("chapter"),
@@ -95,10 +101,19 @@ def create_server(port=8765, documents=None):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=8765)
-    parser.add_argument("--corpus", type=Path, help="Optional approved JSONL pack; otherwise use original demo notes")
+    inputs = parser.add_mutually_exclusive_group()
+    inputs.add_argument("--corpus", type=Path, help="Approved JSONL pack")
+    inputs.add_argument("--demo", action="store_true", help="Use 12 original demo notes")
+    parser.add_argument("--corpus-ref", default="origin/staging/rag", help="Local Git snapshot of the existing corpus")
     args = parser.parse_args()
-    documents = load_documents(args.corpus)[0] if args.corpus else None
-    server = create_server(args.port, documents)
+    info = None
+    documents = None
+    if args.corpus:
+        documents = load_documents(args.corpus)[0]
+    elif not args.demo:
+        documents, info = load_existing_corpus(args.corpus_ref)
+        print(json.dumps(info, ensure_ascii=True), flush=True)
+    server = create_server(args.port, documents, info)
     print(f"ASTRA retrieval app: http://127.0.0.1:{server.server_port}", flush=True)
     print("Imported text stays in memory until the server stops. Ctrl+C to stop.", flush=True)
     try:

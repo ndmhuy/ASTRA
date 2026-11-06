@@ -1,5 +1,5 @@
 const $ = id => document.getElementById(id);
-let subjects = {}, searchSequence = 0;
+let subjects = {}, searchSequence = 0, existingCorpus = false;
 const label = key => subjects[key]?.[0] || key;
 const node = (tag, className, text) => { const el = document.createElement(tag); if (className) el.className = className; if (text !== undefined) el.textContent = text; return el; };
 async function api(path, data) {
@@ -12,7 +12,7 @@ async function openDocument(id) {
   try {
     const d = await api('/api/documents/' + encodeURIComponent(id));
     $('doc-title').textContent = d.title;
-    $('doc-meta').textContent = `${label(d.subject)} · Grade ${d.grade} · ${d.chapter ? 'Chapter ' + d.chapter : 'Topic note'} · ${d.edition} · ${d.evidence_class === 'synthetic' ? 'Original demo note' : 'User-provided source'}`;
+    $('doc-meta').textContent = `${label(d.subject)} · ${d.grade ? 'Grade ' + d.grade : 'Grade mapping unknown'} · ${d.chapter ? 'Chapter ' + d.chapter : 'Chapter mapping unknown'} · ${d.edition} · ${d.approval_status} · ${d.evidence_class}`;
     $('doc-text').textContent = d.content;
     const {content, ...metadata} = d; $('doc-json').textContent = JSON.stringify(metadata, null, 2);
     $('document-dialog').showModal();
@@ -20,6 +20,15 @@ async function openDocument(id) {
 }
 async function loadCollection() {
   const data = await api('/api/collection'); subjects = data.subjects;
+  existingCorpus = Boolean(data.corpus_info);
+  $('collection-kind').parentElement.hidden = !existingCorpus;
+  $('add').hidden = existingCorpus;
+  if (existingCorpus) {
+    const info = data.corpus_info;
+    $('corpus-note').textContent = `${info.curriculum_rows} curriculum rows · ${info.exam_papers} searchable papers · ${info.excluded_papers} excluded papers. Internal prototype; draft/OCR status retained.`;
+    document.querySelector('footer').textContent = `Local BM25 search · corpus snapshot ${info.snapshot.slice(0, 12)} · Curriculum rows describe scope; exam text may contain OCR errors and require figures. Keys and audits are excluded.`;
+    $('query').value = 'Vật lí lớp 11 chương 1 về dao động';
+  }
   $('count').textContent = data.documents.length;
   const selectedEdition = $('edition').value;
   $('edition').replaceChildren(new Option('Auto', ''));
@@ -28,7 +37,7 @@ async function loadCollection() {
   $('collection').replaceChildren();
   for (const d of data.documents) {
     const button = node('button', 'source-link', d.title);
-    button.append(node('small', '', `${label(d.subject)} · Lớp ${d.grade}${d.chapter ? ' · Ch. ' + d.chapter : ''}`));
+    button.append(node('small', '', `${label(d.subject)}${d.grade ? ' · Lớp ' + d.grade : ' · Grade unknown'}${d.chapter ? ' · Ch. ' + d.chapter : ''} · ${d.approval_status}`));
     button.addEventListener('click', () => openDocument(d.document_id)); $('collection').append(button);
   }
   if (!$('import-subject').options.length) {
@@ -46,14 +55,16 @@ async function search(event) {
   $('results').replaceChildren(); $('scope').replaceChildren(); $('notice').replaceChildren(); $('timing').textContent = '';
   $('json').textContent = 'Retrieving…';
   try {
-    const data = await api('/api/search', {query_text: $('query').value, top_k: Number($('top-k').value), edition: $('edition').value || null});
+    const payload = {query_text: $('query').value, top_k: Number($('top-k').value), edition: $('edition').value || null};
+    if (existingCorpus) payload.collection = $('collection-kind').value;
+    const data = await api('/api/search', payload);
     if (sequence !== searchSequence) return;
     $('json').textContent = JSON.stringify(data, null, 2);
     $('timing').textContent = `${data.documents.length} results · ${data.collection_size} sources · ${data.elapsed_ms} ms`;
     if (data.resolved_scope) {
       const s = data.resolved_scope;
       const range = s.range_type === 'topic' ? 'Topic search' : `${s.range_type} ${s.start}${s.end !== s.start ? '–' + s.end : ''}`;
-      for (const text of [label(s.subject), 'Grade ' + s.grade, range]) $('scope').append(node('span', 'tag', text));
+      for (const text of [label(s.subject), s.grade ? 'Grade ' + s.grade : 'Grade mapping unknown', range]) $('scope').append(node('span', 'tag', text));
     }
     if (data.status !== 'success') {
       const hints = {no_documents_in_scope: 'Try a different chapter or add a document with this subject and scope.', missing_grade: 'Include a grade, for example “lớp 11”.', missing_subject: 'Include a subject, for example “Vật lí”.', ambiguous_range: 'Specify an exact chapter or lesson range, for example “chương 1–4”.', no_relevant_match: 'Try another keyword or inspect the source collection.'};
@@ -62,7 +73,7 @@ async function search(event) {
     }
     data.documents.forEach((d, i) => {
       const card = node('article', 'result-card'), top = node('div', 'card-top');
-      top.append(node('span', '', `${i + 1}. ${d.evidence_class === 'synthetic' ? 'Demo note' : 'Local source'}`), node('span', '', `BM25 score ${d.relevance_score.toFixed(2)}`));
+      top.append(node('span', '', `${i + 1}. ${d.content_kind || 'knowledge'} · ${d.approval_status}`), node('span', '', `BM25 score ${d.relevance_score.toFixed(2)}`));
       const bottom = node('div', 'card-bottom');
       bottom.append(node('span', '', `${d.source_id} · characters ${d.excerpt_start}–${d.excerpt_end}`));
       const button = node('button', 'text-button', 'Read full document ↗'); button.addEventListener('click', () => openDocument(d.document_id)); bottom.append(button);
@@ -72,7 +83,11 @@ async function search(event) {
   finally { if (sequence === searchSequence) { $('search-button').disabled = false; $('search-button').textContent = 'Retrieve documents'; $('results-section').setAttribute('aria-busy', 'false'); } }
 }
 $('search-form').addEventListener('submit', search);
-for (const button of document.querySelectorAll('[data-query]')) button.addEventListener('click', () => { $('query').value = button.dataset.query; search(); });
+$('collection-kind').addEventListener('change', () => {
+  $('query').value = $('collection-kind').value === 'exam' ? 'Vật lí về dao động' : 'Vật lí lớp 11 chương 1 về dao động';
+  search();
+});
+for (const button of document.querySelectorAll('[data-query]')) button.addEventListener('click', () => { $('collection-kind').value = 'curriculum'; $('query').value = button.dataset.query; search(); });
 for (const button of document.querySelectorAll('.close')) button.addEventListener('click', () => button.closest('dialog').close());
 $('add').addEventListener('click', () => { $('import-error').textContent = ''; $('import-dialog').showModal(); });
 $('import-file').addEventListener('change', async event => {

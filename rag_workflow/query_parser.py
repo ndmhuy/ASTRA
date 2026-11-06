@@ -9,7 +9,7 @@ def normalize(text: str) -> str:
                    if unicodedata.category(c) != "Mn")
 
 
-def parse(request: RetrievalRequest) -> ResolvedScope:
+def parse(request: RetrievalRequest, require_grade=True) -> ResolvedScope:
     text = normalize(request.query_text)
     if re.search(r"\b(nua|half|dau nam|taught|da hoc|gan day)\b", text):
         raise Gap("ambiguous_range", "Confirm the exact lessons already taught; partial chapters are not inferred.")
@@ -25,9 +25,9 @@ def parse(request: RetrievalRequest) -> ResolvedScope:
     if len(subjects) != 1:
         raise Gap("missing_subject" if not subjects else "ambiguous_subject", "Specify exactly one supported subject.")
     grades = re.findall(r"\b(?:lop|khoi|grade)\s*(\d+)\b", text)
-    if not grades:
+    if not grades and require_grade:
         raise Gap("missing_grade", "Specify the grade explicitly.")
-    if len(set(grades)) != 1 or int(grades[0]) not in CONFIG["grades"]:
+    if grades and (len(set(grades)) != 1 or int(grades[0]) not in CONFIG["grades"]):
         raise Gap("invalid_grade", "Specify exactly one supported grade.")
     text = re.sub(r"\b(?:lop|khoi|grade)\s*\d+\b", " ", text)
     # Convert canonical Roman chapter/lesson numerals before numeric extraction.
@@ -58,4 +58,4 @@ def parse(request: RetrievalRequest) -> ResolvedScope:
     keywords = tuple(dict.fromkeys(w for w in re.findall(r"\w+", text) if w not in CONFIG["stop_words"]))
     if kind == "topic" and not keywords:
         raise Gap("missing_range", "Specify a chapter, lesson, semester, or topic.")
-    return ResolvedScope(subjects.pop(), int(grades[0]), kind, start, end, keywords, request.edition)
+    return ResolvedScope(subjects.pop(), int(grades[0]) if grades else None, kind, start, end, keywords, request.edition)

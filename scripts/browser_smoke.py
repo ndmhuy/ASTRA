@@ -10,14 +10,20 @@ import threading
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from rag_workflow.app import create_server
+from rag_workflow.existing_corpus import load_existing_corpus
 from playwright.sync_api import sync_playwright
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--screenshots", type=Path)
+    parser.add_argument("--existing-corpus", action="store_true")
     args = parser.parse_args()
-    server = create_server(0)
+    if args.existing_corpus:
+        documents, info = load_existing_corpus()
+        server = create_server(0, documents, info)
+    else:
+        server = create_server(0)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
     try:
@@ -28,6 +34,26 @@ def main():
             page.on("pageerror", lambda error: errors.append(str(error)))
             page.goto(f"http://127.0.0.1:{server.server_port}")
             page.locator(".result-card").first.wait_for()
+            if args.existing_corpus:
+                assert page.locator('#count').inner_text() == str(len(documents))
+                assert 'draft' in page.locator('.card-top').first.inner_text()
+                page.locator('#collection-kind').select_option('exam')
+                page.wait_for_function("document.querySelector('#timing').textContent.startsWith('5 results')")
+                assert 'ocr-draft' in page.locator('.card-top').first.inner_text()
+                page.get_by_role('button', name='Read full document').first.click()
+                page.locator('#document-dialog').wait_for(state='visible')
+                assert 'Grade mapping unknown' in page.locator('#doc-meta').inner_text()
+                page.get_by_role('button', name='Close source document').click()
+                page.locator('#query').fill('Vật lí lớp 11 chương 1 dao động')
+                page.locator('#search-button').click()
+                page.get_by_text('No documents retrieved', exact=True).wait_for()
+                assert page.locator('.result-card').count() == 0
+                page.set_viewport_size({'width': 390, 'height': 844})
+                assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth')
+                assert not errors, errors
+                browser.close()
+                print('PASS: existing corpus counts, curriculum search, exam search, source provenance, scope gap and mobile layout; no JavaScript errors.')
+                return
             assert page.locator(".result-card").count() == 2
             for selector in ("h1", ".result-card h3", ".result-card p"):
                 font = page.locator(selector).first.evaluate("e => getComputedStyle(e).fontFamily")
