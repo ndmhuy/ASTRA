@@ -7,6 +7,15 @@ from .retriever import retrieve
 
 
 def run(payload: dict, corpus_path: Path) -> RetrievalResponse:
+    return _run(payload, lambda: load_documents(corpus_path))
+
+
+def run_documents(payload: dict, documents, corpus_sha256: str) -> RetrievalResponse:
+    """Use the same pipeline with an in-memory local collection."""
+    return _run(payload, lambda: (documents, corpus_sha256))
+
+
+def _run(payload, loader) -> RetrievalResponse:
     response = RetrievalResponse()
     try:
         if not isinstance(payload, dict):
@@ -16,7 +25,7 @@ def run(payload: dict, corpus_path: Path) -> RetrievalResponse:
         except TypeError as exc:
             raise Gap("invalid_request", "Unknown or missing request fields.") from exc
         response.resolved_scope = parse(request)
-        documents, response.corpus_sha256 = load_documents(corpus_path)
+        documents, response.corpus_sha256 = loader()
         response.documents = retrieve(documents, response.resolved_scope, request.top_k)
         response.status = "success"
     except Gap as exc:

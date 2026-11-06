@@ -5,11 +5,13 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import unicodedata
 
 from rag_workflow.document_loader import decode_documents
 from rag_workflow.models import Gap, RetrievalRequest, SourceDocument
 from rag_workflow.query_parser import parse
 from rag_workflow.workflow import run
+from rag_workflow.search_index import PassageIndex, split_passages
 
 
 def record(document_id="demo-1", **changes):
@@ -143,6 +145,56 @@ class RetrievalTests(unittest.TestCase):
     def test_missing_file_returns_gap(self):
         self.path.unlink()
         self.gap("Physics grade 11 chapter 4", "corpus_unavailable")
+
+    def test_repeated_range_label(self):
+        scope = parse(RetrievalRequest("Vật lí lớp 11 chương II đến chương IV về Ohm"))
+        self.assertEqual((scope.start, scope.end), (2, 4))
+
+    def test_formula_symbols_are_not_roman_range_numbers(self):
+        scope = parse(RetrievalRequest("Physics grade 11 chapter IV I = U/R"))
+        self.assertEqual(scope.start, 4)
+        self.assertIn("i", scope.keywords)
+
+    def test_best_passage_has_exact_source_offsets(self):
+        text = "Generic introduction. " * 150 + "\n\nRare Ohm explanation about voltage and resistance."
+        self.write([record(title="Electrical notes", content=text)])
+        hit = self.query().documents[0]
+        self.assertGreater(hit["passage_start"], 0)
+        self.assertEqual(hit["excerpt"], text[hit["excerpt_start"]:hit["excerpt_end"]])
+        self.assertIn("Ohm", hit["excerpt"])
+        self.assertEqual(hit["matched_terms"], ["ohm"])
+
+    def test_passages_cover_source_without_losing_characters(self):
+        text = "Một đoạn kiến thức dài. " * 200
+        passages = list(split_passages(text))
+        self.assertGreater(len(passages), 1)
+        self.assertEqual(passages[0].start, 0)
+        self.assertEqual(passages[-1].end, len(text))
+        for a, b in zip(passages, passages[1:]):
+            self.assertLess(a.start, b.start)
+            self.assertLessEqual(b.start, a.end)
+        for p in passages:
+            self.assertEqual(p.text, text[p.start:p.end])
+
+    def test_vietnamese_composed_and_decomposed_text_retrieve_equally(self):
+        content = "Điện trở và định luật Ôm."
+        for form in ("NFC", "NFD"):
+            self.write([record(title="Ghi chú", content=unicodedata.normalize(form, content))])
+            hit = self.query("Vật lí lớp 11 chương 4 về điện trở").documents[0]
+            self.assertEqual(hit["matched_terms"], ["dien", "tro"])
+
+    def test_bm25_rewards_rare_terms(self):
+        documents = [SourceDocument(**record("rare", title="Notes", content="unique concept")),
+                     SourceDocument(**record("common-1", title="Notes", content="common concept")),
+                     SourceDocument(**record("common-2", title="Notes", content="common example"))]
+        hits = PassageIndex(documents).ranked(("unique", "common"))
+        self.assertEqual(hits[0][1].document_id, "rare")
+
+    def test_bm25_normalizes_passage_length(self):
+        documents = [SourceDocument(**record("short", title="Notes", content="ohm explanation")),
+                     SourceDocument(**record("long", title="Notes", content="ohm " + "context " * 80))]
+        hits = PassageIndex(documents).ranked(("ohm",))
+        self.assertEqual(hits[0][1].document_id, "short")
 
     def test_cli_success_and_gap_exit_codes(self):
         for text, expected in (("Physics grade 11 chapter 4 Ohm", 0), ("Physics", 2)):

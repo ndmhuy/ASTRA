@@ -33,8 +33,7 @@ def parse(request: RetrievalRequest) -> ResolvedScope:
     # Convert canonical Roman chapter/lesson numerals before numeric extraction.
     romans = {"i": 1, "ii": 2, "iii": 3, "iv": 4, "v": 5, "vi": 6,
               "vii": 7, "viii": 8, "ix": 9, "x": 10}
-    text = re.sub(r"\b[ivx]+\b", lambda m: str(romans.get(m[0], m[0])), text)
-    pattern = r"\b(chuong|chapter|bai|lesson|hoc\s*k[yi]|semester)\s*(\d+)(?:\s*(?:-|–|—|den|to)\s*(\d+))?\b"
+    pattern = r"\b(chuong|chapter|bai|lesson|hoc\s*k[yi]|semester)\s*(\d+|[ivx]+)(?:\s*(?:-|–|—|den|to)\s*(?:\1\s*)?(\d+|[ivx]+))?\b"
     ranges = list(re.finditer(pattern, text))
     if not ranges:
         # A topic is an explicit range; broad subject-only requests need confirmation.
@@ -44,7 +43,13 @@ def parse(request: RetrievalRequest) -> ResolvedScope:
     else:
         match = ranges[0]
         kind = "chapter" if match[1] in ("chuong", "chapter") else "lesson" if match[1] in ("bai", "lesson") else "semester"
-        start, end = int(match[2]), int(match[3] or match[2])
+        def number(value):
+            if value.isdigit():
+                return int(value)
+            if value not in romans:
+                raise Gap("invalid_range", "Supported Roman range numerals are I–X.")
+            return romans[value]
+        start, end = number(match[2]), number(match[3] or match[2])
         if start < 1 or end < start or (kind == "semester" and end > 2):
             raise Gap("invalid_range", "Range endpoints must be positive, ordered and valid.")
         text = text[:match.start()] + " " + text[match.end():]

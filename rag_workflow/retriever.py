@@ -3,6 +3,7 @@ import re
 from dataclasses import asdict
 from .models import CONFIG, Gap, ResolvedScope, SourceDocument
 from .query_parser import normalize
+from .search_index import PassageIndex
 
 
 def retrieve(documents: list[SourceDocument], scope: ResolvedScope, top_k: int):
@@ -19,31 +20,28 @@ def retrieve(documents: list[SourceDocument], scope: ResolvedScope, top_k: int):
         raise Gap("ambiguous_edition", "Multiple editions match. Confirm an edition before retrieval.")
     if not eligible:
         raise Gap("no_documents_in_scope", "No approved, permitted documents match the exact scope.")
-    hits = []
+    hits = PassageIndex(eligible).ranked(scope.keywords)
     seen = set()
-    for document in eligible:
-        title, content = normalize(document.title), normalize(document.content)
-        title_words, content_words = set(re.findall(r"\w+", title)), set(re.findall(r"\w+", content))
-        score = sum(CONFIG["title_weight"] * (w in title_words)
-                    + CONFIG["content_weight"] * (w in content_words) for w in scope.keywords)
-        if scope.keywords and " ".join(scope.keywords) in title + " " + content:
-            score += CONFIG["phrase_bonus"]
-        if not scope.keywords or score > 0:
-            hits.append((score, document))
-    # Scores are lexical weights, not calibrated probabilities of relevance.
-    hits.sort(key=lambda hit: (-hit[0], hit[1].document_id))
     results = []
-    for score, document in hits:
+    for score, document, passage, matched_terms in hits:
         if document.content_sha256 in seen:
             continue
         seen.add(document.content_sha256)
         result = asdict(document)
         result.pop("content")
-        matched = next((m.start() for m in re.finditer(r"\w+", document.content)
-                        if normalize(m[0]) in scope.keywords), 0)
+        matched = next((m.start() for m in re.finditer(r"\S+", passage.text)
+                        if set(re.findall(r"\w+", normalize(m[0]))) & set(scope.keywords)), 0)
         start = max(0, matched - CONFIG["excerpt_leading_chars"])
-        result["excerpt"] = document.content[start:start + CONFIG["excerpt_chars"]]
-        result["relevance_score"] = score
+        end = min(start + CONFIG["excerpt_chars"], len(passage.text))
+        result["excerpt"] = passage.text[start:end]
+        result["excerpt_start"] = passage.start + start
+        result["excerpt_end"] = passage.start + end
+        result["passage_id"] = f"{document.document_id}:{passage.start}-{passage.end}"
+        result["passage_start"] = passage.start
+        result["passage_end"] = passage.end
+        result["matched_terms"] = matched_terms
+        result["relevance_score"] = round(score, 6)
+        result["ranking_method"] = CONFIG["ranking_version"]
         results.append(result)
         if len(results) == top_k:
             break
