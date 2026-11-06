@@ -1,356 +1,305 @@
-# Scoped retrieval workflow
+# RAG retrieval prototype
 
-For ASTRA members integrating the Retriever stage. This implements the Week 4
-retrieval baseline: a subject/range query returns approved reference passages,
-source locators, versions, and explicit gaps. Python 3.11.1, standard library only.
-The implementation is a proposal for this feature; it does not settle the open
-team stack or data decisions in [mvp-plan.md](mvp-plan.md).
+For ASTRA teammates running, reviewing or integrating the Week 4 retrieval stage.
+Input: a subject and scope/topic query. Output: ranked passages, provenance and
+explicit gaps. Runtime: Python 3.11 standard library; UI: plain HTML/CSS/JavaScript.
+Retrieval uses BM25. Embeddings, LLM answers and exam generation are future work.
+This feature does not settle overall team choices in [mvp-plan.md](mvp-plan.md).
 
-## Existing corpus search (2026-11-06)
+## Quick start
 
-The default `python -m rag_workflow.app` now reads the existing private corpus
-from the local `origin/staging/rag` snapshot. It needs Git installed and the branch
-fetched locally; it makes no network call at startup. `--corpus-ref <commit>` pins
-an exact release. Missing snapshots fail explicitly. The adapter reads a Git
-archive into memory, without checking out files or copying source text into this
-branch. The snapshot SHA appears in collection metadata and each response.
-
-Observed at `8b8fb7b09182b3d9d1eee0b95818027f52ab004d`: 687 curriculum
-records, 134 registry papers, 108 searchable papers and 26 excluded papers.
-`existing_corpus.py` builds two search views:
-
-- **Curriculum:** source titles, keywords and supplied outcomes, retaining draft
-  status, original row provenance and KNTT mapping. Exact grade/range filters use
-  explicit parent links and unit identifiers; unknown scope stays null. Example:
-  `Vật lí lớp 11 chương 1 về dao động`.
-- **Exam transcriptions:** only registry-listed `de.md` with
-  `usable_as_content_evidence=True`, classified official or provincial. Reference,
-  excluded and incomplete papers are omitted. The view preserves the original
-  registry class separately from source authority (`third_party` copies), source
-  card, status note and path. Search is by subject/topic, e.g. `Vật lí dao động`.
-  Grade/chapter/lesson filters return `unmapped_exam_scope` because item mappings
-  are unavailable; graduation papers are not silently labelled grade 12.
-
-Both views reuse BM25 passage ranking and exact character offsets. They are
-internal prototype views, not publication of approved knowledge. Curriculum draft
-status remains draft; exam text is conservatively labelled `ocr-draft` with the
-source STATUS preserved. Registry usability is not teacher approval. Full paper
-text provides parent context, but figures are not rendered; figure-dependent
-passages need source review. Keys, audit/model calls, profiles and generated
-papers are never indexed. No external model processing or embeddings occurs.
-The approved JSONL workflow below retains its existing approval checks.
+From the repository root, with Python 3.11 (tested with 3.11.1):
 
 ```powershell
 python -m rag_workflow.app
-python -m rag_workflow.cli --existing --query "Vật lí lớp 11 chương 1 dao động"
-python -m rag_workflow.cli --existing --collection exam --query "Vật lí dao động"
-python scripts/browser_smoke.py --existing-corpus
 ```
 
-For the HTTP API, add `"collection": "curriculum"` (default) or `"exam"` to
-`POST /api/search`. `GET /api/collection` includes `corpus_info` counts and SHA.
-Existing-corpus mode disables session imports; use `--demo` for those.
-Unit checks use synthetic source snapshots, including key exclusion, provenance,
-range boundaries, missing mappings and broken parent links. Live corpus search
-is a functional check; retrieval quality has not been benchmarked.
+Open <http://127.0.0.1:8765>. Stop with Ctrl+C. No runtime packages, API keys or
+frontend build are needed. The default source is the existing private corpus in
+the local `origin/staging/rag` Git snapshot. Git and that local ref are required;
+run `git fetch --all` once if needed. Startup makes no network/model calls.
 
-## Demo UI app
+| Mode | Command | Behavior |
+| --- | --- | --- |
+| Existing corpus | `python -m rag_workflow.app` | Curriculum and usable exam transcriptions; internal prototype |
+| Original demo | `python -m rag_workflow.app --demo` | 12 original notes, optional session text imports |
+| Approved pack | `python -m rag_workflow.app --corpus path/to/passages.jsonl` | Strict approval, permissions, KNTT and scope filters |
 
-Start the application from the project root; no install, GitHub access or API key
-is required:
+Use `--port 8766` if the port is occupied; `--corpus-ref <commit-sha>` pins an
+existing-corpus snapshot. The server binds to `127.0.0.1`, for local use.
 
-```powershell
-python -m rag_workflow.app --demo
-```
+## Using the app
 
-Open <http://127.0.0.1:8765>. The app starts with 12 original demo study notes
-covering Physics, Mathematics, Chemistry, Biology and English. Enter a query,
-choose a result limit and optionally an edition. Inspect the parsed scope,
-ranked excerpts, full documents and JSON response. Example buttons run Vietnamese
-queries. Subject and grade filters apply before lexical ranking.
+Choose **Search in**, enter the query and select a result limit. Results show
+status, excerpt and BM25 score. **Read full document** opens the parent text and
+source metadata. The JSON response and source collection are collapsed by
+default. The collection scrolls inside a bounded panel; Segoe UI/Arial support
+Vietnamese text. Text is displayed with `textContent`, including imported HTML.
 
-Use **Add a document** to paste text or load a `.txt` / `.md` file. Supply its
-subject, grade and known chapter/lesson/semester metadata, and confirm permission
-for local use. The app treats this as a personal-use selection, not academic or
-teacher verification. Imported documents remain in memory until the server
-stops. Each import must have one consistent scope; long text is split into
-overlapping passages automatically. PDF/OCR ingestion is not
-included. The collection is shared by browser tabs connected to this local server.
+| View | Example | Meaning |
+| --- | --- | --- |
+| Curriculum | `Vật lí lớp 11 chương 1 về dao động` | Grade 11, chapter 1 draft KNTT scope records |
+| Curriculum | `Toán lớp 11 bài 6-7` | Inclusive lesson range, using available mappings |
+| Exam transcriptions | `Vật lí về dao động` | Matching passages from usable Physics papers |
+| Demo | `Vật lí lớp 11 chương 4 về định luật Ohm` | Original notes with illustrative chapter labels |
 
-The default notes are original illustrative material. Their chapter numbers are
-demo scope labels, not independently verified textbook mappings. They are visibly
-identified as demo notes in the interface. Imports are visibly local sources.
-The app uses deterministic keyword retrieval; it returns source evidence and
-does not generate answers. No document text is sent to an external service.
+Curriculum, demo and approved-pack queries need one subject, grade 10–12 and a
+chapter, lesson, semester or topic. Vietnamese accents, unaccented text, English
+subject aliases and Roman range numerals I–X are supported. Ambiguous ranges,
+multiple subjects and partial chapters return gaps. Unknown semesters remain
+unknown. Unresolved numeric formulas/years may require a clearer query; the
+current parser is deliberately conservative.
 
-To use an existing validated passage pack instead:
+Exam passages lack verified grade/chapter mappings. Search by subject and topic,
+without a grade. Grade/chapter/lesson/semester constraints return
+`unmapped_exam_scope`. Exam scope reports `grade: null` and `series: null`.
 
-```powershell
-python -m rag_workflow.app --corpus path/to/passages.jsonl --port 8765
-```
-
-Stop the server with Ctrl+C. The UI is served by Python's built-in HTTP server,
-bound to `127.0.0.1`. This is a single-user local demonstration, not a deployed
-multi-user service. Core implementation: `rag_workflow/app.py`, `demo.py`, and
-`web/`. The file-backed CLI and in-memory app share the same retrieval pipeline.
-
-Verification on 2026-11-06: 30 Python tests passed, including live HTTP search,
-source viewing, import and validation. Compilation, Ruff (`E9,F`), whitespace
-checks and JavaScript syntax checking passed during the GitHub handoff. The
-optional `python scripts/browser_smoke.py` check passed desktop search, source
-dialog, example queries, empty state, import and retrieval, HTML text escaping,
-and a 390-pixel mobile layout with no JavaScript errors. That optional check
-requires Playwright and Chrome already installed; the app does not.
-
-## Run and verify
-
-From the repository root:
-
-```powershell
-python -m rag_workflow.cli --query "Physics grade 11 chapter 4 Ohm" --corpus tests/fixtures/rag_demo_documents.jsonl
-python -m rag_workflow.cli --query "Physics grade 11 chapter 2" --corpus tests/fixtures/rag_demo_documents.jsonl
-python -m unittest discover -s tests -v
-```
-
-For the complete verification command, install the optional development tools:
-
-```powershell
-python -m venv .venv
-./.venv/Scripts/python.exe -m pip install -r requirements-dev.txt
-$env:RAG_PYTHON = "$PWD/.venv/Scripts/python.exe"
-& "C:/Program Files/Git/bin/bash.exe" scripts/verify.sh
-```
-
-`scripts/verify.sh` checks compilation, Ruff's fatal-error/undefined-name/unused-
-import rules (`E9,F`), and all Python tests. It uses `RAG_PYTHON` if supplied,
-otherwise `python`. It does not invoke Git or download dependencies. The app
-continues to run with the standard library alone; development tools are optional.
-With a normal activated virtual environment, `bash scripts/verify.sh` also works.
-
-For browser verification, install `requirements-browser.txt` in the environment
-used to run `python scripts/browser_smoke.py`. Chrome must already be installed.
-The script creates an isolated temporary server/collection and does not import
-test notes into the user's running app. To refresh the documentation screenshots:
-
-```powershell
-python scripts/browser_smoke.py --screenshots docs/assets/rag-workflow
-```
-
-The CLI writes UTF-8 JSON. Exit code 0 means success; 2 means a structured gap.
-The fixture is original synthetic text. Its approval fields simulate a published
-pack for testing; they are not teacher approval or a verified curriculum mapping.
-Chapter 4 / lesson 24 in the fixture are illustrative, not textbook assertions.
-
-## Runtime flow
+## Workflow and architecture
 
 ```mermaid
-flowchart LR
-  A[Query] --> B[Parse and validate scope]
-  B --> C[Read immutable passage pack]
-  C --> D[Approval, rights, KNTT, subject and range filters]
-  D --> E[Confirm edition if ambiguous]
-  E --> F[Passage splitting, BM25 ranking and document deduplication]
-  F --> G[Bounded excerpts with provenance]
+flowchart TD
+    A[CLI or local browser] --> B[Validate request and parse scope]
+    B --> C{Source mode}
+    C --> D[Curriculum: grade and explicit unit mappings]
+    C --> E[Exams: registry eligibility and subject/topic]
+    C --> F[Approved pack: approval, rights, KNTT and scope]
+    D --> G[Eligible documents]
+    E --> G
+    F --> G
+    G --> H[Split passages and rank with BM25]
+    H --> I[Deduplicate and build bounded excerpts]
+    I --> J[Provenance, fingerprints or typed gap]
 ```
 
-The Python entry point is `rag_workflow.workflow.run(payload, corpus_path)`.
-`payload` contains `schema_version` (default `1.0`), `query_text`, optional `top_k`,
-and optional exact `edition`. Contracts live in `rag_workflow/models.py`.
-Weights, aliases and limits live in versioned `rag_workflow/config.json`.
+Transport, source ingestion, eligibility and ranking have separate responsibilities.
+Source artifacts remain canonical; the search view is a rebuildable projection.
 
-Queries require one subject and grade 10–12, plus a chapter, lesson, semester,
-or topic. Vietnamese accents and English subject aliases are supported.
-Examples: `Vật lý lớp 11 chương II đến IV`, `Toán lớp 10 bài 2-4`,
-`Physics grade 11 Ohm`. Numeric chapter/lesson ranges are inclusive; Roman
-numerals I–X are recognized. Multiple ranges, uncertain progress and half-chapters
-produce clarification gaps. Formula-heavy queries with unresolved numbers need
-an upstream structured scope resolver; this conservative parser rejects them.
+| Module in `rag_workflow/` | Responsibility |
+| --- | --- |
+| `models.py` | Versioned request, source, scope and response contracts |
+| `query_parser.py` | Unicode normalization, aliases and conservative range parsing |
+| `document_loader.py` | UTF-8 JSONL validation, duplicate IDs and content checksums |
+| `existing_corpus.py` | Git snapshot projection and internal corpus eligibility |
+| `retriever.py` | Approved-pack approval, rights, edition and scope filters |
+| `search_index.py` | Passage splitting, token statistics and BM25 ranking |
+| `results.py` | Shared deduplication, excerpts, serialization and collection hashing |
+| `workflow.py` | File-backed and in-memory retrieval entry points |
+| `app.py`, `cli.py` | Local HTTP and command-line entry points |
+| `web/` | Browser form, result/source viewer and session import |
+| `config.json` | Versioned aliases, limits, passage sizes and ranking parameters |
 
-Documents have explicit chapter/lesson membership; the retriever does not derive
-membership from filenames, semantic similarity, volume, or position. A document
-with an unknown semester cannot satisfy a semester request. Each passage must
-fit wholly within its metadata scope; a whole mixed-chapter exam is not a passage.
-If approved candidates span editions, the caller must select one before ranking.
+Python integration:
 
-Ranking uses BM25 over eligible passages, a weighted title match and an
-exact-phrase bonus. Term rarity, frequency saturation and passage length affect
-the score. Text is split at paragraph/sentence boundaries where possible, with
-word-boundary fallback and overlap for long sections. Limits are 900 characters
-per passage and 120 characters of overlap, configured in `config.json`.
-Unicode normalization makes composed/decomposed and unaccented Vietnamese
-searchable while original source text remains unchanged.
+```python
+from pathlib import Path
+from rag_workflow.workflow import run
 
-Return the highest-ranked passage per document; exact document hashes are
-deduplicated. Ties use document ID and passage offset. Each result includes
-`passage_id`, `passage_start`, `passage_end`, `excerpt_start`, `excerpt_end`,
-`matched_terms` and `ranking_method`. Character offsets are zero-based Python
-string indices, end-exclusive. The original text slice at the excerpt offsets
-equals the returned excerpt. Scores are retrieval weights, not probabilities.
-With no keywords, eligible range documents receive score 0 and sort by ID.
-Excerpts are limited to 500 characters and at most 20 documents are returned.
-There is no broader fallback search or measured real-corpus quality claim.
+response = run(
+    {"query_text": "Physics grade 11 chapter 4 Ohm", "top_k": 5},
+    Path("tests/fixtures/rag_demo_documents.jsonl"),
+)
+```
 
-The prototype UI uses Segoe UI / Arial consistently for Vietnamese text. Source
-collection and raw JSON are collapsed by default. Browser checks verify the font
-family, accented titles, source viewing, import and mobile layout.
+`run_documents(payload, documents, corpus_sha256, corpus_info=None)` serves the
+in-memory app. Existing-corpus metadata selects its internal search policy.
+Both policies share `ranked_results`; internal corpus access does not weaken
+approved-pack checks.
 
-Every result preserves document ID, source ID, locator, source version, content
-checksum, edition, evidence class, approval and rights metadata. The response
-also fingerprints the exact corpus bytes and retrieval configuration for replay.
-Sources and excerpts are untrusted data; a downstream prompt must label them
-as data, never execute their instructions, and cite the source locator.
+### Ranking and excerpts
 
-## Local HTTP API
+After eligibility filtering, text is split into passages of up to 900 characters
+with a target overlap of 120. The splitter prefers paragraph, sentence and word
+boundaries, with character fallback for very long words. Offsets refer to the
+unchanged source text.
 
-The UI calls the same local server. Send UTF-8 JSON with
-`Content-Type: application/json`. This API is for the local prototype only.
+BM25 scores token rarity, frequency saturation and passage length (`k1=1.2`,
+`b=0.75`). Title weight is 3, content weight 1 and normalized exact-phrase bonus 2.
+Parameters live in `config.json`; they are provisional rather than optimized on
+a benchmark. There is no embedding model, vector database or semantic similarity.
+
+One best passage is returned per unique document content hash. Ties use document
+ID and passage start. A range without topic keywords returns eligible documents
+at score 0 in deterministic order. Scores are ranking weights, not confidence.
+Excerpts center on a matching term where possible and are capped at 500
+characters. `top_k` defaults to 5, with a maximum of 20.
+
+Offsets are zero-based Python character indices, end-exclusive:
+
+```python
+source.content[hit["excerpt_start"]:hit["excerpt_end"]] == hit["excerpt"]
+```
+
+## Corpus ingestion and provenance
+
+Observed snapshot: `8b8fb7b09182b3d9d1eee0b95818027f52ab004d`.
+It contains 687 curriculum rows and 134 registered papers: 108 searchable, 26
+excluded. Counts are calculated at startup and depend on the selected snapshot.
+
+The adapter reads a Git archive into memory, without checking out source files:
+
+- **Curriculum:** `rag/data/*.jsonl` titles, supplied keywords and outcomes.
+  Subject aliases become canonical names; chapter membership follows explicit
+  parents/unit identifiers. The original row and draft status stay attached.
+  The English `Kết nối tri thức (Global Success)` label is an explicit series
+  alias. Semester values with missing or `assumed` provenance remain null in the
+  searchable scope; their original values remain visible in provenance.
+  These are scope metadata, not textbook explanations or approved knowledge.
+- **Exams:** registry-listed `corpus/transcriptions/**/de.md` only when
+  `usable_as_content_evidence=True` and class is `official` or
+  `provincial_third_party`. Incomplete, excluded and reference-only papers are
+  omitted. Registry row, STATUS note, source path and available source card stay
+  attached. Exam classification and source authority are separate: a third-party
+  scan remains `third_party`. The view conservatively labels text `ocr-draft`
+  while preserving the original status note.
+
+Keys, profiles, model calls, generated papers and audits are outside the search
+view. The archive can contain companion files/figures; only allowlisted text and
+provenance become searchable records. No source files are written back, copied
+into this feature's code/test fixtures or sent to external services.
+
+Applied guidance: corpus README, registry README, audit protocol, RAG README,
+curriculum architecture/KNTT decision and group CHECKS/GAPS notes. Registry
+usability indicates transcription completeness, not teacher approval. Unknown
+item mappings, semesters and source quality stay explicit. Existing-corpus access
+is authorized for this private internal prototype.
+
+### Replay identifiers
+
+- `corpus_snapshot`: Git commit ID for existing-corpus runs; null for other modes.
+- `corpus_sha256`: 64-character SHA-256 of canonical ordered JSON for in-memory
+  search projections, or exact file bytes for the file-backed approved-pack API.
+- `config_sha256`: SHA-256 of canonical retrieval configuration.
+- `content_sha256` and `source_version`: each document's text hash and source version.
+
+Reproduce a run with the same mode, snapshot/pack, configuration and request. A
+Git commit ID is recorded separately from the corpus SHA-256.
+
+## CLI and HTTP API
+
+```powershell
+python -m rag_workflow.cli --existing --query "Vật lí lớp 11 chương 1 dao động"
+python -m rag_workflow.cli --existing --collection exam --query "Vật lí dao động"
+python -m rag_workflow.cli --corpus tests/fixtures/rag_demo_documents.jsonl --query "Physics grade 11 chapter 4 Ohm"
+```
+
+The CLI prints UTF-8 JSON. Exit 0 means success; exit 2 means a structured gap,
+including missing snapshots. See `--help` for `--top-k`, `--edition` and
+`--corpus-ref`.
 
 | Method | Route | Behavior |
 | --- | --- | --- |
-| GET | `/api/collection` | List document metadata, subject aliases and editions |
-| POST | `/api/search` | Resolve scope and return ranked passages or typed gaps |
-| GET | `/api/documents/{document_id}` | Return a full source document and metadata |
-| POST | `/api/documents` | Validate and add a text note to the in-memory collection |
+| GET | `/api/collection` | Summaries, aliases, editions, limits and optional `corpus_info` |
+| POST | `/api/search` | Retrieval response plus elapsed milliseconds and collection size |
+| GET | `/api/documents/{id}` | Full parent text, provenance and content checksum |
+| POST | `/api/documents` | Session text import in demo/pack mode; disabled for existing corpus |
 
-Search request:
+Send UTF-8 JSON with `Content-Type: application/json`. Existing-corpus request:
 
 ```json
 {
   "schema_version": "1.0",
-  "query_text": "Vật lí lớp 11 chương 4 về định luật Ohm",
+  "collection": "exam",
+  "query_text": "Vật lí dao động",
   "top_k": 5,
-  "edition": "local-demo-v1"
+  "edition": null
 }
 ```
 
-A valid HTTP request returns 200 even when retrieval has a domain gap. Check
-`status: success | gap` and `gaps[].code`, not only the HTTP status. Responses
-include `resolved_scope`, `documents`, `corpus_sha256`, `config_sha256`,
-`schema_version`, `elapsed_ms` and `collection_size`. Search results retain source
-metadata and the passage/excerpt offsets described above; full text is fetched
-through the source endpoint. `elapsed_ms` is per-request execution time, not a
-performance benchmark. Malformed JSON and invalid imports return 400; semantic
-query errors return a 200 response with a typed gap. Unknown sources or
-routes return 404; cross-origin POSTs return 403; empty/oversized bodies return 413.
+`collection` defaults to `curriculum`, or accepts `exam`, in existing-corpus mode.
+Omit this field for demo/approved packs. Response contract:
 
-Import request:
+| Field | Meaning |
+| --- | --- |
+| `status` | `success` or `gap`; check even after HTTP 200 |
+| `resolved_scope` | Subject, nullable grade, range, keywords, edition and applicable series |
+| `documents` | Ranked metadata, excerpts, passage offsets, matched terms and relevance score |
+| `gaps` | Machine-readable code and actionable message |
+| `corpus_sha256`, `corpus_snapshot`, `config_sha256` | Replay identifiers |
+| `elapsed_ms`, `collection_size` | HTTP diagnostics, not benchmark results |
 
-```json
-{
-  "title": "My vector notes",
-  "content": "A vector has magnitude and direction.",
-  "subject": "toan",
-  "grade": 10,
-  "chapter": 7,
-  "lesson": null,
-  "semester": null,
-  "source_locator": "Personal notes, section 7",
-  "permission_confirmed": true
-}
+Common gaps: `missing_subject`, `missing_grade`, `ambiguous_range`,
+`unmapped_exam_scope`, `ambiguous_edition`, `no_documents_in_scope`,
+`no_relevant_match`, `corpus_unavailable`, `malformed_document`.
+Malformed JSON/imports return HTTP 400, unknown routes/sources 404, cross-origin
+POSTs 403, and empty/oversized bodies 413. Maximum POST body: 2 MB.
+
+### Imports and approved packs
+
+Demo/pack mode accepts pasted text and `.txt`/`.md` files (500 KB file-picker
+limit). Required import fields: title, content, subject, grade and
+`permission_confirmed: true`. Optional: chapter, lesson, semester, source_locator.
+
+Imports remain in memory, shared across tabs until restart. Their local-user
+selection is not independent teacher verification. Imports use `local-demo-v1`;
+select an edition when the supplied pack has another matching edition. The
+endpoint is a prototype input mechanism, not a publication/approval service.
+
+Approved packs are UTF-8 JSONL following `SourceDocument` in `models.py` and the
+original synthetic [fixture](../tests/fixtures/rag_demo_documents.jsonl). Records
+need stable IDs, subject/grade, scope, KNTT series, edition, source/version/locator,
+content checksum, rights evidence and explicit permissions. `approved` requires
+a named reviewer and ISO date. Duplicate IDs, malformed records or checksum
+mismatches reject the pack. Only approved records permitting local retrieval and
+quotation enter ranking. Unknown scope cannot satisfy an exact range. The strict
+loader rejects raw legacy `unit_id` records as `curriculum_metadata_only`; explore
+those through existing-corpus mode with draft status intact.
+
+## Development and verification
+
+Runtime needs no packages. Development setup and the portable verification command:
+
+```powershell
+python -m venv .venv
+./.venv/Scripts/python.exe -m pip install -r requirements-dev.txt
+./.venv/Scripts/python.exe scripts/verify.py
 ```
 
-Successful import returns 201 and a generated `document_id`. The server accepts
-at most 2,000,000 bytes per POST; the UI file chooser limits files to 500,000 bytes
-and the text box to 500,000 characters. Imports use the `local-demo-v1` edition,
-`third_party` evidence class and explicit local-user approval metadata. This is
-session-level permission to select text, **not independently verified teacher
-approval**. Nothing is written back into the canonical corpus. Do not treat this
-import endpoint as a production publication or approval service.
+The command runs compilation, Ruff lint, Ruff formatting checks and unit/HTTP/CLI
+tests. JavaScript syntax is checked when Node is installed, otherwise explicitly
+skipped. Windows needs no Bash. `scripts/verify.sh` delegates to the same command
+and honors `RAG_PYTHON`. Format with
+`python -m ruff format rag_workflow tests scripts`.
 
-## Prototype limits and review notes
+Browser checks need separately pinned `requirements-browser.txt` and installed
+Chrome. They create isolated servers and never import into a running user session:
 
-- Lexical matching uses normalized words, not embeddings, synonym expansion or
-  a trained Vietnamese segmenter. Semantic paraphrases can be missed.
-- Passage indexing is rebuilt for each query after scope filtering. Ranking
-  weights and chunk limits are provisional; large-corpus speed is unmeasured.
-- One highest-ranked passage is returned per unique document content hash.
-  Additional useful passages from the same document are not returned separately.
-- This is a retrieval stage. Answer/exam generation, PDF/OCR ingestion, durable
-  imports, authentication and tenant isolation are outside this prototype.
-- The HTTP source endpoint is a local collection viewer. It does not implement
-  role-specific views or a production authorization boundary.
-- Demo note approval fields are simulation metadata. Real corpus approval still
-  requires source review. No real exam text, student records, API keys or local
-  imported material is included in this change.
+```powershell
+python -m pip install -r requirements-browser.txt
+python scripts/browser_smoke.py
+python scripts/browser_smoke.py --existing-corpus
+```
 
-Automated checks establish observed behavior on synthetic notes. Human review
-of AI-authored code and subject content remains necessary; no individual review
-or teacher acceptance is claimed by this document.
+Coverage includes scope boundaries, approvals/permissions, normalization, BM25,
+deduplication, late matches, exact offsets, hashes, malformed input and corpus
+exclusions. Browser checks cover search, source viewing, gaps, safe rendering,
+Vietnamese fonts, session imports and mobile layout. These are functional checks;
+held-out relevance and teacher acceptance have not been measured. Observed runs
+are recorded in [agent-log/chautanphat.log](../agent-log/chautanphat.log).
 
-AI assistance: Codex (GPT-6.1) authored the prototype code, synthetic notes,
-automated tests and documentation from the member's instructions. Executed
-checks are recorded here and in `agent-log/chautanphat.log`. This disclosure
-does not assert that a member or teacher has independently reviewed every line.
+Observed on 2026-11-06 after cleanup: 44 tests, compilation, lint, formatting and
+JavaScript syntax checks passed. Demo and existing-corpus browser checks passed;
+the default app and both real-corpus CLI search modes were run successfully.
 
-## Screenshots
+Demo screenshots use original text only. Regenerate with
+`python scripts/browser_smoke.py --screenshots docs/assets/rag-workflow`:
 
-Generated from the browser smoke test using original demo notes only. These
-images document the simple UI, not retrieval-quality measurements.
+![Demo desktop](assets/rag-workflow/astra-rag-desktop.png)
+![Demo mobile](assets/rag-workflow/astra-rag-mobile.png)
 
-![Desktop retrieval and Vietnamese source text](assets/rag-workflow/astra-rag-desktop.png)
+## Limits and next integration
 
-![Mobile retrieval layout](assets/rag-workflow/astra-rag-mobile.png)
+The index rebuilds after filtering for each query. BM25 can miss paraphrases.
+Character chunks do not guarantee whole exam questions/shared stimuli, and
+figures are not rendered; the full parent text is available for review. There is
+no PDF/OCR ingestion, durable import storage, authentication, solver-specific view
+or generation/export stage. Downstream consumers must treat sources as data,
+separate them from instructions and cite locators.
 
-## Corpus instructions applied
+Next: verified item/curriculum mappings and held-out retrieval evaluation, then
+compare multilingual embeddings/hybrid retrieval against this baseline.
+Production also needs reviewed rights, teacher-approved knowledge packs and
+role-specific evidence views.
 
-The following files were read from `origin/staging/rag` before implementation:
-
-- `corpus/README.md`, `corpus/registry/README.md`, `corpus/audit/PROTOCOL.md`:
-  usable transcription is not teacher approval; official and provincial evidence
-  retain separate authority; generated examples are not real-exam evidence.
-- `corpus/profiles/README.md`, `corpus/profiles/DOSSIER-SPEC.md`:
-  technical checks and model labels do not establish a complete reviewed dossier.
-- `rag/README.md`, `rag/docs/astra-curriculum-rag-plan.md`,
-  `rag/docs/textbook-series-ket-noi-tri-thuc.md`, and both groups' CHECKS/GAPS notes:
-  KNTT only; curriculum rows are draft metadata; unknown outcomes, semesters and
-  teaching progress remain unknown. Group A source notes were also read.
-
-The legacy map uses `unit_id`, `book`, `parent_id`, `typical_phase`, and `source`.
-It supplies scope structure, not explanatory knowledge. Loading it directly
-returns `curriculum_metadata_only`; it is never silently upgraded to approved.
-The exam registry's `usable_as_content_evidence` flag is likewise not approval.
-No staging corpus, exam text, answer keys or audit output was copied here.
-
-## Publishing a real passage pack
-
-Prepare UTF-8 JSONL under an approved local data root, following the synthetic
-fixture's field names and the canonical `SourceDocument` definition. The pack
-is a retrieval projection of the team's source registry, not a replacement registry.
-Preserve the original source authority in `evidence_class`; a third-party copy
-must not become `official` merely because its contents describe an official paper.
-
-Each semantic passage needs a stable ID, canonical subject, grade, KNTT edition,
-explicit range membership, source ID/version/locator, SHA-256 of its exact UTF-8
-content, permission evidence, and named approval/date. Unknown range metadata
-stays null. Approval requires `approval_status: approved`; `draft`, `ocr-draft`,
-`teacher-checked`, and `superseded` remain ineligible. Both local retrieval and
-quotation must be permitted. Malformed records and duplicate IDs fail the whole
-pack with a line-numbered gap. Source checksums are validated before retrieval.
-
-This local implementation trusts the pack publisher to verify approvals and
-permissions; it is not a permission adjudication service. It accepts knowledge
-and curriculum passages only. Private tenant content, reference items with keys,
-shared stimuli, and role-specific views need a reviewed integration before use.
-Source links are returned as provenance and never opened automatically.
-
-## Verification and remaining work
-
-Tests cover accent/alias handling, range ambiguity, missing scope, wrong subjects
-and grades, later-chapter distractors, edition selection, unapproved/forbidden
-sources, malformed packs, checksums, deduplication, deterministic ranking,
-provenance, excerpts and real CLI exit codes. These are synthetic correctness
-tests, not measurements of retrieval quality on the real corpus.
-
-Observed on 2026-11-06: `bash scripts/verify.sh` passed compilation, all 17 tests,
-and whitespace checks. The CLI returned one synthetic passage for chapter 4
-(exit 0), and an explicit empty-scope gap for chapter 2 (exit 2).
-An additional read-only check against staging snapshot
-`8b8fb7b09182b3d9d1eee0b95818027f52ab004d` found 26 map files / 687 rows:
-25 nonempty files returned `curriculum_metadata_only`; one was empty. None was
-promoted to approved evidence. No real-corpus relevance benchmark was run.
-
-Next integration: publish a teacher-reviewed KNTT passage pack with explicit
-lesson mappings, then label held-out subject queries and measure recall, ranking,
-out-of-scope results and gap handling. Dense/hybrid retrieval and synonym
-expansion should be evaluated against this baseline. Screenshot evidence and the
-personal Week 4 development report belong in the member's lab repository.
+AI assistance: Codex authored code, original synthetic examples, tests and docs
+from the member's instructions. Automated checks do not claim independent member
+or teacher review. Personal Week 4 reports belong in the member's lab repository.

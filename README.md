@@ -34,7 +34,7 @@ This prototype retrieves evidence; it does not generate exams.
 
 ## Documentation
 
-- [Workflow, API examples, verification, screenshots and limitations](docs/rag-workflow.md)
+- [RAG guide: architecture, corpus ingestion, search, API and development](docs/rag-workflow.md)
 - [Team MVP proposal and unresolved decisions](docs/mvp-plan.md)
 - [Repository collaboration rules](AGENTS.md)
 - [AI session record](agent-log/chautanphat.log)
@@ -42,10 +42,13 @@ This prototype retrieves evidence; it does not generate exams.
 ## Verify
 
 ```powershell
-python -m unittest discover -s tests -v
+python -m venv .venv
+./.venv/Scripts/python.exe -m pip install -r requirements-dev.txt
+./.venv/Scripts/python.exe scripts/verify.py
 ```
 
-See the workflow document for the complete compilation/lint/test command and the
-optional browser test. Development dependencies are pinned separately from the
-dependency-free app. Verification uses synthetic data; real-corpus relevance and
-teacher acceptance have not been measured.
+This portable command checks compilation, lint, formatting, unit/HTTP/CLI tests
+and JavaScript syntax when Node is available. Browser checks are documented in
+the guide. Development dependencies are pinned separately from the app. Tests
+use original synthetic text; real-corpus searches are smoke-tested, but relevance
+and teacher acceptance have not been measured.
