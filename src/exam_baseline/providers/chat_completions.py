@@ -5,9 +5,9 @@ from typing import Any
 
 import httpx
 
-from ..config import Settings
-from ..contracts import Completion, CompletionRequest, ProviderError
-from ..models import TokenUsage
+from exam_baseline.config import Settings
+from exam_baseline.core.contracts import Completion, CompletionRequest, ProviderError
+from exam_baseline.core.models import TokenUsage
 
 
 class ChatCompletionsProvider:

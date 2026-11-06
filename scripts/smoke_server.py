@@ -8,7 +8,7 @@ import time
 
 import httpx
 
-from exam_baseline.samples import sample_request
+from exam_baseline.baseline.samples import sample_request
 
 
 def main():

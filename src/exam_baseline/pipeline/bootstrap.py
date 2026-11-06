@@ -6,10 +6,10 @@ from pathlib import Path
 
 import httpx
 
-from ..config import Settings
-from ..contracts import Completion, ProviderError
-from ..providers.chat_completions import ChatCompletionsProvider
-from .contracts import PipelineRequest, StageConfig
+from exam_baseline.config import Settings
+from exam_baseline.core.contracts import Completion, ProviderError
+from exam_baseline.pipeline.contracts import AGENT_ROLES, PipelineRequest, StageConfig
+from exam_baseline.providers.chat_completions import ChatCompletionsProvider
 
 
 class ReplayProvider:
@@ -53,7 +53,7 @@ class ReplayProvider:
 
 def replay_providers(folder: Path) -> dict:
     providers = {}
-    for role in ("composer", "illustrator", "solver", "reviewer"):
+    for role in AGENT_ROLES:
         files = sorted(folder.glob(f"{role}_*.json"))
         if not files:
             raise ValueError(f"missing {role}_NN.json fixtures in {folder}")
@@ -72,7 +72,7 @@ async def provider_scope(payload: PipelineRequest, settings: Settings | None = N
         raise ValueError("pipeline live mode requires EXAM_PROVIDER=chat_completions")
     async with httpx.AsyncClient(follow_redirects=False) as client:
         providers = {}
-        for role in ("composer", "illustrator", "solver", "reviewer"):
+        for role in AGENT_ROLES:
             configured = stage_settings(settings, getattr(payload.workflow, role))
             providers[role] = ChatCompletionsProvider(configured, client)
         yield providers

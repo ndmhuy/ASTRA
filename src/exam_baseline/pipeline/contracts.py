@@ -4,10 +4,11 @@ from typing import Annotated, Literal
 
 from pydantic import Field, model_validator
 
-from ..mini import MiniRequest
-from ..models import Identifier, Model, Text, TokenUsage
+from exam_baseline.core.models import Identifier, Model, Text, TokenUsage
+from exam_baseline.draft.models import MiniRequest
 
 Role = Literal["composer", "illustrator", "solver", "reviewer"]
+AGENT_ROLES: tuple[Role, ...] = ("composer", "illustrator", "solver", "reviewer")
 Target = Literal["composer", "illustrator", "solver", "formatter"]
 Hash = Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
 

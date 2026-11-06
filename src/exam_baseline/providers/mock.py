@@ -2,8 +2,8 @@ import json
 from importlib.resources import files
 from typing import Any
 
-from ..contracts import Completion, CompletionRequest
-from ..models import GeneratedExam
+from exam_baseline.core.contracts import Completion, CompletionRequest
+from exam_baseline.core.models import GeneratedExam
 
 
 class MockProvider:
@@ -15,7 +15,7 @@ class MockProvider:
         self.model = model
         self.parameters: dict[str, Any] = {"fixture": "algebra-v1"}
         self._exam = GeneratedExam.model_validate_json(
-            files("exam_baseline.fixtures").joinpath("mock_exam.json").read_text("utf-8")
+            files("exam_baseline.resources.fixtures").joinpath("mock_exam.json").read_text("utf-8")
         )
 
     async def complete(self, request: CompletionRequest) -> Completion:

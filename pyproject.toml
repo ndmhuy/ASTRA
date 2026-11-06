@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "exam-baseline"
 dynamic = ["version"]
-description = "A measurable, single-generation-agent exam backend"
+description = "Exam generation baseline and four-agent LaTeX workflow"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -21,8 +21,8 @@ dependencies = [
 dev = ["pytest>=8,<10", "pytest-cov>=5,<8", "ruff>=0.9,<1"]
 
 [project.scripts]
-exam-baseline = "exam_baseline.cli:main"
-exam-pipeline = "exam_baseline.pipeline_cli:main"
+exam-baseline = "exam_baseline.baseline.cli:main"
+exam-pipeline = "exam_baseline.pipeline.cli:main"
 
 [tool.setuptools.dynamic]
 version = {attr = "exam_baseline.__version__"}
@@ -31,7 +31,7 @@ version = {attr = "exam_baseline.__version__"}
 where = ["src"]
 
 [tool.setuptools.package-data]
-exam_baseline = ["prompts/*.txt", "fixtures/*.json"]
+exam_baseline = ["resources/prompts/*.txt", "resources/fixtures/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -16,7 +16,7 @@ Nếu chưa có `.env`, sao chép `.env.example` thành `.env`. Không ghi đè 
 ## 2. Chạy mẫu không cần API key
 
 ```powershell
-.\.venv-win\Scripts\python.exe -m exam_baseline.cli --offline
+.\.venv-win\Scripts\python.exe -m exam_baseline.baseline.cli --offline
 ```
 
 Mở `ket_qua.md` theo đường dẫn terminal in ra để xem đề, đáp án và báo cáo.
@@ -48,7 +48,7 @@ Quyền truy cập và hạn mức phụ thuộc tài khoản. Khởi động l�
 **Terminal 2:** gửi yêu cầu mẫu và lưu kết quả:
 
 ```powershell
-.\.venv-win\Scripts\python.exe -m exam_baseline.cli --live
+.\.venv-win\Scripts\python.exe -m exam_baseline.baseline.cli --live
 ```
 
 Mở `ket_qua.md` trong thư mục `runs/live/` theo đường dẫn được in ra.
@@ -63,13 +63,13 @@ Dừng server bằng **Ctrl+C**.
 Xuất JSON mẫu ra một file mới:
 
 ```powershell
-.\.venv-win\Scripts\python.exe -m exam_baseline.cli --export-example inputs/request.json
+.\.venv-win\Scripts\python.exe -m exam_baseline.baseline.cli --export-example inputs/request.json
 ```
 
 Sửa file đó rồi gửi đến server:
 
 ```powershell
-.\.venv-win\Scripts\python.exe -m exam_baseline.cli --live --request inputs/request.json
+.\.venv-win\Scripts\python.exe -m exam_baseline.baseline.cli --live --request inputs/request.json
 ```
 
 ## 5. Pipeline Composer → Illustrator → Solver → Reviewer
@@ -77,7 +77,7 @@ Sửa file đó rồi gửi đến server:
 Chạy thử offline, nhận một file đề `runs/pipeline/demo/de_thi.tex`:
 
 ```powershell
-.\.venv-win\Scripts\python.exe -m exam_baseline.pipeline_cli --request examples/pipeline/text_01/input.json --fixture-dir examples/pipeline/text_01 --output runs/pipeline/demo
+.\.venv-win\Scripts\python.exe -m exam_baseline.pipeline.cli --request examples/pipeline/text_01/input.json --fixture-dir examples/pipeline/text_01 --output runs/pipeline/demo
 ```
 
 Để gọi model thật, bỏ `--fixture-dir` và dùng `.env` ở mục 3. Không cần khởi động server
@@ -89,7 +89,7 @@ thêm `--compile` nếu máy đã cài compiler. JSON/đáp án/review/trace n�
 cùng `human_review.md` liệt kê những điểm cần kiểm tra.
 Qua API, `POST /v2/exams/generate` trả trực tiếp file LaTeX khi đạt kiểm tra.
 
-[Điều phối, vòng sửa, cấu hình và benchmark](docs/PIPELINE_PLAN_AND_BENCHMARK.md).
+[Điều phối, vòng sửa, cấu hình và benchmark](docs/architecture/PIPELINE_PLAN_AND_BENCHMARK.md).
 
 ## 6. Chạy tests
 
@@ -97,10 +97,13 @@ Qua API, `POST /v2/exams/generate` trả trực tiếp file LaTeX khi đạt ki�
 .\.venv-win\Scripts\python.exe -m pytest -q
 ```
 
-[Tác dụng của từng thư mục](docs/CAU_TRUC_THU_MUC.md).
+[Tác dụng của từng thư mục và vị trí sửa code](docs/CAU_TRUC_THU_MUC.md).
 
-[ASTRA mini draft-only Composer → Illustrator và contract bàn giao](docs/MINI_COMPOSER_ILLUSTRATOR.md).
+Các lệnh cũ `exam_baseline.cli`, `exam_baseline.mini_cli`, `exam_baseline.pipeline_cli`
+vẫn chạy được qua launcher tương thích. Uvicorn vẫn dùng `exam_baseline.main:app`.
 
-[Khung đề ĐGNL HCM 120 câu theo đề tham chiếu 11](docs/HCM_DE11_FORMAT.md).
+[ASTRA mini draft-only Composer → Illustrator và contract bàn giao](docs/archive/MINI_COMPOSER_ILLUSTRATOR.md).
 
-[Nhập mẫu LaTeX/kho đề và xuất đề, đáp án, phiếu tô LaTeX](docs/LATEX_PIPELINE.md).
+[Khung đề ĐGNL HCM 120 câu theo đề tham chiếu 11](docs/guides/HCM_DE11_FORMAT.md).
+
+[Nhập mẫu LaTeX/kho đề và xuất đề, đáp án, phiếu tô LaTeX](docs/guides/LATEX_PIPELINE.md).

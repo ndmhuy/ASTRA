@@ -2,8 +2,10 @@
 
 from pathlib import Path
 
-from ..mini import ExamDraft, digest
-from .contracts import IllustrationBook, PipelineRequest, SolutionBook
+from exam_baseline.core.hashing import digest
+from exam_baseline.draft.models import ExamDraft
+from exam_baseline.pipeline.contracts import IllustrationBook, PipelineRequest, SolutionBook
+from exam_baseline.pipeline.rendering.syntax import validate_drawing_code
 
 
 def illustration_view(draft: ExamDraft) -> dict:
@@ -25,7 +27,6 @@ def illustration_view(draft: ExamDraft) -> dict:
 
 
 def validate_illustrations(book: IllustrationBook, draft: ExamDraft) -> None:
-    from .latex import validate_drawing_code
 
     for field in ("exam_id", "draft_id", "revision"):
         if getattr(book, field) != getattr(draft, field):

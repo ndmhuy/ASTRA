@@ -4,8 +4,8 @@ from importlib.resources import files
 
 import pytest
 
-from exam_baseline.models import GeneratedExam, GenerationRequest
-from exam_baseline.samples import sample_request
+from exam_baseline.baseline.samples import sample_request
+from exam_baseline.core.models import GeneratedExam, GenerationRequest
 
 
 @pytest.fixture(autouse=True)
@@ -27,7 +27,9 @@ def request_model(payload):
 
 @pytest.fixture
 def exam_dict():
-    return json.loads(files("exam_baseline.fixtures").joinpath("mock_exam.json").read_text("utf-8"))
+    return json.loads(
+        files("exam_baseline.resources.fixtures").joinpath("mock_exam.json").read_text("utf-8")
+    )
 
 
 @pytest.fixture

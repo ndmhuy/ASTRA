@@ -1,66 +1,99 @@
-# Tác dụng của từng thư mục
+# Cấu trúc mã nguồn ASTRA
+
+Mã nguồn chia theo trách nhiệm: domain dùng chung, baseline, tạo draft, pipeline,
+HTTP và benchmark. README ở root chỉ hướng dẫn chạy; tài liệu thiết kế hiện hành ở
+[architecture/PIPELINE_PLAN_AND_BENCHMARK.md](architecture/PIPELINE_PLAN_AND_BENCHMARK.md).
+
+## Thư mục chính
 
 ```text
 ASTRA/
-├── src/exam_baseline/       Mã nguồn backend
-│   ├── providers/          Các adapter gọi dịch vụ model và mock offline
-│   ├── pipeline/           Orchestrator, Solver, Reviewer, LaTeX và benchmark
-│   ├── prompts/            Nội dung prompt theo phiên bản
-│   └── fixtures/           Request mẫu và đề mock cố định
-├── tests/                  Tests tự động, không gọi model thật
-├── scripts/                Script kiểm tra server và file chuẩn bị đưa lên Git
-├── examples/pipeline/      Input và replay fixtures để test pipeline không gọi API
-├── docs/                   Cấu trúc thư mục và kế hoạch phát triển/benchmark
-├── .github/workflows/      Cấu hình CI chạy kiểm tra khi push hoặc tạo pull request
-├── inputs/                 JSON đầu vào cá nhân, tạo khi xuất ví dụ
-├── runs/                   Kết quả từng lần chạy: đề, phản hồi JSON và báo cáo
-└── .venv-win/              Môi trường Python cùng các thư viện đã cài
+├── src/exam_baseline/
+│   ├── core/                 Models, contracts, ma trận, profile, hashing dùng chung
+│   ├── config.py             Cấu hình .env, không chứa key cố định
+│   ├── providers/            Adapter HTTP model và provider mock
+│   ├── baseline/             Luồng một agent để làm đối chứng, CLI và báo cáo Markdown
+│   ├── draft/                Composer, schema draft, validation và renderer PNG cũ
+│   ├── pipeline/
+│   │   ├── agents/           Mỗi agent một file; prompt, response binding, validation
+│   │   ├── orchestration/    Điều phối, checkpoint validation, lưu/xuất artifacts
+│   │   ├── rendering/        Syntax LaTeX/TikZ, ghép document, compiler
+│   │   ├── contracts.py      Request/result, solution/review và budget
+│   │   ├── views.py          Dữ liệu riêng cho Illustrator/Solver/Reviewer
+│   │   ├── bootstrap.py      Ghép provider live hoặc replay theo vai trò
+│   │   ├── runtime.py        Trace, token/call budget và deadline
+│   │   └── cli.py            CLI full pipeline
+│   ├── api/                  App factory, dependency và routes V1/V2 riêng
+│   ├── benchmarks/           Runner, scoring và nhãn chấm; tách khỏi runtime
+│   ├── resources/            Prompt baseline và JSON fixtures đóng gói trong wheel
+│   └── main.py               Entry point uvicorn hiện có
+├── tests/                    Chia cùng nhóm chức năng với src; architecture/ kiểm ranh giới
+├── examples/                 Input/replay mẫu của mini, pipeline và HCM
+├── scripts/                  Dựng fixtures, HTTP smoke và kiểm repository
+├── docs/
+│   ├── architecture/         Thiết kế pipeline hiện hành
+│   ├── guides/               Hướng dẫn theo định dạng/luồng draft
+│   ├── plans/                Kế hoạch dài/ngắn giữ để tham khảo lịch sử
+│   ├── archive/              Tài liệu bàn giao người 1 cũ
+│   └── reports/              Các report và AI declaration đã có trước refactor
+├── inputs/                   Input cá nhân, không đưa lên Git
+├── runs/                     Kết quả chạy riêng, không đưa lên Git
+└── .venv-win/                Môi trường local, không đưa lên Git
 ```
 
-`inputs/`, `runs/` và `.venv-win/` là thư mục local, không đưa lên Git. Chúng có thể chưa
-tồn tại trong một bản clone mới. `.git/` do Git quản lý để lưu lịch sử và trạng thái repo.
+## Cần sửa gì thì tìm ở đâu?
 
-## Các module chính trong `src/exam_baseline/`
-
-| File | Tác dụng |
+| Công việc | Vị trí |
 | --- | --- |
-| `models.py` | Schema ma trận, ngân hàng câu hỏi, đề thi và phản hồi |
-| `contracts.py` | Interface cho provider, agent, context loader và recorder |
-| `config.py` | Đọc cấu hình môi trường và tạo cấu hình offline |
-| `bootstrap.py` | Ghép các thành phần, quản lý vòng đời HTTP client |
-| `agent.py` | Gọi model một lần và đọc đề trả về theo schema |
-| `prompting.py` | Ghép prompt, dữ liệu đầu vào và schema đầu ra |
-| `context.py` | Chuẩn bị dữ liệu JSON và cảnh báo ngân hàng câu hỏi |
-| `validation.py` | Kiểm tra đề với ma trận bằng Python |
-| `evaluation.py` | Tổng hợp thời gian, token, chi phí ước lượng và kết quả kiểm tra |
-| `service.py` | Điều phối toàn bộ quy trình sinh đề |
-| `api.py` | Khai báo endpoint và dependency FastAPI |
-| `http_status.py` | Chuyển trạng thái kết quả thành HTTP status |
-| `main.py` | Điểm khởi động server |
-| `cli.py` | Chạy offline hoặc gửi request tới server, lưu kết quả |
-| `reporting.py` | Tạo bản kết quả Markdown dễ đọc |
-| `samples.py` | Đọc request mẫu dùng chung |
-| `mini.py`, `mini_cli.py` | Composer/Illustrator và đường chạy draft-only |
-| `pipeline_cli.py` | Chạy full pipeline, xuất đề LaTeX sau kiểm tra |
-| `pipeline/contracts.py` | Hợp đồng solution/review/result và config/budget |
-| `pipeline/orchestrator.py` | Điều phối stages, vòng sửa, revision và điều kiện xuất |
-| `pipeline/agents.py`, `pipeline/stages.py`, `pipeline/views.py` | Solver/Reviewer và dữ liệu riêng từng vai trò |
-| `pipeline/runtime.py`, `pipeline/bootstrap.py` | Tracing, deadlines và ghép provider theo role |
-| `pipeline/latex.py` | Kiểm format và ghép TikZ/PGFPlots vào một file LaTeX |
-| `pipeline/benchmark.py`, `pipeline/reviewer_benchmark.py` | Pilot đối chứng và đo riêng Reviewer |
+| Thêm field ma trận/câu hỏi, kiểm phân bố hoặc điểm | `core/models.py`, `core/validation.py` |
+| Thêm profile đề | `core/profiles.py` và validation domain |
+| Đổi endpoint/key/model mặc định | `.env`, schema cấu hình ở `config.py` |
+| Thêm provider mới | `providers/`, theo `core/contracts.py: LLMProvider` |
+| Sửa Composer | `pipeline/agents/composer.py`; phần tạo draft dùng chung ở `draft/composer.py` |
+| Sửa Illustrator/Solver/Reviewer | File tương ứng trong `pipeline/agents/` |
+| Sửa prompt vai trò | `pipeline/agents/prompts.py`; Composer ở `draft/prompts.py` |
+| Đổi schema trả về của agent, bind ID/hash | `pipeline/contracts.py`, `agents/responses.py` |
+| Đổi validation đáp án/review | `pipeline/agents/validation.py` |
+| Đổi luồng hoặc điều kiện gửi feedback | `pipeline/orchestration/orchestrator.py` |
+| Đổi nơi lưu, tên file, điều kiện publish | `pipeline/orchestration/artifacts.py` |
+| Kiểm input/checkpoint trước khi xuất | `pipeline/orchestration/validation.py` |
+| Đổi bố cục đề LaTeX | `pipeline/rendering/document.py` |
+| Đổi tập lệnh LaTeX/TikZ được hỗ trợ | `pipeline/rendering/syntax.py` |
+| Đổi cách biên dịch | `pipeline/rendering/compiler.py` |
+| Đổi HTTP response/headers | `api/routes_baseline.py`, `api/routes_pipeline.py` |
+| Đổi cách chấm benchmark | `benchmarks/scoring.py`, `benchmarks/reviewer.py` |
 
-## Các file ở thư mục gốc
+Các đường dẫn trong bảng tính từ `src/exam_baseline/`. Tests tương ứng nằm ở
+`tests/core`, `tests/baseline`, `tests/draft`, `tests/pipeline`, `tests/api`,
+`tests/providers`, `tests/benchmarks` và `tests/tooling`.
 
-| File | Tác dụng |
-| --- | --- |
-| `README.md` | Các lệnh cài đặt và chạy dự án |
-| `pyproject.toml` | Khai báo package, dependencies, CLI và cấu hình công cụ |
-| `requirements-tested.txt` | Phiên bản dependencies đã dùng khi kiểm chứng |
-| `.env.example` | Mẫu cấu hình không chứa key thật |
-| `.env` | Cấu hình và key riêng trên máy, không đưa lên Git |
-| `.gitignore` | Loại file riêng tư và file sinh tự động khỏi Git |
-| `.gitattributes` | Quy định cách Git xử lý định dạng dòng |
-| `.editorconfig` | Quy định encoding, thụt dòng và định dạng khi sửa file |
+## Quy tắc mở rộng
 
-Các thư mục như `__pycache__/`, `.pytest_cache/`, `.ruff_cache/`, `build/`, `dist/` có thể
-được công cụ tạo lại khi chạy; chúng không thuộc mã nguồn cần commit.
+- `core/` không import HTTP, agent, provider hoặc benchmark. Core chỉ chứa dữ liệu và
+  quy tắc domain dùng chung; tests architecture kiểm ranh giới này.
+- Mỗi agent phụ trách nội dung của mình. `agents/base.py` chỉ xử lý transport/schema
+  correction; prompt và `ResponseContract` được truyền vào, không chọn role bằng if/else.
+- Để thay implementation một vai trò, truyền `PipelineAgents(...)` vào Orchestrator;
+  không sửa ba agent khác. Thêm role mới cần contract/config, factory và bước điều phối
+  rõ ràng, cùng tests về budget/revision/data view.
+- ID/revision/hash do code bind. Solver không nhận đáp án Composer; benchmark gold không
+  được import vào runtime agents hoặc orchestration.
+- Orchestrator quyết định thứ tự/feedback; `RunArtifacts` quản lý filesystem và xuất file.
+  Renderer chỉ ghép source; không gọi model hay tự gửi feedback.
+- Giữ policy Reviewer một lượt, phản hồi về Composer tối đa một lần, sau đó người dùng
+  kiểm tra bằng mắt. Refactor không thay policy này hay contract JSON hiện hành.
+
+## Entry point và tương thích
+
+Lệnh chính mới là `python -m exam_baseline.baseline.cli`, `python -m exam_baseline.draft.cli`
+và `python -m exam_baseline.pipeline.cli`. `exam-baseline`/`exam-pipeline` trỏ trực tiếp
+vào implementation tương ứng khi cài package.
+
+Các module root `cli.py`, `mini_cli.py`, `pipeline_cli.py` chỉ là launcher tương thích
+cho lệnh cũ. `pipeline/orchestrator.py` giữ import Orchestrator cũ; benchmark launcher cũ
+cũng được giữ. Business logic luôn nằm trong thư mục chức năng, không nhân đôi code.
+Uvicorn vẫn chạy bằng `exam_baseline.main:app`; routes V1/V2 được giữ nguyên.
+
+Các import nội bộ cũ như `exam_baseline.models`, `exam_baseline.mini` hoặc
+`exam_baseline.pipeline.latex` được thay bằng `core.models`, `draft/*` và
+`pipeline.rendering/*`. Dùng các module mới khi viết code tích hợp.

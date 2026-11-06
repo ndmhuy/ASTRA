@@ -4,8 +4,10 @@ import asyncio
 import json
 from pathlib import Path
 
-from exam_baseline.contracts import Completion
-from exam_baseline.mini import MiniRequest, create_draft, verify_handoff
+from exam_baseline.core.contracts import Completion
+from exam_baseline.draft.composer import create_draft
+from exam_baseline.draft.models import MiniRequest
+from exam_baseline.draft.validation import verify_handoff
 
 
 class FixtureProvider:

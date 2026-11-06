@@ -6,9 +6,9 @@ import re
 from pathlib import Path
 from time import perf_counter
 
-from ..contracts import Completion, CompletionRequest, LLMProvider, ProviderError
-from ..mini import digest
-from .contracts import CallTrace, PipelineResult, Role, WorkflowConfig
+from exam_baseline.core.contracts import Completion, CompletionRequest, LLMProvider, ProviderError
+from exam_baseline.core.hashing import digest
+from exam_baseline.pipeline.contracts import CallTrace, PipelineResult, Role, WorkflowConfig
 
 
 def normalize_json(text: str) -> tuple[str, bool]:
