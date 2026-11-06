@@ -1,6 +1,6 @@
 # Lab04 plan: phased build of the ASTRA exam-profile RAG
 
-Status: **draft for Huy's review, 2026-11-06.** Spec: [spec.md](spec.md). Phases P0 and P1 describe work already in the repo; P2 has a runnable baseline; its screenshot gate remains open. P3 onward is not started. Each phase is one branch and one PR of about 300-400 changed lines (AGENTS.md Tier 2A), cut from the latest `origin/main`, with a short `tasks.md` list written at the start of that phase.
+Status: **draft for Huy's review, 2026-11-06.** Spec: [spec.md](spec.md). Phases P0 and P1 describe work already in the repo; P2 has a runnable baseline; its screenshot gate remains open. P3–P6 are in progress with partial offline results; their full gates remain open. Each phase is one branch and one PR of about 300-400 changed lines (AGENTS.md Tier 2A), cut from the latest `origin/main`, with a short `tasks.md` list written at the start of that phase.
 
 ```mermaid
 flowchart LR
@@ -54,10 +54,10 @@ Reading it: filters run before ranking, so a wrong-grade or wrong-subject chunk 
 | P0 Prepare the corpus | Approved, registered source material | Registry, checksums, usable flags present | Done in repo |
 | P1 Preprocess profiles | Retrievable per-subject records | Profiles parse; known gaps listed | Done, agent-reviewed only |
 | P2 Baseline | Runnable lexical RAG with receipts | Command runs and prints ranked cited hits; tests run; screenshot | Implemented and run; screenshot pending |
-| P3 Augmentation | Hybrid dense plus rerank, switchable | Each option runs; comparison table has real numbers | Not started |
-| P4 Evaluate | Decide what to keep | Gold set, metrics, matched arms recorded | Not started |
-| P5 Integrate | Retriever contract for Writer | Bundle JSON validated; leakage and gap tests pass | Not started |
-| P6 Demo and Lab04 pack | Show it and submit | Screenshots, report, commit log, AI declaration | Not started |
+| P3 Augmentation | Hybrid dense plus rerank, switchable | Each option runs; comparison table has real numbers | Partial: opt-in spelling expansion; dense and other options not run |
+| P4 Evaluate | Decide what to keep | Gold set, metrics, matched arms recorded | Partial: small provisional lexical comparison; other arms and review not run |
+| P5 Integrate | Retriever contract for Writer | Bundle JSON validated; leakage and gap tests pass | Partial: local byte-bounded caller and tests; Writer and token budget not integrated |
+| P6 Demo and Lab04 pack | Show it and submit | Screenshots, report, commit log, AI declaration | Partial: terminal demo run; Streamlit, screenshots and lab pack pending |
 
 ## P0 Prepare the corpus (done)
 
@@ -76,9 +76,11 @@ Remaining work: a `chunker` spec only, no new data. One chunk = one topic record
 
 Implemented: offline SQLite FTS5 indexing of curriculum and profile JSON records with structured filters, deterministic ranking, gaps, and local receipts. The verbatim snapshot remains unchanged; adapters live under `rag/compat`. See [how-to-query.md](how-to-query.md) for observed CLI output and [p2-run-log.md](p2-run-log.md) for test results and integration skips.
 
-Gate: CLI output observed and tests run and reported; **screenshot not captured**, so the full written gate remains open. No P3 work has started.
+Gate: CLI output observed and tests run and reported; **screenshot not captured**, so the full written gate remains open. See [results.md](results.md) for the subsequent limited P3–P4 work.
 
 ## P3 Augmentation (switchable, each must earn its place)
+
+Observed: opt-in spelling expansion runs and is compared in [results.md](results.md); no held-out improvement was demonstrated. The remaining options below have not been run.
 
 Order of trial, cheapest first. Keep a change only if P4 shows a gain on held-out queries.
 
@@ -95,6 +97,8 @@ Gate: each option runs behind a flag in the CLI; no option is on by default unti
 
 ## P4 Evaluate (real runs only)
 
+Observed: [results.md](results.md) reports a small provisional curriculum-only comparison, not the full evaluation or teacher validation.
+
 1. Gold set `rag/tests/gold_profile_queries.json`: start from the 30 existing questions, add unaccented text, synonyms, formulas, wrong-chapter labels, later-topic distractors, no-answer, cross-subject traps. Hold out a fixed share that no tuning touches.
 2. Metrics: source recall@k, MRR, out-of-scope rate, gap correctness, latency, index size, token cost of the bundle.
 3. Arms: no retrieval, lexical, lexical plus expansion, hybrid, hybrid plus parent expansion.
@@ -105,12 +109,16 @@ Gate: a table of recorded numbers. Loop back to P3 if nothing beats the baseline
 
 ## P5 Integrate with the MAS
 
+Observed: `astra_rag.bundle` constructs byte-bounded local JSON and tests scope, gaps and provenance; its standard-library validator checks the documented structure. No actual Writer, independent JSON Schema validator, or tokenizer-based cap has been run.
+
 - Freeze the bundle contract as versioned JSON (`rag/schema/evidence_bundle.v1.json`): items, locators, review status, gaps, receipt id.
 - Add leakage tests: wrong subject or grade never appears; profile text is treated as data.
 - Plain function call from the orchestrator (the MVP default, Problem 7); stub caller if the real Writer is not ready.
 - Append decisions to `docs/DECISIONS.md` only after the team agrees: retrieval stack (Problem 10), snapshot id, rule-8 exception.
 
 ## P6 Demo and Lab04 submission
+
+Observed: `python3 -m astra_rag.demo` ran as an offline terminal demo. It is not the planned Streamlit page; screenshots and the reviewed submission pack remain outstanding.
 
 - Streamlit page: request box, filters, ranked evidence with locators, gaps in red, receipt download. (Handout links the Streamlit tutorial; Streamlit is an extra dependency, so say so in the PR.)
 - Screenshots of the feature running, and of tests and CLI output.

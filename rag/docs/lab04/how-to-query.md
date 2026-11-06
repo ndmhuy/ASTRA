@@ -143,3 +143,18 @@ Every search appends a line to `.index/receipts.jsonl`; read the latest with `ta
 Each hit shows rank, SQLite BM25 score (smaller is better), stable chunk ID, kind, subject, grade, title, locator, review status and a text excerpt of up to 150 characters. A profile with multiple or unknown grades displays `grade=None`; multiple known grades are retained in the filter table, and unknown grades do not pass a grade filter. Locators identify the source file and row/topic ID. `GAP: no_rows` means no records satisfy the filters, `no_match` means no eligible record matched every query token, `empty_query` means no searchable tokens, and `bad_grades` means the grade list is invalid. No filter is widened.
 
 This is lexical matching only: there is no synonym expansion or semantic retrieval. A match does not prove the text answers the question. Curriculum records are draft; profile labels are agent-reviewed and not teacher-confirmed. Profile text uses the topic names, raw topic names and available reasoning-move descriptions from JSON; it is not the complete profile document.
+
+## Continuation: spelling expansion, bundles and offline demo
+
+Run from `rag/`. `--expand` enables the limited spelling table (`om`→`ohm`, `niuton`→`newton`, `jun`/`jul`→`joule`); it never changes filters and is **off by default**. The provisional held-out comparison did not establish a gain; see [results.md](results.md).
+
+```sh
+python3 -m astra_rag.search -q om --subject 'Vật lí' --grades 11 --kind curriculum --expand
+python3 -m astra_rag.bundle -q 'hàm số' --subject Toan --grades 12 --kind curriculum --budget-bytes 12000
+python3 -m astra_rag.demo
+python3 -m unittest discover -s tests -p 'test_evidence_bundle.py' -v
+```
+
+The bundle caller labels evidence as untrusted data and records a receipt ID. The byte budget limits the compact UTF-8 JSON encoding, **not model tokens**; its `budget_exhausted` gap indicates omitted ranked hits. The receipt lists the complete ranked search result before budget trimming. The standalone local caller does not invoke or integrate with an actual Writer. Do not treat its `evidence_role` field as enforcement against prompt injection; any future consumer must enforce that boundary.
+
+`python3 -m astra_rag.demo` runs an interactive terminal demo. Streamlit, hybrid retrieval, a teacher-reviewed gold set, and screenshots are not provided by this demo.
