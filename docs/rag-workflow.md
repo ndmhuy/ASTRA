@@ -6,6 +6,54 @@ source locators, versions, and explicit gaps. Python 3.11.1, standard library on
 The implementation is a proposal for this feature; it does not settle the open
 team stack or data decisions in [mvp-plan.md](mvp-plan.md).
 
+## Local UI app
+
+Start the application from the project root; no install, GitHub access or API key
+is required:
+
+```powershell
+python -m rag_workflow.app
+```
+
+Open <http://127.0.0.1:8765>. The app starts with 12 original demo study notes
+covering Physics, Mathematics, Chemistry, Biology and English. Enter a query,
+choose a result limit and optionally an edition. Inspect the parsed scope,
+ranked excerpts, full documents and JSON response. Example buttons run Vietnamese
+queries. Subject and grade filters apply before lexical ranking.
+
+Use **Add a document** to paste text or load a `.txt` / `.md` file. Supply its
+subject, grade and known chapter/lesson/semester metadata, and confirm permission
+for local use. The app treats this as a personal-use selection, not academic or
+teacher verification. Imported documents remain in memory until the server
+stops. Each import must have one consistent scope; long text is split into
+overlapping passages automatically. PDF/OCR ingestion is not
+included. The collection is shared by browser tabs connected to this local server.
+
+The default notes are original illustrative material. Their chapter numbers are
+demo scope labels, not independently verified textbook mappings. They are visibly
+identified as demo notes in the interface. Imports are visibly local sources.
+The app uses deterministic keyword retrieval; it returns source evidence and
+does not generate answers. No document text is sent to an external service.
+
+To use an existing validated passage pack instead:
+
+```powershell
+python -m rag_workflow.app --corpus path/to/passages.jsonl --port 8765
+```
+
+Stop the server with Ctrl+C. The UI is served by Python's built-in HTTP server,
+bound to `127.0.0.1`. This is a single-user local demonstration, not a deployed
+multi-user service. Core implementation: `rag_workflow/app.py`, `demo.py`, and
+`web/`. The file-backed CLI and in-memory app share the same retrieval pipeline.
+
+Verification on 2026-11-06: 30 Python tests passed, including live HTTP search,
+source viewing, import and validation. Compilation, Ruff (`E9,F`), whitespace
+checks and JavaScript syntax checking passed during the GitHub handoff. The
+optional `python scripts/browser_smoke.py` check passed desktop search, source
+dialog, example queries, empty state, import and retrieval, HTML text escaping,
+and a 390-pixel mobile layout with no JavaScript errors. That optional check
+requires Playwright and Chrome already installed; the app does not.
+
 ## Run and verify
 
 From the repository root:
@@ -16,7 +64,30 @@ python -m rag_workflow.cli --query "Physics grade 11 chapter 2" --corpus tests/f
 python -m unittest discover -s tests -v
 ```
 
-In Git Bash, `bash scripts/verify.sh` checks compilation, tests, and whitespace.
+For the complete verification command, install the optional development tools:
+
+```powershell
+python -m venv .venv
+./.venv/Scripts/python.exe -m pip install -r requirements-dev.txt
+$env:RAG_PYTHON = "$PWD/.venv/Scripts/python.exe"
+& "C:/Program Files/Git/bin/bash.exe" scripts/verify.sh
+```
+
+`scripts/verify.sh` checks compilation, Ruff's fatal-error/undefined-name/unused-
+import rules (`E9,F`), and all Python tests. It uses `RAG_PYTHON` if supplied,
+otherwise `python`. It does not invoke Git or download dependencies. The app
+continues to run with the standard library alone; development tools are optional.
+With a normal activated virtual environment, `bash scripts/verify.sh` also works.
+
+For browser verification, install `requirements-browser.txt` in the environment
+used to run `python scripts/browser_smoke.py`. Chrome must already be installed.
+The script creates an isolated temporary server/collection and does not import
+test notes into the user's running app. To refresh the documentation screenshots:
+
+```powershell
+python scripts/browser_smoke.py --screenshots docs/assets/rag-workflow
+```
+
 The CLI writes UTF-8 JSON. Exit code 0 means success; 2 means a structured gap.
 The fixture is original synthetic text. Its approval fields simulate a published
 pack for testing; they are not teacher approval or a verified curriculum mapping.
@@ -30,7 +101,7 @@ flowchart LR
   B --> C[Read immutable passage pack]
   C --> D[Approval, rights, KNTT, subject and range filters]
   D --> E[Confirm edition if ambiguous]
-  E --> F[Lexical ranking and exact-content deduplication]
+  E --> F[Passage splitting, BM25 ranking and document deduplication]
   F --> G[Bounded excerpts with provenance]
 ```
 
@@ -53,18 +124,124 @@ with an unknown semester cannot satisfy a semester request. Each passage must
 fit wholly within its metadata scope; a whole mixed-chapter exam is not a passage.
 If approved candidates span editions, the caller must select one before ranking.
 
-Ranking counts unique keyword matches, weights title matches more highly, and
-adds an exact-phrase bonus. Scores are raw lexical weights, not probabilities.
-Ties use document ID. Exact content hashes are deduplicated. With no keywords,
-eligible range documents receive score 0 and sort by ID. Excerpts begin near the
-first keyword match and are limited to 500 characters; at most 20 results are
-allowed. Both limits are configurable. There is no broader fallback search.
+Ranking uses BM25 over eligible passages, a weighted title match and an
+exact-phrase bonus. Term rarity, frequency saturation and passage length affect
+the score. Text is split at paragraph/sentence boundaries where possible, with
+word-boundary fallback and overlap for long sections. Limits are 900 characters
+per passage and 120 characters of overlap, configured in `config.json`.
+Unicode normalization makes composed/decomposed and unaccented Vietnamese
+searchable while original source text remains unchanged.
+
+Return the highest-ranked passage per document; exact document hashes are
+deduplicated. Ties use document ID and passage offset. Each result includes
+`passage_id`, `passage_start`, `passage_end`, `excerpt_start`, `excerpt_end`,
+`matched_terms` and `ranking_method`. Character offsets are zero-based Python
+string indices, end-exclusive. The original text slice at the excerpt offsets
+equals the returned excerpt. Scores are retrieval weights, not probabilities.
+With no keywords, eligible range documents receive score 0 and sort by ID.
+Excerpts are limited to 500 characters and at most 20 documents are returned.
+There is no broader fallback search or measured real-corpus quality claim.
+
+The prototype UI uses Segoe UI / Arial consistently for Vietnamese text. Source
+collection and raw JSON are collapsed by default. Browser checks verify the font
+family, accented titles, source viewing, import and mobile layout.
 
 Every result preserves document ID, source ID, locator, source version, content
 checksum, edition, evidence class, approval and rights metadata. The response
 also fingerprints the exact corpus bytes and retrieval configuration for replay.
 Sources and excerpts are untrusted data; a downstream prompt must label them
 as data, never execute their instructions, and cite the source locator.
+
+## Local HTTP API
+
+The UI calls the same local server. Send UTF-8 JSON with
+`Content-Type: application/json`. This API is for the local prototype only.
+
+| Method | Route | Behavior |
+| --- | --- | --- |
+| GET | `/api/collection` | List document metadata, subject aliases and editions |
+| POST | `/api/search` | Resolve scope and return ranked passages or typed gaps |
+| GET | `/api/documents/{document_id}` | Return a full source document and metadata |
+| POST | `/api/documents` | Validate and add a text note to the in-memory collection |
+
+Search request:
+
+```json
+{
+  "schema_version": "1.0",
+  "query_text": "Vật lí lớp 11 chương 4 về định luật Ohm",
+  "top_k": 5,
+  "edition": "local-demo-v1"
+}
+```
+
+A valid HTTP request returns 200 even when retrieval has a domain gap. Check
+`status: success | gap` and `gaps[].code`, not only the HTTP status. Responses
+include `resolved_scope`, `documents`, `corpus_sha256`, `config_sha256`,
+`schema_version`, `elapsed_ms` and `collection_size`. Search results retain source
+metadata and the passage/excerpt offsets described above; full text is fetched
+through the source endpoint. `elapsed_ms` is per-request execution time, not a
+performance benchmark. Malformed JSON and invalid imports return 400; semantic
+query errors return a 200 response with a typed gap. Unknown sources or
+routes return 404; cross-origin POSTs return 403; empty/oversized bodies return 413.
+
+Import request:
+
+```json
+{
+  "title": "My vector notes",
+  "content": "A vector has magnitude and direction.",
+  "subject": "toan",
+  "grade": 10,
+  "chapter": 7,
+  "lesson": null,
+  "semester": null,
+  "source_locator": "Personal notes, section 7",
+  "permission_confirmed": true
+}
+```
+
+Successful import returns 201 and a generated `document_id`. The server accepts
+at most 2,000,000 bytes per POST; the UI file chooser limits files to 500,000 bytes
+and the text box to 500,000 characters. Imports use the `local-demo-v1` edition,
+`third_party` evidence class and explicit local-user approval metadata. This is
+session-level permission to select text, **not independently verified teacher
+approval**. Nothing is written back into the canonical corpus. Do not treat this
+import endpoint as a production publication or approval service.
+
+## Prototype limits and review notes
+
+- Lexical matching uses normalized words, not embeddings, synonym expansion or
+  a trained Vietnamese segmenter. Semantic paraphrases can be missed.
+- Passage indexing is rebuilt for each query after scope filtering. Ranking
+  weights and chunk limits are provisional; large-corpus speed is unmeasured.
+- One highest-ranked passage is returned per unique document content hash.
+  Additional useful passages from the same document are not returned separately.
+- This is a retrieval stage. Answer/exam generation, PDF/OCR ingestion, durable
+  imports, authentication and tenant isolation are outside this prototype.
+- The HTTP source endpoint is a local collection viewer. It does not implement
+  role-specific views or a production authorization boundary.
+- Demo note approval fields are simulation metadata. Real corpus approval still
+  requires source review. No real exam text, student records, API keys or local
+  imported material is included in this change.
+
+Automated checks establish observed behavior on synthetic notes. Human review
+of AI-authored code and subject content remains necessary; no individual review
+or teacher acceptance is claimed by this document.
+
+AI assistance: Codex (GPT-6.1) authored the prototype code, synthetic notes,
+automated tests and documentation from the member's instructions. Executed
+checks are recorded here and in `agent-log/chautanphat.log`. This disclosure
+does not assert that a member or teacher has independently reviewed every line.
+
+## Screenshots
+
+Generated from the browser smoke test using original demo notes only. These
+images document the simple UI, not retrieval-quality measurements.
+
+![Desktop retrieval and Vietnamese source text](assets/rag-workflow/astra-rag-desktop.png)
+
+![Mobile retrieval layout](assets/rag-workflow/astra-rag-mobile.png)
 
 ## Corpus instructions applied
 
