@@ -1,0 +1,172 @@
+{
+  "request_tag": "finish-three-new-samples-hoa-hoc-d6b7d356e77f",
+  "samples": [
+    {
+      "id": "HH-N-794e3a30c695",
+      "topic_id": "T02",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Tình huống và số liệu tự biên soạn. Có 10 phần dung dịch giống nhau; mỗi phần chứa 0,010 mol glucose và 0,005 mol sucrose. Mỗi phần phải được xử lí nguyên phần theo một trong hai quy trình, hoặc không sử dụng:\n\n| Quy trình | Xử lí carbohydrate | Lượng AgNO3 cấp cố định cho mỗi phần | Hiệu suất thu hồi silver |\n|---|---|---:|---:|\n| R | Không thủy phân | 0,020 mol | 80,0% |\n| H | Thủy phân hoàn toàn sucrose, sau đó trung hòa | 0,040 mol | 76,0% |\n\nThuốc thử chứa AgNO3 trong môi trường ammonia được chuẩn bị phù hợp. Trong điều kiện này, 1 mol glucose hoặc fructose có thể tạo tối đa 2 mol silver; sucrose chưa thủy phân không tạo silver. Hiệu suất trong bảng tính theo lượng silver tối đa từ carbohydrate của phần dung dịch tương ứng. Toàn bộ AgNO3 đã cấp cho một phần được tính là đã sử dụng, kể cả phần không được thu hồi thành silver; không tái sử dụng thuốc thử.\n\nTổng lượng AgNO3 có thể cấp là 0,260 mol. Silver thu hồi từ các phần được gộp lại để tạo lớp phủ, giả sử công đoạn tạo lớp phủ không hao hụt. Mỗi tấm cần phủ trên tổng diện tích 180 cm² một lớp silver dày đều 1,00 μm. Bỏ qua thể tích ở mép và độ nhám; khối lượng riêng của silver là 10,5 g/cm³. Cho M(Ag) = 108 g/mol và 1 μm = 10⁻⁴ cm.\n\nCó thể hoàn thành nhiều nhất bao nhiêu tấm? Chỉ tính tấm được phủ đủ; ghi một số nguyên, đơn vị tấm.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": "116",
+          "level": "VD",
+          "solution": "Mỗi tấm cần 180 × 10⁻⁴ × 10,5 = 0,189 g silver. Một phần theo R cho 0,010 × 2 × 108 × 0,80 = 1,728 g; theo H cho (0,010 + 2 × 0,005) × 2 × 108 × 0,76 = 3,2832 g. Đặt x, y là số phần theo R, H. Cần tối đa hóa 1,728x + 3,2832y với x, y nguyên không âm, x + y ≤ 10 và x + 2y ≤ 13. Giá trị lớn nhất đạt tại x = 7, y = 3: thu 21,9456 g, đủ 116 tấm vì 116 × 0,189 = 21,924 g còn 117 × 0,189 = 22,113 g."
+        }
+      ],
+      "solution": "Sau thủy phân, mỗi phần có 0,015 mol glucose và 0,005 mol fructose, tức 0,020 mol monosaccharide khử. Vì vậy lượng silver thu được theo R và H lần lượt là 1,728 g và 3,2832 g. Gọi x, y là số phần dùng từng quy trình. Hai nguồn lực độc lập tạo các ràng buộc x + y ≤ 10 và 0,020x + 0,040y ≤ 0,260, hay x + 2y ≤ 13.\n\nVới y cố định, chọn x lớn nhất vì lượng silver tăng theo x. Các phương án tốt nhất tương ứng là:\n\n| y | x lớn nhất | Silver thu được (g) |\n|---:|---:|---:|\n| 0 | 10 | 17,2800 |\n| 1 | 9 | 18,8352 |\n| 2 | 8 | 20,3904 |\n| 3 | 7 | 21,9456 |\n| 4 | 5 | 21,7728 |\n| 5 | 3 | 21,6000 |\n| 6 | 1 | 21,4272 |\n\nKhông thể có y ≥ 7 do giới hạn AgNO3. Lớp phủ trên mỗi tấm có thể tích 0,0180 cm³ và khối lượng 0,189 g. Do đó số tấm tối đa là phần nguyên của 21,9456/0,189, bằng 116. Không làm tròn lên.",
+      "cognitive_rationale": "VD nằm ở việc xây dựng mô hình lựa chọn nguyên phần dưới đồng thời hai giới hạn, rồi chứng minh phương án tối ưu trước khi đổi lượng silver thành sản phẩm hoàn chỉnh. Kiểm tra đường tắt: chọn H nhiều nhất vì mỗi phần cho nhiều silver hơn dẫn tới y = 6, x = 1 và chỉ đủ 113 tấm; chọn toàn R vì tiết kiệm AgNO3 cũng kém tối ưu. Tính lượng chất theo một quy trình cho sẵn hoặc chỉ đếm số phép tính không giải quyết được lựa chọn này.",
+      "distractor_mechanisms": {},
+      "easier": "Ấn định sử dụng 7 phần theo R và 3 phần theo H, giữ nguyên các số liệu còn lại, chỉ yêu cầu tính số tấm hoàn chỉnh. Khi đó nhiệm vụ là tính tỉ lượng, khối lượng lớp phủ và lấy phần nguyên, ở mức TH.",
+      "harder": "Giữ nguyên dữ kiện nhưng cho phép thu hồi 25% lượng silver tương đương với AgNO3 đã cấp mà chưa thu được thành kim loại, rồi dùng lượng thuốc thử thu hồi cho các phần còn lại. Chỉ cho phép một lần thu hồi; yêu cầu tìm số tấm tối đa và phải mô hình hóa cả thứ tự hai lượt xử lí.",
+      "rubric": [
+        {
+          "criterion": "Xác định đúng silver thu hồi mỗi phần: R là 1,728 g, H là 3,2832 g.",
+          "points": 0.25
+        },
+        {
+          "criterion": "Lập đúng hai ràng buộc về số phần và lượng AgNO3, có điều kiện nguyên không âm.",
+          "points": 0.25
+        },
+        {
+          "criterion": "Chứng minh phương án tối ưu x = 7, y = 3 bằng bảng hoặc lập luận tương đương.",
+          "points": 0.25
+        },
+        {
+          "criterion": "Tính đúng 0,189 g silver mỗi tấm và kết luận tối đa 116 tấm bằng cách lấy phần nguyên.",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": "Có thể xét hai miền y ≤ 3 và y ≥ 3: trong miền đầu, x = 10 − y và lượng silver tăng theo y; trong miền sau, x = 13 − 2y và lượng silver giảm theo y. Cũng chấp nhận liệt kê đầy đủ các giá trị nguyên khả thi hoặc quy hoạch nguyên có chứng minh tối ưu. Các cách đổi đơn vị khác được chấp nhận nếu nhất quán.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "pending_unkeyed_review"
+    },
+    {
+      "id": "HH-N-a2cd9d0a688a",
+      "topic_id": "T03",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Tình huống tự biên soạn. Một chất X có công thức phân tử C9H13N, chứa đúng một vòng benzene và không chứa vòng nào khác. Cần xác định tất cả công thức cấu tạo của X phù hợp đồng thời với các dữ kiện sau:\n\n• X là amine bậc một; nguyên tử nitrogen liên kết trực tiếp với một nguyên tử carbon no thuộc mạch nhánh, không liên kết trực tiếp với vòng benzene.\n• Khi oxi hóa hoàn toàn các mạch nhánh bằng potassium permanganate dư, nóng, rồi acid hóa, sản phẩm hữu cơ chứa vòng benzene duy nhất là benzene-1,4-dicarboxylic acid.\n• Để xét phép oxi hóa này, sử dụng mô hình: mỗi mạch nhánh gắn với vòng qua một carbon có ít nhất một hydrogen được chuyển thành một nhóm –COOH tại chính vị trí gắn đó; các carbon xa vòng và nitrogen không nằm trong sản phẩm hữu cơ chứa vòng. Vị trí tương đối của các nhóm thế trên vòng không thay đổi.\n\nCó bao nhiêu công thức cấu tạo của X phù hợp? Chỉ đếm đồng phân cấu tạo, không đếm riêng các đồng phân quang học; ghi một số nguyên.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": "3",
+          "level": "VD",
+          "solution": "C9H13N có độ bất bão hòa bằng 4, đã được dùng hết bởi vòng benzene nên các mạch nhánh còn lại chỉ có liên kết đơn. Sản phẩm oxi hóa buộc vòng có đúng hai mạch nhánh carbon ở vị trí para. Ba carbon ngoài vòng phải phân bố thành 1 + 2. Nhóm –NH2 có thể nằm trên nhánh một carbon, hoặc tại một trong hai carbon của nhánh hai carbon. Thu được ba cấu tạo: p-C6H4(CH2NH2)(CH2CH3), p-C6H4(CH3)(CH(NH2)CH3), p-C6H4(CH3)(CH2CH2NH2)."
+        }
+      ],
+      "solution": "Độ bất bão hòa của X là (2 × 9 + 2 + 1 − 13)/2 = 4. Một vòng benzene đã chiếm toàn bộ độ bất bão hòa này. Do đó không thể thêm liên kết đôi, liên kết ba hoặc vòng ở mạch nhánh.\n\nTheo mô hình oxi hóa đã cho, hai nhóm –COOH ở vị trí 1,4 bắt nguồn từ hai mạch nhánh carbon ở vị trí para. X có ba carbon ngoài vòng nên kích thước hai mạch nhánh bắt buộc là một carbon và hai carbon. Nitrogen thuộc nhóm –NH2 và phải liên kết với carbon no của một trong hai mạch nhánh.\n\nLiệt kê có hệ thống:\n1. –NH2 trên nhánh một carbon: p-C6H4(CH2NH2)(CH2CH3).\n2. –NH2 trên carbon sát vòng của nhánh hai carbon: p-C6H4(CH3)(CH(NH2)CH3).\n3. –NH2 trên carbon xa vòng của nhánh hai carbon: p-C6H4(CH3)(CH2CH2NH2).\n\nCả ba đều có công thức C9H13N; mỗi carbon gắn trực tiếp với vòng đều còn ít nhất một hydrogen nên thỏa mô hình oxi hóa. Hoán đổi cách đánh số hai vị trí para không tạo đồng phân mới. Cấu tạo thứ hai có thể có đồng phân quang học nhưng chỉ được đếm một lần. Kết quả là 3.",
+      "cognitive_rationale": "Nhiệm vụ yêu cầu kết nối giới hạn bất bão hòa, thông tin về sản phẩm oxi hóa, cách phân bố carbon giữa hai nhánh và vị trí khả dĩ của nhóm amine; đồng thời phải chứng minh danh sách không thiếu và không đếm trùng. Kiểm tra đường tắt: chỉ biết công thức phân tử và amine bậc một không xác định được số đồng phân cần đếm; chỉ thấy sản phẩm para cũng chưa xác định được nitrogen nằm ở nhánh nào. Đếm riêng hai dạng quang học của cấu tạo có –CH(NH2)– tạo kết quả sai.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn ba công thức cấu tạo trong lời giải và hỏi bậc amine của từng chất, hoặc cho một cấu tạo rồi hỏi sản phẩm oxi hóa theo mô hình đã nêu. Không yêu cầu tự xây dựng danh sách đồng phân.",
+      "harder": "Thay công thức phân tử bằng C10H15N, giữ các điều kiện khác. Yêu cầu đếm tất cả đồng phân cấu tạo, xét cả phân bố carbon 1 + 3 và 2 + 2, đồng thời loại những nhánh không có hydrogen ở carbon gắn trực tiếp với vòng.",
+      "rubric": [
+        {
+          "criterion": "Dùng độ bất bão hòa để giới hạn các mạch nhánh là no, không vòng.",
+          "points": 0.25
+        },
+        {
+          "criterion": "Suy ra hai mạch nhánh ở vị trí para và phân bố ba carbon ngoài vòng thành 1 + 2.",
+          "points": 0.25
+        },
+        {
+          "criterion": "Liệt kê đúng ba vị trí cấu tạo khác nhau của nhóm –NH2, không thiếu trường hợp.",
+          "points": 0.25
+        },
+        {
+          "criterion": "Kiểm tra điều kiện oxi hóa, tránh đếm trùng hoặc đếm riêng đồng phân quang học và kết luận 3.",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập cây phân nhánh theo vị trí nitrogen trước, hoặc theo kích thước mạch nhánh trước. Có thể biểu diễn bằng công thức thu gọn hay tên cấu tạo chính xác. Không bắt buộc tính độ bất bão hòa bằng công thức nếu chứng minh tương đương rằng các nhánh không thể có thêm vòng hoặc liên kết bội.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "pending_unkeyed_review"
+    },
+    {
+      "id": "HH-N-477d6fee5cec",
+      "topic_id": "T04",
+      "part": "P2",
+      "qtype": "true_false",
+      "stem": "Mô hình và số liệu tự biên soạn, dùng để khảo sát liên kết ngang của polymer; đây là mô hình lí tưởng, không mô tả đầy đủ cơ chế lưu hóa thực tế.\n\nBan đầu có 68,00 g polyisoprene tinh khiết, với mắt xích –CH2–C(CH3)=CH–CH2–. Khi đưa sulfur vào, chỉ hình thành hai loại cầu nối:\n\n| Loại cầu nối | Cấu trúc liên kết | Sulfur được giữ lại trên mỗi cầu nối | Hydrogen bị tách trên mỗi cầu nối |\n|---|---|---:|---:|\n| Monosulfide | C–S–C | 1 nguyên tử S | 2 nguyên tử H |\n| Disulfide | C–S–S–C | 2 nguyên tử S | 2 nguyên tử H |\n\nHai carbon ở hai đầu cầu nối có thể thuộc cùng một mạch hoặc hai mạch khác nhau. Mỗi cầu nối hình thành giải phóng đúng một phân tử H2. Không có phản ứng phụ, không có sulfur tự do còn lại và không mất nguyên tử carbon. Khối lượng H2 thu được là 0,0800 g; khối lượng vật liệu sau phản ứng là 69,84 g. Cho C = 12, H = 1, S = 32.\n\nTrong mô hình cơ học, chỉ các cầu nối nối hai mạch khác nhau mới có tác dụng; gọi chúng là cầu nối liên mạch. Đại lượng cơ học E tỉ lệ thuận với số mol cầu nối liên mạch. Một phép xử lí chọn lọc làm mất hoàn toàn tác dụng của mọi cầu nối disulfide, không làm thay đổi cầu nối monosulfide và không gây thay đổi nào khác. Sau xử lí, E còn 40,0% giá trị ban đầu. Giả sử mọi cầu nối liên mạch có cùng đóng góp vào E.\n\nXác định mỗi phát biểu sau đúng hay sai.",
+      "options": {},
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Mắt xích của polyisoprene đã cho có công thức phân tử C5H8."
+        },
+        {
+          "sub": "b",
+          "text": "Tổng lượng cầu nối monosulfide và disulfide hình thành là 0,0800 mol."
+        },
+        {
+          "sub": "c",
+          "text": "Trước phép xử lí chọn lọc, số mol cầu nối monosulfide bằng số mol cầu nối disulfide."
+        },
+        {
+          "sub": "d",
+          "text": "Trước phép xử lí chọn lọc, tỉ số giữa số mol mắt xích và số mol cầu nối liên mạch không thể nhỏ hơn 30; giá trị 30 phù hợp với tất cả dữ kiện."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "NB",
+          "solution": "Đếm nguyên tử trong mắt xích –CH2–C(CH3)=CH–CH2– được 5 carbon và 8 hydrogen, tức C5H8."
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH",
+          "solution": "n(H2) = 0,0800/2 = 0,0400 mol. Mỗi cầu nối giải phóng một H2 nên tổng số mol cầu nối là 0,0400 mol, không phải 0,0800 mol."
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "TH",
+          "solution": "Khối lượng sulfur giữ lại là 69,84 − 68,00 + 0,0800 = 1,920 g, tương ứng 0,0600 mol nguyên tử S. Gọi x, y lần lượt là số mol cầu nối monosulfide và disulfide: x + y = 0,0400 và x + 2y = 0,0600. Suy ra x = y = 0,0200 mol."
+        },
+        {
+          "sub": "d",
+          "value": "D",
+          "level": "VD",
+          "solution": "Có 68,00/68 = 1,000 mol mắt xích. Gọi B là số mol cầu nối liên mạch ban đầu. E giảm 60% nên cầu nối disulfide liên mạch chiếm 0,60B; lượng này không vượt tổng disulfide 0,0200 mol. Do đó B ≤ 1/30 mol và 1,000/B ≥ 30. Dấu bằng đạt được khi toàn bộ 0,0200 mol disulfide là liên mạch; monosulfide liên mạch bằng 0,40/30 = 0,01333… mol, nhỏ hơn tổng monosulfide 0,0200 mol. Phần monosulfide còn lại nối các vị trí trên cùng một mạch, nên phương án này khả thi trong mô hình."
+        }
+      ],
+      "solution": "Mắt xích C5H8 có khối lượng mol 68 g/mol, nên mẫu ban đầu chứa 1,000 mol mắt xích. Số mol H2 là 0,0400, bằng tổng số mol cầu nối. Bảo toàn khối lượng, có tính phần hydrogen đã thoát ra, cho khối lượng sulfur giữ lại bằng 1,920 g, tức 0,0600 mol nguyên tử S. Từ x + y = 0,0400 và x + 2y = 0,0600 suy ra mỗi loại cầu nối có 0,0200 mol.\n\nKhông được đồng nhất tổng số cầu nối hóa học với số cầu nối liên mạch có tác dụng cơ học. Gọi u, v lần lượt là số mol monosulfide và disulfide liên mạch. Phép xử lí để lại E bằng 40% ban đầu nên u/(u + v) = 0,40, tức v = 1,5u. Đồng thời 0 ≤ u ≤ 0,0200 và 0 ≤ v ≤ 0,0200. Giới hạn v quyết định giá trị lớn nhất của u + v: khi v = 0,0200 thì u = 0,01333… và u + v = 1/30 mol. Vì vậy số mol mắt xích trên một mol cầu nối liên mạch ít nhất bằng 30. Phần monosulfide không liên mạch vẫn phù hợp với dữ kiện hóa học. Kết luận: a đúng, b sai, c đúng, d đúng.",
+      "cognitive_rationale": "a là NB do nhận diện thành phần một mắt xích; b và c là TH do áp dụng trực tiếp mô hình tỉ lượng và bảo toàn khối lượng. d đạt VD vì phải phân biệt hai tập cầu nối, dùng biến đổi cơ học để suy ra thành phần của tập liên mạch, rồi kết hợp giới hạn hóa học để tìm cận và chứng minh cận đạt được. Kiểm tra đường tắt: lấy 1,000/0,0400 = 25 đã ngầm coi mọi cầu nối đều liên mạch. Giả thiết đó dự đoán E còn 50% sau xử lí, trái dữ kiện 40%, nên không thể dùng.",
+      "distractor_mechanisms": {},
+      "easier": "Bỏ dữ kiện cơ học và thay d bằng phát biểu: 'Trung bình có 25 mắt xích ứng với một cầu nối hóa học, tính chung cả hai loại.' Khi đó d chỉ cần dùng tổng số mol cầu nối, ở mức TH.",
+      "harder": "Thay phép xử lí bằng quá trình chỉ làm mất tác dụng của 80% cầu nối disulfide liên mạch và 10% cầu nối monosulfide liên mạch; cho E còn 48% ban đầu. Yêu cầu tìm khoảng khả dĩ của số mol cầu nối liên mạch và chứng minh cận trên đạt được bằng một cách phân bố cụ thể.",
+      "rubric": [
+        {
+          "criterion": "Chọn đúng a: D.",
+          "points": 0.25
+        },
+        {
+          "criterion": "Chọn đúng b: S.",
+          "points": 0.25
+        },
+        {
+          "criterion": "Chọn đúng c: D.",
+          "points": 0.25
+        },
+        {
+          "criterion": "Chọn đúng d: D.",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": "Đối với d, có thể dùng B và các tỉ phần 0,40B, 0,60B hoặc hai biến u, v. Chấp nhận mô hình bất đẳng thức, biểu diễn miền khả thi hoặc lập luận bằng giới hạn số cầu nối disulfide, miễn có kiểm tra khả năng đạt cận. Rubric chấm độc lập từng phát biểu; lời giải dùng để thẩm định cơ sở suy luận.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "pending_unkeyed_review"
+    }
+  ]
+}

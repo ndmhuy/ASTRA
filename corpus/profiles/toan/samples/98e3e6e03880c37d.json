@@ -1,0 +1,151 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "98e3e6e03880c37d",
+    "topic": "Tích phân và tích lũy",
+    "part": "P2",
+    "level": "VD",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Hàm biên, mốc xuất phát và ngưỡng tăng nghiêm ngặt của đại lượng tích lũy.",
+        "task": "Kiểm tra quy mô nhỏ nhất được đề xuất để vượt ngưỡng.",
+        "reasoning": [
+          "Lập tích phân có cận trên là quy mô chưa biết.",
+          "Chuyển điều kiện vượt ngưỡng thành bất phương trình.",
+          "Xác định miền nghiệm phù hợp với quy mô và tính đơn điệu.",
+          "Kiểm tra giá trị biên, dấu nghiêm ngặt và điều kiện nguyên nếu đếm sản phẩm."
+        ],
+        "combines": [
+          "Tích phân có tham số",
+          "Bất phương trình bậc hai",
+          "Điều kiện biến đếm"
+        ],
+        "difficulty_source": "Kiểm tra dấu nghiêm ngặt và bản chất rời rạc của quy mô.",
+        "evidence_uncertainty": "Đề chưa phát biểu rõ miền nguyên của biến đếm; nếu hiểu biến liên tục thì một miền mở có thể không có giá trị nhỏ nhất.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "3b4cca11ea82|P2|3|d"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "98e3e6e03880c37d",
+    "stem": "Một bể chứa được tối đa 12 m³ nước, ban đầu có 2 m³. Trong khoảng thời gian từ t = 0 đến t = 4 giờ, nước chảy vào liên tục với lưu lượng q(t) = 6 − t, tính bằng m³/giờ. Một máy bơm được bật tại thời điểm s thuộc [0; 4] và từ đó bơm nước ra liên tục với lưu lượng 4 m³/giờ đến hết giờ thứ 4. Thời điểm s được phép là số thực. Không có nguồn nước vào hoặc ra nào khác ngoài dòng vào, máy bơm và nước tràn khi bể đầy. Người vận hành yêu cầu nước không tràn trong suốt khoảng thời gian xét và lượng nước còn lại lúc t = 4 lớn hơn 9 m³. Xét tính đúng, sai của các phát biểu sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Tổng lượng nước chảy vào bể trong 4 giờ là 16 m³."
+      },
+      {
+        "sub": "b",
+        "text": "Nếu bật máy bơm ngay tại t = 0 thì lượng nước còn lại lúc t = 4 là 2 m³."
+      },
+      {
+        "sub": "c",
+        "text": "Nếu bật máy bơm tại s = 5/2 thì nước không tràn trong suốt 4 giờ."
+      },
+      {
+        "sub": "d",
+        "text": "Tập hợp các thời điểm bật máy bơm đáp ứng đồng thời hai yêu cầu của người vận hành là (7/4; 2]."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "VD"
+      }
+    ],
+    "solution": "a) Lượng nước vào là ∫₀⁴(6 − t)dt = [6t − t²/2]₀⁴ = 16 m³. b) Với s = 0, lượng nước theo cân bằng dòng vào và dòng ra là V(t) = 2 + ∫₀ᵗ(2 − u)du = 2 + 2t − t²/2. Hàm này tăng đến t = 2 rồi giảm; giá trị lớn nhất là 4 m³ và nhỏ nhất trên [0; 4] là 2 m³. Bể không tràn hoặc cạn, nên V(4) = 2 m³. c) Nếu chưa bật bơm, lượng nước tích lũy đến thời điểm t là 2 + 6t − t²/2. Tại t = 2, lượng nước đã bằng 12 m³. Với s = 5/2, máy bơm vẫn chưa hoạt động ngay sau t = 2, trong khi nước tiếp tục chảy vào với lưu lượng dương, nên bể tràn. d) Nếu s > 2 thì bể tràn trước khi bật bơm, nên bắt buộc s ≤ 2. Với 0 ≤ s ≤ 2, trước lúc bật bơm lượng nước tăng; sau lúc bật, tốc độ thay đổi lượng nước là 2 − t. Vì vậy lượng nước lớn nhất đạt tại t = 2 và bằng 2 + ∫₀²(6 − t)dt − 4(2 − s) = 4 + 4s. Điều kiện không tràn tương đương s ≤ 2. Trong miền này bể không cạn, và lượng nước cuối cùng là 2 + 16 − 4(4 − s) = 2 + 4s. Điều kiện lớn hơn 9 m³ cho s > 7/4. Kết hợp được 7/4 < s ≤ 2. Tại s = 2, bể chỉ chạm mức đầy rồi lượng nước giảm, nên vẫn được chấp nhận.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "c",
+        "mistake": "Chỉ kiểm tra cân bằng nước tại thời điểm cuối rồi kết luận bể không tràn trong toàn bộ quá trình.",
+        "why_plausible": "Nếu bỏ qua nước tràn, phép tính tại s = 5/2 cho lượng cuối bằng 12 m³, nhưng lượng nước đã vượt sức chứa trước khi bật máy bơm."
+      }
+    ],
+    "level_reason": "Mức toàn mẫu là VD do ý d đòi hỏi xây dựng điều kiện khả thi cho cả quá trình. Học sinh phải phân biệt lượng nước cuối với cực đại trung gian, mô hình hóa thời điểm thay đổi dòng ra, xác định vị trí cực đại theo s và kết hợp ràng buộc sức chứa với ngưỡng cuối nghiêm ngặt. Một phép tích phân rồi giải bất phương trình ngưỡng cuối chưa đủ để kết luận.",
+    "prerequisites": [
+      "Tích phân xác định biểu diễn lượng tích lũy",
+      "Cân bằng lượng vào và lượng ra",
+      "Dấu đạo hàm và giá trị lớn nhất trên một đoạn",
+      "Giao các điều kiện bất phương trình",
+      "Phân biệt đạt sức chứa với vượt sức chứa"
+    ],
+    "variation_guidance": "Có thể thay lưu lượng vào, công suất bơm, sức chứa và ngưỡng cuối. Cần kiểm tra cực đại trong toàn khoảng thời gian, khả năng cạn bể và việc các đầu mút có được nhận hay không; không chỉ kiểm tra lượng nước cuối.",
+    "uncertainties": [
+      "Đây là câu minh họa tự soạn. Cơ sở quan sát cho mục tiêu tích lũy vượt ngưỡng chỉ thuộc cấp tỉnh từ bên thứ ba, chưa có điểm neo chính thức.",
+      "Mô hình dòng chảy được quy định ngay trong đề; lời giải chỉ dùng tích phân, đạo hàm và bất phương trình ở bậc trung học phổ thông."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "98e3e6e03880c37d",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "VD"
+      }
+    ],
+    "solution": "a) Tổng lượng nước vào là ∫₀⁴(6 − t)dt = 16 m³.\nb) Khi s = 0, lượng nước là V(t) = 2 + 2t − t²/2, đạt tối đa 4 m³ tại t = 2 nên không tràn; V(4) = 2 m³.\nc) Trước khi bật bơm, V(t) = 2 + 6t − t²/2. Bể đầy tại t = 2; nếu chờ đến s = 5/2 thì nước đã tràn trong khoảng sau t = 2 và trước lúc bật bơm.\nd) Khi chưa có tràn, V(t) = 2 + 6t − t²/2 với t ≤ s và V(t) = 2 + 2t − t²/2 + 4s với t ≥ s. Nếu s > 2, bể tràn trước lúc bật bơm. Nếu s ≤ 2, lượng nước lớn nhất đạt tại t = 2, bằng 4 + 4s; do đó điều kiện không tràn tương đương s ≤ 2. Khi đó V(4) = 2 + 4s > 9 tương đương s > 7/4. Tập thời điểm thỏa mãn là (7/4; 2].",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a) Tính tích phân lưu lượng là TH. b) Áp dụng cân bằng lượng nước và kiểm tra cực đại của một hàm bậc hai quen thuộc là TH. c) Tính thời điểm bể đầy trước khi bơm hoạt động là TH. d) Phải lập mô hình theo hai giai đoạn, xác định cực đại phụ thuộc thời điểm bật bơm và kết hợp điều kiện trong cả khoảng với điều kiện cuối kỳ, mức VD."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/toan/686b4e05d46640db4c5883c1b5e66ef353a65ed795289f70de7cdbfd9b701ff4.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/toan/686b4e05d46640db4c5883c1b5e66ef353a65ed795289f70de7cdbfd9b701ff4.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 0,
+  "source_rows_sha256": "863dd6885185956ed9dabede84bf529993a764e4871f75f25629503cf8f2731a"
+}

@@ -1,0 +1,130 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "63c2552c258edbec",
+    "topic": "Hệ bất phương trình tuyến tính",
+    "part": "P1",
+    "level": "TH",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một hệ bất phương trình bậc nhất có dấu nghiêm ngặt và các cặp giá trị ứng viên.",
+        "task": "Chọn cặp giá trị đồng thời thỏa mãn mọi bất phương trình.",
+        "reasoning": [
+          "Thay cặp giá trị ứng viên vào từng bất phương trình.",
+          "Kiểm tra chiều bất đẳng thức.",
+          "Chọn cặp thỏa mãn đồng thời các điều kiện."
+        ],
+        "combines": [
+          "Bất phương trình bậc nhất hai ẩn",
+          "Nghiệm của hệ bất phương trình"
+        ],
+        "difficulty_source": "Duy trì yêu cầu thỏa mãn đồng thời thay vì dừng ở một bất phương trình.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      }
+    ],
+    "support_refs": [
+      "023e74626dd8|P1|10|None"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "63c2552c258edbec",
+    "stem": "Cho hệ bất phương trình 3x − 2y < 8 và x + y ≤ 5. Với x = 2, tập hợp tất cả giá trị y để (x; y) là nghiệm của hệ là tập nào sau đây?",
+    "options": [
+      {
+        "label": "A",
+        "text": "[−1; 3]"
+      },
+      {
+        "label": "B",
+        "text": "(−1; 3)"
+      },
+      {
+        "label": "C",
+        "text": "(−∞; −1)"
+      },
+      {
+        "label": "D",
+        "text": "(−1; 3]"
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "Thay x = 2 vào bất phương trình thứ nhất được 6 − 2y < 8, tương đương −2y < 2, hay y > −1. Bất phương trình thứ hai cho 2 + y ≤ 5, hay y ≤ 3. Kết hợp hai điều kiện được −1 < y ≤ 3, chọn D. A nhận thêm biên y = −1 dù bất phương trình thứ nhất nghiêm ngặt. B loại sai biên y = 3, vốn thỏa mãn cả hai điều kiện. C xuất phát từ việc không đổi chiều bất đẳng thức khi chia cho −2.",
+    "distractors": [
+      {
+        "label": "A",
+        "sub": null,
+        "mistake": "Đổi điều kiện y > −1 thành y ≥ −1.",
+        "why_plausible": "Học sinh giải được hai mốc biên nhưng dùng đoạn đóng ở cả hai đầu."
+      },
+      {
+        "label": "B",
+        "sub": null,
+        "mistake": "Đổi điều kiện y ≤ 3 thành y < 3.",
+        "why_plausible": "Học sinh có thể cho rằng hệ chứa một dấu nghiêm ngặt thì khoảng nghiệm phải mở ở cả hai đầu."
+      },
+      {
+        "label": "C",
+        "sub": null,
+        "mistake": "Từ −2y < 2 suy ra y < −1 do không đổi chiều khi chia cho số âm.",
+        "why_plausible": "Sai sót này tạo ra điều kiện y < −1; giao với y ≤ 3 vẫn là khoảng được nêu trong phương án."
+      }
+    ],
+    "level_reason": "Học sinh thực hiện thủ tục quen thuộc: cố định một ẩn, giải hai bất phương trình một ẩn rồi lấy giao các tập nghiệm. Đây là mức TH.",
+    "prerequisites": [
+      "Nghiệm của hệ bất phương trình tuyến tính",
+      "Quy tắc đổi chiều bất đẳng thức khi chia cho số âm",
+      "Kí hiệu khoảng và đoạn"
+    ],
+    "variation_guidance": "Thay giá trị cố định của x và các hệ số để tạo một khoảng nghiệm khác; giữ các phương án nhiễu gắn với lỗi đổi chiều hoặc nhận sai đầu mút.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "63c2552c258edbec",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "Thay x = 2: 6 − 2y < 8 tương đương y > −1; 2 + y ≤ 5 tương đương y ≤ 3. Giao hai điều kiện là (−1; 3].",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Thay giá trị đã cho vào hệ, giải các bất phương trình bậc nhất và lấy giao là thủ tục quen thuộc."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/toan/686b4e05d46640db4c5883c1b5e66ef353a65ed795289f70de7cdbfd9b701ff4.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/toan/686b4e05d46640db4c5883c1b5e66ef353a65ed795289f70de7cdbfd9b701ff4.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 0,
+  "source_rows_sha256": "863dd6885185956ed9dabede84bf529993a764e4871f75f25629503cf8f2731a"
+}

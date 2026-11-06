@@ -1,0 +1,316 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{setspace}
+\setstretch{1.08}
+\usepackage{graphicx}
+\usepackage{ifthen}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, patterns}
+\IfFileExists{pgf-pie.sty}{\usepackage{pgf-pie}}{}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{chemfig}
+\usepackage{longtable,booktabs}
+\usepackage{adjustbox}
+\providecommand{\errorpart}[2]{$\underset{\textbf{#1}}{\underline{\text{#2}}}$}
+\usepackage[top=0.8in, left=0.75in, right=0.75in, bottom=0.85in, headheight=38pt, headsep=18pt, footskip=1.2cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue]{hyperref}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 2pt minus 1pt}
+
+\setlist[enumerate]{itemsep=4pt, parsep=2pt, topsep=4pt, partopsep=2pt}
+\setlist[itemize]{itemsep=4pt, parsep=2pt, topsep=4pt}
+
+\makeatletter
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{LecturingLastPage}{{}{\thepage}{}{}{}}}}
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{LecturingPageCount}{{}{\two@digits{\value{page}}}{}{}{}}}}
+\makeatother
+\pagestyle{fancy}
+\fancyhf{}
+\cfoot{\small Trang \thepage/\pageref*{LecturingLastPage} - Mã đề thi 2161}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\usepackage{tabularx}
+\begin{document}
+
+\sloppy
+
+\noindent
+\begin{minipage}[t]{0.37\textwidth}
+    \small
+    \centering
+    \IfFileExists{logo.png}{\includegraphics[height=0.9cm]{logo.png}\\[0.1cm]}{%
+      \IfFileExists{logo.jpg}{\includegraphics[height=0.9cm]{logo.jpg}\\[0.1cm]}{}%
+    }
+    {\bfseries \mbox{}}\\[-0.2cm]
+    \rule{3cm}{0.5pt}\\[0.1cm]
+    {\bfseries ĐỀ LUYỆN TẬP -- BẢN NGHIÊN CỨU}\\{\small (Đề thi có \pageref*{LecturingPageCount} trang)}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.62\textwidth}
+    \small
+    \centering
+    {\bfseries \sbox0{KỲ THI TỐT NGHIỆP TRUNG HỌC PHỔ THÔNG NĂM 2026}\ifdim\wd0>\linewidth KỲ THI TỐT NGHIỆP TRUNG HỌC PHỔ~THÔNG\\NĂM 2026\else\usebox0\fi}\\[0.15cm]
+    {\bfseries Môn thi: GIÁO DỤC KINH TẾ VÀ PHÁP LUẬT}\\[0.15cm]
+    {\itshape Thời gian làm bài: 50 phút, không kể thời gian phát đề}
+\end{minipage}
+
+\vspace{0.4cm}
+\noindent
+\begin{minipage}[t]{0.68\textwidth}
+    Họ, tên thí sinh: \dotfill\\[0.15cm]
+    Số báo danh: \dotfill
+\end{minipage}%
+\hfill
+\fbox{\begin{minipage}{3.6cm}\centering\textbf{Mã đề: 2161}\end{minipage}}
+
+\vspace{0.5cm}
+
+
+% LECTURING-PART: P1
+\textbf{Phần I: Chọn một đáp án.}\par
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 1:} Không được người ở đồng ý và không có căn cứ pháp luật, K và L tự ý vào khám phòng trọ của M; N chỉ đứng ngoài hỏi tin. Hành vi của ai trực tiếp xâm phạm quyền bất khả xâm phạm về chỗ ở?\par
+\noindent A. K và L\par
+\noindent B. K và N\par
+\noindent C. L và M\par
+\noindent D. M và N\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 2:} Quyền công dân góp ý kiến với cơ quan nhà nước về vấn đề chung của địa phương thuộc quyền nào?\par
+\noindent A. Tham gia quản lí nhà nước và xã hội\par
+\noindent B. Sở hữu tài sản\par
+\noindent C. Tự do kinh doanh\par
+\noindent D. Bất khả xâm phạm về chỗ ở\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 3:} Nguyên tắc nào được thể hiện khi hai người có hành vi vi phạm cùng tính chất và mức độ đều được xem xét trách nhiệm pháp lí theo cùng tiêu chí, không phân biệt nghề nghiệp?\par
+\noindent A. Bình đẳng về trách nhiệm pháp lí.\par
+\noindent B. Tự do lựa chọn nghề nghiệp.\par
+\noindent C. Quyền kinh doanh không hạn chế.\par
+\noindent D. Bình đẳng tuyệt đối về thu nhập.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 4:} Trong bốn hình thức thực hiện pháp luật, hình thức nào thể hiện chủ thể kiềm chế, không làm việc pháp luật cấm?\par
+\noindent A. Thi hành pháp luật\par
+\noindent B. Sử dụng pháp luật\par
+\noindent C. Tuân thủ pháp luật\par
+\noindent D. Áp dụng pháp luật\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 5:} Ba quyền năng cơ bản của quyền sở hữu gồm chiếm hữu, sử dụng và quyền nào?\par
+\noindent A. Quản lí hành chính\par
+\noindent B. Giải quyết tranh chấp\par
+\noindent C. Định đoạt\par
+\noindent D. Thanh tra tài sản\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 6:} Chỉ tiêu nào dưới đây trực tiếp phản ánh mức tăng về quy mô sản lượng cuối cùng của nền kinh tế trong một giai đoạn khi đã loại ảnh hưởng biến động giá?\par
+\noindent A. Tốc độ tăng GDP thực.\par
+\noindent B. Tỉ lệ hộ tham gia câu lạc bộ.\par
+\noindent C. Số lượt quảng cáo sản phẩm.\par
+\noindent D. Tỉ lệ người thích mua sắm trực tuyến.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 7:} Tại một mức giá và trong một thời kì xác định, lượng sản phẩm mà những người bán có khả năng và sẵn sàng đưa ra thị trường được gọi là gì?\par
+\noindent A. Cầu.\par
+\noindent B. Cung.\par
+\noindent C. Thu nhập.\par
+\noindent D. Tiêu dùng.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 8:} Nơi người lao động và người sử dụng lao động gặp nhau để trao đổi sức lao động được gọi là gì?\par
+\noindent A. Thị trường vốn\par
+\noindent B. Thị trường lao động\par
+\noindent C. Thị trường hàng tiêu dùng\par
+\noindent D. Thị trường bất động sản\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 9:} Khoản nào sau đây thuộc nguồn thu của ngân sách nhà nước?\par
+\noindent A. Chi xây dựng trường công\par
+\noindent B. Chi hỗ trợ khẩn cấp\par
+\noindent C. Thu thuế theo quy định\par
+\noindent D. Chi trả dịch vụ công\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 10:} Hội nhập kinh tế giữa hai quốc gia thường được gọi là hội nhập ở cấp độ nào?\par
+\noindent A. Song phương\par
+\noindent B. Khu vực\par
+\noindent C. Toàn cầu\par
+\noindent D. Đơn phương\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 11:} Doanh nghiệp có 12 đơn vị tiền để vào thị trường mới, không được vay; tiền giữ lại chuyển được sang giai đoạn sau. Giai đoạn 1 cần 8 để đạt chứng nhận xuất khẩu. Sau chứng nhận, khách chỉ trả trước 3 khi doanh nghiệp đã mua được nguyên liệu giá 7; khoản còn lại 12 chỉ trả sau giao hàng. Có ba thỏa thuận có thể chọn ngay, mỗi thỏa thuận đều giữ doanh thu cuối 12: M trả phí môi giới 1 ngay, không đổi lịch thanh toán; N nhận trước 4 từ một nhà đầu tư ngay và trả họ 5 sau khi thu đủ tiền khách; P được người bán nguyên liệu cho trả 3 sau giao hàng, trả 4 khi mua. Chọn cách có thể hoàn thành đơn hàng và để lại tiền cuối cùng nhiều nhất. Mọi bên giữ đúng cam kết, không có chi phí khác.\par
+\noindent A. Chọn M, vì phí 1 nhỏ hơn khoản trả nhà đầu tư\par
+\noindent B. Chọn N, vì khoản vốn bổ sung làm dư tiền cuối lớn nhất\par
+\noindent C. Chọn P, vì tín dụng đầu vào tháo nút vốn trước khoản trả trước\par
+\noindent D. Không chọn thỏa thuận nào, dùng khoản 3 của khách mua nguyên liệu\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 12:} Văn bản thỏa thuận bằng văn bản được kí kết giữa hai quốc gia nhằm thiết lập nghĩa vụ theo pháp luật quốc tế thường được gọi là gì?\par
+\noindent A. Nội quy công ty.\par
+\noindent B. Điều ước quốc tế.\par
+\noindent C. Nghị quyết nội bộ câu lạc bộ.\par
+\noindent D. Thỏa thuận mua hàng trong nước.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 13:} Quy tắc hàng hải giả định: lấy mẫu tài nguyên ở vùng R cần A đồng ý; vùng S không cần sự đồng ý đó. Không suy luật hiện hành ngoài bài. Chuyến tàu có hai đợt lấy mẫu, một ở R và một ở S; thùng của hai đợt niêm phong riêng, có đúng hai mã M và N, không biết mã nào thuộc đợt nào. Mã M được chuyển sang tàu tiếp nhận trước khi tàu lấy mẫu rời R; mọi mẫu vùng S chỉ được lấy sau khi rời R, không chuyển ngược về quá khứ. Hồ sơ A chỉ đồng ý lấy mẫu cho thùng N, không cho M. Bản khai chung ghi cả chuyến được phép. Kết luận nào được toàn bộ chuỗi chứng cứ hỗ trợ?\par
+\noindent A. M là mẫu vùng R và đợt này thiếu đồng ý theo quy tắc\par
+\noindent B. N là mẫu vùng R vì N có hồ sơ đồng ý\par
+\noindent C. Không thể xác định thùng nào thuộc R do bản khai không tách đợt\par
+\noindent D. Cả hai thùng đều được phép vì N có hồ sơ đồng ý\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 14:} Văn bản xác định mục tiêu, nguồn lực và cách triển khai hoạt động kinh doanh được gọi là gì?\par
+\noindent A. Thông điệp quảng cáo\par
+\noindent B. Bảng ghi các khoản thu chi đã phát sinh\par
+\noindent C. Bản tin thị trường\par
+\noindent D. Kế hoạch kinh doanh\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 15:} Trong tình huống này, pháp luật yêu cầu cơ sở công bố đúng thành phần hàng hóa. Hoạt động nào trực tiếp thể hiện trách nhiệm pháp lí của cơ sở?\par
+\noindent A. Ghi đúng thành phần trên nhãn\par
+\noindent B. Tài trợ sách cho thư viện\par
+\noindent C. Giảm giá dịp khai trương\par
+\noindent D. Mở rộng số điểm bán\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 16:} Gia đình có 21 triệu tiền sẵn có, tháng tới thu chắc chắn 12 triệu. Chi thiết yếu tháng tới 10 triệu; phải giữ quỹ dự phòng ít nhất 15 triệu sau mọi khoản chi. Cần máy học tập 8 triệu trong tháng; khoản thưởng 6 triệu chưa chắc nhận. Hai cách mua: trả ngay 8 triệu hoặc trả trước 3 triệu và trả 6 triệu vào tháng sau. Tháng sau thu chắc chắn 10 triệu, thiết yếu 10 triệu, không có nguồn khác. Phương án nào đáp ứng cả hai tháng mà không dựa vào thưởng?\par
+\noindent A. Trả góp, dự phòng đủ trong cả hai tháng\par
+\noindent B. Mua ngay, dự phòng còn 15 triệu trong cả hai tháng\par
+\noindent C. Trả góp vì chỉ cần kiểm tra tháng trả trước\par
+\noindent D. Mua ngay rồi chi thêm 6 triệu từ khoản thưởng dự kiến\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 17:} Một cá nhân tự nguyện kí hợp đồng với doanh nghiệp bảo hiểm để được bồi thường thiệt hại đối với máy ảnh theo điều kiện hợp đồng. Đây chủ yếu là loại bảo hiểm nào?\par
+\noindent A. Bảo hiểm thương mại.\par
+\noindent B. Bảo hiểm xã hội bắt buộc.\par
+\noindent C. Bảo hiểm thất nghiệp do quan hệ lao động.\par
+\noindent D. Trợ giúp xã hội từ ngân sách.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 18:} Một hộ sau lũ cần 6 đơn vị ăn mỗi tuần trong hai tuần, hiện không có dự trữ. Nếu làm công ngay thì kiếm 4 mỗi tuần. Nếu học nghề tuần 1 thì không có thu nhập tuần đó, nhưng tuần 2 có việc đã cam kết trả 8. Hộ không vay được; khoản ăn thiếu phải được bù trong đúng tuần. Chương trình có 6 đơn vị trợ giúp tiêu dùng có thể cấp theo lịch, không thu hồi; thêm một suất học nghề miễn phí. Mục tiêu là bảo đảm đủ ăn cả hai tuần và sau trợ giúp có năng lực tự trang trải tốt hơn. Thức ăn dư giữ được sang tuần sau, không có nguồn khác. Phương án nào đạt cả hai mục tiêu?\par
+\noindent A. Cấp 3 mỗi tuần, hộ học nghề tuần 1\par
+\noindent B. Cấp cả 6 tuần 2, hộ học nghề tuần 1\par
+\noindent C. Cấp cả 6 tuần 1, hộ học nghề tuần 1\par
+\noindent D. Cấp 2 mỗi tuần, hộ làm công cả hai tuần\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 19:} Bài tập giả định quy định: doanh thu trồng rau do hộ tự sản xuất được miễn khoản thu X; doanh thu mua rau về bán lại chịu X. Hộ P vừa trồng rau vừa mua rau bán lại. Nhận định nào phù hợp quy tắc đã cho?\par
+\noindent A. Cả hai nguồn đều được miễn X\par
+\noindent B. Chỉ nguồn rau mua lại thuộc diện X\par
+\noindent C. Cả hai nguồn đều thuộc diện X\par
+\noindent D. Chỉ nguồn rau tự trồng thuộc diện X\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 20:} Sau khi đọc bảng giá và lượng hàng khách đang tìm mua, xưởng Q biết mẫu nào được quan tâm. Chưa có dữ kiện xưởng đã đổi sản lượng. Chức năng thị trường nào được thể hiện trực tiếp?\par
+\noindent A. Điều tiết sản lượng của xưởng\par
+\noindent B. Phân phối lại thu nhập hộ\par
+\noindent C. Bảo đảm chất lượng sản phẩm\par
+\noindent D. Cung cấp thông tin thị trường\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 21:} Theo dữ liệu giả định, sản lượng thực tăng nhưng tỉ lệ trẻ bỏ học và mức ô nhiễm cũng tăng. Kết luận nào được dữ liệu hỗ trợ?\par
+\noindent A. Mọi mặt phát triển đều cải thiện\par
+\noindent B. Có tăng trưởng nhưng còn vấn đề về chất lượng phát triển\par
+\noindent C. Không thể có tăng trưởng khi ô nhiễm tăng\par
+\noindent D. Bỏ học tăng là thước đo tăng trưởng\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 22:} Hai người nộp hồ sơ cùng loại và cùng đủ điều kiện. Nhân viên ưu tiên hồ sơ người quen, không có quy tắc ưu tiên nào khác. Nhận định nào phù hợp nguyên tắc bình đẳng?\par
+\noindent A. Quan hệ quen biết là điều kiện chuyên môn\par
+\noindent B. Đủ điều kiện thì không cần thủ tục chung\par
+\noindent C. Cần xử lí theo tiêu chí chung thay vì quan hệ riêng\par
+\noindent D. Bình đẳng đòi hỏi bỏ mọi điều kiện hồ sơ\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 23:} Loại văn bản nào là đạo luật cơ bản của Nhà nước, ghi nhận các quyền cơ bản của công dân và nền tảng tổ chức quyền lực nhà nước?\par
+\noindent A. Hiến pháp\par
+\noindent B. Bộ luật Dân sự\par
+\noindent C. Bộ luật Lao động\par
+\noindent D. Luật Doanh nghiệp\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 24:} Hiến pháp ghi nhận quyền công dân tham gia quản lí nhà nước và xã hội; Nhà nước tạo điều kiện để công dân tham gia, công khai, minh bạch trong tiếp nhận, phản hồi ý kiến, kiến nghị. Một cơ quan mở kênh góp ý nhưng từ chối xem mọi ý kiến chỉ vì người gửi không phải nhân viên cơ quan. Nhận định nào phù hợp nguyên tắc đã nêu?\par
+\noindent A. Chỉ nhân viên cơ quan mới có quyền góp ý vấn đề công\par
+\noindent B. Mở kênh đủ để thay thế việc tiếp nhận và phản hồi\par
+\noindent C. Cần tiếp nhận, phản hồi theo tiêu chí công khai thay vì loại người ngoài cơ quan\par
+\noindent D. Tiếp nhận ý kiến đồng nghĩa phải thực hiện mọi yêu cầu\par
+\end{minipage}\par\vspace{0.12cm}
+
+% LECTURING-PART: P2
+\textbf{Phần II: Đúng/sai. Mỗi câu gồm bốn ý a--d.}\par
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 1:} Ngữ liệu tự biên soạn, số liệu giả định. Một nhóm nghiên cứu đánh giá chương trình ở vùng A, dùng vùng B làm đối chứng. Bảng ghi GDP theo giá hiện hành (tỉ đồng), chỉ số giá GDP (năm đầu=100), dân số (nghìn người):\par
+\begin{center}\small\begin{tabularx}{\linewidth}{|X|X|X|X|X|}
+\hline
+Vùng và thời điểm & GDP hiện hành & Chỉ số giá & Dân số & Tỉ lệ nghèo \\ \hline
+A trước chương trình & 1000 & 100 & 100 & 12\% \\ \hline
+A sau chương trình & 1452 & 110 & 110 & 11\% \\ \hline
+B cùng thời điểm đầu & 1800 & 100 & 200 & 20\% \\ \hline
+B cùng thời điểm sau & 2376 & 110 & 220 & 18\% \\ \hline
+\end{tabularx}\end{center}
+Chấp nhận mô hình giả định: nếu không có chương trình thì GDP thực bình quân đầu người của A tăng cùng tỉ lệ với B; chương trình không làm thay đổi dân số hay chỉ số giá so với bảng. Hiệu quả tương đối được đo bằng mức GDP thực bình quân quan sát của A so với mức phản thực theo mô hình, không phải chênh lệch tốc độ tăng GDP tổng. Không suy từ mô hình này ra tác động nhân quả trong một nghiên cứu thực tế.\par
+\noindent a) GDP trong cột thứ hai của bảng được ghi theo giá hiện hành.\par
+\noindent b) Số người nghèo ở A sau chương trình ít hơn trước vì tỉ lệ nghèo giảm.\par
+\noindent c) Theo mô hình đối chứng đã chấp nhận, hiệu quả tương đối của chương trình đối với GDP thực bình quân đầu người của A là 10\%.\par
+\noindent d) Lấy chênh lệch tốc độ tăng GDP thực tổng của A và B sẽ cho đúng con số hiệu quả tương đối ở nhận định c.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 2:} Quy tắc hàng hải hoàn toàn giả định: lấy mẫu tài nguyên vùng R cần A đồng ý; vùng S không cần đồng ý đó. Có hai đợt lấy mẫu, một ở R và một ở S, chứa trong hai thùng niêm phong riêng mang mã M, N. M được chuyển sang tàu tiếp nhận trước khi tàu lấy mẫu rời R. Mọi mẫu S chỉ được lấy sau khi rời R; không có chuyển thùng ngược, mở niêm phong hay lấy mẫu trước. Hồ sơ A chỉ đồng ý lấy mẫu cho thùng N. Bản khai chung ghi cả chuyến được phép.\par
+\noindent a) Theo quy tắc giả định, việc lấy mẫu R cần A đồng ý.\par
+\noindent b) Kết hợp thứ tự chuyển thùng và hai đợt lấy mẫu cho phép xác định M thuộc R và thiếu đồng ý.\par
+\noindent c) Nếu bỏ chứng cứ thời điểm chuyển M, chỉ giữ thông tin hai mã và hồ sơ chấp thuận N, chưa đủ xác định thùng nào lấy ở R để kết luận có đợt không được đồng ý.\par
+\noindent d) Bản khai chung tự nó thay thế hồ sơ đồng ý cho M.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 3:} Toàn bộ quy tắc sau là hợp đồng giả định, không phải quy định pháp luật hiện hành. S sở hữu máy, cho R thuê; bán máy cần S chấp thuận bằng văn bản. R nhận của T khoản đặt trước 6, giữ riêng chưa dùng. Hợp đồng R--T quy định: nếu S từ chối, R trả nguyên 6 cho T; nếu đồng ý, 6 được chuyển cho S và R phải bổ sung 4 mới được nhận tiền bán hàng 8 từ T sau khi giao máy. R hiện không có tiền riêng. Nếu thay vì giữ riêng, R dùng 6 để sửa máy ngay, tiền này không thu hồi được và không thay cho 4 phải bổ sung; chưa biết S có đồng ý không. Không bên nào cho vay hay cấp thêm tiền. Xét cả quyền định đoạt và khả năng thực hiện cam kết.\par
+\noindent a) R đang thuê nên có thể tự bán mà không cần S.\par
+\noindent b) Giữ riêng 6 đủ để bảo đảm hoàn trả nếu S từ chối nhưng chưa bảo đảm giao dịch hoàn tất nếu S đồng ý.\par
+\noindent c) Khoản 8 nhận sau giao máy có thể dùng trước để bổ sung 4, nên nhánh đồng ý đã tự cân đối.\par
+\noindent d) Dùng 6 sửa máy trước sẽ tạo nguy cơ không thực hiện được cả nhánh từ chối lẫn nhánh đồng ý.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 4:} Doanh nghiệp thử gói hỗ trợ hội nhập gồm đạt chứng nhận và học quy trình xuất khẩu. Trước thử nghiệm, nhóm tham gia có 20 đơn bán được, nhóm đối chiếu tương đồng có 18. Sau thử nghiệm, hai nhóm lần lượt có 32 và 25. Trong mô hình giả định, không có tác động lan tỏa; nếu không có gói hỗ trợ, biến động thị trường sẽ làm số đơn của hai nhóm thay đổi cùng một lượng. Chi phí gói là 4 đơn vị; mỗi đơn tăng thêm do gói tạo lợi nhuận 1. Chưa có dữ liệu tách riêng hai thành phần của gói.\par
+\noindent a) Nhóm tham gia tăng 12 đơn so với trước.\par
+\noindent b) Có thể coi cả 12 đơn tăng là tác động riêng của chứng nhận.\par
+\noindent c) Theo mô hình đối chứng, gói tạo thêm 5 đơn và lợi ích ròng 1 đơn vị.\par
+\noindent d) Nếu sau thử nghiệm nhóm đối chiếu chỉ đạt 22 thay vì 25, giữ nguyên giả định mô hình, lợi ích ròng của gói sẽ tăng thêm 3.\par
+\end{minipage}\par\vspace{0.12cm}
+\begin{center}\textbf{HẾT}\end{center}\end{document}

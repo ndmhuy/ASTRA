@@ -1,0 +1,167 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "05970230b7347f3f",
+    "topic": "Mô hình đại số",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Quy tắc tính điểm, số câu chắc đúng và một kết quả giả định của phần trả lời ngẫu nhiên.",
+        "task": "Kiểm tra tổng điểm được đề xuất.",
+        "reasoning": [
+          "Gộp số câu đúng chắc chắn với số câu đúng trong phần đoán.",
+          "Suy ra số câu sai.",
+          "Tính tổng điểm thưởng trừ điểm phạt và đối chiếu."
+        ],
+        "combines": [
+          "Mô hình đại số tuyến tính",
+          "Số học có dấu"
+        ],
+        "difficulty_source": "Theo dõi đúng tổng số câu đúng và sai khi tính điểm.",
+        "evidence_uncertainty": "Không có khóa đúng sai phù hợp. Kiến thức trực tiếp là số học và mô hình tuyến tính cơ bản, không đủ căn cứ gán riêng cho một lớp trong các lớp tham chiếu.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Tổng số câu, cơ chế thưởng phạt và một mức điểm kèm số câu đúng sai được đề xuất.",
+        "task": "Kiểm tra sự phù hợp giữa điểm số và số câu đúng sai.",
+        "reasoning": [
+          "Biểu diễn số câu sai theo số câu đúng.",
+          "Lập biểu thức tổng điểm theo số câu đúng.",
+          "Giải hoặc thay số lượng được nêu để kiểm tra sự phù hợp."
+        ],
+        "combines": [
+          "Phương trình bậc nhất",
+          "Mô hình điểm số"
+        ],
+        "difficulty_source": "Tính cả tác động của câu sai khi suy ngược tổng điểm.",
+        "evidence_uncertainty": "Không có khóa đúng sai phù hợp. Công cụ trực tiếp thuộc đại số cơ bản trước các lớp tham chiếu nên không gán lớp cụ thể.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "6aa30214ba7e|P2|3|a",
+      "6aa30214ba7e|P2|3|c"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "05970230b7347f3f",
+    "stem": "Một trò chơi kiến thức có 24 câu hỏi. Mỗi câu trả lời đúng được cộng 5 điểm, mỗi câu trả lời sai bị trừ 2 điểm; người chơi phải trả lời tất cả các câu và ban đầu có 0 điểm. Lan trả lời đúng chắc chắn 14 câu. Gọi x là số câu Lan trả lời đúng trong 10 câu còn lại, với x là số nguyên từ 0 đến 10. Xét tính đúng sai của các khẳng định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Tổng điểm của Lan được biểu diễn bởi T(x) = 50 + 5x."
+      },
+      {
+        "sub": "b",
+        "text": "Nếu Lan trả lời đúng 6 trong 10 câu còn lại thì tổng điểm của Lan là 92."
+      },
+      {
+        "sub": "c",
+        "text": "Nếu tổng điểm của Lan là 85 thì Lan đã trả lời đúng 19 câu."
+      },
+      {
+        "sub": "d",
+        "text": "Tổng điểm thấp nhất Lan có thể nhận được là 40."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Lan có 14 + x câu đúng và 10 − x câu sai nên T(x) = 5(14 + x) − 2(10 − x) = 50 + 7x. a) Sai: hệ số của x phải là 7. b) Đúng: T(6) = 50 + 42 = 92. c) Đúng: 50 + 7x = 85 cho x = 5, nên tổng số câu đúng là 14 + 5 = 19. d) Sai: vì x ≥ 0 nên tổng điểm thấp nhất là T(0) = 50.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "a",
+        "mistake": "Chỉ cộng thêm 5 điểm cho mỗi câu đúng trong nhóm còn lại, nhưng vẫn giữ nguyên khoản phạt của 10 câu sai.",
+        "why_plausible": "Học sinh có thể quên rằng khi một câu chuyển từ sai thành đúng, tổng điểm vừa tăng 5 điểm thưởng vừa giảm 2 điểm phạt."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Tính điểm thấp nhất bằng 14 × 5 − 15 × 2 = 40.",
+        "why_plausible": "Học sinh có thể không đối chiếu số câu sai với 10 câu còn lại, dẫn đến tổng số câu đúng và sai vượt quá 24."
+      }
+    ],
+    "level_reason": "Mức cao nhất của toàn mẫu là TH. Học sinh biểu diễn số câu đúng, sai và thực hiện quy trình quen thuộc với biểu thức bậc nhất; các nhận định không đòi hỏi xây dựng mô hình có quan hệ mới.",
+    "prerequisites": [
+      "Biểu thức bậc nhất và phương trình bậc nhất một ẩn",
+      "Phép tính với số có dấu",
+      "Quan hệ giữa tổng số câu, số câu đúng và số câu sai"
+    ],
+    "variation_guidance": "Có thể đổi tổng số câu, điểm thưởng, điểm phạt và số câu chắc đúng. Khi đặt nhận định suy ngược từ điểm số, cần bảo đảm nghiệm nguyên nằm trong miền cho phép.",
+    "uncertainties": [
+      "Đây là mẫu tổng hợp tự tạo, chỉ tham khảo cách xây dựng từ quan sát nguồn cấp tỉnh bên thứ ba; không phải bằng chứng đề thi thật và không có đối sánh chính thức được cung cấp.",
+      "Các công cụ đại số được dùng là kiến thức cơ bản; dữ liệu tham chiếu không đủ để gán riêng mẫu này cho một lớp cụ thể."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "05970230b7347f3f",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Lan đúng 14+x câu, sai 10−x câu nên T(x)=5(14+x)−2(10−x)=50+7x. a) Công thức đã nêu sai. b) T(6)=92. c) T(x)=85 cho x=5, nên Lan đúng 19 câu. d) T nhỏ nhất tại x=0, bằng 50 điểm.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a) Biểu diễn điểm bằng phép tính quen thuộc. b) Thay số tính điểm. c) Giải phương trình bậc nhất rồi tính số câu đúng. d) Xác định giá trị nhỏ nhất của biểu thức tăng trên miền nguyên đã cho. Tất cả đều là TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/c2c0667dd18f85a05c492558529d69590aaa3c9d0ec01e92ea871bba5e5afcd6.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/c2c0667dd18f85a05c492558529d69590aaa3c9d0ec01e92ea871bba5e5afcd6.resolve.json"
+}

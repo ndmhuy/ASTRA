@@ -1,0 +1,151 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "a4976c6633f9d419",
+    "topic": "Vectơ và hệ trục tọa độ trong không gian",
+    "part": "P2",
+    "level": "VD",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một mái phẳng trên nền chữ nhật, độ cao các trụ, kích thước nền và đơn giá vật liệu theo diện tích.",
+        "task": "Kiểm tra chi phí vật liệu phủ mặt nghiêng.",
+        "reasoning": [
+          "Dùng tính phẳng và cấu trúc các trụ để xác định hai vectơ cạnh của mái.",
+          "Tính diện tích mặt nghiêng bằng tích có hướng hoặc công thức hình học tương đương.",
+          "Nhân diện tích với đơn giá.",
+          "Đổi đơn vị tiền, làm tròn và đối chiếu."
+        ],
+        "combines": [
+          "Vectơ không gian",
+          "Diện tích mặt nghiêng",
+          "Đơn giá và làm tròn"
+        ],
+        "difficulty_source": "Phân biệt diện tích mặt nghiêng với diện tích nền và chọn cách tính phù hợp.",
+        "evidence_uncertainty": "Không có khóa đúng sai phù hợp. Tích có hướng là một cách giải; có thể dùng hình học diện tích tương đương, không suy ra đề bắt buộc công cụ này.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "6aa30214ba7e|P2|4|c"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "a4976c6633f9d419",
+    "stem": "Một mái che phẳng ABCD có hình chiếu vuông góc xuống mặt đất là hình chữ nhật với các đỉnh lần lượt là (0;0;0), (3;0;0), (3;4;0), (0;4;0). Chọn hệ tọa độ Oxyz với đơn vị mét, mặt đất là Oxy và Oz hướng thẳng đứng lên trên. Hai đỉnh cố định là A(0;0;3), C(3;4;8). Hai đỉnh B, D được điều chỉnh độ cao nhưng phải nằm trên các đường thẳng đứng qua hình chiếu tương ứng và không thấp hơn A. Mỗi phương án mái phải là một hình bình hành phẳng. Vật liệu được mua đúng bằng 110% diện tích mặt mái, giá 200 000 đồng/m². Không tính chi phí khác. Xét tính đúng, sai của các nhận định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Trong mọi phương án hợp lệ, tổng độ cao của B và D bằng 11 m."
+      },
+      {
+        "sub": "b",
+        "text": "Nếu B có độ cao 5 m thì vectơ AB có tọa độ (3;0;2)."
+      },
+      {
+        "sub": "c",
+        "text": "Diện tích mặt mái nhỏ nhất có thể đạt được là 12√2 m²."
+      },
+      {
+        "sub": "d",
+        "text": "Có thể điều chỉnh B và D để tiền mua vật liệu không vượt quá 3 700 000 đồng."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "VD"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "VD"
+      }
+    ],
+    "solution": "Đặt B=(3;0;3+3p), D=(0;4;3+4q), với p,q≥0. Vì ABCD là hình bình hành nên C=B+D−A, suy ra 3p+4q=5. Do đó zB+zD=6+3p+4q=11; a đúng. Nếu zB=5 thì AB=(3;0;2); b đúng. Đặt u=AB=(3;0;3p), v=AD=(0;4;4q). Công thức diện tích hình bình hành S²=|u|²|v|²−(u·v)² cho S²=144(1+p²+q²). Mặt khác, 25(p²+q²)−(3p+4q)²=(4p−3q)²≥0. Vì 3p+4q=5 nên p²+q²≥1. Dấu bằng đạt được khi p=3/5, q=4/5, tương ứng zB=4,8 và zD=6,2, đều hợp lệ. Vậy S nhỏ nhất bằng 12√2 m²; c đúng. Tiền vật liệu nhỏ nhất là 12√2×1,10×200 000=2 640 000√2 đồng, xấp xỉ 3 733 524 đồng. Mọi phương án đều vượt 3 700 000 đồng; d sai.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Dùng diện tích hình chiếu 12 m² để tính chi phí nhỏ nhất.",
+        "why_plausible": "Kích thước hình chữ nhật trên mặt đất dễ được dùng trực tiếp, cho chi phí 2 640 000 đồng. Tuy nhiên, hai đỉnh đối diện có độ cao khác nhau nên mặt mái luôn nghiêng; phải xét diện tích thực và tối ưu đồng thời hai độ dốc."
+      }
+    ],
+    "level_reason": "Mức toàn câu là VD. Ở c, học sinh phải mô hình hóa hai độ dốc có ràng buộc chung, biểu diễn diện tích bằng vectơ, rồi thiết lập một chặn dưới và kiểm tra điều kiện đạt được. Ở d, cần dùng kết quả tối ưu để kết luận về mọi phương án mái, thay vì chỉ tính chi phí của một mái đã cho. Các ý a, b là TH.",
+    "prerequisites": [
+      "Tọa độ vectơ và tính chất hình bình hành",
+      "Tích vô hướng",
+      "Diện tích hình bình hành qua độ dài hai cạnh và góc xen giữa",
+      "Biến đổi bất đẳng thức từ bình phương không âm",
+      "Tỉ lệ phần trăm và tính chi phí"
+    ],
+    "variation_guidance": "Có thể thay hai kích thước hình chiếu và độ chênh cao giữa hai đỉnh đối diện. Phải tìm lại cấu hình đạt diện tích nhỏ nhất và kiểm tra cấu hình đó thỏa các giới hạn độ cao trước khi chọn ngân sách.",
+    "uncertainties": [
+      "Đây là mẫu minh họa tổng hợp nguyên gốc; căn cứ cấu trúc chỉ là quan sát cấp tỉnh do bên thứ ba cung cấp, không có neo đề chính thức hoặc khóa nguồn phù hợp.",
+      "Công thức diện tích dùng trong lời giải suy ra từ S=|u||v|sinθ và tích vô hướng; không cần giả định học sinh đã học tích có hướng."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "a4976c6633f9d419",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "VD"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "VD"
+      }
+    ],
+    "solution": "Đặt B=(3;0;3+u), D=(0;4;3+v), với u,v≥0. Điều kiện hình bình hành A+C=B+D cho u+v=5, nên tổng độ cao B,D bằng 11 m. Nếu B cao 5 m thì AB=(3;0;2). Diện tích mái là S=|AB×AD|=√(144+16u²+9v²). Thay v=5−u, được S²=288+25(u−9/5)². Vì u=9/5, v=16/5 là phương án hợp lệ, S nhỏ nhất bằng 12√2 m². Tiền vật liệu nhỏ nhất là 200000×1,1×12√2≈3733524 đồng, lớn hơn 3700000 đồng.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a dùng tính chất hai đường chéo hình bình hành có cùng trung điểm; b tính tọa độ vectơ theo quy trình quen thuộc, đều là TH. c phải liên kết điều kiện hình học, công thức diện tích bằng tích có hướng và tối ưu trên miền hợp lệ, nên là VD. d phải xác lập chi phí nhỏ nhất từ bài toán tối ưu rồi kết luận tính khả thi, nên là VD."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/toan/6c85110f945e94e07413b0bb3c97cb4db59979d6ba4a6f3a4d5270113849f771.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/toan/6c85110f945e94e07413b0bb3c97cb4db59979d6ba4a6f3a4d5270113849f771.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 0,
+  "source_rows_sha256": "863dd6885185956ed9dabede84bf529993a764e4871f75f25629503cf8f2731a"
+}

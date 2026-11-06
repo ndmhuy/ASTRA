@@ -2,7 +2,7 @@
 
 Câu do Sol viết mới, không phải đề thật hoặc bằng chứng tần suất. Chưa giáo viên duyệt. Nhãn mục tiêu dựa trên phân loại khái quát; xem LEVELS.md. Một mẫu cho mỗi ô chủ đề/phần/mức có căn cứ, chưa bảo đảm phủ mọi dạng trong cùng ô.
 
-Đã xuất 53/54 mẫu dự kiến; các mẫu có cờ không được coi là sẵn dùng.
+Đã xuất 54/54 mẫu dự kiến; các mẫu có cờ không được coi là sẵn dùng.
 
 ## Bài tiết và cân bằng nội môi ở động vật / P1 / TH
 
@@ -27,6 +27,10 @@ Lỗi tạo nhiễu:
 Mức dự kiến: Học sinh diễn giải các quan hệ điều hòa đã cho và xác định chiều biến đổi của tái hấp thụ nước cùng độ đậm đặc nước tiểu. Đây là vận dụng trực tiếp cơ chế quen thuộc, thuộc mức TH.
 
 Tiên quyết: Vai trò của ADH trong điều hòa tái hấp thụ nước ở thận.; Ý nghĩa của tái hấp thụ nước.; Quan hệ giữa lượng nước còn trong dịch ống thận và độ đậm đặc nước tiểu.
+
+Neo bằng chứng của dạng: có quan sát chính thức.
+
+Bất định của mẫu: chưa được model nêu; vẫn chờ rà chuyên môn
 
 Biến thể: Có thể thay bằng tình huống mất nước sau vận động và đảo chiều biến đổi áp suất thẩm thấu, đồng thời giữ rõ giả thiết các yếu tố khác không đổi.
 
@@ -60,6 +64,10 @@ Mức dự kiến: Học sinh phải diễn giải trạng thái phân li từ m
 
 Tiên quyết: Diễn biến phân li nhiễm sắc thể trong nguyên phân.; Sau khi tách tại tâm động, mỗi chromatid trở thành một nhiễm sắc thể đơn.; Mỗi nhóm nhiễm sắc thể đi về một cực trong nguyên phân bình thường mang bộ 2n.
 
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Căn cứ tham khảo về dạng quan sát phân bào chỉ đến từ nguồn cấp tỉnh qua bên thứ ba. Mẫu tự tạo này không phải bằng chứng đề thi thật và không xác lập sự tương ứng với đề thi chính thức.
+
 Biến thể: Có thể thay số nhiễm sắc thể đơn bằng một số chẵn khác, đồng thời giữ rõ phạm vi đếm là toàn tế bào và thời điểm các chromatid đã tách. Không tăng mức nhận thức chỉ bằng cách tăng độ lớn của số liệu.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
@@ -88,6 +96,10 @@ Lỗi tạo nhiễu:
 Mức dự kiến: Học sinh đối chiếu các dãy số với quy luật nhân đôi DNA ở pha S, duy trì lượng DNA ở pha G2 và phân chia cho hai nhân con. Đây là đọc biểu diễn và áp dụng quy luật chu kì tế bào quen thuộc ở mức TH.
 
 Tiên quyết: Trình tự các pha G1, S, G2 và pha phân bào.; DNA nhân đôi trong pha S.; Sự phân chia đồng đều DNA cho hai nhân con trong nguyên phân bình thường.
+
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Căn cứ tham khảo về dạng nhiệm vụ chỉ là mô tả đồ thị cấp tỉnh qua nguồn thứ ba; các bản ghi trong mẫu này được tự tạo và không phải dữ liệu đề thi chính thức.
 
 Biến thể: Thay lượng DNA ban đầu hoặc đổi thứ tự các bản ghi; luôn xác định rõ đại lượng tính cho một nhân và mốc đo sau phân chia.
 
@@ -121,6 +133,10 @@ Mức dự kiến: Chỉ cần nhớ vị trí của chuỗi truyền electron h
 
 Tiên quyết: Vị trí của chuỗi truyền electron hô hấp ở tế bào nhân thực.
 
+Neo bằng chứng của dạng: có quan sát chính thức.
+
+Bất định của mẫu: chưa được model nêu; vẫn chờ rà chuyên môn
+
 Biến thể: Có thể chuyển sang hỏi vị trí đường phân với các phương án là những khoang tế bào tương ứng; mỗi biến thể chỉ kiểm tra một kiến thức về vị trí.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
@@ -142,16 +158,20 @@ Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu 
 
 Đáp án: C
 
-Lời giải: Chọn C. Protein được cấu tạo từ các amino acid; nucleotide là đơn phân của axit nucleic. A là đặc điểm cấu tạo của protein. B đúng vì nhiều protein tham gia cấu trúc tế bào. D đúng vì nhiều enzyme có bản chất là protein.
+Lời giải: Chọn C. Protein được cấu tạo từ các amino acid; nucleotide là đơn phân của nucleic acid. A là đặc điểm cấu tạo của protein. B đúng vì nhiều protein tham gia cấu trúc tế bào. D đúng vì nhiều enzyme có bản chất là protein.
 
 Lỗi tạo nhiễu:
-- A: Cho rằng amino acid không phải đơn phân của protein. — Học sinh có thể nhớ lẫn tên đơn phân của protein và axit nucleic.
+- A: Cho rằng amino acid không phải đơn phân của protein. — Học sinh có thể nhớ lẫn tên đơn phân của protein và nucleic acid.
 - B: Cho rằng protein chỉ đảm nhiệm chức năng enzyme nên không tham gia cấu trúc tế bào. — Chức năng xúc tác thường được nhấn mạnh khiến học sinh bỏ sót chức năng cấu trúc.
 - D: Cho rằng enzyme là một nhóm chất tách biệt với protein. — Học sinh có thể ghi nhớ tên chức năng mà chưa liên hệ với bản chất hóa học của enzyme.
 
 Mức dự kiến: Học sinh chỉ cần nhớ và nhận diện đặc điểm cấu tạo, chức năng cơ bản của protein trong một đơn vị kiến thức; không cần xử lí tình huống.
 
-Tiên quyết: Đơn phân của protein và axit nucleic; Các chức năng cơ bản của protein
+Tiên quyết: Đơn phân của protein và nucleic acid; Các chức năng cơ bản của protein
+
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Quan sát tham chiếu chỉ thuộc nguồn bên thứ ba cấp tỉnh, không có điểm neo chính thức; câu này là mẫu minh họa tổng hợp, không phải bằng chứng đề thi thật.
 
 Biến thể: Có thể thay các chức năng cấu trúc và xúc tác bằng vận chuyển hoặc bảo vệ, nhưng giữ yêu cầu nhận diện trực tiếp một đặc điểm không thuộc protein.
 
@@ -169,89 +189,101 @@ Phân tử X là một polymer sinh học. Khi thủy phân hoàn toàn X, ngư�
 
 - a) X thuộc nhóm polysaccharide.
 - b) Các đơn phân cấu tạo nên X là nucleotide có chứa đường glucose.
-- c) X có thể là ADN đảm nhiệm chức năng lưu giữ thông tin di truyền trong nhân tế bào.
+- c) X có thể là DNA đảm nhiệm chức năng lưu giữ thông tin di truyền trong nhân tế bào.
 - d) Chỉ từ dữ kiện về sản phẩm thủy phân, chưa thể phân biệt X là tinh bột hay cellulose.
 
 Đáp án: a) D; b) S; c) S; d) D
 
-Lời giải: a đúng: X là polymer chỉ cho glucose khi thủy phân hoàn toàn, phù hợp với polysaccharide cấu tạo từ các đơn phân glucose. b sai: đơn phân của X là glucose, không phải nucleotide; nucleotide của ADN chứa đường deoxyribose, còn nucleotide của ARN chứa đường ribose. c sai: ADN là polymer của các deoxyribonucleotide, không phải polymer của glucose. d đúng: cả tinh bột và cellulose đều có thể cho glucose khi thủy phân hoàn toàn; cần thêm dữ kiện về kiểu liên kết hoặc cấu trúc để phân biệt.
+Lời giải: a đúng: X là polymer chỉ cho glucose khi thủy phân hoàn toàn, phù hợp với polysaccharide cấu tạo từ các đơn phân glucose. b sai: đơn phân của X là glucose, không phải nucleotide; nucleotide của DNA chứa đường deoxyribose, còn nucleotide của RNA chứa đường ribose. c sai: DNA là polymer của các deoxyribonucleotide, không phải polymer của glucose. d đúng: cả tinh bột và cellulose đều có thể cho glucose khi thủy phân hoàn toàn; cần thêm dữ kiện về kiểu liên kết hoặc cấu trúc để phân biệt.
 
 Lỗi tạo nhiễu:
 - b: Đồng nhất một phân tử đường đơn với một nucleotide. — Học sinh nhớ nucleotide có thành phần đường nhưng nhầm thành phần với toàn bộ đơn phân.
-- c: Cho rằng mọi polymer sinh học đều có thể đảm nhiệm vai trò vật chất di truyền trong nhân. — X và ADN đều là các phân tử lớn nên học sinh có thể bỏ qua sự khác nhau về đơn phân.
+- c: Cho rằng mọi polymer sinh học đều có thể đảm nhiệm vai trò vật chất di truyền trong nhân. — X và DNA đều là các phân tử lớn nên học sinh có thể bỏ qua sự khác nhau về đơn phân.
 
 Mức dự kiến: Học sinh diễn giải dữ kiện thủy phân để nhận diện nhóm chất, đối chiếu đơn phân với chức năng di truyền và phân biệt giới hạn của dữ kiện. Đây là các liên hệ quen thuộc ở mức TH; mức của toàn câu là TH.
 
-Tiên quyết: Đường đơn và polysaccharide; Đơn phân của tinh bột và cellulose; Thành phần nucleotide và chức năng của ADN
+Tiên quyết: Đường đơn và polysaccharide; Đơn phân của tinh bột và cellulose; Thành phần nucleotide và chức năng của DNA
+
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Quan sát tham chiếu chỉ thuộc nguồn bên thứ ba cấp tỉnh, không có điểm neo chính thức; mẫu minh họa này không xác nhận cách phân loại của một đề thi chính thức.
 
 Biến thể: Có thể thay glucose bằng dữ kiện về một loại đơn phân khác, nhưng phải bảo đảm dữ kiện đủ để nhận diện nhóm chất và không suy ra duy nhất một phân tử khi nhiều phân tử cùng phù hợp.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
 
-Mức do lượt tự giải nhận định: a: TH; b: NB; c: TH; d: TH. a) Diễn giải sản phẩm thủy phân để nhận diện nhóm chất. b) Nhớ thành phần của nucleotide. c) Đối chiếu dữ kiện với cấu tạo ADN. d) So sánh sản phẩm thủy phân quen thuộc của tinh bột và cellulose.
+Mức do lượt tự giải nhận định: a: TH; b: NB; c: TH; d: TH. a) Diễn giải sản phẩm thủy phân để nhận diện nhóm chất. b) Nhớ thành phần của nucleotide. c) Đối chiếu dữ kiện với cấu tạo DNA. d) So sánh sản phẩm thủy phân quen thuộc của tinh bột và cellulose.
 
 Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu mức ở trên
 
 ## Công nghệ tế bào và biệt hóa / P1 / TH
 
-Còn cờ cần rà; chưa dùng làm mẫu chuẩn.
+Đã qua kiểm bằng model; chờ giáo viên rà.
 
-Trong một thí nghiệm nuôi cấy, quần thể tế bào X được tách từ phôi. Qua nhiều lần phân chia, một phần tế bào con vẫn duy trì đặc điểm của X. Khi thay đổi điều kiện nuôi cấy thích hợp, các nhóm tế bào X có thể lần lượt tạo thành tế bào thần kinh, tế bào cơ tim hoặc tế bào biểu mô. Cách nhận diện nào sau đây phù hợp với tế bào X?
+Một nhóm tế bào gốc được chia thành hai phần. Phần I tiếp tục được nuôi trong môi trường duy trì tế bào gốc. Phần II được chuyển sang môi trường cảm ứng biệt hóa và tạo thành các tế bào cơ có khả năng co. Khi kiểm tra trong những điều kiện thích hợp, phần I vẫn tạo được nhiều loại tế bào chuyên hóa, còn các tế bào cơ ở phần II có khả năng biệt hóa hạn chế hơn. Cách giải thích nào phù hợp nhất với kết quả này?
 
-- A. Tế bào thần kinh đã chuyên hóa, vì có thể tạo ra tế bào thần kinh.
-- B. Tế bào gốc chưa chuyên hóa, vì có thể tự đổi mới và tạo nhiều loại tế bào.
-- C. Tế bào cơ tim đã chuyên hóa, vì có thể tạo ra tế bào cơ tim.
-- D. Tế bào biểu mô đã chuyên hóa, vì có thể tạo ra tế bào biểu mô.
+- A. Sự gia tăng số lượng tế bào đã tạo ra khả năng co, còn mức độ chuyên hóa của tế bào không đổi.
+- B. Tế bào đã biệt hóa theo hướng tế bào cơ, đồng thời khả năng tạo các loại tế bào khác bị thu hẹp.
+- C. Tế bào đã trở về trạng thái ít chuyên hóa hơn, đồng thời xuất hiện chức năng co của tế bào cơ.
+- D. Môi trường đã chọn lọc các tế bào cơ có sẵn trong nhóm ban đầu, làm chúng trở thành nhóm chiếm ưu thế.
 
 Đáp án: B
 
-Lời giải: Chọn B. Việc một phần tế bào con duy trì đặc điểm của X thể hiện khả năng tự đổi mới. Việc X tạo được nhiều loại tế bào chuyên hóa thể hiện khả năng biệt hóa. Hai đặc điểm này phù hợp với tế bào gốc. A, C và D đều nhầm một loại tế bào tạo thành sau biệt hóa với tế bào X ban đầu.
+Lời giải: Chọn B. Sự xuất hiện chức năng co cùng với khả năng biệt hóa bị thu hẹp phù hợp với quá trình tế bào gốc biệt hóa thành tế bào cơ. A sai vì tăng số lượng tế bào không giải thích được sự hình thành chức năng chuyên biệt. C sai vì kết quả thể hiện sự tăng mức độ chuyên hóa, không phải trở về trạng thái ít chuyên hóa. D sai vì nhóm ban đầu được xác định là tế bào gốc; dữ kiện không cho thấy có sẵn một nhóm tế bào cơ để môi trường chọn lọc.
 
 Lỗi tạo nhiễu:
-- A: Dùng tế bào thần kinh ở đầu ra để xác định X là tế bào thần kinh đã chuyên hóa. — Học sinh chú ý một kết quả nuôi cấy nhưng bỏ qua các hướng biệt hóa còn lại.
-- C: Đồng nhất khả năng tạo tế bào cơ tim với trạng thái đã chuyên hóa thành tế bào cơ tim. — Học sinh có thể nhầm khả năng phát triển thành một loại tế bào với bản chất hiện tại của tế bào.
-- D: Xác định tế bào ban đầu theo sản phẩm biểu mô của một điều kiện nuôi cấy. — Học sinh có thể đọc kết quả biệt hóa theo chiều ngược và bỏ qua khả năng tự đổi mới.
+- A: Đồng nhất sự phân chia làm tăng số lượng tế bào với sự biệt hóa tạo chức năng chuyên biệt. — Trong nuôi cấy, tăng sinh và biệt hóa có thể cùng được đề cập nên học sinh dễ nhầm vai trò của hai quá trình.
+- C: Đảo ngược chiều thay đổi mức độ chuyên hóa trong quá trình biệt hóa. — Học sinh có thể nhớ tế bào gốc liên quan đến khả năng phát triển nhưng chưa phân biệt biệt hóa với trở về trạng thái ít chuyên hóa.
+- D: Dùng cơ chế chọn lọc tế bào có sẵn để giải thích sự xuất hiện tế bào chuyên hóa từ tế bào gốc. — Môi trường nuôi cấy có thể ảnh hưởng đến sự sống và tăng sinh của tế bào, khiến học sinh nhầm ảnh hưởng đó với cảm ứng biệt hóa.
 
-Mức dự kiến: Học sinh đọc mô tả quá trình nuôi cấy và giải thích các dấu hiệu tự đổi mới, biệt hóa để nhận diện tế bào gốc. Đây là diễn giải một biểu diễn quen thuộc, không đòi hỏi xây dựng mô hình mới.
+Mức dự kiến: Học sinh phải diễn giải sự thay đổi đồng thời về chức năng và khả năng biệt hóa, rồi phân biệt biệt hóa với tăng sinh hoặc chọn lọc tế bào. Đây là giải thích một tình huống quen thuộc ở mức TH.
 
-Tiên quyết: Đặc điểm của tế bào gốc; Khái niệm tự đổi mới; Khái niệm biệt hóa tế bào
+Tiên quyết: Đặc điểm của tế bào gốc; Khái niệm biệt hóa tế bào; Phân biệt tăng sinh với biệt hóa
 
-Biến thể: Có thể đổi các loại tế bào chuyên hóa ở đầu ra, đồng thời giữ rõ hai dấu hiệu tự đổi mới và biệt hóa. Không suy ra khả năng tạo một cơ thể hoàn chỉnh chỉ từ việc tạo được vài loại tế bào.
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Quan sát tham chiếu thuộc nguồn bên thứ ba cấp tỉnh, không có điểm neo chính thức. Tình huống nuôi cấy được sáng tác và không đại diện cho mọi quy trình biệt hóa thực tế.
+
+Biến thể: Có thể thay tế bào cơ bằng một loại tế bào chuyên hóa khác và cung cấp chức năng tương ứng. Giữ dữ kiện về trạng thái ban đầu và sự thay đổi khả năng biệt hóa để phân biệt các cách giải thích.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
 
-Mức do lượt tự giải nhận định: TH. Nhận diện hai biểu hiện quen thuộc của tế bào gốc trong mô tả thí nghiệm; không cần xây dựng mô hình hay chuỗi suy luận phức tạp.
+Mức do lượt tự giải nhận định: TH. Diễn giải kết quả thí nghiệm bằng mối quan hệ quen thuộc giữa biệt hóa, chức năng chuyên hóa và tiềm năng biệt hóa.
 
-Cờ lượt tự giải: phuong_an_nhieu_de_loai_do_chi_dua_vao_mot_loai_te_bao_dau_ra
+Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu mức ở trên
 
 ## Cấu trúc tế bào nhân thực / P2 / TH
 
 Đã qua kiểm bằng model; chờ giáo viên rà.
 
-Một phân tử axit nucleic X có đường deoxyribose và thành phần base: A = 28%, T = 28%, G = 22%, C = 22%. X đại diện cho một loại axit nucleic có trong tế bào nhân thực. Xét tế bào mô giậu đang quang hợp ở lá cây đậu, hãy xác định đúng hay sai cho mỗi nhận định sau.
+Một phân tử nucleic acid X có đường deoxyribose và thành phần base: A = 28%, T = 28%, G = 22%, C = 22%. X đại diện cho một loại nucleic acid có trong tế bào nhân thực. Xét tế bào mô giậu đang quang hợp ở lá cây đậu, hãy xác định đúng hay sai cho mỗi nhận định sau.
 
-- a) Thành phần base của X phù hợp với nguyên tắc bổ sung của ADN hai mạch.
-- b) Loại axit nucleic mà X đại diện có thể có trong nhân tế bào.
-- c) Loại axit nucleic mà X đại diện không thể có trong ti thể vì ti thể nằm ngoài nhân.
-- d) Loại axit nucleic mà X đại diện là thành phần axit nucleic cấu tạo nên ribosome.
+- a) Thành phần base của X phù hợp với nguyên tắc bổ sung của DNA hai mạch.
+- b) Loại nucleic acid mà X đại diện có thể có trong nhân tế bào.
+- c) Loại nucleic acid mà X đại diện không thể có trong ti thể vì ti thể nằm ngoài nhân.
+- d) Loại nucleic acid mà X đại diện là thành phần nucleic acid cấu tạo nên ribosome.
 
 Đáp án: a) D; b) D; c) S; d) S
 
-Lời giải: X là ADN vì chứa đường deoxyribose và các base A, T, G, C. a đúng: A = T và G = C phù hợp với nguyên tắc bổ sung của ADN hai mạch; riêng các tỉ lệ này không đủ chứng minh X có hai mạch. b đúng: nhân của tế bào mô giậu chứa ADN. c sai: ti thể có hệ gene riêng nên có ADN dù nằm ngoài nhân. d sai: axit nucleic cấu tạo nên ribosome là rARN, không phải ADN.
+Lời giải: X là DNA vì chứa đường deoxyribose và các base A, T, G, C. a đúng: A = T và G = C phù hợp với nguyên tắc bổ sung của DNA hai mạch; riêng các tỉ lệ này không đủ chứng minh X có hai mạch. b đúng: nhân của tế bào mô giậu chứa DNA. c sai: ti thể có hệ gene riêng nên có DNA dù nằm ngoài nhân. d sai: nucleic acid cấu tạo nên ribosome là rRNA, không phải DNA.
 
 Lỗi tạo nhiễu:
-- c: Cho rằng ADN trong tế bào nhân thực chỉ tồn tại trong nhân. — Học sinh có thể khái quát quá mức vai trò lưu giữ thông tin di truyền của nhân và quên hệ gene của ti thể.
-- d: Nhầm ADN với rARN khi xác định thành phần của ribosome. — Cả ADN và rARN đều là axit nucleic nên học sinh có thể bỏ qua sự khác biệt về cấu tạo và vị trí.
+- c: Cho rằng DNA trong tế bào nhân thực chỉ tồn tại trong nhân. — Học sinh có thể khái quát quá mức vai trò lưu giữ thông tin di truyền của nhân và quên hệ gene của ti thể.
+- d: Nhầm DNA với rRNA khi xác định thành phần của ribosome. — Cả DNA và rRNA đều là nucleic acid nên học sinh có thể bỏ qua sự khác biệt về cấu tạo và vị trí.
 
-Mức dự kiến: Học sinh diễn giải thành phần đường và base để nhận diện ADN, kiểm tra sự phù hợp với nguyên tắc bổ sung rồi đối chiếu với kiến thức quen thuộc về nhân, ti thể và ribosome. Mức cao nhất của các nhận định là TH.
+Mức dự kiến: Học sinh diễn giải thành phần đường và base để nhận diện DNA, kiểm tra sự phù hợp với nguyên tắc bổ sung rồi đối chiếu với kiến thức quen thuộc về nhân, ti thể và ribosome. Mức cao nhất của các nhận định là TH.
 
-Tiên quyết: Thành phần cấu tạo của ADN; Nguyên tắc bổ sung; ADN trong nhân và ti thể; Thành phần cấu tạo của ribosome
+Tiên quyết: Thành phần cấu tạo của DNA; Nguyên tắc bổ sung; DNA trong nhân và ti thể; Thành phần cấu tạo của ribosome
 
-Biến thể: Có thể đổi tỉ lệ base nhưng phải giữ A = T, G = C và tổng bằng 100% nếu muốn xét sự phù hợp với ADN hai mạch. Có thể thay ti thể bằng lục lạp trong bối cảnh tế bào lá đang quang hợp.
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Quan sát tham chiếu chỉ thuộc nguồn bên thứ ba cấp tỉnh, không có điểm neo chính thức; mẫu này không phải bằng chứng về cấu trúc hoặc mức độ của đề thi thật.
+
+Biến thể: Có thể đổi tỉ lệ base nhưng phải giữ A = T, G = C và tổng bằng 100% nếu muốn xét sự phù hợp với DNA hai mạch. Có thể thay ti thể bằng lục lạp trong bối cảnh tế bào lá đang quang hợp.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
 
-Mức do lượt tự giải nhận định: a: TH; b: TH; c: TH; d: TH. a) Đối chiếu các tỉ lệ base với nguyên tắc bổ sung. b), c), d) Nhận diện ADN từ loại đường rồi đối chiếu với kiến thức quen thuộc về vị trí ADN và thành phần ribosome.
+Mức do lượt tự giải nhận định: a: TH; b: TH; c: TH; d: TH. a) Đối chiếu các tỉ lệ base với nguyên tắc bổ sung. b), c), d) Nhận diện DNA từ loại đường rồi đối chiếu với kiến thức quen thuộc về vị trí DNA và thành phần ribosome.
 
 Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu mức ở trên
 
@@ -259,7 +291,7 @@ Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu 
 
 Đã qua kiểm bằng model; chờ giáo viên rà.
 
-Ở một loài thực vật lưỡng bội, xét ba locus có các cặp alen tương ứng là A/a, B/b và E/e. Kiểu gene nào sau đây đồng hợp tại cả ba locus?
+Ở một loài thực vật lưỡng bội, xét ba locus có các cặp allele tương ứng là A/a, B/b và E/e. Kiểu gene nào sau đây đồng hợp tại cả ba locus?
 
 - A. AAbbEe
 - B. AabbEE
@@ -268,7 +300,7 @@ Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu 
 
 Đáp án: C
 
-Lời giải: Đáp án C. Đồng hợp tại một locus nghĩa là hai alen của locus đó giống nhau. Kiểu gene aaBBee có ba cặp đồng hợp: aa, BB và ee. A có cặp Ee dị hợp; B có cặp Aa dị hợp; D có cặp Bb dị hợp.
+Lời giải: Đáp án C. Đồng hợp tại một locus nghĩa là hai allele của locus đó giống nhau. Kiểu gene aaBBee có ba cặp đồng hợp: aa, BB và ee. A có cặp Ee dị hợp; B có cặp Aa dị hợp; D có cặp Bb dị hợp.
 
 Lỗi tạo nhiễu:
 - A: Chỉ kiểm tra hai cặp AA và bb, bỏ qua cặp Ee dị hợp. — Hai locus đầu đều đồng hợp nên học sinh có thể kết luận trước khi kiểm tra locus cuối.
@@ -279,7 +311,11 @@ Mức dự kiến: Học sinh chỉ cần nhận diện kí hiệu phù hợp v�
 
 Tiên quyết: Cách viết kiểu gene của cơ thể lưỡng bội; Khái niệm đồng hợp và dị hợp
 
-Biến thể: Có thể thay tên alen và vị trí cặp dị hợp trong các phương án nhiễu, đồng thời giữ duy nhất một kiểu gene đồng hợp tại mọi locus.
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Quan sát xây dựng cho mục tiêu này chỉ thuộc nguồn cấp tỉnh do bên thứ ba cung cấp; mẫu tổng hợp này không xác lập đặc trưng của đề thi chính thức.
+
+Biến thể: Có thể thay tên allele và vị trí cặp dị hợp trong các phương án nhiễu, đồng thời giữ duy nhất một kiểu gene đồng hợp tại mọi locus.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
 
@@ -291,7 +327,7 @@ Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu 
 
 Đã qua kiểm bằng model; chờ giáo viên rà.
 
-Ở một loài động vật, con cái có cặp nhiễm sắc thể giới tính XX, con đực có cặp XY. Gene quy định màu mắt có hai alen M và m, nằm trên vùng không tương đồng của nhiễm sắc thể X. Giảm phân và thụ tinh diễn ra bình thường. Phép lai nào sau đây có thể tạo đời con gồm đủ bốn kiểu gene X^M X^M, X^M X^m, X^M Y và X^m Y?
+Ở một loài động vật, con cái có cặp nhiễm sắc thể giới tính XX, con đực có cặp XY. Gene quy định màu mắt có hai allele M và m, nằm trên vùng không tương đồng của nhiễm sắc thể X. Giảm phân và thụ tinh diễn ra bình thường. Phép lai nào sau đây có thể tạo đời con gồm đủ bốn kiểu gene X^M X^M, X^M X^m, X^M Y và X^m Y?
 
 - A. ♀ X^M X^M × ♂ X^m Y
 - B. ♀ X^M X^m × ♂ X^M Y
@@ -303,15 +339,19 @@ Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu 
 Lời giải: Đáp án B. Con cái X^M X^m tạo trứng mang X^M hoặc X^m; con đực X^M Y tạo tinh trùng mang X^M hoặc Y. Tổ hợp các giao tử cho đúng bốn kiểu gene yêu cầu. Phép lai A chỉ tạo X^M X^m và X^M Y. Phép lai C tạo X^M X^m, X^m X^m, X^M Y và X^m Y, thiếu X^M X^M. Phép lai D chỉ tạo X^M X^m và X^m Y.
 
 Lỗi tạo nhiễu:
-- A: Cho rằng bố mẹ mang đủ hai alen M và m thì đời con sẽ có đủ bốn kiểu gene yêu cầu. — Học sinh chú ý sự có mặt của hai alen nhưng bỏ qua việc mẹ chỉ tạo một loại trứng.
-- C: Thấy phép lai tạo bốn kiểu gene rồi đồng nhất chúng với bốn kiểu gene được yêu cầu. — Phép lai này cũng tạo bốn kiểu gene, nhưng alen trên X của bố làm thay đổi các kiểu gene ở con cái.
-- D: Cho rằng alen M của bố có thể truyền cho cả con trai và con gái. — Học sinh áp dụng cách tổ hợp alen của gene trên nhiễm sắc thể thường, quên rằng con trai nhận Y từ bố.
+- A: Cho rằng bố mẹ mang đủ hai allele M và m thì đời con sẽ có đủ bốn kiểu gene yêu cầu. — Học sinh chú ý sự có mặt của hai allele nhưng bỏ qua việc mẹ chỉ tạo một loại trứng.
+- C: Thấy phép lai tạo bốn kiểu gene rồi đồng nhất chúng với bốn kiểu gene được yêu cầu. — Phép lai này cũng tạo bốn kiểu gene, nhưng allele trên X của bố làm thay đổi các kiểu gene ở con cái.
+- D: Cho rằng allele M của bố có thể truyền cho cả con trai và con gái. — Học sinh áp dụng cách tổ hợp allele của gene trên nhiễm sắc thể thường, quên rằng con trai nhận Y từ bố.
 
 Mức dự kiến: Học sinh thực hiện quy trình quen thuộc: xác định giao tử, tổ hợp giao tử và đối chiếu các kiểu gene đời con. Đây là thông hiểu, không đòi hỏi xây dựng mô hình di truyền mới.
 
 Tiên quyết: Gene trên vùng không tương đồng của nhiễm sắc thể X; Sự truyền nhiễm sắc thể giới tính từ bố mẹ; Lập sơ đồ lai
 
-Biến thể: Có thể thay kí hiệu alen hoặc tập kiểu gene cần tạo; cần kiểm tra từng phép lai để bảo đảm chỉ một phương án đáp ứng đầy đủ yêu cầu.
+Neo bằng chứng của dạng: có quan sát chính thức.
+
+Bất định của mẫu: chưa được model nêu; vẫn chờ rà chuyên môn
+
+Biến thể: Có thể thay kí hiệu allele hoặc tập kiểu gene cần tạo; cần kiểm tra từng phép lai để bảo đảm chỉ một phương án đáp ứng đầy đủ yêu cầu.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
 
@@ -323,7 +363,7 @@ Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu 
 
 Đã qua kiểm bằng model; chờ giáo viên rà.
 
-Một bệnh di truyền do một gene có hai alen trên nhiễm sắc thể thường quy định. Tính trạng biểu hiện hoàn toàn theo kiểu trội – lặn; không có đột biến mới. Mai và Nam đều không mắc bệnh. Bố mẹ của Mai đều không mắc bệnh nhưng có một người con mắc bệnh; bố mẹ của Nam cũng đều không mắc bệnh nhưng có một người con mắc bệnh. Hai gia đình không có quan hệ huyết thống. Trước đây, Nam có một người con với một phụ nữ mắc bệnh; người con này không mắc bệnh. Không có thông tin chọn lọc nào khác về người con đó. Biết xác suất sinh con trai là 1/2 và độc lập với sự di truyền gene gây bệnh. Dựa trên toàn bộ thông tin trên, xác suất lần sinh tới Mai và Nam sinh một con trai mắc bệnh là bao nhiêu?
+Một bệnh di truyền do một gene có hai allele trên nhiễm sắc thể thường quy định. Tính trạng biểu hiện hoàn toàn theo kiểu trội – lặn; không có đột biến mới. Mai và Nam đều không mắc bệnh. Bố mẹ của Mai đều không mắc bệnh nhưng có một người con mắc bệnh; bố mẹ của Nam cũng đều không mắc bệnh nhưng có một người con mắc bệnh. Hai gia đình không có quan hệ huyết thống. Trước đây, Nam có một người con với một phụ nữ mắc bệnh; người con này không mắc bệnh. Không có thông tin chọn lọc nào khác về người con đó. Biết xác suất sinh con trai là 1/2 và độc lập với sự di truyền gene gây bệnh. Dựa trên toàn bộ thông tin trên, xác suất lần sinh tới Mai và Nam sinh một con trai mắc bệnh là bao nhiêu?
 
 - A. 1/18
 - B. 1/12
@@ -332,16 +372,20 @@ Một bệnh di truyền do một gene có hai alen trên nhiễm sắc thể th
 
 Đáp án: D
 
-Lời giải: Đáp án D. Bố mẹ không bệnh sinh con bệnh, trong điều kiện đề cho, nên bệnh do alen lặn a quy định; người bệnh có kiểu gene aa. Bố mẹ của mỗi người đều phải là Aa × Aa. Vì Mai không bệnh, xác suất Mai có kiểu gene Aa là 2/3. Trước khi xét người con trước đây, Nam cũng có xác suất Aa bằng 2/3 và AA bằng 1/3. Với người mẹ aa, nếu Nam là AA thì xác suất con không bệnh bằng 1; nếu Nam là Aa thì xác suất này bằng 1/2. Do đã biết người con không bệnh, xác suất Nam là Aa được cập nhật thành [(2/3) × (1/2)] / [(1/3) × 1 + (2/3) × (1/2)] = 1/2. Xác suất con của Mai và Nam mắc bệnh là (2/3) × (1/2) × (1/4) = 1/12. Xác suất đồng thời là con trai và mắc bệnh bằng (1/12) × (1/2) = 1/24. Phương án A bỏ qua thông tin người con trước của Nam; B chưa kết hợp xác suất giới tính; C dùng sai xác suất Mai mang alen bệnh là 1/2.
+Lời giải: Đáp án D. Bố mẹ không bệnh sinh con bệnh, trong điều kiện đề cho, nên bệnh do allele lặn a quy định; người bệnh có kiểu gene aa. Bố mẹ của mỗi người đều phải là Aa × Aa. Vì Mai không bệnh, xác suất Mai có kiểu gene Aa là 2/3. Trước khi xét người con trước đây, Nam cũng có xác suất Aa bằng 2/3 và AA bằng 1/3. Với người mẹ aa, nếu Nam là AA thì xác suất con không bệnh bằng 1; nếu Nam là Aa thì xác suất này bằng 1/2. Do đã biết người con không bệnh, xác suất Nam là Aa được cập nhật thành [(2/3) × (1/2)] / [(1/3) × 1 + (2/3) × (1/2)] = 1/2. Xác suất con của Mai và Nam mắc bệnh là (2/3) × (1/2) × (1/4) = 1/12. Xác suất đồng thời là con trai và mắc bệnh bằng (1/12) × (1/2) = 1/24. Phương án A bỏ qua thông tin người con trước của Nam; B chưa kết hợp xác suất giới tính; C dùng sai xác suất Mai mang allele bệnh là 1/2.
 
 Lỗi tạo nhiễu:
-- A: Giữ xác suất Nam mang alen bệnh là 2/3, tính (2/3) × (2/3) × (1/4) × (1/2) = 1/18. — Học sinh nhớ xác suất 2/3 của người không bệnh trong gia đình Aa × Aa nhưng chưa cập nhật theo thông tin về con của Nam.
+- A: Giữ xác suất Nam mang allele bệnh là 2/3, tính (2/3) × (2/3) × (1/4) × (1/2) = 1/18. — Học sinh nhớ xác suất 2/3 của người không bệnh trong gia đình Aa × Aa nhưng chưa cập nhật theo thông tin về con của Nam.
 - B: Tính đúng xác suất con mắc bệnh là 1/12 nhưng coi đó là xác suất sinh con trai mắc bệnh. — Học sinh có thể đọc yêu cầu về giới tính thành điều kiện đã biết thay vì một sự kiện phải xảy ra đồng thời.
 - C: Coi hai khả năng AA và Aa của Mai là đồng xác suất, rồi tính (1/2) × (1/2) × (1/4) × (1/2) = 1/32. — Sau khi loại aa, học sinh có thể chia đều xác suất cho hai tên kiểu gene còn lại, bỏ qua tỉ lệ AA : Aa là 1 : 2.
 
 Mức dự kiến: Học sinh phải suy ra cơ chế di truyền, xác định xác suất kiểu gene có điều kiện từ gia đình, dùng thông tin về một người con để cập nhật riêng xác suất kiểu gene của Nam, rồi kết hợp nguy cơ bệnh với giới tính. Các bước phụ thuộc nhau và đòi hỏi xây dựng mô hình xác suất từ dữ kiện.
 
 Tiên quyết: Di truyền trội – lặn trên nhiễm sắc thể thường; Phân li kiểu gene trong phép lai Aa × Aa; Xác suất có điều kiện; Quy tắc nhân xác suất
+
+Neo bằng chứng của dạng: có quan sát chính thức.
+
+Bất định của mẫu: Nhánh quan sát về xác suất bệnh trong gia đình được cung cấp chỉ thuộc nguồn cấp tỉnh do bên thứ ba cung cấp; mẫu này không chứng minh dạng bài tương ứng xuất hiện trong đề thi chính thức.; Mô hình bệnh là giả định phục vụ bài tập, không mô tả một bệnh cụ thể trong thực tế.
 
 Biến thể: Có thể thay thông tin về con trước bằng một kết quả xét nghiệm được mô tả đầy đủ về khả năng xuất hiện ở từng kiểu gene. Phải tính lại xác suất hậu nghiệm và giữ rõ yêu cầu đồng thời về giới tính và bệnh.
 
@@ -353,34 +397,38 @@ Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu 
 
 ## Di truyền nhiễm sắc thể và quy luật di truyền / P2 / NB
 
-Còn cờ cần rà; chưa dùng làm mẫu chuẩn.
+Đã qua kiểm bằng model; chờ giáo viên rà.
 
-Trong một mô hình di truyền ở người, gene có hai alen A và a nằm trên vùng không tương đồng của nhiễm sắc thể X. Alen a gây bệnh và lặn hoàn toàn so với alen A. Một người mẹ có kiểu gene X^A X^a. Hãy xác định mỗi nhận định sau là đúng hay sai.
+Xét kiến thức di truyền nhiễm sắc thể ở người theo mô hình phổ thông với nữ có cặp nhiễm sắc thể giới tính XX và nam có cặp nhiễm sắc thể giới tính XY. Xác định mỗi nhận định sau là đúng hay sai.
 
-- a) Gene đang xét là gene liên kết với giới tính.
-- b) Bệnh đang xét thuộc dạng di truyền liên kết với nhiễm sắc thể Y.
-- c) Người mẹ có kiểu gene dị hợp tại locus đang xét.
-- d) Trong mô hình này, a là alen trội so với A.
+- a) Gene nằm trên vùng không tương đồng của nhiễm sắc thể Y được xếp vào nhóm gene liên kết với giới tính.
+- b) Kiểu gene dị hợp tại một locus gồm hai allele giống nhau.
+- c) Hai allele của cùng một gene trên một cặp nhiễm sắc thể thường tương đồng nằm ở cùng locus.
+- d) Liên kết gene là hiện tượng các gene nằm trên những cặp nhiễm sắc thể khác nhau có xu hướng được di truyền cùng nhau.
 
 Đáp án: a) D; b) S; c) D; d) S
 
-Lời giải: a đúng: gene nằm trên nhiễm sắc thể giới tính X nên là gene liên kết với giới tính. b sai: đề cho gene nằm trên vùng không tương đồng của X, không phải trên Y. c đúng: người mẹ mang hai alen khác nhau A và a tại cùng locus nên dị hợp. d sai: đề đã xác định a lặn hoàn toàn so với A.
+Lời giải: a đúng: gene trên vùng không tương đồng của Y là gene nằm trên nhiễm sắc thể giới tính. b sai: kiểu gene dị hợp có hai allele khác nhau tại locus đang xét; hai allele giống nhau là đồng hợp. c đúng: các allele của cùng một gene chiếm cùng locus trên cặp nhiễm sắc thể tương đồng. d sai: liên kết gene gắn với các gene nằm trên cùng một nhiễm sắc thể và có xu hướng được di truyền cùng nhau.
 
 Lỗi tạo nhiễu:
-- b: Đồng nhất di truyền liên kết giới tính với di truyền liên kết Y. — Học sinh nhớ tên nhóm quy luật nhưng chưa phân biệt gene trên X với gene trên Y.
-- d: Cho rằng alen gây bệnh luôn là alen trội. — Học sinh nhầm tác động gây bệnh với quan hệ trội – lặn giữa hai alen.
+- b: Nhầm định nghĩa dị hợp với đồng hợp. — Hai thuật ngữ mô tả thành phần allele tại cùng một locus; nhớ sai quan hệ giống/khác sẽ dẫn đến chọn sai.
+- d: Nhớ đặc điểm di truyền cùng nhau nhưng gắn liên kết gene với các gene trên những cặp nhiễm sắc thể khác nhau. — Học sinh có thể lẫn cơ sở nhiễm sắc thể của liên kết gene với cơ sở của phân li độc lập.
 
-Mức dự kiến: Cả bốn nhận định chỉ yêu cầu nhận diện vị trí gene, khái niệm dị hợp hoặc nhắc lại quan hệ trội – lặn đã cho. Mức cao nhất của các nhận định là NB, nên mức của toàn mẫu là NB.
+Mức dự kiến: Từng ý kiểm tra trực tiếp một định nghĩa đã học về vị trí gene, dị hợp, locus hoặc liên kết gene. Không cần diễn giải tình huống hay phân biệt tác động giới tính trong biểu hiện tính trạng. Mức cao nhất là NB.
 
-Tiên quyết: Khái niệm gene liên kết với giới tính; Phân biệt gene trên X và gene trên Y; Khái niệm dị hợp; Quan hệ trội – lặn
+Tiên quyết: Khái niệm gene liên kết với giới tính; Khái niệm allele và locus; Cơ sở nhiễm sắc thể của liên kết gene; Khái niệm dị hợp và đồng hợp
 
-Biến thể: Có thể thay kí hiệu alen hoặc kiểu gene được nêu, nhưng giữ các nhận định ở mức nhận diện trực tiếp; không thêm suy luận đời con nếu vẫn nhắm mức NB.
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Quan sát tham chiếu chỉ thuộc nguồn bên thứ ba cấp tỉnh và hỗ trợ một nhận định về vị trí gene. Các nhận định trong mẫu được sáng tác để tạo câu đúng/sai hoàn chỉnh.
+
+Biến thể: Có thể thay các nhận định bằng những đặc điểm định nghĩa khác trong cùng chủ đề. Giữ yêu cầu nhận biết trực tiếp, tránh thêm phả hệ hoặc tính xác suất đời con.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
 
-Mức do lượt tự giải nhận định: a: NB; b: NB; c: NB; d: NB. Từng nhận định chỉ yêu cầu nhận biết: a về vị trí gene liên kết giới tính; b về nhiễm sắc thể mang gene; c về định nghĩa dị hợp; d về quan hệ trội–lặn đã nêu.
+Mức do lượt tự giải nhận định: a: NB; b: NB; c: NB; d: NB. Cả bốn nhận định chỉ yêu cầu nhận biết hoặc nhớ lại trực tiếp các khái niệm gene liên kết với giới tính, dị hợp, vị trí của các allele và liên kết gene; mỗi nhận định thuộc một đơn vị kiến thức, nên đều ở mức NB.
 
-Cờ lượt tự giải: nhan_dinh_sai_hien_nhien_do_mau_thuan_truc_tiep_voi_gia_thiet
+Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu mức ở trên
 
 ## Di truyền nhiễm sắc thể và quy luật di truyền / P2 / TH
 
@@ -404,6 +452,10 @@ Lỗi tạo nhiễu:
 Mức dự kiến: Các phát biểu yêu cầu giải thích một dấu hiệu phân li điển hình và thực hiện phép lai một gene quen thuộc. Mức cao nhất của mẫu là TH.
 
 Tiên quyết: Quan hệ trội hoàn toàn; Quy luật phân li; Quan hệ giữa kiểu gene và kiểu hình
+
+Neo bằng chứng của dạng: có quan sát chính thức.
+
+Bất định của mẫu: Đây là mẫu minh họa tổng hợp ở loài giả định, không phải dữ kiện thực nghiệm hoặc bằng chứng đề thi thật.
 
 Biến thể: Có thể thay dạng mép lá bằng một tính trạng giả định khác, nhưng phải giữ giả thiết một gene, trội hoàn toàn và dữ kiện bố mẹ cùng kiểu hình sinh con khác kiểu hình.
 
@@ -435,6 +487,10 @@ Mức dự kiến: Các phát biểu a, b, c dùng những suy luận gia đình
 
 Tiên quyết: Di truyền lặn trên nhiễm sắc thể thường; Di truyền lặn liên kết nhiễm sắc thể X; Xác suất có điều kiện; Quy tắc nhân xác suất
 
+Neo bằng chứng của dạng: có quan sát chính thức.
+
+Bất định của mẫu: Hai bệnh và gia đình đều là tình huống giả định phục vụ minh họa, không mô tả một bệnh hoặc gia đình thực tế.
+
 Biến thể: Có thể thay quan hệ gia đình hoặc kiểu hình người phối ngẫu, nhưng cần tính lại phân bố kiểu gene có điều kiện và phân biệt xác suất trong nhóm con trai với xác suất trên mọi lần sinh.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
@@ -460,6 +516,10 @@ Mức dự kiến: Học sinh đọc biểu diễn số bản sao và áp dụng
 
 Tiên quyết: Bộ nhiễm sắc thể lưỡng bội; Nhóm nhiễm sắc thể tương đồng; Đột biến lệch bội dạng thể một
 
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Căn cứ cấu trúc cho mục tiêu này chỉ gồm quan sát từ nguồn cấp tỉnh qua bên thứ ba; không có neo đề chính thức được cung cấp. Mẫu mới không mở rộng giá trị bằng chứng của nguồn đó.
+
 Biến thể: Thay số nhóm nhiễm sắc thể hoặc vị trí nhóm thiếu; có thể đưa thêm thể ba và thể một kép để kiểm tra khả năng phân biệt, đồng thời giữ quy ước biểu diễn rõ ràng.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
@@ -472,24 +532,28 @@ Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu 
 
 Đã qua kiểm bằng model; chờ giáo viên rà.
 
-Ở một loài cây giả định, hai gene A/a và B/b nằm trên hai cặp nhiễm sắc thể khác nhau. Trong điều kiện nuôi trồng đang xét, A tạo enzyme giúp tổng hợp sắc tố đỏ, còn aa không tạo sắc tố đỏ; B tạo enzyme giúp tổng hợp sắc tố xanh, còn bb không tạo sắc tố xanh. Hai nhánh tổng hợp hoạt động độc lập. Hoa có cả hai sắc tố mang màu tím, chỉ có sắc tố đỏ mang màu đỏ, chỉ có sắc tố xanh mang màu xanh, không có cả hai sắc tố mang màu trắng. Lai hai cây chưa biết kiểu gene, đời con có tỉ lệ kiểu hình lí thuyết là 3 hoa tím : 3 hoa đỏ : 1 hoa xanh : 1 hoa trắng. Chọn toàn bộ cây hoa tím ở đời con cho từng cây tự thụ phấn; mỗi cây đóng góp số hạt như nhau vào lô hạt chung. Không có đột biến, các kiểu gene có sức sống và khả năng sinh sản như nhau. Tính tỉ lệ phần trăm cây hoa trắng dự kiến khi gieo lô hạt chung, làm tròn đến hai chữ số sau dấu phẩy.
+Ở một loài cây lưỡng bội giả định, allele A quy định hạt đen, trội hoàn toàn so với allele a quy định hạt trắng; allele B quy định khả năng chịu mặn, trội hoàn toàn so với allele b quy định không kháng. Hai gene cùng nằm trên một cặp nhiễm sắc thể thường. Cho cây hạt đen, chịu mặn lai với cây hạt đen, không chịu mặn, thu được F1 có tỉ lệ kiểu hình lí thuyết: 45% hạt đen, chịu mặn; 30% hạt đen, không chịu mặn; 5% hạt trắng, chịu mặn; 20% hạt trắng, không chịu mặn. Chọn tất cả cây hạt đen, chịu mặn ở F1, cho từng cây tự thụ phấn rồi lấy số hạt bằng nhau từ mỗi cây để tạo lô hạt chung. Tần số hoán vị giữa hai gene giống nhau ở quá trình tạo giao tử đực và cái, không đổi qua các thế hệ và không vượt quá 50%. Không có đột biến; các giao tử có khả năng thụ tinh như nhau, các kiểu gene có sức sống và khả năng sinh sản như nhau. Khi gieo lô hạt chung, cây hạt trắng, không chịu mặn chiếm bao nhiêu phần trăm? Làm tròn kết quả đến hai chữ số sau dấu phẩy.
 
 
-Đáp án: 4,17%
+Đáp án: 7,22
 
-Lời giải: Quy ước kiểu hình: A_B_ tím, A_bb đỏ, aaB_ xanh, aabb trắng. Tỉ lệ có sắc tố đỏ là (3 + 3)/8 = 3/4, còn không có sắc tố đỏ là 1/4, suy ra phép lai tại locus A là Aa × Aa. Tỉ lệ có sắc tố xanh là (3 + 1)/8 = 1/2, còn không có sắc tố xanh là 1/2, suy ra phép lai tại locus B là Bb × bb. Vì hai gene phân li độc lập, trong nhóm cây hoa tím, mọi cây đều là Bb; tại locus A, tỉ lệ AA : Aa là 1 : 2. Do đó, nhóm được chọn gồm 1/3 AABb và 2/3 AaBb. Cây AABb tự thụ không sinh cây aabb. Cây AaBb tự thụ sinh cây aabb với xác suất 1/16. Mỗi cây đóng góp số hạt như nhau nên tỉ lệ hoa trắng trong lô chung là (1/3) × 0 + (2/3) × (1/16) = 1/24, tương đương khoảng 4,17%.
+Lời giải: Cây hạt trắng chiếm 25% F1 nên cả hai cây bố mẹ hạt đen đều mang kiểu gene Aa. Cây chịu mặn lai với cây không chịu mặn sinh 50% cây không chịu mặn nên phép lai tại locus B là Bb × bb. Vì vậy, bố mẹ có kiểu gene AaBb × Aabb. Cây Aabb tạo giao tử Ab và ab, mỗi loại chiếm 1/2. F1 có 20% aabb nên cây AaBb tạo giao tử ab với xác suất 0,20 ÷ 0,50 = 0,40. Do tần số hoán vị không vượt quá 50%, ab là giao tử liên kết; cây AaBb có pha AB/ab và tần số hoán vị là 20%. Các giao tử AB, ab, Ab, aB lần lượt có xác suất 0,40; 0,40; 0,10; 0,10. Nhóm hạt đen, chịu mặn gồm AB/Ab với tỉ lệ trên toàn F1 là 0,40 × 0,50 = 0,20; AB/ab với tỉ lệ 0,20; Ab/aB với tỉ lệ 0,10 × 0,50 = 0,05. Tổng tỉ lệ nhóm được chọn là 0,45. Khi tự thụ phấn, AB/Ab không sinh aabb; AB/ab sinh aabb với xác suất 0,40² = 0,16; Ab/aB sinh aabb với xác suất 0,10² = 0,01. Do mỗi cây đóng góp số hạt bằng nhau, tỉ lệ aabb trong lô chung là (0,20 × 0,16 + 0,05 × 0,01)/0,45 = 13/180. Đổi sang phần trăm và làm tròn được 7,22%.
 
 Lỗi tạo nhiễu:
 
-Mức dự kiến: Học sinh phải chuyển cơ chế tạo sắc tố thành nhóm kiểu gene, suy ngược phép lai từ phân bố kiểu hình, xác định lại thành phần kiểu gene trong nhóm hoa tím được chọn và tổng hợp kết quả tự thụ theo trọng số. Chuỗi suy luận phụ thuộc này đạt mức VD.
+Mức dự kiến: Học sinh phải suy kiểu gene bố mẹ từ các tỉ lệ kiểu hình riêng, dùng tỉ lệ lặn đồng thời để xác định pha liên kết và tần số hoán vị, rồi dựng thành phần kiểu gene có điều kiện của nhóm được chọn. Kết quả còn phụ thuộc vào việc phân biệt hai pha liên kết khi tính xác suất tự thụ và tổng hợp theo trọng số. Đây là chuỗi suy luận kết nối nhiều đơn vị kiến thức, đạt mức VD.
 
-Tiên quyết: Quan hệ giữa gene, enzyme và sắc tố; Quy luật phân li; Phân li độc lập; Xác suất có điều kiện khi chọn nhóm kiểu hình; Tự thụ phấn và trung bình có trọng số
+Tiên quyết: Quy luật phân li và quan hệ trội hoàn toàn; Liên kết gene và hoán vị gene; Quan hệ giữa pha liên kết và tỉ lệ giao tử; Xác suất có điều kiện khi chọn nhóm kiểu hình; Tự thụ phấn và trung bình có trọng số
 
-Biến thể: Có thể đổi nhánh tạo sắc tố, phân bố đời con hoặc nhóm cây được chọn. Khi thay đổi, cần suy lại thành phần kiểu gene của nhóm được chọn và nêu rõ cách các cây đóng góp hạt.
+Neo bằng chứng của dạng: có quan sát chính thức.
+
+Bất định của mẫu: Đây là mô hình di truyền giả định được quy định trong câu hỏi, không mô tả một loài cây thực tế.; Cấu trúc suy luận về liên kết gene, chọn nhóm và tự thụ phấn dựa trên quan sát đề cấp tỉnh qua nguồn bên thứ ba trong dữ liệu được cung cấp; không coi mẫu tổng hợp này là bằng chứng từ đề chính thức.
+
+Biến thể: Có thể thay tần số hoán vị hoặc chọn một nhóm kiểu hình khác để tự thụ phấn. Cần dựng lại phân bố kiểu gene, phân biệt pha liên kết của từng nhóm và giữ rõ quy tắc đóng góp hạt.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
 
-Mức do lượt tự giải nhận định: VD. Cần suy ngược phép lai từ tỉ lệ kiểu hình, xác định phân bố kiểu gene có điều kiện trong nhóm hoa tím rồi kết hợp kết quả tự thụ theo trọng số đóng góp hạt. Đây là chuỗi lập luận phụ thuộc kết nối nhiều đơn vị kiến thức.
+Mức do lượt tự giải nhận định: VD. Cần suy luận kiểu gene và pha liên kết của bố mẹ từ phân bố kiểu hình, xác định thành phần có điều kiện của nhóm F1 được chọn, rồi kết hợp xác suất tự thụ phấn theo tỉ trọng đóng góp hạt.
 
 Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu mức ở trên
 
@@ -516,6 +580,10 @@ Lỗi tạo nhiễu:
 Mức dự kiến: Chỉ cần nhớ và nhận diện chức năng đặc trưng của tRNA trong một đơn vị kiến thức; không cần xử lí tình huống hay suy luận qua nhiều bước.
 
 Tiên quyết: Chức năng của các loại RNA; Khái niệm bộ ba mã hóa và bộ ba đối mã
+
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Cơ sở quan sát cho mục tiêu này chỉ thuộc nhóm nguồn cấp tỉnh qua bên thứ ba; mẫu không thể hiện sự đối chiếu với đề chính thức.
 
 Biến thể: Có thể đổi sang nhận diện phân tử mang bộ ba mã hóa hoặc thành phần RNA của ribosome, đồng thời giữ yêu cầu nhớ trực tiếp một chức năng. Đây là mẫu minh họa tổng hợp, không phải câu hỏi lấy từ đề thi.
 
@@ -549,6 +617,10 @@ Mức dự kiến: Học sinh diễn giải cấu trúc tiền mRNA, xác địn
 
 Tiên quyết: Phân biệt exon và intron; Quá trình tạo mRNA trưởng thành từ tiền mRNA
 
+Neo bằng chứng của dạng: có quan sát chính thức.
+
+Bất định của mẫu: chưa được model nêu; vẫn chờ rà chuyên môn
+
 Biến thể: Thay đổi độ dài các đoạn hoặc số intron nhưng giữ rõ quy tắc cắt nối. Không tăng số phép cộng để gán mức VD. Các dữ kiện là giả định được tạo mới cho mẫu minh họa.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
@@ -579,6 +651,10 @@ Lỗi tạo nhiễu:
 Mức dự kiến: Mỗi ý chỉ yêu cầu nhận diện một định nghĩa, chức năng hoặc chiều hoạt động đã học. Mức cao nhất trong các ý là NB, nên toàn mẫu ở mức NB.
 
 Tiên quyết: Khái niệm polysome; Chiều đọc mRNA trong dịch mã; Chức năng tRNA; Phân biệt phiên mã và dịch mã
+
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Cơ sở quan sát cho mục tiêu này chỉ thuộc nhóm nguồn cấp tỉnh qua bên thứ ba; mẫu là minh họa tổng hợp, không phải bằng chứng từ đề thi thực.
 
 Biến thể: Có thể thay mô tả mô hình bằng một tình huống minh họa khác nhưng phải cung cấp trực tiếp dấu hiệu nhiều ribosome dùng chung một mRNA. Không suy ra tốc độ hay hiệu suất khi chưa có dữ kiện.
 
@@ -611,6 +687,10 @@ Mức dự kiến: Các ý yêu cầu phân biệt tiền mRNA với mRNA trư�
 
 Tiên quyết: Cắt nối thay thế; Khung đọc và bộ ba mở đầu; Bộ ba kết thúc không mã hóa amino acid; Quan hệ giữa vùng được dịch và độ dài chuỗi polypeptide
 
+Neo bằng chứng của dạng: có quan sát chính thức.
+
+Bất định của mẫu: chưa được model nêu; vẫn chờ rà chuyên môn
+
 Biến thể: Có thể đổi tổ hợp exon hoặc vị trí bộ ba kết thúc, nhưng phải kiểm tra lại khung đọc và điểm dừng đầu tiên của từng sản phẩm. Bối cảnh, độ dài và vị trí tín hiệu trong mẫu đều được đặt mới cho mô hình giả định, không mô tả một gene tự nhiên hay một câu hỏi đề thi.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
@@ -636,6 +716,10 @@ Mức dự kiến: Học sinh áp dụng quy tắc quen thuộc: mỗi đoạn O
 
 Tiên quyết: Tái bản DNA theo hai chiều; Mạch được tổng hợp liên tục và mạch được tổng hợp gián đoạn; Vai trò của đoạn mồi RNA
 
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Cấu trúc minh họa chỉ tham khảo quan sát trừu tượng từ nguồn đề cấp tỉnh do bên thứ ba cung cấp; chưa có điểm neo chính thức để đối chiếu.
+
 Biến thể: Có thể thay số đơn vị tái bản và số đoạn Okazaki ở từng đơn vị; phải nêu rõ số đoạn được tính cho cả hai chạc và giữ nhất quán giả thiết về mồi khởi đầu.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
@@ -646,26 +730,30 @@ Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu 
 
 ## Di truyền phân tử / P3 / VD
 
-Còn cờ cần rà; chưa dùng làm mẫu chuẩn.
+Đã qua kiểm bằng model; chờ giáo viên rà.
 
-Một nhóm phân tử DNA ban đầu đều có hai mạch chứa đồng vị ¹⁵N. Người ta cho toàn bộ nhóm DNA nhân đôi hai lần liên tiếp trong môi trường chỉ cung cấp nitơ ¹⁴N. Sau giai đoạn này, có 24 phân tử chứa một mạch ¹⁵N và một mạch ¹⁴N. Tiếp theo, toàn bộ DNA được chuyển sang môi trường chỉ cung cấp nitơ ¹⁵N và nhân đôi một lần. Người ta loại bỏ tất cả phân tử có cả hai mạch chứa ¹⁵N, giữ lại toàn bộ các phân tử còn lại. Nhóm được giữ lại tiếp tục nhân đôi hai lần trong môi trường chỉ cung cấp nitơ ¹⁴N. Biết DNA nhân đôi theo nguyên tắc bán bảo tồn; mọi phân tử đều hoàn tất mỗi lần nhân đôi, không có trao đổi đoạn mạch hoặc thất thoát DNA ngoài bước loại bỏ đã nêu. Cuối cùng có bao nhiêu phân tử DNA có cả hai mạch chứa ¹⁴N?
+Ở một mô hình tế bào nhân sơ, đoạn mã hóa của một gene không có intron có mạch khuôn theo chiều phiên mã là 3′-TAC GAA CTT ACC GGA TTT CAA ATT-5′. Có năm RNA polymerase cùng phiên mã gene này; ba enzyme đã đi qua hết bộ ba thứ tư, hai enzyme còn lại vừa sao chép xong bộ ba thứ ba và chưa bắt đầu bộ ba thứ tư. Mỗi RNA đang tổng hợp gắn đúng một ribosome; cả năm ribosome đều vừa tạo xong ba amino acid đầu tiên. Tại thời điểm đó, một can thiệp chỉ làm bộ ba thứ tư trên DNA khuôn đổi từ ACC thành ACT, giữ chiều dài gene và không làm thay đổi các phân tử RNA đã được tổng hợp. Sau can thiệp, mọi enzyme tiếp tục hoạt động bình thường, không khởi đầu thêm lượt phiên mã hoặc dịch mã; các RNA không bị phân hủy. Cho biết AUG là codon mở đầu, UGA và UAA là codon kết thúc; các codon còn lại xuất hiện trong đoạn RNA được phiên mã từ đoạn DNA này đều mã hóa amino acid. Khi cả năm ribosome kết thúc dịch mã, tổng số amino acid của năm chuỗi polypeptide tạo thành là bao nhiêu? Tính cả amino acid mở đầu, không xét cắt bỏ sau dịch mã.
 
 
-Đáp án: 144
+Đáp án: 27
 
-Lời giải: Kí hiệu H là mạch chứa ¹⁵N, L là mạch chứa ¹⁴N và n là số phân tử HH ban đầu. Sau hai lần nhân đôi trong môi trường ¹⁴N, nhóm DNA gồm 2n phân tử HL và 2n phân tử LL. Vì có 24 phân tử HL nên n = 12; lúc này có 24 HL và 24 LL. Khi nhân đôi một lần trong môi trường ¹⁵N, mỗi HL tạo một HH và một HL, còn mỗi LL tạo hai HL. Vì vậy thu được 24 HH và 72 HL. Loại bỏ HH thì còn 72 HL. Trong môi trường ¹⁴N, lần nhân đôi tiếp theo tạo 72 HL và 72 LL; lần cuối tạo 144 HL và 144 LL. Số phân tử có cả hai mạch chứa ¹⁴N là 144.
+Lời giải: RNA tạo từ mạch khuôn chưa biến đổi có trình tự 5′-AUG CUU GAA UGG CCU AAA GUU UAA-3′, nên dịch mã được 7 amino acid rồi gặp UAA ở bộ ba 8. Biến đổi ACC thành ACT ở mạch khuôn làm bộ ba RNA tương ứng chuyển UGG thành UGA, tạo tín hiệu kết thúc ở bộ ba 4. Ba RNA đã được tổng hợp qua vị trí này giữ UGG vì can thiệp chỉ tác động lên DNA; ba ribosome trên chúng tạo ba chuỗi, mỗi chuỗi 7 amino acid. Hai RNA còn lại chưa sao chép bộ ba 4 sẽ nhận UGA từ DNA đã biến đổi; hai ribosome trên chúng kết thúc sau 3 amino acid. Tổng là 3 × 7 + 2 × 3 = 27 amino acid. Không dùng vị trí ribosome để suy RNA có nhận thay đổi DNA hay không; trạng thái phiên mã mới quyết định bộ ba nào đã tồn tại trên RNA.
 
 Lỗi tạo nhiễu:
 
-Mức dự kiến: Học sinh phải lập mô hình các lớp DNA theo thành phần hai mạch, suy ngược quy mô nhóm ban đầu từ lớp lai, rồi điều chỉnh nhóm được theo dõi sau bước loại bỏ chọn lọc. Kết quả cuối phụ thuộc vào việc nối đúng lịch sử bảo toàn mạch với sự thay đổi thành phần nhóm qua từng môi trường; không thể chỉ dùng tổng số lần nhân đôi trong một công thức tăng số lượng.
+Mức dự kiến: Phải nối chiều bổ sung DNA–RNA, nhận ra biến đổi tạo codon kết thúc, dựng các nhóm sản phẩm theo vị trí RNA polymerase tại thời điểm can thiệp và tách trạng thái RNA khỏi vị trí ribosome. Phép cộng cuối đơn giản nhưng không đủ nếu chưa xây dựng đúng mô hình truyền thông tin theo thời điểm; chuỗi quyết định kết hợp phiên mã, dịch mã và đột biến thuộc VD.
 
-Tiên quyết: Nguyên tắc bán bảo tồn trong tái bản DNA; Mạch mới nhận nitơ từ môi trường đang cung cấp nguyên liệu; Phân biệt DNA có hai mạch nặng, hai mạch nhẹ và một mạch mỗi loại; Bảo toàn mạch DNA qua các lần nhân đôi
+Tiên quyết: Chiều và nguyên tắc bổ sung trong phiên mã; Codon mở đầu/kết thúc và nguyên tắc dịch mã; Phân biệt DNA khuôn với RNA đã tổng hợp; Quan hệ thời điểm giữa phiên mã và dịch mã ở tế bào nhân sơ
 
-Biến thể: Có thể thay lớp DNA được loại bỏ hoặc đổi đồng vị cung cấp ở giai đoạn cuối. Khi thay đổi phải theo dõi lại từng loại mạch qua bước chọn lọc, không chỉ thay số trong đáp án.
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
 
-Đối chiếu khóa: còn bất đồng. Đối chiếu mức: khớp.
+Bất định của mẫu: Mô hình can thiệp tức thời là giả định của bài toán, không mô tả một kỹ thuật thực nghiệm cụ thể. Dạng có quan sát hỗ trợ từ nguồn tỉnh, chưa có điểm neo chính thức trong tập này.
 
-Mức do lượt tự giải nhận định: VD. VD: Cần xây dựng và nối các chuyển đổi thành phần mạch qua nhiều giai đoạn, xác định nhóm còn lại sau bước loại chọn lọc rồi dùng nhóm đó làm đầu vào cho giai đoạn cuối.
+Biến thể: Có thể đổi vị trí tạo codon kết thúc và vị trí RNA polymerase; phải xác định lại các RNA đã sao chép qua vị trí biến đổi. Không chỉ thêm phép tính hoặc đổi số phân tử để gọi là tăng mức. Nếu bỏ yêu cầu suy ảnh hưởng thời điểm và cho sẵn nhóm sản phẩm, mức có thể giảm xuống TH.
+
+Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
+
+Mức do lượt tự giải nhận định: VD. Cần kết nối chiều phiên mã, tính bổ sung DNA–RNA và cơ chế kết thúc dịch mã; đồng thời phân biệt ảnh hưởng của can thiệp lên hai nhóm RNA theo tiến độ phiên mã để xác định độ dài từng nhóm chuỗi.
 
 Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu mức ở trên
 
@@ -692,6 +780,10 @@ Lỗi tạo nhiễu:
 Mức dự kiến: Học sinh chỉ cần nhận ra mô tả đặc trưng và gọi đúng tên hiện tượng ưu thế lai. Đáp án nằm trong một đơn vị kiến thức, thuộc NB.
 
 Tiên quyết: Khái niệm ưu thế lai; Phân biệt ưu thế lai với thường biến, phân li tính trạng và trội không hoàn toàn
+
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Đối tượng và kết quả phép lai trong câu hỏi là tình huống giả định, không phải thành tựu chọn giống được dẫn chứng thực tế.; Cấu trúc minh họa chỉ tham khảo quan sát trừu tượng từ nguồn đề cấp tỉnh do bên thứ ba cung cấp; chưa có điểm neo chính thức để đối chiếu.
 
 Biến thể: Có thể đổi đối tượng hoặc đặc tính có lợi, nhưng phải giữ mô tả con lai vượt cả hai dạng bố mẹ trong điều kiện so sánh tương đương; không thêm yêu cầu giải thích cơ chế nếu giữ mức NB.
 
@@ -725,6 +817,10 @@ Mức dự kiến: Học sinh đọc cấu trúc kiểu gene và áp dụng tr�
 
 Tiên quyết: Phân biệt tần số kiểu gene và tần số allele; Mỗi cá thể lưỡng bội có hai allele tại locus đang xét; Công thức f(A) = f(AA) + ½f(Aa)
 
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Cấu trúc minh họa chỉ tham khảo quan sát trừu tượng từ nguồn đề cấp tỉnh do bên thứ ba cung cấp; chưa có điểm neo chính thức để đối chiếu.
+
 Biến thể: Có thể thay cấu trúc kiểu gene hoặc yêu cầu tính allele a. Các tần số kiểu gene phải không âm và có tổng bằng 1; không cần đặt điều kiện cân bằng di truyền.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
@@ -755,6 +851,10 @@ Lỗi tạo nhiễu:
 Mức dự kiến: Mỗi ý chỉ yêu cầu nhớ một chức năng hoặc một tên gọi đã học. Mức cao nhất của cả mẫu là NB.
 
 Tiên quyết: Vai trò của thể truyền và gene đánh dấu; Chức năng của enzyme cắt giới hạn và DNA ligase
+
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Mẫu tổng hợp minh họa; căn cứ xây dựng được cung cấp chỉ là quan sát từ nguồn cấp tỉnh bên thứ ba, không có neo đề chính thức.
 
 Biến thể: Có thể thay tính trạng đánh dấu hoặc loại thể truyền, nhưng giữ yêu cầu nhận biết trực tiếp và không suy diễn rằng gene kháng kháng sinh tự phân biệt được vector có đoạn chèn với vector không có đoạn chèn.
 
@@ -787,6 +887,10 @@ Mức dự kiến: Học sinh phải diễn giải các bước của quy trình
 
 Tiên quyết: DNA tái tổ hợp; Biểu hiện gene trong tế bào nhận; Sự ổn định thông tin di truyền khi nhân dòng theo giả thiết; Kháng nguyên, kháng thể và vaccine tiểu đơn vị
 
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Virus V và protein K là kí hiệu giả định; mẫu không khẳng định hiệu quả của một vaccine thực tế.; Căn cứ xây dựng được cung cấp chỉ là quan sát từ nguồn cấp tỉnh bên thứ ba, không có neo đề chính thức.
+
 Biến thể: Có thể đổi tế bào sản xuất và protein kháng nguyên giả định. Cần nêu rõ thành phần được tinh sạch và các giả thiết về duy trì gene để tránh suy luận từ hình dạng hoặc giai đoạn sinh trưởng.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
@@ -797,26 +901,30 @@ Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu 
 
 ## Di truyền quần thể và ứng dụng / P3 / TH
 
-Còn cờ cần rà; chưa dùng làm mẫu chuẩn.
+Đã qua kiểm bằng model; chờ giáo viên rà.
 
-Ở một quần thể động vật lưỡng bội, một locus trên nhiễm sắc thể thường có ba allele A₁, A₂ và A₃. Kết quả khảo sát toàn bộ quần thể ghi nhận: 40 cá thể A₁A₁, 60 cá thể A₁A₂, 20 cá thể A₁A₃, 30 cá thể A₂A₂, 10 cá thể A₂A₃ và 40 cá thể A₃A₃. Tần số allele A₂ trong quần thể bằng bao nhiêu? Viết kết quả dưới dạng số thập phân, làm tròn đến ba chữ số sau dấu phẩy.
+Khảo sát một quần thể thực vật lưỡng bội tại một locus trên nhiễm sắc thể thường có ba allele B₁, B₂ và B₃, người ta ghi nhận đầy đủ các nhóm kiểu gene như sau: 30 cây B₁B₁, 24 cây B₁B₂, 18 cây B₁B₃, 12 cây B₂B₂, 6 cây B₂B₃ và 10 cây B₃B₃. Tần số allele B₃ trong quần thể bằng bao nhiêu? Viết kết quả dưới dạng số thập phân, làm tròn đến ba chữ số sau dấu phẩy.
 
 
-Đáp án: 0,475
+Đáp án: 0,220
 
-Lời giải: Tổng số cá thể là 40 + 60 + 20 + 30 + 10 + 40 = 200, tương ứng 400 bản sao allele tại locus. Số bản sao A₂ là 60 + 2 × 30 + 10 = 130. Vì vậy, tần số A₂ = 130/400 = 0,325.
+Lời giải: Tổng số cây là 30 + 24 + 18 + 12 + 6 + 10 = 100, tương ứng 200 bản sao allele tại locus. Các cây B₁B₃ và B₂B₃ mỗi cây mang một bản sao B₃; các cây B₃B₃ mỗi cây mang hai bản sao B₃. Số bản sao B₃ là 18 + 6 + 2 × 10 = 44. Tần số B₃ = 44/200 = 0,220. Phép tính này không cần giả định quần thể cân bằng di truyền.
 
 Lỗi tạo nhiễu:
 
-Mức dự kiến: Yêu cầu đếm bản sao allele trong các kiểu gene bằng trọng số quen thuộc rồi chia cho hai lần số cá thể. Đây là thủ tục chuẩn ở mức TH, không cần giả định cân bằng di truyền.
+Mức dự kiến: Học sinh đếm bản sao allele từ số lượng từng kiểu gene, dùng trọng số hai cho kiểu gene đồng hợp và một cho kiểu gene dị hợp, rồi chia cho tổng số bản sao tại locus. Đây là thủ tục quen thuộc ở mức TH.
 
-Tiên quyết: Mỗi cá thể lưỡng bội có hai allele tại locus trên nhiễm sắc thể thường; Cách tính tần số allele từ số lượng các kiểu gene
+Tiên quyết: Mỗi cá thể lưỡng bội mang hai bản sao allele tại locus trên nhiễm sắc thể thường.; Cách tính tần số allele từ số lượng các kiểu gene.
 
-Biến thể: Thay số lượng các kiểu gene và allele cần tính; giữ bảng số liệu đầy đủ và thống nhất yêu cầu làm tròn. Không thêm giả định cân bằng Hardy–Weinberg khi chỉ cần đếm allele.
+Neo bằng chứng của dạng: có quan sát chính thức.
 
-Đối chiếu khóa: còn bất đồng. Đối chiếu mức: khớp.
+Bất định của mẫu: chưa được model nêu; vẫn chờ rà chuyên môn
 
-Mức do lượt tự giải nhận định: TH. Áp dụng quy trình quen thuộc: đếm số bản sao allele rồi chia cho tổng số allele tại locus trong quần thể lưỡng bội.
+Biến thể: Có thể thay số lượng từng kiểu gene và allele được hỏi; cần giữ số liệu đầy đủ để tính tổng số cá thể và đếm đúng số bản sao allele, không cần bổ sung giả định cân bằng di truyền.
+
+Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
+
+Mức do lượt tự giải nhận định: TH. Áp dụng cách tính tần số allele từ số lượng các kiểu gene trong quần thể lưỡng bội.
 
 Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu mức ở trên
 
@@ -843,6 +951,10 @@ Lỗi tạo nhiễu:
 Mức dự kiến: Học sinh chỉ cần nhận ra thuật ngữ tương ứng với một định nghĩa cơ bản trong một đơn vị kiến thức, phù hợp mức NB.
 
 Tiên quyết: Khái niệm tiếp nhận, tiêu hóa, hấp thụ và đồng hóa
+
+Neo bằng chứng của dạng: có quan sát chính thức.
+
+Bất định của mẫu: chưa được model nêu; vẫn chờ rà chuyên môn
 
 Biến thể: Có thể thay cách diễn đạt định nghĩa, nhưng giữ ranh giới rõ giữa biến đổi thức ăn, hấp thụ chất dinh dưỡng và tổng hợp chất của cơ thể.
 
@@ -875,6 +987,10 @@ Mức dự kiến: Học sinh cần diễn giải mô tả cấu tạo, phân bi
 
 Tiên quyết: Trình tự các bộ phận chính của ống tiêu hóa; Phân biệt tiêu hóa cơ học và tiêu hóa hóa học; Vai trò của vi sinh vật phân giải cellulose
 
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Mẫu tổng hợp chỉ tham khảo kiểu cấu trúc được mô tả trong quan sát nguồn bên thứ ba cấp tỉnh; chưa có mốc đối chiếu chính thức cho mục tiêu này.
+
 Biến thể: Có thể thay mô tả bằng sơ đồ chữ đầy đủ hoặc đổi vị trí khoang lên men; phải cung cấp rõ đường đi của thức ăn và điều chỉnh các nhận định tương ứng.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
@@ -892,11 +1008,11 @@ Lipase xúc tác sự thủy phân loại chất nào sau đây?
 - A. Protein.
 - B. Tinh bột.
 - C. Triglyceride.
-- D. Acid nucleic.
+- D. Nucleic acid.
 
 Đáp án: C
 
-Lời giải: Chọn C. Lipase xúc tác thủy phân các liên kết ester trong triglyceride. Protein là cơ chất của protease; tinh bột là cơ chất của amylase; acid nucleic là cơ chất của nuclease.
+Lời giải: Chọn C. Lipase xúc tác thủy phân các liên kết ester trong triglyceride. Protein là cơ chất của protease; tinh bột là cơ chất của amylase; nucleic acid là cơ chất của nuclease.
 
 Lỗi tạo nhiễu:
 - A: Nhầm cơ chất của lipase với cơ chất của protease. — Học sinh nhớ enzyme thường có bản chất protein rồi nhầm bản chất của enzyme với cơ chất mà enzyme tác động.
@@ -906,6 +1022,10 @@ Lỗi tạo nhiễu:
 Mức dự kiến: Chỉ cần nhớ và nhận ra cơ chất đặc trưng của lipase trong một đơn vị kiến thức; không cần diễn giải dữ liệu hay thực hiện quy trình.
 
 Tiên quyết: Tính đặc hiệu của enzyme; Cơ chất của một số enzyme thủy phân thông dụng
+
+Neo bằng chứng của dạng: có quan sát chính thức.
+
+Bất định của mẫu: chưa được model nêu; vẫn chờ rà chuyên môn
 
 Biến thể: Có thể thay lipase bằng một enzyme thủy phân khác đã học và xây dựng phương án nhiễu từ những cặp enzyme và cơ chất thường bị nhầm.
 
@@ -939,6 +1059,10 @@ Mức dự kiến: Học sinh chỉ cần nhớ sự kiện đặc trưng của 
 
 Tiên quyết: Chromatid chị em và tâm động; Diễn biến chính của hai lần phân bào trong giảm phân
 
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Mẫu tổng hợp chỉ tham khảo kiểu yêu cầu được mô tả trong quan sát nguồn bên thứ ba cấp tỉnh; chưa có mốc đối chiếu chính thức cho mục tiêu này.
+
 Biến thể: Có thể thay bằng sự phân li của nhiễm sắc thể tương đồng ở lần phân bào thứ nhất; giữ yêu cầu nhận ra trực tiếp một sự kiện đã học.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
@@ -971,6 +1095,10 @@ Mức dự kiến: Học sinh cần diễn giải đồng thời trạng thái k
 
 Tiên quyết: Ý nghĩa của bộ nhiễm sắc thể 2n và n; Phân biệt nhiễm sắc thể đơn với nhiễm sắc thể kép; Diễn biến của kì giữa, kì sau và kì cuối trong giảm phân
 
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Mẫu tổng hợp chỉ tham khảo kiểu yêu cầu được mô tả trong quan sát nguồn bên thứ ba cấp tỉnh; chưa có mốc đối chiếu chính thức cho mục tiêu này.
+
 Biến thể: Có thể đổi bộ nhiễm sắc thể hoặc mô tả nhiễm sắc thể đơn đang đi về cực để chuyển đáp án sang kì sau II; phải giữ số lượng và trạng thái nhiễm sắc thể nhất quán.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
@@ -1002,6 +1130,10 @@ Mức dự kiến: Mức cao nhất là TH: học sinh đọc mô tả không gi
 
 Tiên quyết: Chiều khuếch tán khí phụ thuộc chênh lệch phân áp.; Máu nhận O₂ khi đi qua bề mặt hô hấp của mang.; Phân biệt thứ tự trình bày số liệu với chiều chuyển động của dòng.
 
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Đây là mẫu tổng hợp với số liệu giả định; các quan sát định hướng chỉ có nguồn cấp tỉnh qua bên thứ ba, chưa có đối chiếu chính thức.
+
 Biến thể: Có thể đổi kí hiệu hai đầu và các giá trị phân áp, nhưng phải giữ sự nhất quán giữa chiều máu chảy, chiều nước chảy và chênh lệch phân áp tại từng vị trí.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
@@ -1032,6 +1164,10 @@ Lỗi tạo nhiễu:
 Mức dự kiến: Mức cao nhất là TH: học sinh diễn giải tỉ lệ, phân biệt các trạng thái liên kết và áp dụng quan hệ quen thuộc giữa O₂ hòa tan với điều kiện vật lí đã được giữ cố định.
 
 Tiên quyết: O₂ có thể tồn tại ở dạng hòa tan hoặc liên kết với Hb.; Phân biệt vị trí không gắn O₂ với vị trí còn trống.; Ở cùng điều kiện dung môi và nhiệt độ, nồng độ khí hòa tan phụ thuộc phân áp khí.
+
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: X là chất giả định trong mô hình đơn giản hóa, không đại diện đầy đủ cho tác động của một khí độc cụ thể.; Các quan sát định hướng chỉ có nguồn cấp tỉnh qua bên thứ ba, chưa có đối chiếu chính thức.
 
 Biến thể: Có thể thay đổi phân áp và các tỉ lệ liên kết, bảo đảm tổng tỉ lệ không vượt 100%. Nếu tiếp tục hỏi về O₂ hòa tan, cần nêu rõ các điều kiện quyết định độ hòa tan được giữ nguyên.
 
@@ -1065,6 +1201,10 @@ Mức dự kiến: NB: chỉ cần nhận ra tên gọi tương ứng với mộ
 
 Tiên quyết: Khái niệm công nghệ sinh học.
 
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Các quan sát định hướng chỉ có nguồn cấp tỉnh qua bên thứ ba, chưa có đối chiếu chính thức.
+
 Biến thể: Có thể diễn đạt lại định nghĩa bằng các từ tương đương, giữ phạm vi bao quát của lĩnh vực và dùng các công nghệ thành phần làm phương án nhiễu.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
@@ -1094,6 +1234,10 @@ Lỗi tạo nhiễu:
 Mức dự kiến: Mức cao nhất là TH: học sinh diễn giải chỉ số theo định nghĩa, liên hệ quang hợp với tích lũy chất khô và so sánh trực tiếp số liệu. Không cần xây dựng mô hình hay xác định nguyên nhân của sự khác biệt giữa các lô.
 
 Tiên quyết: Khái niệm chỉ số diện tích lá.; Vai trò của quang hợp trong tạo chất hữu cơ.; Sự vận chuyển sản phẩm quang hợp đến cơ quan tích lũy.; Cách so sánh số liệu giữa các nghiệm thức.
+
+Neo bằng chứng của dạng: có quan sát chính thức.
+
+Bất định của mẫu: Số liệu là giả định phục vụ minh họa, không phải kết quả thực nghiệm.; Quan sát định hướng chỉ hỗ trợ mối liên hệ giữa bộ lá, quang hợp và cơ quan thu hoạch; các phát biểu còn lại được xây dựng mới từ dữ liệu đầy đủ trong câu hỏi.
 
 Biến thể: Có thể thay cây trồng có cơ quan tích lũy và điều chỉnh số liệu. Cần cung cấp đầy đủ kết quả, đồng thời tránh suy ra quan hệ nhân quả riêng của diện tích lá khi các lô còn khác nhau về dinh dưỡng.
 
@@ -1127,6 +1271,10 @@ Mức dự kiến: Học sinh chỉ cần nhớ một quan hệ kiến thức đ
 
 Tiên quyết: Vai trò của NADP⁺ và NADPH trong quang hợp.; Các sản phẩm của pha sáng.
 
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Mẫu tự biên soạn; định hướng cấu trúc chỉ dựa trên các quan sát từ nguồn cấp tỉnh do bên thứ ba cung cấp, chưa có neo đề chính thức.
+
 Biến thể: Có thể đổi cách hỏi sang nhận diện chất cung cấp khả năng khử cho chu trình Calvin; tránh đặt đồng thời nhiều sản phẩm đúng trong các phương án.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
@@ -1159,11 +1307,51 @@ Mức dự kiến: Học sinh đọc các dãy số và so sánh đáp ứng c�
 
 Tiên quyết: Ý nghĩa của tốc độ quang hợp thuần.; Cách so sánh số liệu giữa các điều kiện thí nghiệm.
 
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Số liệu là giả định phục vụ minh họa, không phải kết quả thực nghiệm.; Định hướng cấu trúc chỉ dựa trên các quan sát từ nguồn cấp tỉnh do bên thứ ba cung cấp, chưa có neo đề chính thức.
+
 Biến thể: Có thể thay các mức CO₂ và tốc độ giả định, đồng thời giữ một nhóm có hai giá trị cuối bằng nhau. Không suy ra con đường C₃ hoặc C₄ chỉ từ bộ số liệu ngắn này.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
 
 Mức do lượt tự giải nhận định: TH. Đọc và so sánh trực tiếp các số liệu đã cho.
+
+Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu mức ở trên
+
+## Sinh thái học / P1 / NB
+
+Đã qua kiểm bằng model; chờ giáo viên rà.
+
+Môi trường sống chủ yếu của giun đất thuộc loại môi trường nào sau đây?
+
+- A. Môi trường nước.
+- B. Môi trường trong đất.
+- C. Môi trường trên cạn.
+- D. Môi trường sinh vật.
+
+Đáp án: B
+
+Lời giải: Chọn B. Giun đất sống chủ yếu trong đất nên thuộc nhóm sinh vật sống trong môi trường trong đất. A sai vì nhu cầu giữ ẩm không đồng nghĩa với sống trong môi trường nước. C sai vì trong cách phân loại môi trường sống này, môi trường trong đất được phân biệt với môi trường trên cạn. D sai vì sử dụng chất hữu cơ trong đất làm thức ăn không có nghĩa là sống trên hoặc trong cơ thể sinh vật khác.
+
+Lỗi tạo nhiễu:
+- A: Đồng nhất môi trường ẩm với môi trường nước. — Giun đất cần bề mặt cơ thể ẩm để trao đổi khí.
+- C: Gộp môi trường trong đất vào môi trường trên cạn khi phân loại. — Đất nằm trên phần lục địa nên học sinh có thể bỏ qua nhóm môi trường trong đất.
+- D: Nhầm nguồn thức ăn có nguồn gốc sinh vật với môi trường sinh vật. — Giun đất sử dụng các chất hữu cơ có trong đất làm thức ăn.
+
+Mức dự kiến: Học sinh chỉ cần nhớ môi trường sống điển hình của giun đất và gọi đúng tên nhóm môi trường, thuộc một đơn vị kiến thức ở mức NB.
+
+Tiên quyết: Các loại môi trường sống chủ yếu của sinh vật.; Môi trường sống điển hình của giun đất.
+
+Neo bằng chứng của dạng: có quan sát chính thức.
+
+Bất định của mẫu: chưa được model nêu; vẫn chờ rà chuyên môn
+
+Biến thể: Có thể thay bằng một sinh vật khác có môi trường sống điển hình rõ ràng; tránh sinh vật có các giai đoạn sống ở những môi trường khác nhau nếu không chỉ rõ giai đoạn.
+
+Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
+
+Mức do lượt tự giải nhận định: NB. Nhận biết môi trường sống chủ yếu của một sinh vật quen thuộc.
 
 Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu mức ở trên
 
@@ -1190,6 +1378,10 @@ Lỗi tạo nhiễu:
 Mức dự kiến: Học sinh đối chiếu các khoảng đã cho và kiểm tra quan hệ bao chứa theo tiêu chí nêu sẵn. Đây là vận dụng kiến thức theo một quy trình quen thuộc ở mức TH, không yêu cầu tự xây dựng mô hình lựa chọn.
 
 Tiên quyết: Ý nghĩa của giới hạn chịu đựng đối với nhiệt độ.; Cách xác định một khoảng giá trị có chứa trọn một khoảng khác.
+
+Neo bằng chứng của dạng: có quan sát chính thức.
+
+Bất định của mẫu: Các loài và khoảng chịu đựng đều là giả định, không dùng làm hướng dẫn chọn loài nuôi thực tế.; Cấu trúc đối chiếu toàn khoảng trong mẫu này dựa trên quan sát cấp tỉnh do bên thứ ba cung cấp; không coi cấu trúc này đã có neo đề chính thức.
 
 Biến thể: Có thể đổi nhân tố thành độ mặn và thay các khoảng giả định. Cần giữ duy nhất một phương án chứa trọn khoảng môi trường và nêu rõ các yếu tố khác được coi là phù hợp.
 
@@ -1222,6 +1414,10 @@ Mức dự kiến: Các phát biểu yêu cầu diễn giải chuỗi thức ăn
 
 Tiên quyết: Bậc dinh dưỡng và cấp sinh vật tiêu thụ; Ưu thế về sinh khối và ảnh hưởng sinh thái; Đọc số liệu và tính chênh lệch; Điều kiện quang hợp và hô hấp ở thực vật
 
+Neo bằng chứng của dạng: có quan sát chính thức.
+
+Bất định của mẫu: Đây là câu hỏi minh họa tổng hợp tự tạo, không phải dữ liệu thực nghiệm hoặc bằng chứng từ đề thi thật.; Kết quả loại bỏ loài trong tình huống này chưa đủ để xác lập mọi cơ chế tác động hoặc kết luận loài chủ chốt.
+
 Biến thể: Có thể thay hệ cây trồng và các loài tiêu thụ, đồng thời đổi số liệu. Cần giữ rõ các liên kết dinh dưỡng và việc thiếu dữ liệu sinh khối ban đầu của loài bị loại bỏ.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
@@ -1247,6 +1443,10 @@ Mức dự kiến: Học sinh nhận ra các đặc điểm hình thái điển 
 
 Tiên quyết: Đặc điểm hình thái điển hình của lá cây ưa bóng
 
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Đặc điểm nêu trong câu là khái quát điển hình trong dạy học, không phải tiêu chí tuyệt đối cho mọi loài cây ưa bóng.; Mẫu tự tạo chỉ tham khảo dạng nhiệm vụ từ quan sát cấp tỉnh qua nguồn thứ ba; không có neo đề chính thức và không phải bằng chứng đề thi thật.
+
 Biến thể: Có thể đổi thứ tự các đặc điểm hoặc thay bằng những đặc điểm hình thái điển hình khác đã được dạy. Tránh đưa đặc điểm chỉ đúng ở một số loài mà không giới hạn bối cảnh.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
@@ -1271,6 +1471,10 @@ Lỗi tạo nhiễu:
 Mức dự kiến: Học sinh thực hiện quy trình ô mẫu quen thuộc: tính mật độ trung bình rồi nhân với diện tích khảo sát. Các bước tính liên tiếp vẫn thuộc TH vì cách ước tính đã được chỉ rõ, không đòi hỏi xây dựng phương án hay mô hình mới.
 
 Tiên quyết: Mật độ quần thể; Phương pháp lấy mẫu bằng ô; Quan hệ giữa mật độ, diện tích và kích thước quần thể
+
+Neo bằng chứng của dạng: có quan sát chính thức.
+
+Bất định của mẫu: Đây là số liệu giả định phục vụ câu hỏi minh họa, không phải kết quả khảo sát thật.; 2160 là giá trị ước tính theo mật độ mẫu; đề bài chưa cung cấp bằng chứng độc lập về mức độ đại diện của các ô hoặc sai số ước tính.
 
 Biến thể: Có thể thay diện tích bãi, diện tích mỗi ô và số cây đếm được. Phải cho đủ diện tích lấy mẫu và nêu rõ các ô không chồng lấn.
 
@@ -1310,6 +1514,10 @@ Mức dự kiến: Để chọn đúng tập hợp nhận định, học sinh ph
 
 Tiên quyết: Cạnh tranh khác loài về nguồn sống giới hạn; Quan hệ ăn và bị ăn; Tác động trực tiếp và gián tiếp trong quần xã; Vai trò của nghiệm thức can thiệp trong đánh giá cơ chế; Giới hạn ngoại suy giữa các điều kiện thí nghiệm
 
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Đây là mô hình và số liệu tổng hợp tự tạo; giả định bù A không làm thay đổi điều kiện khác là điều kiện lý tưởng của bài toán.; Dự báo ở nhận định (3) phụ thuộc các giả định đã cho, không khẳng định mức giảm cụ thể của B hoặc kết quả ngoài tự nhiên.; Mẫu chỉ tham khảo kiểu suy luận từ quan sát cấp tỉnh qua nguồn thứ ba; không có neo đề chính thức và không phải bằng chứng đề thi thật.
+
 Biến thể: Có thể thay nhóm sinh vật, tài nguyên giới hạn và các giá trị sinh khối. Cần giữ nghiệm thức can thiệp vào biến trung gian và các giả định loại trừ con đường tác động khác; không biến nhiệm vụ thành chỉ đếm số loài tăng hoặc giảm.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
@@ -1320,33 +1528,37 @@ Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu 
 
 ## Sinh trưởng và các yếu tố ảnh hưởng ở vi sinh vật / P1 / NB
 
-Còn cờ cần rà; chưa dùng làm mẫu chuẩn.
+Đã qua kiểm bằng model; chờ giáo viên rà.
 
-Một chủng vi khuẩn phân lập từ nước hồ vùng lạnh có nhiệt độ sinh trưởng tối ưu là 12 °C. Theo sự thích nghi với nhiệt độ, chủng này thuộc nhóm nào?
+Các tên gọi vi sinh vật ưa lạnh, vi sinh vật ưa ấm và vi sinh vật ưa nhiệt thuộc cách phân nhóm dựa trên yếu tố nào?
 
-- A. Vi sinh vật ưa ấm.
-- B. Vi sinh vật ưa nhiệt.
-- C. Vi sinh vật ưa lạnh.
-- D. Vi sinh vật ưa siêu nhiệt.
+- A. Độ pH thích hợp cho sinh trưởng.
+- B. Nồng độ oxygen thích hợp cho sinh trưởng.
+- C. Nhiệt độ thích hợp cho sinh trưởng.
+- D. Áp suất thẩm thấu thích hợp cho sinh trưởng.
 
 Đáp án: C
 
-Lời giải: Chọn C. Nhiệt độ sinh trưởng tối ưu 12 °C là đặc trưng của nhóm vi sinh vật ưa lạnh. Nhóm ưa ấm có nhiệt độ tối ưu cao hơn; nhóm ưa nhiệt và ưa siêu nhiệt thích nghi với các mức nhiệt cao hơn nữa.
+Lời giải: Chọn C. Các tên gọi ưa lạnh, ưa ấm và ưa nhiệt thể hiện sự thích nghi với nhiệt độ. A sai vì độ pH là cơ sở của cách phân nhóm theo môi trường acid, trung tính hoặc kiềm. B sai vì nhu cầu oxygen liên quan đến các nhóm như hiếu khí và kị khí. D sai vì áp suất thẩm thấu liên quan đến sự di chuyển nước và khả năng sinh trưởng trong môi trường có nồng độ chất tan khác nhau.
 
 Lỗi tạo nhiễu:
-- A: Xếp chủng vào nhóm ưa ấm vì vẫn sinh trưởng ở nhiệt độ trên 0 °C. — Học sinh có thể dùng cảm nhận nóng, lạnh thông thường thay cho nhiệt độ sinh trưởng tối ưu đặc trưng của từng nhóm.
-- B: Hiểu 'ưa nhiệt' là có một nhiệt độ thuận lợi cho sinh trưởng. — Mọi nhóm đều có nhiệt độ tối ưu nên cách hiểu theo nghĩa thông thường dễ làm lẫn tên nhóm chuyên biệt.
-- D: Đồng nhất khả năng sống trong môi trường lạnh với đặc tính ưa siêu nhiệt. — Học sinh có thể nhớ nhóm ưa siêu nhiệt gắn với môi trường khắc nghiệt nhưng quên chiều tác động của nhiệt độ.
+- A: Nhầm tiêu chí phân nhóm theo nhiệt độ với tiêu chí phân nhóm theo độ pH. — Cả nhiệt độ và độ pH đều là yếu tố môi trường ảnh hưởng đến sinh trưởng và đều có khoảng thích hợp.
+- B: Nhầm các nhóm thích nghi nhiệt độ với các nhóm phân theo nhu cầu oxygen. — Học sinh có thể nhớ nhiều cách phân nhóm vi sinh vật nhưng gắn sai tên nhóm với tiêu chí tương ứng.
+- D: Dùng áp suất thẩm thấu làm tiêu chí cho các tên nhóm thích nghi nhiệt độ. — Áp suất thẩm thấu cũng ảnh hưởng đến sinh trưởng nên dễ bị chọn khi học sinh chưa nhớ cơ sở của tên nhóm.
 
-Mức dự kiến: Học sinh chỉ cần nhận diện nhóm vi sinh vật từ một mức nhiệt độ tối ưu đặc trưng, thuộc một đơn vị kiến thức đã học.
+Mức dự kiến: Câu hỏi yêu cầu nhớ trực tiếp tiêu chí của một cách phân nhóm đã học. Không có dữ liệu nhiệt độ cần diễn giải hoặc trường hợp cụ thể cần phân loại, nên mức tối thiểu là NB.
 
-Tiên quyết: Khái niệm nhiệt độ sinh trưởng tối ưu.; Phân nhóm vi sinh vật theo sự thích nghi với nhiệt độ.
+Tiên quyết: Các yếu tố môi trường ảnh hưởng đến sinh trưởng vi sinh vật; Cơ sở phân nhóm vi sinh vật theo nhiệt độ
 
-Biến thể: Có thể đổi môi trường phân lập và chọn một nhiệt độ tối ưu nằm rõ trong khoảng đặc trưng của nhóm khác; tránh các giá trị sát ranh giới phân loại.
+Neo bằng chứng của dạng: có quan sát chính thức.
 
-Đối chiếu khóa: khớp. Đối chiếu mức: còn khác mức mục tiêu.
+Bất định của mẫu: chưa được model nêu; vẫn chờ rà chuyên môn
 
-Mức do lượt tự giải nhận định: TH. Đối chiếu nhiệt độ tối ưu được cho với đặc điểm các nhóm vi sinh vật để phân loại; đây là thao tác áp dụng kiến thức quen thuộc.
+Biến thể: Có thể hỏi tên tiêu chí của một cách phân nhóm môi trường khác trong cùng chủ đề. Nếu giữ mức NB, không chuyển sang yêu cầu phân loại một chủng từ bảng số liệu sinh trưởng.
+
+Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
+
+Mức do lượt tự giải nhận định: NB. Nhận biết trực tiếp tiêu chí phân nhóm vi sinh vật theo nhiệt độ.
 
 Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu mức ở trên
 
@@ -1373,6 +1585,10 @@ Lỗi tạo nhiễu:
 Mức dự kiến: Yêu cầu chỉ là nhận biết loại bằng chứng từ dấu hiệu trình tự amino acid, không cần phân tích mức độ họ hàng.
 
 Tiên quyết: Các loại bằng chứng tiến hóa.; Protein có cấu trúc được đặc trưng bởi trình tự amino acid.
+
+Neo bằng chứng của dạng: có quan sát chính thức.
+
+Bất định của mẫu: Bối cảnh nghiên cứu được sáng tác cho mẫu minh họa tổng hợp, không mô tả một nghiên cứu hay câu hỏi đề thi thật.
 
 Biến thể: Có thể thay trình tự amino acid bằng trình tự nucleotide của các đoạn DNA tương đồng; giữ yêu cầu nhận diện loại bằng chứng.
 
@@ -1406,6 +1622,10 @@ Mức dự kiến: Học sinh diễn giải dữ liệu trước và sau xử l�
 
 Tiên quyết: Biến dị di truyền trong quần thể.; Chọn lọc tự nhiên thông qua sự khác biệt về khả năng đóng góp vào thế hệ sau.; Phân biệt phát sinh biến dị và chọn lọc biến dị.
 
+Neo bằng chứng của dạng: có quan sát chính thức.
+
+Bất định của mẫu: Thí nghiệm, tên biến thể và các tỉ lệ đều là dữ liệu giả định của mẫu minh họa, không phải kết quả thực nghiệm hay bằng chứng đề thi thật.
+
 Biến thể: Có thể đổi sang quần thể côn trùng có biến thể kháng thuốc trừ sâu; cần giữ dữ liệu ban đầu và nhóm đối chứng để phân biệt sự xuất hiện biến dị với sự tăng tần số biến dị.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
@@ -1431,6 +1651,10 @@ Mức dự kiến: Học sinh đọc cấu trúc phân nhánh được cung cấ
 
 Tiên quyết: Cây phát sinh có gốc.; Tổ tiên chung gần nhất.; Đánh giá quan hệ họ hàng bằng thứ tự phân nhánh.
 
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Không có điểm neo chính thức cho mục tiêu này; cơ sở về dạng câu hỏi chỉ giới hạn ở các quan sát cấp tỉnh được cung cấp.; Cây và mã loài được sáng tác cho mẫu minh họa tổng hợp, không tái hiện câu hỏi đề thi thật.
+
 Biến thể: Có thể hoán đổi mã loài và vị trí nhánh, nhưng phải giữ quan hệ phân nhánh rõ ràng và tránh tạo các nhóm đồng hạng khi yêu cầu một thứ tự duy nhất. Cấu trúc minh họa này chỉ dựa trên dạng quan sát cấp tỉnh được cung cấp.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
@@ -1443,30 +1667,34 @@ Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu 
 
 Đã qua kiểm bằng model; chờ giáo viên rà.
 
-Một nhóm học sinh dùng biểu bì mặt dưới lá thài lài tía để quan sát sự thay đổi của tế bào khi chuyển từ nước sang dung dịch muối ưu trương. Các thao tác được ghi như sau:
-(1) Quan sát lại vùng tế bào đã chọn, ghi nhận sự thay đổi vị trí của khối nguyên sinh so với thành tế bào.
-(2) Đặt một mảnh biểu bì mỏng, phẳng vào giọt nước trên lam kính rồi đậy lamen.
-(3) Nhỏ dung dịch muối ưu trương vào một mép lamen, đồng thời đặt giấy thấm ở mép đối diện để hút nước và đưa dung dịch muối vào tiêu bản.
-(4) Nhỏ một giọt nước lên lam kính sạch.
-(5) Đặt tiêu bản lên kính hiển vi, lấy nét và ghi nhận trạng thái ban đầu của một vùng tế bào.
-Hãy viết thứ tự thực hiện các thao tác bằng dãy số nối với nhau bằng dấu gạch ngang.
+Một nhóm học sinh chuẩn bị tiêu bản biểu bì vảy hành tím trong dung dịch sodium chloride ưu trương để quan sát co nguyên sinh, sau đó thay môi trường bằng nước cất để quan sát phản co nguyên sinh. Các thao tác được đánh số như sau:
+(1) Nhỏ nước cất liên tục ở một mép lamen, dùng giấy thấm ở mép đối diện để thay dung dịch ưu trương trong tiêu bản bằng nước cất.
+(2) Đặt tiêu bản lên kính hiển vi, lấy nét và ghi nhận trạng thái co nguyên sinh của một vùng tế bào trước khi thay môi trường.
+(3) Nhỏ một giọt dung dịch sodium chloride ưu trương lên lam kính sạch.
+(4) Sau khi thay môi trường khoảng 3 phút, quan sát lại vùng tế bào đã chọn để ghi nhận sự thay đổi của khối nguyên sinh.
+(5) Đặt mảnh biểu bì mỏng vào giọt dung dịch trên lam kính, đậy lamen và chờ đến khi tế bào co nguyên sinh.
+Hãy sắp xếp các thao tác theo trình tự thực hiện. Ghi đáp án dưới dạng một số nguyên có năm chữ số bằng cách ghép các số thứ tự thao tác, không dùng dấu ngăn cách.
 
 
-Đáp án: 4-2-5-3-1
+Đáp án: 35214
 
-Lời giải: Nhỏ nước lên lam kính trước khi đặt biểu bì và đậy lamen. Khi tiêu bản đã sẵn sàng, lấy nét và quan sát trạng thái ban đầu. Tiếp đó thay nước bằng dung dịch muối ưu trương, rồi quan sát lại cùng vùng tế bào để nhận biết hiện tượng co nguyên sinh.
+Lời giải: Trình tự là (3), (5), (2), (1), (4), nên đáp án là 35214. Cần có giọt dung dịch trước khi đặt biểu bì và đậy lamen. Sau khi tế bào co nguyên sinh, quan sát trạng thái ban đầu rồi mới thay dung dịch ưu trương bằng nước cất. Cuối cùng quan sát lại cùng vùng tế bào. Khi môi trường ngoài được thay bằng nước cất, nước có thể đi vào tế bào, giúp khối nguyên sinh phục hồi nếu tế bào còn sống và màng còn hoạt động bình thường.
 
 Lỗi tạo nhiễu:
 
-Mức dự kiến: Học sinh sắp xếp một quy trình thực hành quen thuộc dựa trên điều kiện thực hiện từng thao tác và yêu cầu quan sát trước, sau can thiệp. Đây là thực hiện và giải thích quy trình ở mức TH.
+Mức dự kiến: Học sinh sắp xếp quy trình thực hành quen thuộc theo quan hệ phụ thuộc giữa chuẩn bị tiêu bản, ghi nhận trạng thái trước can thiệp, thay môi trường và quan sát sau can thiệp. Đây là mức TH; cách ghép chữ số chỉ là định dạng trả lời.
 
-Tiên quyết: Cách chuẩn bị tiêu bản biểu bì thực vật; Thao tác lấy nét bằng kính hiển vi; Nước di chuyển qua màng và hiện tượng co nguyên sinh
+Tiên quyết: Chuẩn bị tiêu bản biểu bì thực vật; Quan sát bằng kính hiển vi; Thẩm thấu, co nguyên sinh và phản co nguyên sinh
 
-Biến thể: Có thể thay loại biểu bì có sắc tố hoặc đổi cách đánh số thao tác. Cần giữ bước quan sát ban đầu trước khi thay môi trường và bước quan sát kết quả sau khi thay môi trường.
+Neo bằng chứng của dạng: có quan sát chính thức.
+
+Bất định của mẫu: Khoảng chờ 3 phút là điều kiện quy ước của tình huống minh họa; mức độ và tốc độ phản co nguyên sinh thực tế phụ thuộc mẫu và điều kiện thí nghiệm.
+
+Biến thể: Có thể đổi cách đánh số hoặc loại biểu bì phù hợp. Giữ rõ trạng thái co nguyên sinh trước khi thay môi trường và yêu cầu quan sát cùng vùng tế bào sau khi thay bằng nước cất.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
 
-Mức do lượt tự giải nhận định: TH. Sắp xếp các thao tác theo quy trình thực hành quen thuộc, bảo đảm quan sát trước và sau khi thay dung dịch.
+Mức do lượt tự giải nhận định: TH. Sắp xếp các bước của quy trình thực hành quen thuộc theo quan hệ trước sau, không cần xây dựng phương pháp mới.
 
 Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu mức ở trên
 
@@ -1474,7 +1702,7 @@ Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu 
 
 Đã qua kiểm bằng model; chờ giáo viên rà.
 
-Khi học về dinh dưỡng của cây ngô, một học sinh cần ghi lại các dạng nitơ mà rễ cây hấp thụ chủ yếu từ đất. Cặp nào sau đây phù hợp?
+Khi học về dinh dưỡng của cây ngô, một học sinh cần ghi lại các dạng nitrogen mà rễ cây hấp thụ chủ yếu từ đất. Cặp nào sau đây phù hợp?
 
 - A. NO₃⁻ và N₂.
 - B. NO₃⁻ và NH₄⁺.
@@ -1483,22 +1711,26 @@ Khi học về dinh dưỡng của cây ngô, một học sinh cần ghi lại c
 
 Đáp án: B
 
-Lời giải: Rễ cây hấp thụ nitơ từ đất chủ yếu ở dạng ion nitrat NO₃⁻ và ion amoni NH₄⁺. A thay nhầm amoni bằng nitơ phân tử; C thay nhầm nitrat bằng nitrit; D sử dụng cả nitrit và nitơ phân tử nên không thể hiện đúng hai dạng hấp thụ chủ yếu.
+Lời giải: Rễ cây hấp thụ nitrogen từ đất chủ yếu ở dạng ion nitrate NO₃⁻ và ion ammonium NH₄⁺. A thay nhầm ammonium bằng nitrogen phân tử; C thay nhầm nitrate bằng nitrite; D sử dụng cả nitrite và nitrogen phân tử nên không thể hiện đúng hai dạng hấp thụ chủ yếu.
 
 Lỗi tạo nhiễu:
-- A: Cho rằng rễ cây có thể trực tiếp sử dụng N₂ như một dạng nitơ dinh dưỡng chủ yếu. — Học sinh nhớ nitơ có nhiều trong không khí nhưng bỏ qua yêu cầu chuyển hóa N₂ thành dạng cây sử dụng được.
-- C: Nhầm ion nitrit NO₂⁻ với ion nitrat NO₃⁻. — Hai ion có tên và công thức gần giống nhau, đồng thời đều có thể xuất hiện khi học về chuyển hóa nitơ.
-- D: Đồng nhất các dạng nitơ xuất hiện trong chu trình nitơ với các dạng rễ hấp thụ chủ yếu. — Học sinh có thể nhớ N₂ và NO₂⁻ trong sơ đồ chu trình nhưng chưa phân biệt vai trò của chúng với NO₃⁻ và NH₄⁺.
+- A: Cho rằng rễ cây có thể trực tiếp sử dụng N₂ như một dạng nitrogen dinh dưỡng chủ yếu. — Học sinh nhớ nitrogen có nhiều trong không khí nhưng bỏ qua yêu cầu chuyển hóa N₂ thành dạng cây sử dụng được.
+- C: Nhầm ion nitrite NO₂⁻ với ion nitrate NO₃⁻. — Hai ion có tên và công thức gần giống nhau, đồng thời đều có thể xuất hiện khi học về chuyển hóa nitrogen.
+- D: Đồng nhất các dạng nitrogen xuất hiện trong chu trình nitrogen với các dạng rễ hấp thụ chủ yếu. — Học sinh có thể nhớ N₂ và NO₂⁻ trong sơ đồ chu trình nhưng chưa phân biệt vai trò của chúng với NO₃⁻ và NH₄⁺.
 
-Mức dự kiến: Đáp án được xác định bằng cách nhớ trực tiếp hai dạng nitơ dinh dưỡng chủ yếu; bối cảnh cây ngô không tạo thêm yêu cầu suy luận.
+Mức dự kiến: Đáp án được xác định bằng cách nhớ trực tiếp hai dạng nitrogen dinh dưỡng chủ yếu; bối cảnh cây ngô không tạo thêm yêu cầu suy luận.
 
-Tiên quyết: Dạng nitơ được rễ cây hấp thụ chủ yếu; Phân biệt công thức của nitrat, nitrit, amoni và nitơ phân tử
+Tiên quyết: Dạng nitrogen được rễ cây hấp thụ chủ yếu; Phân biệt công thức của nitrate, nitrite, ammonium và nitrogen phân tử
 
-Biến thể: Có thể thay cây ngô bằng một cây trồng trên cạn quen thuộc khác. Giữ yêu cầu nhận biết dạng hấp thụ chủ yếu, tránh chuyển thành bài giải thích chu trình nitơ.
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Quan sát cấu trúc được cung cấp cho mục tiêu này chỉ đến từ nguồn cấp tỉnh qua bên thứ ba; không có điểm neo chính thức để đối chiếu cấu trúc câu.
+
+Biến thể: Có thể thay cây ngô bằng một cây trồng trên cạn quen thuộc khác. Giữ yêu cầu nhận biết dạng hấp thụ chủ yếu, tránh chuyển thành bài giải thích chu trình nitrogen.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
 
-Mức do lượt tự giải nhận định: NB. Nhớ lại hai dạng nitơ khoáng mà rễ cây hấp thụ chủ yếu; bối cảnh cây ngô không làm thay đổi yêu cầu nhận biết.
+Mức do lượt tự giải nhận định: NB. Nhớ lại hai dạng nitrogen khoáng mà rễ cây hấp thụ chủ yếu; bối cảnh cây ngô không làm thay đổi yêu cầu nhận biết.
 
 Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu mức ở trên
 
@@ -1518,13 +1750,17 @@ Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu 
 Lời giải: Tâm thất trái bơm máu vào động mạch chủ. Tâm nhĩ trái nhận máu từ phổi rồi chuyển xuống tâm thất trái. Tâm thất phải bơm máu vào động mạch phổi. Tâm nhĩ phải nhận máu từ các cơ quan qua tĩnh mạch chủ.
 
 Lỗi tạo nhiễu:
-- A: Nhầm ngăn nhận máu từ phổi với ngăn bơm máu vào động mạch chủ. — Tâm nhĩ trái và tâm thất trái đều chứa máu giàu ôxi trong điều kiện bình thường.
+- A: Nhầm ngăn nhận máu từ phổi với ngăn bơm máu vào động mạch chủ. — Tâm nhĩ trái và tâm thất trái đều chứa máu giàu oxygen trong điều kiện bình thường.
 - B: Nhớ tâm thất có chức năng bơm máu vào động mạch nhưng nhầm bên phải với bên trái. — Cả hai tâm thất đều bơm máu ra khỏi tim nhưng đưa máu vào hai vòng tuần hoàn khác nhau.
 - C: Nhầm nơi nhận máu trở về từ cơ thể với nơi khởi đầu dòng máu đi đến cơ thể. — Học sinh nhớ tâm nhĩ phải liên hệ với tuần hoàn cơ thể nhưng đảo chiều đường đi của máu.
 
 Mức dự kiến: Học sinh chỉ cần nhớ mối nối giữa tâm thất trái và động mạch chủ trong tuần hoàn của thú; đáp án nằm trong một đơn vị kiến thức.
 
 Tiên quyết: Các ngăn của tim thú; Đường đi cơ bản của máu qua tim
+
+Neo bằng chứng của dạng: có quan sát chính thức.
+
+Bất định của mẫu: Dữ liệu cung cấp không có mẫu hiệu chuẩn chính thức dạng trừu tượng để đối chiếu mức phân hóa; mức NB ở đây được xác định theo thao tác nhận thức tối thiểu.
 
 Biến thể: Có thể thay thỏ bằng một loài thú quen thuộc khác hoặc hỏi ngăn tim bơm máu vào động mạch phổi. Giữ yêu cầu nhớ trực tiếp một mối nối giải phẫu.
 
@@ -1541,58 +1777,66 @@ Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu 
 Một mô hình tuần hoàn của thỏ khỏe mạnh dùng hai thẻ K và L để thay tên hai mạng mao mạch. Mô hình biểu diễn các đường đi sau; mũi tên chỉ chiều máu chảy:
 Tâm thất phải → động mạch phổi → K → tĩnh mạch phổi → tâm nhĩ trái.
 Tâm thất trái → động mạch chủ → động mạch đến cơ quan → L → tĩnh mạch từ cơ quan → tĩnh mạch chủ → tâm nhĩ phải.
-Khi qua K, máu nhận ôxi từ không khí trong phế nang. Khi qua L, máu cung cấp ôxi cho các tế bào cơ quan. Xác định mỗi phát biểu sau là đúng hay sai.
+Khi qua K, máu nhận oxygen từ không khí trong phế nang. Khi qua L, máu cung cấp oxygen cho các tế bào cơ quan. Xác định mỗi phát biểu sau là đúng hay sai.
 
 - a) K biểu diễn mạng mao mạch phổi, còn L biểu diễn mạng mao mạch ở các cơ quan thuộc vòng tuần hoàn cơ thể.
 - b) Sau khi rời K, máu đi qua tĩnh mạch phổi rồi đổ trực tiếp vào tâm thất trái.
-- c) Máu trong tĩnh mạch phổi giàu ôxi hơn máu trong động mạch phổi, dù tĩnh mạch phổi đưa máu về tim.
+- c) Máu trong tĩnh mạch phổi giàu oxygen hơn máu trong động mạch phổi, dù tĩnh mạch phổi đưa máu về tim.
 - d) Đường máu từ tâm thất trái qua L rồi về tâm nhĩ phải thuộc vòng tuần hoàn phổi.
 
 Đáp án: a) D; b) S; c) D; d) S
 
-Lời giải: a) Đúng. K nằm giữa động mạch phổi và tĩnh mạch phổi, là nơi máu nhận ôxi từ phế nang; L là nơi máu trao ôxi cho tế bào cơ quan.
+Lời giải: a) Đúng. K nằm giữa động mạch phổi và tĩnh mạch phổi, là nơi máu nhận oxygen từ phế nang; L là nơi máu trao oxygen cho tế bào cơ quan.
 b) Sai. Tĩnh mạch phổi đưa máu vào tâm nhĩ trái; máu sau đó mới chuyển xuống tâm thất trái.
-c) Đúng. Máu nhận ôxi khi qua K nên máu rời phổi qua tĩnh mạch phổi giàu ôxi hơn máu đến phổi qua động mạch phổi. Tên động mạch và tĩnh mạch được xác định theo chiều dòng máu so với tim.
+c) Đúng. Máu nhận oxygen khi qua K nên máu rời phổi qua tĩnh mạch phổi giàu oxygen hơn máu đến phổi qua động mạch phổi. Tên động mạch và tĩnh mạch được xác định theo chiều dòng máu so với tim.
 d) Sai. Đường đi từ tâm thất trái qua mao mạch các cơ quan rồi về tâm nhĩ phải thuộc vòng tuần hoàn cơ thể.
 
 Lỗi tạo nhiễu:
 - b: Bỏ qua tâm nhĩ trái khi xác định nơi tiếp nhận máu từ tĩnh mạch phổi. — Học sinh nhớ máu từ phổi sẽ được tâm thất trái bơm đi nên có thể nhầm đích đến trực tiếp với ngăn bơm máu tiếp theo.
 - d: Gán tên vòng tuần hoàn phổi cho đường máu qua các cơ quan cơ thể. — Học sinh có thể nhớ hai vòng tuần hoàn nhưng chưa gắn đúng tên vòng với mạng mao mạch và các ngăn tim tương ứng.
 
-Mức dự kiến: Mức của toàn bộ mẫu là TH, bằng mức cao nhất của các phát biểu. Học sinh đọc mô hình bằng chữ, diễn giải vị trí trao đổi khí và phân biệt chiều dòng máu với mức giàu ôxi. Các thao tác đều là đối chiếu, giải thích quan hệ tuần hoàn quen thuộc.
+Mức dự kiến: Mức của toàn bộ mẫu là TH, bằng mức cao nhất của các phát biểu. Học sinh đọc mô hình bằng chữ, diễn giải vị trí trao đổi khí và phân biệt chiều dòng máu với mức giàu oxygen. Các thao tác đều là đối chiếu, giải thích quan hệ tuần hoàn quen thuộc.
 
 Tiên quyết: Tuần hoàn kép ở thú; Chức năng của tâm nhĩ và tâm thất; Quy tắc gọi tên động mạch và tĩnh mạch; Trao đổi khí ở phổi và các mô
+
+Neo bằng chứng của dạng: chưa có quan sát chính thức cho ô này; nguồn tỉnh chỉ bổ sung dạng.
+
+Bất định của mẫu: Quan sát cấu trúc được cung cấp cho mục tiêu này chỉ đến từ nguồn cấp tỉnh qua bên thứ ba; không có điểm neo chính thức để đối chiếu cấu trúc câu.
 
 Biến thể: Có thể đổi kí hiệu hai mạng mao mạch hoặc thay thỏ bằng một loài thú khác. Nếu thay mô hình bằng hình vẽ, phải cung cấp đủ nhãn và chiều mũi tên. Giữ bốn phát biểu và đánh giá mức của toàn mẫu theo phát biểu có mức cao nhất.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
 
-Mức do lượt tự giải nhận định: a: TH; b: TH; c: TH; d: TH. a) Diễn giải ký hiệu K, L từ đường đi và chức năng đã cho. b) Đọc đường đi để phân biệt ngăn tim nhận máu. c) Diễn giải sự thay đổi hàm lượng ôxi khi máu qua phổi và phân biệt với chiều chảy của tĩnh mạch. d) Đối chiếu đường đi đã cho với hai vòng tuần hoàn. Từng ý chỉ cần đọc hiểu mô hình hoặc vận dụng kiến thức theo cách quen thuộc.
+Mức do lượt tự giải nhận định: a: TH; b: TH; c: TH; d: TH. a) Diễn giải ký hiệu K, L từ đường đi và chức năng đã cho. b) Đọc đường đi để phân biệt ngăn tim nhận máu. c) Diễn giải sự thay đổi hàm lượng oxygen khi máu qua phổi và phân biệt với chiều chảy của tĩnh mạch. d) Đối chiếu đường đi đã cho với hai vòng tuần hoàn. Từng ý chỉ cần đọc hiểu mô hình hoặc vận dụng kiến thức theo cách quen thuộc.
 
 Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu mức ở trên
 
 ## Tuần hoàn ở động vật / P3 / TH
 
-Còn cờ cần rà; chưa dùng làm mẫu chuẩn.
+Đã qua kiểm bằng model; chờ giáo viên rà.
 
-Trong một mô hình minh họa, hai động vật M và N có tần số tim lần lượt là 75 nhịp/phút và 100 nhịp/phút. Ở mỗi động vật, thời gian co tâm nhĩ, co tâm thất và dãn chung trong một chu kì tim có tỉ lệ 1 : 3 : 4. Thời gian dãn chung trong mỗi chu kì của M dài hơn của N bao nhiêu giây? Làm tròn kết quả đến hai chữ số thập phân.
+Trong một mô hình minh họa, hai động vật X và Y có tần số tim lần lượt là 60 nhịp/phút và 80 nhịp/phút. Ở cả hai động vật, thời gian co tâm nhĩ, co tâm thất và dãn chung trong mỗi chu kì tim được giả định có tỉ lệ 1 : 2 : 3. Thời gian co tâm thất trong một chu kì của X dài hơn của Y bao nhiêu giây? Viết kết quả dưới dạng số thập phân, làm tròn đến ba chữ số sau dấu phẩy.
 
 
-Đáp án: 0,10 giây
+Đáp án: 0,083
 
-Lời giải: Thời gian một chu kì tim của M là 60/75 = 0,80 giây; của N là 60/100 = 0,60 giây. Pha dãn chung chiếm 4/(1 + 3 + 4) = 1/2 chu kì. Chênh lệch cần tìm là (0,80 − 0,60) × 1/2 = 0,10 giây.
+Lời giải: Thời gian một chu kì tim của X là 60/60 = 1 giây; của Y là 60/80 = 0,75 giây. Co tâm thất chiếm 2/(1 + 2 + 3) = 1/3 chu kì. Chênh lệch thời gian co tâm thất là (1 − 0,75) × 1/3 = 1/12 giây, làm tròn đến ba chữ số sau dấu phẩy được 0,083 giây.
 
 Lỗi tạo nhiễu:
 
-Mức dự kiến: Học sinh thực hiện quy trình quen thuộc: đổi tần số thành thời gian chu kì, xác định phần thời gian dãn chung rồi tính chênh lệch. Các bước đều áp dụng trực tiếp dữ kiện và quan hệ đã học, phù hợp mức TH.
+Mức dự kiến: Học sinh thực hiện quy trình quen thuộc: đổi tần số tim thành thời gian chu kì, xác định phần thời gian co tâm thất theo tỉ lệ rồi lấy hiệu. Các thao tác áp dụng trực tiếp dữ kiện, phù hợp mức TH.
 
-Tiên quyết: Quan hệ giữa tần số tim và thời gian một chu kì tim; Các pha của chu kì tim; Tính một phần của đại lượng theo tỉ lệ
+Tiên quyết: Quan hệ giữa tần số tim và thời gian một chu kì tim.; Các pha của chu kì tim.; Tính phần của một đại lượng theo tỉ lệ và làm tròn số.
 
-Biến thể: Có thể thay tần số tim và tỉ lệ thời gian các pha, nhưng cần nêu rõ đây là giả định của mô hình và giữ yêu cầu tính chênh lệch thời gian của một pha.
+Neo bằng chứng của dạng: có quan sát chính thức.
 
-Đối chiếu khóa: còn bất đồng. Đối chiếu mức: khớp.
+Bất định của mẫu: Tỉ lệ thời gian các pha là giả định của mô hình, không phải kết luận chung cho mọi động vật hoặc trạng thái sinh lí.
 
-Mức do lượt tự giải nhận định: TH. Thực hiện quy trình tính quen thuộc: đổi tần số thành thời gian chu kì, lấy phần thời gian theo tỉ lệ rồi tính hiệu; các phép tính thường quy thuộc TH.
+Biến thể: Có thể đổi tần số tim và pha cần tính, đồng thời nêu rõ tỉ lệ thời gian là giả định của mô hình. Giữ yêu cầu ở dạng áp dụng trực tiếp quan hệ tần số, chu kì và tỉ lệ.
+
+Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
+
+Mức do lượt tự giải nhận định: TH. Tính chu kì từ tần số rồi sử dụng tỉ lệ thời gian đã cho, thuộc quy trình tính toán thông thường.
 
 Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu mức ở trên
 
@@ -1622,6 +1866,10 @@ Mức dự kiến: Học sinh phải nối kết kết quả can thiệp khẩu 
 
 Tiên quyết: Tín hiệu trong tập tính lựa chọn bạn tình; Phân biệt trạng thái của cá thể với tín hiệu mà cá thể nhận biết; Vai trò của đối chứng và phân nhóm ngẫu nhiên; Phân biệt mối liên hệ với quan hệ nhân quả
 
+Neo bằng chứng của dạng: có quan sát chính thức.
+
+Bất định của mẫu: Loài chim, số liệu và xu hướng hành vi đều là giả định minh họa.; Quan hệ giữa tốc độ hót và chỉ số miễn dịch chỉ được xét ở mức trung bình nhóm trong điều kiện đã nêu; chưa đủ để dự đoán chính xác trạng thái từng cá thể hoặc khái quát sang loài khác.
+
 Biến thể: Có thể thay tín hiệu âm thanh bằng một tín hiệu thị giác và thay cách can thiệp trạng thái sinh lí. Cần giữ phép thử riêng về sự ưa thích tín hiệu và tình huống hoán đổi tín hiệu để học sinh phải kết nối các bằng chứng.
 
 Đối chiếu khóa: khớp. Đối chiếu mức: khớp.
@@ -1632,4 +1880,4 @@ Cờ lượt tự giải: không có cờ nội dung; xem riêng đối chiếu 
 
 ## Khoảng thiếu và giới hạn
 
-[{"id": "f478d7325efffcb1", "reason": "source ten-word overlap; draft withheld from profile", "overlap_count": 6, "resolved_by_bounded_revision": true}, {"id": "547ab7a24ad434f0", "reason": "source ten-word overlap; draft withheld from profile", "overlap_count": 3}]
+[{"id": "f478d7325efffcb1", "reason": "source ten-word overlap; draft withheld from profile", "overlap_count": 6, "resolved_by_bounded_revision": true}, {"id": "547ab7a24ad434f0", "reason": "source ten-word overlap; draft withheld from profile", "overlap_count": 3, "resolved_by_bounded_revision": true}]

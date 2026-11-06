@@ -1,0 +1,131 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "bc39c0e29502fe41",
+    "topic": "Nguyên hàm và điều kiện giá trị",
+    "part": "P1",
+    "level": "TH",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một hàm gồm thành phần đa thức và nghịch đảo trên miền dương, kèm giá trị của nguyên hàm tại một điểm.",
+        "task": "Tính giá trị nguyên hàm tại điểm được yêu cầu.",
+        "reasoning": [
+          "Lấy nguyên hàm từng thành phần trên miền đã cho.",
+          "Dùng điều kiện ban đầu để xác định hằng số.",
+          "Thay điểm cần tính và rút gọn."
+        ],
+        "combines": [
+          "Nguyên hàm cơ bản",
+          "Điều kiện ban đầu",
+          "Giá trị lôgarit"
+        ],
+        "difficulty_source": "Ghép nguyên hàm cơ bản với điều kiện xác định hằng số.",
+        "evidence_uncertainty": "Thiếu khóa đáp án khớp mã để phân tích riêng từng phương án sai.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "3f1b2aa3cb72|P1|12|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "bc39c0e29502fe41",
+    "stem": "Cho F là một nguyên hàm của hàm số f(x)=4x+3/x trên khoảng (0;+∞), thỏa mãn F(1)=2. Giá trị F(e) bằng bao nhiêu?",
+    "options": [
+      {
+        "label": "A",
+        "text": "2e²+3"
+      },
+      {
+        "label": "B",
+        "text": "2e²+5"
+      },
+      {
+        "label": "C",
+        "text": "2e²−3"
+      },
+      {
+        "label": "D",
+        "text": "4e+1"
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "A",
+        "level": "TH"
+      }
+    ],
+    "solution": "Trên khoảng (0;+∞), F(x)=2x²+3ln x+C. Điều kiện F(1)=2 cho 2+C=2, suy ra C=0. Vì ln e=1 nên F(e)=2e²+3. Chọn A. Phương án B xuất hiện khi lấy ngay C=F(1)=2 mà không trừ giá trị phần nguyên hàm tại x=1. Phương án C xuất hiện khi viết nhầm nguyên hàm của 3/x thành −3ln x. Phương án D xuất hiện khi viết nhầm nguyên hàm của 4x thành 4x, rồi dùng F(1)=2 để tính C=−2.",
+    "distractors": [
+      {
+        "label": "B",
+        "sub": null,
+        "mistake": "Đồng nhất hằng số nguyên hàm C với giá trị F(1).",
+        "why_plausible": "Học sinh nhớ phải dùng điều kiện giá trị nhưng bỏ qua đóng góp của 2x² tại x=1."
+      },
+      {
+        "label": "C",
+        "sub": null,
+        "mistake": "Đổi sai dấu trong công thức nguyên hàm của 1/x.",
+        "why_plausible": "Học sinh có thể nhầm dấu của công thức lôgarit với dấu xuất hiện trong một số công thức đạo hàm của lũy thừa âm."
+      },
+      {
+        "label": "D",
+        "sub": null,
+        "mistake": "Giữ nguyên 4x khi lấy nguyên hàm, rồi xác định hằng số từ biểu thức sai.",
+        "why_plausible": "Học sinh nhận ra thành phần lôgarit nhưng áp dụng không đầy đủ quy tắc nguyên hàm lũy thừa cho thành phần đa thức."
+      }
+    ],
+    "level_reason": "TH vì cần lấy nguyên hàm từng thành phần, xác định hằng số từ điều kiện và tính giá trị tại một điểm. Đây là bài tập chuẩn với các công thức đã học.",
+    "prerequisites": [
+      "Nguyên hàm của hàm lũy thừa",
+      "Nguyên hàm của 1/x trên miền dương",
+      "Xác định hằng số nguyên hàm bằng điều kiện giá trị",
+      "Đẳng thức ln e=1"
+    ],
+    "variation_guidance": "Thay hệ số của x và 1/x, điểm cho điều kiện hoặc điểm cần tính; xây dựng lại từng phương án sai theo một lỗi cụ thể và kiểm tra các giá trị không trùng nhau.",
+    "uncertainties": [
+      "Đây là câu hỏi tổng hợp mới; cấu trúc tham khảo chỉ có quan sát cấp tỉnh qua nguồn bên thứ ba, thiếu neo đề chính thức và khóa đáp án tương ứng. Các phương án nhiễu được xây dựng riêng cho mẫu này."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "bc39c0e29502fe41",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "A",
+        "level": "TH"
+      }
+    ],
+    "solution": "Trên (0;+∞), F(x)=2x²+3ln x+C. Từ F(1)=2 suy ra C=0. Do đó F(e)=2e²+3, chọn A.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Tính nguyên hàm cơ bản, xác định hằng số rồi thay giá trị là quy trình quen thuộc, mức TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/6e56a3c325b185cbeee3fecc43660d5c401ace967d81f8ef1c9d4e79a5c538fb.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/6e56a3c325b185cbeee3fecc43660d5c401ace967d81f8ef1c9d4e79a5c538fb.resolve.json"
+}

@@ -1,0 +1,307 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{setspace}
+\setstretch{1.08}
+\usepackage{graphicx}
+\usepackage{ifthen}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, patterns}
+\IfFileExists{pgf-pie.sty}{\usepackage{pgf-pie}}{}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{chemfig}
+\usepackage{longtable,booktabs}
+\usepackage{adjustbox}
+\providecommand{\errorpart}[2]{$\underset{\textbf{#1}}{\underline{\text{#2}}}$}
+\usepackage[top=0.8in, left=0.75in, right=0.75in, bottom=0.85in, headheight=38pt, headsep=18pt, footskip=1.2cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue]{hyperref}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 2pt minus 1pt}
+
+\setlist[enumerate]{itemsep=4pt, parsep=2pt, topsep=4pt, partopsep=2pt}
+\setlist[itemize]{itemsep=4pt, parsep=2pt, topsep=4pt}
+
+\makeatletter
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{LecturingLastPage}{{}{\thepage}{}{}{}}}}
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{LecturingPageCount}{{}{\two@digits{\value{page}}}{}{}{}}}}
+\makeatother
+\pagestyle{fancy}
+\fancyhf{}
+\cfoot{\small Trang \thepage/\pageref*{LecturingLastPage} - Mã đề thi 8650}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\usepackage{tabularx}
+\begin{document}
+
+\sloppy
+
+\noindent
+\begin{minipage}[t]{0.37\textwidth}
+    \small
+    \centering
+    \IfFileExists{logo.png}{\includegraphics[height=0.9cm]{logo.png}\\[0.1cm]}{%
+      \IfFileExists{logo.jpg}{\includegraphics[height=0.9cm]{logo.jpg}\\[0.1cm]}{}%
+    }
+    {\bfseries \mbox{}}\\[-0.2cm]
+    \rule{3cm}{0.5pt}\\[0.1cm]
+    {\bfseries ĐỀ LUYỆN TẬP -- BẢN NGHIÊN CỨU}\\{\small (Đề thi có \pageref*{LecturingPageCount} trang)}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.62\textwidth}
+    \small
+    \centering
+    {\bfseries \sbox0{KỲ THI TỐT NGHIỆP TRUNG HỌC PHỔ THÔNG NĂM 2026}\ifdim\wd0>\linewidth KỲ THI TỐT NGHIỆP TRUNG HỌC PHỔ~THÔNG\\NĂM 2026\else\usebox0\fi}\\[0.15cm]
+    {\bfseries Môn thi: LỊCH SỬ}\\[0.15cm]
+    {\itshape Thời gian làm bài: 50 phút, không kể thời gian phát đề}
+\end{minipage}
+
+\vspace{0.4cm}
+\noindent
+\begin{minipage}[t]{0.68\textwidth}
+    Họ, tên thí sinh: \dotfill\\[0.15cm]
+    Số báo danh: \dotfill
+\end{minipage}%
+\hfill
+\fbox{\begin{minipage}{3.6cm}\centering\textbf{Mã đề: 8650}\end{minipage}}
+
+\vspace{0.5cm}
+
+
+% LECTURING-PART: P1
+\textbf{Phần I: Chọn một đáp án.}\par
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 1:} Trong khối đại đoàn kết toàn dân tộc Việt Nam hiện nay, liên minh nào được xác định là nền tảng?\par
+\noindent A. Giữa các hiệp hội doanh nghiệp với tổ chức quốc tế.\par
+\noindent B. Giữa giai cấp công nhân, giai cấp nông dân và đội ngũ trí thức.\par
+\noindent C. Giữa các tổ chức quân sự với cơ quan ngoại giao.\par
+\noindent D. Giữa cộng đồng người Việt ở ngoài nước với các nước sở tại.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 2:} Cuộc kháng chiến nào sau đây kết thúc bằng thất bại của triều đình trước quân xâm lược?\par
+\noindent A. Kháng chiến chống Tống thời Lý.\par
+\noindent B. Kháng chiến chống Minh của nhà Hồ.\par
+\noindent C. Kháng chiến chống Nguyên thời Trần.\par
+\noindent D. Kháng chiến chống Thanh thời Tây Sơn.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 3:} Phong trào nào góp phần đánh đổ các tập đoàn phong kiến chia cắt và tạo cơ sở thống nhất đất nước cuối thế kỉ XVIII?\par
+\noindent A. Khởi nghĩa Hai Bà Trưng.\par
+\noindent B. Khởi nghĩa Lam Sơn.\par
+\noindent C. Phong trào Cần vương.\par
+\noindent D. Phong trào Tây Sơn.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 4:} Nguyên tắc nào gắn với việc thành lập Liên bang Cộng hòa xã hội chủ nghĩa Xô viết?\par
+\noindent A. Các nước cộng hòa được sáp nhập theo thứ bậc thuộc địa.\par
+\noindent B. Bình đẳng và tự nguyện giữa các nước cộng hòa tham gia.\par
+\noindent C. Chỉ các nước có cùng một dân tộc mới được tham gia.\par
+\noindent D. Các nước cộng hòa tiếp tục thuộc chế độ quân chủ chuyên chế.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 5:} Sau Chiến tranh thế giới thứ hai, sự kiện nào thể hiện chủ nghĩa xã hội mở rộng ra ngoài phạm vi Liên Xô?\par
+\noindent A. Thành lập Liên minh châu Âu.\par
+\noindent B. Sự hình thành tổ chức NATO.\par
+\noindent C. Các nước dân chủ nhân dân Đông Âu đi lên xây dựng chủ nghĩa xã hội.\par
+\noindent D. Kí kết Hiệp ước Versailles sau Chiến tranh thế giới thứ nhất.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 6:} Trước khi Đảng Cộng sản Việt Nam ra đời, Nguyễn Ái Quốc đã thực hiện hoạt động nào nhằm chuẩn bị đội ngũ cách mạng?\par
+\noindent A. Tổ chức các lớp huấn luyện của Hội Việt Nam Cách mạng Thanh niên.\par
+\noindent B. Chủ trì thành lập Mặt trận Việt Minh tại Cao Bằng.\par
+\noindent C. Đọc Tuyên ngôn Độc lập tại Hà Nội.\par
+\noindent D. Ra lời kêu gọi Toàn quốc kháng chiến chống Pháp.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 7:} Việc Nguyễn Ái Quốc chủ trì hợp nhất các tổ chức cộng sản đầu năm 1930 có ý nghĩa trực tiếp nào?\par
+\noindent A. Chuyển nhiệm vụ cách mạng từ giải phóng dân tộc sang phát triển thuộc địa.\par
+\noindent B. Hoàn thành ngay việc giành chính quyền trên phạm vi cả nước.\par
+\noindent C. Khắc phục phân tán tổ chức, tạo một chính đảng lãnh đạo thống nhất.\par
+\noindent D. Thay thế việc xây dựng lực lượng quần chúng bằng hoạt động đối ngoại.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 8:} Hoạt động nào của Nguyễn Ái Quốc trực tiếp góp phần chuẩn bị về tư tưởng, lí luận cho việc thành lập Đảng?\par
+\noindent A. Truyền bá chủ nghĩa Mác--Lênin và đường lối cách mạng giải phóng dân tộc.\par
+\noindent B. Đọc Tuyên ngôn Độc lập thành lập nước Việt Nam Dân chủ Cộng hòa.\par
+\noindent C. Chủ trì đàm phán kí Hiệp định Genève về Đông Dương.\par
+\noindent D. Lãnh đạo chiến dịch Hồ Chí Minh giải phóng Sài Gòn.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 9:} Thuật ngữ “trật tự hai cực” trong quan hệ quốc tế sau Chiến tranh thế giới thứ hai nhấn mạnh đặc điểm nào?\par
+\noindent A. Thế giới được điều hành bởi hai tổ chức kinh tế khu vực.\par
+\noindent B. Hai trung tâm quyền lực chủ yếu gắn với Mỹ và Liên Xô.\par
+\noindent C. Mọi quốc gia đều tham gia một trong hai liên minh quân sự.\par
+\noindent D. Chỉ còn hai quốc gia có quan hệ ngoại giao với nhau.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 10:} Trong ba trụ cột của Cộng đồng ASEAN, trụ cột nào tập trung vào hợp tác kinh tế của các nước thành viên?\par
+\noindent A. Cộng đồng Kinh tế ASEAN.\par
+\noindent B. Hội đồng Bảo an ASEAN.\par
+\noindent C. Liên minh Tiền tệ ASEAN.\par
+\noindent D. Hiệp ước Phòng thủ ASEAN.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 11:} Cuộc tổng tuyển cử bầu Quốc hội khóa I của nước Việt Nam Dân chủ Cộng hòa diễn ra vào thời điểm nào?\par
+\noindent A. Tháng 9-1945.\par
+\noindent B. Tháng 12-1946.\par
+\noindent C. Tháng 1-1946.\par
+\noindent D. Tháng 7-1954.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 12:} Bài tập mô phỏng sử học: một nhóm phải phân biệt tác động của Hiệp định Paris với tác động của thắng lợi Tây Nguyên khi giải thích quyết định đẩy nhanh giải phóng miền Nam năm 1975. Họ được giao giả định hẹp: kết quả và phản ứng quốc tế sau Phước Long giữ như thực tế; đối phương vẫn rút khỏi Tây Nguyên nhưng rút có tổ chức, bảo toàn lực lượng để tăng phòng thủ ven biển. Nhóm phải chọn cặp công việc nghiên cứu tiếp theo: một việc kiểm tra điều kiện can thiệp từ bên ngoài, một việc kiểm tra cơ sở tăng nhịp tiến công trong nước. Cặp nào dùng đúng giá trị từng loại bằng chứng và trúng thay đổi trong giả định?\par
+\noindent A. Đối chiếu điều khoản Paris với phản ứng sau Phước Long để đánh giá can thiệp; theo dõi việc mất địa bàn Tây Nguyên như chỉ báo chính cho khả năng mở rộng tiến công.\par
+\noindent B. Đối chiếu điều khoản Paris với phản ứng sau Phước Long để đánh giá can thiệp; theo dõi lực lượng rút về và liên kết phòng thủ ven biển để đánh giá khả năng mở rộng tiến công.\par
+\noindent C. Đối chiếu phản ứng sau Phước Long với tổn thất lực lượng ở Tây Nguyên để đánh giá can thiệp; theo dõi việc thi hành Paris như chỉ báo chính cho khả năng mở rộng tiến công.\par
+\noindent D. Đối chiếu điều khoản Paris với bố trí phòng thủ ven biển để đánh giá can thiệp; theo dõi sự chuyển biến sau Phước Long như chỉ báo chính cho khả năng mở rộng tiến công.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 13:} Đại hội đại biểu toàn quốc nào của Đảng Cộng sản Việt Nam đã khởi xướng đường lối Đổi mới năm 1986?\par
+\noindent A. Đại hội IV.\par
+\noindent B. Đại hội V.\par
+\noindent C. Đại hội VI.\par
+\noindent D. Đại hội VII.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 14:} Việt Nam và Hoa Kỳ chính thức bình thường hóa quan hệ ngoại giao vào năm nào?\par
+\noindent A. 1973.\par
+\noindent B. 1986.\par
+\noindent C. 1995.\par
+\noindent D. 2007.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 15:} Trong hệ thống bài học của cách mạng Việt Nam từ khi Đảng Cộng sản Việt Nam ra đời, nhân tố nào giữ vai trò lãnh đạo?\par
+\noindent A. Sự giúp đỡ của bạn bè quốc tế.\par
+\noindent B. Sự lãnh đạo của Đảng Cộng sản Việt Nam.\par
+\noindent C. Truyền thống đoàn kết của dân tộc.\par
+\noindent D. Sức mạnh của hậu phương cách mạng.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 16:} Vì sao bài học phát huy sức mạnh dân tộc gắn với sức mạnh thời đại không có nghĩa là dựa vào sự giúp đỡ từ bên ngoài?\par
+\noindent A. Vì sức mạnh thời đại chủ yếu thể hiện ở viện trợ vật chất.\par
+\noindent B. Vì đoàn kết quốc tế chỉ có ý nghĩa sau khi giành chính quyền.\par
+\noindent C. Vì nội lực giữ vai trò quyết định, hỗ trợ quốc tế là điều kiện thuận lợi.\par
+\noindent D. Vì có thể thay tổ chức lực lượng trong nước bằng liên minh ngoại giao.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 17:} Sau khi đất nước thống nhất, nhiệm vụ bảo vệ Tổ quốc được thể hiện trực tiếp qua hoạt động nào?\par
+\noindent A. Đấu tranh bảo vệ biên giới Tây Nam và biên giới phía Bắc.\par
+\noindent B. Thực hiện Tổng khởi nghĩa giành chính quyền cả nước.\par
+\noindent C. Tiến hành chiến dịch Điện Biên Phủ chống thực dân Pháp.\par
+\noindent D. Tổ chức phong trào Đồng khởi tại miền Nam.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 18:} Điểm khác về ý nghĩa trực tiếp của bảo vệ biên giới sau thống nhất so với Tổng tiến công và nổi dậy Xuân 1975 là gì?\par
+\noindent A. Hoàn thành giải phóng miền Nam khỏi chính quyền Sài Gòn.\par
+\noindent B. Kết thúc chiến tranh chống Mĩ trên phạm vi cả nước.\par
+\noindent C. Tạo điều kiện kí Hiệp định Paris về Việt Nam.\par
+\noindent D. Giữ vững chủ quyền lãnh thổ của một nước đã thống nhất.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 19:} Điểm chung trong cách tổ chức chống ngoại xâm của nhà Trần và Tây Sơn là gì?\par
+\noindent A. Cùng lấy phòng tuyến sông Như Nguyệt làm trung tâm.\par
+\noindent B. Cùng kết thúc bằng cuộc tiến công vào Ung Châu.\par
+\noindent C. Chủ động tạo thế rồi tiến hành đòn quân sự quyết định.\par
+\noindent D. Cùng lấy vây thành Đông Quan làm phương thức chủ yếu.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 20:} Dùng kiến thức về phân công giải giáp quân Nhật của Đồng minh và tình thế Việt Nam cuối năm 1945 để xét giả định: Nhật vẫn đầu hàng, nhưng các lực lượng được phân công giải giáp đã kiểm soát Hà Nội và Sài Gòn trước khi Tổng khởi nghĩa bắt đầu; chính sách của họ đối với cách mạng giữ như thực tế. Chuỗi hệ quả nào phù hợp với cả hai địa bàn?\par
+\noindent A. Quân Trung Hoa Dân quốc ở Bắc gây sức ép từ các lực lượng chống đối; quân Anh ở Nam tạo thuận lợi cho Pháp trở lại; thời cơ do Nhật đầu hàng không còn đi cùng khoảng trống kiểm soát đô thị như thực tế.\par
+\noindent B. Quân Trung Hoa Dân quốc ở Bắc gây sức ép từ các lực lượng chống đối; quân Anh ở Nam tạo thuận lợi cho Pháp trở lại; nhiệm vụ chính trước khởi nghĩa chuyển từ giành chính quyền sang bảo vệ chính quyền đã được Đồng minh trao.\par
+\noindent C. Quân Trung Hoa Dân quốc ở Bắc giải giáp Nhật; quân Anh ở Nam tạo thuận lợi cho Pháp trở lại; bộ máy Nhật suy yếu khiến khả năng giành chính quyền tại hai đô thị không đổi so với thực tế.\par
+\noindent D. Quân Trung Hoa Dân quốc ở Bắc gây sức ép từ các lực lượng chống đối; quân Anh ở Nam giải giáp Nhật; hai lực lượng ấy cùng tham gia chống Nhật nên tác động chính trị với cách mạng thuận chiều với việc Nhật đầu hàng.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 21:} Vai trò của căn cứ địa trong chuẩn bị Tổng khởi nghĩa và của hậu phương trong kháng chiến có điểm chung nào?\par
+\noindent A. Tạo nơi bảo đảm lực lượng và điều kiện vật chất cho đấu tranh.\par
+\noindent B. Là nơi chỉ tiến hành hoạt động kinh tế, tách khỏi chính trị.\par
+\noindent C. Là lãnh thổ đã được quốc tế công nhận độc lập trước thắng lợi.\par
+\noindent D. Là bộ máy thay thế việc chỉ đạo đấu tranh trên cả nước.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 22:} Xét mô hình giả định về chuyển đổi cơ chế kinh tế ở Việt Nam: trước đổi mới, cơ sở sản xuất nhận đầu vào và giao đầu ra theo chỉ tiêu; lỗ được bù. Sau đổi mới, cơ sở được tự mua đầu vào, bán đầu ra và giữ lợi nhuận nhưng tự chịu lỗ. Một người dự đoán: nếu vẫn bù toàn bộ lỗ thì tự chủ cũng tạo sức ép tiết kiệm nguồn lực như cơ chế mới. Phương án nào dựng đúng tác động của giả định này, đồng thời phân biệt nó với mở rộng các thành phần kinh tế?\par
+\noindent A. Giữ lợi nhuận khuyến khích tăng thu; bù lỗ chuyển chi phí quyết định kém sang Nhà nước; cho tư nhân tham gia tự nó không thay chế độ chịu lỗ của cơ sở được bù.\par
+\noindent B. Giữ lợi nhuận khuyến khích tăng thu; tự mua đầu vào đã chuyển mọi hậu quả thua lỗ cho cơ sở; cho tư nhân tham gia bổ sung cạnh tranh trên thị trường.\par
+\noindent C. Bù lỗ tạo nguồn bảo đảm cho sản xuất; vì được tự bán nên khoản bù trở thành thu nhập do thị trường xác định; cho tư nhân tham gia mở rộng hình thức sở hữu.\par
+\noindent D. Giữ lợi nhuận tăng động cơ sản xuất; có tư nhân cạnh tranh làm khoản bù lỗ tự chấm dứt; cơ sở nhà nước và tư nhân cùng bán hàng theo nhu cầu.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 23:} Hồ Chí Minh được nhân dân Việt Nam tôn vinh gắn trực tiếp với vai trò nào?\par
+\noindent A. Người lãnh đạo phong trào Cần vương cuối thế kỉ XIX.\par
+\noindent B. Người tổ chức cuộc cải cách Minh Trị tại Nhật Bản.\par
+\noindent C. Lãnh tụ sự nghiệp giải phóng dân tộc Việt Nam.\par
+\noindent D. Người khởi xướng phong trào Đông du đầu thế kỉ XX.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 24:} Vì sao nghiên cứu di sản Hồ Chí Minh cần xét cả hoạt động giải phóng dân tộc lẫn tư tưởng về con người và văn hóa?\par
+\noindent A. Vì hai mặt ấy cho thấy đóng góp chính trị gắn với giá trị nhân văn.\par
+\noindent B. Vì thành tựu văn hóa có thể thay thế việc đánh giá hoạt động chính trị.\par
+\noindent C. Vì ảnh hưởng quốc tế được xác định bằng số địa danh mang tên Người.\par
+\noindent D. Vì mọi hoạt động văn hóa đều có cùng mục tiêu trực tiếp như đấu tranh vũ trang.\par
+\end{minipage}\par\vspace{0.12cm}
+
+% LECTURING-PART: P2
+\textbf{Phần II: Đúng/sai. Mỗi câu gồm bốn ý a--d.}\par
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 1:} Ngữ liệu do người biên soạn tự tổng hợp, không phải trích dẫn. So sánh kết thúc hai cuộc kháng chiến qua Hiệp định Genève về Đông Dương và Hiệp định Paris về Việt Nam. Đoạn dẫn không nhắc lại nội dung các hiệp định; các ý dưới yêu cầu dùng kiến thức về cam kết quân sự, tình trạng lãnh thổ và lực lượng còn lại. Xác định đúng/sai từng ý; các giả định chỉ dùng để kiểm quan hệ nhân quả, không phải sự kiện được khẳng định đã xảy ra.\par
+\noindent a) Nếu thay điều khoản quân Mĩ rút trong Paris bằng việc hai phía Việt Nam cùng chuyển lực lượng sang hai vùng tập kết mới theo một giới tuyến mới, ta đã thay cơ chế quân sự của Paris bằng một cơ chế gần với tập kết ở Genève, chứ không chỉ đổi tên lực lượng rút.\par
+\noindent b) Giới tuyến quân sự tạm thời theo Genève là biên giới quốc gia lâu dài được hiệp định xác lập.\par
+\noindent c) Hiệp định Paris được kí trước thắng lợi giải phóng miền Nam năm 1975.\par
+\noindent d) Giữ nguyên mục tiêu giải phóng miền Nam, việc Paris không tạo một cuộc tập kết mới của lực lượng Việt Nam theo giới tuyến như Genève khiến vấn đề đối đầu giữa các lực lượng tại miền Nam vẫn là mắt xích cần xét; không thể suy nhiệm vụ sau hai hiệp định giống nhau từ việc cả hai đều yêu cầu ngừng bắn.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 2:} Bài tập lịch sử giả định do người biên soạn đặt ra, không phải trích dẫn: Một triển lãm giải thích việc ASEAN mở rộng ở thập niên 1990 bằng hai tuyến: tháo gỡ đối đầu chính trị trong khu vực và mở rộng hợp tác phát triển. Giả sử tiến trình giải quyết vấn đề Campuchia vẫn diễn ra như thực tế, nhưng xu thế quốc tế sau Chiến tranh lạnh là các nước lớn tiếp tục đặt Đông Nam Á vào hai hệ thống liên kết đối địch, còn nhu cầu hợp tác kinh tế của các nước khu vực giữ như thực tế. Hãy dùng lịch sử hình thành, mở rộng ASEAN và quan hệ Đông Dương--ASEAN để xét từng nhận định; không suy đoán năm gia nhập thay thế.\par
+\noindent a) ASEAN được thành lập năm 1967 với năm nước thành viên.\par
+\noindent b) Trong triển lãm giả định, ghép mốc giải quyết vấn đề Campuchia với chương trình mở rộng hợp tác kinh tế vẫn giải thích được một phần động lực mở rộng; nhưng cần bổ sung trở lực đối với việc chuyển quan hệ Đông Dương--ASEAN từ đối đầu sang hợp tác, nên không thể dùng nguyên cơ chế mở rộng của thập niên 1990 thực tế.\par
+\noindent c) Mở rộng số thành viên và tăng mức độ liên kết là hai quá trình có quan hệ nhưng không đồng nhất.\par
+\noindent d) Nguyên tắc không can thiệp công việc nội bộ thể hiện sự coi trọng chủ quyền của các nước thành viên.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 3:} Bài tập đối chiếu do người biên soạn tự đặt: Hãy phân tích hai thời điểm năm 1945: chuẩn bị giành chính quyền trước khi quân Đồng minh vào giải giáp và bảo vệ chính quyền sau khi các lực lượng ấy đã hiện diện. Xét thêm phương án giả định: Việt Minh đã có tổ chức và lực lượng như thực tế, Nhật vẫn đầu hàng, nhưng quân giải giáp đã kiểm soát Hà Nội và Sài Gòn trước khi phát lệnh tổng khởi nghĩa. Không giả định lực lượng giải giáp thay đổi chính sách, cũng không coi mọi khó khăn sau cách mạng đều xuất hiện nguyên dạng trước cách mạng.\par
+\noindent a) Lực lượng Đồng minh được phân công vào phía bắc vĩ tuyến 16 để giải giáp quân Nhật là quân Trung Hoa Dân quốc.\par
+\noindent b) Nhật đầu hàng làm suy yếu chỗ dựa của chính quyền thân Nhật, nhưng không đồng nghĩa mọi lực lượng nước ngoài đều ủng hộ việc Việt Minh giành chính quyền.\par
+\noindent c) Trong phương án giả định, có thể chuyển nguyên cách xử lí sức ép đối với chính quyền trung ương sau Cách mạng tháng Tám thành phương án giành Hà Nội, đồng thời chuyển nguyên cách chống Pháp trở lại ở Nam Bộ thành phương án giành Sài Gòn; hai chuyển đổi đều bảo toàn đối tượng, vị thế chính trị và công cụ hành động của cách mạng.\par
+\noindent d) Chính quyền cách mạng phải đồng thời đối diện khó khăn trong nước và sức ép từ bên ngoài sau khi được thành lập.\par
+\end{minipage}\par\vspace{0.12cm}
+
+\par\noindent\begin{minipage}{\linewidth}
+\noindent\textbf{Câu 4:} Ngữ liệu tự biên soạn, không phải trích dẫn: Một hồ sơ đặt Hiệp định Genève năm 1954 bên cạnh Hiệp định Paris năm 1973. Hồ sơ không cung cấp sẵn cách bố trí lực lượng sau từng hiệp định. Người học phải dùng kiến thức lịch sử để đánh giá việc dùng một sơ đồ chung cho cả hai: “ngừng bắn \(\rightarrow\) bố trí lại lực lượng \(\rightarrow\) nhiệm vụ đấu tranh tiếp theo”. Trong bài tập giả định, có đề xuất thay cơ chế bố trí lực lượng Việt Nam sau Paris bằng cơ chế tập kết theo vùng như sau Genève, nhưng giữ mục tiêu thống nhất và việc quân Mĩ rút như lịch sử.\par
+\noindent a) Sự thay thế giả định sẽ làm thay đổi cả điểm xuất phát quân sự của nhiệm vụ giải phóng miền Nam: việc quân Mĩ rút không còn đi cùng cách bố trí lực lượng cách mạng tại miền Nam như sau Paris thực tế; vì vậy không thể giữ nguyên sơ đồ nối từ kết quả ngoại giao đến khả năng tiến công, dù mục tiêu thống nhất không đổi.\par
+\noindent b) Giới tuyến quân sự tạm thời theo Genève không phải biên giới quốc gia lâu dài.\par
+\noindent c) Sau Paris, quân Mĩ và đồng minh rút khỏi miền Nam, nhưng chính quyền và quân đội Sài Gòn vẫn tồn tại.\par
+\noindent d) Mục tiêu thống nhất đất nước giúp giải thích vì sao chấm dứt chiến sự và hoàn tất nhiệm vụ dân tộc không phải hai khái niệm đồng nhất.\par
+\end{minipage}\par\vspace{0.12cm}
+\begin{center}\textbf{HẾT}\end{center}\end{document}

@@ -1,0 +1,204 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "ff8957fa36232074",
+    "topic": "Mũ và lôgarit",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Mô hình biến thiên tỉ lệ và hai phép đo tại các thời điểm khác nhau.",
+        "task": "Kiểm tra hệ số tốc độ được đề xuất.",
+        "reasoning": [
+          "Lập tỉ số hai giá trị của mô hình mũ.",
+          "Lấy lôgarit để tách hệ số tốc độ.",
+          "Đối chiếu độ lớn và dấu của hệ số với khẳng định."
+        ],
+        "combines": [
+          "Mô hình mũ",
+          "Lôgarit",
+          "Xu hướng tăng giảm"
+        ],
+        "difficulty_source": "Giữ đúng thứ tự thời điểm và dấu của tốc độ suy giảm.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Mô hình hàm mũ, hai phép đo và một hằng số tích phân được đề xuất.",
+        "task": "Kiểm tra hằng số xác định mức ban đầu của mô hình.",
+        "reasoning": [
+          "Xác định hệ số tốc độ từ hai phép đo.",
+          "Thế một phép đo vào biểu thức lôgarit của mô hình.",
+          "Giải hằng số và đối chiếu khẳng định."
+        ],
+        "combines": [
+          "Hàm mũ",
+          "Lôgarit",
+          "Xác định tham số"
+        ],
+        "difficulty_source": "Phối hợp hai phép đo để xác định đúng vai trò từng tham số.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Một mô hình suy giảm được xác định qua dữ liệu đo và một ngưỡng tại thời điểm về sau.",
+        "task": "Kiểm tra đại lượng dự báo có vượt ngưỡng hay không.",
+        "reasoning": [
+          "Xác định mô hình từ các phép đo.",
+          "Tính giá trị dự báo hoặc xác định thời điểm chạm ngưỡng.",
+          "Dùng tính giảm để so sánh với ngưỡng tại thời điểm được hỏi."
+        ],
+        "combines": [
+          "Mô hình mũ",
+          "Bất đẳng thức",
+          "Tính đơn điệu"
+        ],
+        "difficulty_source": "Chọn cách so sánh theo ngưỡng và tính giảm thay vì chỉ thay số máy móc.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Quan hệ tăng trưởng tỉ lệ cùng giá trị của đại lượng tại các thời điểm.",
+        "task": "Kiểm tra hằng số tăng trưởng được đề xuất.",
+        "reasoning": [
+          "Biểu diễn tỉ số các giá trị bằng một hàm mũ của khoảng thời gian.",
+          "Lấy lôgarit để tìm hằng số.",
+          "Đối chiếu nhận định."
+        ],
+        "combines": [
+          "Mô hình hàm mũ",
+          "Lôgarit"
+        ],
+        "difficulty_source": "Tính hệ số tăng trưởng từ tỉ số và khoảng thời gian.",
+        "evidence_uncertainty": "Thiếu khóa đúng sai khớp mã; lớp được gán theo thao tác mũ và lôgarit, mô hình liên hệ đạo hàm huy động kiến thức lớp sau.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "163f20908cf7|P2|2|b",
+      "163f20908cf7|P2|2|c",
+      "163f20908cf7|P2|2|d",
+      "0ecb85132b84|P2|1|b",
+      "0ecb85132b84|P2|1|c",
+      "0ecb85132b84|P2|1|d",
+      "7ab78715480e|P2|1|a"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "ff8957fa36232074",
+    "stem": "Trong một mô hình giả định, lượng chất màu còn lại trong một bể được biểu diễn bởi Q(t) = A·e^(kt), với A > 0, k là hằng số, t ≥ 0 tính bằng giờ và Q(t) tính bằng gam. Biết Q(2) = 72 và Q(5) = 9. Xét tính đúng sai của các khẳng định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "e^(3k) = 1/8."
+      },
+      {
+        "sub": "b",
+        "text": "k = −ln(2)/3."
+      },
+      {
+        "sub": "c",
+        "text": "Lượng chất màu tại thời điểm t = 0 là 288 gam."
+      },
+      {
+        "sub": "d",
+        "text": "Tại thời điểm t = 6, lượng chất màu còn lại nhỏ hơn 4 gam."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Từ Q(5)/Q(2) = e^(3k) = 9/72 = 1/8, suy ra 3k = ln(1/8) = −3ln(2), nên k = −ln(2). Do đó a đúng, b sai. Thay Q(2) = 72 vào mô hình: A·e^(−2ln(2)) = 72, suy ra A = 288, nên c đúng. Khi t = 6, Q(6) = 288·2^(−6) = 4,5 gam, lớn hơn 4 gam, nên d sai.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Thay ln(1/8) bằng −ln(2), rồi chia tiếp cho khoảng thời gian 3 giờ.",
+        "why_plausible": "Học sinh nhận ra cơ số 2 nhưng bỏ mất số mũ 3 khi lấy lôgarit của 1/8."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Cho rằng sau giờ thứ năm lượng chất giảm thêm 8 lần trong một giờ, nên thu được 9/8 gam.",
+        "why_plausible": "Học sinh áp dụng hệ số giảm của cả khoảng từ giờ thứ hai đến giờ thứ năm cho một giờ riêng lẻ."
+      }
+    ],
+    "level_reason": "Mức cao nhất là TH: mô hình đã được cung cấp; học sinh lập tỉ số, lấy lôgarit, xác định tham số và thay thời điểm theo quy trình quen thuộc.",
+    "prerequisites": [
+      "Quy tắc lũy thừa và lôgarit",
+      "Giải phương trình mũ đơn giản",
+      "Xác định tham số trong mô hình hàm mũ"
+    ],
+    "variation_guidance": "Có thể thay hai thời điểm và hai lượng đo, chọn tỉ số là một lũy thừa đơn giản để việc tính toán không lấn át yêu cầu hiểu mô hình.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "ff8957fa36232074",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Ta có e^(3k) = Q(5)/Q(2) = 9/72 = 1/8, suy ra k = −ln(2). Từ A·e^(2k) = 72 suy ra A = 288. Do đó Q(0) = 288 gam và Q(6) = 288/64 = 4,5 gam, lớn hơn 4 gam.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Cả bốn ý đều dùng quy trình quen thuộc: lấy tỉ số hai giá trị của hàm mũ, giải tìm k, thế tìm A và tính giá trị hàm. Các phép tính phụ thuộc nhau vẫn là thao tác thường quy."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/72f40c9864c88dfd76e88581be3453303c3ce7f0914947fafc60887a8d50c650.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/72f40c9864c88dfd76e88581be3453303c3ce7f0914947fafc60887a8d50c650.resolve.json"
+}

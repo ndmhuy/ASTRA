@@ -1,6 +1,6 @@
 # Hồ sơ theo chủ đề — sinh-hoc
 
-Đây là lớp hồ sơ đang bổ sung. Audit ma trận, audit prototype, mức NB/TH/VD và câu mẫu mới được báo trạng thái riêng; trích xuất kỹ thuật đạt không có nghĩa hồ sơ ra đề đã đủ.
+Hồ sơ tổng hợp cách ra đề theo chủ đề, nối audit ma trận/prototype, NB/TH/VD và câu mẫu mới. Trạng thái kiểm định hiện tại ở completion.json; hoàn tất bản nghiên cứu không đồng nghĩa đã giáo viên duyệt hoặc đã tích hợp runtime.
 
 Tên chủ đề đã được ánh xạ về họ/chương; vẫn cần rà ánh xạ.
 
@@ -58,11 +58,47 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 **Đối chiếu ma trận và NB/TH/VD:**
 
 - Họ chủ đề này chưa được ánh xạ vào một chương mặc định; cần xem kết luận audit trước khi đề xuất thêm.
-- Phân bố NB/TH/VD: xem [bảng mức nhận thức](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md). Đây là nhãn trên khái quát, chờ rà đề gốc; không quy đổi từ thấp/vừa/cao.
 
-**Câu mẫu mới:** chưa sinh và tự giải độc lập. Các mô tả phía trên là khái quát từ bằng chứng, không phải câu mẫu có thể đưa vào đề.
+**Cách dùng dữ kiện thuộc lòng — số câu/ý trong mẫu:**
 
-**Audit prototype theo chủ đề:** xem audit môn đã xuất; chưa có bảng nối đầy đủ đến chủ đề này.
+| Nguồn | Hỏi trực tiếp | Cho làm gợi ý | Cần trong suy luận | Không dùng | Chưa rõ |
+|---|---:|---:|---:|---:|---:|
+| Chính thức | 0 | 0 | 0 | 1 | 0 |
+| Tỉnh/trường | 0 | 0 | 0 | 0 | 0 |
+
+**Cách tăng yêu cầu suy luận có bằng chứng:**
+
+Chưa có thao tác tăng yêu cầu được aggregate xác lập riêng cho chủ đề; không tự tạo dạng khó từ số bước hoặc độ dài.
+
+**NB/TH/VD quan sát — đơn vị câu/ý:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|---:|---:|---:|---:|
+| official / P1 | 0 | 1 | 0 | 0 |
+
+Nhãn dựa trên khái quát đã trích, chưa phải rà toàn bộ câu gốc hoặc điểm học sinh. TF đếm từng ý; slot mặc định đếm câu. Không so trực tiếp hai đơn vị này.
+
+**Mức toàn câu có chứa chủ đề — cùng đơn vị câu với slot ma trận:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|:---:|:---:|:---:|:---:|
+| official / P1 | 0 | 1 | 0 | 0 |
+Lấy mức cao nhất của toàn bộ ý trong câu; có ý chưa rõ thì cả câu giữ chưa rõ. Với câu tích hợp, mức này có thể do kiến thức khác quyết định. Không cộng bảng của nhiều chủ đề thành tổng câu hoặc chuyển thành hạn ngạch NB/TH/VD.
+
+**Audit ma trận liên quan:**
+
+| Phần | Slot mặc định | Đề chính thức có | Đề tỉnh có |
+|---|---:|---:|---:|
+| P1 | 0 | 1 | 0 |
+Mẫu số và kết luận đề xuất ở [audit ma trận](../../audit/matrices/sinh-hoc.md). Hiện diện không tự chứng minh cần tăng số slot; lớp bằng chứng tách riêng.
+
+**Prototype liên quan đến chủ đề:**
+
+Chưa nối được câu prototype vào chủ đề qua mapping đã kiểm; không coi đây là bằng chứng prototype không có chủ đề.
+
+**Câu mẫu mới của chủ đề:**
+
+[Đọc 1 câu mẫu, đáp án, lời giải và lượt tự giải của chủ đề](samples/topics/9a65bdaebdd2.md). Mẫu tổng hợp mới, chờ giáo viên; mẫu có cờ chưa sẵn dùng.
 
 ## 2. Chu kì tế bào và nguyên phân
 
@@ -94,11 +130,51 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 **Đối chiếu ma trận và NB/TH/VD:**
 
 - Họ chủ đề này chưa được ánh xạ vào một chương mặc định; cần xem kết luận audit trước khi đề xuất thêm.
-- Phân bố NB/TH/VD: xem [bảng mức nhận thức](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md). Đây là nhãn trên khái quát, chờ rà đề gốc; không quy đổi từ thấp/vừa/cao.
 
-**Câu mẫu mới:** chưa sinh và tự giải độc lập. Các mô tả phía trên là khái quát từ bằng chứng, không phải câu mẫu có thể đưa vào đề.
+**Cách dùng dữ kiện thuộc lòng — số câu/ý trong mẫu:**
 
-**Audit prototype theo chủ đề:** xem audit môn đã xuất; chưa có bảng nối đầy đủ đến chủ đề này.
+| Nguồn | Hỏi trực tiếp | Cho làm gợi ý | Cần trong suy luận | Không dùng | Chưa rõ |
+|---|---:|---:|---:|---:|---:|
+| Chính thức | 0 | 0 | 0 | 0 | 0 |
+| Tỉnh/trường | 0 | 1 | 0 | 1 | 0 |
+
+**Cách tăng yêu cầu suy luận có bằng chứng:**
+
+Chưa có thao tác tăng yêu cầu được aggregate xác lập riêng cho chủ đề; không tự tạo dạng khó từ số bước hoặc độ dài.
+
+**NB/TH/VD quan sát — đơn vị câu/ý:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|---:|---:|---:|---:|
+| provincial_third_party / P1 | 0 | 1 | 0 | 0 |
+| provincial_third_party / P3 | 0 | 1 | 0 | 0 |
+
+Nhãn dựa trên khái quát đã trích, chưa phải rà toàn bộ câu gốc hoặc điểm học sinh. TF đếm từng ý; slot mặc định đếm câu. Không so trực tiếp hai đơn vị này.
+
+**Mức toàn câu có chứa chủ đề — cùng đơn vị câu với slot ma trận:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|:---:|:---:|:---:|:---:|
+| provincial_third_party / P1 | 0 | 1 | 0 | 0 |
+| provincial_third_party / P3 | 0 | 1 | 0 | 0 |
+Lấy mức cao nhất của toàn bộ ý trong câu; có ý chưa rõ thì cả câu giữ chưa rõ. Với câu tích hợp, mức này có thể do kiến thức khác quyết định. Không cộng bảng của nhiều chủ đề thành tổng câu hoặc chuyển thành hạn ngạch NB/TH/VD.
+
+**Audit ma trận liên quan:**
+
+| Phần | Slot mặc định | Đề chính thức có | Đề tỉnh có |
+|---|---:|---:|---:|
+| P1 | 0 | 0 | 1 |
+| P3 | 0 | 0 | 1 |
+Mẫu số và kết luận đề xuất ở [audit ma trận](../../audit/matrices/sinh-hoc.md). Hiện diện không tự chứng minh cần tăng số slot; lớp bằng chứng tách riêng.
+
+**Prototype liên quan đến chủ đề:**
+
+- Pc48174209c / P1/4: phân hóa ước lượng low; thường quy; 0 cờ thô.
+Xem [audit prototype](../../audit/prototypes/sinh-hoc.md) để đọc nhiễu, bất đồng và giới hạn; cờ thô cần phân biệt với giới hạn đầu vào của lượt chấm.
+
+**Câu mẫu mới của chủ đề:**
+
+[Đọc 2 câu mẫu, đáp án, lời giải và lượt tự giải của chủ đề](samples/topics/399911b458f6.md). Mẫu tổng hợp mới, chờ giáo viên; mẫu có cờ chưa sẵn dùng.
 
 ## 3. Chuyển hóa năng lượng và hô hấp tế bào
 
@@ -125,11 +201,47 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 **Đối chiếu ma trận và NB/TH/VD:**
 
 - Họ chủ đề này chưa được ánh xạ vào một chương mặc định; cần xem kết luận audit trước khi đề xuất thêm.
-- Phân bố NB/TH/VD: xem [bảng mức nhận thức](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md). Đây là nhãn trên khái quát, chờ rà đề gốc; không quy đổi từ thấp/vừa/cao.
 
-**Câu mẫu mới:** chưa sinh và tự giải độc lập. Các mô tả phía trên là khái quát từ bằng chứng, không phải câu mẫu có thể đưa vào đề.
+**Cách dùng dữ kiện thuộc lòng — số câu/ý trong mẫu:**
 
-**Audit prototype theo chủ đề:** xem audit môn đã xuất; chưa có bảng nối đầy đủ đến chủ đề này.
+| Nguồn | Hỏi trực tiếp | Cho làm gợi ý | Cần trong suy luận | Không dùng | Chưa rõ |
+|---|---:|---:|---:|---:|---:|
+| Chính thức | 0 | 0 | 0 | 1 | 0 |
+| Tỉnh/trường | 0 | 0 | 0 | 0 | 0 |
+
+**Cách tăng yêu cầu suy luận có bằng chứng:**
+
+Chưa có thao tác tăng yêu cầu được aggregate xác lập riêng cho chủ đề; không tự tạo dạng khó từ số bước hoặc độ dài.
+
+**NB/TH/VD quan sát — đơn vị câu/ý:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|---:|---:|---:|---:|
+| official / P1 | 1 | 0 | 0 | 0 |
+
+Nhãn dựa trên khái quát đã trích, chưa phải rà toàn bộ câu gốc hoặc điểm học sinh. TF đếm từng ý; slot mặc định đếm câu. Không so trực tiếp hai đơn vị này.
+
+**Mức toàn câu có chứa chủ đề — cùng đơn vị câu với slot ma trận:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|:---:|:---:|:---:|:---:|
+| official / P1 | 1 | 0 | 0 | 0 |
+Lấy mức cao nhất của toàn bộ ý trong câu; có ý chưa rõ thì cả câu giữ chưa rõ. Với câu tích hợp, mức này có thể do kiến thức khác quyết định. Không cộng bảng của nhiều chủ đề thành tổng câu hoặc chuyển thành hạn ngạch NB/TH/VD.
+
+**Audit ma trận liên quan:**
+
+| Phần | Slot mặc định | Đề chính thức có | Đề tỉnh có |
+|---|---:|---:|---:|
+| P1 | 0 | 1 | 0 |
+Mẫu số và kết luận đề xuất ở [audit ma trận](../../audit/matrices/sinh-hoc.md). Hiện diện không tự chứng minh cần tăng số slot; lớp bằng chứng tách riêng.
+
+**Prototype liên quan đến chủ đề:**
+
+Chưa nối được câu prototype vào chủ đề qua mapping đã kiểm; không coi đây là bằng chứng prototype không có chủ đề.
+
+**Câu mẫu mới của chủ đề:**
+
+[Đọc 1 câu mẫu, đáp án, lời giải và lượt tự giải của chủ đề](samples/topics/699648ae9832.md). Mẫu tổng hợp mới, chờ giáo viên; mẫu có cờ chưa sẵn dùng.
 
 ## 4. Các phân tử sinh học
 
@@ -161,11 +273,50 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 **Đối chiếu ma trận và NB/TH/VD:**
 
 - Họ chủ đề này chưa được ánh xạ vào một chương mặc định; cần xem kết luận audit trước khi đề xuất thêm.
-- Phân bố NB/TH/VD: xem [bảng mức nhận thức](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md). Đây là nhãn trên khái quát, chờ rà đề gốc; không quy đổi từ thấp/vừa/cao.
 
-**Câu mẫu mới:** chưa sinh và tự giải độc lập. Các mô tả phía trên là khái quát từ bằng chứng, không phải câu mẫu có thể đưa vào đề.
+**Cách dùng dữ kiện thuộc lòng — số câu/ý trong mẫu:**
 
-**Audit prototype theo chủ đề:** xem audit môn đã xuất; chưa có bảng nối đầy đủ đến chủ đề này.
+| Nguồn | Hỏi trực tiếp | Cho làm gợi ý | Cần trong suy luận | Không dùng | Chưa rõ |
+|---|---:|---:|---:|---:|---:|
+| Chính thức | 0 | 0 | 0 | 0 | 0 |
+| Tỉnh/trường | 0 | 1 | 0 | 1 | 0 |
+
+**Cách tăng yêu cầu suy luận có bằng chứng:**
+
+Chưa có thao tác tăng yêu cầu được aggregate xác lập riêng cho chủ đề; không tự tạo dạng khó từ số bước hoặc độ dài.
+
+**NB/TH/VD quan sát — đơn vị câu/ý:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|---:|---:|---:|---:|
+| provincial_third_party / P1 | 1 | 0 | 0 | 0 |
+| provincial_third_party / P2 | 0 | 1 | 0 | 0 |
+
+Nhãn dựa trên khái quát đã trích, chưa phải rà toàn bộ câu gốc hoặc điểm học sinh. TF đếm từng ý; slot mặc định đếm câu. Không so trực tiếp hai đơn vị này.
+
+**Mức toàn câu có chứa chủ đề — cùng đơn vị câu với slot ma trận:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|:---:|:---:|:---:|:---:|
+| provincial_third_party / P1 | 1 | 0 | 0 | 0 |
+| provincial_third_party / P2 | 0 | 0 | 0 | 1 |
+Lấy mức cao nhất của toàn bộ ý trong câu; có ý chưa rõ thì cả câu giữ chưa rõ. Với câu tích hợp, mức này có thể do kiến thức khác quyết định. Không cộng bảng của nhiều chủ đề thành tổng câu hoặc chuyển thành hạn ngạch NB/TH/VD.
+
+**Audit ma trận liên quan:**
+
+| Phần | Slot mặc định | Đề chính thức có | Đề tỉnh có |
+|---|---:|---:|---:|
+| P1 | 0 | 0 | 1 |
+| P2 | 0 | 0 | 1 |
+Mẫu số và kết luận đề xuất ở [audit ma trận](../../audit/matrices/sinh-hoc.md). Hiện diện không tự chứng minh cần tăng số slot; lớp bằng chứng tách riêng.
+
+**Prototype liên quan đến chủ đề:**
+
+Chưa nối được câu prototype vào chủ đề qua mapping đã kiểm; không coi đây là bằng chứng prototype không có chủ đề.
+
+**Câu mẫu mới của chủ đề:**
+
+[Đọc 2 câu mẫu, đáp án, lời giải và lượt tự giải của chủ đề](samples/topics/94023a2ff992.md). Mẫu tổng hợp mới, chờ giáo viên; mẫu có cờ chưa sẵn dùng.
 
 ## 5. Công nghệ tế bào và biệt hóa
 
@@ -192,11 +343,47 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 **Đối chiếu ma trận và NB/TH/VD:**
 
 - Họ chủ đề này chưa được ánh xạ vào một chương mặc định; cần xem kết luận audit trước khi đề xuất thêm.
-- Phân bố NB/TH/VD: xem [bảng mức nhận thức](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md). Đây là nhãn trên khái quát, chờ rà đề gốc; không quy đổi từ thấp/vừa/cao.
 
-**Câu mẫu mới:** chưa sinh và tự giải độc lập. Các mô tả phía trên là khái quát từ bằng chứng, không phải câu mẫu có thể đưa vào đề.
+**Cách dùng dữ kiện thuộc lòng — số câu/ý trong mẫu:**
 
-**Audit prototype theo chủ đề:** xem audit môn đã xuất; chưa có bảng nối đầy đủ đến chủ đề này.
+| Nguồn | Hỏi trực tiếp | Cho làm gợi ý | Cần trong suy luận | Không dùng | Chưa rõ |
+|---|---:|---:|---:|---:|---:|
+| Chính thức | 0 | 0 | 0 | 0 | 0 |
+| Tỉnh/trường | 0 | 1 | 0 | 0 | 0 |
+
+**Cách tăng yêu cầu suy luận có bằng chứng:**
+
+Chưa có thao tác tăng yêu cầu được aggregate xác lập riêng cho chủ đề; không tự tạo dạng khó từ số bước hoặc độ dài.
+
+**NB/TH/VD quan sát — đơn vị câu/ý:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|---:|---:|---:|---:|
+| provincial_third_party / P1 | 0 | 1 | 0 | 0 |
+
+Nhãn dựa trên khái quát đã trích, chưa phải rà toàn bộ câu gốc hoặc điểm học sinh. TF đếm từng ý; slot mặc định đếm câu. Không so trực tiếp hai đơn vị này.
+
+**Mức toàn câu có chứa chủ đề — cùng đơn vị câu với slot ma trận:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|:---:|:---:|:---:|:---:|
+| provincial_third_party / P1 | 0 | 1 | 0 | 0 |
+Lấy mức cao nhất của toàn bộ ý trong câu; có ý chưa rõ thì cả câu giữ chưa rõ. Với câu tích hợp, mức này có thể do kiến thức khác quyết định. Không cộng bảng của nhiều chủ đề thành tổng câu hoặc chuyển thành hạn ngạch NB/TH/VD.
+
+**Audit ma trận liên quan:**
+
+| Phần | Slot mặc định | Đề chính thức có | Đề tỉnh có |
+|---|---:|---:|---:|
+| P1 | 0 | 0 | 1 |
+Mẫu số và kết luận đề xuất ở [audit ma trận](../../audit/matrices/sinh-hoc.md). Hiện diện không tự chứng minh cần tăng số slot; lớp bằng chứng tách riêng.
+
+**Prototype liên quan đến chủ đề:**
+
+Chưa nối được câu prototype vào chủ đề qua mapping đã kiểm; không coi đây là bằng chứng prototype không có chủ đề.
+
+**Câu mẫu mới của chủ đề:**
+
+[Đọc 1 câu mẫu, đáp án, lời giải và lượt tự giải của chủ đề](samples/topics/ee74784f7111.md). Mẫu tổng hợp mới, chờ giáo viên; mẫu có cờ chưa sẵn dùng.
 
 ## 6. Cấu trúc tế bào nhân thực
 
@@ -223,11 +410,47 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 **Đối chiếu ma trận và NB/TH/VD:**
 
 - Họ chủ đề này chưa được ánh xạ vào một chương mặc định; cần xem kết luận audit trước khi đề xuất thêm.
-- Phân bố NB/TH/VD: xem [bảng mức nhận thức](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md). Đây là nhãn trên khái quát, chờ rà đề gốc; không quy đổi từ thấp/vừa/cao.
 
-**Câu mẫu mới:** chưa sinh và tự giải độc lập. Các mô tả phía trên là khái quát từ bằng chứng, không phải câu mẫu có thể đưa vào đề.
+**Cách dùng dữ kiện thuộc lòng — số câu/ý trong mẫu:**
 
-**Audit prototype theo chủ đề:** xem audit môn đã xuất; chưa có bảng nối đầy đủ đến chủ đề này.
+| Nguồn | Hỏi trực tiếp | Cho làm gợi ý | Cần trong suy luận | Không dùng | Chưa rõ |
+|---|---:|---:|---:|---:|---:|
+| Chính thức | 0 | 0 | 0 | 0 | 0 |
+| Tỉnh/trường | 0 | 0 | 1 | 0 | 0 |
+
+**Cách tăng yêu cầu suy luận có bằng chứng:**
+
+Chưa có thao tác tăng yêu cầu được aggregate xác lập riêng cho chủ đề; không tự tạo dạng khó từ số bước hoặc độ dài.
+
+**NB/TH/VD quan sát — đơn vị câu/ý:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|---:|---:|---:|---:|
+| provincial_third_party / P2 | 0 | 1 | 0 | 0 |
+
+Nhãn dựa trên khái quát đã trích, chưa phải rà toàn bộ câu gốc hoặc điểm học sinh. TF đếm từng ý; slot mặc định đếm câu. Không so trực tiếp hai đơn vị này.
+
+**Mức toàn câu có chứa chủ đề — cùng đơn vị câu với slot ma trận:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|:---:|:---:|:---:|:---:|
+| provincial_third_party / P2 | 0 | 0 | 0 | 1 |
+Lấy mức cao nhất của toàn bộ ý trong câu; có ý chưa rõ thì cả câu giữ chưa rõ. Với câu tích hợp, mức này có thể do kiến thức khác quyết định. Không cộng bảng của nhiều chủ đề thành tổng câu hoặc chuyển thành hạn ngạch NB/TH/VD.
+
+**Audit ma trận liên quan:**
+
+| Phần | Slot mặc định | Đề chính thức có | Đề tỉnh có |
+|---|---:|---:|---:|
+| P2 | 0 | 0 | 1 |
+Mẫu số và kết luận đề xuất ở [audit ma trận](../../audit/matrices/sinh-hoc.md). Hiện diện không tự chứng minh cần tăng số slot; lớp bằng chứng tách riêng.
+
+**Prototype liên quan đến chủ đề:**
+
+Chưa nối được câu prototype vào chủ đề qua mapping đã kiểm; không coi đây là bằng chứng prototype không có chủ đề.
+
+**Câu mẫu mới của chủ đề:**
+
+[Đọc 1 câu mẫu, đáp án, lời giải và lượt tự giải của chủ đề](samples/topics/9d51cd71a770.md). Mẫu tổng hợp mới, chờ giáo viên; mẫu có cờ chưa sẵn dùng.
 
 ## 7. Di truyền nhiễm sắc thể và quy luật di truyền
 
@@ -402,11 +625,78 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 - Mặc định P1: NB=2, TH=2.
 - Mặc định P2: TH=1.
 - Mặc định P3: VD=1.
-- Phân bố NB/TH/VD: xem [bảng mức nhận thức](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md). Đây là nhãn trên khái quát, chờ rà đề gốc; không quy đổi từ thấp/vừa/cao.
 
-**Câu mẫu mới:** chưa sinh và tự giải độc lập. Các mô tả phía trên là khái quát từ bằng chứng, không phải câu mẫu có thể đưa vào đề.
+**Cách dùng dữ kiện thuộc lòng — số câu/ý trong mẫu:**
 
-**Audit prototype theo chủ đề:** xem audit môn đã xuất; chưa có bảng nối đầy đủ đến chủ đề này.
+| Nguồn | Hỏi trực tiếp | Cho làm gợi ý | Cần trong suy luận | Không dùng | Chưa rõ |
+|---|---:|---:|---:|---:|---:|
+| Chính thức | 0 | 4 | 0 | 4 | 0 |
+| Tỉnh/trường | 0 | 5 | 36 | 7 | 0 |
+
+**Cách tăng yêu cầu suy luận có bằng chứng:**
+
+- Chính thức: Không để tên loại biến đổi tự quyết định đáp án. Buộc người làm xác định vị trí bị tác động, quá trình đang có hiệu lực và hệ quả thực sự đối với sản phẩm hoặc biểu hiện. — có refs thuộc chủ đề trong 1 đề.
+- Chính thức: Cho các khả năng cấu hình di truyền có vẻ cùng chịu tác động; yêu cầu xét bản sao còn hoạt động và sự khác nhau giữa các dòng tế bào trước khi chấp nhận kết luận về toàn cơ thể. — có refs thuộc chủ đề trong 1 đề.
+- Chính thức: Chỉ cung cấp thông tin gia đình đủ giới hạn các khả năng kiểu gene. Người làm phải xác định trọng số có điều kiện rồi tổng hợp xác suất qua các khả năng, thay vì tự chọn một kiểu gene đại diện. — có refs thuộc chủ đề trong 1 đề.
+- Chính thức: Yêu cầu một tổ hợp gồm đặc điểm di truyền và điều kiện giới tính. Thiết kế phát biểu sai bằng cách bỏ điều kiện khi ghép xác suất hoặc dùng xác suất trong một nhóm cho toàn bộ đời con. — có refs thuộc chủ đề trong 1 đề.
+- Tỉnh/trường: Cho dữ liệu quan sát thay mô hình hoàn chỉnh; yêu cầu suy trạng thái trung gian, kiểm tra mô hình cạnh tranh rồi mới dùng cho bước tiếp theo. Không mặc định quy luật quen thuộc khi trái dữ kiện. — có refs thuộc chủ đề trong 3 đề.
+- Tỉnh/trường: Cập nhật tập đủ điều kiện và mẫu số trước khi tính; giữ phân bố cho các kiểu gene còn khả dĩ rồi tổng hợp theo trọng số. Phân biệt xác suất có điều kiện với sự kiện đồng thời. — có refs thuộc chủ đề trong 5 đề.
+- Tỉnh/trường: Nối điều kiện về cấu trúc, phép lai, nhóm được chọn và đầu ra; phương án trung gian đúng vẫn phải qua điều kiện cuối. Với đáp án ghép, kiểm tra riêng từng thành phần. — có refs thuộc chủ đề trong 5 đề.
+- Tỉnh/trường: Dùng quan hệ allele, gia đình, phân tử hoặc quần thể để kiểm tra cách đọc biểu diễn và xử lí bất định trước khi đếm hay tính. Phát biểu rõ bất thường phân li cùng giả định cần thiết. — có refs thuộc chủ đề trong 4 đề.
+- Tỉnh/trường: Để kết quả trung gian làm đầu vào bước sau; cập nhật trình tự, khung đọc hoặc thành phần nhóm thay vì tiếp tục dùng trạng thái xuất phát. — có refs thuộc chủ đề trong 1 đề.
+- Tỉnh/trường: Khi dữ kiện còn cho phép các cấu hình khác nhau, yêu cầu tìm phản ví dụ hoặc chứng minh kết luận đúng với mọi cấu hình. Bằng chứng trực tiếp cho thao tác phản ví dụ trong các mục này là quan sát riêng. — có refs thuộc chủ đề trong 1 đề.
+
+**NB/TH/VD quan sát — đơn vị câu/ý:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|---:|---:|---:|---:|
+| official / P1 | 0 | 2 | 1 | 0 |
+| official / P2 | 0 | 1 | 3 | 0 |
+| official / P3 | 0 | 0 | 1 | 0 |
+| provincial_third_party / P1 | 8 | 7 | 4 | 0 |
+| provincial_third_party / P2 | 1 | 7 | 11 | 1 |
+| provincial_third_party / P3 | 0 | 2 | 6 | 1 |
+
+Nhãn dựa trên khái quát đã trích, chưa phải rà toàn bộ câu gốc hoặc điểm học sinh. TF đếm từng ý; slot mặc định đếm câu. Không so trực tiếp hai đơn vị này.
+
+**Mức toàn câu có chứa chủ đề — cùng đơn vị câu với slot ma trận:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|:---:|:---:|:---:|:---:|
+| official / P1 | 0 | 2 | 1 | 0 |
+| official / P2 | 0 | 0 | 1 | 0 |
+| official / P3 | 0 | 0 | 1 | 0 |
+| provincial_third_party / P1 | 8 | 7 | 4 | 0 |
+| provincial_third_party / P2 | 0 | 0 | 4 | 2 |
+| provincial_third_party / P3 | 0 | 2 | 6 | 1 |
+Lấy mức cao nhất của toàn bộ ý trong câu; có ý chưa rõ thì cả câu giữ chưa rõ. Với câu tích hợp, mức này có thể do kiến thức khác quyết định. Không cộng bảng của nhiều chủ đề thành tổng câu hoặc chuyển thành hạn ngạch NB/TH/VD.
+
+**Audit ma trận liên quan:**
+
+| Phần | Slot mặc định | Đề chính thức có | Đề tỉnh có |
+|---|---:|---:|---:|
+| P1 | 4 | 1 | 5 |
+| P2 | 1 | 1 | 5 |
+| P3 | 1 | 1 | 5 |
+Mẫu số và kết luận đề xuất ở [audit ma trận](../../audit/matrices/sinh-hoc.md). Hiện diện không tự chứng minh cần tăng số slot; lớp bằng chứng tách riêng.
+
+**Prototype liên quan đến chủ đề:**
+
+- Pc48174209c / P1/3: phân hóa ước lượng low; thường quy; 0 cờ thô.
+- Pc48174209c / P1/9: phân hóa ước lượng low; thường quy; 0 cờ thô.
+- Pc48174209c / P1/10: phân hóa ước lượng medium; thường quy; 0 cờ thô.
+- Pc48174209c / P1/12: phân hóa ước lượng low; thường quy; 0 cờ thô.
+- Pc48174209c / P1/13: phân hóa ước lượng low; thường quy; 0 cờ thô.
+- Pc48174209c / P2/1: phân hóa ước lượng medium; thường quy; 0 cờ thô.
+- Pc48174209c / P2/3: phân hóa ước lượng low; thường quy; 1 cờ thô.
+- Pc48174209c / P3/2: phân hóa ước lượng low; thường quy; 0 cờ thô.
+- Pc48174209c / P3/4: phân hóa ước lượng medium; thường quy; 0 cờ thô.
+- Pc48174209c / P3/5: phân hóa ước lượng medium; thường quy; 0 cờ thô.
+Xem [audit prototype](../../audit/prototypes/sinh-hoc.md) để đọc nhiễu, bất đồng và giới hạn; cờ thô cần phân biệt với giới hạn đầu vào của lượt chấm.
+
+**Câu mẫu mới của chủ đề:**
+
+[Đọc 8 câu mẫu, đáp án, lời giải và lượt tự giải của chủ đề](samples/topics/f3a9d7edcdc2.md). Mẫu tổng hợp mới, chờ giáo viên; mẫu có cờ chưa sẵn dùng.
 
 ## 8. Di truyền phân tử
 
@@ -518,11 +808,64 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 - Mặc định P1: NB=3, TH=1.
 - Mặc định P2: TH=1.
 - Mặc định P3: VD=2.
-- Phân bố NB/TH/VD: xem [bảng mức nhận thức](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md). Đây là nhãn trên khái quát, chờ rà đề gốc; không quy đổi từ thấp/vừa/cao.
 
-**Câu mẫu mới:** chưa sinh và tự giải độc lập. Các mô tả phía trên là khái quát từ bằng chứng, không phải câu mẫu có thể đưa vào đề.
+**Cách dùng dữ kiện thuộc lòng — số câu/ý trong mẫu:**
 
-**Audit prototype theo chủ đề:** xem audit môn đã xuất; chưa có bảng nối đầy đủ đến chủ đề này.
+| Nguồn | Hỏi trực tiếp | Cho làm gợi ý | Cần trong suy luận | Không dùng | Chưa rõ |
+|---|---:|---:|---:|---:|---:|
+| Chính thức | 0 | 1 | 1 | 3 | 0 |
+| Tỉnh/trường | 0 | 9 | 10 | 5 | 0 |
+
+**Cách tăng yêu cầu suy luận có bằng chứng:**
+
+- Chính thức: Cho dữ liệu phân tử có định hướng và quy ước xử lí sản phẩm; yêu cầu liên kết mạch khuôn, bản phiên mã, khung đọc và sản phẩm hoàn chỉnh. Điểm phân hóa nằm ở sự nhất quán của cả chuỗi suy luận. — có refs thuộc chủ đề trong 1 đề.
+- Chính thức: Không để tên loại biến đổi tự quyết định đáp án. Buộc người làm xác định vị trí bị tác động, quá trình đang có hiệu lực và hệ quả thực sự đối với sản phẩm hoặc biểu hiện. — có refs thuộc chủ đề trong 1 đề.
+- Tỉnh/trường: Để kết quả trung gian làm đầu vào bước sau; cập nhật trình tự, khung đọc hoặc thành phần nhóm thay vì tiếp tục dùng trạng thái xuất phát. — có refs thuộc chủ đề trong 1 đề.
+- Tỉnh/trường: Từ đường cong, tín hiệu động hoặc quá trình đang diễn ra, suy tốc độ, vai trò và phần thông tin đã truyền. Thao tác phân biệt tác động hiện tại với lượt biểu hiện sau mới được quan sát trong một đề. — có refs thuộc chủ đề trong 1 đề.
+
+**NB/TH/VD quan sát — đơn vị câu/ý:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|---:|---:|---:|---:|
+| official / P1 | 0 | 1 | 0 | 0 |
+| official / P2 | 0 | 4 | 0 | 0 |
+| provincial_third_party / P1 | 5 | 2 | 0 | 0 |
+| provincial_third_party / P2 | 1 | 10 | 0 | 2 |
+| provincial_third_party / P3 | 0 | 1 | 2 | 1 |
+
+Nhãn dựa trên khái quát đã trích, chưa phải rà toàn bộ câu gốc hoặc điểm học sinh. TF đếm từng ý; slot mặc định đếm câu. Không so trực tiếp hai đơn vị này.
+
+**Mức toàn câu có chứa chủ đề — cùng đơn vị câu với slot ma trận:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|:---:|:---:|:---:|:---:|
+| official / P1 | 0 | 1 | 0 | 0 |
+| official / P2 | 0 | 1 | 0 | 0 |
+| provincial_third_party / P1 | 5 | 2 | 0 | 0 |
+| provincial_third_party / P2 | 0 | 1 | 0 | 4 |
+| provincial_third_party / P3 | 0 | 1 | 2 | 1 |
+Lấy mức cao nhất của toàn bộ ý trong câu; có ý chưa rõ thì cả câu giữ chưa rõ. Với câu tích hợp, mức này có thể do kiến thức khác quyết định. Không cộng bảng của nhiều chủ đề thành tổng câu hoặc chuyển thành hạn ngạch NB/TH/VD.
+
+**Audit ma trận liên quan:**
+
+| Phần | Slot mặc định | Đề chính thức có | Đề tỉnh có |
+|---|---:|---:|---:|
+| P1 | 4 | 1 | 4 |
+| P2 | 1 | 1 | 5 |
+| P3 | 2 | 0 | 4 |
+Mẫu số và kết luận đề xuất ở [audit ma trận](../../audit/matrices/sinh-hoc.md). Hiện diện không tự chứng minh cần tăng số slot; lớp bằng chứng tách riêng.
+
+**Prototype liên quan đến chủ đề:**
+
+- Pc48174209c / P1/1: phân hóa ước lượng low; thường quy; 0 cờ thô.
+- Pc48174209c / P1/2: phân hóa ước lượng low; thường quy; 0 cờ thô.
+- Pc48174209c / P1/17: phân hóa ước lượng low; thường quy; 0 cờ thô.
+- Pc48174209c / P3/3: phân hóa ước lượng low; thường quy; 0 cờ thô.
+Xem [audit prototype](../../audit/prototypes/sinh-hoc.md) để đọc nhiễu, bất đồng và giới hạn; cờ thô cần phân biệt với giới hạn đầu vào của lượt chấm.
+
+**Câu mẫu mới của chủ đề:**
+
+[Đọc 6 câu mẫu, đáp án, lời giải và lượt tự giải của chủ đề](samples/topics/d87edd930632.md). Mẫu tổng hợp mới, chờ giáo viên; mẫu có cờ chưa sẵn dùng.
 
 ## 9. Di truyền quần thể và ứng dụng
 
@@ -613,11 +956,57 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 - Mặc định P1: NB=2, TH=2.
 - Mặc định P2: TH=1.
 - Mặc định P3: VD=1.
-- Phân bố NB/TH/VD: xem [bảng mức nhận thức](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md). Đây là nhãn trên khái quát, chờ rà đề gốc; không quy đổi từ thấp/vừa/cao.
 
-**Câu mẫu mới:** chưa sinh và tự giải độc lập. Các mô tả phía trên là khái quát từ bằng chứng, không phải câu mẫu có thể đưa vào đề.
+**Cách dùng dữ kiện thuộc lòng — số câu/ý trong mẫu:**
 
-**Audit prototype theo chủ đề:** xem audit môn đã xuất; chưa có bảng nối đầy đủ đến chủ đề này.
+| Nguồn | Hỏi trực tiếp | Cho làm gợi ý | Cần trong suy luận | Không dùng | Chưa rõ |
+|---|---:|---:|---:|---:|---:|
+| Chính thức | 0 | 1 | 0 | 0 | 0 |
+| Tỉnh/trường | 1 | 5 | 9 | 7 | 0 |
+
+**Cách tăng yêu cầu suy luận có bằng chứng:**
+
+Chưa có thao tác tăng yêu cầu được aggregate xác lập riêng cho chủ đề; không tự tạo dạng khó từ số bước hoặc độ dài.
+
+**NB/TH/VD quan sát — đơn vị câu/ý:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|---:|---:|---:|---:|
+| official / P3 | 0 | 1 | 0 | 0 |
+| provincial_third_party / P1 | 2 | 6 | 0 | 0 |
+| provincial_third_party / P2 | 2 | 6 | 0 | 1 |
+| provincial_third_party / P3 | 0 | 5 | 0 | 0 |
+
+Nhãn dựa trên khái quát đã trích, chưa phải rà toàn bộ câu gốc hoặc điểm học sinh. TF đếm từng ý; slot mặc định đếm câu. Không so trực tiếp hai đơn vị này.
+
+**Mức toàn câu có chứa chủ đề — cùng đơn vị câu với slot ma trận:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|:---:|:---:|:---:|:---:|
+| official / P3 | 0 | 1 | 0 | 0 |
+| provincial_third_party / P1 | 2 | 6 | 0 | 0 |
+| provincial_third_party / P2 | 0 | 2 | 0 | 1 |
+| provincial_third_party / P3 | 0 | 5 | 0 | 0 |
+Lấy mức cao nhất của toàn bộ ý trong câu; có ý chưa rõ thì cả câu giữ chưa rõ. Với câu tích hợp, mức này có thể do kiến thức khác quyết định. Không cộng bảng của nhiều chủ đề thành tổng câu hoặc chuyển thành hạn ngạch NB/TH/VD.
+
+**Audit ma trận liên quan:**
+
+| Phần | Slot mặc định | Đề chính thức có | Đề tỉnh có |
+|---|---:|---:|---:|
+| P1 | 4 | 0 | 4 |
+| P2 | 1 | 0 | 3 |
+| P3 | 1 | 1 | 5 |
+Mẫu số và kết luận đề xuất ở [audit ma trận](../../audit/matrices/sinh-hoc.md). Hiện diện không tự chứng minh cần tăng số slot; lớp bằng chứng tách riêng.
+
+**Prototype liên quan đến chủ đề:**
+
+- Pc48174209c / P1/8: phân hóa ước lượng low; thường quy; 0 cờ thô.
+- Pc48174209c / P3/1: phân hóa ước lượng low; thường quy; 0 cờ thô.
+Xem [audit prototype](../../audit/prototypes/sinh-hoc.md) để đọc nhiễu, bất đồng và giới hạn; cờ thô cần phân biệt với giới hạn đầu vào của lượt chấm.
+
+**Câu mẫu mới của chủ đề:**
+
+[Đọc 5 câu mẫu, đáp án, lời giải và lượt tự giải của chủ đề](samples/topics/10e6c5114559.md). Mẫu tổng hợp mới, chờ giáo viên; mẫu có cờ chưa sẵn dùng.
 
 ## 10. Dinh dưỡng và tiêu hóa ở động vật
 
@@ -658,11 +1047,52 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 **Đối chiếu ma trận và NB/TH/VD:**
 
 - Họ chủ đề này chưa được ánh xạ vào một chương mặc định; cần xem kết luận audit trước khi đề xuất thêm.
-- Phân bố NB/TH/VD: xem [bảng mức nhận thức](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md). Đây là nhãn trên khái quát, chờ rà đề gốc; không quy đổi từ thấp/vừa/cao.
 
-**Câu mẫu mới:** chưa sinh và tự giải độc lập. Các mô tả phía trên là khái quát từ bằng chứng, không phải câu mẫu có thể đưa vào đề.
+**Cách dùng dữ kiện thuộc lòng — số câu/ý trong mẫu:**
 
-**Audit prototype theo chủ đề:** xem audit môn đã xuất; chưa có bảng nối đầy đủ đến chủ đề này.
+| Nguồn | Hỏi trực tiếp | Cho làm gợi ý | Cần trong suy luận | Không dùng | Chưa rõ |
+|---|---:|---:|---:|---:|---:|
+| Chính thức | 0 | 0 | 0 | 1 | 0 |
+| Tỉnh/trường | 0 | 4 | 0 | 1 | 0 |
+
+**Cách tăng yêu cầu suy luận có bằng chứng:**
+
+Chưa có thao tác tăng yêu cầu được aggregate xác lập riêng cho chủ đề; không tự tạo dạng khó từ số bước hoặc độ dài.
+
+**NB/TH/VD quan sát — đơn vị câu/ý:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|---:|---:|---:|---:|
+| official / P1 | 1 | 0 | 0 | 0 |
+| provincial_third_party / P1 | 1 | 0 | 0 | 0 |
+| provincial_third_party / P2 | 0 | 3 | 0 | 1 |
+
+Nhãn dựa trên khái quát đã trích, chưa phải rà toàn bộ câu gốc hoặc điểm học sinh. TF đếm từng ý; slot mặc định đếm câu. Không so trực tiếp hai đơn vị này.
+
+**Mức toàn câu có chứa chủ đề — cùng đơn vị câu với slot ma trận:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|:---:|:---:|:---:|:---:|
+| official / P1 | 1 | 0 | 0 | 0 |
+| provincial_third_party / P1 | 1 | 0 | 0 | 0 |
+| provincial_third_party / P2 | 0 | 0 | 0 | 1 |
+Lấy mức cao nhất của toàn bộ ý trong câu; có ý chưa rõ thì cả câu giữ chưa rõ. Với câu tích hợp, mức này có thể do kiến thức khác quyết định. Không cộng bảng của nhiều chủ đề thành tổng câu hoặc chuyển thành hạn ngạch NB/TH/VD.
+
+**Audit ma trận liên quan:**
+
+| Phần | Slot mặc định | Đề chính thức có | Đề tỉnh có |
+|---|---:|---:|---:|
+| P1 | 0 | 1 | 1 |
+| P2 | 0 | 0 | 1 |
+Mẫu số và kết luận đề xuất ở [audit ma trận](../../audit/matrices/sinh-hoc.md). Hiện diện không tự chứng minh cần tăng số slot; lớp bằng chứng tách riêng.
+
+**Prototype liên quan đến chủ đề:**
+
+Chưa nối được câu prototype vào chủ đề qua mapping đã kiểm; không coi đây là bằng chứng prototype không có chủ đề.
+
+**Câu mẫu mới của chủ đề:**
+
+[Đọc 2 câu mẫu, đáp án, lời giải và lượt tự giải của chủ đề](samples/topics/db9b4b784485.md). Mẫu tổng hợp mới, chờ giáo viên; mẫu có cờ chưa sẵn dùng.
 
 ## 11. Enzyme và chuyển hóa tế bào
 
@@ -689,11 +1119,47 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 **Đối chiếu ma trận và NB/TH/VD:**
 
 - Họ chủ đề này chưa được ánh xạ vào một chương mặc định; cần xem kết luận audit trước khi đề xuất thêm.
-- Phân bố NB/TH/VD: xem [bảng mức nhận thức](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md). Đây là nhãn trên khái quát, chờ rà đề gốc; không quy đổi từ thấp/vừa/cao.
 
-**Câu mẫu mới:** chưa sinh và tự giải độc lập. Các mô tả phía trên là khái quát từ bằng chứng, không phải câu mẫu có thể đưa vào đề.
+**Cách dùng dữ kiện thuộc lòng — số câu/ý trong mẫu:**
 
-**Audit prototype theo chủ đề:** xem audit môn đã xuất; chưa có bảng nối đầy đủ đến chủ đề này.
+| Nguồn | Hỏi trực tiếp | Cho làm gợi ý | Cần trong suy luận | Không dùng | Chưa rõ |
+|---|---:|---:|---:|---:|---:|
+| Chính thức | 0 | 1 | 0 | 0 | 0 |
+| Tỉnh/trường | 0 | 0 | 0 | 0 | 0 |
+
+**Cách tăng yêu cầu suy luận có bằng chứng:**
+
+Chưa có thao tác tăng yêu cầu được aggregate xác lập riêng cho chủ đề; không tự tạo dạng khó từ số bước hoặc độ dài.
+
+**NB/TH/VD quan sát — đơn vị câu/ý:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|---:|---:|---:|---:|
+| official / P1 | 1 | 0 | 0 | 0 |
+
+Nhãn dựa trên khái quát đã trích, chưa phải rà toàn bộ câu gốc hoặc điểm học sinh. TF đếm từng ý; slot mặc định đếm câu. Không so trực tiếp hai đơn vị này.
+
+**Mức toàn câu có chứa chủ đề — cùng đơn vị câu với slot ma trận:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|:---:|:---:|:---:|:---:|
+| official / P1 | 1 | 0 | 0 | 0 |
+Lấy mức cao nhất của toàn bộ ý trong câu; có ý chưa rõ thì cả câu giữ chưa rõ. Với câu tích hợp, mức này có thể do kiến thức khác quyết định. Không cộng bảng của nhiều chủ đề thành tổng câu hoặc chuyển thành hạn ngạch NB/TH/VD.
+
+**Audit ma trận liên quan:**
+
+| Phần | Slot mặc định | Đề chính thức có | Đề tỉnh có |
+|---|---:|---:|---:|
+| P1 | 0 | 1 | 0 |
+Mẫu số và kết luận đề xuất ở [audit ma trận](../../audit/matrices/sinh-hoc.md). Hiện diện không tự chứng minh cần tăng số slot; lớp bằng chứng tách riêng.
+
+**Prototype liên quan đến chủ đề:**
+
+Chưa nối được câu prototype vào chủ đề qua mapping đã kiểm; không coi đây là bằng chứng prototype không có chủ đề.
+
+**Câu mẫu mới của chủ đề:**
+
+[Đọc 1 câu mẫu, đáp án, lời giải và lượt tự giải của chủ đề](samples/topics/8bd73b231f12.md). Mẫu tổng hợp mới, chờ giáo viên; mẫu có cờ chưa sẵn dùng.
 
 ## 12. Giảm phân
 
@@ -722,11 +1188,47 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 **Đối chiếu ma trận và NB/TH/VD:**
 
 - Họ chủ đề này chưa được ánh xạ vào một chương mặc định; cần xem kết luận audit trước khi đề xuất thêm.
-- Phân bố NB/TH/VD: xem [bảng mức nhận thức](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md). Đây là nhãn trên khái quát, chờ rà đề gốc; không quy đổi từ thấp/vừa/cao.
 
-**Câu mẫu mới:** chưa sinh và tự giải độc lập. Các mô tả phía trên là khái quát từ bằng chứng, không phải câu mẫu có thể đưa vào đề.
+**Cách dùng dữ kiện thuộc lòng — số câu/ý trong mẫu:**
 
-**Audit prototype theo chủ đề:** xem audit môn đã xuất; chưa có bảng nối đầy đủ đến chủ đề này.
+| Nguồn | Hỏi trực tiếp | Cho làm gợi ý | Cần trong suy luận | Không dùng | Chưa rõ |
+|---|---:|---:|---:|---:|---:|
+| Chính thức | 0 | 0 | 0 | 0 | 0 |
+| Tỉnh/trường | 0 | 0 | 0 | 2 | 0 |
+
+**Cách tăng yêu cầu suy luận có bằng chứng:**
+
+Chưa có thao tác tăng yêu cầu được aggregate xác lập riêng cho chủ đề; không tự tạo dạng khó từ số bước hoặc độ dài.
+
+**NB/TH/VD quan sát — đơn vị câu/ý:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|---:|---:|---:|---:|
+| provincial_third_party / P1 | 1 | 1 | 0 | 0 |
+
+Nhãn dựa trên khái quát đã trích, chưa phải rà toàn bộ câu gốc hoặc điểm học sinh. TF đếm từng ý; slot mặc định đếm câu. Không so trực tiếp hai đơn vị này.
+
+**Mức toàn câu có chứa chủ đề — cùng đơn vị câu với slot ma trận:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|:---:|:---:|:---:|:---:|
+| provincial_third_party / P1 | 1 | 1 | 0 | 0 |
+Lấy mức cao nhất của toàn bộ ý trong câu; có ý chưa rõ thì cả câu giữ chưa rõ. Với câu tích hợp, mức này có thể do kiến thức khác quyết định. Không cộng bảng của nhiều chủ đề thành tổng câu hoặc chuyển thành hạn ngạch NB/TH/VD.
+
+**Audit ma trận liên quan:**
+
+| Phần | Slot mặc định | Đề chính thức có | Đề tỉnh có |
+|---|---:|---:|---:|
+| P1 | 0 | 0 | 2 |
+Mẫu số và kết luận đề xuất ở [audit ma trận](../../audit/matrices/sinh-hoc.md). Hiện diện không tự chứng minh cần tăng số slot; lớp bằng chứng tách riêng.
+
+**Prototype liên quan đến chủ đề:**
+
+Chưa nối được câu prototype vào chủ đề qua mapping đã kiểm; không coi đây là bằng chứng prototype không có chủ đề.
+
+**Câu mẫu mới của chủ đề:**
+
+[Đọc 2 câu mẫu, đáp án, lời giải và lượt tự giải của chủ đề](samples/topics/94ad7cd7e4c9.md). Mẫu tổng hợp mới, chờ giáo viên; mẫu có cờ chưa sẵn dùng.
 
 ## 13. Hô hấp và trao đổi khí ở động vật
 
@@ -760,11 +1262,47 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 **Đối chiếu ma trận và NB/TH/VD:**
 
 - Họ chủ đề này chưa được ánh xạ vào một chương mặc định; cần xem kết luận audit trước khi đề xuất thêm.
-- Phân bố NB/TH/VD: xem [bảng mức nhận thức](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md). Đây là nhãn trên khái quát, chờ rà đề gốc; không quy đổi từ thấp/vừa/cao.
 
-**Câu mẫu mới:** chưa sinh và tự giải độc lập. Các mô tả phía trên là khái quát từ bằng chứng, không phải câu mẫu có thể đưa vào đề.
+**Cách dùng dữ kiện thuộc lòng — số câu/ý trong mẫu:**
 
-**Audit prototype theo chủ đề:** xem audit môn đã xuất; chưa có bảng nối đầy đủ đến chủ đề này.
+| Nguồn | Hỏi trực tiếp | Cho làm gợi ý | Cần trong suy luận | Không dùng | Chưa rõ |
+|---|---:|---:|---:|---:|---:|
+| Chính thức | 0 | 0 | 0 | 0 | 0 |
+| Tỉnh/trường | 0 | 0 | 0 | 4 | 0 |
+
+**Cách tăng yêu cầu suy luận có bằng chứng:**
+
+Chưa có thao tác tăng yêu cầu được aggregate xác lập riêng cho chủ đề; không tự tạo dạng khó từ số bước hoặc độ dài.
+
+**NB/TH/VD quan sát — đơn vị câu/ý:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|---:|---:|---:|---:|
+| provincial_third_party / P2 | 0 | 4 | 0 | 0 |
+
+Nhãn dựa trên khái quát đã trích, chưa phải rà toàn bộ câu gốc hoặc điểm học sinh. TF đếm từng ý; slot mặc định đếm câu. Không so trực tiếp hai đơn vị này.
+
+**Mức toàn câu có chứa chủ đề — cùng đơn vị câu với slot ma trận:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|:---:|:---:|:---:|:---:|
+| provincial_third_party / P2 | 0 | 1 | 0 | 0 |
+Lấy mức cao nhất của toàn bộ ý trong câu; có ý chưa rõ thì cả câu giữ chưa rõ. Với câu tích hợp, mức này có thể do kiến thức khác quyết định. Không cộng bảng của nhiều chủ đề thành tổng câu hoặc chuyển thành hạn ngạch NB/TH/VD.
+
+**Audit ma trận liên quan:**
+
+| Phần | Slot mặc định | Đề chính thức có | Đề tỉnh có |
+|---|---:|---:|---:|
+| P2 | 0 | 0 | 1 |
+Mẫu số và kết luận đề xuất ở [audit ma trận](../../audit/matrices/sinh-hoc.md). Hiện diện không tự chứng minh cần tăng số slot; lớp bằng chứng tách riêng.
+
+**Prototype liên quan đến chủ đề:**
+
+Chưa nối được câu prototype vào chủ đề qua mapping đã kiểm; không coi đây là bằng chứng prototype không có chủ đề.
+
+**Câu mẫu mới của chủ đề:**
+
+[Đọc 1 câu mẫu, đáp án, lời giải và lượt tự giải của chủ đề](samples/topics/be94f461bbc9.md). Mẫu tổng hợp mới, chờ giáo viên; mẫu có cờ chưa sẵn dùng.
 
 ## 14. Hô hấp và vận chuyển khí ở động vật
 
@@ -800,11 +1338,47 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 **Đối chiếu ma trận và NB/TH/VD:**
 
 - Họ chủ đề này chưa được ánh xạ vào một chương mặc định; cần xem kết luận audit trước khi đề xuất thêm.
-- Phân bố NB/TH/VD: xem [bảng mức nhận thức](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md). Đây là nhãn trên khái quát, chờ rà đề gốc; không quy đổi từ thấp/vừa/cao.
 
-**Câu mẫu mới:** chưa sinh và tự giải độc lập. Các mô tả phía trên là khái quát từ bằng chứng, không phải câu mẫu có thể đưa vào đề.
+**Cách dùng dữ kiện thuộc lòng — số câu/ý trong mẫu:**
 
-**Audit prototype theo chủ đề:** xem audit môn đã xuất; chưa có bảng nối đầy đủ đến chủ đề này.
+| Nguồn | Hỏi trực tiếp | Cho làm gợi ý | Cần trong suy luận | Không dùng | Chưa rõ |
+|---|---:|---:|---:|---:|---:|
+| Chính thức | 0 | 0 | 0 | 0 | 0 |
+| Tỉnh/trường | 0 | 1 | 2 | 1 | 0 |
+
+**Cách tăng yêu cầu suy luận có bằng chứng:**
+
+Chưa có thao tác tăng yêu cầu được aggregate xác lập riêng cho chủ đề; không tự tạo dạng khó từ số bước hoặc độ dài.
+
+**NB/TH/VD quan sát — đơn vị câu/ý:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|---:|---:|---:|---:|
+| provincial_third_party / P2 | 0 | 4 | 0 | 0 |
+
+Nhãn dựa trên khái quát đã trích, chưa phải rà toàn bộ câu gốc hoặc điểm học sinh. TF đếm từng ý; slot mặc định đếm câu. Không so trực tiếp hai đơn vị này.
+
+**Mức toàn câu có chứa chủ đề — cùng đơn vị câu với slot ma trận:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|:---:|:---:|:---:|:---:|
+| provincial_third_party / P2 | 0 | 1 | 0 | 0 |
+Lấy mức cao nhất của toàn bộ ý trong câu; có ý chưa rõ thì cả câu giữ chưa rõ. Với câu tích hợp, mức này có thể do kiến thức khác quyết định. Không cộng bảng của nhiều chủ đề thành tổng câu hoặc chuyển thành hạn ngạch NB/TH/VD.
+
+**Audit ma trận liên quan:**
+
+| Phần | Slot mặc định | Đề chính thức có | Đề tỉnh có |
+|---|---:|---:|---:|
+| P2 | 0 | 0 | 1 |
+Mẫu số và kết luận đề xuất ở [audit ma trận](../../audit/matrices/sinh-hoc.md). Hiện diện không tự chứng minh cần tăng số slot; lớp bằng chứng tách riêng.
+
+**Prototype liên quan đến chủ đề:**
+
+Chưa nối được câu prototype vào chủ đề qua mapping đã kiểm; không coi đây là bằng chứng prototype không có chủ đề.
+
+**Câu mẫu mới của chủ đề:**
+
+[Đọc 1 câu mẫu, đáp án, lời giải và lượt tự giải của chủ đề](samples/topics/40594af71bce.md). Mẫu tổng hợp mới, chờ giáo viên; mẫu có cờ chưa sẵn dùng.
 
 ## 15. Nhập môn sinh học và công nghệ sinh học
 
@@ -831,11 +1405,47 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 **Đối chiếu ma trận và NB/TH/VD:**
 
 - Họ chủ đề này chưa được ánh xạ vào một chương mặc định; cần xem kết luận audit trước khi đề xuất thêm.
-- Phân bố NB/TH/VD: xem [bảng mức nhận thức](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md). Đây là nhãn trên khái quát, chờ rà đề gốc; không quy đổi từ thấp/vừa/cao.
 
-**Câu mẫu mới:** chưa sinh và tự giải độc lập. Các mô tả phía trên là khái quát từ bằng chứng, không phải câu mẫu có thể đưa vào đề.
+**Cách dùng dữ kiện thuộc lòng — số câu/ý trong mẫu:**
 
-**Audit prototype theo chủ đề:** xem audit môn đã xuất; chưa có bảng nối đầy đủ đến chủ đề này.
+| Nguồn | Hỏi trực tiếp | Cho làm gợi ý | Cần trong suy luận | Không dùng | Chưa rõ |
+|---|---:|---:|---:|---:|---:|
+| Chính thức | 0 | 0 | 0 | 0 | 0 |
+| Tỉnh/trường | 0 | 0 | 0 | 1 | 0 |
+
+**Cách tăng yêu cầu suy luận có bằng chứng:**
+
+Chưa có thao tác tăng yêu cầu được aggregate xác lập riêng cho chủ đề; không tự tạo dạng khó từ số bước hoặc độ dài.
+
+**NB/TH/VD quan sát — đơn vị câu/ý:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|---:|---:|---:|---:|
+| provincial_third_party / P1 | 1 | 0 | 0 | 0 |
+
+Nhãn dựa trên khái quát đã trích, chưa phải rà toàn bộ câu gốc hoặc điểm học sinh. TF đếm từng ý; slot mặc định đếm câu. Không so trực tiếp hai đơn vị này.
+
+**Mức toàn câu có chứa chủ đề — cùng đơn vị câu với slot ma trận:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|:---:|:---:|:---:|:---:|
+| provincial_third_party / P1 | 1 | 0 | 0 | 0 |
+Lấy mức cao nhất của toàn bộ ý trong câu; có ý chưa rõ thì cả câu giữ chưa rõ. Với câu tích hợp, mức này có thể do kiến thức khác quyết định. Không cộng bảng của nhiều chủ đề thành tổng câu hoặc chuyển thành hạn ngạch NB/TH/VD.
+
+**Audit ma trận liên quan:**
+
+| Phần | Slot mặc định | Đề chính thức có | Đề tỉnh có |
+|---|---:|---:|---:|
+| P1 | 0 | 0 | 1 |
+Mẫu số và kết luận đề xuất ở [audit ma trận](../../audit/matrices/sinh-hoc.md). Hiện diện không tự chứng minh cần tăng số slot; lớp bằng chứng tách riêng.
+
+**Prototype liên quan đến chủ đề:**
+
+Chưa nối được câu prototype vào chủ đề qua mapping đã kiểm; không coi đây là bằng chứng prototype không có chủ đề.
+
+**Câu mẫu mới của chủ đề:**
+
+[Đọc 1 câu mẫu, đáp án, lời giải và lượt tự giải của chủ đề](samples/topics/53d1ac904568.md). Mẫu tổng hợp mới, chờ giáo viên; mẫu có cờ chưa sẵn dùng.
 
 ## 16. Quang hợp và năng suất cây trồng
 
@@ -866,11 +1476,47 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 **Đối chiếu ma trận và NB/TH/VD:**
 
 - Họ chủ đề này chưa được ánh xạ vào một chương mặc định; cần xem kết luận audit trước khi đề xuất thêm.
-- Phân bố NB/TH/VD: xem [bảng mức nhận thức](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md). Đây là nhãn trên khái quát, chờ rà đề gốc; không quy đổi từ thấp/vừa/cao.
 
-**Câu mẫu mới:** chưa sinh và tự giải độc lập. Các mô tả phía trên là khái quát từ bằng chứng, không phải câu mẫu có thể đưa vào đề.
+**Cách dùng dữ kiện thuộc lòng — số câu/ý trong mẫu:**
 
-**Audit prototype theo chủ đề:** xem audit môn đã xuất; chưa có bảng nối đầy đủ đến chủ đề này.
+| Nguồn | Hỏi trực tiếp | Cho làm gợi ý | Cần trong suy luận | Không dùng | Chưa rõ |
+|---|---:|---:|---:|---:|---:|
+| Chính thức | 0 | 1 | 0 | 1 | 0 |
+| Tỉnh/trường | 0 | 0 | 0 | 0 | 0 |
+
+**Cách tăng yêu cầu suy luận có bằng chứng:**
+
+Chưa có thao tác tăng yêu cầu được aggregate xác lập riêng cho chủ đề; không tự tạo dạng khó từ số bước hoặc độ dài.
+
+**NB/TH/VD quan sát — đơn vị câu/ý:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|---:|---:|---:|---:|
+| official / P2 | 0 | 1 | 0 | 1 |
+
+Nhãn dựa trên khái quát đã trích, chưa phải rà toàn bộ câu gốc hoặc điểm học sinh. TF đếm từng ý; slot mặc định đếm câu. Không so trực tiếp hai đơn vị này.
+
+**Mức toàn câu có chứa chủ đề — cùng đơn vị câu với slot ma trận:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|:---:|:---:|:---:|:---:|
+| official / P2 | 0 | 0 | 0 | 1 |
+Lấy mức cao nhất của toàn bộ ý trong câu; có ý chưa rõ thì cả câu giữ chưa rõ. Với câu tích hợp, mức này có thể do kiến thức khác quyết định. Không cộng bảng của nhiều chủ đề thành tổng câu hoặc chuyển thành hạn ngạch NB/TH/VD.
+
+**Audit ma trận liên quan:**
+
+| Phần | Slot mặc định | Đề chính thức có | Đề tỉnh có |
+|---|---:|---:|---:|
+| P2 | 0 | 1 | 0 |
+Mẫu số và kết luận đề xuất ở [audit ma trận](../../audit/matrices/sinh-hoc.md). Hiện diện không tự chứng minh cần tăng số slot; lớp bằng chứng tách riêng.
+
+**Prototype liên quan đến chủ đề:**
+
+Chưa nối được câu prototype vào chủ đề qua mapping đã kiểm; không coi đây là bằng chứng prototype không có chủ đề.
+
+**Câu mẫu mới của chủ đề:**
+
+[Đọc 1 câu mẫu, đáp án, lời giải và lượt tự giải của chủ đề](samples/topics/d187d0a3fb71.md). Mẫu tổng hợp mới, chờ giáo viên; mẫu có cờ chưa sẵn dùng.
 
 ## 17. Quang hợp và phân bố sản phẩm đồng hóa
 
@@ -898,11 +1544,47 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 **Đối chiếu ma trận và NB/TH/VD:**
 
 - Họ chủ đề này chưa được ánh xạ vào một chương mặc định; cần xem kết luận audit trước khi đề xuất thêm.
-- Phân bố NB/TH/VD: xem [bảng mức nhận thức](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md). Đây là nhãn trên khái quát, chờ rà đề gốc; không quy đổi từ thấp/vừa/cao.
 
-**Câu mẫu mới:** chưa sinh và tự giải độc lập. Các mô tả phía trên là khái quát từ bằng chứng, không phải câu mẫu có thể đưa vào đề.
+**Cách dùng dữ kiện thuộc lòng — số câu/ý trong mẫu:**
 
-**Audit prototype theo chủ đề:** xem audit môn đã xuất; chưa có bảng nối đầy đủ đến chủ đề này.
+| Nguồn | Hỏi trực tiếp | Cho làm gợi ý | Cần trong suy luận | Không dùng | Chưa rõ |
+|---|---:|---:|---:|---:|---:|
+| Chính thức | 0 | 1 | 0 | 0 | 0 |
+| Tỉnh/trường | 0 | 0 | 0 | 0 | 0 |
+
+**Cách tăng yêu cầu suy luận có bằng chứng:**
+
+Chưa có thao tác tăng yêu cầu được aggregate xác lập riêng cho chủ đề; không tự tạo dạng khó từ số bước hoặc độ dài.
+
+**NB/TH/VD quan sát — đơn vị câu/ý:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|---:|---:|---:|---:|
+| official / P2 | 0 | 0 | 0 | 1 |
+
+Nhãn dựa trên khái quát đã trích, chưa phải rà toàn bộ câu gốc hoặc điểm học sinh. TF đếm từng ý; slot mặc định đếm câu. Không so trực tiếp hai đơn vị này.
+
+**Mức toàn câu có chứa chủ đề — cùng đơn vị câu với slot ma trận:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|:---:|:---:|:---:|:---:|
+| official / P2 | 0 | 0 | 0 | 1 |
+Lấy mức cao nhất của toàn bộ ý trong câu; có ý chưa rõ thì cả câu giữ chưa rõ. Với câu tích hợp, mức này có thể do kiến thức khác quyết định. Không cộng bảng của nhiều chủ đề thành tổng câu hoặc chuyển thành hạn ngạch NB/TH/VD.
+
+**Audit ma trận liên quan:**
+
+| Phần | Slot mặc định | Đề chính thức có | Đề tỉnh có |
+|---|---:|---:|---:|
+| P2 | 0 | 1 | 0 |
+Mẫu số và kết luận đề xuất ở [audit ma trận](../../audit/matrices/sinh-hoc.md). Hiện diện không tự chứng minh cần tăng số slot; lớp bằng chứng tách riêng.
+
+**Prototype liên quan đến chủ đề:**
+
+Chưa nối được câu prototype vào chủ đề qua mapping đã kiểm; không coi đây là bằng chứng prototype không có chủ đề.
+
+**Câu mẫu mới của chủ đề:**
+
+Chưa có câu mẫu đã xuất cho chủ đề; dữ liệu cách hỏi phía trên không thay thế một câu mẫu hoàn chỉnh.
 
 ## 18. Quang hợp ở thực vật
 
@@ -944,11 +1626,48 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 **Đối chiếu ma trận và NB/TH/VD:**
 
 - Họ chủ đề này chưa được ánh xạ vào một chương mặc định; cần xem kết luận audit trước khi đề xuất thêm.
-- Phân bố NB/TH/VD: xem [bảng mức nhận thức](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md). Đây là nhãn trên khái quát, chờ rà đề gốc; không quy đổi từ thấp/vừa/cao.
 
-**Câu mẫu mới:** chưa sinh và tự giải độc lập. Các mô tả phía trên là khái quát từ bằng chứng, không phải câu mẫu có thể đưa vào đề.
+**Cách dùng dữ kiện thuộc lòng — số câu/ý trong mẫu:**
 
-**Audit prototype theo chủ đề:** xem audit môn đã xuất; chưa có bảng nối đầy đủ đến chủ đề này.
+| Nguồn | Hỏi trực tiếp | Cho làm gợi ý | Cần trong suy luận | Không dùng | Chưa rõ |
+|---|---:|---:|---:|---:|---:|
+| Chính thức | 0 | 0 | 0 | 0 | 0 |
+| Tỉnh/trường | 0 | 1 | 3 | 3 | 0 |
+
+**Cách tăng yêu cầu suy luận có bằng chứng:**
+
+- Tỉnh/trường: Từ đường cong, tín hiệu động hoặc quá trình đang diễn ra, suy tốc độ, vai trò và phần thông tin đã truyền. Thao tác phân biệt tác động hiện tại với lượt biểu hiện sau mới được quan sát trong một đề. — có refs thuộc chủ đề trong 1 đề.
+
+**NB/TH/VD quan sát — đơn vị câu/ý:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|---:|---:|---:|---:|
+| provincial_third_party / P1 | 4 | 2 | 0 | 1 |
+
+Nhãn dựa trên khái quát đã trích, chưa phải rà toàn bộ câu gốc hoặc điểm học sinh. TF đếm từng ý; slot mặc định đếm câu. Không so trực tiếp hai đơn vị này.
+
+**Mức toàn câu có chứa chủ đề — cùng đơn vị câu với slot ma trận:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|:---:|:---:|:---:|:---:|
+| provincial_third_party / P1 | 4 | 2 | 0 | 1 |
+Lấy mức cao nhất của toàn bộ ý trong câu; có ý chưa rõ thì cả câu giữ chưa rõ. Với câu tích hợp, mức này có thể do kiến thức khác quyết định. Không cộng bảng của nhiều chủ đề thành tổng câu hoặc chuyển thành hạn ngạch NB/TH/VD.
+
+**Audit ma trận liên quan:**
+
+| Phần | Slot mặc định | Đề chính thức có | Đề tỉnh có |
+|---|---:|---:|---:|
+| P1 | 0 | 0 | 5 |
+Mẫu số và kết luận đề xuất ở [audit ma trận](../../audit/matrices/sinh-hoc.md). Hiện diện không tự chứng minh cần tăng số slot; lớp bằng chứng tách riêng.
+
+**Prototype liên quan đến chủ đề:**
+
+- Pc48174209c / P1/11: phân hóa ước lượng low; thường quy; 0 cờ thô.
+Xem [audit prototype](../../audit/prototypes/sinh-hoc.md) để đọc nhiễu, bất đồng và giới hạn; cờ thô cần phân biệt với giới hạn đầu vào của lượt chấm.
+
+**Câu mẫu mới của chủ đề:**
+
+[Đọc 2 câu mẫu, đáp án, lời giải và lượt tự giải của chủ đề](samples/topics/b82b12953b76.md). Mẫu tổng hợp mới, chờ giáo viên; mẫu có cờ chưa sẵn dùng.
 
 ## 19. Sinh thái học
 
@@ -1115,11 +1834,66 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 - Mặc định P1: NB=2, TH=1.
 - Mặc định P2: không có slot trong phần này.
 - Mặc định P3: VD=1.
-- Phân bố NB/TH/VD: xem [bảng mức nhận thức](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md). Đây là nhãn trên khái quát, chờ rà đề gốc; không quy đổi từ thấp/vừa/cao.
 
-**Câu mẫu mới:** chưa sinh và tự giải độc lập. Các mô tả phía trên là khái quát từ bằng chứng, không phải câu mẫu có thể đưa vào đề.
+**Cách dùng dữ kiện thuộc lòng — số câu/ý trong mẫu:**
 
-**Audit prototype theo chủ đề:** xem audit môn đã xuất; chưa có bảng nối đầy đủ đến chủ đề này.
+| Nguồn | Hỏi trực tiếp | Cho làm gợi ý | Cần trong suy luận | Không dùng | Chưa rõ |
+|---|---:|---:|---:|---:|---:|
+| Chính thức | 0 | 8 | 0 | 2 | 0 |
+| Tỉnh/trường | 0 | 12 | 20 | 11 | 0 |
+
+**Cách tăng yêu cầu suy luận có bằng chứng:**
+
+- Tỉnh/trường: Dùng can thiệp cùng quan hệ giữa các thành phần để theo dõi biến trung gian; không gán mọi biến đổi quan sát được cho tác động trực tiếp. Bằng chứng trực tiếp trong mục này là quan sát riêng. — có refs thuộc chủ đề trong 1 đề.
+- Tỉnh/trường: Từ đường cong, tín hiệu động hoặc quá trình đang diễn ra, suy tốc độ, vai trò và phần thông tin đã truyền. Thao tác phân biệt tác động hiện tại với lượt biểu hiện sau mới được quan sát trong một đề. — có refs thuộc chủ đề trong 1 đề.
+
+**NB/TH/VD quan sát — đơn vị câu/ý:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|---:|---:|---:|---:|
+| official / P1 | 2 | 1 | 0 | 1 |
+| official / P2 | 0 | 4 | 0 | 0 |
+| official / P3 | 0 | 1 | 0 | 1 |
+| provincial_third_party / P1 | 11 | 7 | 0 | 2 |
+| provincial_third_party / P2 | 0 | 12 | 0 | 4 |
+| provincial_third_party / P3 | 1 | 3 | 2 | 1 |
+
+Nhãn dựa trên khái quát đã trích, chưa phải rà toàn bộ câu gốc hoặc điểm học sinh. TF đếm từng ý; slot mặc định đếm câu. Không so trực tiếp hai đơn vị này.
+
+**Mức toàn câu có chứa chủ đề — cùng đơn vị câu với slot ma trận:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|:---:|:---:|:---:|:---:|
+| official / P1 | 2 | 1 | 0 | 1 |
+| official / P2 | 0 | 1 | 0 | 0 |
+| official / P3 | 0 | 1 | 0 | 1 |
+| provincial_third_party / P1 | 11 | 7 | 0 | 2 |
+| provincial_third_party / P2 | 0 | 2 | 0 | 2 |
+| provincial_third_party / P3 | 1 | 3 | 2 | 1 |
+Lấy mức cao nhất của toàn bộ ý trong câu; có ý chưa rõ thì cả câu giữ chưa rõ. Với câu tích hợp, mức này có thể do kiến thức khác quyết định. Không cộng bảng của nhiều chủ đề thành tổng câu hoặc chuyển thành hạn ngạch NB/TH/VD.
+
+**Audit ma trận liên quan:**
+
+| Phần | Slot mặc định | Đề chính thức có | Đề tỉnh có |
+|---|---:|---:|---:|
+| P1 | 3 | 1 | 5 |
+| P2 | 0 | 1 | 4 |
+| P3 | 1 | 1 | 4 |
+Mẫu số và kết luận đề xuất ở [audit ma trận](../../audit/matrices/sinh-hoc.md). Hiện diện không tự chứng minh cần tăng số slot; lớp bằng chứng tách riêng.
+
+**Prototype liên quan đến chủ đề:**
+
+- Pc48174209c / P1/7: phân hóa ước lượng low; thường quy; 0 cờ thô.
+- Pc48174209c / P1/14: phân hóa ước lượng low; thường quy; 1 cờ thô.
+- Pc48174209c / P1/15: phân hóa ước lượng low; thường quy; 0 cờ thô.
+- Pc48174209c / P1/16: phân hóa ước lượng low; thường quy; 0 cờ thô.
+- Pc48174209c / P2/2: phân hóa ước lượng medium; thường quy; 1 cờ thô.
+- Pc48174209c / P3/6: phân hóa ước lượng low; thường quy; 0 cờ thô.
+Xem [audit prototype](../../audit/prototypes/sinh-hoc.md) để đọc nhiễu, bất đồng và giới hạn; cờ thô cần phân biệt với giới hạn đầu vào của lượt chấm.
+
+**Câu mẫu mới của chủ đề:**
+
+[Đọc 6 câu mẫu, đáp án, lời giải và lượt tự giải của chủ đề](samples/topics/7b1355626ef4.md). Mẫu tổng hợp mới, chờ giáo viên; mẫu có cờ chưa sẵn dùng.
 
 ## 20. Sinh trưởng và các yếu tố ảnh hưởng ở vi sinh vật
 
@@ -1146,11 +1920,47 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 **Đối chiếu ma trận và NB/TH/VD:**
 
 - Họ chủ đề này chưa được ánh xạ vào một chương mặc định; cần xem kết luận audit trước khi đề xuất thêm.
-- Phân bố NB/TH/VD: xem [bảng mức nhận thức](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md). Đây là nhãn trên khái quát, chờ rà đề gốc; không quy đổi từ thấp/vừa/cao.
 
-**Câu mẫu mới:** chưa sinh và tự giải độc lập. Các mô tả phía trên là khái quát từ bằng chứng, không phải câu mẫu có thể đưa vào đề.
+**Cách dùng dữ kiện thuộc lòng — số câu/ý trong mẫu:**
 
-**Audit prototype theo chủ đề:** xem audit môn đã xuất; chưa có bảng nối đầy đủ đến chủ đề này.
+| Nguồn | Hỏi trực tiếp | Cho làm gợi ý | Cần trong suy luận | Không dùng | Chưa rõ |
+|---|---:|---:|---:|---:|---:|
+| Chính thức | 0 | 1 | 0 | 0 | 0 |
+| Tỉnh/trường | 0 | 0 | 0 | 0 | 0 |
+
+**Cách tăng yêu cầu suy luận có bằng chứng:**
+
+Chưa có thao tác tăng yêu cầu được aggregate xác lập riêng cho chủ đề; không tự tạo dạng khó từ số bước hoặc độ dài.
+
+**NB/TH/VD quan sát — đơn vị câu/ý:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|---:|---:|---:|---:|
+| official / P1 | 1 | 0 | 0 | 0 |
+
+Nhãn dựa trên khái quát đã trích, chưa phải rà toàn bộ câu gốc hoặc điểm học sinh. TF đếm từng ý; slot mặc định đếm câu. Không so trực tiếp hai đơn vị này.
+
+**Mức toàn câu có chứa chủ đề — cùng đơn vị câu với slot ma trận:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|:---:|:---:|:---:|:---:|
+| official / P1 | 1 | 0 | 0 | 0 |
+Lấy mức cao nhất của toàn bộ ý trong câu; có ý chưa rõ thì cả câu giữ chưa rõ. Với câu tích hợp, mức này có thể do kiến thức khác quyết định. Không cộng bảng của nhiều chủ đề thành tổng câu hoặc chuyển thành hạn ngạch NB/TH/VD.
+
+**Audit ma trận liên quan:**
+
+| Phần | Slot mặc định | Đề chính thức có | Đề tỉnh có |
+|---|---:|---:|---:|
+| P1 | 0 | 1 | 0 |
+Mẫu số và kết luận đề xuất ở [audit ma trận](../../audit/matrices/sinh-hoc.md). Hiện diện không tự chứng minh cần tăng số slot; lớp bằng chứng tách riêng.
+
+**Prototype liên quan đến chủ đề:**
+
+Chưa nối được câu prototype vào chủ đề qua mapping đã kiểm; không coi đây là bằng chứng prototype không có chủ đề.
+
+**Câu mẫu mới của chủ đề:**
+
+[Đọc 1 câu mẫu, đáp án, lời giải và lượt tự giải của chủ đề](samples/topics/f08f713353fb.md). Mẫu tổng hợp mới, chờ giáo viên; mẫu có cờ chưa sẵn dùng.
 
 ## 21. Tiến hoá
 
@@ -1236,11 +2046,57 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 
 - Mặc định P1: NB=2, TH=1.
 - Mặc định P3: VD=1.
-- Phân bố NB/TH/VD: xem [bảng mức nhận thức](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md). Đây là nhãn trên khái quát, chờ rà đề gốc; không quy đổi từ thấp/vừa/cao.
 
-**Câu mẫu mới:** chưa sinh và tự giải độc lập. Các mô tả phía trên là khái quát từ bằng chứng, không phải câu mẫu có thể đưa vào đề.
+**Cách dùng dữ kiện thuộc lòng — số câu/ý trong mẫu:**
 
-**Audit prototype theo chủ đề:** xem audit môn đã xuất; chưa có bảng nối đầy đủ đến chủ đề này.
+| Nguồn | Hỏi trực tiếp | Cho làm gợi ý | Cần trong suy luận | Không dùng | Chưa rõ |
+|---|---:|---:|---:|---:|---:|
+| Chính thức | 0 | 2 | 1 | 0 | 0 |
+| Tỉnh/trường | 0 | 10 | 4 | 9 | 0 |
+
+**Cách tăng yêu cầu suy luận có bằng chứng:**
+
+Chưa có thao tác tăng yêu cầu được aggregate xác lập riêng cho chủ đề; không tự tạo dạng khó từ số bước hoặc độ dài.
+
+**NB/TH/VD quan sát — đơn vị câu/ý:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|---:|---:|---:|---:|
+| official / P1 | 2 | 1 | 0 | 0 |
+| provincial_third_party / P1 | 12 | 7 | 0 | 0 |
+| provincial_third_party / P3 | 0 | 3 | 0 | 1 |
+
+Nhãn dựa trên khái quát đã trích, chưa phải rà toàn bộ câu gốc hoặc điểm học sinh. TF đếm từng ý; slot mặc định đếm câu. Không so trực tiếp hai đơn vị này.
+
+**Mức toàn câu có chứa chủ đề — cùng đơn vị câu với slot ma trận:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|:---:|:---:|:---:|:---:|
+| official / P1 | 2 | 1 | 0 | 0 |
+| provincial_third_party / P1 | 12 | 7 | 0 | 0 |
+| provincial_third_party / P3 | 0 | 3 | 0 | 1 |
+Lấy mức cao nhất của toàn bộ ý trong câu; có ý chưa rõ thì cả câu giữ chưa rõ. Với câu tích hợp, mức này có thể do kiến thức khác quyết định. Không cộng bảng của nhiều chủ đề thành tổng câu hoặc chuyển thành hạn ngạch NB/TH/VD.
+
+**Audit ma trận liên quan:**
+
+| Phần | Slot mặc định | Đề chính thức có | Đề tỉnh có |
+|---|---:|---:|---:|
+| P1 | 3 | 1 | 5 |
+| P3 | 1 | 0 | 4 |
+| P2 | 1 | 0 | 0 |
+Mẫu số và kết luận đề xuất ở [audit ma trận](../../audit/matrices/sinh-hoc.md). Hiện diện không tự chứng minh cần tăng số slot; lớp bằng chứng tách riêng.
+
+**Prototype liên quan đến chủ đề:**
+
+- Pc48174209c / P1/5: phân hóa ước lượng low; thường quy; 0 cờ thô.
+- Pc48174209c / P1/6: phân hóa ước lượng low; thường quy; 0 cờ thô.
+- Pc48174209c / P1/18: phân hóa ước lượng low; thường quy; 0 cờ thô.
+- Pc48174209c / P2/4: phân hóa ước lượng medium; thường quy; 0 cờ thô.
+Xem [audit prototype](../../audit/prototypes/sinh-hoc.md) để đọc nhiễu, bất đồng và giới hạn; cờ thô cần phân biệt với giới hạn đầu vào của lượt chấm.
+
+**Câu mẫu mới của chủ đề:**
+
+[Đọc 3 câu mẫu, đáp án, lời giải và lượt tự giải của chủ đề](samples/topics/fced5fd6d516.md). Mẫu tổng hợp mới, chờ giáo viên; mẫu có cờ chưa sẵn dùng.
 
 ## 22. Trao đổi chất qua màng tế bào
 
@@ -1267,11 +2123,47 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 **Đối chiếu ma trận và NB/TH/VD:**
 
 - Họ chủ đề này chưa được ánh xạ vào một chương mặc định; cần xem kết luận audit trước khi đề xuất thêm.
-- Phân bố NB/TH/VD: xem [bảng mức nhận thức](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md). Đây là nhãn trên khái quát, chờ rà đề gốc; không quy đổi từ thấp/vừa/cao.
 
-**Câu mẫu mới:** chưa sinh và tự giải độc lập. Các mô tả phía trên là khái quát từ bằng chứng, không phải câu mẫu có thể đưa vào đề.
+**Cách dùng dữ kiện thuộc lòng — số câu/ý trong mẫu:**
 
-**Audit prototype theo chủ đề:** xem audit môn đã xuất; chưa có bảng nối đầy đủ đến chủ đề này.
+| Nguồn | Hỏi trực tiếp | Cho làm gợi ý | Cần trong suy luận | Không dùng | Chưa rõ |
+|---|---:|---:|---:|---:|---:|
+| Chính thức | 0 | 1 | 0 | 0 | 0 |
+| Tỉnh/trường | 0 | 0 | 0 | 0 | 0 |
+
+**Cách tăng yêu cầu suy luận có bằng chứng:**
+
+Chưa có thao tác tăng yêu cầu được aggregate xác lập riêng cho chủ đề; không tự tạo dạng khó từ số bước hoặc độ dài.
+
+**NB/TH/VD quan sát — đơn vị câu/ý:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|---:|---:|---:|---:|
+| official / P3 | 0 | 1 | 0 | 0 |
+
+Nhãn dựa trên khái quát đã trích, chưa phải rà toàn bộ câu gốc hoặc điểm học sinh. TF đếm từng ý; slot mặc định đếm câu. Không so trực tiếp hai đơn vị này.
+
+**Mức toàn câu có chứa chủ đề — cùng đơn vị câu với slot ma trận:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|:---:|:---:|:---:|:---:|
+| official / P3 | 0 | 1 | 0 | 0 |
+Lấy mức cao nhất của toàn bộ ý trong câu; có ý chưa rõ thì cả câu giữ chưa rõ. Với câu tích hợp, mức này có thể do kiến thức khác quyết định. Không cộng bảng của nhiều chủ đề thành tổng câu hoặc chuyển thành hạn ngạch NB/TH/VD.
+
+**Audit ma trận liên quan:**
+
+| Phần | Slot mặc định | Đề chính thức có | Đề tỉnh có |
+|---|---:|---:|---:|
+| P3 | 0 | 1 | 0 |
+Mẫu số và kết luận đề xuất ở [audit ma trận](../../audit/matrices/sinh-hoc.md). Hiện diện không tự chứng minh cần tăng số slot; lớp bằng chứng tách riêng.
+
+**Prototype liên quan đến chủ đề:**
+
+Chưa nối được câu prototype vào chủ đề qua mapping đã kiểm; không coi đây là bằng chứng prototype không có chủ đề.
+
+**Câu mẫu mới của chủ đề:**
+
+[Đọc 1 câu mẫu, đáp án, lời giải và lượt tự giải của chủ đề](samples/topics/7af4b7fa52b2.md). Mẫu tổng hợp mới, chờ giáo viên; mẫu có cờ chưa sẵn dùng.
 
 ## 23. Trao đổi nước và dinh dưỡng khoáng ở thực vật
 
@@ -1306,11 +2198,50 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 **Đối chiếu ma trận và NB/TH/VD:**
 
 - Họ chủ đề này chưa được ánh xạ vào một chương mặc định; cần xem kết luận audit trước khi đề xuất thêm.
-- Phân bố NB/TH/VD: xem [bảng mức nhận thức](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md). Đây là nhãn trên khái quát, chờ rà đề gốc; không quy đổi từ thấp/vừa/cao.
 
-**Câu mẫu mới:** chưa sinh và tự giải độc lập. Các mô tả phía trên là khái quát từ bằng chứng, không phải câu mẫu có thể đưa vào đề.
+**Cách dùng dữ kiện thuộc lòng — số câu/ý trong mẫu:**
 
-**Audit prototype theo chủ đề:** xem audit môn đã xuất; chưa có bảng nối đầy đủ đến chủ đề này.
+| Nguồn | Hỏi trực tiếp | Cho làm gợi ý | Cần trong suy luận | Không dùng | Chưa rõ |
+|---|---:|---:|---:|---:|---:|
+| Chính thức | 0 | 1 | 0 | 0 | 0 |
+| Tỉnh/trường | 0 | 1 | 0 | 2 | 0 |
+
+**Cách tăng yêu cầu suy luận có bằng chứng:**
+
+Chưa có thao tác tăng yêu cầu được aggregate xác lập riêng cho chủ đề; không tự tạo dạng khó từ số bước hoặc độ dài.
+
+**NB/TH/VD quan sát — đơn vị câu/ý:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|---:|---:|---:|---:|
+| official / P2 | 0 | 0 | 0 | 1 |
+| provincial_third_party / P1 | 3 | 0 | 0 | 0 |
+
+Nhãn dựa trên khái quát đã trích, chưa phải rà toàn bộ câu gốc hoặc điểm học sinh. TF đếm từng ý; slot mặc định đếm câu. Không so trực tiếp hai đơn vị này.
+
+**Mức toàn câu có chứa chủ đề — cùng đơn vị câu với slot ma trận:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|:---:|:---:|:---:|:---:|
+| official / P2 | 0 | 0 | 0 | 1 |
+| provincial_third_party / P1 | 3 | 0 | 0 | 0 |
+Lấy mức cao nhất của toàn bộ ý trong câu; có ý chưa rõ thì cả câu giữ chưa rõ. Với câu tích hợp, mức này có thể do kiến thức khác quyết định. Không cộng bảng của nhiều chủ đề thành tổng câu hoặc chuyển thành hạn ngạch NB/TH/VD.
+
+**Audit ma trận liên quan:**
+
+| Phần | Slot mặc định | Đề chính thức có | Đề tỉnh có |
+|---|---:|---:|---:|
+| P1 | 0 | 0 | 2 |
+| P2 | 0 | 1 | 0 |
+Mẫu số và kết luận đề xuất ở [audit ma trận](../../audit/matrices/sinh-hoc.md). Hiện diện không tự chứng minh cần tăng số slot; lớp bằng chứng tách riêng.
+
+**Prototype liên quan đến chủ đề:**
+
+Chưa nối được câu prototype vào chủ đề qua mapping đã kiểm; không coi đây là bằng chứng prototype không có chủ đề.
+
+**Câu mẫu mới của chủ đề:**
+
+[Đọc 1 câu mẫu, đáp án, lời giải và lượt tự giải của chủ đề](samples/topics/407b2d02ff7f.md). Mẫu tổng hợp mới, chờ giáo viên; mẫu có cờ chưa sẵn dùng.
 
 ## 24. Tuần hoàn ở động vật
 
@@ -1347,7 +2278,7 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 - Tỉnh/trường / P2: cho Sơ đồ dòng máu qua tim, phổi và các mạch nối. Yêu cầu: Kiểm tra trình tự đường đi của máu trong vòng tuần hoàn trao đổi khí.
   Suy luận: Xác định ngăn tim khởi phát vòng tuần hoàn; theo dòng qua hệ mạch và mao mạch; kiểm tra ngăn tim tiếp nhận máu trở về. Kết hợp: Các ngăn tim; Hệ mạch phổi. Nguồn độ khó: Đối chiếu một đường đi tuần hoàn cơ bản.
 - Tỉnh/trường / P2: cho Sơ đồ có cả vòng tuần hoàn trao đổi khí và vòng tuần hoàn cơ thể. Yêu cầu: Đánh giá quy tắc khái quát về thành phần khí của máu trong các loại mạch.
-  Suy luận: Nhớ loại mạch được gọi theo chiều đi so với tim; xét sự trao đổi khí trong các vòng tuần hoàn; tìm trường hợp làm quy tắc khái quát không đúng. Kết hợp: Chiều dòng máu; Trao đổi khí; Phân loại mạch máu. Nguồn độ khó: Phải tách tiêu chí gọi tên mạch khỏi mức oxygen hóa.
+  Suy luận: Nhớ loại mạch được gọi theo chiều đi so với tim; xét sự trao đổi khí trong các vòng tuần hoàn; tìm trường hợp làm quy tắc khái quát không đúng. Kết hợp: Chiều dòng máu; Trao đổi khí; Phân loại mạch máu. Nguồn độ khó: Phải tách tiêu chí gọi tên mạch khỏi tình trạng giàu hay nghèo oxygen của máu.
 - Tỉnh/trường / P2: cho Sơ đồ tim và hệ mạch đưa máu tới các mô rồi trở về tim. Yêu cầu: Kiểm tra trình tự của vòng tuần hoàn cơ thể.
   Suy luận: Xác định ngăn tim bơm máu đi nuôi cơ thể; theo trình tự các loại mạch qua mô; xác định ngăn tim nhận máu trở về. Kết hợp: Các ngăn tim; Hệ mạch cơ thể. Nguồn độ khó: Nhớ và đối chiếu đường tuần hoàn cơ bản.
 
@@ -1361,11 +2292,53 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 **Đối chiếu ma trận và NB/TH/VD:**
 
 - Họ chủ đề này chưa được ánh xạ vào một chương mặc định; cần xem kết luận audit trước khi đề xuất thêm.
-- Phân bố NB/TH/VD: xem [bảng mức nhận thức](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md). Đây là nhãn trên khái quát, chờ rà đề gốc; không quy đổi từ thấp/vừa/cao.
 
-**Câu mẫu mới:** chưa sinh và tự giải độc lập. Các mô tả phía trên là khái quát từ bằng chứng, không phải câu mẫu có thể đưa vào đề.
+**Cách dùng dữ kiện thuộc lòng — số câu/ý trong mẫu:**
 
-**Audit prototype theo chủ đề:** xem audit môn đã xuất; chưa có bảng nối đầy đủ đến chủ đề này.
+| Nguồn | Hỏi trực tiếp | Cho làm gợi ý | Cần trong suy luận | Không dùng | Chưa rõ |
+|---|---:|---:|---:|---:|---:|
+| Chính thức | 0 | 1 | 0 | 1 | 0 |
+| Tỉnh/trường | 0 | 6 | 1 | 1 | 0 |
+
+**Cách tăng yêu cầu suy luận có bằng chứng:**
+
+Chưa có thao tác tăng yêu cầu được aggregate xác lập riêng cho chủ đề; không tự tạo dạng khó từ số bước hoặc độ dài.
+
+**NB/TH/VD quan sát — đơn vị câu/ý:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|---:|---:|---:|---:|
+| official / P1 | 1 | 0 | 0 | 0 |
+| official / P3 | 0 | 1 | 0 | 0 |
+| provincial_third_party / P2 | 0 | 8 | 0 | 0 |
+
+Nhãn dựa trên khái quát đã trích, chưa phải rà toàn bộ câu gốc hoặc điểm học sinh. TF đếm từng ý; slot mặc định đếm câu. Không so trực tiếp hai đơn vị này.
+
+**Mức toàn câu có chứa chủ đề — cùng đơn vị câu với slot ma trận:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|:---:|:---:|:---:|:---:|
+| official / P1 | 1 | 0 | 0 | 0 |
+| official / P3 | 0 | 1 | 0 | 0 |
+| provincial_third_party / P2 | 0 | 2 | 0 | 0 |
+Lấy mức cao nhất của toàn bộ ý trong câu; có ý chưa rõ thì cả câu giữ chưa rõ. Với câu tích hợp, mức này có thể do kiến thức khác quyết định. Không cộng bảng của nhiều chủ đề thành tổng câu hoặc chuyển thành hạn ngạch NB/TH/VD.
+
+**Audit ma trận liên quan:**
+
+| Phần | Slot mặc định | Đề chính thức có | Đề tỉnh có |
+|---|---:|---:|---:|
+| P1 | 0 | 1 | 0 |
+| P2 | 0 | 0 | 2 |
+| P3 | 0 | 1 | 0 |
+Mẫu số và kết luận đề xuất ở [audit ma trận](../../audit/matrices/sinh-hoc.md). Hiện diện không tự chứng minh cần tăng số slot; lớp bằng chứng tách riêng.
+
+**Prototype liên quan đến chủ đề:**
+
+Chưa nối được câu prototype vào chủ đề qua mapping đã kiểm; không coi đây là bằng chứng prototype không có chủ đề.
+
+**Câu mẫu mới của chủ đề:**
+
+[Đọc 3 câu mẫu, đáp án, lời giải và lượt tự giải của chủ đề](samples/topics/78e7c9e443e5.md). Mẫu tổng hợp mới, chờ giáo viên; mẫu có cờ chưa sẵn dùng.
 
 ## 25. Tập tính ở động vật
 
@@ -1393,12 +2366,48 @@ Số câu/ý và số đề là các đơn vị khác nhau; một câu tích h�
 **Đối chiếu ma trận và NB/TH/VD:**
 
 - Họ chủ đề này chưa được ánh xạ vào một chương mặc định; cần xem kết luận audit trước khi đề xuất thêm.
-- Phân bố NB/TH/VD: xem [bảng mức nhận thức](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md). Đây là nhãn trên khái quát, chờ rà đề gốc; không quy đổi từ thấp/vừa/cao.
 
-**Câu mẫu mới:** chưa sinh và tự giải độc lập. Các mô tả phía trên là khái quát từ bằng chứng, không phải câu mẫu có thể đưa vào đề.
+**Cách dùng dữ kiện thuộc lòng — số câu/ý trong mẫu:**
 
-**Audit prototype theo chủ đề:** xem audit môn đã xuất; chưa có bảng nối đầy đủ đến chủ đề này.
+| Nguồn | Hỏi trực tiếp | Cho làm gợi ý | Cần trong suy luận | Không dùng | Chưa rõ |
+|---|---:|---:|---:|---:|---:|
+| Chính thức | 0 | 1 | 0 | 0 | 0 |
+| Tỉnh/trường | 0 | 0 | 0 | 0 | 0 |
+
+**Cách tăng yêu cầu suy luận có bằng chứng:**
+
+Chưa có thao tác tăng yêu cầu được aggregate xác lập riêng cho chủ đề; không tự tạo dạng khó từ số bước hoặc độ dài.
+
+**NB/TH/VD quan sát — đơn vị câu/ý:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|---:|---:|---:|---:|
+| official / P1 | 0 | 0 | 1 | 0 |
+
+Nhãn dựa trên khái quát đã trích, chưa phải rà toàn bộ câu gốc hoặc điểm học sinh. TF đếm từng ý; slot mặc định đếm câu. Không so trực tiếp hai đơn vị này.
+
+**Mức toàn câu có chứa chủ đề — cùng đơn vị câu với slot ma trận:**
+
+| Nguồn / phần | NB | TH | VD | Chưa rõ |
+|---|:---:|:---:|:---:|:---:|
+| official / P1 | 0 | 0 | 1 | 0 |
+Lấy mức cao nhất của toàn bộ ý trong câu; có ý chưa rõ thì cả câu giữ chưa rõ. Với câu tích hợp, mức này có thể do kiến thức khác quyết định. Không cộng bảng của nhiều chủ đề thành tổng câu hoặc chuyển thành hạn ngạch NB/TH/VD.
+
+**Audit ma trận liên quan:**
+
+| Phần | Slot mặc định | Đề chính thức có | Đề tỉnh có |
+|---|---:|---:|---:|
+| P1 | 0 | 1 | 0 |
+Mẫu số và kết luận đề xuất ở [audit ma trận](../../audit/matrices/sinh-hoc.md). Hiện diện không tự chứng minh cần tăng số slot; lớp bằng chứng tách riêng.
+
+**Prototype liên quan đến chủ đề:**
+
+Chưa nối được câu prototype vào chủ đề qua mapping đã kiểm; không coi đây là bằng chứng prototype không có chủ đề.
+
+**Câu mẫu mới của chủ đề:**
+
+[Đọc 1 câu mẫu, đáp án, lời giải và lượt tự giải của chủ đề](samples/topics/c0b10c0cb8ae.md). Mẫu tổng hợp mới, chờ giáo viên; mẫu có cờ chưa sẵn dùng.
 
 ## Phạm vi cần bổ sung
 
-Hồ sơ ra đề đầy đủ còn cần: phân bố nhận thức theo ma trận; câu mẫu mới với đáp án, lời giải, lỗi đằng sau từng nhiễu và kiểm tự giải độc lập; audit ma trận/prototype; các điều kiện câu chùm và tiên quyết cho từng dạng. Không dùng ví dụ app sinh làm bằng chứng tần suất.
+Các thành phần đã có được nối trong từng chủ đề. Những ô chưa có mẫu, chưa có nhãn hoặc chưa nối được prototype vẫn được ghi rõ. Phủ mọi dạng, rà lại câu gốc và nghiệm thu chuyên môn vẫn cần kiểm riêng. Không dùng ví dụ app sinh làm bằng chứng tần suất.

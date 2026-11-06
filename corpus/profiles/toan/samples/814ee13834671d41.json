@@ -1,0 +1,169 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "814ee13834671d41",
+    "topic": "Tích vô hướng",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Tọa độ các đỉnh đã biết của một hình thang vuông trong không gian và nhận định về côsin góc giữa các vectơ chung gốc.",
+        "task": "Kiểm tra nhận định về côsin góc giữa các vectơ.",
+        "reasoning": [
+          "Lập các vectơ theo thứ tự đầu mút.",
+          "Tính tích vô hướng và độ dài từng vectơ.",
+          "Dùng công thức côsin góc giữa các vectơ rồi đối chiếu nhận định."
+        ],
+        "combines": [
+          "Tọa độ vectơ",
+          "Tích vô hướng",
+          "Góc giữa các vectơ"
+        ],
+        "difficulty_source": "Thực hiện đúng phép chuẩn hóa tích vô hướng bằng tích độ dài.",
+        "evidence_uncertainty": "Thiếu khóa đáp án khớp mã đề; chưa gán lỗi cho nhận định.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Tọa độ các điểm xác định các vectơ chung gốc và một nhận định về tích vô hướng.",
+        "task": "Kiểm tra giá trị tích vô hướng.",
+        "reasoning": [
+          "Lập tọa độ các vectơ theo đúng chiều.",
+          "Cộng các tích tọa độ tương ứng.",
+          "Đối chiếu với nhận định."
+        ],
+        "combines": [
+          "Hiệu tọa độ điểm",
+          "Tích vô hướng"
+        ],
+        "difficulty_source": "Tính trực tiếp theo công thức tọa độ.",
+        "evidence_uncertainty": "Thiếu khóa đáp án khớp mã đề; chưa phân loại đúng sai.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "beee25b53250|P2|1|a",
+      "beee25b53250|P2|1|d"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "814ee13834671d41",
+    "stem": "Trong không gian Oxyz, cho ba điểm A(1;−1;2), B(3;0;4), C(0;1;4). Xét tính đúng sai của các nhận định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Vectơ AB có tọa độ (2;1;2)."
+      },
+      {
+        "sub": "b",
+        "text": "Tích vô hướng của hai vectơ AB và AC bằng 0."
+      },
+      {
+        "sub": "c",
+        "text": "Côsin của góc giữa hai vectơ AB và AC bằng 4/9."
+      },
+      {
+        "sub": "d",
+        "text": "Tích vô hướng của hai vectơ BA và AC bằng 4."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Ta có AB=(2;1;2), AC=(−1;2;2) và BA=(−2;−1;−2). Vì vậy AB·AC=2×(−1)+1×2+2×2=4. Độ dài AB và AC đều bằng 3 nên côsin góc giữa chúng bằng 4/(3×3)=4/9. Mặt khác BA·AC=−AB·AC=−4. Do đó a, c đúng; b, d sai.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Chỉ tính tích các hoành độ và tung độ, bỏ tích các cao độ, được 2×(−1)+1×2=0.",
+        "why_plausible": "Học sinh có thể áp dụng thiếu thành phần khi chuyển từ công thức tích vô hướng trong mặt phẳng sang không gian."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Dùng tọa độ của AB thay cho BA nên giữ nguyên kết quả 4.",
+        "why_plausible": "Hai vectơ có cùng cặp đầu mút và cùng độ dài, dễ dẫn đến bỏ qua việc chúng ngược hướng."
+      }
+    ],
+    "level_reason": "Các nhận định yêu cầu lập tọa độ vectơ, tính tích vô hướng, độ dài và áp dụng công thức côsin trong trường hợp tiêu chuẩn. Mức cao nhất của toàn mẫu là TH.",
+    "prerequisites": [
+      "Tọa độ vectơ từ hai điểm trong không gian",
+      "Công thức tích vô hướng theo tọa độ",
+      "Độ dài vectơ",
+      "Công thức côsin góc giữa hai vectơ khác vectơ không",
+      "Quan hệ giữa hai vectơ đối nhau"
+    ],
+    "variation_guidance": "Đây là mẫu minh họa tự biên soạn, không phải bằng chứng đề thi thực hay một đề thi đầy đủ. Có thể thay tọa độ ba điểm, bảo đảm hai vectơ dùng để tính góc đều khác vectơ không; tính lại toàn bộ tích vô hướng và độ dài.",
+    "uncertainties": [
+      "Các quan sát cấu trúc chỉ thuộc nguồn cấp tỉnh qua bên thứ ba và thiếu khóa đáp án khớp mã đề; không dùng mẫu này để gán đúng sai cho nhận định trong nguồn hoặc suy rộng về đề thi chính thức."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "814ee13834671d41",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "AB=(2;1;2), AC=(−1;2;2), BA=(−2;−1;−2). Ta có AB·AC=−2+2+4=4 và |AB|=|AC|=3, nên côsin góc giữa AB và AC bằng 4/9. Đồng thời BA·AC=−4, không phải 4.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Ý a tính tọa độ vectơ từ hai điểm; b và d tính tích vô hướng bằng tọa độ; c thay tích vô hướng và độ dài vào công thức côsin. Tất cả đều là bài tính chuẩn, không đòi hỏi xây dựng mô hình hay lập luận không quen thuộc."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/92ebcf2d68f94d6d1ca6b5d27f07efd3b6feb2ca1288f5a2f691c88e8dfa5d6c.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/92ebcf2d68f94d6d1ca6b5d27f07efd3b6feb2ca1288f5a2f691c88e8dfa5d6c.resolve.json"
+}

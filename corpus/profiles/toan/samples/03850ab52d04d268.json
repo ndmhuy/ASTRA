@@ -1,0 +1,181 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "03850ab52d04d268",
+    "topic": "Nguyên hàm",
+    "part": "P1",
+    "level": "NB",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một hàm lượng giác cơ bản và các họ hàm ứng viên.",
+        "task": "Chọn họ nguyên hàm thích hợp.",
+        "reasoning": [
+          "Nhớ công thức nguyên hàm lượng giác hoặc kiểm tra bằng đạo hàm.",
+          "Đối chiếu dấu và hằng số tùy ý trong các lựa chọn."
+        ],
+        "combines": [
+          "Nguyên hàm",
+          "Đạo hàm lượng giác"
+        ],
+        "difficulty_source": "Nhớ đúng dấu trong công thức nguyên hàm lượng giác.",
+        "evidence_uncertainty": "Không có khóa khớp mã để xác nhận từng phương án sai.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một hàm số và hàm được đề nghị là nguyên hàm của nó trên một khoảng.",
+        "task": "Chọn hệ thức định nghĩa nguyên hàm.",
+        "reasoning": [
+          "Nhớ quan hệ giữa nguyên hàm và đạo hàm.",
+          "Đối chiếu đúng hàm được lấy đạo hàm và dấu của hệ thức."
+        ],
+        "combines": [
+          "Định nghĩa nguyên hàm",
+          "Ký hiệu đạo hàm"
+        ],
+        "difficulty_source": "Nhận biết trực tiếp định nghĩa.",
+        "evidence_uncertainty": "Thiếu khóa đáp án hợp lệ.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một hàm được xác định là nguyên hàm của hàm mũ.",
+        "task": "Chọn hệ thức đạo hàm phù hợp.",
+        "reasoning": [
+          "Nhận diện hàm dưới dấu tích phân là đạo hàm của nguyên hàm.",
+          "Đối chiếu hệ thức định nghĩa với các biểu thức được đưa ra."
+        ],
+        "combines": [
+          "Định nghĩa nguyên hàm",
+          "Đạo hàm"
+        ],
+        "difficulty_source": "Nhận ra chỉ cần định nghĩa nguyên hàm.",
+        "evidence_uncertainty": "Không có khóa đáp án phù hợp; chưa xác định lựa chọn sai.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một hàm lượng giác cơ bản.",
+        "task": "Chọn họ nguyên hàm.",
+        "reasoning": [
+          "Nhớ công thức nguyên hàm lượng giác tương ứng.",
+          "Kiểm tra dấu và hằng số tùy ý."
+        ],
+        "combines": [
+          "Nguyên hàm lượng giác"
+        ],
+        "difficulty_source": "Nhớ đúng dấu trong công thức cơ bản.",
+        "evidence_uncertainty": "Khóa đáp án chưa được xác nhận; chưa gán lỗi cho từng lựa chọn.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "3f1b2aa3cb72|P1|4|None",
+      "525d3542283a|P1|6|None",
+      "6aa30214ba7e|P1|6|None",
+      "acc00d945397|P1|2|None",
+      "aceb17d936f5|P1|8|None",
+      "c6340827ba59|P1|8|None",
+      "fc12a8146279|P1|8|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "03850ab52d04d268",
+    "stem": "Cho hàm số g liên tục trên khoảng I và hàm số H có đạo hàm trên I. Hệ thức nào sau đây là điều kiện định nghĩa H là một nguyên hàm của g trên I?",
+    "options": [
+      {
+        "label": "A",
+        "text": "g′(x) = H(x) với mọi x ∈ I."
+      },
+      {
+        "label": "B",
+        "text": "H′(x) = g(x) với mọi x ∈ I."
+      },
+      {
+        "label": "C",
+        "text": "H′(x) = −g(x) với mọi x ∈ I."
+      },
+      {
+        "label": "D",
+        "text": "H(x) = g(x) với mọi x ∈ I."
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "NB"
+      }
+    ],
+    "solution": "Theo định nghĩa, H là một nguyên hàm của g trên I khi H′(x) = g(x) với mọi x ∈ I. Vì vậy chọn B. A đảo vai trò hai hàm và còn sử dụng đạo hàm của g khi giả thiết chưa bảo đảm g có đạo hàm. C thêm dấu âm không có trong định nghĩa. D nhầm quan hệ nguyên hàm với sự bằng nhau của hai hàm.",
+    "distractors": [
+      {
+        "label": "A",
+        "sub": null,
+        "mistake": "Lấy đạo hàm của g thay vì lấy đạo hàm của nguyên hàm H.",
+        "why_plausible": "Học sinh nhớ hai phép toán có quan hệ ngược nhau nhưng nhầm chiều của hệ thức."
+      },
+      {
+        "label": "C",
+        "sub": null,
+        "mistake": "Cho rằng phép toán ngược với đạo hàm phải kèm việc đổi dấu.",
+        "why_plausible": "Học sinh có thể khái quát nhầm dấu âm trong một số công thức lượng giác thành quy tắc chung."
+      },
+      {
+        "label": "D",
+        "sub": null,
+        "mistake": "Đồng nhất nguyên hàm với chính hàm số ban đầu.",
+        "why_plausible": "Học sinh chưa phân biệt quan hệ giữa hai hàm với quan hệ giữa đạo hàm của hàm này và hàm kia."
+      }
+    ],
+    "level_reason": "Chỉ cần nhận ra hệ thức định nghĩa nguyên hàm trong một đơn vị kiến thức. Không cần tính nguyên hàm hay suy luận từ một tình huống thực tế.",
+    "prerequisites": [
+      "Định nghĩa nguyên hàm trên một khoảng",
+      "Ký hiệu đạo hàm"
+    ],
+    "variation_guidance": "Có thể đổi ký hiệu hàm và khoảng xác định, đồng thời thay vị trí đáp án đúng. Giữ yêu cầu nhận biết định nghĩa trực tiếp để duy trì mức NB.",
+    "uncertainties": [
+      "Đây là câu minh họa tổng hợp mới, không phải bằng chứng đề thi thật hoặc một phần của đề thi hoàn chỉnh.",
+      "Căn cứ quan sát chỉ thuộc nguồn cấp tỉnh qua bên thứ ba, không có mốc chính thức và thiếu khóa đáp án được xác nhận. Các phương án được xây dựng riêng cho mẫu này."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "03850ab52d04d268",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "NB"
+      }
+    ],
+    "solution": "Theo định nghĩa, H là một nguyên hàm của g trên I khi H′(x) = g(x) với mọi x ∈ I.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Chỉ cần nhận biết định nghĩa nguyên hàm."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/toan/a46b8e759d0411d029e615243da796ac943411d2bda2f05e68f1db5e1f62e2ca.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/toan/a46b8e759d0411d029e615243da796ac943411d2bda2f05e68f1db5e1f62e2ca.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 0,
+  "source_rows_sha256": "863dd6885185956ed9dabede84bf529993a764e4871f75f25629503cf8f2731a"
+}

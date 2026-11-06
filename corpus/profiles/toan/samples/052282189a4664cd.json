@@ -1,0 +1,107 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "052282189a4664cd",
+    "topic": "Vectơ và hệ trục tọa độ trong không gian",
+    "part": "P3",
+    "level": "VD",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Một hình hộp chữ nhật, các độ dài cạnh và những chuyển động đồng thời với tốc độ không đổi trên các đường gấp khúc đã chỉ định; có hình phối cảnh.",
+        "task": "Tính khoảng cách giữa các điểm chuyển động tại thời điểm một điểm còn cách đích một đoạn cho trước.",
+        "reasoning": [
+          "Tính độ dài các chặng đường bằng hình học hình hộp.",
+          "Xác định vị trí của điểm dùng làm mốc và thời gian tương ứng.",
+          "Tính quãng đường điểm còn lại đã đi để xác định nó đang trên chặng nào.",
+          "Dùng tỉ lệ trên đoạn thẳng để biểu diễn tọa độ các vị trí.",
+          "Tính khoảng cách không gian và làm tròn theo yêu cầu."
+        ],
+        "combines": [
+          "Định lý Pythagore",
+          "Chuyển động đều",
+          "Phân chia hành trình theo chặng",
+          "Tọa độ vectơ",
+          "Khoảng cách trong không gian"
+        ],
+        "difficulty_source": "Đồng bộ thời gian và kiểm tra chặng chuyển động trước khi nội suy vị trí.",
+        "evidence_uncertainty": "Không có đáp án chuẩn để đối chiếu; hình và mô tả hành trình đủ để xác định các chặng cần kiểm tra.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "525d3542283a|P3|6|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "052282189a4664cd",
+    "stem": "Một khung hình hộp chữ nhật ABCD.A'B'C'D' có AB = 3 m, AD = 4 m và AA' = 12 m. Các đỉnh A', B', C', D' lần lượt nằm phía trên A, B, C, D. Hai thiết bị bắt đầu chuyển động đồng thời trên các thanh dẫn thẳng: M xuất phát từ A, đi theo đường gấp khúc A → B → D' với tốc độ 2 m/s; N xuất phát từ C, đi theo đường gấp khúc C → C' → B' với tốc độ 1 m/s. Mỗi thiết bị giữ nguyên tốc độ khi qua điểm nối và dừng tại đích. Tại thời điểm đầu tiên sau lúc xuất phát mà đường thẳng MN song song với mặt phẳng đáy (ABCD), khoảng cách MN bằng bao nhiêu mét? Làm tròn đến hàng phần trăm.",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "3,02",
+        "level": "VD"
+      }
+    ],
+    "solution": "Chọn A(0;0;0), B(3;0;0), D(0;4;0), A'(0;0;12), suy ra C(3;4;0) và D'(0;4;12). Có BD' = √(3² + 4² + 12²) = 13 m. Gọi t là thời gian tính bằng giây. Với 0 < t ≤ 1,5, M ở trên AB có độ cao 0, còn N ở trên CC' có độ cao t > 0, nên MN chưa song song với đáy. Khi 1,5 ≤ t ≤ 8, M ở trên BD'. Đặt u = (2t − 3)/13, khi đó M(3 − 3u; 4u; 12u). Trong khoảng này N vẫn ở trên CC' vì cần 12 giây để tới C', nên N(3;4;t). Đường thẳng MN song song với đáy khi hai điểm có cùng độ cao và phân biệt, tức 12u = t. Kết hợp với 13u = 2t − 3 được u = 3/11 và t = 36/11. Thời gian này thuộc khoảng đang xét, là nghiệm duy nhất trong khoảng đó và không có nghiệm dương trước đó. Khi ấy M(24/11;12/11;36/11), N(3;4;36/11). Hai điểm phân biệt và nằm ở độ cao dương nên MN song song với mặt phẳng đáy. Do đó MN = √[(9/11)² + (32/11)²] = √1105/11 ≈ 3,02 m.",
+    "distractors": [],
+    "level_reason": "Học sinh phải chuyển điều kiện đường nối song song với đáy thành điều kiện bằng độ cao, phân chia hành trình theo chặng, lập vị trí phụ thuộc thời gian và kiểm tra nghiệm thuộc đúng chặng của cả hai thiết bị. Các quyết định này phụ thuộc lẫn nhau trước khi tính khoảng cách, đáp ứng mức VD.",
+    "prerequisites": [
+      "Gắn hệ tọa độ với hình hộp chữ nhật",
+      "Định lý Pythagore trong không gian",
+      "Quan hệ giữa quãng đường, tốc độ và thời gian",
+      "Biểu diễn điểm chuyển động trên đoạn thẳng",
+      "Quan hệ song song giữa đường thẳng và mặt phẳng",
+      "Khoảng cách giữa hai điểm trong không gian"
+    ],
+    "variation_guidance": "Có thể đổi hành trình hoặc tốc độ để thời điểm bằng độ cao chuyển sang chặng khác. Cần giải lại điều kiện theo từng chặng, kiểm tra tính đầu tiên của thời điểm và bảo đảm hai thiết bị không trùng nhau.",
+    "uncertainties": [
+      "Đây là mẫu tổng hợp tự soạn; cơ sở tham khảo cấu trúc chuyển động theo chặng chỉ là quan sát bên thứ ba ở cấp tỉnh, không phải bằng chứng từ đề thi chính thức."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "052282189a4664cd",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "3.02",
+        "level": "VD"
+      }
+    ],
+    "solution": "Chọn A=(0;0;0), B=(3;0;0), D=(0;4;0), A'=(0;0;12), với tọa độ tính bằng mét và t tính bằng giây. M đến B lúc t=1,5; trước đó, với t>0, M có độ cao 0 còn N có độ cao t nên MN chưa song song với đáy. Vì BD'=13, trong khoảng 1,5≤t≤8, M=(3−3(2t−3)/13;4(2t−3)/13;12(2t−3)/13). N vẫn trên CC' nên N=(3;4;t). Hai độ cao bằng nhau khi 12(2t−3)/13=t, suy ra t=36/11, thuộc khoảng đang xét và là thời điểm đầu tiên cần tìm. Khi đó M=(24/11;12/11;36/11), N=(33/11;44/11;36/11). Hai điểm phân biệt, cùng độ cao dương nên đường thẳng MN song song với mặt phẳng đáy. Khoảng cách MN=√(9²+32²)/11=√1105/11≈3,02 m.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Cần mô hình hóa chuyển động theo từng chặng, xác định khoảng thời gian phù hợp, chuyển điều kiện song song thành điều kiện bằng độ cao và kiểm tra tính đầu tiên trước khi tính khoảng cách."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/toan/f7ee1ba193a3149f863e5d70019b81f59061c6305e96e3f545aeee761e37705f.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/toan/f7ee1ba193a3149f863e5d70019b81f59061c6305e96e3f545aeee761e37705f.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 2,
+  "source_rows_sha256": "863dd6885185956ed9dabede84bf529993a764e4871f75f25629503cf8f2731a",
+  "source_overlap_review": {
+    "disposition": "generic_mathematical_shape_false_positive",
+    "reviewer": "parent_sol",
+    "at_utc": "2026-11-03T22:29:41.202116+00:00",
+    "sample_sha256": "6212e447ca864a87350bb1b909d36cbb72f055bdea55806a24caa7f77a28840d",
+    "overlap_sha256": [
+      "83e7fec0576e0f56bf03f1859f616b087274938aa15c2aacb28a10098df25be9",
+      "b77822cc11d40796d3960793b2fe4009a2ebb84a3b3024c14abd26291ad76680"
+    ],
+    "reason": "Only the conventional rectangular-prism name and vertex notation match. Speeds, paths, event condition and solution are synthetic. No numerical or scenario overlap is waived. Exact lexical matches retained for audit.",
+    "mathematical_check": "Piecewise altitude equality has first positive solution in the interior of both active segments; Euclidean distance agrees with blind solution.",
+    "semantic_noncopying_proved": false
+  }
+}

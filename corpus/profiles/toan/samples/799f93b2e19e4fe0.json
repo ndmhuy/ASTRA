@@ -1,0 +1,186 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "799f93b2e19e4fe0",
+    "topic": "Quy tắc xác suất",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Dữ liệu chéo giữa kết quả phân loại và trạng thái thực tế, cùng một xác suất biên được đề xuất.",
+        "task": "Kiểm tra xác suất của trạng thái khi không đặt điều kiện về kết quả phân loại.",
+        "reasoning": [
+          "Gộp các nhóm rời nhau có cùng trạng thái cần xét.",
+          "Chia tổng số phần tử thuận lợi cho kích thước quần thể.",
+          "Đối chiếu xác suất biên với nhận định."
+        ],
+        "combines": [
+          "Biến cố hợp rời nhau",
+          "Xác suất cổ điển",
+          "Đọc dữ liệu chéo"
+        ],
+        "difficulty_source": "Phân biệt hai tiêu chí phân nhóm khi tính xác suất biên.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Xác suất hoạt động của các bộ phận độc lập và xác suất đúng một bộ phận hoạt động được đề xuất.",
+        "task": "Kiểm tra xác suất có đúng một bộ phận hoạt động.",
+        "reasoning": [
+          "Chia biến cố thành các trường hợp loại trừ nhau theo bộ phận hoạt động.",
+          "Dùng độc lập để tính xác suất từng trường hợp, có lấy biến cố đối.",
+          "Cộng các xác suất rồi đối chiếu."
+        ],
+        "combines": [
+          "Biến cố đối",
+          "Biến cố độc lập",
+          "Công thức cộng xác suất"
+        ],
+        "difficulty_source": "Chọn đúng các trường hợp xung khắc cho yêu cầu đúng một.",
+        "evidence_uncertainty": "Thiếu khóa đúng sai được xác nhận.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một chuỗi phép thử độc lập với các xác suất thành công khác nhau.",
+        "task": "Kiểm tra xác suất có ít nhất một lần thành công.",
+        "reasoning": [
+          "Chuyển sang biến cố đối là thất bại ở toàn bộ phép thử.",
+          "Nhân các xác suất thất bại.",
+          "Lấy xác suất bù và đối chiếu."
+        ],
+        "combines": [
+          "Biến cố đối",
+          "Biến cố độc lập",
+          "Công thức nhân xác suất"
+        ],
+        "difficulty_source": "Diễn đạt đúng biến cố đối của điều kiện ít nhất một.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "023e74626dd8|P2|3|c",
+      "85efdd1a7e54|P2|4|b",
+      "adb051fd8253|P2|4|c"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "799f93b2e19e4fe0",
+    "stem": "Một khu vườn dùng hai bộ điều khiển tưới A và B. Trong một buổi sáng, xác suất A hoạt động bình thường là 0,8; xác suất B hoạt động bình thường là 0,6. Trạng thái hoạt động của hai bộ điều khiển độc lập với nhau. Xét tính đúng sai của các nhận định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Xác suất cả hai bộ điều khiển hoạt động bình thường là 0,48."
+      },
+      {
+        "sub": "b",
+        "text": "Xác suất có đúng một bộ điều khiển hoạt động bình thường là 0,44."
+      },
+      {
+        "sub": "c",
+        "text": "Xác suất có ít nhất một bộ điều khiển hoạt động bình thường là 0,88."
+      },
+      {
+        "sub": "d",
+        "text": "Xác suất cả hai bộ điều khiển đều không hoạt động bình thường là 0,12."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Gọi A, B lần lượt là biến cố hai bộ điều khiển hoạt động bình thường. a) Do độc lập, P(A∩B)=0,8×0,6=0,48 nên nhận định đúng. b) Hai trường hợp chỉ A hoạt động và chỉ B hoạt động xung khắc, nên xác suất cần tìm là 0,8×0,4+0,2×0,6=0,44; nhận định đúng. c) Xác suất ít nhất một bộ hoạt động là 1−0,2×0,4=0,92, không phải 0,88. d) Xác suất cả hai không hoạt động bình thường là 0,2×0,4=0,08, không phải 0,12.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "c",
+        "mistake": "Tính 1−0,2×0,6=0,88, chỉ lấy biến cố đối ở bộ điều khiển A.",
+        "why_plausible": "Học sinh nhớ cách lấy xác suất bù nhưng nhầm biến cố đối của 'ít nhất một hoạt động' với trường hợp chỉ B hoạt động."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Dùng 0,2×0,6 để tính xác suất cả hai không hoạt động bình thường.",
+        "why_plausible": "Học sinh lấy đúng xác suất A không hoạt động nhưng giữ nguyên xác suất B hoạt động, nên tính sang một trường hợp khác."
+      }
+    ],
+    "level_reason": "Mức cao nhất của các nhận định là TH: học sinh diễn giải các biến cố và thực hiện quy trình quen thuộc bằng công thức nhân cho hai biến cố độc lập, công thức cộng và biến cố đối.",
+    "prerequisites": [
+      "Biến cố đối",
+      "Hai biến cố độc lập",
+      "Công thức cộng xác suất cho các biến cố xung khắc"
+    ],
+    "variation_guidance": "Có thể thay xác suất hoạt động và bối cảnh thiết bị; phải nêu rõ tính độc lập và tính lại từng xác suất. Các nhận định về đúng một và ít nhất một chỉ tham khảo kiểu thao tác trong quan sát cấp tỉnh, không được xem là bằng chứng đề thi chính thức.",
+    "uncertainties": [
+      "Một quan sát cấp tỉnh về xác suất đúng một bộ phận hoạt động chưa có khóa đúng sai được xác nhận; các kết luận ở đây được suy ra từ dữ kiện tổng hợp của câu minh họa."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "799f93b2e19e4fe0",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Do hai trạng thái độc lập: a) P(A∩B)=0,8×0,6=0,48. b) Xác suất đúng một bộ hoạt động bình thường là 0,8×0,4+0,2×0,6=0,44. c) Xác suất ít nhất một bộ hoạt động bình thường là 1−0,2×0,4=0,92. d) Xác suất cả hai bộ đều không hoạt động bình thường là 0,2×0,4=0,08.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Từng nhận định a, b, c, d đều chỉ yêu cầu áp dụng các quy tắc xác suất quen thuộc cho hai biến cố độc lập; các phép tính thường quy thuộc TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/d05ca70e548abf6592dc38a3527ea48a9dd6a784b29610cbb4e9bccbc1439b89.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/d05ca70e548abf6592dc38a3527ea48a9dd6a784b29610cbb4e9bccbc1439b89.resolve.json"
+}

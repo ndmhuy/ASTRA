@@ -1,0 +1,127 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "82af23d82e41b5ab",
+    "topic": "Ứng dụng tích phân: tính diện tích và thể tích",
+    "part": "P1",
+    "level": "NB",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một hàm liên tục không âm trên đoạn và miền phẳng quay quanh trục hoành.",
+        "task": "Chọn biểu thức tính thể tích khối được tạo thành.",
+        "reasoning": [
+          "Nhận diện bán kính tiết diện vuông góc với trục quay.",
+          "Áp dụng công thức tích phân diện tích tiết diện tròn."
+        ],
+        "combines": [
+          "Tích phân",
+          "Thể tích khối tròn xoay"
+        ],
+        "difficulty_source": "Nhận đúng công thức thể tích quen thuộc.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "adb051fd8253|P1|2|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "82af23d82e41b5ab",
+    "stem": "Cho hàm số h liên tục và không âm trên đoạn [1; 4]. Quay miền phẳng giới hạn bởi đồ thị y = h(x), trục Ox và hai đường thẳng x = 1, x = 4 quanh trục Ox. Công thức nào sau đây tính thể tích V của khối tròn xoay thu được?",
+    "options": [
+      {
+        "label": "A",
+        "text": "V = π(∫₁⁴ h(x) dx)²."
+      },
+      {
+        "label": "B",
+        "text": "V = 2π∫₁⁴ h(x) dx."
+      },
+      {
+        "label": "C",
+        "text": "V = ∫₁⁴ [h(x)]² dx."
+      },
+      {
+        "label": "D",
+        "text": "V = π∫₁⁴ [h(x)]² dx."
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "D",
+        "level": "NB"
+      }
+    ],
+    "solution": "Công thức thể tích khối tròn xoay quanh Ox là V = π∫₁⁴ [h(x)]² dx, nên chọn D. Tiết diện vuông góc với Ox tại x là hình tròn bán kính h(x), có diện tích π[h(x)]². Phương án A bình phương kết quả tích phân thay vì bình phương bán kính trong tích phân. Phương án B dùng biểu thức chu vi 2πh(x) thay cho diện tích tiết diện. Phương án C bỏ hệ số π của diện tích hình tròn.",
+    "distractors": [
+      {
+        "label": "A",
+        "sub": null,
+        "mistake": "Đưa phép bình phương ra ngoài tích phân.",
+        "why_plausible": "Học sinh nhớ công thức có π và bình phương nhưng nhầm đối tượng cần bình phương."
+      },
+      {
+        "label": "B",
+        "sub": null,
+        "mistake": "Dùng chu vi hình tròn thay cho diện tích hình tròn trong công thức tiết diện.",
+        "why_plausible": "Hai công thức đều chứa π và bán kính nên dễ bị lẫn khi nhớ công thức khối tròn xoay."
+      },
+      {
+        "label": "C",
+        "sub": null,
+        "mistake": "Bỏ hệ số π khi tính diện tích tiết diện tròn.",
+        "why_plausible": "Học sinh nhớ phải tích phân bình phương hàm số nhưng nhớ thiếu hệ số."
+      }
+    ],
+    "level_reason": "Yêu cầu nhận ra công thức thể tích khối tròn xoay quen thuộc trong đúng điều kiện áp dụng; không yêu cầu thiết lập mô hình mới hoặc tính tích phân.",
+    "prerequisites": [
+      "Công thức diện tích hình tròn.",
+      "Công thức thể tích khối tròn xoay tạo bởi miền dưới đồ thị hàm không âm khi quay quanh Ox."
+    ],
+    "variation_guidance": "Có thể đổi tên hàm và cận tích phân, giữ điều kiện liên tục, không âm và trục quay Ox để tiếp tục kiểm tra việc nhận biết cùng một công thức.",
+    "uncertainties": [
+      "Mẫu tự biên soạn dựa trên quan sát cấu trúc cấp tỉnh qua bên thứ ba, không có neo chính thức."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "82af23d82e41b5ab",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "D",
+        "level": "NB"
+      }
+    ],
+    "solution": "Công thức thể tích khi quay miền dưới đồ thị y = h(x) quanh Ox là V = π∫₁⁴ [h(x)]² dx.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Chỉ cần nhận biết công thức thể tích khối tròn xoay quanh Ox với các cận đã cho."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/74a043ab077d344b9e5ae04dfd42e00f483d9941e82d7c15c872e4eae0dd710a.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/74a043ab077d344b9e5ae04dfd42e00f483d9941e82d7c15c872e4eae0dd710a.resolve.json"
+}

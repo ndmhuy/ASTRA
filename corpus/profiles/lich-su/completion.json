@@ -1,0 +1,74 @@
+{
+  "schema_version": "research-profile-completion-v2",
+  "subject": "lich-su",
+  "date": "2026-11-06",
+  "status": "agent_reviewed_content_usable_with_level_conditions",
+  "complete": false,
+  "usable_for_runtime": false,
+  "teacher_approved": false,
+  "has_runtime_test": false,
+  "quantities": {
+    "source_official_distinct": 1,
+    "source_provincial_distinct": 5,
+    "source_papers_total": 6,
+    "partial_sources": 1,
+    "source_rows_current": 240,
+    "topics": 25,
+    "unknown_source_rows": 1,
+    "samples_current": 73,
+    "samples_solved_consistently": 72,
+    "samples_content_hold": 0,
+    "coverage_cells": 67,
+    "coverage_model_checked": 64,
+    "coverage_missing": 3,
+    "coverage_missing_level": "VD",
+    "coverage_strict_supported": 59,
+    "coverage_level_conditional": 5,
+    "samples_agent_adjudicated": 73,
+    "samples_repaired_without_new_blind_call": 1
+  },
+  "open_cell_ids": [
+    "CELL-be33f53d06ab",
+    "CELL-be64831a7097",
+    "CELL-1988a566675d"
+  ],
+  "source_data": "data/source-observations-current.json",
+  "sample_data": "data/samples-current.json",
+  "coverage_data": "data/coverage-current.json",
+  "coverage_table": "COVERAGE.csv",
+  "cognitive_review": "COGNITIVE-REVIEW.md",
+  "evidence_limits": [
+    "Three VD target cells remain unsupported after bounded revision; no arbitrary relabeling.",
+    "One source item remains unknown.",
+    "Six-paper corpus includes one partial source (Diện Biên: code/key cannot be paired confidently).",
+    "Revised prototype compiled and layout-reviewed on 7 pages; teacher feedback follow-up is not fully closed.",
+    "Original P2/1a ambiguity remains in immutable baseline; revised selection is separate; D/Đ equivalence is a comparison normalization only.",
+    "70 prior samples retain existing separate unkeyed checks; two restored drafts reuse their existing unique-key TH checks; LS-V-002 repaired and agent-adjudicated, not a new blind model call. Five proposed VD labels remain conditional; no teacher approval or empirical item calibration."
+  ],
+  "teacher_feedback": {
+    "notes_recorded": 7,
+    "closed": false,
+    "source": "data/teacher-feedback.json"
+  },
+  "prototype": {
+    "revised": "prototype-revised/",
+    "render_status": "compile_layout_pass",
+    "ambiguous_ref": "P2/1a",
+    "d_diacritic_comparison": "D and Đ normalize to same truth value for answer comparison only",
+    "verification": "prototype-revised/verification.json",
+    "pages": 7,
+    "original_ambiguous_ref": "P2/1a",
+    "ambiguous_ref_scope": "Original prototype audit only; revised prototype is a separate synthetic selection."
+  },
+  "observed_coverage": {
+    "total": 62,
+    "covered": 62
+  },
+  "proposed_only_coverage": {
+    "total": 5,
+    "covered": 2,
+    "open": 3
+  },
+  "claim_limits_addendum": "73 content-usable samples; 3 restored at TH. Legacy-label coverage64/67; strict unconditional level coverage {'supported': 59, 'conditional': 5, 'proposed_unfilled': 3}. Proposed-only VD extensions remain unfilled, not content defects.",
+  "usable_for_authoring": true
+}

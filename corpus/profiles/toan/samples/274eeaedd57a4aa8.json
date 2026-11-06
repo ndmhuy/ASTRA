@@ -1,0 +1,88 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "274eeaedd57a4aa8",
+    "topic": "Quá trình xác suất hữu hạn",
+    "part": "P3",
+    "level": "VD",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Một trò chơi có điểm biến đổi theo các kết quả độc lập, dừng ngay khi chạm một trong các ngưỡng và có thời điểm kết thúc được chỉ định.",
+        "task": "Tính xác suất thắng đúng thời điểm quy định rồi thực hiện phép chuẩn hóa.",
+        "reasoning": [
+          "Xác định các trạng thái điểm chưa kết thúc.",
+          "Suy ra trạng thái cần có ngay trước lượt thắng cuối.",
+          "Lập truy hồi hoặc phân loại các chuỗi chỉ đi qua trạng thái chưa kết thúc ở các lượt trước.",
+          "Dùng quy tắc nhân và cộng để tính xác suất đến trạng thái trước lượt cuối.",
+          "Nhân xác suất của lượt kết thúc và thực hiện phép chuẩn hóa."
+        ],
+        "combines": [
+          "Biến cố độc lập",
+          "Quy tắc cộng xác suất",
+          "Quá trình theo trạng thái",
+          "Điều kiện dừng"
+        ],
+        "difficulty_source": "Loại các chuỗi chạm ngưỡng sớm dù có cùng tổng biến thiên điểm ở thời điểm cuối.",
+        "evidence_uncertainty": "Mốc thời gian và tên riêng chỉ tạo bối cảnh, không cần nhớ hay dùng trong lời giải. Xếp lớp theo các quy tắc xác suất; cách tổ chức truy hồi không được định vị riêng trong danh mục.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "de5833d227dd|P3|3|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "274eeaedd57a4aa8",
+    "stem": "Một thiết bị mô phỏng bắt đầu ở mức năng lượng 2. Sau mỗi lượt, mức năng lượng tăng 2 đơn vị với xác suất 1/3 hoặc giảm 1 đơn vị với xác suất 2/3. Kết quả các lượt độc lập. Thiết bị dừng ngay khi mức năng lượng đạt ít nhất 5 hoặc bằng 0; trường hợp đạt ít nhất 5 được gọi là thành công. Gọi P là xác suất thiết bị thành công đúng ở lượt thứ sáu. Tính 729P.",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "32",
+        "level": "VD"
+      }
+    ],
+    "solution": "Đặt p = 1/3, q = 2/3. Chỉ theo dõi các trạng thái chưa dừng. Sau lượt 1, các trạng thái là 4 với xác suất p và 1 với xác suất q. Sau lượt 2, trạng thái chưa dừng duy nhất là 3, có xác suất pq + qp = 2pq. Sau lượt 3, trạng thái chưa dừng duy nhất là 2, có xác suất 2pq². Sau lượt 4, trạng thái 4 có xác suất 2p²q² và trạng thái 1 có xác suất 2pq³. Sau lượt 5, trạng thái chưa dừng duy nhất là 3, có xác suất 2p²q³ + 2p²q³ = 4p²q³. Muốn thành công ở lượt 6, từ trạng thái này thiết bị phải tăng 2 đơn vị. Do đó P = 4p³q³ = 32/729, suy ra 729P = 32. Các nhánh đã chạm mức dừng đều bị loại ngay, kể cả khi tổng biến thiên của một chuỗi kéo dài giả định cho kết quả phù hợp.",
+    "distractors": [],
+    "level_reason": "Học sinh phải xây dựng mô hình trạng thái có hấp thụ, xác định những nhánh còn được phép tiếp tục và kết nối xác suất qua các lượt. Chỉ xét mức năng lượng cuối cùng mà bỏ điều kiện dừng sớm sẽ không xác định đúng biến cố.",
+    "prerequisites": [
+      "Tính độc lập của các kết quả",
+      "Quy tắc cộng và quy tắc nhân xác suất",
+      "Phân loại biến cố theo trạng thái trung gian",
+      "Điều kiện dừng của một quá trình hữu hạn"
+    ],
+    "variation_guidance": "Có thể thay mức xuất phát, hai độ biến thiên và thời điểm thành công. Cần kiểm tra lại toàn bộ các nhánh dừng sớm và chọn hệ số chuẩn hóa phù hợp với xác suất mới.",
+    "uncertainties": [
+      "Định hướng cấu trúc chỉ dựa trên quan sát cấp tỉnh do bên thứ ba cung cấp; chưa có điểm neo đề chính thức. Đây là câu hỏi minh họa tổng hợp, không phải bằng chứng đề thi."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "274eeaedd57a4aa8",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "32",
+        "level": "VD"
+      }
+    ],
+    "solution": "Đặt w_n(e)=3^n nhân với xác suất thiết bị chưa dừng và đang ở mức e sau n lượt. Ban đầu w_0(2)=1. Mỗi bước tăng đóng góp trọng số w, mỗi bước giảm đóng góp trọng số 2w; loại các trạng thái đã dừng. Các trạng thái còn lại lần lượt là: lượt 1: {4:1,1:2}; lượt 2: {3:4}; lượt 3: {2:8}; lượt 4: {4:8,1:16}; lượt 5: {3:32}. Từ mức 3 ở lượt 5, thiết bị thành công ở lượt 6 khi tăng thêm 2. Do đó P=32/3^6, suy ra 729P=32.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Phải xây dựng mô hình xác suất có trạng thái dừng, loại những đường đi đã kết thúc và nối các trạng thái qua sáu lượt; đây là chuỗi suy luận phụ thuộc có nội dung."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/7dd47a7a552d2990282dc698237e2b6228ad184eb57d0b3f6ce187c1437acd20.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/7dd47a7a552d2990282dc698237e2b6228ad184eb57d0b3f6ce187c1437acd20.resolve.json"
+}

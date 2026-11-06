@@ -4,7 +4,7 @@
 
 Trích xuất và aggregate đã qua kiểm kỹ thuật; nhận định vẫn chờ giáo viên rà.
 
-[Đọc cách hỏi theo từng chủ đề](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/hoa-hoc/TOPICS.md)
+[Đọc cách hỏi theo từng chủ đề](TOPICS.md)
 
 **Các phần của hồ sơ:**
 

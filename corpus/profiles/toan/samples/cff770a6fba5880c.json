@@ -1,0 +1,86 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "cff770a6fba5880c",
+    "topic": "Tổ hợp",
+    "part": "P3",
+    "level": "VD",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Các vật phân biệt được xếp vào những ngăn phân biệt, mỗi ngăn không rỗng và thứ tự trong từng ngăn được tính.",
+        "task": "Đếm các cách xếp khác nhau rồi thực hiện phép quy đổi kết quả được yêu cầu.",
+        "reasoning": [
+          "Mã hóa mỗi cách xếp thành một dãy các vật kèm những điểm ngăn cách.",
+          "Đếm các hoán vị của toàn bộ vật.",
+          "Chọn các khe bên trong dãy để đặt vách ngăn, bảo đảm mọi ngăn không rỗng.",
+          "Nhân hai số đếm theo sự tương ứng duy nhất.",
+          "Thực hiện phép quy đổi kết quả."
+        ],
+        "combines": [
+          "Hoán vị",
+          "Tổ hợp",
+          "Quy tắc nhân",
+          "Mô hình vách ngăn"
+        ],
+        "difficulty_source": "Nhận ra cách mã hóa vừa giữ thứ tự trong ngăn vừa bảo đảm không đếm trùng.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      }
+    ],
+    "support_refs": [
+      "163f20908cf7|P3|5|None"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "cff770a6fba5880c",
+    "stem": "Bảy robot phân biệt, trong đó có hai robot mang tên A và B, được bố trí vào ba làn xuất phát đánh số 1, 2, 3. Trong mỗi làn, các robot xếp thành một hàng và thứ tự từ đầu đến cuối hàng được tính. Mỗi làn phải có ít nhất một robot, làn 2 phải có đúng hai robot, còn A và B phải ở hai làn khác nhau để tránh nhiễu tín hiệu. Hai cách bố trí khác nhau nếu có robot đổi làn hoặc thứ tự trong một làn thay đổi. Có bao nhiêu cách bố trí thỏa mãn các yêu cầu trên?",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "14400",
+        "level": "VD"
+      }
+    ],
+    "solution": "Gọi a và c là số robot trong làn 1 và làn 3. Vì làn 2 có hai robot, ta có a + c = 5 với a,c ≥ 1, nên các cặp (a,c) là (1,4), (2,3), (3,2), (4,1). Với mỗi cặp, coi các vị trí trong ba hàng là những vị trí phân biệt. Có 7·6 = 42 cách đặt có thứ tự A và B vào hai vị trí khác nhau. Số cách đặt khiến chúng cùng làn là a(a − 1) + 2·1 + c(c − 1). Vì thế số cách đặt A và B khác làn tương ứng với bốn cặp là 28, 32, 32, 28. Sau khi đặt A và B, năm robot còn lại được xếp vào năm vị trí còn trống theo 5! cách. Tổng số cách là (28 + 32 + 32 + 28)·5! = 120·120 = 14400. Mỗi cách bố trí xác định duy nhất số robot từng làn và các vị trí của từng robot nên không bị đếm trùng.",
+    "distractors": [],
+    "level_reason": "Học sinh phải mã hóa bố trí thành các vị trí có thứ tự theo từng làn, phân loại kích thước các làn và đếm vị trí của hai robot bị ràng buộc bằng phép bù. Sự kết nối giữa kích thước làn, vị trí có thứ tự và điều kiện khác làn quyết định cách đếm.",
+    "prerequisites": [
+      "Quy tắc cộng và quy tắc nhân",
+      "Hoán vị",
+      "Đếm bằng phần bù",
+      "Phân biệt thứ tự trong nhóm với nhãn của nhóm"
+    ],
+    "variation_guidance": "Đây là mẫu tổng hợp minh họa, không phải bằng chứng đề thi thật. Có thể thay số robot hoặc số robot bắt buộc trong làn 2. Cần giữ rõ các làn có nhãn và thứ tự trong làn được tính, đồng thời tính lại số vị trí bị cấm cho A và B.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "cff770a6fba5880c",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "14400",
+        "level": "VD"
+      }
+    ],
+    "solution": "Gọi số robot trong làn 1 là k, khi đó ba làn có kích thước (k,2,5−k), với k=1,2,3,4. Với mỗi bộ kích thước cố định, có 7! cách bố trí trước khi xét điều kiện A,B. Số cách A,B cùng làn là [k(k−1)+2+(5−k)(4−k)]·5!: chọn hai vị trí có thứ tự cho A,B trong cùng làn rồi xếp năm robot còn lại. Khi k=1 hoặc 4, số cách hợp lệ là 5040−14·120=3360. Khi k=2 hoặc 3, số cách hợp lệ là 5040−10·120=3840. Tổng cộng 2·3360+2·3840=14400 cách.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Cần mô hình hóa đồng thời việc chia robot vào các làn và thứ tự trong từng làn, sau đó đếm bù các trường hợp A,B cùng làn theo từng bộ kích thước."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/5e6c635d98eb6f814d35e53267596ad6ab037f76b127f28353864ec3671675c4.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/5e6c635d98eb6f814d35e53267596ad6ab037f76b127f28353864ec3671675c4.resolve.json"
+}

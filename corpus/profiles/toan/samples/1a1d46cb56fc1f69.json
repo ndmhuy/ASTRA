@@ -1,0 +1,128 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "1a1d46cb56fc1f69",
+    "topic": "Tổ hợp",
+    "part": "P1",
+    "level": "TH",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một tập người được chia thành các nhóm và các chức vụ phân biệt cần giao.",
+        "task": "Chọn biểu thức đếm số cách giao chức vụ cho những người khác nhau.",
+        "reasoning": [
+          "Nhận ra chức vụ làm cho thứ tự chọn có ý nghĩa.",
+          "Chọn chỉnh hợp từ toàn bộ tập người."
+        ],
+        "combines": [
+          "Quy tắc đếm",
+          "Chỉnh hợp"
+        ],
+        "difficulty_source": "Nhận ra vai trò phân biệt quyết định dùng chỉnh hợp.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "c6340827ba59|P1|1|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "1a1d46cb56fc1f69",
+    "stem": "Một câu lạc bộ có 3 thành viên nhóm nhiếp ảnh và 5 thành viên nhóm thiết kế; mỗi người chỉ thuộc một nhóm. Câu lạc bộ giao ba nhiệm vụ: phụ trách nội dung, phụ trách thiết bị và phụ trách liên lạc. Mỗi nhiệm vụ giao cho một người, không ai nhận hai nhiệm vụ và mọi thành viên đều có thể nhận bất kỳ nhiệm vụ nào. Có bao nhiêu cách giao nhiệm vụ?",
+    "options": [
+      {
+        "label": "A",
+        "text": "56 cách."
+      },
+      {
+        "label": "B",
+        "text": "512 cách."
+      },
+      {
+        "label": "C",
+        "text": "336 cách."
+      },
+      {
+        "label": "D",
+        "text": "168 cách."
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "C",
+        "level": "TH"
+      }
+    ],
+    "solution": "Có 3 + 5 = 8 thành viên. Ba nhiệm vụ phân biệt và phải giao cho ba người khác nhau nên số cách là A_8^3 = 8 × 7 × 6 = 336.",
+    "distractors": [
+      {
+        "label": "A",
+        "sub": null,
+        "mistake": "Tính C_8^3 = 56, chỉ chọn ba người mà chưa phân công nhiệm vụ.",
+        "why_plausible": "Học sinh nhận ra cần chọn ba người khác nhau nhưng bỏ qua sự phân biệt giữa ba nhiệm vụ."
+      },
+      {
+        "label": "B",
+        "sub": null,
+        "mistake": "Tính 8^3 = 512, cho phép một người được chọn cho nhiều nhiệm vụ.",
+        "why_plausible": "Học sinh áp dụng quy tắc nhân nhưng giữ nguyên tám lựa chọn ở cả ba lượt."
+      },
+      {
+        "label": "D",
+        "sub": null,
+        "mistake": "Tính C_8^3 × 3 = 168, chỉ phân biệt người phụ trách nội dung rồi coi hai nhiệm vụ còn lại như nhau.",
+        "why_plausible": "Học sinh đã chú ý đến vai trò khác nhau nhưng chưa xét hai cách giao hai nhiệm vụ còn lại."
+      }
+    ],
+    "level_reason": "Học sinh phân biệt chọn một nhóm người với giao các nhiệm vụ phân biệt, rồi thực hiện phép đếm chỉnh hợp quen thuộc. Tình huống không đòi hỏi xây dựng mô hình hay chuỗi suy luận mới.",
+    "prerequisites": [
+      "Quy tắc cộng để xác định tổng số thành viên.",
+      "Quy tắc nhân.",
+      "Phân biệt tổ hợp và chỉnh hợp."
+    ],
+    "variation_guidance": "Có thể thay số thành viên và tên nhiệm vụ, nhưng giữ điều kiện nhiệm vụ phân biệt, người nhận khác nhau và không có hạn chế theo nhóm để duy trì yêu cầu TH.",
+    "uncertainties": [
+      "Đây là câu minh họa tổng hợp mới. Quan sát tham khảo chỉ thuộc nguồn cấp tỉnh qua bên thứ ba, không có điểm neo chính thức; không suy rộng thành đặc trưng đề thi chính thức."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "1a1d46cb56fc1f69",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "C",
+        "level": "TH"
+      }
+    ],
+    "solution": "Có 8 thành viên. Ba nhiệm vụ phân biệt được giao cho ba người khác nhau nên số cách là 8 × 7 × 6 = 336.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Áp dụng trực tiếp quy tắc nhân hoặc công thức chỉnh hợp trong bài toán quen thuộc."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/ddbff3d8f195ef1a1ebf720c918397a4a31bbaaa651a63d80c531be6cea863fb.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/ddbff3d8f195ef1a1ebf720c918397a4a31bbaaa651a63d80c531be6cea863fb.resolve.json"
+}

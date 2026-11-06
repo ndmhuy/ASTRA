@@ -4,14 +4,14 @@
 
 Trích xuất và aggregate đã qua kiểm kỹ thuật; nhận định vẫn chờ giáo viên rà.
 
-[Đọc cách hỏi theo từng chủ đề](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/TOPICS.md)
+[Đọc cách hỏi theo từng chủ đề](TOPICS.md)
 
 **Các phần của hồ sơ:**
 
-- [Audit ma trận](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/matrices/sinh-hoc.md) — đã có bản, còn chờ rà.
-- [Audit prototype](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/prototypes/sinh-hoc.md) — đã có bản, còn chờ rà.
-- [NB/TH/VD](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/LEVELS.md) — đã có bản, còn chờ rà.
-- [Câu mẫu mới](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/sinh-hoc/SAMPLES.md) — đã có bản, còn chờ rà.
+- [Audit ma trận](../../audit/matrices/sinh-hoc.md) — đã có bản, còn chờ rà.
+- [Audit prototype](../../audit/prototypes/sinh-hoc.md) — đã có bản, còn chờ rà.
+- [NB/TH/VD](LEVELS.md) — đã có bản, còn chờ rà.
+- [Câu mẫu mới](SAMPLES.md) — đã có bản, còn chờ rà.
 
 **Bằng chứng:** chính thức 1 đề; tỉnh/trường 5 đề; 240 câu/ý được gắn nhãn. Model EXTRACT: gpt-6.1-sol. Hai nguồn được tổng hợp riêng.
 Khóa khớp đã chấp nhận: chính thức 1/1, tỉnh/trường 5/5.
@@ -72,3 +72,7 @@ Chưa phán đoán được mức phân hóa ở chính thức 5, tỉnh/trườ
 Thứ tự quan sát không tự trở thành luật cố định. Xem [audit cấu trúc](../../audit/block-structure.md) để phân biệt canonical, hoán vị và vị trí tự do.
 
 **Truy nguyên:** [rows](rows.json), [phân bố](distributions.json), [compact](profile.compact.json), [cấu trúc từng đề](paper-structures.json), [kiểm định](verification.json).
+
+## Rà danh pháp
+
+[Danh pháp và ghi chú của môn](TERMINOLOGY.md) · [Báo cáo Luna và quy tắc chung](../../audit/terminology/REPORT.md).

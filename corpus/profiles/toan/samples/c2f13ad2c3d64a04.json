@@ -1,0 +1,129 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "c2f13ad2c3d64a04",
+    "topic": "Hàm lượng giác",
+    "part": "P1",
+    "level": "NB",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một hàm lượng giác cơ bản và các tập loại trừ được viết bằng họ góc.",
+        "task": "Chọn tập xác định của hàm.",
+        "reasoning": [
+          "Biểu diễn điều kiện mẫu của tỉ số lượng giác khác không.",
+          "Xác định đầy đủ họ góc bị loại và chọn tập tương ứng."
+        ],
+        "combines": [
+          "Hàm số lượng giác",
+          "Tập xác định"
+        ],
+        "difficulty_source": "Nhớ đúng điều kiện xác định và họ nghiệm lượng giác cơ bản.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "adb051fd8253|P1|10|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "c2f13ad2c3d64a04",
+    "stem": "Tập xác định của hàm số y = cot x là tập nào sau đây? Trong các phương án, k ∈ ℤ.",
+    "options": [
+      {
+        "label": "A",
+        "text": "ℝ \\ {π/2 + kπ | k ∈ ℤ}"
+      },
+      {
+        "label": "B",
+        "text": "ℝ \\ {kπ | k ∈ ℤ}"
+      },
+      {
+        "label": "C",
+        "text": "ℝ \\ {2kπ | k ∈ ℤ}"
+      },
+      {
+        "label": "D",
+        "text": "ℝ \\ {π/2 + 2kπ | k ∈ ℤ}"
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "NB"
+      }
+    ],
+    "solution": "Hàm cot x = cos x/sin x xác định khi sin x ≠ 0, tức x ≠ kπ với k ∈ ℤ. Vì vậy chọn B. A loại họ nghiệm của cos x = 0. C chỉ loại các bội chẵn của π, bỏ sót các bội lẻ. D loại một phần họ nghiệm của cos x = 0 và không loại các điểm làm sin x = 0.",
+    "distractors": [
+      {
+        "label": "A",
+        "sub": null,
+        "mistake": "Nhầm tập xác định của cot x với tập xác định của tan x.",
+        "why_plausible": "Hai hàm được biểu diễn bằng các tỉ số lượng giác đảo nhau nên học sinh dễ nhầm mẫu số."
+      },
+      {
+        "label": "C",
+        "sub": null,
+        "mistake": "Nhớ nghiệm sin x = 0 thành x = 2kπ.",
+        "why_plausible": "Học sinh chỉ nhớ các điểm ứng với góc 0 sau mỗi vòng tròn lượng giác, bỏ sót góc π."
+      },
+      {
+        "label": "D",
+        "sub": null,
+        "mistake": "Dùng điều kiện cos x ≠ 0 rồi chỉ loại họ π/2 + 2kπ.",
+        "why_plausible": "Học sinh vừa nhầm mẫu của cot x vừa bỏ sót một nhánh nghiệm của cos x = 0."
+      }
+    ],
+    "level_reason": "Học sinh chỉ cần nhớ tập xác định của hàm cot và nhận ra cách viết tương ứng; không phải giải một bài toán biến đổi lượng giác.",
+    "prerequisites": [
+      "Định nghĩa hàm cot",
+      "Họ nghiệm sin x = 0",
+      "Ký hiệu tập hợp và số nguyên"
+    ],
+    "variation_guidance": "Có thể đổi sang hàm tan với các họ góc loại trừ tương ứng. Giữ đối số là x để yêu cầu vẫn tập trung vào nhận biết tập xác định cơ bản.",
+    "uncertainties": [
+      "Đây là câu minh họa tổng hợp mới, không phải câu trích từ đề thi.",
+      "Quan sát cấu trúc chỉ đến từ nguồn cấp tỉnh qua bên thứ ba; không có mốc đề chính thức để suy rộng tính đại diện."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "c2f13ad2c3d64a04",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "NB"
+      }
+    ],
+    "solution": "Hàm số cot x xác định khi sin x ≠ 0, tức x ≠ kπ với k ∈ ℤ. Tập xác định là ℝ \\ {kπ | k ∈ ℤ}.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Nhận biết tập xác định cơ bản của hàm số cot x."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/9c92779a73d0953d2249e4003d3f25979d47c2f3660df55947f0426b26244ade.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/9c92779a73d0953d2249e4003d3f25979d47c2f3660df55947f0426b26244ade.resolve.json"
+}

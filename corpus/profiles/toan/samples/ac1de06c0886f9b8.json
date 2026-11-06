@@ -1,0 +1,165 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "ac1de06c0886f9b8",
+    "topic": "Tổ hợp",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một phép lấy đồng thời các vật từ một tập hữu hạn và công thức đếm không gian mẫu được đề nghị.",
+        "task": "Kiểm tra số phần tử của không gian mẫu.",
+        "reasoning": [
+          "Xác định kết quả chọn không phân biệt thứ tự.",
+          "Chọn công cụ tổ hợp phù hợp và đối chiếu công thức đề nghị."
+        ],
+        "combines": [
+          "Không gian mẫu",
+          "Phân biệt chỉnh hợp và tổ hợp"
+        ],
+        "difficulty_source": "Nhận diện bản chất không có thứ tự của phép lấy đồng thời.",
+        "evidence_uncertainty": "Thiếu khóa đúng sai được xác nhận khớp mã đề.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Phép thử nhị phân tại những vị trí phân biệt và điều kiện chỉ một vị trí mang kết quả chỉ định.",
+        "task": "Kiểm tra số kết quả thỏa điều kiện.",
+        "reasoning": [
+          "Chọn vị trí duy nhất mang kết quả chỉ định.",
+          "Nhận ra kết quả ở mọi vị trí còn lại đã được xác định.",
+          "Đối chiếu số cách chọn với nhận định."
+        ],
+        "combines": [
+          "Tổ hợp",
+          "Biểu diễn kết quả phép thử"
+        ],
+        "difficulty_source": "Quy kết quả nhị phân về phép chọn vị trí.",
+        "evidence_uncertainty": "Không có khóa đáp án đối sánh; không gán đúng sai cho nhận định.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "525d3542283a|P2|4|b",
+      "aceb17d936f5|P2|2|b"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "ac1de06c0886f9b8",
+    "stem": "Một hộp chứa 9 thẻ phân biệt, gồm 5 thẻ trắng đánh số từ 1 đến 5 và 4 thẻ xanh đánh số từ 6 đến 9. Lấy đồng thời 4 thẻ. Mỗi kết quả được xác định bởi tập hợp bốn thẻ lấy ra. Xét tính đúng sai của các nhận định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Không gian mẫu có 126 phần tử."
+      },
+      {
+        "sub": "b",
+        "text": "Số kết quả có thể có của phép lấy thẻ là 3024."
+      },
+      {
+        "sub": "c",
+        "text": "Có 20 kết quả gồm đúng một thẻ trắng và ba thẻ xanh."
+      },
+      {
+        "sub": "d",
+        "text": "Có 5 kết quả gồm bốn thẻ cùng màu."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) Đúng. Lấy đồng thời nên không xét thứ tự; số kết quả là C_9^4 = 126. b) Sai. 3024 = A_9^4 đếm các bộ có thứ tự, khiến mỗi tập bốn thẻ bị đếm 4! lần. c) Đúng. Chọn một trong năm thẻ trắng và ba trong bốn thẻ xanh có C_5^1 × C_4^3 = 20 cách. d) Sai. Bốn thẻ cùng màu có thể đều trắng hoặc đều xanh, nên có C_5^4 + C_4^4 = 5 + 1 = 6 kết quả.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Dùng chỉnh hợp A_9^4 cho phép lấy đồng thời.",
+        "why_plausible": "Các thẻ có số khác nhau dễ khiến học sinh nhầm sự phân biệt giữa các thẻ với việc xét thứ tự lấy thẻ."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Chỉ đếm trường hợp bốn thẻ trắng và bỏ sót trường hợp lấy đủ bốn thẻ xanh.",
+        "why_plausible": "Nhóm trắng có nhiều thẻ hơn nên học sinh có thể tập trung vào nhóm này khi xét điều kiện cùng màu."
+      }
+    ],
+    "level_reason": "Mức cao nhất của các nhận định là TH: học sinh diễn giải kết quả lấy đồng thời và dùng tổ hợp, quy tắc nhân, quy tắc cộng trong các trường hợp quen thuộc.",
+    "prerequisites": [
+      "Không gian mẫu của phép chọn đồng thời.",
+      "Công thức tổ hợp và chỉnh hợp.",
+      "Quy tắc cộng và quy tắc nhân."
+    ],
+    "variation_guidance": "Thay số thẻ và cơ cấu màu, đồng thời bảo đảm mọi trường hợp được nêu đều có thể xảy ra. Giữ rõ mỗi kết quả là một tập thẻ, không phải một dãy thẻ.",
+    "uncertainties": [
+      "Quan sát tham khảo thuộc nguồn cấp tỉnh qua bên thứ ba và thiếu khóa đúng sai đối sánh. Các đáp án ở đây được xác định từ dữ kiện mới của câu minh họa, không phải phục dựng khóa nguồn."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "ac1de06c0886f9b8",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a, b: Lấy đồng thời, không xét thứ tự nên có C(9,4) = 126 kết quả. c: Có C(5,1) × C(4,3) = 20 kết quả. d: Bốn thẻ cùng màu có C(5,4) + C(4,4) = 6 kết quả.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Cả bốn ý đều sử dụng phép đếm tổ hợp quen thuộc; ý c dùng thêm quy tắc nhân, ý d dùng quy tắc cộng, không đòi hỏi lập mô hình hay suy luận đặc biệt."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/ddbff3d8f195ef1a1ebf720c918397a4a31bbaaa651a63d80c531be6cea863fb.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/ddbff3d8f195ef1a1ebf720c918397a4a31bbaaa651a63d80c531be6cea863fb.resolve.json"
+}

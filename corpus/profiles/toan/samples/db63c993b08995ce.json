@@ -1,0 +1,147 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "db63c993b08995ce",
+    "topic": "Xác suất cổ điển và tổ hợp",
+    "part": "P2",
+    "level": "VD",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Phép thử nhị phân đồng khả năng trên vòng và biến cố có cặp vị trí kề nhau cùng mang kết quả chỉ định.",
+        "task": "Kiểm tra xác suất xuất hiện ít nhất một cặp kề nhau phù hợp.",
+        "reasoning": [
+          "Chuyển sang biến cố bù không có các vị trí được chọn kề nhau.",
+          "Phân loại theo số vị trí được chọn và giới hạn do cấu trúc vòng.",
+          "Đếm các tập vị trí hợp lệ trong từng trường hợp, xử lý điều kiện khép vòng.",
+          "Cộng số kết quả của biến cố bù và chia cho số kết quả đồng khả năng.",
+          "Lấy xác suất bù rồi đối chiếu."
+        ],
+        "combines": [
+          "Xác suất cổ điển",
+          "Tổ hợp có ràng buộc",
+          "Biến cố đối"
+        ],
+        "difficulty_source": "Đếm cấu hình không kề nhau trên vòng khi số vị trí được chọn thay đổi.",
+        "evidence_uncertainty": "Không có khóa đáp án đối sánh; không gán đúng sai cho nhận định.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "aceb17d936f5|P2|2|d"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "db63c993b08995ce",
+    "stem": "Sáu đèn được đánh số từ 1 đến 6 và đặt thành một vòng tròn theo thứ tự đó. Mỗi đèn được bật bằng một phép thử riêng, độc lập với các đèn khác; xác suất sáng và tắt đều bằng 1/2. Hai đèn được coi là kề nhau nếu số thứ tự của chúng liên tiếp hoặc chúng mang số 1 và 6. Xét tính đúng, sai của các nhận định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Không gian mẫu gồm 64 cấu hình sáng, tắt đồng khả năng."
+      },
+      {
+        "sub": "b",
+        "text": "Xác suất có đúng hai đèn sáng và hai đèn đó không kề nhau bằng 9/64."
+      },
+      {
+        "sub": "c",
+        "text": "Biến cố “đèn 1 và đèn 2 cùng sáng” độc lập với biến cố “đèn 2 và đèn 3 cùng sáng”."
+      },
+      {
+        "sub": "d",
+        "text": "Xác suất có ít nhất một cặp đèn kề nhau cùng sáng bằng 23/32."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "VD"
+      }
+    ],
+    "solution": "a) Mỗi đèn có hai trạng thái nên có 2^6=64 cấu hình. Tính độc lập và xác suất bằng nhau khiến mỗi cấu hình có xác suất 1/64. b) Trong C(6,2)=15 cặp vị trí, có 6 cặp kề nhau, kể cả cặp {1,6}. Do đó có 9 cấu hình thỏa mãn, cho xác suất 9/64. c) Gọi hai biến cố được nêu là A và B. Ta có P(A)=P(B)=1/4, còn P(A∩B)=1/8 vì cần cả ba đèn 1, 2, 3 sáng. Vì 1/8 khác 1/16 nên A và B không độc lập. d) Đếm biến cố bù: không có hai đèn sáng kề nhau. Với số đèn sáng bằng 0, 1, 2, số cấu hình lần lượt là 1, 6, 9. Nếu có ba đèn sáng thì mỗi khoảng giữa hai đèn sáng liên tiếp phải chứa ít nhất một đèn tắt; do chỉ có ba đèn tắt nên chúng phải xen kẽ, cho hai cấu hình. Không thể có từ bốn đèn sáng mà vẫn không kề nhau. Xác suất biến cố bù là (1+6+9+2)/64=9/32. Xác suất cần tìm bằng 1−9/32=23/32.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "c",
+        "mistake": "Suy từ tính độc lập của trạng thái từng đèn sang tính độc lập của hai biến cố có chung đèn 2.",
+        "why_plausible": "Đề cho các phép thử riêng độc lập, nhưng hai biến cố ghép cùng phụ thuộc vào trạng thái đèn 2 nên cần kiểm tra bằng xác suất giao."
+      }
+    ],
+    "level_reason": "Mức của toàn mẫu là VD do nhận định d yêu cầu xây dựng cách đếm biến cố bù, phân loại theo số đèn sáng và xử lý ràng buộc khép vòng. Các nhận định còn lại dùng phép đếm hoặc kiểm tra độc lập quen thuộc.",
+    "prerequisites": [
+      "Xác suất cổ điển",
+      "Tổ hợp chập hai",
+      "Biến cố đối",
+      "Điều kiện độc lập của hai biến cố"
+    ],
+    "variation_guidance": "Có thể thay số vị trí hoặc xác suất sáng; khi đổi xác suất sáng phải kiểm tra lại tính đồng khả năng của các cấu hình. Luôn giữ rõ quan hệ kề nhau tại chỗ khép vòng.",
+    "uncertainties": [
+      "Căn cứ cấu trúc được cung cấp chỉ là quan sát từ nguồn bên thứ ba cấp tỉnh, không có neo chính thức hoặc khóa đáp án đối sánh; mẫu này là sáng tác minh họa."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "db63c993b08995ce",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "VD"
+      }
+    ],
+    "solution": "a) Mỗi đèn có hai trạng thái độc lập, đồng khả năng nên có 2⁶=64 cấu hình đồng khả năng. b) Có C(6,2)=15 cặp đèn, trong đó có 6 cặp kề nhau. Xác suất cần tìm là (15−6)/64=9/64. c) Gọi E là biến cố đèn 1, 2 cùng sáng và F là biến cố đèn 2, 3 cùng sáng. Khi đó P(E)=P(F)=1/4 nhưng P(E∩F)=1/8≠1/16=P(E)P(F), nên hai biến cố không độc lập. d) Đếm cấu hình không có hai đèn kề nhau cùng sáng: không đèn sáng có 1 cấu hình; một đèn sáng có 6; hai đèn sáng có 9; ba đèn sáng chỉ có {1,3,5} và {2,4,6}; không thể có nhiều hơn ba đèn sáng. Tổng cộng có 18 cấu hình. Xác suất có ít nhất một cặp kề nhau cùng sáng là 1−18/64=23/32.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a) TH: thực hiện quy tắc nhân quen thuộc. b) TH: đếm các cặp rồi loại sáu cặp kề nhau. c) TH: tính xác suất và kiểm tra điều kiện độc lập theo quy trình chuẩn. d) VD: xây dựng phép đếm biến cố đối bằng cách phân chia số đèn sáng và xét ràng buộc kề nhau trên vòng tròn."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/900f9593368ef63445c31acbab70694e75ce6da46f93b59628d6317c5bcec638.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/900f9593368ef63445c31acbab70694e75ce6da46f93b59628d6317c5bcec638.resolve.json"
+}

@@ -1,0 +1,148 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "a1cfe76a7796b167",
+    "topic": "Hệ bất phương trình tuyến tính",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một bài toán sản lượng của hai loại sản phẩm.",
+        "task": "Kiểm tra cách chọn biến và điều kiện không âm.",
+        "reasoning": [
+          "Liên hệ mỗi biến với lượng sản phẩm tương ứng.",
+          "Xác định miền giá trị không âm từ ý nghĩa sản lượng."
+        ],
+        "combines": [
+          "Mô hình hóa bằng biến",
+          "Điều kiện của ẩn"
+        ],
+        "difficulty_source": "Nhận biết điều kiện tự nhiên của lượng sản xuất.",
+        "evidence_uncertainty": "Khóa đáp án chưa được xác nhận; chưa phân loại đúng sai.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "acc00d945397|P2|4|b"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "a1cfe76a7796b167",
+    "stem": "Một cơ sở phối trộn hai loại sản phẩm A và B. Gọi x, y lần lượt là khối lượng sản phẩm A và B trong một ngày, tính bằng tấn; có thể không sản xuất một trong hai loại. Mô hình giới hạn nguyên liệu được cho sẵn bởi hệ bất phương trình: x≥0, y≥0, 2x+y≤12, x+2y≤15. Trong mô hình này, sản lượng được phép nhận giá trị thực. Xét tính đúng sai của các phát biểu sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Phương án chỉ sản xuất sản phẩm A được biểu diễn bằng y=0 và x≥0, đồng thời vẫn phải thỏa mãn hai bất phương trình giới hạn nguyên liệu."
+      },
+      {
+        "sub": "b",
+        "text": "Khi x=0, giá trị lớn nhất của y được phép là 12."
+      },
+      {
+        "sub": "c",
+        "text": "Phương án sản xuất 3 tấn A và 4 tấn B thỏa mãn hệ bất phương trình."
+      },
+      {
+        "sub": "d",
+        "text": "Phương án sản xuất 5 tấn A và 3 tấn B thỏa mãn hệ bất phương trình."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Theo cách chọn biến, không sản xuất B tương ứng với y=0; x vẫn không âm và mọi giới hạn nguyên liệu vẫn áp dụng, nên a đúng. Khi x=0, hai giới hạn trở thành y≤12 và 2y≤15. Kết hợp với y≥0 được 0≤y≤7,5; b sai. Với (x;y)=(3;4), ta có 2x+y=10≤12 và x+2y=11≤15, đồng thời x,y không âm; c đúng. Với (x;y)=(5;3), ta có 2x+y=13>12 nên phương án không thỏa mãn hệ, dù x+2y=11≤15; d sai.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Chỉ xét giới hạn 2x+y≤12 và bỏ qua giới hạn x+2y≤15.",
+        "why_plausible": "Sau khi đặt x=0, bất phương trình thứ nhất cho ngay y≤12, dễ khiến học sinh dừng trước khi lấy phần giao của các điều kiện."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Chỉ kiểm tra x+2y≤15 rồi kết luận phương án thỏa mãn cả hệ.",
+        "why_plausible": "Phương án có sản lượng không âm và thỏa mãn một giới hạn nguyên liệu, nhưng học sinh có thể nhầm điều kiện cần với việc thỏa mãn đồng thời mọi bất phương trình."
+      }
+    ],
+    "level_reason": "Mức cao nhất là TH: học sinh diễn giải biến đã được định nghĩa và kiểm tra nghiệm của hệ cho sẵn bằng phép thế. Không yêu cầu tự xây dựng hệ hoặc tối ưu hóa sản lượng.",
+    "prerequisites": [
+      "Ý nghĩa của biến trong mô hình sản lượng",
+      "Điều kiện không âm",
+      "Nghiệm của hệ bất phương trình là nghiệm chung của mọi bất phương trình"
+    ],
+    "variation_guidance": "Có thể thay hệ số và mức nguyên liệu; giữ mô hình cho sẵn nếu tiếp tục nhắm TH. Chọn các phương án sai do vi phạm một giới hạn cụ thể để làm rõ yêu cầu thỏa mãn đồng thời.",
+    "uncertainties": [
+      "Quan sát tham khảo chỉ thuộc nguồn đề cấp tỉnh qua bên thứ ba và mới hỗ trợ thao tác chọn biến, điều kiện không âm; các phát biểu kiểm tra nghiệm trong mẫu là phần mở rộng tự tạo, không được coi là bằng chứng về cấu trúc đề nguồn."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "a1cfe76a7796b167",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) Không sản xuất B tương ứng y=0; phương án vẫn phải thỏa mãn toàn bộ hệ, khi đó 0≤x≤6. b) Với x=0, có y≤12 và 2y≤15 nên y lớn nhất là 7,5 tấn. c) Với (x;y)=(3;4), hai vế trái giới hạn nguyên liệu lần lượt là 10≤12 và 11≤15; phương án thỏa mãn hệ. d) Với (x;y)=(5;3), có 2x+y=13>12 nên phương án không thỏa mãn hệ.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a) Diễn giải ý nghĩa của biến và điều kiện khả thi trong mô hình đã cho. b) Thế x=0 rồi tìm giới hạn chung của y. c,d) Thay tọa độ phương án để kiểm tra hệ bất phương trình. Từng ý thuộc TH; không phải tự xây dựng mô hình."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/4f4f4abb6fe53e850c01ef46e0ef66993bc5081bd77a1b23e3fd5c80b7df6cec.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/4f4f4abb6fe53e850c01ef46e0ef66993bc5081bd77a1b23e3fd5c80b7df6cec.resolve.json"
+}

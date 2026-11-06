@@ -1,0 +1,160 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "59b15b4dd3cc35d2",
+    "topic": "Ứng dụng đạo hàm và khảo sát hàm số",
+    "part": "P3",
+    "level": "VD",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Đồ thị bậc ba có ba giao điểm liên tiếp với mốc độ cao, khoảng cách giữa các giao điểm và độ cao cực đại của một miền.",
+        "task": "Tìm độ sâu cực đại của miền nằm dưới mốc độ cao.",
+        "reasoning": [
+          "Dùng các giao điểm để biểu diễn hàm bậc ba dưới dạng tích chứa một hệ số chưa biết.",
+          "Giải phương trình đạo hàm bằng không để tìm các vị trí cực trị.",
+          "Dùng độ cao đã biết để xác định hệ số hoặc tỉ lệ giữa hai giá trị cực trị.",
+          "Tính độ lớn của giá trị cực tiểu.",
+          "Đổi đơn vị và làm tròn."
+        ],
+        "combines": [
+          "Biểu diễn đa thức theo nghiệm",
+          "Cực trị bằng đạo hàm",
+          "Hiệu chỉnh mô hình",
+          "Đổi đơn vị"
+        ],
+        "difficulty_source": "Dựng hàm từ nghiệm và dùng một cực trị để hiệu chỉnh cực trị còn lại.",
+        "evidence_uncertainty": "Hình cắt chưa được kiểm chứng độc lập; vị trí tương đối của các miền được thể hiện rõ và được lời văn hỗ trợ.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Doanh thu theo số người sử dụng, hàm chi phí có thành phần lôgarit và mức lợi nhuận yêu cầu.",
+        "task": "Tìm số người sử dụng nguyên nhỏ nhất để đạt mức lợi nhuận.",
+        "reasoning": [
+          "Lập hàm lợi nhuận bằng doanh thu trừ chi phí.",
+          "Chuyển yêu cầu thành bất phương trình trên miền nguyên dương.",
+          "Xét sự biến thiên để xác định nhánh vượt ngưỡng và loại các giá trị nhỏ hơn.",
+          "Định vị ngưỡng bằng tính toán số.",
+          "Kiểm tra hai giá trị nguyên kề ngưỡng để chọn giá trị nhỏ nhất."
+        ],
+        "combines": [
+          "Mô hình doanh thu và chi phí",
+          "Hàm lôgarit",
+          "Tính đơn điệu",
+          "Điều kiện nguyên"
+        ],
+        "difficulty_source": "Bảo đảm tính nhỏ nhất trên miền nguyên khi bất phương trình không giải tường minh bằng phép biến đổi sơ cấp.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Hình vẽ khối chóp cụt đều có đáy vuông, tổng diện tích các đáy cố định và một đường chéo không gian có độ dài cố định.",
+        "task": "Tìm thể tích lớn nhất của khối.",
+        "reasoning": [
+          "Đặt biến cho kích thước các đáy và viết ràng buộc diện tích.",
+          "Dùng hình chiếu của đường chéo để biểu diễn chiều cao theo kích thước đáy.",
+          "Viết thể tích và chọn biến tổng hợp làm giảm số biến.",
+          "Xác định miền khả thi cùng các điều kiện không suy biến.",
+          "Tối ưu biểu thức thể tích và kiểm tra cấu hình đạt cực đại."
+        ],
+        "combines": [
+          "Hình học chóp cụt đều",
+          "Định lý Pythagore",
+          "Thể tích",
+          "Tối ưu hàm số"
+        ],
+        "difficulty_source": "Chọn biến tổng hợp liên kết ràng buộc diện tích, đường chéo và thể tích.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Hai vị trí trên một đường thẳng, một tuyến song song có vận tốc di chuyển khác, khoảng cách giữa các tuyến và hình minh họa nhìn thấy được.",
+        "task": "Tìm thời gian di chuyển nhỏ nhất khi được chọn vị trí chuyển tuyến.",
+        "reasoning": [
+          "Đặt biến cho vị trí vào và ra tuyến, xác định miền khả thi.",
+          "Biểu diễn tổng thời gian bằng độ dài từng chặng chia vận tốc.",
+          "Dùng tính đối xứng hoặc điều kiện cực tiểu để rút gọn các biến.",
+          "Giải điều kiện đạo hàm và kiểm tra các phương án biên cùng đường đi trực tiếp.",
+          "Tính thời gian nhỏ nhất và đổi đơn vị."
+        ],
+        "combines": [
+          "Định lý Pythagore",
+          "Mô hình quãng đường và vận tốc",
+          "Tối ưu bằng đạo hàm",
+          "Kiểm tra miền khả thi"
+        ],
+        "difficulty_source": "Tự chọn biến chuyển tuyến và chứng minh phương án tối ưu thuộc miền khả thi.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "0968e8bc9e2d|P3|3|None",
+      "0ecb85132b84|P3|3|None",
+      "0ecb85132b84|P3|4|None",
+      "3b4cca11ea82|P3|3|None",
+      "525d3542283a|P3|5|None",
+      "54e9a2a276ca|P3|6|None",
+      "85efdd1a7e54|P3|6|None",
+      "9ed45d16a975|P3|1|None",
+      "adb051fd8253|P3|2|None",
+      "ccae0b94a82d|P3|5|None",
+      "ecd76ac672e5|P3|6|None",
+      "fc12a8146279|P3|4|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "59b15b4dd3cc35d2",
+    "stem": "Trong một mô hình thiết kế cảnh quan, độ cao của mặt đất so với một mặt phẳng chuẩn được biểu diễn bởi y=f(x), trong đó x và y đều tính bằng mét, 0≤x≤8 và f là một đa thức bậc ba. Mặt đất chạm mặt phẳng chuẩn đúng tại các vị trí x=0, x=3 và x=8. Trên khoảng 0<x<3, mặt đất nằm phía trên mặt phẳng chuẩn và đạt độ cao lớn nhất là 0,30 m; trên khoảng 3<x<8, mặt đất nằm phía dưới mặt phẳng chuẩn. Độ sâu lớn nhất của phần nằm dưới mặt phẳng chuẩn bằng bao nhiêu centimét? Làm tròn đến một chữ số thập phân và viết kết quả bằng dấu chấm thập phân.",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "72.9",
+        "level": "VD"
+      }
+    ],
+    "solution": "Vì f là đa thức bậc ba có ba nghiệm 0, 3, 8 nên f(x)=k x(x−3)(x−8). Trên (0;3), tích x(x−3)(x−8) dương, do đó k>0. Đặt g(x)=x(x−3)(x−8)=x³−11x²+24x. Ta có g′(x)=3x²−22x+24=(3x−4)(x−6), nên hai điểm tới hạn là x=4/3 và x=6. Theo dấu đạo hàm, f đạt độ cao lớn nhất trên [0;3] tại x=4/3 và đạt giá trị nhỏ nhất trên [3;8] tại x=6. Tính được g(4/3)=400/27 và g(6)=−36. Dữ kiện độ cao cho k×400/27=0,30, suy ra k=0,02025. Vì thế f(6)=−0,729 m. Độ sâu lớn nhất là 0,729 m=72,9 cm, viết theo định dạng yêu cầu là 72.9.",
+    "distractors": [],
+    "level_reason": "Học sinh phải dựng biểu thức đa thức từ các vị trí có độ cao bằng 0, dùng đạo hàm xác định hai cực trị, rồi dùng độ cao của một miền để hiệu chỉnh mô hình và suy ra độ sâu ở miền khác. Chuỗi suy luận kết nối điều kiện hình học, nghiệm đa thức và cực trị.",
+    "prerequisites": [
+      "Biểu diễn đa thức bậc ba qua ba nghiệm phân biệt",
+      "Đạo hàm đa thức và xét dấu đạo hàm",
+      "Cực trị và giá trị lớn nhất, nhỏ nhất trên đoạn",
+      "Đổi mét sang centimét"
+    ],
+    "variation_guidance": "Có thể thay ba vị trí chạm mặt phẳng và độ cao đã biết. Nên chọn khoảng cách giữa các nghiệm không bằng nhau để học sinh phải xác định quan hệ giữa hai cực trị thay vì suy đoán chúng đối xứng.",
+    "uncertainties": [
+      "Quan sát nền chỉ thuộc nguồn cấp tỉnh qua bên thứ ba, chưa có đối chiếu đề chính thức.",
+      "Đa thức bậc ba là giả thiết chính xác của tình huống mô phỏng này, không phải khẳng định về một địa hình thực tế."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "59b15b4dd3cc35d2",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "72.9",
+        "level": "VD"
+      }
+    ],
+    "solution": "Do f là đa thức bậc ba có ba nghiệm 0, 3, 8 nên f(x)=kx(x−3)(x−8), với k>0 theo dấu đã cho. Ta có f′(x)=k(3x²−22x+24)=k(3x−4)(x−6). Độ cao lớn nhất trên (0;3) đạt tại x=4/3, bằng 400k/27=0,30 m. Điểm thấp nhất trên (3;8) có x=6, với f(6)=−36k. Vì vậy độ sâu lớn nhất là 36×0,30×27/400=0,729 m=72,9 cm. Làm tròn một chữ số thập phân được 72.9.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Cần thiết lập mô hình đa thức từ các giao điểm và dấu, liên kết hai cực trị thông qua hệ số chung rồi dùng độ cao đã biết để suy ra độ sâu cần tìm."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/311d97575e803f54fd1c966c1d7cd2e0177fbf8a7b90e7e533519c834ffe1abd.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/311d97575e803f54fd1c966c1d7cd2e0177fbf8a7b90e7e533519c834ffe1abd.resolve.json"
+}

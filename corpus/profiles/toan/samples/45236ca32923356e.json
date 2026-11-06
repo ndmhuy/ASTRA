@@ -1,0 +1,264 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "45236ca32923356e",
+    "topic": "Ứng dụng đạo hàm và khảo sát hàm số",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một hàm đa thức và tập nghiệm đề xuất cho phương trình đạo hàm bằng không.",
+        "task": "Kiểm tra tính đầy đủ và chính xác của tập nghiệm.",
+        "reasoning": [
+          "Tính đạo hàm của hàm số.",
+          "Giải phương trình đạo hàm bằng không.",
+          "So sánh tập nghiệm với tập được nêu."
+        ],
+        "combines": [
+          "Đạo hàm đa thức",
+          "Phương trình bậc hai"
+        ],
+        "difficulty_source": "Giải phương trình đạo hàm theo quy trình quen thuộc.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Một hàm đa thức và nhận định về tính nghịch biến trên một khoảng.",
+        "task": "Kiểm tra khoảng nghịch biến được nêu.",
+        "reasoning": [
+          "Xác định nghiệm và dấu của đạo hàm.",
+          "Xét dấu đạo hàm trên khoảng được nêu.",
+          "Suy ra chiều biến thiên và đối chiếu nhận định."
+        ],
+        "combines": [
+          "Dấu tam thức bậc hai",
+          "Tính đơn điệu"
+        ],
+        "difficulty_source": "Liên hệ dấu đạo hàm với chiều biến thiên.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Một hàm đa thức và một giá trị được gán cho cực tiểu.",
+        "task": "Kiểm tra giá trị cực tiểu được đề xuất.",
+        "reasoning": [
+          "Tìm các điểm dừng.",
+          "Dựa vào sự đổi dấu đạo hàm để xác định điểm cực tiểu.",
+          "Tính giá trị hàm tại điểm cực tiểu.",
+          "Đối chiếu với giá trị được nêu."
+        ],
+        "combines": [
+          "Dấu đạo hàm",
+          "Phân loại cực trị",
+          "Giá trị hàm số"
+        ],
+        "difficulty_source": "Phân loại đúng điểm dừng trước khi tính giá trị cực trị.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Một hàm đa thức và tập nghiệm được đề xuất cho phương trình đạo hàm bằng không.",
+        "task": "Kiểm tra tập nghiệm có đầy đủ và chính xác hay không.",
+        "reasoning": [
+          "Tính đạo hàm.",
+          "Giải phương trình đạo hàm bằng không.",
+          "So sánh toàn bộ nghiệm với tập được nêu."
+        ],
+        "combines": [
+          "Đạo hàm",
+          "Phương trình bậc hai",
+          "Tập hợp nghiệm"
+        ],
+        "difficulty_source": "Kiểm tra tính đầy đủ của tập nghiệm thay vì chỉ thử một nghiệm.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      }
+    ],
+    "support_refs": [
+      "023e74626dd8|P2|2|b",
+      "023e74626dd8|P2|2|c",
+      "023e74626dd8|P2|2|d",
+      "163f20908cf7|P2|1|b",
+      "163f20908cf7|P2|1|d",
+      "0968e8bc9e2d|P2|1|c",
+      "0968e8bc9e2d|P2|1|d",
+      "0ecb85132b84|P2|3|a",
+      "0ecb85132b84|P2|3|d",
+      "11d88d9a96ad|P2|3|a",
+      "11d88d9a96ad|P2|3|b",
+      "11d88d9a96ad|P2|3|d",
+      "3b4cca11ea82|P2|1|b",
+      "3b4cca11ea82|P2|1|c",
+      "3b4cca11ea82|P2|1|d",
+      "3f1b2aa3cb72|P2|1|c",
+      "3f1b2aa3cb72|P2|1|d",
+      "525d3542283a|P2|3|c",
+      "525d3542283a|P2|3|d",
+      "54e9a2a276ca|P2|1|b",
+      "54e9a2a276ca|P2|1|c",
+      "54e9a2a276ca|P2|1|d",
+      "6aa30214ba7e|P2|1|a",
+      "6aa30214ba7e|P2|1|b",
+      "6aa30214ba7e|P2|1|c",
+      "6aa30214ba7e|P2|1|d",
+      "6aa30214ba7e|P2|2|a",
+      "6aa30214ba7e|P2|2|b",
+      "7ab78715480e|P2|3|b",
+      "7ab78715480e|P2|3|c",
+      "7ab78715480e|P2|3|d",
+      "85efdd1a7e54|P2|3|b",
+      "85efdd1a7e54|P2|3|c",
+      "9ed45d16a975|P2|4|a",
+      "9ed45d16a975|P2|4|b",
+      "9ed45d16a975|P2|4|c",
+      "aceb17d936f5|P2|1|c",
+      "aceb17d936f5|P2|4|a",
+      "aceb17d936f5|P2|4|b",
+      "aceb17d936f5|P2|4|c",
+      "aceb17d936f5|P2|4|d",
+      "adb051fd8253|P2|2|a",
+      "adb051fd8253|P2|2|b",
+      "adb051fd8253|P2|2|c",
+      "adb051fd8253|P2|2|d",
+      "beee25b53250|P2|3|b",
+      "beee25b53250|P2|3|d",
+      "beee25b53250|P2|4|b",
+      "beee25b53250|P2|4|d",
+      "c6340827ba59|P2|1|a",
+      "c6340827ba59|P2|1|b",
+      "c6340827ba59|P2|1|c",
+      "ccae0b94a82d|P2|4|b",
+      "ccae0b94a82d|P2|4|c",
+      "ccae0b94a82d|P2|4|d",
+      "de5833d227dd|P2|3|a",
+      "de5833d227dd|P2|3|b",
+      "de5833d227dd|P2|3|c",
+      "ecd76ac672e5|P2|1|a",
+      "ecd76ac672e5|P2|1|b",
+      "ecd76ac672e5|P2|1|c",
+      "ecd76ac672e5|P2|2|c",
+      "ecd76ac672e5|P2|2|d",
+      "fc12a8146279|P2|1|b",
+      "fc12a8146279|P2|1|c",
+      "fc12a8146279|P2|1|d"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "45236ca32923356e",
+    "stem": "Cho hàm số f(x) = x³ − 3x² − 9x + 5 xác định trên R. Xét tính đúng hoặc sai của các khẳng định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Đạo hàm của hàm số là f′(x) = 3x² − 6x − 9."
+      },
+      {
+        "sub": "b",
+        "text": "Tập nghiệm của phương trình f′(x) = 0 là {−1; 1}."
+      },
+      {
+        "sub": "c",
+        "text": "Hàm số nghịch biến trên khoảng (−1; 3)."
+      },
+      {
+        "sub": "d",
+        "text": "Giá trị cực tiểu của hàm số bằng 3."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) Lấy đạo hàm từng hạng tử được f′(x) = 3x² − 6x − 9, nên khẳng định đúng. b) Ta có f′(x) = 3(x + 1)(x − 3), vì vậy tập nghiệm là {−1; 3}, không phải {−1; 1}; khẳng định sai. c) Trên (−1; 3), x + 1 > 0 và x − 3 < 0 nên f′(x) < 0. Hàm số nghịch biến trên khoảng này; khẳng định đúng. d) Đạo hàm đổi dấu từ âm sang dương khi đi qua x = 3, nên hàm số đạt cực tiểu tại x = 3. Giá trị cực tiểu là f(3) = 27 − 27 − 27 + 5 = −22. Số 3 là hoành độ điểm cực tiểu, không phải giá trị cực tiểu; khẳng định sai.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Chấp nhận tập nghiệm {−1; 1} do phân tích x² − 2x − 3 thành (x + 1)(x − 1).",
+        "why_plausible": "Học sinh nhớ dạng hiệu hai bình phương nhưng bỏ qua hệ số của x và hằng số khi phân tích tam thức."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Đồng nhất hoành độ điểm cực tiểu với giá trị cực tiểu.",
+        "why_plausible": "Học sinh tìm đúng vị trí đổi dấu của đạo hàm nhưng dừng ở x = 3, chưa tính giá trị hàm số tại đó."
+      }
+    ],
+    "level_reason": "Các ý lần lượt yêu cầu thực hiện đạo hàm, giải phương trình, xét dấu và phân biệt hoành độ cực tiểu với giá trị cực tiểu trong một bài đa thức quen thuộc. Mức cao nhất của toàn mẫu là TH.",
+    "prerequisites": [
+      "Quy tắc đạo hàm đa thức",
+      "Giải phương trình bậc hai bằng phân tích nhân tử",
+      "Quan hệ giữa dấu đạo hàm và tính đơn điệu",
+      "Dấu hiệu cực trị và giá trị cực trị"
+    ],
+    "variation_guidance": "Đây là mẫu minh họa tổng hợp. Có thể chọn đạo hàm có hai nghiệm phân biệt khác, xây dựng hàm bậc ba tương ứng và điều chỉnh các khẳng định về nghiệm, khoảng nghịch biến và giá trị cực tiểu.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "45236ca32923356e",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Ta có f′(x) = 3x² − 6x − 9 = 3(x + 1)(x − 3), nên a đúng và b sai vì nghiệm là {−1; 3}. Trên (−1; 3), f′(x) < 0 nên hàm số nghịch biến, do đó c đúng. Đạo hàm đổi dấu từ âm sang dương tại x = 3 nên giá trị cực tiểu là f(3) = −22, do đó d sai.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a: Tính đạo hàm đa thức theo quy tắc quen thuộc. b: Giải phương trình đạo hàm bằng 0. c: Xét dấu đạo hàm để xác định khoảng nghịch biến. d: Xác định điểm cực tiểu bằng dấu đạo hàm rồi tính giá trị hàm số. Mỗi ý đều thuộc quy trình thường quy ở mức TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/418d184204665514c7cf7e614ca321fdd19e1db10c0c13e49368593bd9c1296a.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/418d184204665514c7cf7e614ca321fdd19e1db10c0c13e49368593bd9c1296a.resolve.json"
+}

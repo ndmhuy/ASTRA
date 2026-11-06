@@ -1,0 +1,154 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "ce6796cbe1814216",
+    "topic": "Tổ hợp có ràng buộc",
+    "part": "P3",
+    "level": "VD",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Một tập số nguyên phân biệt và hình lưới bậc thang có các ô được xác định theo hàng, cột; các số phải dùng hết và không được trùng lớp dư trong cùng hàng hoặc cột.",
+        "task": "Đếm các phép gán hợp lệ vào vị trí có nhãn rồi thực hiện phép chuẩn hóa được yêu cầu.",
+        "reasoning": [
+          "Chuyển điều kiện về hiệu chia hết thành điều kiện các lớp dư khác nhau trong từng hàng và cột.",
+          "Phân loại các số theo lớp dư và xác định số phần tử của mỗi lớp.",
+          "Khai thác các hàng, cột dài và hình dạng bậc thang để suy ra ràng buộc lên vị trí của từng lớp dư.",
+          "Đếm các cấu hình lớp dư hợp lệ, phân biệt các nhánh và tránh đếm lặp.",
+          "Đếm các hoán vị của những số phân biệt trong mỗi lớp dư.",
+          "Nhân các hệ số đếm rồi thực hiện phép chuẩn hóa."
+        ],
+        "combines": [
+          "Chia hết và đồng dư",
+          "Quy tắc đếm",
+          "Hoán vị",
+          "Ràng buộc hàng và cột"
+        ],
+        "difficulty_source": "Biến ràng buộc cục bộ theo hàng và cột thành cấu hình lớp dư toàn cục có số lượng cố định.",
+        "evidence_uncertainty": "Các công cụ đếm được xếp theo chương tổ hợp; điều kiện đồng dư huy động kiến thức số học từ cấp học trước.",
+        "evidence_class": "official"
+      },
+      {
+        "given": "Một tập người chia thành các nhóm thuộc tính, với giới hạn thành phần của tập con và điều kiện tham gia phụ thuộc giữa các cá nhân được chỉ định.",
+        "task": "Đếm các tập con thỏa đồng thời điều kiện thành phần và điều kiện kéo theo.",
+        "reasoning": [
+          "Liệt kê các cơ cấu thành phần được phép của tập con.",
+          "Diễn giải điều kiện kéo theo thành cấu hình bị cấm hoặc các trường hợp theo sự có mặt của cá nhân chỉ định.",
+          "Dùng tổ hợp đếm các lựa chọn trong từng trường hợp, giữ đúng số chỗ còn lại ở mỗi nhóm.",
+          "Cộng các trường hợp rời nhau hoặc trừ các cấu hình bị cấm khỏi tổng."
+        ],
+        "combines": [
+          "Tổ hợp",
+          "Quy tắc cộng và nhân",
+          "Mệnh đề kéo theo",
+          "Đếm bù"
+        ],
+        "difficulty_source": "Phân biệt điều kiện kéo theo một chiều với yêu cầu các cá nhân luôn cùng tham gia.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một tập số nguyên liên tiếp, các vị trí phân biệt trên hình nhìn thấy được và điều kiện chia hết áp lên tổng bình phương các số được điền.",
+        "task": "Đếm các phép gán số phân biệt thỏa mãn điều kiện.",
+        "reasoning": [
+          "Phân loại các số theo phần dư của bình phương đối với môđun yêu cầu.",
+          "Đếm số phần tử trong từng nhóm phần dư.",
+          "Liệt kê các kiểu phối hợp nhóm làm tổng phần dư hợp lệ.",
+          "Đếm cách chọn các số phân biệt trong từng kiểu.",
+          "Tính số cách gán vào các vị trí phân biệt và cộng các trường hợp."
+        ],
+        "combines": [
+          "Số dư và tính chia hết",
+          "Quy tắc cộng và nhân",
+          "Tổ hợp",
+          "Hoán vị"
+        ],
+        "difficulty_source": "Chuyển điều kiện tổng bình phương thành một số kiểu phần dư rồi phân biệt chọn số với xếp số.",
+        "evidence_uncertainty": "Chủ đề đếm thuộc lớp được gán; công cụ số dư huy động kiến thức số học từ cấp học trước.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một cơ chế nhận vật theo thứ tự với các vị trí có sức chứa tăng dần, mỗi vị trí chỉ dùng một lần, cùng ràng buộc số lần xuất hiện của một số kích cỡ; có hình minh họa.",
+        "task": "Đếm các dãy kích cỡ khiến mọi vật được nhận vào vị trí hợp lệ.",
+        "reasoning": [
+          "Mô hình hóa quy tắc mỗi vật chiếm vị trí còn trống đầu tiên đủ sức chứa.",
+          "Tìm điều kiện cần và đủ trên phân bố kích cỡ để toàn bộ dãy được tiếp nhận.",
+          "Kết hợp điều kiện đó với số lần xuất hiện đã bị cố định.",
+          "Phân loại các đa tập kích cỡ còn lại thỏa điều kiện.",
+          "Đếm các thứ tự của từng đa tập, chia cho hoán vị giữa những kích cỡ lặp.",
+          "Cộng các trường hợp và kiểm tra không đếm lặp."
+        ],
+        "combines": [
+          "Mô hình hóa thuật toán tuần tự",
+          "Điều kiện cần và đủ",
+          "Quy tắc đếm",
+          "Hoán vị có phần tử lặp"
+        ],
+        "difficulty_source": "Chuyển quy tắc tiếp nhận tuần tự thành điều kiện toàn cục để đếm dãy mà không phân biệt các vật cùng kích cỡ.",
+        "evidence_uncertainty": "Xếp lớp theo công cụ tổ hợp; tiêu chuẩn khả thi của cơ chế phân bổ và công thức hoán vị có lặp không được liệt kê thành bài riêng trong danh mục tham chiếu. Không có đáp án chuẩn để đối chiếu.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "023e74626dd8|P3|3|None",
+      "11d88d9a96ad|P3|3|None",
+      "3b4cca11ea82|P3|6|None",
+      "525d3542283a|P3|3|None",
+      "54e9a2a276ca|P3|4|None",
+      "adb051fd8253|P3|3|None",
+      "beee25b53250|P3|1|None",
+      "de5833d227dd|P3|2|None"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "ce6796cbe1814216",
+    "stem": "Một bảng có bảy ô được gắn nhãn theo hàng và cột. Hàng 1 gồm các ô (1,1), (1,2), (1,3); hàng 2 gồm các ô (2,1), (2,2), (2,3); hàng 3 chỉ có ô (3,1). Điền các số nguyên từ 1 đến 7 vào bảng, mỗi số dùng đúng một lần. Hai số nằm trong cùng một hàng hoặc cùng một cột phải có hiệu không chia hết cho 3. Có bao nhiêu cách điền thỏa mãn yêu cầu? Hai cách điền được xem là khác nhau nếu có ít nhất một ô nhận các số khác nhau.",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "96",
+        "level": "VD"
+      }
+    ],
+    "solution": "Chia các số thành ba lớp dư modulo 3: R0 = {3,6}, R1 = {1,4,7}, R2 = {2,5}. Điều kiện đề bài tương đương các ô cùng hàng hoặc cùng cột có lớp dư đôi một khác nhau. Mỗi hàng trong hai hàng đầu có ba ô nên phải chứa đủ ba lớp dư. Sau khi điền hai hàng đó, chỉ còn một số thuộc R1; vì vậy ô (3,1) phải thuộc R1. Cột 1 có ba ô nên hai ô (1,1), (2,1) phải lần lượt thuộc R0, R2 hoặc R2, R0. Có 2 cách chọn thứ tự này. Với mỗi cách, hai ô còn lại của hàng 1 nhận hai lớp dư còn lại theo 2 thứ tự. Hàng 2 khi đó được xác định duy nhất: lớp dư trùng với ô (1,1) phải đặt vào cột mà hàng 1 mang lớp dư của ô (2,1), còn lớp dư R1 đặt vào cột còn lại. Cách điền này thỏa điều kiện của cả cột 2 và cột 3. Do đó có 2 × 2 = 4 cấu hình lớp dư. Trong mỗi cấu hình, các số của R1 có 3! cách phân vào các ô tương ứng, còn R0 và R2 mỗi lớp có 2! cách. Số cách điền là 4 × 3! × 2! × 2! = 96.",
+    "distractors": [],
+    "level_reason": "Bài toán yêu cầu chuyển điều kiện chia hết sang cấu hình lớp dư, phối hợp số lượng phần tử mỗi lớp với các hàng và cột dài để buộc lớp dư của ô cuối, rồi chứng minh cách hoàn thành hai hàng đầu. Đây là chuỗi suy luận về ràng buộc toàn cục trước khi áp dụng quy tắc nhân.",
+    "prerequisites": [
+      "Lớp dư modulo 3",
+      "Điều kiện hiệu hai số chia hết cho 3",
+      "Quy tắc cộng và quy tắc nhân",
+      "Hoán vị các phần tử phân biệt"
+    ],
+    "variation_guidance": "Có thể thay bộ số bằng một bộ khác có cùng số lượng phần tử trong từng lớp dư. Nếu thay vị trí ô ở hàng 3 hoặc thay số lượng phần tử mỗi lớp, phải đếm lại cấu hình lớp dư trước khi nhân các giai thừa.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "ce6796cbe1814216",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "96",
+        "level": "VD"
+      }
+    ],
+    "solution": "Xét phần dư modulo 3. Các lớp dư 1, 2, 0 lần lượt có 3, 2, 2 số. Mỗi hàng gồm ba ô phải chứa đủ ba lớp dư; vì thế hai hàng đầu sử dụng mỗi lớp dư đúng hai lần, buộc ô (3,1) có dư 1. Hai ô còn lại của cột 1 phải có dư 0 và 2, có 2 cách sắp. Với mỗi cách đó, hàng đầu có 2 cách điền hai lớp dư còn lại vào cột 2 và 3. Hàng thứ hai sau đó được xác định duy nhất bởi điều kiện khác lớp dư trong từng cột. Có 2×2=4 bảng phần dư. Với mỗi bảng, hoán vị các số trong từng lớp dư được 3!×2!×2!=24 cách. Tổng cộng có 4×24=96 cách.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Cần chuyển điều kiện chia hết thành mô hình lớp dư, phối hợp ràng buộc hàng và cột để đếm các bảng phần dư, rồi tính số cách gán các số cụ thể."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/ca57e2a1488a4c03c08c749147887c884e0ddb8b4463091bb3ae34f2cfe49339.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/ca57e2a1488a4c03c08c749147887c884e0ddb8b4463091bb3ae34f2cfe49339.resolve.json"
+}

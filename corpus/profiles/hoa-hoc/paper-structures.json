@@ -1,1813 +1,1814 @@
 {
-  "model": "gpt-6.1-sol",
-  "observations": [
-    {
-      "paper_id": "53f7e0c73214",
-      "source": "transcriptions/hoa-hoc/2025-paper/de.md",
-      "source_sha256": "4143d924e3a97592c3f884f1c5ff63ec90148c4957cb0ae2f932496236adedcf",
-      "class": "official",
-      "year": "2025",
-      "model": "gpt-6.1-sol",
-      "origin": "inline_EXTRACT",
-      "structure": {
-        "parts_in_order": [
-          "P1",
-          "P2",
-          "P3"
-        ],
-        "blocks_in_order": [
-          {
-            "part": "P1",
-            "kind": "Trắc nghiệm chọn một đáp án, ngữ liệu riêng từng câu",
-            "question_indices": [
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16
-            ],
-            "shares_content": false,
-            "stimulus_id": null
-          },
-          {
-            "part": "P1",
-            "kind": "Trắc nghiệm chọn một đáp án, dùng chung đoạn dẫn",
-            "question_indices": [
-              17,
-              18
-            ],
-            "shares_content": true,
-            "stimulus_id": "S1"
-          },
-          {
-            "part": "P2",
-            "kind": "Đúng sai theo một sơ đồ tổng hợp và các dữ liệu kèm theo",
-            "question_indices": [
-              1
-            ],
-            "shares_content": true,
-            "stimulus_id": "S2"
-          },
-          {
-            "part": "P2",
-            "kind": "Đúng sai theo một thí nghiệm định lượng",
-            "question_indices": [
-              2
-            ],
-            "shares_content": true,
-            "stimulus_id": "S3"
-          },
-          {
-            "part": "P2",
-            "kind": "Đúng sai theo một sơ đồ tạo polymer",
-            "question_indices": [
-              3
-            ],
-            "shares_content": true,
-            "stimulus_id": "S4"
-          },
-          {
-            "part": "P2",
-            "kind": "Đúng sai theo một quy trình điện phân",
-            "question_indices": [
-              4
-            ],
-            "shares_content": true,
-            "stimulus_id": "S5"
-          },
-          {
-            "part": "P3",
-            "kind": "Trả lời ngắn, ngữ liệu riêng từng câu",
-            "question_indices": [
-              1,
-              2,
-              3,
-              4,
-              5,
-              6
-            ],
-            "shares_content": false,
-            "stimulus_id": null
-          }
-        ],
-        "shared_stimuli": [
-          {
-            "id": "S1",
-            "kind": "Đoạn dẫn ứng dụng",
-            "members": [
-              {
-                "part": "P1",
-                "idx": 17
-              },
-              {
-                "part": "P1",
-                "idx": 18
-              }
-            ],
-            "description": "Mô tả sự ăn mòn hợp kim trong môi trường điện li và cách bảo vệ bằng kim loại gắn kèm.",
-            "scope": "multiple_questions",
-            "support": "explicit_instruction"
-          },
-          {
-            "id": "S2",
-            "kind": "Sơ đồ phản ứng, dữ liệu thực nghiệm và bảng tra",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 1
-              }
-            ],
-            "description": "Một quá trình chuyển hóa hữu cơ có dữ liệu lượng chất, sản phẩm thu được và khoảng hấp thụ hồng ngoại.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S3",
-            "kind": "Quy trình thí nghiệm, dữ liệu so sánh và hình dụng cụ",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 2
-              }
-            ],
-            "description": "Chuẩn độ cùng loại mẫu ở các thời điểm lưu giữ khác nhau để kiểm tra giả thuyết về nồng độ.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S4",
-            "kind": "Sơ đồ cấu tạo và phản ứng",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 3
-              }
-            ],
-            "description": "Chuyển monomer dạng vòng thành vật liệu sợi có nhóm chức lặp lại.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S5",
-            "kind": "Mô tả quy trình công nghệ",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 4
-              }
-            ],
-            "description": "Điện phân dung dịch có màng ngăn rồi thu chất rắn từ dung dịch sản phẩm.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          }
-        ],
-        "optional_paths": [],
-        "limits": [
-          "Cấu trúc chỉ phản ánh thứ tự quan sát được trên đề này; không suy rộng thành thứ tự cố định của các đề cùng môn.",
-          "Không thấy nhóm câu tự chọn hoặc ngữ liệu dùng chung xuyên phần.",
-          "Các ý đúng sai được ghi thành từng hàng phân tích nhưng vẫn thuộc cùng câu hỏi.",
-          "Không có ví dụ hiệu chuẩn chính thức; mức phân hóa là nhận định từ thao tác tư duy, chưa phải kết quả thống kê.",
-          "Tham chiếu chương trình không có mục môn học tương ứng; phân lớp dựa trên kiến thức chương trình phổ thông thông dụng, không dựa vào một danh mục được cung cấp.",
-          "Sử dụng khóa được cung cấp cho đề đang xét; các dấu viết tay trên ảnh không được dùng làm đáp án.",
-          "Một phương án cấu hình electron có vấn đề về quy ước thứ tự trình bày; giới hạn này được ghi tại hàng tương ứng."
-        ]
-      }
-    },
-    {
-      "paper_id": "30e3a77f6f23",
-      "source": "transcriptions/hoa-hoc/2026-paper/de.md",
-      "source_sha256": "95447764b618dd4e22ca514c688f1791e256996659a95624f0853de75793c884",
-      "class": "official",
-      "year": "2026",
-      "model": "gpt-6.1-sol",
-      "origin": "inline_EXTRACT",
-      "structure": {
-        "parts_in_order": [
-          "P1",
-          "P2",
-          "P3"
-        ],
-        "blocks_in_order": [
-          {
-            "part": "P1",
-            "kind": "Các câu chọn một phương án, mỗi câu có dữ kiện riêng",
-            "question_indices": [
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15
-            ],
-            "shares_content": false,
-            "stimulus_id": null
-          },
-          {
-            "part": "P1",
-            "kind": "Các câu chọn một phương án dùng chung đoạn thông tin",
-            "question_indices": [
-              16,
-              17
-            ],
-            "shares_content": true,
-            "stimulus_id": "S1"
-          },
-          {
-            "part": "P1",
-            "kind": "Câu chọn một phương án có dữ kiện riêng",
-            "question_indices": [
-              18
-            ],
-            "shares_content": false,
-            "stimulus_id": null
-          },
-          {
-            "part": "P2",
-            "kind": "Câu đúng sai dùng chung quy trình và bảng số liệu giữa các ý",
-            "question_indices": [
-              1
-            ],
-            "shares_content": true,
-            "stimulus_id": "S2"
-          },
-          {
-            "part": "P2",
-            "kind": "Câu đúng sai dùng chung sơ đồ chuyển hóa giữa các ý",
-            "question_indices": [
-              2
-            ],
-            "shares_content": true,
-            "stimulus_id": "S3"
-          },
-          {
-            "part": "P2",
-            "kind": "Câu đúng sai dùng chung hình phương trình cấu tạo giữa các ý",
-            "question_indices": [
-              3
-            ],
-            "shares_content": true,
-            "stimulus_id": "S4"
-          },
-          {
-            "part": "P2",
-            "kind": "Câu đúng sai dùng chung thông tin cấu tạo và thủy phân giữa các ý",
-            "question_indices": [
-              4
-            ],
-            "shares_content": true,
-            "stimulus_id": "S5"
-          },
-          {
-            "part": "P3",
-            "kind": "Các câu trả lời ngắn có dữ kiện riêng",
-            "question_indices": [
-              1,
-              2,
-              3,
-              4,
-              5,
-              6
-            ],
-            "shares_content": false,
-            "stimulus_id": null
-          }
-        ],
-        "shared_stimuli": [
-          {
-            "id": "S1",
-            "kind": "Đoạn thông tin và phương trình cân bằng",
-            "members": [
-              {
-                "part": "P1",
-                "idx": 16
-              },
-              {
-                "part": "P1",
-                "idx": 17
-              }
-            ],
-            "description": "Cơ chế tạo kết tủa keo để làm trong nước và điều kiện môi trường ảnh hưởng hiệu quả.",
-            "scope": "multiple_questions",
-            "support": "explicit_instruction"
-          },
-          {
-            "id": "S2",
-            "kind": "Quy trình thí nghiệm, giả thuyết và bảng số liệu",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 1
-              }
-            ],
-            "description": "So sánh khả năng tiêu thụ acid của các mẫu bằng xử lí acid dư và chuẩn độ ngược.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S3",
-            "kind": "Sơ đồ chuyển hóa phức chất",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 2
-              }
-            ],
-            "description": "Các phức cùng trung tâm có loại và số phối tử khác nhau, kèm quy ước liên kết.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S4",
-            "kind": "Hình phương trình cấu tạo",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 3
-              }
-            ],
-            "description": "Thủy phân chất béo trong kiềm tạo alcohol đa chức và các muối hữu cơ mạch dài.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S5",
-            "kind": "Thông tin cấu tạo và phương trình thủy phân",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 4
-              }
-            ],
-            "description": "Các polysaccharide có cùng thành phần mắt xích và tạo đường đơn khi thủy phân hoàn toàn.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          }
-        ],
-        "optional_paths": [],
-        "limits": [
-          "Cấu trúc chỉ phản ánh thứ tự quan sát được trên đề này, không suy rộng thành thứ tự chung của môn học.",
-          "Không thấy nhóm câu tự chọn, văn bản dùng chung xuyên phần hoặc chỉ dẫn phân nhánh.",
-          "Các ý đúng sai được phân tích riêng nhưng vẫn thuộc câu hỏi chung có cùng dữ kiện.",
-          "Khóa khớp mã đề được dùng để xác định phương án không đúng; các dấu viết tay trên ảnh không được dùng làm khóa.",
-          "Không có danh mục chương trình khớp môn; lớp được ghi khi nội dung đủ rõ, còn nội dung xuyên lớp hoặc khó quy thuộc được để trống.",
-          "Mức phân hóa là nhận định từ yêu cầu suy luận có đối chiếu các ví dụ hiệu chuẩn được cung cấp, không phải kết quả thống kê thí sinh.",
-          "Các hình gốc có sẵn để đọc; phần mô tả bằng chữ không được dùng thay thế các chi tiết cấu tạo nhìn được trên ảnh.",
-          "Các câu có cùng chủ đề nhưng không có đoạn dẫn chung không được coi là dùng chung kích thích."
-        ]
-      }
-    },
-    {
-      "paper_id": "a381d0bc1996",
-      "source": "transcriptions/hoa-hoc/2026-provincial/de-thi-thu-tn-2026-mon-hoa-so-gd-ca-mau-lan-1/de.md",
-      "source_sha256": "b3151552c8bbbe916c3a510fcbbcad26b97a50c28c5faac90b5741c5b1724ad8",
-      "class": "provincial_third_party",
-      "year": "2026",
-      "model": "gpt-6.1-sol",
-      "origin": "inline_EXTRACT",
-      "structure": {
-        "parts_in_order": [
-          "P1",
-          "P2",
-          "P3"
-        ],
-        "blocks_in_order": [
-          {
-            "part": "P1",
-            "kind": "Trắc nghiệm chọn một phương án, các câu có dữ kiện riêng",
-            "question_indices": [
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18
-            ],
-            "shares_content": false,
-            "stimulus_id": null
-          },
-          {
-            "part": "P2",
-            "kind": "Đúng sai với dữ kiện chung trong câu",
-            "question_indices": [
-              1
-            ],
-            "shares_content": true,
-            "stimulus_id": "S1"
-          },
-          {
-            "part": "P2",
-            "kind": "Đúng sai với phương trình và dữ kiện điện hóa chung",
-            "question_indices": [
-              2
-            ],
-            "shares_content": true,
-            "stimulus_id": "S2"
-          },
-          {
-            "part": "P2",
-            "kind": "Đúng sai với thí nghiệm tổng hợp hữu cơ chung",
-            "question_indices": [
-              3
-            ],
-            "shares_content": true,
-            "stimulus_id": "S3"
-          },
-          {
-            "part": "P2",
-            "kind": "Đúng sai với sơ đồ chuyển hóa chung",
-            "question_indices": [
-              4
-            ],
-            "shares_content": true,
-            "stimulus_id": "S4"
-          },
-          {
-            "part": "P3",
-            "kind": "Trả lời ngắn, gồm tuyển chọn nhận định và tính toán với dữ kiện riêng",
-            "question_indices": [
-              1,
-              2,
-              3,
-              4,
-              5,
-              6
-            ],
-            "shares_content": false,
-            "stimulus_id": null
-          }
-        ],
-        "shared_stimuli": [
-          {
-            "id": "S1",
-            "kind": "Bối cảnh ứng dụng của một muối acid",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 1
-              }
-            ],
-            "description": "Các nhận định cùng xuất phát từ một chất có ứng dụng dựa trên nhiệt phân và phản ứng trung hòa; dữ kiện định lượng chỉ phục vụ một nhận định.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S2",
-            "kind": "Mô tả nguồn điện, phương trình thuận nghịch và hệ thức điện lượng",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 2
-              }
-            ],
-            "description": "Các nhận định dùng chung cấu tạo điện cực và chiều phản ứng; phần định lượng bổ sung cơ sở tính lượng chất tái tạo.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S3",
-            "kind": "Thí nghiệm tổng hợp ester",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 3
-              }
-            ],
-            "description": "Các nhận định cùng xét một quá trình tổng hợp, từ loại phản ứng và cấu tạo nguyên liệu đến hiệu suất.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S4",
-            "kind": "Sơ đồ chuyển hóa hữu cơ",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 4
-              }
-            ],
-            "description": "Một chuỗi phản ứng làm cơ sở xác định trung gian, tính chất base, loại phản ứng và lượng sản phẩm.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          }
-        ],
-        "optional_paths": [],
-        "limits": [
-          "Các địa chỉ được quan sát đều thuộc phần bắt buộc; không thấy nhóm lựa chọn hoặc đường làm bài thay thế.",
-          "Mỗi nhận định đúng sai được phân tích thành một hàng nhưng vẫn thuộc cùng một câu hỏi có dữ kiện chung.",
-          "Không thấy văn bản hay hình dùng chung giữa các câu độc lập hoặc xuyên phần; trùng chủ đề không được coi là chung ngữ liệu.",
-          "Bảng nguyên tử khối và chú giải trạng thái là dữ liệu tra cứu chung của đề, không phải một tình huống liên câu.",
-          "Không có tham chiếu chương trình khớp môn để xác nhận phân lớp; trường lớp được để trống thay vì suy từ cấp độ kỳ thi.",
-          "Đánh giá khả năng phân hóa dựa trên thao tác tư duy và đối chiếu các ví dụ hiệu chuẩn trừu tượng đã cung cấp, không dựa trên thống kê kết quả làm bài.",
-          "Khóa địa phương được cung cấp khớp mã đề và được dùng để xác định phương án sai; phần lời giải tham khảo không được tính thành câu hỏi.",
-          "Các phương án chỉ là số đếm thường không cho phép xác định duy nhất tổ hợp sai lầm; mô tả lỗi tương ứng chỉ là khả năng hợp lí.",
-          "Ở câu chuẩn độ, chưa chứng minh được lỗi cụ thể tạo ra từng giá trị nhiễu; không coi các phương án đó là bằng chứng về một ngộ nhận xác định.",
-          "Một nhận định về ứng dụng nhiệt phân có lỗi diễn đạt ở cuối; việc đánh giá bám nội dung hóa học chính và khóa được cung cấp.",
-          "Phân tích cơ chế cộng bám sơ đồ giản lược mà đề sử dụng, không suy rộng thành mô tả đầy đủ cơ chế thực tế.",
-          "Thứ tự khối chỉ mô tả đề đang quan sát, không khẳng định đây là thứ tự cố định của các đề cùng loại."
-        ]
-      }
-    },
-    {
-      "paper_id": "7090ca87e657",
-      "source": "transcriptions/hoa-hoc/2026-provincial/de-thi-thu-tn-2026-mon-hoa-so-gd-quang-ninh-lan-1/de.md",
-      "source_sha256": "885019db4970d504b0de63616d850a7f2032f2963702328e06a09fb0b5184409",
-      "class": "provincial_third_party",
-      "year": "2026",
-      "model": "gpt-6.1-sol",
-      "origin": "inline_EXTRACT",
-      "structure": {
-        "parts_in_order": [
-          "P1",
-          "P2",
-          "P3"
-        ],
-        "blocks_in_order": [
-          {
-            "part": "P1",
-            "kind": "Trắc nghiệm chọn một phương án, các câu có dữ kiện riêng",
-            "question_indices": [
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18
-            ],
-            "shares_content": false,
-            "stimulus_id": null
-          },
-          {
-            "part": "P2",
-            "kind": "Một câu đúng sai gồm các nhận định dùng chung phản ứng và đồ thị",
-            "question_indices": [
-              1
-            ],
-            "shares_content": true,
-            "stimulus_id": "S1"
-          },
-          {
-            "part": "P2",
-            "kind": "Một câu đúng sai gồm các nhận định dùng chung quy trình thí nghiệm",
-            "question_indices": [
-              2
-            ],
-            "shares_content": true,
-            "stimulus_id": "S2"
-          },
-          {
-            "part": "P2",
-            "kind": "Một câu đúng sai gồm các nhận định dùng chung chuỗi thí nghiệm và hình minh họa",
-            "question_indices": [
-              3
-            ],
-            "shares_content": true,
-            "stimulus_id": "S3"
-          },
-          {
-            "part": "P2",
-            "kind": "Một câu đúng sai gồm các nhận định dùng chung cấu tạo phân tử và dữ kiện acid–base",
-            "question_indices": [
-              4
-            ],
-            "shares_content": true,
-            "stimulus_id": "S4"
-          },
-          {
-            "part": "P3",
-            "kind": "Trả lời ngắn, các câu có dữ kiện riêng",
-            "question_indices": [
-              1,
-              2,
-              3,
-              4,
-              5,
-              6
-            ],
-            "shares_content": false,
-            "stimulus_id": null
-          }
-        ],
-        "shared_stimuli": [
-          {
-            "id": "S1",
-            "kind": "Phương trình nhiệt hóa học và đồ thị nhiều đường",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 1
-              }
-            ],
-            "description": "Các nhận định cùng khai thác một hệ cân bằng khí, quan hệ hiệu suất với điều kiện vận hành và khả năng tính sản phẩm.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S2",
-            "kind": "Quy trình thí nghiệm so sánh",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 2
-              }
-            ],
-            "description": "Các nhận định cùng dựa trên việc cho những kim loại cùng nhóm phản ứng với nước rồi thử môi trường dung dịch.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S3",
-            "kind": "Chuỗi thao tác thí nghiệm kèm hình",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 3
-              }
-            ],
-            "description": "Các nhận định giải thích sự thay đổi trạng thái của một hợp chất hữu cơ qua những thao tác biến đổi acid–base.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S4",
-            "kind": "Công thức cấu tạo và dữ kiện dạng ion",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 4
-              }
-            ],
-            "description": "Các nhận định khai thác chung cấu tạo một amino acid có thêm nhóm chức ở mạch bên và thông tin về trạng thái điện tích.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          }
-        ],
-        "optional_paths": [],
-        "limits": [
-          "Cấu trúc phản ánh thứ tự quan sát được của tài liệu này, không phải quy luật chung cho mọi đề cùng môn.",
-          "Không quan sát thấy nhóm câu tự chọn hoặc tuyến làm bài thay thế.",
-          "Các trang lời giải lặp lại nội dung đề không được tính thành câu hỏi mới.",
-          "Khóa đáp án chưa được đối sánh; không dùng màu sắc, gạch chân hoặc lời giải nhìn thấy trong ảnh để xác định lựa chọn sai.",
-          "Với câu nhiều lựa chọn, các nhãn đều được giữ ở trạng thái chưa xác định để không tự suy tập phương án sai; với câu đúng sai, danh sách chi tiết để trống không mang nghĩa phát biểu đúng.",
-          "Không có tham chiếu chương trình khớp môn và cấp lớp; lớp được để trống thay vì suy từ tính chất của kì thi.",
-          "Mức phân hóa được đối chiếu với các ví dụ hiệu chuẩn trừu tượng đã cung cấp và dựa vào quyết định nhận thức cần thực hiện; không phải kết quả thống kê thực nghiệm.",
-          "Không có bằng chứng về ngữ liệu chung giữa các câu độc lập hoặc giữa các phần; việc trùng chủ đề không được xem là dùng chung ngữ liệu.",
-          "Bảng hằng số đầu đề là dữ liệu hỗ trợ chung, không được xem là một tình huống hay ngữ liệu liên câu."
-        ]
-      }
-    },
-    {
-      "paper_id": "02f028487a62",
-      "source": "transcriptions/hoa-hoc/2026-provincial/de-thi-thu-tn-2026-mon-hoa-so-gd-quang-tri-lan-1/de.md",
-      "source_sha256": "0d39f859b16d325750815bb98a9369f57a524ad37cd3cfe49138aaeee0200dd0",
-      "class": "provincial_third_party",
-      "year": "2026",
-      "model": "gpt-6.1-sol",
-      "origin": "inline_EXTRACT",
-      "structure": {
-        "parts_in_order": [
-          "P1",
-          "P2",
-          "P3"
-        ],
-        "blocks_in_order": [
-          {
-            "part": "P1",
-            "kind": "Trắc nghiệm chọn một phương án; có câu chọn số lượng nhận định đúng.",
-            "question_indices": [
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18
-            ],
-            "shares_content": false,
-            "stimulus_id": null
-          },
-          {
-            "part": "P2",
-            "kind": "Đúng sai theo từng phát biểu trong một quy trình sản xuất.",
-            "question_indices": [
-              1
-            ],
-            "shares_content": true,
-            "stimulus_id": "S1"
-          },
-          {
-            "part": "P2",
-            "kind": "Đúng sai theo từng phát biểu về một vật liệu polymer.",
-            "question_indices": [
-              2
-            ],
-            "shares_content": true,
-            "stimulus_id": "S2"
-          },
-          {
-            "part": "P2",
-            "kind": "Đúng sai theo từng phát biểu về một hệ chuẩn độ.",
-            "question_indices": [
-              3
-            ],
-            "shares_content": true,
-            "stimulus_id": "S3"
-          },
-          {
-            "part": "P2",
-            "kind": "Đúng sai theo từng phát biểu về tổng hợp và nhận diện sản phẩm hữu cơ.",
-            "question_indices": [
-              4
-            ],
-            "shares_content": true,
-            "stimulus_id": "S4"
-          },
-          {
-            "part": "P3",
-            "kind": "Trả lời ngắn bằng kết quả tính toán hoặc mã nhãn nhận định.",
-            "question_indices": [
-              1,
-              2,
-              3,
-              4,
-              5,
-              6
-            ],
-            "shares_content": false,
-            "stimulus_id": null
-          }
-        ],
-        "shared_stimuli": [
-          {
-            "id": "S1",
-            "kind": "Sơ đồ công nghệ và phương trình phản ứng",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 1
-              }
-            ],
-            "description": "Các phát biểu dùng chung sơ đồ sản xuất muối, công đoạn tách chất và dòng tuần hoàn.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S2",
-            "kind": "Thông tin vật liệu và hình cấu tạo monomer",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 2
-              }
-            ],
-            "description": "Các phát biểu dùng chung thông tin phân hủy sinh học và cấu tạo nguyên liệu tạo polymer.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S3",
-            "kind": "Mô tả chuẩn độ và phương trình ion",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 3
-              }
-            ],
-            "description": "Các phát biểu dùng chung hệ phản ứng, lượng thuốc chuẩn và môi trường dung dịch.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S4",
-            "kind": "Sơ đồ ester hóa và bảng dữ liệu phổ",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 4
-              }
-            ],
-            "description": "Các phát biểu dùng chung cấu tạo chất phản ứng, sản phẩm và dữ liệu nhận diện nhóm chức.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S5",
-            "kind": "Bối cảnh ăn mòn và nhóm nhận định",
-            "members": [
-              {
-                "part": "P1",
-                "idx": 15
-              }
-            ],
-            "description": "Một bối cảnh kết cấu kim loại hỗ trợ các nhận định thành phần trước khi chọn kết quả đếm.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S6",
-            "kind": "Dữ liệu nhận diện cấu tạo và tập nhận định",
-            "members": [
-              {
-                "part": "P3",
-                "idx": 5
-              }
-            ],
-            "description": "Các nhận định tính chất phụ thuộc chung vào kết quả nhận diện hợp chất từ dữ liệu công thức và phổ.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          }
-        ],
-        "optional_paths": [],
-        "limits": [
-          "Chỉ ghi nhận thứ tự và cách tổ chức của bản đề được cung cấp; không suy rộng thành khuôn cố định cho các đề khác.",
-          "Không quan sát thấy nhóm câu tự chọn hoặc dữ liệu dùng chung giữa các câu độc lập hay giữa các phần.",
-          "Các nhận định bên trong câu chọn số lượng và câu mã hóa kết quả không tạo địa chỉ chấm điểm riêng.",
-          "Khóa được cung cấp khớp mã đề trên bản đề và được dùng để xác định phương án sai, phát biểu sai.",
-          "Không có tham chiếu chương trình phù hợp cho môn học nên chưa gán lớp cho các hàng.",
-          "Một hình tiểu phân hữu cơ có kí hiệu chưa rõ; không kết luận chắc chắn về độ phân hóa và cơ chế từng nhiễu của câu đó.",
-          "Phân loại độ phân hóa là đánh giá từ yêu cầu suy luận, có đối chiếu các mốc hiệu chuẩn trừu tượng được cung cấp, không phải kết quả thống kê làm bài.",
-          "Thông tin số trang trong phần đầu không thống nhất với cách phân trang của bản đính kèm; nội dung câu hỏi vẫn được theo dõi liên tục qua các ảnh."
-        ]
-      }
-    },
-    {
-      "paper_id": "0ccfacf4a5ac",
-      "source": "transcriptions/hoa-hoc/2026-provincial/de-thi-thu-tn-2026-mon-hoa-so-gd-son-la-lan-2/de.md",
-      "source_sha256": "fbe20c82b47d55cad4c3a39d72d9d542704537ddb944d5c71ee3a025ed084a00",
-      "class": "provincial_third_party",
-      "year": "2026",
-      "model": "gpt-6.1-sol",
-      "origin": "inline_EXTRACT",
-      "structure": {
-        "parts_in_order": [
-          "P1",
-          "P2",
-          "P3"
-        ],
-        "blocks_in_order": [
-          {
-            "part": "P1",
-            "kind": "Trắc nghiệm chọn một phương án; gồm cả câu chọn đáp án trực tiếp và câu đánh giá một tập phát biểu.",
-            "question_indices": [
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18
-            ],
-            "shares_content": false,
-            "stimulus_id": null
-          },
-          {
-            "part": "P2",
-            "kind": "Đánh giá từng phát biểu dựa trên mô tả vật liệu và hình cấu tạo.",
-            "question_indices": [
-              1
-            ],
-            "shares_content": true,
-            "stimulus_id": "S5"
-          },
-          {
-            "part": "P2",
-            "kind": "Đánh giá từng phát biểu dựa trên một chuỗi thao tác thí nghiệm.",
-            "question_indices": [
-              2
-            ],
-            "shares_content": true,
-            "stimulus_id": "S6"
-          },
-          {
-            "part": "P2",
-            "kind": "Đánh giá từng phát biểu dựa trên quy trình sinh hóa và bảng thực nghiệm.",
-            "question_indices": [
-              3
-            ],
-            "shares_content": true,
-            "stimulus_id": "S7"
-          },
-          {
-            "part": "P2",
-            "kind": "Đánh giá từng phát biểu dựa trên một hệ bảo vệ điện hóa.",
-            "question_indices": [
-              4
-            ],
-            "shares_content": true,
-            "stimulus_id": "S8"
-          },
-          {
-            "part": "P3",
-            "kind": "Trả lời ngắn bằng kết quả ghép thứ tự, đếm hoặc tính toán.",
-            "question_indices": [
-              1,
-              2,
-              3,
-              4,
-              5,
-              6
-            ],
-            "shares_content": false,
-            "stimulus_id": null
-          }
-        ],
-        "shared_stimuli": [
-          {
-            "id": "S1",
-            "kind": "Mô tả cấu tạo và môi trường hoạt động của pin.",
-            "members": [
-              {
-                "part": "P1",
-                "idx": 1
-              }
-            ],
-            "description": "Các nhận định cùng xét một hệ phát điện có điện cực hoạt động và điện cực tiếp xúc với chất oxi hóa từ môi trường.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S2",
-            "kind": "Tập phát biểu về một nhóm hợp chất sinh học.",
-            "members": [
-              {
-                "part": "P1",
-                "idx": 6
-              }
-            ],
-            "description": "Các nhận định cùng kiểm tra tính tan, thủy phân và phản ứng màu của một nhóm đại phân tử.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S3",
-            "kind": "Quy trình tách chất bằng dụng cụ thí nghiệm.",
-            "members": [
-              {
-                "part": "P1",
-                "idx": 16
-              }
-            ],
-            "description": "Các nhận định cùng dựa vào thao tác phân bố chất tan giữa các pha lỏng.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S4",
-            "kind": "Mô tả xử lý hỗn hợp kim loại trong dung dịch.",
-            "members": [
-              {
-                "part": "P1",
-                "idx": 17
-              }
-            ],
-            "description": "Các nhận định cùng xét phản ứng hòa tan chọn lọc và thành phần sau lọc.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S5",
-            "kind": "Mô tả polymer kèm hình cấu tạo mắt xích.",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 1
-              }
-            ],
-            "description": "Các ý dùng chung thông tin về cấu trúc, tổng hợp và xử lý một polyester.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S6",
-            "kind": "Chuỗi thao tác và hiện tượng tạo phức.",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 2
-              }
-            ],
-            "description": "Các ý cùng phân tích sự hòa tan và thay đổi môi trường phối trí của một ion kim loại.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S7",
-            "kind": "Quy trình thủy phân sinh học và bảng kết quả.",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 3
-              }
-            ],
-            "description": "Các ý cùng sử dụng điều kiện phản ứng, thành phần nguyên liệu và xu hướng hiệu suất theo nhiệt độ.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S8",
-            "kind": "Mô tả bảo vệ vật kim loại trong dung dịch điện li.",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 4
-              }
-            ],
-            "description": "Các ý cùng xét lựa chọn vật liệu hi sinh, vai trò điện cực và thời gian bảo vệ.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          }
-        ],
-        "optional_paths": [],
-        "limits": [
-          "Không quan sát thấy nhóm câu tự chọn hoặc dữ kiện dùng chung giữa các câu khác nhau hay giữa các phần.",
-          "Các tập phát biểu ở phần chọn phương án vẫn là một câu chấm điểm; các ý ở phần đúng sai được biểu diễn thành từng hàng.",
-          "Không có danh mục chương trình phù hợp được cung cấp; lớp được gán theo vị trí kiến thức phổ thông có thể nhận diện, nội dung khó quy về một lớp được để trống.",
-          "Đã có ví dụ hiệu chuẩn chính thức dạng trừu tượng để đối chiếu; mức phân hóa ở đây là nhận định từ thao tác tư duy, không phải kết quả thống kê thí sinh.",
-          "Sử dụng khóa đáp án được cung cấp là khóa đã ghép với đề; các phương án chỉ khác số lượng phát biểu đúng không luôn xác định được duy nhất phát biểu mà người chọn đã hiểu sai."
-        ]
-      }
-    },
-    {
-      "paper_id": "cd005a72af60",
-      "source": "transcriptions/hoa-hoc/2026-provincial/de-thi-thu-tn-thpt-nam-2026-mon-hoa-so-gd-da-nang-lan-1/de.md",
-      "source_sha256": "8ff6432845810703f19563d31224e3bccf584775bafd87841cce0d85813d835e",
-      "class": "provincial_third_party",
-      "year": "2026",
-      "model": "gpt-6.1-sol",
-      "origin": "inline_EXTRACT",
-      "structure": {
-        "parts_in_order": [
-          "P1",
-          "P2",
-          "P3"
-        ],
-        "blocks_in_order": [
-          {
-            "part": "P1",
-            "kind": "Trắc nghiệm chọn một phương án; các câu độc lập về ngữ liệu",
-            "question_indices": [
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18
-            ],
-            "shares_content": false,
-            "stimulus_id": null
-          },
-          {
-            "part": "P2",
-            "kind": "Đúng sai theo các phát biểu dùng chung thí nghiệm và bảng số liệu",
-            "question_indices": [
-              1
-            ],
-            "shares_content": true,
-            "stimulus_id": "S1"
-          },
-          {
-            "part": "P2",
-            "kind": "Đúng sai theo các phát biểu dùng chung ngữ cảnh và công thức cấu tạo; một phát biểu có dữ liệu định lượng bổ sung",
-            "question_indices": [
-              2
-            ],
-            "shares_content": true,
-            "stimulus_id": "S2"
-          },
-          {
-            "part": "P2",
-            "kind": "Đúng sai theo các phát biểu dùng chung quy trình điều chế; các bài tính có dữ liệu riêng",
-            "question_indices": [
-              3
-            ],
-            "shares_content": true,
-            "stimulus_id": "S3"
-          },
-          {
-            "part": "P2",
-            "kind": "Đúng sai theo các phát biểu dùng chung công thức phức chất",
-            "question_indices": [
-              4
-            ],
-            "shares_content": true,
-            "stimulus_id": "S4"
-          },
-          {
-            "part": "P3",
-            "kind": "Trả lời ngắn; các câu có dữ kiện riêng",
-            "question_indices": [
-              1,
-              2,
-              3,
-              4,
-              5,
-              6
-            ],
-            "shares_content": false,
-            "stimulus_id": null
-          }
-        ],
-        "shared_stimuli": [
-          {
-            "id": "S1",
-            "kind": "Mô tả thí nghiệm và bảng kết quả",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 1
-              }
-            ],
-            "description": "Các phát biểu khai thác loại phản ứng, thao tác tách, chức năng thiết bị và xu hướng của bảng thực nghiệm; không phải mọi phát biểu đều cần bảng.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S2",
-            "kind": "Ngữ cảnh xử lí khí và bộ công thức cấu tạo",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 2
-              }
-            ],
-            "description": "Các phát biểu cùng dựa trên nhóm chất hấp thụ; phần tính toán bổ sung bảng thành phần khí và quy ước vận hành ngay trong phát biểu.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S3",
-            "kind": "Quy trình điều chế và phương trình phản ứng",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 3
-              }
-            ],
-            "description": "Quy trình tạo dung dịch và kết tinh làm nền cho các phát biểu về vật liệu, vai trò tác chất và tính toán dung dịch; dữ liệu định lượng thuộc từng phát biểu.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S4",
-            "kind": "Công thức phức chất",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 4
-              }
-            ],
-            "description": "Một công thức được dùng để xét liên kết phối trí, số phối tử, hình học và điện tích.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          }
-        ],
-        "optional_paths": [],
-        "limits": [
-          "Chỉ mô tả thứ tự quan sát được trong đề này; không suy thành thứ tự chung của môn học.",
-          "Không thấy nhóm câu tự chọn hoặc ngữ liệu dùng chung xuyên phần.",
-          "Các câu cùng chủ đề nhưng có dữ kiện riêng không được xem là dùng chung ngữ liệu.",
-          "Mỗi cụm đúng sai vẫn là một câu; các phát biểu được tách thành hàng để phân tích.",
-          "Không có tham chiếu chương trình phù hợp để xác nhận lớp nên trường lớp được để trống.",
-          "Mức phân hóa là nhận định từ thao tác tư duy, có đối chiếu các ví dụ hiệu chuẩn trừu tượng được cung cấp; không có dữ liệu thực nghiệm về kết quả làm bài.",
-          "Khóa đối sánh được cung cấp là căn cứ xác định phương án sai; phần lời giải tham khảo có chỗ kết luận nội bộ không nhất quán nên không thay thế khóa.",
-          "Các hình cần thiết có thể quan sát trong ảnh gốc; phân tích không chỉ dựa trên mô tả hình của bản nhận dạng.",
-          "Một số giá trị nhiễu định lượng không cho phép xác định chắc lỗi học sinh tạo ra chúng.",
-          "Điều kiện áp suất trong bài tái sinh khí cần cách hiểu mô hình về các điều kiện khí còn lại; đề không phát biểu đầy đủ các giả định đó."
-        ]
-      }
-    },
-    {
-      "paper_id": "126f1b46d648",
-      "source": "transcriptions/hoa-hoc/2026-provincial/de-thi-thu-tn-thpt-nam-2026-mon-hoa-so-gd-nghe-an-lan-2/de.md",
-      "source_sha256": "e225248eab6d3bf1fd92e4ad9d91d919bca8b3da8c3a60471b1a00b516f3787d",
-      "class": "provincial_third_party",
-      "year": "2026",
-      "model": "gpt-6.1-sol",
-      "origin": "inline_EXTRACT",
-      "structure": {
-        "parts_in_order": [
-          "P1",
-          "P2",
-          "P3"
-        ],
-        "blocks_in_order": [
-          {
-            "part": "P1",
-            "kind": "Trắc nghiệm chọn một phương án",
-            "question_indices": [
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16
-            ],
-            "shares_content": false,
-            "stimulus_id": null
-          },
-          {
-            "part": "P1",
-            "kind": "Trắc nghiệm chọn một phương án dùng ngữ liệu chung",
-            "question_indices": [
-              17,
-              18
-            ],
-            "shares_content": true,
-            "stimulus_id": "S1"
-          },
-          {
-            "part": "P2",
-            "kind": "Đúng sai theo bảng thực nghiệm",
-            "question_indices": [
-              1
-            ],
-            "shares_content": true,
-            "stimulus_id": "S2"
-          },
-          {
-            "part": "P2",
-            "kind": "Đúng sai theo quy trình sản xuất",
-            "question_indices": [
-              2
-            ],
-            "shares_content": true,
-            "stimulus_id": "S3"
-          },
-          {
-            "part": "P2",
-            "kind": "Đúng sai theo mô tả hiện tượng ăn mòn",
-            "question_indices": [
-              3
-            ],
-            "shares_content": true,
-            "stimulus_id": "S4"
-          },
-          {
-            "part": "P2",
-            "kind": "Đúng sai theo hình cấu tạo và sơ đồ biến đổi vật liệu",
-            "question_indices": [
-              4
-            ],
-            "shares_content": true,
-            "stimulus_id": "S5"
-          },
-          {
-            "part": "P3",
-            "kind": "Trả lời ngắn bằng số lượng",
-            "question_indices": [
-              1,
-              2
-            ],
-            "shares_content": false,
-            "stimulus_id": null
-          },
-          {
-            "part": "P3",
-            "kind": "Trả lời ngắn bằng danh sách nhận định",
-            "question_indices": [
-              3,
-              4
-            ],
-            "shares_content": false,
-            "stimulus_id": null
-          },
-          {
-            "part": "P3",
-            "kind": "Trả lời ngắn định lượng",
-            "question_indices": [
-              5,
-              6
-            ],
-            "shares_content": false,
-            "stimulus_id": null
-          }
-        ],
-        "shared_stimuli": [
-          {
-            "id": "S1",
-            "kind": "Đoạn giới thiệu và hình cấu tạo chất hữu cơ",
-            "members": [
-              {
-                "part": "P1",
-                "idx": 17
-              },
-              {
-                "part": "P1",
-                "idx": 18
-              }
-            ],
-            "description": "Thông tin ứng dụng và cấu tạo của hợp chất chứa các nhóm chức khác nhau được dùng cho bài toán sản xuất và nhận diện tính chất.",
-            "scope": "multiple_questions",
-            "support": "explicit_instruction"
-          },
-          {
-            "id": "S2",
-            "kind": "Quy trình thí nghiệm và bảng theo dõi",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 1
-              }
-            ],
-            "description": "Các mẫu có nồng độ nguyên liệu khác nhau được theo dõi sản phẩm theo thời gian để kiểm tra một giả thuyết.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S3",
-            "kind": "Chuỗi công đoạn và phương trình hóa học",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 2
-              }
-            ],
-            "description": "Quy trình chuyển nguyên liệu khoáng thành kim loại có thông tin về điều kiện vận hành, độ tinh khiết và hiệu suất.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S4",
-            "kind": "Mô tả môi trường ăn mòn",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 3
-              }
-            ],
-            "description": "Một hợp kim tiếp xúc với lớp dung dịch điện li trong môi trường ẩm làm cơ sở xét cơ chế và bảo vệ kim loại.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          },
-          {
-            "id": "S5",
-            "kind": "Hình đoạn mạch và sơ đồ nối mạch",
-            "members": [
-              {
-                "part": "P2",
-                "idx": 4
-              }
-            ],
-            "description": "Hình cấu tạo polymer và sơ đồ hình thành cầu nối giữa các mạch phục vụ xét cấu hình, phân loại biến đổi, tính chất và thành phần.",
-            "scope": "statements_within_question",
-            "support": "layout_observation"
-          }
-        ],
-        "optional_paths": [],
-        "limits": [
-          "Phân tích chỉ mô tả trình tự và hình thức quan sát được trong tài liệu này.",
-          "Không quan sát thấy nhóm câu lựa chọn thay thế.",
-          "Phần đúng sai được giữ thành các câu chung ngữ liệu, dù mỗi mệnh đề có một hàng phân tích.",
-          "Không có tham chiếu chương trình phù hợp để xác nhận lớp; trường grade được để trống.",
-          "Mức phân hóa là đánh giá từ thao tác nhận thức, có đối chiếu các ví dụ hiệu chuẩn trừu tượng được cung cấp.",
-          "Số trang tự khai ở phần đầu không khớp phạm vi trang chứa toàn bộ câu hỏi quan sát được; địa chỉ câu được xác định theo nội dung thực tế.",
-          "Một nhận định về phân loại phản ứng polymer có dấu hiệu không thống nhất giữa khóa và cách phân loại thường dùng; hạn chế được ghi tại hàng tương ứng."
-        ]
-      }
-    }
-  ],
-  "issues": [],
-  "part_order_observations": [
-    {
-      "class": "official",
-      "order": [
-        "P1",
-        "P2",
-        "P3"
+ "model": "gpt-6.1-sol",
+ "observations": [
+  {
+   "paper_id": "53f7e0c73214",
+   "source": "transcriptions/hoa-hoc/2025-paper/de.md",
+   "source_sha256": "2e10bd835da794843e84e637e9a85d3ddb42b07d782e14e9fed92977aae7e273",
+   "class": "official",
+   "year": "2025",
+   "model": "gpt-6.1-sol",
+   "origin": "inline_EXTRACT",
+   "structure": {
+    "parts_in_order": [
+     "P1",
+     "P2",
+     "P3"
+    ],
+    "blocks_in_order": [
+     {
+      "part": "P1",
+      "kind": "Trắc nghiệm chọn một đáp án, ngữ liệu riêng từng câu",
+      "question_indices": [
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12,
+       13,
+       14,
+       15,
+       16
       ],
-      "distinct_papers": 2
-    },
-    {
-      "class": "provincial_third_party",
-      "order": [
-        "P1",
-        "P2",
-        "P3"
+      "shares_content": false,
+      "stimulus_id": null
+     },
+     {
+      "part": "P1",
+      "kind": "Trắc nghiệm chọn một đáp án, dùng chung đoạn dẫn",
+      "question_indices": [
+       17,
+       18
       ],
-      "distinct_papers": 6
-    }
-  ],
-  "shared_group_presence": [
-    {
-      "class": "official",
-      "part": "P1",
-      "kind": "Đoạn dẫn ứng dụng",
-      "scope": "multiple_questions",
-      "questions_in_part": 2,
-      "distinct_papers": 1
-    },
-    {
-      "class": "official",
-      "part": "P1",
-      "kind": "Đoạn thông tin và phương trình cân bằng",
-      "scope": "multiple_questions",
-      "questions_in_part": 2,
-      "distinct_papers": 1
-    },
-    {
-      "class": "official",
+      "shares_content": true,
+      "stimulus_id": "S1"
+     },
+     {
       "part": "P2",
-      "kind": "Hình phương trình cấu tạo",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "official",
+      "kind": "Đúng sai theo một sơ đồ tổng hợp và các dữ liệu kèm theo",
+      "question_indices": [
+       1
+      ],
+      "shares_content": true,
+      "stimulus_id": "S2"
+     },
+     {
       "part": "P2",
-      "kind": "Mô tả quy trình công nghệ",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "official",
+      "kind": "Đúng sai theo một thí nghiệm định lượng",
+      "question_indices": [
+       2
+      ],
+      "shares_content": true,
+      "stimulus_id": "S3"
+     },
+     {
       "part": "P2",
-      "kind": "Quy trình thí nghiệm, dữ liệu so sánh và hình dụng cụ",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "official",
+      "kind": "Đúng sai theo một sơ đồ tạo polymer",
+      "question_indices": [
+       3
+      ],
+      "shares_content": true,
+      "stimulus_id": "S4"
+     },
+     {
       "part": "P2",
-      "kind": "Quy trình thí nghiệm, giả thuyết và bảng số liệu",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "official",
-      "part": "P2",
-      "kind": "Sơ đồ chuyển hóa phức chất",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "official",
-      "part": "P2",
-      "kind": "Sơ đồ cấu tạo và phản ứng",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "official",
-      "part": "P2",
-      "kind": "Sơ đồ phản ứng, dữ liệu thực nghiệm và bảng tra",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "official",
-      "part": "P2",
-      "kind": "Thông tin cấu tạo và phương trình thủy phân",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "kind": "Bối cảnh ăn mòn và nhóm nhận định",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "kind": "Mô tả cấu tạo và môi trường hoạt động của pin.",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "kind": "Mô tả xử lý hỗn hợp kim loại trong dung dịch.",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "kind": "Quy trình tách chất bằng dụng cụ thí nghiệm.",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "kind": "Tập phát biểu về một nhóm hợp chất sinh học.",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "kind": "Đoạn giới thiệu và hình cấu tạo chất hữu cơ",
-      "scope": "multiple_questions",
-      "questions_in_part": 2,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "kind": "Bối cảnh ứng dụng của một muối acid",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "kind": "Chuỗi công đoạn và phương trình hóa học",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "kind": "Chuỗi thao tác thí nghiệm kèm hình",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "kind": "Chuỗi thao tác và hiện tượng tạo phức.",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "kind": "Công thức cấu tạo và dữ kiện dạng ion",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "kind": "Công thức phức chất",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "kind": "Hình đoạn mạch và sơ đồ nối mạch",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "kind": "Mô tả bảo vệ vật kim loại trong dung dịch điện li.",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "kind": "Mô tả chuẩn độ và phương trình ion",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "kind": "Mô tả môi trường ăn mòn",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "kind": "Mô tả nguồn điện, phương trình thuận nghịch và hệ thức điện lượng",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "kind": "Mô tả polymer kèm hình cấu tạo mắt xích.",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "kind": "Mô tả thí nghiệm và bảng kết quả",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "kind": "Ngữ cảnh xử lí khí và bộ công thức cấu tạo",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "kind": "Phương trình nhiệt hóa học và đồ thị nhiều đường",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "kind": "Quy trình thí nghiệm so sánh",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "kind": "Quy trình thí nghiệm và bảng theo dõi",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "kind": "Quy trình thủy phân sinh học và bảng kết quả.",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "kind": "Quy trình điều chế và phương trình phản ứng",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "kind": "Sơ đồ chuyển hóa hữu cơ",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "kind": "Sơ đồ công nghệ và phương trình phản ứng",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "kind": "Sơ đồ ester hóa và bảng dữ liệu phổ",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "kind": "Thí nghiệm tổng hợp ester",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "kind": "Thông tin vật liệu và hình cấu tạo monomer",
-      "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    },
-    {
-      "class": "provincial_third_party",
+      "kind": "Đúng sai theo một quy trình điện phân",
+      "question_indices": [
+       4
+      ],
+      "shares_content": true,
+      "stimulus_id": "S5"
+     },
+     {
       "part": "P3",
-      "kind": "Dữ liệu nhận diện cấu tạo và tập nhận định",
+      "kind": "Trả lời ngắn, ngữ liệu riêng từng câu",
+      "question_indices": [
+       1,
+       2,
+       3,
+       4,
+       5,
+       6
+      ],
+      "shares_content": false,
+      "stimulus_id": null
+     }
+    ],
+    "shared_stimuli": [
+     {
+      "id": "S1",
+      "kind": "Đoạn dẫn ứng dụng",
+      "members": [
+       {
+        "part": "P1",
+        "idx": 17
+       },
+       {
+        "part": "P1",
+        "idx": 18
+       }
+      ],
+      "description": "Mô tả sự ăn mòn hợp kim trong môi trường điện li và cách bảo vệ bằng kim loại gắn kèm.",
+      "scope": "multiple_questions",
+      "support": "explicit_instruction"
+     },
+     {
+      "id": "S2",
+      "kind": "Sơ đồ phản ứng, dữ liệu thực nghiệm và bảng tra",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 1
+       }
+      ],
+      "description": "Một quá trình chuyển hóa hữu cơ có dữ liệu lượng chất, sản phẩm thu được và khoảng hấp thụ hồng ngoại.",
       "scope": "statements_within_question",
-      "questions_in_part": 1,
-      "distinct_papers": 1
-    }
-  ],
-  "limits": [
-    "Observed order is not proof of universal fixed order.",
-    "Multiple codes of the same paper are not independent papers.",
-    "Internal TF statements are not multi-question clusters.",
-    "Structure observations and topic-profile completion counts may differ; see per-paper provenance."
-  ]
+      "support": "layout_observation"
+     },
+     {
+      "id": "S3",
+      "kind": "Quy trình thí nghiệm, dữ liệu so sánh và hình dụng cụ",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 2
+       }
+      ],
+      "description": "Chuẩn độ cùng loại mẫu ở các thời điểm lưu giữ khác nhau để kiểm tra giả thuyết về nồng độ.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S4",
+      "kind": "Sơ đồ cấu tạo và phản ứng",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 3
+       }
+      ],
+      "description": "Chuyển monomer dạng vòng thành vật liệu sợi có nhóm chức lặp lại.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S5",
+      "kind": "Mô tả quy trình công nghệ",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 4
+       }
+      ],
+      "description": "Điện phân dung dịch có màng ngăn rồi thu chất rắn từ dung dịch sản phẩm.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     }
+    ],
+    "optional_paths": [],
+    "limits": [
+     "Cấu trúc chỉ phản ánh thứ tự quan sát được trên đề này; không suy rộng thành thứ tự cố định của các đề cùng môn.",
+     "Không thấy nhóm câu tự chọn hoặc ngữ liệu dùng chung xuyên phần.",
+     "Các ý đúng sai được ghi thành từng hàng phân tích nhưng vẫn thuộc cùng câu hỏi.",
+     "Không có ví dụ hiệu chuẩn chính thức; mức phân hóa là nhận định từ thao tác tư duy, chưa phải kết quả thống kê.",
+     "Tham chiếu chương trình không có mục môn học tương ứng; phân lớp dựa trên kiến thức chương trình phổ thông thông dụng, không dựa vào một danh mục được cung cấp.",
+     "Sử dụng khóa được cung cấp cho đề đang xét; các dấu viết tay trên ảnh không được dùng làm đáp án.",
+     "Một phương án cấu hình electron có vấn đề về quy ước thứ tự trình bày; giới hạn này được ghi tại hàng tương ứng."
+    ]
+   },
+   "source_sha256_before_structural_label_normalization": "4143d924e3a97592c3f884f1c5ff63ec90148c4957cb0ae2f932496236adedcf"
+  },
+  {
+   "paper_id": "30e3a77f6f23",
+   "source": "transcriptions/hoa-hoc/2026-paper/de.md",
+   "source_sha256": "95447764b618dd4e22ca514c688f1791e256996659a95624f0853de75793c884",
+   "class": "official",
+   "year": "2026",
+   "model": "gpt-6.1-sol",
+   "origin": "inline_EXTRACT",
+   "structure": {
+    "parts_in_order": [
+     "P1",
+     "P2",
+     "P3"
+    ],
+    "blocks_in_order": [
+     {
+      "part": "P1",
+      "kind": "Các câu chọn một phương án, mỗi câu có dữ kiện riêng",
+      "question_indices": [
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12,
+       13,
+       14,
+       15
+      ],
+      "shares_content": false,
+      "stimulus_id": null
+     },
+     {
+      "part": "P1",
+      "kind": "Các câu chọn một phương án dùng chung đoạn thông tin",
+      "question_indices": [
+       16,
+       17
+      ],
+      "shares_content": true,
+      "stimulus_id": "S1"
+     },
+     {
+      "part": "P1",
+      "kind": "Câu chọn một phương án có dữ kiện riêng",
+      "question_indices": [
+       18
+      ],
+      "shares_content": false,
+      "stimulus_id": null
+     },
+     {
+      "part": "P2",
+      "kind": "Câu đúng sai dùng chung quy trình và bảng số liệu giữa các ý",
+      "question_indices": [
+       1
+      ],
+      "shares_content": true,
+      "stimulus_id": "S2"
+     },
+     {
+      "part": "P2",
+      "kind": "Câu đúng sai dùng chung sơ đồ chuyển hóa giữa các ý",
+      "question_indices": [
+       2
+      ],
+      "shares_content": true,
+      "stimulus_id": "S3"
+     },
+     {
+      "part": "P2",
+      "kind": "Câu đúng sai dùng chung hình phương trình cấu tạo giữa các ý",
+      "question_indices": [
+       3
+      ],
+      "shares_content": true,
+      "stimulus_id": "S4"
+     },
+     {
+      "part": "P2",
+      "kind": "Câu đúng sai dùng chung thông tin cấu tạo và thủy phân giữa các ý",
+      "question_indices": [
+       4
+      ],
+      "shares_content": true,
+      "stimulus_id": "S5"
+     },
+     {
+      "part": "P3",
+      "kind": "Các câu trả lời ngắn có dữ kiện riêng",
+      "question_indices": [
+       1,
+       2,
+       3,
+       4,
+       5,
+       6
+      ],
+      "shares_content": false,
+      "stimulus_id": null
+     }
+    ],
+    "shared_stimuli": [
+     {
+      "id": "S1",
+      "kind": "Đoạn thông tin và phương trình cân bằng",
+      "members": [
+       {
+        "part": "P1",
+        "idx": 16
+       },
+       {
+        "part": "P1",
+        "idx": 17
+       }
+      ],
+      "description": "Cơ chế tạo kết tủa keo để làm trong nước và điều kiện môi trường ảnh hưởng hiệu quả.",
+      "scope": "multiple_questions",
+      "support": "explicit_instruction"
+     },
+     {
+      "id": "S2",
+      "kind": "Quy trình thí nghiệm, giả thuyết và bảng số liệu",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 1
+       }
+      ],
+      "description": "So sánh khả năng tiêu thụ acid của các mẫu bằng xử lí acid dư và chuẩn độ ngược.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S3",
+      "kind": "Sơ đồ chuyển hóa phức chất",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 2
+       }
+      ],
+      "description": "Các phức cùng trung tâm có loại và số phối tử khác nhau, kèm quy ước liên kết.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S4",
+      "kind": "Hình phương trình cấu tạo",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 3
+       }
+      ],
+      "description": "Thủy phân chất béo trong kiềm tạo alcohol đa chức và các muối hữu cơ mạch dài.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S5",
+      "kind": "Thông tin cấu tạo và phương trình thủy phân",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 4
+       }
+      ],
+      "description": "Các polysaccharide có cùng thành phần mắt xích và tạo đường đơn khi thủy phân hoàn toàn.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     }
+    ],
+    "optional_paths": [],
+    "limits": [
+     "Cấu trúc chỉ phản ánh thứ tự quan sát được trên đề này, không suy rộng thành thứ tự chung của môn học.",
+     "Không thấy nhóm câu tự chọn, văn bản dùng chung xuyên phần hoặc chỉ dẫn phân nhánh.",
+     "Các ý đúng sai được phân tích riêng nhưng vẫn thuộc câu hỏi chung có cùng dữ kiện.",
+     "Khóa khớp mã đề được dùng để xác định phương án không đúng; các dấu viết tay trên ảnh không được dùng làm khóa.",
+     "Không có danh mục chương trình khớp môn; lớp được ghi khi nội dung đủ rõ, còn nội dung xuyên lớp hoặc khó quy thuộc được để trống.",
+     "Mức phân hóa là nhận định từ yêu cầu suy luận có đối chiếu các ví dụ hiệu chuẩn được cung cấp, không phải kết quả thống kê thí sinh.",
+     "Các hình gốc có sẵn để đọc; phần mô tả bằng chữ không được dùng thay thế các chi tiết cấu tạo nhìn được trên ảnh.",
+     "Các câu có cùng chủ đề nhưng không có đoạn dẫn chung không được coi là dùng chung kích thích."
+    ]
+   }
+  },
+  {
+   "paper_id": "a381d0bc1996",
+   "source": "transcriptions/hoa-hoc/2026-provincial/de-thi-thu-tn-2026-mon-hoa-so-gd-ca-mau-lan-1/de.md",
+   "source_sha256": "b3151552c8bbbe916c3a510fcbbcad26b97a50c28c5faac90b5741c5b1724ad8",
+   "class": "provincial_third_party",
+   "year": "2026",
+   "model": "gpt-6.1-sol",
+   "origin": "inline_EXTRACT",
+   "structure": {
+    "parts_in_order": [
+     "P1",
+     "P2",
+     "P3"
+    ],
+    "blocks_in_order": [
+     {
+      "part": "P1",
+      "kind": "Trắc nghiệm chọn một phương án, các câu có dữ kiện riêng",
+      "question_indices": [
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12,
+       13,
+       14,
+       15,
+       16,
+       17,
+       18
+      ],
+      "shares_content": false,
+      "stimulus_id": null
+     },
+     {
+      "part": "P2",
+      "kind": "Đúng sai với dữ kiện chung trong câu",
+      "question_indices": [
+       1
+      ],
+      "shares_content": true,
+      "stimulus_id": "S1"
+     },
+     {
+      "part": "P2",
+      "kind": "Đúng sai với phương trình và dữ kiện điện hóa chung",
+      "question_indices": [
+       2
+      ],
+      "shares_content": true,
+      "stimulus_id": "S2"
+     },
+     {
+      "part": "P2",
+      "kind": "Đúng sai với thí nghiệm tổng hợp hữu cơ chung",
+      "question_indices": [
+       3
+      ],
+      "shares_content": true,
+      "stimulus_id": "S3"
+     },
+     {
+      "part": "P2",
+      "kind": "Đúng sai với sơ đồ chuyển hóa chung",
+      "question_indices": [
+       4
+      ],
+      "shares_content": true,
+      "stimulus_id": "S4"
+     },
+     {
+      "part": "P3",
+      "kind": "Trả lời ngắn, gồm tuyển chọn nhận định và tính toán với dữ kiện riêng",
+      "question_indices": [
+       1,
+       2,
+       3,
+       4,
+       5,
+       6
+      ],
+      "shares_content": false,
+      "stimulus_id": null
+     }
+    ],
+    "shared_stimuli": [
+     {
+      "id": "S1",
+      "kind": "Bối cảnh ứng dụng của một muối acid",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 1
+       }
+      ],
+      "description": "Các nhận định cùng xuất phát từ một chất có ứng dụng dựa trên nhiệt phân và phản ứng trung hòa; dữ kiện định lượng chỉ phục vụ một nhận định.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S2",
+      "kind": "Mô tả nguồn điện, phương trình thuận nghịch và hệ thức điện lượng",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 2
+       }
+      ],
+      "description": "Các nhận định dùng chung cấu tạo điện cực và chiều phản ứng; phần định lượng bổ sung cơ sở tính lượng chất tái tạo.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S3",
+      "kind": "Thí nghiệm tổng hợp ester",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 3
+       }
+      ],
+      "description": "Các nhận định cùng xét một quá trình tổng hợp, từ loại phản ứng và cấu tạo nguyên liệu đến hiệu suất.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S4",
+      "kind": "Sơ đồ chuyển hóa hữu cơ",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 4
+       }
+      ],
+      "description": "Một chuỗi phản ứng làm cơ sở xác định trung gian, tính chất base, loại phản ứng và lượng sản phẩm.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     }
+    ],
+    "optional_paths": [],
+    "limits": [
+     "Các địa chỉ được quan sát đều thuộc phần bắt buộc; không thấy nhóm lựa chọn hoặc đường làm bài thay thế.",
+     "Mỗi nhận định đúng sai được phân tích thành một hàng nhưng vẫn thuộc cùng một câu hỏi có dữ kiện chung.",
+     "Không thấy văn bản hay hình dùng chung giữa các câu độc lập hoặc xuyên phần; trùng chủ đề không được coi là chung ngữ liệu.",
+     "Bảng nguyên tử khối và chú giải trạng thái là dữ liệu tra cứu chung của đề, không phải một tình huống liên câu.",
+     "Không có tham chiếu chương trình khớp môn để xác nhận phân lớp; trường lớp được để trống thay vì suy từ cấp độ kỳ thi.",
+     "Đánh giá khả năng phân hóa dựa trên thao tác tư duy và đối chiếu các ví dụ hiệu chuẩn trừu tượng đã cung cấp, không dựa trên thống kê kết quả làm bài.",
+     "Khóa địa phương được cung cấp khớp mã đề và được dùng để xác định phương án sai; phần lời giải tham khảo không được tính thành câu hỏi.",
+     "Các phương án chỉ là số đếm thường không cho phép xác định duy nhất tổ hợp sai lầm; mô tả lỗi tương ứng chỉ là khả năng hợp lí.",
+     "Ở câu chuẩn độ, chưa chứng minh được lỗi cụ thể tạo ra từng giá trị nhiễu; không coi các phương án đó là bằng chứng về một ngộ nhận xác định.",
+     "Một nhận định về ứng dụng nhiệt phân có lỗi diễn đạt ở cuối; việc đánh giá bám nội dung hóa học chính và khóa được cung cấp.",
+     "Phân tích cơ chế cộng bám sơ đồ giản lược mà đề sử dụng, không suy rộng thành mô tả đầy đủ cơ chế thực tế.",
+     "Thứ tự khối chỉ mô tả đề đang quan sát, không khẳng định đây là thứ tự cố định của các đề cùng loại."
+    ]
+   }
+  },
+  {
+   "paper_id": "7090ca87e657",
+   "source": "transcriptions/hoa-hoc/2026-provincial/de-thi-thu-tn-2026-mon-hoa-so-gd-quang-ninh-lan-1/de.md",
+   "source_sha256": "885019db4970d504b0de63616d850a7f2032f2963702328e06a09fb0b5184409",
+   "class": "provincial_third_party",
+   "year": "2026",
+   "model": "gpt-6.1-sol",
+   "origin": "inline_EXTRACT",
+   "structure": {
+    "parts_in_order": [
+     "P1",
+     "P2",
+     "P3"
+    ],
+    "blocks_in_order": [
+     {
+      "part": "P1",
+      "kind": "Trắc nghiệm chọn một phương án, các câu có dữ kiện riêng",
+      "question_indices": [
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12,
+       13,
+       14,
+       15,
+       16,
+       17,
+       18
+      ],
+      "shares_content": false,
+      "stimulus_id": null
+     },
+     {
+      "part": "P2",
+      "kind": "Một câu đúng sai gồm các nhận định dùng chung phản ứng và đồ thị",
+      "question_indices": [
+       1
+      ],
+      "shares_content": true,
+      "stimulus_id": "S1"
+     },
+     {
+      "part": "P2",
+      "kind": "Một câu đúng sai gồm các nhận định dùng chung quy trình thí nghiệm",
+      "question_indices": [
+       2
+      ],
+      "shares_content": true,
+      "stimulus_id": "S2"
+     },
+     {
+      "part": "P2",
+      "kind": "Một câu đúng sai gồm các nhận định dùng chung chuỗi thí nghiệm và hình minh họa",
+      "question_indices": [
+       3
+      ],
+      "shares_content": true,
+      "stimulus_id": "S3"
+     },
+     {
+      "part": "P2",
+      "kind": "Một câu đúng sai gồm các nhận định dùng chung cấu tạo phân tử và dữ kiện acid–base",
+      "question_indices": [
+       4
+      ],
+      "shares_content": true,
+      "stimulus_id": "S4"
+     },
+     {
+      "part": "P3",
+      "kind": "Trả lời ngắn, các câu có dữ kiện riêng",
+      "question_indices": [
+       1,
+       2,
+       3,
+       4,
+       5,
+       6
+      ],
+      "shares_content": false,
+      "stimulus_id": null
+     }
+    ],
+    "shared_stimuli": [
+     {
+      "id": "S1",
+      "kind": "Phương trình nhiệt hóa học và đồ thị nhiều đường",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 1
+       }
+      ],
+      "description": "Các nhận định cùng khai thác một hệ cân bằng khí, quan hệ hiệu suất với điều kiện vận hành và khả năng tính sản phẩm.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S2",
+      "kind": "Quy trình thí nghiệm so sánh",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 2
+       }
+      ],
+      "description": "Các nhận định cùng dựa trên việc cho những kim loại cùng nhóm phản ứng với nước rồi thử môi trường dung dịch.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S3",
+      "kind": "Chuỗi thao tác thí nghiệm kèm hình",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 3
+       }
+      ],
+      "description": "Các nhận định giải thích sự thay đổi trạng thái của một hợp chất hữu cơ qua những thao tác biến đổi acid–base.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S4",
+      "kind": "Công thức cấu tạo và dữ kiện dạng ion",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 4
+       }
+      ],
+      "description": "Các nhận định khai thác chung cấu tạo một amino acid có thêm nhóm chức ở mạch bên và thông tin về trạng thái điện tích.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     }
+    ],
+    "optional_paths": [],
+    "limits": [
+     "Cấu trúc phản ánh thứ tự quan sát được của tài liệu này, không phải quy luật chung cho mọi đề cùng môn.",
+     "Không quan sát thấy nhóm câu tự chọn hoặc tuyến làm bài thay thế.",
+     "Các trang lời giải lặp lại nội dung đề không được tính thành câu hỏi mới.",
+     "Khóa đáp án chưa được đối sánh; không dùng màu sắc, gạch chân hoặc lời giải nhìn thấy trong ảnh để xác định lựa chọn sai.",
+     "Với câu nhiều lựa chọn, các nhãn đều được giữ ở trạng thái chưa xác định để không tự suy tập phương án sai; với câu đúng sai, danh sách chi tiết để trống không mang nghĩa phát biểu đúng.",
+     "Không có tham chiếu chương trình khớp môn và cấp lớp; lớp được để trống thay vì suy từ tính chất của kì thi.",
+     "Mức phân hóa được đối chiếu với các ví dụ hiệu chuẩn trừu tượng đã cung cấp và dựa vào quyết định nhận thức cần thực hiện; không phải kết quả thống kê thực nghiệm.",
+     "Không có bằng chứng về ngữ liệu chung giữa các câu độc lập hoặc giữa các phần; việc trùng chủ đề không được xem là dùng chung ngữ liệu.",
+     "Bảng hằng số đầu đề là dữ liệu hỗ trợ chung, không được xem là một tình huống hay ngữ liệu liên câu."
+    ]
+   }
+  },
+  {
+   "paper_id": "02f028487a62",
+   "source": "transcriptions/hoa-hoc/2026-provincial/de-thi-thu-tn-2026-mon-hoa-so-gd-quang-tri-lan-1/de.md",
+   "source_sha256": "0d39f859b16d325750815bb98a9369f57a524ad37cd3cfe49138aaeee0200dd0",
+   "class": "provincial_third_party",
+   "year": "2026",
+   "model": "gpt-6.1-sol",
+   "origin": "inline_EXTRACT",
+   "structure": {
+    "parts_in_order": [
+     "P1",
+     "P2",
+     "P3"
+    ],
+    "blocks_in_order": [
+     {
+      "part": "P1",
+      "kind": "Trắc nghiệm chọn một phương án; có câu chọn số lượng nhận định đúng.",
+      "question_indices": [
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12,
+       13,
+       14,
+       15,
+       16,
+       17,
+       18
+      ],
+      "shares_content": false,
+      "stimulus_id": null
+     },
+     {
+      "part": "P2",
+      "kind": "Đúng sai theo từng phát biểu trong một quy trình sản xuất.",
+      "question_indices": [
+       1
+      ],
+      "shares_content": true,
+      "stimulus_id": "S1"
+     },
+     {
+      "part": "P2",
+      "kind": "Đúng sai theo từng phát biểu về một vật liệu polymer.",
+      "question_indices": [
+       2
+      ],
+      "shares_content": true,
+      "stimulus_id": "S2"
+     },
+     {
+      "part": "P2",
+      "kind": "Đúng sai theo từng phát biểu về một hệ chuẩn độ.",
+      "question_indices": [
+       3
+      ],
+      "shares_content": true,
+      "stimulus_id": "S3"
+     },
+     {
+      "part": "P2",
+      "kind": "Đúng sai theo từng phát biểu về tổng hợp và nhận diện sản phẩm hữu cơ.",
+      "question_indices": [
+       4
+      ],
+      "shares_content": true,
+      "stimulus_id": "S4"
+     },
+     {
+      "part": "P3",
+      "kind": "Trả lời ngắn bằng kết quả tính toán hoặc mã nhãn nhận định.",
+      "question_indices": [
+       1,
+       2,
+       3,
+       4,
+       5,
+       6
+      ],
+      "shares_content": false,
+      "stimulus_id": null
+     }
+    ],
+    "shared_stimuli": [
+     {
+      "id": "S1",
+      "kind": "Sơ đồ công nghệ và phương trình phản ứng",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 1
+       }
+      ],
+      "description": "Các phát biểu dùng chung sơ đồ sản xuất muối, công đoạn tách chất và dòng tuần hoàn.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S2",
+      "kind": "Thông tin vật liệu và hình cấu tạo monomer",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 2
+       }
+      ],
+      "description": "Các phát biểu dùng chung thông tin phân hủy sinh học và cấu tạo nguyên liệu tạo polymer.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S3",
+      "kind": "Mô tả chuẩn độ và phương trình ion",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 3
+       }
+      ],
+      "description": "Các phát biểu dùng chung hệ phản ứng, lượng thuốc chuẩn và môi trường dung dịch.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S4",
+      "kind": "Sơ đồ ester hóa và bảng dữ liệu phổ",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 4
+       }
+      ],
+      "description": "Các phát biểu dùng chung cấu tạo chất phản ứng, sản phẩm và dữ liệu nhận diện nhóm chức.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S5",
+      "kind": "Bối cảnh ăn mòn và nhóm nhận định",
+      "members": [
+       {
+        "part": "P1",
+        "idx": 15
+       }
+      ],
+      "description": "Một bối cảnh kết cấu kim loại hỗ trợ các nhận định thành phần trước khi chọn kết quả đếm.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S6",
+      "kind": "Dữ liệu nhận diện cấu tạo và tập nhận định",
+      "members": [
+       {
+        "part": "P3",
+        "idx": 5
+       }
+      ],
+      "description": "Các nhận định tính chất phụ thuộc chung vào kết quả nhận diện hợp chất từ dữ liệu công thức và phổ.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     }
+    ],
+    "optional_paths": [],
+    "limits": [
+     "Chỉ ghi nhận thứ tự và cách tổ chức của bản đề được cung cấp; không suy rộng thành khuôn cố định cho các đề khác.",
+     "Không quan sát thấy nhóm câu tự chọn hoặc dữ liệu dùng chung giữa các câu độc lập hay giữa các phần.",
+     "Các nhận định bên trong câu chọn số lượng và câu mã hóa kết quả không tạo địa chỉ chấm điểm riêng.",
+     "Khóa được cung cấp khớp mã đề trên bản đề và được dùng để xác định phương án sai, phát biểu sai.",
+     "Không có tham chiếu chương trình phù hợp cho môn học nên chưa gán lớp cho các hàng.",
+     "Một hình tiểu phân hữu cơ có kí hiệu chưa rõ; không kết luận chắc chắn về độ phân hóa và cơ chế từng nhiễu của câu đó.",
+     "Phân loại độ phân hóa là đánh giá từ yêu cầu suy luận, có đối chiếu các mốc hiệu chuẩn trừu tượng được cung cấp, không phải kết quả thống kê làm bài.",
+     "Thông tin số trang trong phần đầu không thống nhất với cách phân trang của bản đính kèm; nội dung câu hỏi vẫn được theo dõi liên tục qua các ảnh."
+    ]
+   }
+  },
+  {
+   "paper_id": "0ccfacf4a5ac",
+   "source": "transcriptions/hoa-hoc/2026-provincial/de-thi-thu-tn-2026-mon-hoa-so-gd-son-la-lan-2/de.md",
+   "source_sha256": "fbe20c82b47d55cad4c3a39d72d9d542704537ddb944d5c71ee3a025ed084a00",
+   "class": "provincial_third_party",
+   "year": "2026",
+   "model": "gpt-6.1-sol",
+   "origin": "inline_EXTRACT",
+   "structure": {
+    "parts_in_order": [
+     "P1",
+     "P2",
+     "P3"
+    ],
+    "blocks_in_order": [
+     {
+      "part": "P1",
+      "kind": "Trắc nghiệm chọn một phương án; gồm cả câu chọn đáp án trực tiếp và câu đánh giá một tập phát biểu.",
+      "question_indices": [
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12,
+       13,
+       14,
+       15,
+       16,
+       17,
+       18
+      ],
+      "shares_content": false,
+      "stimulus_id": null
+     },
+     {
+      "part": "P2",
+      "kind": "Đánh giá từng phát biểu dựa trên mô tả vật liệu và hình cấu tạo.",
+      "question_indices": [
+       1
+      ],
+      "shares_content": true,
+      "stimulus_id": "S5"
+     },
+     {
+      "part": "P2",
+      "kind": "Đánh giá từng phát biểu dựa trên một chuỗi thao tác thí nghiệm.",
+      "question_indices": [
+       2
+      ],
+      "shares_content": true,
+      "stimulus_id": "S6"
+     },
+     {
+      "part": "P2",
+      "kind": "Đánh giá từng phát biểu dựa trên quy trình sinh hóa và bảng thực nghiệm.",
+      "question_indices": [
+       3
+      ],
+      "shares_content": true,
+      "stimulus_id": "S7"
+     },
+     {
+      "part": "P2",
+      "kind": "Đánh giá từng phát biểu dựa trên một hệ bảo vệ điện hóa.",
+      "question_indices": [
+       4
+      ],
+      "shares_content": true,
+      "stimulus_id": "S8"
+     },
+     {
+      "part": "P3",
+      "kind": "Trả lời ngắn bằng kết quả ghép thứ tự, đếm hoặc tính toán.",
+      "question_indices": [
+       1,
+       2,
+       3,
+       4,
+       5,
+       6
+      ],
+      "shares_content": false,
+      "stimulus_id": null
+     }
+    ],
+    "shared_stimuli": [
+     {
+      "id": "S1",
+      "kind": "Mô tả cấu tạo và môi trường hoạt động của pin.",
+      "members": [
+       {
+        "part": "P1",
+        "idx": 1
+       }
+      ],
+      "description": "Các nhận định cùng xét một hệ phát điện có điện cực hoạt động và điện cực tiếp xúc với chất oxi hóa từ môi trường.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S2",
+      "kind": "Tập phát biểu về một nhóm hợp chất sinh học.",
+      "members": [
+       {
+        "part": "P1",
+        "idx": 6
+       }
+      ],
+      "description": "Các nhận định cùng kiểm tra tính tan, thủy phân và phản ứng màu của một nhóm đại phân tử.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S3",
+      "kind": "Quy trình tách chất bằng dụng cụ thí nghiệm.",
+      "members": [
+       {
+        "part": "P1",
+        "idx": 16
+       }
+      ],
+      "description": "Các nhận định cùng dựa vào thao tác phân bố chất tan giữa các pha lỏng.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S4",
+      "kind": "Mô tả xử lý hỗn hợp kim loại trong dung dịch.",
+      "members": [
+       {
+        "part": "P1",
+        "idx": 17
+       }
+      ],
+      "description": "Các nhận định cùng xét phản ứng hòa tan chọn lọc và thành phần sau lọc.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S5",
+      "kind": "Mô tả polymer kèm hình cấu tạo mắt xích.",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 1
+       }
+      ],
+      "description": "Các ý dùng chung thông tin về cấu trúc, tổng hợp và xử lý một polyester.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S6",
+      "kind": "Chuỗi thao tác và hiện tượng tạo phức.",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 2
+       }
+      ],
+      "description": "Các ý cùng phân tích sự hòa tan và thay đổi môi trường phối trí của một ion kim loại.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S7",
+      "kind": "Quy trình thủy phân sinh học và bảng kết quả.",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 3
+       }
+      ],
+      "description": "Các ý cùng sử dụng điều kiện phản ứng, thành phần nguyên liệu và xu hướng hiệu suất theo nhiệt độ.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S8",
+      "kind": "Mô tả bảo vệ vật kim loại trong dung dịch điện li.",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 4
+       }
+      ],
+      "description": "Các ý cùng xét lựa chọn vật liệu hi sinh, vai trò điện cực và thời gian bảo vệ.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     }
+    ],
+    "optional_paths": [],
+    "limits": [
+     "Không quan sát thấy nhóm câu tự chọn hoặc dữ kiện dùng chung giữa các câu khác nhau hay giữa các phần.",
+     "Các tập phát biểu ở phần chọn phương án vẫn là một câu chấm điểm; các ý ở phần đúng sai được biểu diễn thành từng hàng.",
+     "Không có danh mục chương trình phù hợp được cung cấp; lớp được gán theo vị trí kiến thức phổ thông có thể nhận diện, nội dung khó quy về một lớp được để trống.",
+     "Đã có ví dụ hiệu chuẩn chính thức dạng trừu tượng để đối chiếu; mức phân hóa ở đây là nhận định từ thao tác tư duy, không phải kết quả thống kê thí sinh.",
+     "Sử dụng khóa đáp án được cung cấp là khóa đã ghép với đề; các phương án chỉ khác số lượng phát biểu đúng không luôn xác định được duy nhất phát biểu mà người chọn đã hiểu sai."
+    ]
+   }
+  },
+  {
+   "paper_id": "cd005a72af60",
+   "source": "transcriptions/hoa-hoc/2026-provincial/de-thi-thu-tn-thpt-nam-2026-mon-hoa-so-gd-da-nang-lan-1/de.md",
+   "source_sha256": "8ff6432845810703f19563d31224e3bccf584775bafd87841cce0d85813d835e",
+   "class": "provincial_third_party",
+   "year": "2026",
+   "model": "gpt-6.1-sol",
+   "origin": "inline_EXTRACT",
+   "structure": {
+    "parts_in_order": [
+     "P1",
+     "P2",
+     "P3"
+    ],
+    "blocks_in_order": [
+     {
+      "part": "P1",
+      "kind": "Trắc nghiệm chọn một phương án; các câu độc lập về ngữ liệu",
+      "question_indices": [
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12,
+       13,
+       14,
+       15,
+       16,
+       17,
+       18
+      ],
+      "shares_content": false,
+      "stimulus_id": null
+     },
+     {
+      "part": "P2",
+      "kind": "Đúng sai theo các phát biểu dùng chung thí nghiệm và bảng số liệu",
+      "question_indices": [
+       1
+      ],
+      "shares_content": true,
+      "stimulus_id": "S1"
+     },
+     {
+      "part": "P2",
+      "kind": "Đúng sai theo các phát biểu dùng chung ngữ cảnh và công thức cấu tạo; một phát biểu có dữ liệu định lượng bổ sung",
+      "question_indices": [
+       2
+      ],
+      "shares_content": true,
+      "stimulus_id": "S2"
+     },
+     {
+      "part": "P2",
+      "kind": "Đúng sai theo các phát biểu dùng chung quy trình điều chế; các bài tính có dữ liệu riêng",
+      "question_indices": [
+       3
+      ],
+      "shares_content": true,
+      "stimulus_id": "S3"
+     },
+     {
+      "part": "P2",
+      "kind": "Đúng sai theo các phát biểu dùng chung công thức phức chất",
+      "question_indices": [
+       4
+      ],
+      "shares_content": true,
+      "stimulus_id": "S4"
+     },
+     {
+      "part": "P3",
+      "kind": "Trả lời ngắn; các câu có dữ kiện riêng",
+      "question_indices": [
+       1,
+       2,
+       3,
+       4,
+       5,
+       6
+      ],
+      "shares_content": false,
+      "stimulus_id": null
+     }
+    ],
+    "shared_stimuli": [
+     {
+      "id": "S1",
+      "kind": "Mô tả thí nghiệm và bảng kết quả",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 1
+       }
+      ],
+      "description": "Các phát biểu khai thác loại phản ứng, thao tác tách, chức năng thiết bị và xu hướng của bảng thực nghiệm; không phải mọi phát biểu đều cần bảng.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S2",
+      "kind": "Ngữ cảnh xử lí khí và bộ công thức cấu tạo",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 2
+       }
+      ],
+      "description": "Các phát biểu cùng dựa trên nhóm chất hấp thụ; phần tính toán bổ sung bảng thành phần khí và quy ước vận hành ngay trong phát biểu.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S3",
+      "kind": "Quy trình điều chế và phương trình phản ứng",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 3
+       }
+      ],
+      "description": "Quy trình tạo dung dịch và kết tinh làm nền cho các phát biểu về vật liệu, vai trò tác chất và tính toán dung dịch; dữ liệu định lượng thuộc từng phát biểu.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S4",
+      "kind": "Công thức phức chất",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 4
+       }
+      ],
+      "description": "Một công thức được dùng để xét liên kết phối trí, số phối tử, hình học và điện tích.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     }
+    ],
+    "optional_paths": [],
+    "limits": [
+     "Chỉ mô tả thứ tự quan sát được trong đề này; không suy thành thứ tự chung của môn học.",
+     "Không thấy nhóm câu tự chọn hoặc ngữ liệu dùng chung xuyên phần.",
+     "Các câu cùng chủ đề nhưng có dữ kiện riêng không được xem là dùng chung ngữ liệu.",
+     "Mỗi cụm đúng sai vẫn là một câu; các phát biểu được tách thành hàng để phân tích.",
+     "Không có tham chiếu chương trình phù hợp để xác nhận lớp nên trường lớp được để trống.",
+     "Mức phân hóa là nhận định từ thao tác tư duy, có đối chiếu các ví dụ hiệu chuẩn trừu tượng được cung cấp; không có dữ liệu thực nghiệm về kết quả làm bài.",
+     "Khóa đối sánh được cung cấp là căn cứ xác định phương án sai; phần lời giải tham khảo có chỗ kết luận nội bộ không nhất quán nên không thay thế khóa.",
+     "Các hình cần thiết có thể quan sát trong ảnh gốc; phân tích không chỉ dựa trên mô tả hình của bản nhận dạng.",
+     "Một số giá trị nhiễu định lượng không cho phép xác định chắc lỗi học sinh tạo ra chúng.",
+     "Điều kiện áp suất trong bài tái sinh khí cần cách hiểu mô hình về các điều kiện khí còn lại; đề không phát biểu đầy đủ các giả định đó."
+    ]
+   }
+  },
+  {
+   "paper_id": "126f1b46d648",
+   "source": "transcriptions/hoa-hoc/2026-provincial/de-thi-thu-tn-thpt-nam-2026-mon-hoa-so-gd-nghe-an-lan-2/de.md",
+   "source_sha256": "e225248eab6d3bf1fd92e4ad9d91d919bca8b3da8c3a60471b1a00b516f3787d",
+   "class": "provincial_third_party",
+   "year": "2026",
+   "model": "gpt-6.1-sol",
+   "origin": "inline_EXTRACT",
+   "structure": {
+    "parts_in_order": [
+     "P1",
+     "P2",
+     "P3"
+    ],
+    "blocks_in_order": [
+     {
+      "part": "P1",
+      "kind": "Trắc nghiệm chọn một phương án",
+      "question_indices": [
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12,
+       13,
+       14,
+       15,
+       16
+      ],
+      "shares_content": false,
+      "stimulus_id": null
+     },
+     {
+      "part": "P1",
+      "kind": "Trắc nghiệm chọn một phương án dùng ngữ liệu chung",
+      "question_indices": [
+       17,
+       18
+      ],
+      "shares_content": true,
+      "stimulus_id": "S1"
+     },
+     {
+      "part": "P2",
+      "kind": "Đúng sai theo bảng thực nghiệm",
+      "question_indices": [
+       1
+      ],
+      "shares_content": true,
+      "stimulus_id": "S2"
+     },
+     {
+      "part": "P2",
+      "kind": "Đúng sai theo quy trình sản xuất",
+      "question_indices": [
+       2
+      ],
+      "shares_content": true,
+      "stimulus_id": "S3"
+     },
+     {
+      "part": "P2",
+      "kind": "Đúng sai theo mô tả hiện tượng ăn mòn",
+      "question_indices": [
+       3
+      ],
+      "shares_content": true,
+      "stimulus_id": "S4"
+     },
+     {
+      "part": "P2",
+      "kind": "Đúng sai theo hình cấu tạo và sơ đồ biến đổi vật liệu",
+      "question_indices": [
+       4
+      ],
+      "shares_content": true,
+      "stimulus_id": "S5"
+     },
+     {
+      "part": "P3",
+      "kind": "Trả lời ngắn bằng số lượng",
+      "question_indices": [
+       1,
+       2
+      ],
+      "shares_content": false,
+      "stimulus_id": null
+     },
+     {
+      "part": "P3",
+      "kind": "Trả lời ngắn bằng danh sách nhận định",
+      "question_indices": [
+       3,
+       4
+      ],
+      "shares_content": false,
+      "stimulus_id": null
+     },
+     {
+      "part": "P3",
+      "kind": "Trả lời ngắn định lượng",
+      "question_indices": [
+       5,
+       6
+      ],
+      "shares_content": false,
+      "stimulus_id": null
+     }
+    ],
+    "shared_stimuli": [
+     {
+      "id": "S1",
+      "kind": "Đoạn giới thiệu và hình cấu tạo chất hữu cơ",
+      "members": [
+       {
+        "part": "P1",
+        "idx": 17
+       },
+       {
+        "part": "P1",
+        "idx": 18
+       }
+      ],
+      "description": "Thông tin ứng dụng và cấu tạo của hợp chất chứa các nhóm chức khác nhau được dùng cho bài toán sản xuất và nhận diện tính chất.",
+      "scope": "multiple_questions",
+      "support": "explicit_instruction"
+     },
+     {
+      "id": "S2",
+      "kind": "Quy trình thí nghiệm và bảng theo dõi",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 1
+       }
+      ],
+      "description": "Các mẫu có nồng độ nguyên liệu khác nhau được theo dõi sản phẩm theo thời gian để kiểm tra một giả thuyết.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S3",
+      "kind": "Chuỗi công đoạn và phương trình hóa học",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 2
+       }
+      ],
+      "description": "Quy trình chuyển nguyên liệu khoáng thành kim loại có thông tin về điều kiện vận hành, độ tinh khiết và hiệu suất.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S4",
+      "kind": "Mô tả môi trường ăn mòn",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 3
+       }
+      ],
+      "description": "Một hợp kim tiếp xúc với lớp dung dịch điện li trong môi trường ẩm làm cơ sở xét cơ chế và bảo vệ kim loại.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     },
+     {
+      "id": "S5",
+      "kind": "Hình đoạn mạch và sơ đồ nối mạch",
+      "members": [
+       {
+        "part": "P2",
+        "idx": 4
+       }
+      ],
+      "description": "Hình cấu tạo polymer và sơ đồ hình thành cầu nối giữa các mạch phục vụ xét cấu hình, phân loại biến đổi, tính chất và thành phần.",
+      "scope": "statements_within_question",
+      "support": "layout_observation"
+     }
+    ],
+    "optional_paths": [],
+    "limits": [
+     "Phân tích chỉ mô tả trình tự và hình thức quan sát được trong tài liệu này.",
+     "Không quan sát thấy nhóm câu lựa chọn thay thế.",
+     "Phần đúng sai được giữ thành các câu chung ngữ liệu, dù mỗi mệnh đề có một hàng phân tích.",
+     "Không có tham chiếu chương trình phù hợp để xác nhận lớp; trường grade được để trống.",
+     "Mức phân hóa là đánh giá từ thao tác nhận thức, có đối chiếu các ví dụ hiệu chuẩn trừu tượng được cung cấp.",
+     "Số trang tự khai ở phần đầu không khớp phạm vi trang chứa toàn bộ câu hỏi quan sát được; địa chỉ câu được xác định theo nội dung thực tế.",
+     "Một nhận định về phân loại phản ứng polymer có dấu hiệu không thống nhất giữa khóa và cách phân loại thường dùng; hạn chế được ghi tại hàng tương ứng."
+    ]
+   }
+  }
+ ],
+ "issues": [],
+ "part_order_observations": [
+  {
+   "class": "official",
+   "order": [
+    "P1",
+    "P2",
+    "P3"
+   ],
+   "distinct_papers": 2
+  },
+  {
+   "class": "provincial_third_party",
+   "order": [
+    "P1",
+    "P2",
+    "P3"
+   ],
+   "distinct_papers": 6
+  }
+ ],
+ "shared_group_presence": [
+  {
+   "class": "official",
+   "part": "P1",
+   "kind": "Đoạn dẫn ứng dụng",
+   "scope": "multiple_questions",
+   "questions_in_part": 2,
+   "distinct_papers": 1
+  },
+  {
+   "class": "official",
+   "part": "P1",
+   "kind": "Đoạn thông tin và phương trình cân bằng",
+   "scope": "multiple_questions",
+   "questions_in_part": 2,
+   "distinct_papers": 1
+  },
+  {
+   "class": "official",
+   "part": "P2",
+   "kind": "Hình phương trình cấu tạo",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "official",
+   "part": "P2",
+   "kind": "Mô tả quy trình công nghệ",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "official",
+   "part": "P2",
+   "kind": "Quy trình thí nghiệm, dữ liệu so sánh và hình dụng cụ",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "official",
+   "part": "P2",
+   "kind": "Quy trình thí nghiệm, giả thuyết và bảng số liệu",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "official",
+   "part": "P2",
+   "kind": "Sơ đồ chuyển hóa phức chất",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "official",
+   "part": "P2",
+   "kind": "Sơ đồ cấu tạo và phản ứng",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "official",
+   "part": "P2",
+   "kind": "Sơ đồ phản ứng, dữ liệu thực nghiệm và bảng tra",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "official",
+   "part": "P2",
+   "kind": "Thông tin cấu tạo và phương trình thủy phân",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "kind": "Bối cảnh ăn mòn và nhóm nhận định",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "kind": "Mô tả cấu tạo và môi trường hoạt động của pin.",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "kind": "Mô tả xử lý hỗn hợp kim loại trong dung dịch.",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "kind": "Quy trình tách chất bằng dụng cụ thí nghiệm.",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "kind": "Tập phát biểu về một nhóm hợp chất sinh học.",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "kind": "Đoạn giới thiệu và hình cấu tạo chất hữu cơ",
+   "scope": "multiple_questions",
+   "questions_in_part": 2,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "kind": "Bối cảnh ứng dụng của một muối acid",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "kind": "Chuỗi công đoạn và phương trình hóa học",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "kind": "Chuỗi thao tác thí nghiệm kèm hình",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "kind": "Chuỗi thao tác và hiện tượng tạo phức.",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "kind": "Công thức cấu tạo và dữ kiện dạng ion",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "kind": "Công thức phức chất",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "kind": "Hình đoạn mạch và sơ đồ nối mạch",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "kind": "Mô tả bảo vệ vật kim loại trong dung dịch điện li.",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "kind": "Mô tả chuẩn độ và phương trình ion",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "kind": "Mô tả môi trường ăn mòn",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "kind": "Mô tả nguồn điện, phương trình thuận nghịch và hệ thức điện lượng",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "kind": "Mô tả polymer kèm hình cấu tạo mắt xích.",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "kind": "Mô tả thí nghiệm và bảng kết quả",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "kind": "Ngữ cảnh xử lí khí và bộ công thức cấu tạo",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "kind": "Phương trình nhiệt hóa học và đồ thị nhiều đường",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "kind": "Quy trình thí nghiệm so sánh",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "kind": "Quy trình thí nghiệm và bảng theo dõi",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "kind": "Quy trình thủy phân sinh học và bảng kết quả.",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "kind": "Quy trình điều chế và phương trình phản ứng",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "kind": "Sơ đồ chuyển hóa hữu cơ",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "kind": "Sơ đồ công nghệ và phương trình phản ứng",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "kind": "Sơ đồ ester hóa và bảng dữ liệu phổ",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "kind": "Thí nghiệm tổng hợp ester",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "kind": "Thông tin vật liệu và hình cấu tạo monomer",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P3",
+   "kind": "Dữ liệu nhận diện cấu tạo và tập nhận định",
+   "scope": "statements_within_question",
+   "questions_in_part": 1,
+   "distinct_papers": 1
+  }
+ ],
+ "limits": [
+  "Observed order is not proof of universal fixed order.",
+  "Multiple codes of the same paper are not independent papers.",
+  "Internal TF statements are not multi-question clusters.",
+  "Structure observations and topic-profile completion counts may differ; see per-paper provenance."
+ ]
 }

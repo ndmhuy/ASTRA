@@ -1,0 +1,313 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{setspace}
+\setstretch{1.18}
+\usepackage{graphicx}
+\usepackage{ifthen}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, patterns}
+\IfFileExists{pgf-pie.sty}{\usepackage{pgf-pie}}{}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{chemfig}
+\usepackage{longtable,booktabs}
+\usepackage{adjustbox}
+\providecommand{\errorpart}[2]{$\underset{\textbf{#1}}{\underline{\text{#2}}}$}
+\usepackage[top=0.8in, left=0.75in, right=0.75in, bottom=0.85in, headheight=38pt, headsep=18pt, footskip=1.2cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue]{hyperref}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 2pt minus 1pt}
+
+\setlist[enumerate]{itemsep=4pt, parsep=2pt, topsep=4pt, partopsep=2pt}
+\setlist[itemize]{itemsep=4pt, parsep=2pt, topsep=4pt}
+
+\makeatletter
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{LecturingLastPage}{{}{\thepage}{}{}{}}}}
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{LecturingPageCount}{{}{\two@digits{\value{page}}}{}{}{}}}}
+\makeatother
+\pagestyle{fancy}
+\fancyhf{}
+\cfoot{\small Trang \thepage/\pageref*{LecturingLastPage} - Mã đề thi 2615}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\begin{document}
+
+\sloppy
+
+\noindent
+\begin{minipage}[t]{0.37\textwidth}
+    \small
+    \centering
+    \IfFileExists{logo.png}{\includegraphics[height=0.9cm]{logo.png}\\[0.1cm]}{%
+      \IfFileExists{logo.jpg}{\includegraphics[height=0.9cm]{logo.jpg}\\[0.1cm]}{}%
+    }
+    {\bfseries \mbox{}}\\[-0.2cm]
+    \rule{3cm}{0.5pt}\\[0.1cm]
+    {\bfseries ĐỀ LUYỆN TẬP}\\{\small (Đề thi có \pageref*{LecturingPageCount} trang)}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.62\textwidth}
+    \small
+    \centering
+    {\bfseries \sbox0{KỲ THI TỐT NGHIỆP TRUNG HỌC PHỔ THÔNG NĂM 2026}\ifdim\wd0>\linewidth KỲ THI TỐT NGHIỆP TRUNG HỌC PHỔ~THÔNG\\NĂM 2026\else\usebox0\fi}\\[0.15cm]
+    {\bfseries Môn thi: HOÁ HỌC}\\[0.15cm]
+    {\itshape Thời gian làm bài: 50 phút, không kể thời gian phát đề}
+\end{minipage}
+
+\vspace{0.4cm}
+\noindent
+\begin{minipage}[t]{0.68\textwidth}
+    Họ, tên thí sinh: \dotfill\\[0.15cm]
+    Số báo danh: \dotfill
+\end{minipage}%
+\hfill
+\fbox{\begin{minipage}{3.6cm}\centering\textbf{Mã đề: 2615}\end{minipage}}
+
+\vspace{0.5cm}
+
+% LECTURING-PART: P1
+\textbf{Phần I: Trắc nghiệm nhiều lựa chọn} \textit{Thí sinh trả lời từ câu 1 đến câu 18. Mỗi câu hỏi thí sinh chỉ chọn một phương án.}
+
+\noindent \textbf{Câu 1:} Kim loại nào sau đây tác dụng mạnh với nước ở nhiệt độ thường, tạo thành dung dịch base và khí hydrogen?\\
+\noindent\makebox[0.24\textwidth][l]{A. $\text{Ag}$.}\makebox[0.24\textwidth][l]{B. $\text{Cu}$.}\makebox[0.24\textwidth][l]{C. $\text{Na}$.}\makebox[0.24\textwidth][l]{D. $\text{Fe}$.}
+
+\noindent \textbf{Câu 2:} Chất nào sau đây là amine bậc hai?\\
+\noindent A. $\text{CH}_3\text{NH}_2$. \hfill B. $(\text{CH}_3)_2\text{NH}$. \hfill C. $(\text{CH}_3)_3\text{N}$. \hfill D. $\text{C}_6\text{H}_5\text{NH}_2$.\\
+
+\noindent \textbf{Câu 3:} Công thức Haworth của monosaccharide X được biểu diễn ở hình bên dưới.\\
+\begin{center}
+\begin{adjustbox}{max width=0.95\linewidth, max totalheight=0.38\textheight}
+\begin{tikzpicture}[scale=0.9, every node/.style={font=\small}]
+\coordinate (C2) at (2,0); \coordinate (C3) at (1.2,-1);
+\coordinate (C4) at (-0.4,-1); \coordinate (C5) at (-1.2,0);
+\node (O) at (0.4,1) {$\mathrm{O}$};
+\draw[thick] (O) -- (C2) -- (C3) -- (C4) -- (C5) -- (O);
+\draw[line width=1.8pt] (C3)--(C4);
+\draw (C2)--(2,1.1) node[above] {$\mathrm{OH}$};
+\draw (C2)--(2,-1.8) node[below right,inner sep=1pt] {$\mathrm{CH_2OH}$};
+\draw (C3)--(1.2,-0.05) node[above] {$\mathrm{OH}$};
+\draw (C3)--(1.2,-1.9) node[below] {$\mathrm{H}$};
+\draw (C4)--(-0.4,-1.9) node[below] {$\mathrm{OH}$};
+\draw (C4)--(-0.4,-0.05) node[above] {$\mathrm{H}$};
+\draw (C5)--(-1.2,1.1) node[above] {$\mathrm{CH_2OH}$};
+\draw (C5)--(-1.2,-0.9) node[below] {$\mathrm{H}$};
+\end{tikzpicture}
+\end{adjustbox}
+\end{center}
+Chất X là\\
+\noindent\makebox[0.24\textwidth][l]{A. fructose.}\makebox[0.24\textwidth][l]{B. maltose.}\makebox[0.24\textwidth][l]{C. sucrose.}\makebox[0.24\textwidth][l]{D. glucose.}
+
+\noindent \textbf{Câu 4:} Cho bảng giá trị thế điện cực chuẩn của một số cặp oxi hoá -- khử ở $25\,^{\circ}\text{C}$ như sau:\\
+\begin{center}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Cặp oxi hoá -- khử & $\text{Mg}^{2+}/\text{Mg}$ & $\text{Zn}^{2+}/\text{Zn}$ & $\text{Cu}^{2+}/\text{Cu}$ & $\text{Ag}^{+}/\text{Ag}$ \\
+\hline
+$E^{\circ}$ (V) & $-2{,}37$ & $-0{,}76$ & $+0{,}34$ & $+0{,}80$ \\
+\hline
+\end{tabular}
+\end{adjustbox}
+\end{center}
+Sức điện động chuẩn của pin điện hoá $\text{Zn}$ -- $\text{Ag}$ là\\
+\noindent\makebox[0.24\textwidth][l]{A. $0{,}04$ V.}\makebox[0.24\textwidth][l]{B. $1{,}10$ V.}\makebox[0.24\textwidth][l]{C. $1{,}56$ V.}\makebox[0.24\textwidth][l]{D. $2{,}36$ V.}
+
+\noindent \textbf{Câu 5:} Thuỷ phân hoàn toàn ethyl acetate trong dung dịch $\text{NaOH}$ đun nóng, thu được các sản phẩm hữu cơ là\\
+\noindent A. $\text{CH}_3\text{COONa}$ và $\text{C}_2\text{H}_5\text{OH}$. \hfill B. $\text{C}_2\text{H}_5\text{COONa}$ và $\text{CH}_3\text{OH}$.\\
+\noindent C. $\text{HCOONa}$ và $\text{C}_3\text{H}_7\text{OH}$. \hfill D. $\text{CH}_3\text{COOH}$ và $\text{C}_2\text{H}_5\text{ONa}$.\\
+
+\noindent \textbf{Câu 6:} Hydrogen hoá hoàn toàn triolein (xúc tác $\text{Ni}$, đun nóng, áp suất cao) thu được chất béo nào sau đây?\\
+\noindent\makebox[0.24\textwidth][l]{A. Trilinolein.}\makebox[0.24\textwidth][l]{B. Tristearin.}\makebox[0.24\textwidth][l]{C. Tripalmitin.}\makebox[0.24\textwidth][l]{D. Glycerol.}
+
+\noindent \textbf{Câu 7:} Polymer nào sau đây được điều chế bằng phản ứng trùng ngưng?\\
+\noindent\makebox[0.48\textwidth][l]{A. Polystyrene.}\makebox[0.48\textwidth][l]{B. Poly(vinyl chloride).}\\
+\noindent\makebox[0.48\textwidth][l]{C. Nylon-6,6.}\makebox[0.48\textwidth][l]{D. Polyethylene.}
+
+\noindent \textbf{Câu 8:} Dung dịch của chất nào sau đây làm quỳ tím chuyển sang màu xanh?\\
+\noindent\makebox[0.24\textwidth][l]{A. Lysine.}\makebox[0.24\textwidth][l]{B. Glutamic acid.}\makebox[0.24\textwidth][l]{C. Glycine.}\makebox[0.24\textwidth][l]{D. Alanine.}
+
+\noindent \textbf{Câu 9:} Nhỏ từ từ đến dư dung dịch $\text{NH}_3$ vào ống nghiệm đựng dung dịch $\text{CuSO}_4$. Hiện tượng quan sát được là\\
+\noindent A. xuất hiện kết tủa màu xanh, sau đó kết tủa tan tạo dung dịch màu xanh lam đậm.\\
+\noindent B. xuất hiện kết tủa màu xanh, kết tủa không tan khi thêm $\text{NH}_3$ dư.\\
+\noindent C. xuất hiện kết tủa màu trắng, sau đó kết tủa tan tạo dung dịch không màu.\\
+\noindent D. có khí mùi khai thoát ra và dung dịch chuyển sang không màu.
+
+\noindent \textbf{Câu 10:} Nguyên tử của nguyên tố X có số hiệu nguyên tử $Z = 17$. Vị trí của X trong bảng tuần hoàn là\\
+\noindent\makebox[0.48\textwidth][l]{A. chu kì 3, nhóm VA.}\makebox[0.48\textwidth][l]{B. chu kì 4, nhóm IA.}\\
+\noindent\makebox[0.48\textwidth][l]{C. chu kì 2, nhóm VIIA.}\makebox[0.48\textwidth][l]{D. chu kì 3, nhóm VIIA.}
+
+\noindent \textbf{Câu 11:} Điện phân dung dịch $\text{CuSO}_4$ với các điện cực trơ. Quá trình xảy ra ở anode là\\
+\noindent A. sự oxi hoá phân tử $\text{H}_2\text{O}$.\\
+\noindent B. sự oxi hoá ion $\text{SO}_4^{2-}$.\\
+\noindent C. sự khử ion $\text{Cu}^{2+}$.\\
+\noindent D. sự khử phân tử $\text{H}_2\text{O}$.
+
+\noindent \textbf{Câu 12:} Một mẫu nước giếng chứa các ion $\text{Ca}^{2+}$, $\text{Mg}^{2+}$, $\text{Cl}^{-}$ và $\text{SO}_4^{2-}$. Hoá chất nào sau đây làm mềm được mẫu nước này?\\
+\noindent\makebox[0.48\textwidth][l]{A. $\text{Ca(OH)}_2$.}\makebox[0.48\textwidth][l]{B. $\text{Na}_2\text{CO}_3$.}\\
+\noindent\makebox[0.48\textwidth][l]{C. $\text{HCl}$.}\makebox[0.48\textwidth][l]{D. $\text{NaCl}$.}
+
+\noindent \textbf{Câu 13:} Một ống thép (thành phần chính là $\text{Fe}$) được nối với một thanh kim loại M rồi cùng đặt trong đất ẩm. Với kim loại M nào sau đây thì ống thép bị ăn mòn điện hoá nhanh hơn?\\
+\begin{center}
+\begin{adjustbox}{max width=0.8\linewidth, max totalheight=0.25\textheight}
+\begin{tikzpicture}[scale=0.9]
+  \fill[brown!25] (0,0) rectangle (9,3);
+  \draw[thick] (0,0) rectangle (9,3);
+  \node[fill=brown!25, inner sep=2pt] at (4.5,0.45) {đất ẩm};
+  \fill[gray!55] (0.8,1.2) rectangle (4.2,1.9);
+  \draw (0.8,1.2) rectangle (4.2,1.9);
+  \node[above] at (2.5,1.95) {ống thép (Fe)};
+  \fill[gray!30] (6.4,1.1) rectangle (7.6,2.0);
+  \draw (6.4,1.1) rectangle (7.6,2.0);
+  \node[above] at (7.0,2.05) {kim loại M};
+  \draw[thick] (4.2,1.55) -- (6.4,1.55);
+  \node[below, font=\small] at (5.3,1.5) {dây dẫn};
+\end{tikzpicture}
+\end{adjustbox}
+\end{center}
+\noindent\makebox[0.24\textwidth][l]{A. $\text{Cu}$.}\makebox[0.24\textwidth][l]{B. $\text{Mg}$.}\makebox[0.24\textwidth][l]{C. $\text{Zn}$.}\makebox[0.24\textwidth][l]{D. $\text{Al}$.}
+
+\noindent \textbf{Câu 14:} Xà phòng hoá hoàn toàn $8{,}8$ gam ethyl acetate bằng dung dịch $\text{NaOH}$ vừa đủ, cô cạn dung dịch sau phản ứng thu được $m$ gam muối khan. Cho nguyên tử khối: $\text{H} = 1$; $\text{C} = 12$; $\text{O} = 16$; $\text{Na} = 23$. Giá trị của $m$ là\\
+\noindent\makebox[0.24\textwidth][l]{A. $4{,}6$.}\makebox[0.24\textwidth][l]{B. $6{,}8$.}\makebox[0.24\textwidth][l]{C. $8{,}2$.}\makebox[0.24\textwidth][l]{D. $9{,}6$.}
+
+\noindent \textbf{Câu 15:} Lên men $36$ gam glucose thành ethanol với hiệu suất $80\%$, toàn bộ khí $\text{CO}_2$ sinh ra được thu lại. Biết ở điều kiện chuẩn ($25\,^{\circ}\text{C}$, $1$ bar) một mol khí chiếm thể tích $24{,}79$ lít; nguyên tử khối: $\text{H} = 1$; $\text{C} = 12$; $\text{O} = 16$. Thể tích khí $\text{CO}_2$ thu được ở điều kiện chuẩn là\\
+\noindent\makebox[0.24\textwidth][l]{A. $3{,}97$ lít.}\makebox[0.24\textwidth][l]{B. $4{,}96$ lít.}\makebox[0.24\textwidth][l]{C. $7{,}93$ lít.}\makebox[0.24\textwidth][l]{D. $9{,}92$ lít.}
+
+\noindent \textbf{Câu 16:} Cho $4{,}5$ gam ethylamine ($\text{C}_2\text{H}_5\text{NH}_2$) tác dụng vừa đủ với dung dịch $\text{HCl}$, thu được dung dịch chứa $m$ gam muối. Cho nguyên tử khối: $\text{H} = 1$; $\text{C} = 12$; $\text{N} = 14$; $\text{Cl} = 35{,}5$. Giá trị của $m$ là\\
+\noindent A. $7{,}65$. \hfill B. $8{,}15$. \hfill C. $8{,}55$. \hfill D. $9{,}15$.\\
+
+\noindent \textbf{Câu 17:} Phát biểu nào sau đây về protein là \textbf{đúng}?\\
+\noindent A. Protein đơn giản khi thuỷ phân hoàn toàn chỉ thu được các $\alpha$-amino acid.\\
+\noindent B. Protein không bị đông tụ khi đun nóng.\\
+\noindent C. Liên kết peptide là liên kết giữa nhóm $\text{-COOH}$ và nhóm $\text{-OH}$.\\
+\noindent D. Tất cả các protein đều tan tốt trong nước tạo dung dịch keo.
+
+\noindent \textbf{Câu 18:} Hoà tan hoàn toàn $7{,}8$ gam hỗn hợp gồm $\text{Mg}$ và $\text{Al}$ trong dung dịch $\text{HCl}$ dư, thu được $9{,}916$ lít khí $\text{H}_2$ ở điều kiện chuẩn (một mol khí chiếm $24{,}79$ lít). Cho nguyên tử khối: $\text{Mg} = 24$; $\text{Al} = 27$. Khối lượng $\text{Al}$ trong hỗn hợp ban đầu là\\
+\noindent\makebox[0.24\textwidth][l]{A. $2{,}4$ gam.}\makebox[0.24\textwidth][l]{B. $2{,}7$ gam.}\makebox[0.24\textwidth][l]{C. $4{,}05$ gam.}\makebox[0.24\textwidth][l]{D. $5{,}4$ gam.}
+
+\vspace{0.5cm}
+% LECTURING-PART: P2
+\textbf{Phần II: Trắc nghiệm đúng/sai} \textit{Thí sinh trả lời từ câu 1 đến câu 4. Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn đúng hoặc sai.}
+
+\noindent \textbf{Câu 1:} Một nhóm học sinh tiến hành điện phân dung dịch $\text{CuSO}_4$ với hai điện cực graphite theo sơ đồ ở hình bên dưới, cường độ dòng điện không đổi $I = 1{,}93$ A trong thời gian $2000$ giây. Biết hiệu suất điện phân là $100\%$, hằng số Faraday $F = 96485$ C/mol, nguyên tử khối $\text{Cu} = 64$, và trong suốt thời gian điện phân ion $\text{Cu}^{2+}$ vẫn còn dư.\\
+\begin{center}
+\begin{adjustbox}{max width=0.95\linewidth, max totalheight=0.21\textheight}
+\begin{tikzpicture}[scale=0.9]
+  % cốc
+  \draw[thick] (0,4) -- (0,0) -- (6,0) -- (6,4);
+  % mặt dung dịch
+  \fill[gray!15] (0.02,0.02) rectangle (5.98,3);
+  \draw (0,3) -- (6,3);
+  % điện cực
+  \fill[gray!70] (1.3,1.0) rectangle (1.7,4.6);
+  \draw (1.3,1.0) rectangle (1.7,4.6);
+  \fill[gray!70] (4.3,1.0) rectangle (4.7,4.6);
+  \draw (4.3,1.0) rectangle (4.7,4.6);
+  % dây dẫn và nguồn
+  \draw (1.5,4.6) -- (1.5,5.8) -- (2.85,5.8);
+  \draw (4.5,4.6) -- (4.5,5.8) -- (3.15,5.8);
+  \draw[very thick] (2.85,5.55) -- (2.85,6.05); % vạch ngắn: cực âm
+  \draw[very thick] (3.15,5.35) -- (3.15,6.25); % vạch dài: cực dương
+
+
+  % nhãn
+
+  \draw (-0.1,3.8) -- (1.3,3.8);
+
+  \draw (6.1,3.8) -- (4.7,3.8);
+    % captions last so nothing paints over them
+    % captions last so nothing paints over them
+    \node[above] at (2.6,6.0) {$-$};
+\node[above] at (3.4,6.2) {$+$};
+\node[left] at (-0.1,3.8) {cathode};
+\node[right] at (6.1,3.8) {anode};
+\node[fill=gray!15, inner sep=2pt] at (3,0.5) {dung dịch $\text{CuSO}_4$};
+\end{tikzpicture}
+\end{adjustbox}
+\end{center}
+\noindent a) Trong quá trình điện phân, ở điện cực nối với cực âm của nguồn có lớp kim loại màu đỏ bám vào.\\
+
+\noindent b) Khí thoát ra ở anode là khí hydrogen.\\
+
+\noindent c) Khối lượng kim loại bám vào cathode sau $2000$ giây xấp xỉ $1{,}28$ gam.\\
+
+\noindent d) Giá trị pH của dung dịch tăng dần trong quá trình điện phân.\\
+
+\noindent \textbf{Câu 2:} Tiến hành thí nghiệm phản ứng tráng bạc của glucose theo các bước sau:\\
+Bước 1: Cho $2$ mL dung dịch $\text{AgNO}_3$ $1\%$ vào ống nghiệm sạch, nhỏ từ từ dung dịch $\text{NH}_3$ $5\%$ vào, lắc đều đến khi kết tủa vừa tạo thành tan hết.\\
+Bước 2: Thêm tiếp $1$ mL dung dịch glucose $10\%$ vào ống nghiệm.\\
+Bước 3: Đặt ống nghiệm vào cốc nước nóng khoảng $60$ -- $70\,^{\circ}\text{C}$ trong vài phút.\\
+Cho nguyên tử khối: $\text{H} = 1$; $\text{C} = 12$; $\text{O} = 16$; $\text{Ag} = 108$.\\
+\noindent a) Sau bước 3, trên thành ống nghiệm xuất hiện một lớp kim loại sáng như gương.\\
+
+\noindent b) Trong phản ứng ở bước 3, glucose đóng vai trò chất oxi hoá.\\
+
+\noindent c) Nếu thay dung dịch glucose ở bước 2 bằng dung dịch sucrose thì sau bước 3 cũng thu được lớp kim loại sáng như gương.\\
+
+\noindent d) Trong một thí nghiệm khác, cho $0{,}9$ gam glucose phản ứng hoàn toàn với dung dịch $\mathrm{AgNO_3/NH_3}$ dư thì thu được $1{,}08$ gam Ag.\\
+
+\noindent \textbf{Câu 3:} Tiến hành thí nghiệm xà phòng hoá chất béo theo các bước sau:\\
+Bước 1: Cho khoảng $2$ gam mỡ lợn và $5$ mL dung dịch $\text{NaOH}$ $40\%$ vào bát sứ.\\
+Bước 2: Đun sôi nhẹ hỗn hợp, liên tục khuấy đều bằng đũa thuỷ tinh, thỉnh thoảng thêm vài giọt nước cất.\\
+Bước 3: Sau khoảng $8$ -- $10$ phút, rót thêm vào hỗn hợp $10$ mL dung dịch $\text{NaCl}$ bão hoà nóng, khuấy nhẹ rồi để nguội.\\
+Cho nguyên tử khối: $\text{H} = 1$; $\text{C} = 12$; $\text{O} = 16$; $\text{Na} = 23$.\\
+\noindent a) Sau bước 3, có một lớp chất rắn màu trắng nổi lên trên bề mặt hỗn hợp.\\
+
+\noindent b) Mục đích chính của việc thêm dung dịch $\text{NaCl}$ bão hoà ở bước 3 là làm tăng tốc độ phản ứng xà phòng hoá.\\
+
+\noindent c) Việc thêm nước cất ở bước 2 giúp hỗn hợp không bị cạn khô, nhờ đó phản ứng xà phòng hoá tiếp tục xảy ra.\\
+
+\noindent d) Xà phòng hoá hoàn toàn $8{,}9$ gam tristearin bằng dung dịch $\text{NaOH}$ dư thu được $2{,}76$ gam glycerol.\\
+
+\noindent \textbf{Câu 4:} Để xác định nồng độ của một dung dịch $\text{NaOH}$, một học sinh lấy chính xác $10{,}0$ mL dung dịch này cho vào bình tam giác, thêm 2 giọt phenolphthalein, rồi chuẩn độ bằng dung dịch $\text{HCl}$ $0{,}100$ M. Kết quả ba lần chuẩn độ được ghi ở bảng sau:\\
+\begin{center}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Lần chuẩn độ & 1 & 2 & 3 \\
+\hline
+Thể tích dung dịch $\text{HCl}$ đã dùng (mL) & $10{,}1$ & $9{,}9$ & $10{,}0$ \\
+\hline
+\end{tabular}
+\end{adjustbox}
+\end{center}
+\noindent a) Thời điểm kết thúc chuẩn độ là khi dung dịch trong bình tam giác chuyển từ màu hồng sang không màu và giữ nguyên trong khoảng 20 giây.\\
+
+\noindent b) Thể tích trung bình của dung dịch $\text{HCl}$ đã dùng trong ba lần chuẩn độ là $10{,}0$ mL.\\
+
+\noindent c) Nồng độ của dung dịch $\text{NaOH}$ ban đầu là $0{,}010$ M.\\
+
+\noindent d) Dung dịch $\text{HCl}$ trong thí nghiệm này được chứa trong pipette và nhỏ từ từ vào bình tam giác.\\
+
+\vspace{0.5cm}
+% LECTURING-PART: P3
+\textbf{Phần III: Trắc nghiệm trả lời ngắn} \textit{Thí sinh trả lời từ câu 1 đến câu 6. Thí sinh chỉ điền một con số (có thể có dấu âm, dấu phẩy thập phân) vào ô trống.}
+
+\noindent \textbf{Câu 1:} Cho các polymer sau: (1) polyethylene; (2) nylon-6,6; (3) cellulose; (4) poly(vinyl chloride); (5) polyacrylonitrile. Có bao nhiêu polymer trong danh sách được điều chế bằng phản ứng trùng hợp?\\
+
+\noindent \textbf{Câu 2:} Có bao nhiêu ester mạch hở có cùng công thức phân tử $\text{C}_4\text{H}_8\text{O}_2$?\\
+
+\noindent \textbf{Câu 3:} Trong công nghiệp, aluminium được sản xuất bằng cách điện phân nóng chảy $\text{Al}_2\text{O}_3$. Từ $10$ tấn quặng bauxite chứa $51\%$ khối lượng $\text{Al}_2\text{O}_3$ (phần còn lại không chứa aluminium), với hiệu suất của cả quá trình là $90\%$, thu được bao nhiêu tấn aluminium? Cho nguyên tử khối: $\text{O} = 16$; $\text{Al} = 27$. \textit{(Làm tròn đến chữ số hàng phần trăm)}\\
+
+\noindent \textbf{Câu 4:} Thuỷ phân hoàn toàn $14{,}6$ gam dipeptide Gly-Ala bằng dung dịch $\text{NaOH}$ dư, đun nóng. Cô cạn dung dịch sau phản ứng, khối lượng muối của các amino acid thu được là bao nhiêu gam? Cho nguyên tử khối: $\text{H} = 1$; $\text{C} = 12$; $\text{N} = 14$; $\text{O} = 16$; $\text{Na} = 23$. \textit{(Làm tròn đến chữ số hàng phần mười)}\\
+
+\noindent \textbf{Câu 5:} Một loại phân đạm urea chứa $95\%$ khối lượng $(\text{NH}_2)_2\text{CO}$, phần còn lại là tạp chất không chứa nitrogen. Để cung cấp $70$ kg nguyên tố nitrogen cho một hecta lúa, người nông dân cần bón bao nhiêu kilôgam loại phân đạm này? Cho nguyên tử khối: $\text{H} = 1$; $\text{C} = 12$; $\text{N} = 14$; $\text{O} = 16$. \textit{(Làm tròn đến chữ số hàng đơn vị)}\\
+
+\noindent \textbf{Câu 6:} Cho phương trình nhiệt hoá học của phản ứng đốt cháy methane:\\
+$\text{CH}_4(g) + 2\text{O}_2(g) \longrightarrow \text{CO}_2(g) + 2\text{H}_2\text{O}(l)$\\
+Biết enthalpy tạo thành chuẩn $\Delta_f H^{\circ}_{298}$ (kJ/mol) của $\text{CH}_4(g)$, $\text{CO}_2(g)$ và $\text{H}_2\text{O}(l)$ lần lượt là $-74{,}9$; $-393{,}5$ và $-285{,}8$. Đốt cháy hoàn toàn $4{,}0$ gam methane ở điều kiện chuẩn thì lượng nhiệt toả ra là bao nhiêu kJ? Cho nguyên tử khối: $\text{H} = 1$; $\text{C} = 12$. \textit{(Làm tròn đến chữ số hàng đơn vị)}\\\vspace{0.6cm}
+\begin{center}
+{\bfseries -{}-{}-{}-{}-{}-}\ \textbf{HẾT}\ {\bfseries -{}-{}-{}-{}-{}-}
+\end{center}
+\vspace{0.15cm}
+{\small\itshape
+Thí sinh không được sử dụng tài liệu. Cán bộ coi thi không giải thích gì thêm.}
+
+\end{document}

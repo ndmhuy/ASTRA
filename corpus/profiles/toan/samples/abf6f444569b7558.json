@@ -1,0 +1,240 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "abf6f444569b7558",
+    "topic": "Xác suất có điều kiện",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Số lượng các nhóm theo kết quả phân loại và trạng thái thực tế, cùng một nhận định về xác suất có điều kiện so với ngưỡng.",
+        "task": "Kiểm tra xác suất của một trạng thái trong nhóm đã biết kết quả phân loại.",
+        "reasoning": [
+          "Giới hạn không gian xét vào nhóm thỏa mãn điều kiện.",
+          "Lấy số phần tử đồng thời thỏa mãn trạng thái cần tìm chia cho kích thước nhóm điều kiện.",
+          "So sánh xác suất với ngưỡng."
+        ],
+        "combines": [
+          "Xác suất có điều kiện",
+          "Đọc dữ liệu phân nhóm",
+          "So sánh tỉ số"
+        ],
+        "difficulty_source": "Đổi mẫu số theo điều kiện được nêu.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Dữ liệu chéo về kết quả phân loại và trạng thái thực tế, cùng nhận định có điều kiện theo trạng thái.",
+        "task": "Kiểm tra xác suất của một kết quả phân loại khi đã biết trạng thái thực tế.",
+        "reasoning": [
+          "Gộp các nhóm có cùng trạng thái được dùng làm điều kiện.",
+          "Xác định phần giao với kết quả phân loại cần xét.",
+          "Lập tỉ số trong nhóm điều kiện và so sánh với ngưỡng."
+        ],
+        "combines": [
+          "Xác suất có điều kiện",
+          "Xác suất biên",
+          "Đọc dữ liệu chéo"
+        ],
+        "difficulty_source": "Chọn mẫu số theo trạng thái thay vì theo kết quả phân loại.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Tỉ lệ đối tượng thuộc một loại thực trong nhóm không được hệ thống gán nhãn.",
+        "task": "Kiểm tra xác suất thuộc loại thực đối lập khi vẫn giữ nguyên nhóm điều kiện.",
+        "reasoning": [
+          "Cố định nhóm điều kiện đã cho.",
+          "Lấy phần bù của xác suất bên trong nhóm đó.",
+          "Đối chiếu với xác suất được khẳng định."
+        ],
+        "combines": [
+          "Xác suất có điều kiện",
+          "Biến cố đối"
+        ],
+        "difficulty_source": "Đọc đúng mẫu số điều kiện của một tỉ lệ trong nhóm.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Tỉ lệ phân nhóm theo nhãn và các tỉ lệ loại thực trong từng nhóm.",
+        "task": "Kiểm tra xác suất không điều kiện của một loại thực.",
+        "reasoning": [
+          "Chia không gian mẫu thành hai nhóm nhãn đối nhau.",
+          "Tính xác suất loại thực cần xét trong mỗi nhóm.",
+          "Nhân với trọng số nhóm rồi cộng các nhánh.",
+          "Đối chiếu xác suất tổng với khẳng định."
+        ],
+        "combines": [
+          "Xác suất có điều kiện",
+          "Công thức nhân xác suất",
+          "Xác suất toàn phần"
+        ],
+        "difficulty_source": "Phân biệt hai cách phân loại và tổng hợp đúng các nhánh có trọng số.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      }
+    ],
+    "support_refs": [
+      "023e74626dd8|P2|3|b",
+      "023e74626dd8|P2|3|d",
+      "163f20908cf7|P2|4|b",
+      "163f20908cf7|P2|4|c",
+      "163f20908cf7|P2|4|d",
+      "0968e8bc9e2d|P2|3|b",
+      "0968e8bc9e2d|P2|3|c",
+      "0968e8bc9e2d|P2|3|d",
+      "0ecb85132b84|P2|2|a",
+      "0ecb85132b84|P2|2|b",
+      "0ecb85132b84|P2|2|c",
+      "0ecb85132b84|P2|2|d",
+      "11d88d9a96ad|P2|1|b",
+      "11d88d9a96ad|P2|1|c",
+      "11d88d9a96ad|P2|1|d",
+      "3b4cca11ea82|P2|2|a",
+      "3b4cca11ea82|P2|2|b",
+      "3b4cca11ea82|P2|2|c",
+      "3b4cca11ea82|P2|2|d",
+      "3f1b2aa3cb72|P2|2|b",
+      "3f1b2aa3cb72|P2|2|c",
+      "3f1b2aa3cb72|P2|2|d",
+      "54e9a2a276ca|P2|3|a",
+      "54e9a2a276ca|P2|3|b",
+      "54e9a2a276ca|P2|3|c",
+      "7ab78715480e|P2|4|c",
+      "7ab78715480e|P2|4|d",
+      "9ed45d16a975|P2|2|a",
+      "9ed45d16a975|P2|2|b",
+      "9ed45d16a975|P2|2|c",
+      "c6340827ba59|P2|2|a",
+      "c6340827ba59|P2|2|b",
+      "c6340827ba59|P2|2|c",
+      "ccae0b94a82d|P2|1|b",
+      "ccae0b94a82d|P2|1|c",
+      "de5833d227dd|P2|4|b",
+      "de5833d227dd|P2|4|c",
+      "de5833d227dd|P2|4|d",
+      "fc12a8146279|P2|3|b",
+      "fc12a8146279|P2|3|c",
+      "fc12a8146279|P2|3|d"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "abf6f444569b7558",
+    "stem": "Một thư viện có 120 cuốn sách, mỗi cuốn được phân loại theo năm xuất bản và tình trạng dán nhãn xanh. Trong 40 cuốn có nhãn xanh, có 30 cuốn xuất bản từ năm 2020 trở đi và 10 cuốn xuất bản trước năm 2020. Trong 80 cuốn không có nhãn xanh, các số lượng tương ứng là 20 và 60 cuốn. Chọn ngẫu nhiên một cuốn, mỗi cuốn có cùng khả năng được chọn. Gọi A là biến cố “sách có nhãn xanh”, B là biến cố “sách xuất bản từ năm 2020 trở đi”. Xét tính đúng sai của các khẳng định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "P(B|A) = 3/4."
+      },
+      {
+        "sub": "b",
+        "text": "P(A|B) = 3/4."
+      },
+      {
+        "sub": "c",
+        "text": "Biết sách được chọn không có nhãn xanh, xác suất sách đó xuất bản trước năm 2020 bằng 3/4."
+      },
+      {
+        "sub": "d",
+        "text": "Xác suất chọn được sách xuất bản từ năm 2020 trở đi bằng 1/2."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) Trong nhóm 40 cuốn có nhãn xanh, có 30 cuốn thuộc B, nên P(B|A) = 30/40 = 3/4; khẳng định đúng. b) Có 30 + 20 = 50 cuốn thuộc B, trong đó 30 cuốn có nhãn xanh. Do đó P(A|B) = 30/50 = 3/5, nên sai. c) Trong nhóm 80 cuốn không có nhãn xanh, có 60 cuốn xuất bản trước năm 2020; xác suất là 60/80 = 3/4, nên đúng. d) P(B) = (30 + 20)/120 = 5/12, nên sai.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Đồng nhất P(A|B) với P(B|A), lấy 30/40 thay cho 30/50.",
+        "why_plausible": "Hai xác suất có cùng số phần tử giao nhưng khác nhóm làm điều kiện, nên học sinh dễ giữ nguyên mẫu số."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Lấy trung bình cộng hai tỉ lệ 30/40 và 20/80, thu được 1/2.",
+        "why_plausible": "Học sinh tổng hợp hai tỉ lệ theo nhóm nhưng bỏ qua việc hai nhóm có quy mô khác nhau."
+      }
+    ],
+    "level_reason": "Mức cao nhất là TH. Học sinh đọc dữ liệu phân nhóm, chọn mẫu số theo điều kiện và tính xác suất bằng các tỉ số quen thuộc; việc tổng hợp toàn bộ nhóm cũng là thao tác trực tiếp.",
+    "prerequisites": [
+      "Xác suất trên tập hữu hạn đồng khả năng",
+      "Xác suất có điều kiện",
+      "Phân biệt P(A|B) và P(B|A)",
+      "Tổng hợp số lượng từ các nhóm rời nhau"
+    ],
+    "variation_guidance": "Thay bối cảnh và số lượng của bốn nhóm, giữ hai nhóm điều kiện có quy mô khác nhau để lỗi lấy trung bình không trọng số vẫn có ý nghĩa.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "abf6f444569b7558",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) P(B|A) = 30/40 = 3/4. b) P(A|B) = 30/(30+20) = 3/5. c) Xác suất cần tìm bằng 60/80 = 3/4. d) P(B) = (30+20)/120 = 5/12.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Mỗi ý chỉ cần đọc số lượng theo nhóm và tính tỉ số xác suất thông thường hoặc có điều kiện theo quy trình quen thuộc, thuộc TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/3dff3352432a7af02080668e259a61f1d0dcaaa7c094bb12df06bf5843b3b52c.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/3dff3352432a7af02080668e259a61f1d0dcaaa7c094bb12df06bf5843b3b52c.resolve.json"
+}

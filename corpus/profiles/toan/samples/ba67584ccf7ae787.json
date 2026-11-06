@@ -1,0 +1,196 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "ba67584ccf7ae787",
+    "topic": "Nguyên hàm",
+    "part": "P1",
+    "level": "TH",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một họ nguyên hàm đã biết và một biểu thức cộng thêm hằng số vào hàm dưới dấu nguyên hàm.",
+        "task": "Chọn họ nguyên hàm của biểu thức mới.",
+        "reasoning": [
+          "Tách nguyên hàm của tổng thành tổng các nguyên hàm.",
+          "Tính nguyên hàm của hằng số và sử dụng họ nguyên hàm đã cho."
+        ],
+        "combines": [
+          "Tính tuyến tính của nguyên hàm",
+          "Nguyên hàm của hằng số"
+        ],
+        "difficulty_source": "Dùng trực tiếp dữ kiện nguyên hàm mà không biến đổi thừa.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Một hàm lũy thừa được xác định là nguyên hàm của hàm cần tìm.",
+        "task": "Chọn hàm số có nguyên hàm đã cho.",
+        "reasoning": [
+          "Chuyển yêu cầu về tính đạo hàm của nguyên hàm đã biết.",
+          "Áp dụng quy tắc đạo hàm lũy thừa."
+        ],
+        "combines": [
+          "Định nghĩa nguyên hàm",
+          "Đạo hàm lũy thừa"
+        ],
+        "difficulty_source": "Hiểu chiều suy ngược từ nguyên hàm về hàm dưới dấu tích phân.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Một đơn thức và các biểu thức họ nguyên hàm ứng viên.",
+        "task": "Chọn họ nguyên hàm đúng.",
+        "reasoning": [
+          "Áp dụng quy tắc nguyên hàm lũy thừa.",
+          "Kiểm tra hệ số và hằng số tùy ý trong lựa chọn."
+        ],
+        "combines": [
+          "Nguyên hàm",
+          "Lũy thừa"
+        ],
+        "difficulty_source": "Nhớ và áp dụng trực tiếp công thức nguyên hàm.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Một hàm bậc nhất và các họ hàm ứng viên.",
+        "task": "Chọn họ nguyên hàm đầy đủ.",
+        "reasoning": [
+          "Tính nguyên hàm từng hạng tử.",
+          "Cộng các kết quả và hằng số tùy ý."
+        ],
+        "combines": [
+          "Nguyên hàm lũy thừa",
+          "Tính tuyến tính của nguyên hàm"
+        ],
+        "difficulty_source": "Áp dụng trực tiếp bảng nguyên hàm cơ bản.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "023e74626dd8|P1|4|None",
+      "023e74626dd8|P1|8|None",
+      "163f20908cf7|P1|5|None",
+      "0968e8bc9e2d|P1|7|None",
+      "0ecb85132b84|P1|8|None",
+      "11d88d9a96ad|P1|5|None",
+      "3b4cca11ea82|P1|6|None",
+      "9ed45d16a975|P1|5|None",
+      "adb051fd8253|P1|8|None",
+      "beee25b53250|P1|6|None",
+      "de5833d227dd|P1|7|None"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "ba67584ccf7ae787",
+    "stem": "Biết F(x)=3x⁴−5x²+2x là một nguyên hàm của hàm số f(x) trên R. Hàm số f(x) là biểu thức nào dưới đây?",
+    "options": [
+      {
+        "label": "A",
+        "text": "f(x)=3x³−5x+2."
+      },
+      {
+        "label": "B",
+        "text": "f(x)=12x³+10x+2."
+      },
+      {
+        "label": "C",
+        "text": "f(x)=12x³−10x+2."
+      },
+      {
+        "label": "D",
+        "text": "f(x)=12x³−10x+2x."
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "C",
+        "level": "TH"
+      }
+    ],
+    "solution": "Theo định nghĩa nguyên hàm, f(x)=F'(x). Lấy đạo hàm từng hạng tử được f(x)=12x³−10x+2, nên chọn C. A giảm số mũ của hai hạng tử bậc cao nhưng không nhân với số mũ ban đầu. B làm mất dấu âm khi đạo hàm −5x². D giữ nguyên 2x thay vì lấy đạo hàm thành 2.",
+    "distractors": [
+      {
+        "label": "A",
+        "sub": null,
+        "mistake": "Lấy đạo hàm 3x⁴ thành 3x³ và −5x² thành −5x.",
+        "why_plausible": "Học sinh nhớ bước giảm số mũ nhưng bỏ bước nhân hệ số với số mũ ban đầu."
+      },
+      {
+        "label": "B",
+        "sub": null,
+        "mistake": "Đổi đạo hàm của −5x² thành +10x.",
+        "why_plausible": "Hệ số và số mũ được xử lý đúng về độ lớn nhưng dấu âm trước hạng tử bị bỏ khi tính riêng từng đạo hàm."
+      },
+      {
+        "label": "D",
+        "sub": null,
+        "mistake": "Giữ nguyên hạng tử 2x khi lấy đạo hàm.",
+        "why_plausible": "Sau khi xử lý các hạng tử có số mũ viết tường minh, học sinh có thể bỏ sót việc lấy đạo hàm hạng tử bậc nhất."
+      }
+    ],
+    "level_reason": "Học sinh phải hiểu chiều quan hệ từ một nguyên hàm đã biết về hàm dưới dấu nguyên hàm, rồi thực hiện quy trình đạo hàm đa thức quen thuộc. Đây là TH, không chỉ nhận diện một công thức được hỏi trực tiếp.",
+    "prerequisites": [
+      "Định nghĩa nguyên hàm",
+      "Đạo hàm hàm lũy thừa",
+      "Đạo hàm của tổng và của tích với hằng số"
+    ],
+    "variation_guidance": "Thay đa thức F và vị trí đáp án đúng; giữ các phương án sai gắn với lỗi đạo hàm cụ thể. Không quay lại cấu trúc tính nguyên hàm của af(x)+b từ một nguyên hàm đã cho.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "ba67584ccf7ae787",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "C",
+        "level": "TH"
+      }
+    ],
+    "solution": "Vì F là một nguyên hàm của f nên f(x)=F'(x)=12x³−10x+2. Chọn C.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Áp dụng quan hệ giữa nguyên hàm và đạo hàm rồi tính đạo hàm đa thức theo quy trình quen thuộc, thuộc TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/toan/6c85110f945e94e07413b0bb3c97cb4db59979d6ba4a6f3a4d5270113849f771.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/toan/6c85110f945e94e07413b0bb3c97cb4db59979d6ba4a6f3a4d5270113849f771.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 1,
+  "source_rows_sha256": "863dd6885185956ed9dabede84bf529993a764e4871f75f25629503cf8f2731a",
+  "source_overlap_review": {
+    "disposition": "generic_mathematical_shape_false_positive",
+    "reviewer": "parent_sol",
+    "at_utc": "2026-11-03T22:37:54.767056+00:00",
+    "sample_sha256": "5cb7a2cd6b56350e563d049a7892decebeeac6c116a4a21a479ab33acfc7478c",
+    "overlap_sha256": [
+      "a28281843e0a69612b90b73ca40a7528b07c656e96d547fffb213d14d282f91f"
+    ],
+    "reason": "Only the conventional phrase defining F as an antiderivative of f matches. Polynomial coefficients, stem task and answer options are new; no full source question or source numerical instance is waived.",
+    "mathematical_check": "Differentiate the supplied polynomial term by term: the coefficient vector of the derivative matches C. Other alternatives correspond to missed exponents, sign, or derivative of a linear term.",
+    "semantic_noncopying_proved": false
+  }
+}

@@ -1,0 +1,326 @@
+{
+  "input_sha256": "8c3e09ed6f7a09b9daacaf94e5097b9f68e3548abf2c55fdc2330a18e9b88fed",
+  "model": "gpt-6.1-sol",
+  "assignments": [
+    {
+      "ref": "3b4cca11ea82|P2|3|c",
+      "level": "TH",
+      "confidence": "high",
+      "justification": "Yêu cầu thực hiện quy trình quen thuộc để suy ra biến thiên từ tốc độ biến thiên; việc tính toán và đối chiếu không đòi hỏi lập mô hình mới.",
+      "decisive_demand": "Áp dụng quan hệ tích lũy và tính tích phân xác định.",
+      "uncertainty": null
+    },
+    {
+      "ref": "3b4cca11ea82|P2|3|d",
+      "level": "VD",
+      "confidence": "medium",
+      "justification": "Cần liên kết biểu diễn tích lũy với điều kiện vượt ngưỡng và tính khả thi của giá trị biên để đánh giá yêu cầu nhỏ nhất.",
+      "decisive_demand": "Xây dựng điều kiện đạt ngưỡng và lập luận về nghiệm nhỏ nhất trong miền thích hợp.",
+      "uncertainty": "Chưa xác định rõ miền rời rạc hay liên tục; điều này ảnh hưởng đến sự tồn tại của giá trị nhỏ nhất."
+    },
+    {
+      "ref": "3b4cca11ea82|P2|4|a",
+      "level": "TH",
+      "confidence": "high",
+      "justification": "Theo mô tả trích xuất, yêu cầu là đọc biểu diễn rồi áp dụng công thức quen thuộc, kèm xử lý đơn vị và độ chính xác.",
+      "decisive_demand": "Chuyển dữ kiện biểu diễn thành tọa độ và thực hiện phép tính khoảng cách chuẩn.",
+      "uncertainty": null
+    },
+    {
+      "ref": "3b4cca11ea82|P2|4|b",
+      "level": "TH",
+      "confidence": "high",
+      "justification": "Quan hệ xác định điểm đã được cung cấp, nên chỉ cần thực hiện phép toán tọa độ và diễn giải thành phần cần xét.",
+      "decisive_demand": "Thực hiện phép chia đoạn theo quan hệ vectơ đã cho.",
+      "uncertainty": null
+    },
+    {
+      "ref": "3b4cca11ea82|P2|4|c",
+      "level": "TH",
+      "confidence": "high",
+      "justification": "Kiểm tra sự thuộc đoạn bằng tham số thống nhất và miền tham số là một quy trình chuẩn.",
+      "decisive_demand": "Kiểm tra tính tương thích của tọa độ và điều kiện thuộc đoạn.",
+      "uncertainty": null
+    },
+    {
+      "ref": "3b4cca11ea82|P2|4|d",
+      "level": "VD",
+      "confidence": "high",
+      "justification": "Cần phối hợp điều kiện hình học với giới hạn chuyển động để xác định phần giao thực sự trước khi đo độ dài.",
+      "decisive_demand": "Lập mô hình miền tham số thỏa mãn đồng thời điều kiện không gian và giới hạn hành trình.",
+      "uncertainty": null
+    },
+    {
+      "ref": "3b4cca11ea82|P3|1|None",
+      "level": "VD",
+      "confidence": "medium",
+      "justification": "Theo cách hiểu được trích xuất, cần xây dựng các trường hợp đếm có giao nhau và kết hợp chúng thành số trường hợp hợp lệ.",
+      "decisive_demand": "Tổ chức phép đếm có ràng buộc và xử lý phần giao giữa các trường hợp.",
+      "uncertainty": "Điều kiện loại trừ và cơ chế ngẫu nhiên chưa rõ; cách hiểu khác có thể thay đổi mô hình và yêu cầu suy luận."
+    },
+    {
+      "ref": "3b4cca11ea82|P3|2|None",
+      "level": "TH",
+      "confidence": "medium",
+      "justification": "Mô tả cho phép dùng một quy trình khoảng cách quen thuộc trên cấu hình có dữ kiện xác định; chưa có bằng chứng bắt buộc suy luận ngoài quy trình chuẩn.",
+      "decisive_demand": "Triển khai phương pháp khoảng cách chuẩn sau khi xác định các độ dài phụ trợ.",
+      "uncertainty": "Không có nguyên đề để xác nhận mức độ trực tiếp của cấu hình; phương pháp được gợi ra trong trích xuất chưa chắc là cách làm tối thiểu."
+    },
+    {
+      "ref": "3b4cca11ea82|P3|3|None",
+      "level": "VD",
+      "confidence": "high",
+      "justification": "Biểu thức mục tiêu và miền lựa chọn phải được thiết lập từ tình huống, sau đó cần so sánh nghiệm bên trong với các khả năng biên.",
+      "decisive_demand": "Xây dựng và tối ưu hóa mô hình có biến lựa chọn cùng các điều kiện khả thi.",
+      "uncertainty": null
+    },
+    {
+      "ref": "3b4cca11ea82|P3|4|None",
+      "level": "VD",
+      "confidence": "high",
+      "justification": "Cần tự chuyển các quan hệ ràng buộc và mục tiêu thành mô hình toán, rồi kiểm tra khả năng thực hiện của phương án tối ưu.",
+      "decisive_demand": "Thiết lập mô hình tối ưu có ràng buộc và đánh giá nghiệm khả thi.",
+      "uncertainty": null
+    },
+    {
+      "ref": "3b4cca11ea82|P3|5|None",
+      "level": "VD",
+      "confidence": "high",
+      "justification": "Cần suy ra cấu trúc thiết diện và miền tồn tại từ hình học của vật thể trước khi thiết lập phép tính thể tích.",
+      "decisive_demand": "Xây dựng hàm diện tích thiết diện và giới hạn tích lũy phù hợp.",
+      "uncertainty": null
+    },
+    {
+      "ref": "3b4cca11ea82|P3|6|None",
+      "level": "VD",
+      "confidence": "medium",
+      "justification": "Cần chuyển điều kiện số học thành các kiểu lựa chọn hợp lệ rồi phối hợp việc chọn và sắp xếp mà không đếm trùng.",
+      "decisive_demand": "Thiết lập phân hoạch theo tính chất số học và tổ chức phép đếm có ràng buộc.",
+      "uncertainty": "Trích xuất chưa cung cấp cấu trúc cụ thể để loại trừ khả năng điều kiện số học rút gọn đáng kể; mức độ được suy từ chuỗi lập luận mô tả."
+    },
+    {
+      "ref": "de5833d227dd|P1|1|None",
+      "level": "TH",
+      "confidence": "high",
+      "justification": "Cần xử lý biểu thức theo tiêu chuẩn quen thuộc để xác định đối tượng được hỏi, thay vì chỉ nhắc lại tiêu chuẩn.",
+      "decisive_demand": "Áp dụng tiêu chuẩn nhận diện tiệm cận vào biểu thức cụ thể.",
+      "uncertainty": null
+    },
+    {
+      "ref": "de5833d227dd|P1|2|None",
+      "level": "TH",
+      "confidence": "high",
+      "justification": "Việc biến đổi về dạng tương đương rồi giải quan hệ đơn giản thuộc quy trình giải quen thuộc.",
+      "decisive_demand": "Thực hiện phép biến đổi chuẩn để giải phương trình.",
+      "uncertainty": null
+    },
+    {
+      "ref": "de5833d227dd|P1|3|None",
+      "level": "TH",
+      "confidence": "high",
+      "justification": "Dữ kiện được dùng trực tiếp trong công thức đã học để tính đại lượng cần tìm.",
+      "decisive_demand": "Thay dữ kiện vào công thức số hạng và tính giá trị.",
+      "uncertainty": null
+    },
+    {
+      "ref": "de5833d227dd|P1|4|None",
+      "level": "NB",
+      "confidence": "medium",
+      "justification": "Mức tối thiểu được mô tả là nhận ra một quy tắc vectơ đã học trong biểu diễn ký hiệu tương ứng.",
+      "decisive_demand": "Nhận diện đẳng thức thể hiện một tính chất vectơ quen thuộc.",
+      "uncertainty": "Phạm vi hình trích chưa được xác nhận; nếu phải biến đổi hướng vectơ đáng kể thì yêu cầu có thể thuộc TH."
+    },
+    {
+      "ref": "de5833d227dd|P1|5|None",
+      "level": "TH",
+      "confidence": "medium",
+      "justification": "Cần diễn giải đặc trưng của biểu diễn trực quan và đối chiếu chúng với biểu thức đại số.",
+      "decisive_demand": "Liên hệ các dấu hiệu đồ thị với đặc điểm của biểu thức hàm số.",
+      "uncertainty": "Trích xuất ghi nhận mâu thuẫn giữa mô tả và hình, đồng thời chưa xác nhận phạm vi hình; không thể kiểm chứng trực tiếp các dấu hiệu quyết định."
+    },
+    {
+      "ref": "de5833d227dd|P1|6|None",
+      "level": "NB",
+      "confidence": "medium",
+      "justification": "Dạng đặc biệt được mô tả có thể được trả lời bằng việc truy hồi trực tiếp họ nghiệm cơ bản đã học.",
+      "decisive_demand": "Nhớ và nhận diện họ nghiệm của một dạng lượng giác cơ bản.",
+      "uncertainty": "Chưa có các lựa chọn để xác nhận có cần diễn giải các biểu diễn nghiệm tương đương hay không; khi đó có thể thuộc TH."
+    },
+    {
+      "ref": "de5833d227dd|P1|7|None",
+      "level": "TH",
+      "confidence": "high",
+      "justification": "Cần vận dụng tính chất phép toán cùng các công thức cơ bản để xử lý một biểu thức, dù thao tác ngắn.",
+      "decisive_demand": "Thực hiện phép lấy nguyên hàm theo quy tắc chuẩn.",
+      "uncertainty": null
+    },
+    {
+      "ref": "de5833d227dd|P1|8|None",
+      "level": "TH",
+      "confidence": "medium",
+      "justification": "Miền và phép quay đã được xác định, nên việc lập biểu thức theo phương pháp thiết diện quen thuộc chưa đòi hỏi mô hình hóa thực chất.",
+      "decisive_demand": "Chuyển miền đã cho thành biểu thức thể tích theo công thức chuẩn.",
+      "uncertainty": "Có sai lệch thuật ngữ trong bản chép, nhưng trích xuất cho biết các quan hệ toán học cần thiết vẫn xác định."
+    },
+    {
+      "ref": "de5833d227dd|P1|9|None",
+      "level": "TH",
+      "confidence": "medium",
+      "justification": "Cần xác định hình chiếu thích hợp rồi diễn giải định nghĩa góc trong cấu hình đã cho.",
+      "decisive_demand": "Dùng phép chiếu để nhận diện góc đại diện cho quan hệ không gian.",
+      "uncertainty": "Phạm vi hình trích chưa được xác nhận; đánh giá dựa trên cấu hình được mô tả."
+    },
+    {
+      "ref": "de5833d227dd|P1|10|None",
+      "level": "NB",
+      "confidence": "high",
+      "justification": "Thông tin cần chọn được đọc trực tiếp từ cấu trúc ký hiệu theo một tính chất đã học.",
+      "decisive_demand": "Nhận diện vectơ đặc trưng trong dạng phương trình quen thuộc.",
+      "uncertainty": null
+    },
+    {
+      "ref": "de5833d227dd|P1|11|None",
+      "level": "TH",
+      "confidence": "high",
+      "justification": "Cần đọc đúng các biên của biểu diễn dữ liệu rồi thực hiện phép tính thống kê chuẩn.",
+      "decisive_demand": "Trích thông tin từ bảng và áp dụng quy tắc tính độ phân tán.",
+      "uncertainty": null
+    },
+    {
+      "ref": "de5833d227dd|P1|12|None",
+      "level": "TH",
+      "confidence": "high",
+      "justification": "Cần suy ra đại lượng cần tìm từ hệ số trong dạng chuẩn bằng một phép tính quen thuộc.",
+      "decisive_demand": "Áp dụng quan hệ giữa tham số hình học và hằng số trong phương trình.",
+      "uncertainty": null
+    },
+    {
+      "ref": "de5833d227dd|P2|1|a",
+      "level": "TH",
+      "confidence": "medium",
+      "justification": "Việc đọc cấu hình, suy ra tham số từ quan hệ tiếp xúc và lập phương trình là quy trình tọa độ quen thuộc.",
+      "decisive_demand": "Xác định tham số hình học để lập phương trình chuẩn.",
+      "uncertainty": "Phạm vi hình trích chưa được xác nhận; mức phân loại dựa trên mô tả cấu hình."
+    },
+    {
+      "ref": "de5833d227dd|P2|1|b",
+      "level": "TH",
+      "confidence": "medium",
+      "justification": "Cần chuyển kích thước hình học sang các tham số của dạng phương trình đã học.",
+      "decisive_demand": "Diễn giải kích thước để áp dụng phương trình chuẩn.",
+      "uncertainty": "Phạm vi hình trích chưa được xác nhận; chưa kiểm chứng trực tiếp cách thể hiện các kích thước."
+    },
+    {
+      "ref": "de5833d227dd|P2|1|c",
+      "level": "TH",
+      "confidence": "medium",
+      "justification": "Có thể đánh giá biểu thức được đề xuất bằng cách hiểu phạm vi diện tích mà nó biểu diễn và sử dụng đối xứng quen thuộc.",
+      "decisive_demand": "Diễn giải ý nghĩa hình học của tích phân và đối chiếu phạm vi cần tính.",
+      "uncertainty": "Việc xác định toàn miền phụ thuộc mô tả phần tô và tính đối xứng trong hình trích chưa được xác nhận độc lập."
+    },
+    {
+      "ref": "de5833d227dd|P2|1|d",
+      "level": "TH",
+      "confidence": "medium",
+      "justification": "Trích xuất mô tả phép phân rã trực tiếp thành các phần quen thuộc, cho phép áp dụng quy trình thể tích chuẩn; số thao tác không đủ để nâng mức.",
+      "decisive_demand": "Áp dụng phương pháp hiệu thể tích trên các miền đã xác định.",
+      "uncertainty": "Chưa xác nhận đầy đủ hình và miền quay; nếu cần tự thiết lập cấu trúc miền phức tạp hơn thì yêu cầu có thể thay đổi."
+    },
+    {
+      "ref": "de5833d227dd|P2|2|a",
+      "level": "TH",
+      "confidence": "high",
+      "justification": "Các thông tin cần kiểm tra được suy ra bằng đọc dạng chuẩn và biến đổi đại số quen thuộc.",
+      "decisive_demand": "Đưa phương trình về dạng chuẩn để xác định tham số hình học.",
+      "uncertainty": null
+    },
+    {
+      "ref": "de5833d227dd|P2|2|b",
+      "level": "NB",
+      "confidence": "medium",
+      "justification": "Với cấu trúc được mô tả, mức tối thiểu có thể chỉ là nhận ra phương pháp tuyến từ các hệ số của phương trình.",
+      "decisive_demand": "Nhận diện phương vectơ đặc trưng của một dạng phương trình.",
+      "uncertainty": "Không có vectơ đề xuất cụ thể để biết việc đối chiếu chỉ là nhận diện hay cần kiểm tra tính cùng phương; trường hợp sau có thể thuộc TH."
+    },
+    {
+      "ref": "de5833d227dd|P2|2|c",
+      "level": "TH",
+      "confidence": "high",
+      "justification": "Việc xác định tham số rồi dùng công thức khoảng cách tạo thành một chuỗi tính toán chuẩn.",
+      "decisive_demand": "Trích tọa độ từ phương trình và áp dụng công thức khoảng cách.",
+      "uncertainty": null
+    },
+    {
+      "ref": "de5833d227dd|P2|2|d",
+      "level": "VD",
+      "confidence": "high",
+      "justification": "Cần chuyển điều kiện tồn tại một đối tượng tiếp xúc trong không gian thành quan hệ khoảng cách trên cấu hình giao, rồi suy ra điều kiện tham số.",
+      "decisive_demand": "Kết nối cấu trúc giao hình học với điều kiện tiếp xúc để thiết lập bài toán tham số.",
+      "uncertainty": null
+    },
+    {
+      "ref": "de5833d227dd|P2|3|a",
+      "level": "TH",
+      "confidence": "medium",
+      "justification": "Yêu cầu quyết định nằm ở việc hiểu phạm vi áp dụng của kết quả đạo hàm và phân biệt các cách phát biểu tính đơn điệu.",
+      "decisive_demand": "Diễn giải định nghĩa tính đơn điệu trên miền có nhiều thành phần.",
+      "uncertainty": "Ý nghĩa phụ thuộc cách ghi miền xét; trích xuất cho biết cách chép khác có thể làm thay đổi nhận định."
+    },
+    {
+      "ref": "de5833d227dd|P2|3|b",
+      "level": "TH",
+      "confidence": "high",
+      "justification": "Kiểm tra cực trị bằng đạo hàm và sự đổi dấu là một quy trình quen thuộc.",
+      "decisive_demand": "Áp dụng tiêu chuẩn đạo hàm để phân loại điểm tới hạn.",
+      "uncertainty": null
+    },
+    {
+      "ref": "de5833d227dd|P2|3|c",
+      "level": "TH",
+      "confidence": "high",
+      "justification": "Việc lập danh sách ứng viên và so sánh giá trị trên miền đóng thuộc quy trình tối ưu chuẩn.",
+      "decisive_demand": "Thực hiện quy trình tìm giá trị cực trị tuyệt đối trên đoạn.",
+      "uncertainty": null
+    },
+    {
+      "ref": "de5833d227dd|P2|3|d",
+      "level": "VD",
+      "confidence": "medium",
+      "justification": "Cần nối kết kết quả khảo sát hàm với quan hệ độ dài, định lý hình học và biểu diễn tọa độ để suy ra đối tượng chưa biết.",
+      "decisive_demand": "Xây dựng chuỗi phụ thuộc giữa dữ kiện giải tích và quan hệ chia đoạn hình học.",
+      "uncertainty": "Trích xuất chưa cho thấy các kết quả trung gian có sẵn từ phần trước hay phải tự xác định; điều này ảnh hưởng mức kết nối thực sự cần thiết."
+    },
+    {
+      "ref": "de5833d227dd|P2|4|a",
+      "level": "TH",
+      "confidence": "high",
+      "justification": "Cần xác định các số lượng tương ứng rồi tính theo định nghĩa trong một trường hợp chuẩn.",
+      "decisive_demand": "Áp dụng tỉ số đếm để tính xác suất.",
+      "uncertainty": null
+    },
+    {
+      "ref": "de5833d227dd|P2|4|b",
+      "level": "TH",
+      "confidence": "high",
+      "justification": "Thông tin điều kiện cho phép cập nhật trực tiếp không gian xét rồi thực hiện phép tính quen thuộc.",
+      "decisive_demand": "Điều chỉnh tập khả năng theo điều kiện đã biết và tính xác suất.",
+      "uncertainty": null
+    },
+    {
+      "ref": "de5833d227dd|P2|4|c",
+      "level": "TH",
+      "confidence": "high",
+      "justification": "Có thể sử dụng tính đối xứng quen thuộc để xác định xác suất biên; không bắt buộc xây dựng chuỗi phân trường hợp phức tạp.",
+      "decisive_demand": "Diễn giải tính tương đương giữa các vị trí trong phép chọn ngẫu nhiên.",
+      "uncertainty": null
+    },
+    {
+      "ref": "de5833d227dd|P2|4|d",
+      "level": "TH",
+      "confidence": "high",
+      "justification": "Đảo chiều điều kiện trong cấu trúc quen thuộc có thể thực hiện bằng công thức chuẩn hoặc đối xứng; chưa có yêu cầu mô hình hóa mới.",
+      "decisive_demand": "Xác định đúng vai trò của biến cố và áp dụng quy trình xác suất có điều kiện.",
+      "uncertainty": null
+    }
+  ]
+}

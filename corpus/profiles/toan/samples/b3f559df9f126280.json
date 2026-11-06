@@ -1,0 +1,144 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "b3f559df9f126280",
+    "topic": "Ý nghĩa đạo hàm",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một mô hình lôgarit theo thời gian và một nhận định về tốc độ giảm tại thời điểm xác định.",
+        "task": "Kiểm tra giá trị tốc độ giảm và đơn vị của nó.",
+        "reasoning": [
+          "Tính đạo hàm của mô hình.",
+          "Thay thời điểm vào đạo hàm.",
+          "Lấy độ lớn của tốc độ thay đổi để so sánh với tốc độ giảm được nêu."
+        ],
+        "combines": [
+          "Đạo hàm",
+          "Giá trị tuyệt đối",
+          "Đơn vị tốc độ"
+        ],
+        "difficulty_source": "Phân biệt đạo hàm có dấu với độ lớn của tốc độ giảm.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "7ab78715480e|P2|1|c"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "b3f559df9f126280",
+    "stem": "Trong một mô hình minh họa, chiều cao của cột chất lỏng được cho bởi h(t)=90−6ln(1+2t), với h tính bằng centimét, t tính bằng phút và 0≤t≤10. Xác định tính đúng hoặc sai của các phát biểu sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Tại thời điểm t=0, cột chất lỏng cao 90 cm."
+      },
+      {
+        "sub": "b",
+        "text": "Đạo hàm của hàm số chiều cao là h′(t)=−12/(1+2t)."
+      },
+      {
+        "sub": "c",
+        "text": "Tại thời điểm t=2 phút, tốc độ thay đổi tức thời của chiều cao là −2,4 cm/phút."
+      },
+      {
+        "sub": "d",
+        "text": "Tại thời điểm t=2 phút, chiều cao đang giảm với tốc độ 12 cm/phút."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) h(0)=90−6ln1=90 cm. b) Áp dụng quy tắc đạo hàm hàm hợp: h′(t)=−6·2/(1+2t)=−12/(1+2t). c) h′(2)=−12/5=−2,4 cm/phút. d) Đạo hàm âm cho biết chiều cao đang giảm; tốc độ giảm là |h′(2)|=2,4 cm/phút, không phải 12 cm/phút.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Lấy độ lớn của tử số trong biểu thức đạo hàm làm tốc độ giảm, bỏ qua mẫu số tại thời điểm cần xét.",
+        "why_plausible": "Số 12 xuất hiện trực tiếp trong đạo hàm nên học sinh có thể dùng ngay mà chưa thay t=2."
+      }
+    ],
+    "level_reason": "Các phát biểu yêu cầu thay giá trị vào hàm, thực hiện quy tắc đạo hàm quen thuộc và diễn giải dấu, độ lớn cùng đơn vị của đạo hàm. Mức cao nhất của toàn câu là TH.",
+    "prerequisites": [
+      "Đạo hàm của ln u và quy tắc đạo hàm hàm hợp",
+      "Ý nghĩa của đạo hàm theo thời gian",
+      "Phân biệt tốc độ thay đổi có dấu với tốc độ giảm"
+    ],
+    "variation_guidance": "Có thể thay hệ số và thời điểm xét, nhưng cần giữ miền xác định của lôgarit và kiểm tra lại độ lớn của tốc độ giảm tại thời điểm mới.",
+    "uncertainties": [
+      "Định hướng cấu trúc chỉ dựa trên quan sát từ nguồn bên thứ ba cấp tỉnh; không có đối chiếu chính thức. Đây là câu minh họa tổng hợp mới, không phải bằng chứng đề thi thật."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "b3f559df9f126280",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) h(0)=90−6ln1=90 cm. b) h′(t)=−6·2/(1+2t)=−12/(1+2t). c) h′(2)=−12/5=−2,4 cm/phút. d) Tại t=2, chiều cao giảm với tốc độ 2,4 cm/phút, không phải 12 cm/phút.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a) Thay giá trị vào hàm số. b) Thực hiện quy tắc đạo hàm quen thuộc. c) Thay giá trị vào đạo hàm và diễn giải tốc độ thay đổi. d) Phân biệt giá trị đạo hàm âm với độ lớn tốc độ giảm. Mỗi ý đều thuộc quy trình hoặc diễn giải thông thường."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/1218244cf99a19a247ab2d760eeca76bbf572d7ec21223d72eeb900cae190a9a.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/1218244cf99a19a247ab2d760eeca76bbf572d7ec21223d72eeb900cae190a9a.resolve.json"
+}

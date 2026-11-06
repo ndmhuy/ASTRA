@@ -1,0 +1,147 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "aa053b9ef78ff1ab",
+    "topic": "Xác suất có điều kiện",
+    "part": "P2",
+    "level": "NB",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Tỉ lệ nền của các loại đối tượng và xác suất bị một hệ thống chọn theo từng loại.",
+        "task": "Kiểm tra một xác suất có điều kiện được nhắc lại trong nhận định.",
+        "reasoning": [
+          "Xác định loại đối tượng đang được dùng làm điều kiện.",
+          "Đối chiếu xác suất được nêu với thông số tương ứng trong dữ kiện."
+        ],
+        "combines": [
+          "Xác suất có điều kiện",
+          "Đọc thông số phân loại"
+        ],
+        "difficulty_source": "Đọc đúng điều kiện của thông số đã được cung cấp trực tiếp.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "7ab78715480e|P2|4|b"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "aa053b9ef78ff1ab",
+    "stem": "Một vườn ươm phân loại cây giống theo hai khu gieo A và B. Chọn ngẫu nhiên một cây trong vườn; gọi A, B lần lượt là biến cố cây thuộc khu tương ứng, M là biến cố máy gắn nhãn “cần kiểm tra”, và M̄ là biến cố máy không gắn nhãn đó. Cả hai khu đều có cây. Cho biết P(M|A) = 0,82; P(M̄|A) = 0,18; P(M|B) = 0,17; P(M̄|B) = 0,83. Xét tính đúng, sai của các nhận định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Xác suất máy gắn nhãn “cần kiểm tra”, với điều kiện cây thuộc khu A, bằng 0,82."
+      },
+      {
+        "sub": "b",
+        "text": "Xác suất máy không gắn nhãn “cần kiểm tra”, với điều kiện cây thuộc khu A, bằng 0,82."
+      },
+      {
+        "sub": "c",
+        "text": "Xác suất máy gắn nhãn “cần kiểm tra”, với điều kiện cây thuộc khu B, bằng 0,17."
+      },
+      {
+        "sub": "d",
+        "text": "Xác suất máy không gắn nhãn “cần kiểm tra”, với điều kiện cây thuộc khu B, bằng 0,17."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "NB"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "NB"
+      }
+    ],
+    "solution": "a) Đúng: nhận định diễn đạt trực tiếp P(M|A) = 0,82. b) Sai: nhận định nói về P(M̄|A), có giá trị đã cho là 0,18; số 0,82 thuộc biến cố M khi biết A. c) Đúng: nhận định diễn đạt trực tiếp P(M|B) = 0,17. d) Sai: P(M̄|B) = 0,83; số 0,17 là xác suất được gắn nhãn khi biết cây thuộc khu B.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Đồng nhất biến cố được gắn nhãn với biến cố không được gắn nhãn trong cùng khu A.",
+        "why_plausible": "Học sinh chú ý đúng điều kiện A nhưng bỏ qua từ “không” khi đọc biến cố."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Dùng P(M|B) thay cho P(M̄|B).",
+        "why_plausible": "Hai thông số có cùng điều kiện B nên dễ bị ghép nhầm với mô tả kết quả của máy."
+      }
+    ],
+    "level_reason": "Mỗi nhận định chỉ yêu cầu nhận ra cách diễn đạt bằng lời của một xác suất có điều kiện đã cho trực tiếp. Không phải tính xác suất bù hay đảo điều kiện. Mức cao nhất trong bốn nhận định là NB.",
+    "prerequisites": [
+      "Ý nghĩa của ký hiệu xác suất có điều kiện P(X|Y).",
+      "Phân biệt biến cố M với biến cố đối M̄."
+    ],
+    "variation_guidance": "Có thể đổi bối cảnh phân nhóm và các thông số, nhưng cần cung cấp trực tiếp từng xác suất được đối chiếu nếu giữ mục tiêu NB cho toàn bộ mẫu.",
+    "uncertainties": [
+      "Mẫu tự biên soạn dựa trên quan sát cấu trúc cấp tỉnh qua bên thứ ba, không có neo chính thức. Các xác suất là dữ kiện giả định, không mô tả hiệu quả của một hệ thống thực tế."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "aa053b9ef78ff1ab",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "NB"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "NB"
+      }
+    ],
+    "solution": "Các xác suất đã được cho trực tiếp: P(M|A) = 0,82 nên a đúng; P(M̄|A) = 0,18 nên b sai; P(M|B) = 0,17 nên c đúng; P(M̄|B) = 0,83 nên d sai.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Từng ý a, b, c, d chỉ yêu cầu nhận ra hoặc đối chiếu lại đúng xác suất đã nêu trực tiếp trong đề; không cần tính toán hay suy luận kết hợp."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/74a043ab077d344b9e5ae04dfd42e00f483d9941e82d7c15c872e4eae0dd710a.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/74a043ab077d344b9e5ae04dfd42e00f483d9941e82d7c15c872e4eae0dd710a.resolve.json"
+}

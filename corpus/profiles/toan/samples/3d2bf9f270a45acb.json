@@ -1,0 +1,152 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "3d2bf9f270a45acb",
+    "topic": "Đạo hàm và nguyên hàm",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Quan hệ nguyên hàm giữa hai hàm số và một hoành độ tiếp xúc.",
+        "task": "Kiểm tra hệ số góc tiếp tuyến của đồ thị nguyên hàm.",
+        "reasoning": [
+          "Dùng quan hệ nguyên hàm để xác định đạo hàm của hàm cần xét.",
+          "Tính giá trị đạo hàm tại hoành độ tiếp xúc.",
+          "Đối chiếu hệ số góc được nêu."
+        ],
+        "combines": [
+          "Quan hệ nguyên hàm và đạo hàm",
+          "Hệ số góc tiếp tuyến",
+          "Giá trị lượng giác"
+        ],
+        "difficulty_source": "Xác định đúng hàm cần lấy đạo hàm.",
+        "evidence_uncertainty": "Khóa đáp án chưa được xác nhận; chủ đề chính thuộc nguyên hàm, ý nghĩa tiếp tuyến thuộc kiến thức đạo hàm lớp trước.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "acc00d945397|P2|1|c"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "3d2bf9f270a45acb",
+    "stem": "Cho f(x)=2cos x−sin(2x). Hàm số F là một nguyên hàm của f trên R và thỏa mãn F(0)=1. Các góc được tính bằng radian. Xét tính đúng hoặc sai của các khẳng định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "F′(x)=2cos x−sin(2x) với mọi x thuộc R."
+      },
+      {
+        "sub": "b",
+        "text": "Tiếp tuyến của đồ thị y=F(x) tại điểm có hoành độ π/6 có hệ số góc bằng √3."
+      },
+      {
+        "sub": "c",
+        "text": "F(x)=2sin x+(1/2)cos(2x)+1/2 với mọi x thuộc R."
+      },
+      {
+        "sub": "d",
+        "text": "Tiếp tuyến của đồ thị y=F(x) tại điểm có hoành độ 0 có phương trình y=x+1."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Theo định nghĩa nguyên hàm, F′=f nên a đúng. Hệ số góc tại x=π/6 là F′(π/6)=2cos(π/6)−sin(π/3)=√3−√3/2=√3/2, nên b sai. Một nguyên hàm của f là 2sin x+(1/2)cos(2x)+C. Từ F(0)=1 suy ra 1/2+C=1, tức C=1/2: c đúng. Tại x=0, đồ thị đi qua (0;1) và có hệ số góc F′(0)=2. Tiếp tuyến là y−1=2(x−0), hay y=2x+1: d sai.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Chỉ tính 2cos(π/6), bỏ qua số hạng −sin(π/3).",
+        "why_plausible": "Giá trị √3 xuất hiện ngay khi tính số hạng đầu, nên học sinh có thể dừng trước khi tính đủ giá trị của đạo hàm."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Dùng tung độ F(0)=1 làm hệ số góc tiếp tuyến.",
+        "why_plausible": "Cả giá trị hàm và giá trị đạo hàm tại điểm tiếp xúc đều tham gia công thức tiếp tuyến, nên học sinh có thể nhầm vai trò của chúng."
+      }
+    ],
+    "level_reason": "Mức cao nhất là TH. Ý a nhận biết định nghĩa nguyên hàm; các ý còn lại áp dụng trực tiếp quan hệ F′=f, công thức nguyên hàm lượng giác và phương trình tiếp tuyến trong trường hợp quen thuộc.",
+    "prerequisites": [
+      "Định nghĩa nguyên hàm",
+      "Nguyên hàm của các hàm lượng giác cơ bản",
+      "Giá trị lượng giác của các góc đặc biệt",
+      "Ý nghĩa hình học của đạo hàm",
+      "Phương trình tiếp tuyến"
+    ],
+    "variation_guidance": "Có thể thay hệ số lượng giác, điều kiện ban đầu và hoành độ tiếp xúc bằng các giá trị đặc biệt khác; luôn phân biệt rõ hàm số và nguyên hàm của nó.",
+    "uncertainties": [
+      "Đây là mẫu minh họa tổng hợp nguyên gốc. Quan sát định hướng chỉ thuộc nguồn cấp tỉnh qua bên thứ ba và khóa đáp án nguồn chưa được xác nhận; không suy rộng thành đặc điểm đề thi chính thức."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "3d2bf9f270a45acb",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Theo định nghĩa nguyên hàm, F′(x)=f(x). Hệ số góc tại π/6 là f(π/6)=√3−√3/2=√3/2. Ta có F(x)=2sin x+(1/2)cos(2x)+C; điều kiện F(0)=1 cho C=1/2. Tại x=0, F(0)=1 và F′(0)=2 nên tiếp tuyến là y=2x+1.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Ý a nhận biết trực tiếp định nghĩa nguyên hàm nên là NB. Ý b thay giá trị để tính đạo hàm; ý c tìm nguyên hàm và hằng số; ý d lập tiếp tuyến theo công thức quen thuộc: đều là TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/8a0810f74c745a69f1a811fbeb46f5688d22bef3c2f2595253ee17b274b87334.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/8a0810f74c745a69f1a811fbeb46f5688d22bef3c2f2595253ee17b274b87334.resolve.json"
+}

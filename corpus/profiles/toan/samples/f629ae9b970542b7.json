@@ -1,0 +1,152 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "f629ae9b970542b7",
+    "topic": "Tích phân và tối ưu",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Các hàm tốc độ thu và chi cùng một nhận định về lợi nhuận tích lũy trong khoảng hoạt động hữu ích.",
+        "task": "Kiểm tra lợi nhuận tích lũy đến thời điểm kết thúc hữu ích.",
+        "reasoning": [
+          "Lập tốc độ lợi nhuận từ các tốc độ đã cho.",
+          "Xác định độc lập thời điểm chuyển từ tăng sang giảm.",
+          "Tích phân tốc độ lợi nhuận trên khoảng hữu ích.",
+          "Đối chiếu với giá trị được đề xuất."
+        ],
+        "combines": [
+          "Đạo hàm và tối ưu",
+          "Tích phân",
+          "Mô hình lợi nhuận"
+        ],
+        "difficulty_source": "Tự xác định cận trên thay vì dùng ngay một mốc được nêu ở nhận định khác.",
+        "evidence_uncertainty": "Không có khóa đáp án đối sánh; không gán đúng sai cho nhận định.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "aceb17d936f5|P2|1|d"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "f629ae9b970542b7",
+    "stem": "Một quầy hàng hoạt động trong 10 giờ. Tại thời điểm t giờ kể từ lúc mở cửa, tốc độ thu tiền và tốc độ phát sinh chi phí lần lượt là R(t)=30−2t và C(t)=6+t, tính bằng trăm nghìn đồng/giờ, với 0≤t≤10. Gọi L(t) là lợi nhuận tích lũy, tính bằng trăm nghìn đồng, với L(0)=0 và L′(t)=R(t)−C(t). Khoảng hoạt động hữu ích được hiểu là khoảng từ lúc mở cửa đến thời điểm lợi nhuận tích lũy đạt giá trị lớn nhất. Xét tính đúng sai của các nhận định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "L′(t)=24−3t."
+      },
+      {
+        "sub": "b",
+        "text": "Lợi nhuận tích lũy tăng trong suốt 10 giờ hoạt động."
+      },
+      {
+        "sub": "c",
+        "text": "Khoảng hoạt động hữu ích kết thúc tại thời điểm t=8."
+      },
+      {
+        "sub": "d",
+        "text": "Lợi nhuận tích lũy đến cuối khoảng hoạt động hữu ích là 192 trăm nghìn đồng."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) L′(t)=(30−2t)−(6+t)=24−3t nên nhận định đúng. b) L′(t)>0 khi 0≤t<8 và L′(t)<0 khi 8<t≤10. Vì vậy L giảm trong hai giờ cuối, nên nhận định sai. c) Từ dấu của L′, L đạt giá trị lớn nhất trên [0;10] tại t=8; nhận định đúng. d) L(8)=∫ từ 0 đến 8 của (24−3t)dt=[24t−3t²/2] từ 0 đến 8=96 trăm nghìn đồng. Nhận định sai.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Cho rằng tốc độ thu tiền còn dương thì lợi nhuận tích lũy vẫn tăng.",
+        "why_plausible": "R(t) dương trên toàn khoảng hoạt động, nhưng chiều biến thiên của lợi nhuận phụ thuộc vào hiệu R(t)−C(t)."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Lấy tốc độ lợi nhuận ban đầu nhân với toàn bộ 8 giờ, được 24×8=192.",
+        "why_plausible": "Đây là cách tính quen thuộc khi tốc độ không đổi, nhưng tốc độ lợi nhuận trong bài giảm theo thời gian."
+      }
+    ],
+    "level_reason": "Mô hình L′=R−C và ý nghĩa khoảng hữu ích đã được cung cấp. Học sinh thực hiện quy trình quen thuộc: xét dấu một hàm bậc nhất rồi tính tích phân xác định. Mức cao nhất trong các nhận định là TH; số bước tính không tự làm câu hỏi thành VD.",
+    "prerequisites": [
+      "Quan hệ giữa dấu đạo hàm và tính đơn điệu",
+      "Tìm giá trị lớn nhất trên một đoạn",
+      "Tích phân xác định của đa thức",
+      "Ý nghĩa của tốc độ biến thiên và đại lượng tích lũy"
+    ],
+    "variation_guidance": "Đây là mẫu minh họa tự biên soạn, không phải bằng chứng đề thi thực hay một đề thi đầy đủ. Có thể thay các tốc độ bằng hai hàm bậc nhất khác sao cho hiệu đổi dấu từ dương sang âm trong khoảng hoạt động; tính lại thời điểm cực đại và lợi nhuận tích lũy.",
+    "uncertainties": [
+      "Quan sát cấu trúc được cung cấp chỉ thuộc nguồn cấp tỉnh qua bên thứ ba, không có mốc đối sánh chính thức hoặc khóa đáp án khớp; mẫu này không suy rộng thành đặc trưng của đề thi chính thức."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "f629ae9b970542b7",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "L′(t)=(30−2t)−(6+t)=24−3t. Đạo hàm dương khi 0≤t<8 và âm khi 8<t≤10, nên L tăng đến t=8 rồi giảm. Vì vậy lợi nhuận tích lũy lớn nhất tại t=8. Từ L(0)=0 suy ra L(t)=24t−3t²/2; L(8)=96 trăm nghìn đồng, không phải 192.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Từng ý đều chỉ yêu cầu thực hiện quy trình quen thuộc: a trừ hai biểu thức; b xét dấu đạo hàm; c xác định điểm đạt cực đại trên đoạn; d tính nguyên hàm và thay cận. Mô hình lợi nhuận và định nghĩa khoảng hữu ích đã được cung cấp."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/92ebcf2d68f94d6d1ca6b5d27f07efd3b6feb2ca1288f5a2f691c88e8dfa5d6c.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/92ebcf2d68f94d6d1ca6b5d27f07efd3b6feb2ca1288f5a2f691c88e8dfa5d6c.resolve.json"
+}

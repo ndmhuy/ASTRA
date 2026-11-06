@@ -1,0 +1,303 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{setspace}
+\setstretch{1.18}
+\usepackage{graphicx}
+\usepackage{ifthen}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, patterns}
+\IfFileExists{pgf-pie.sty}{\usepackage{pgf-pie}}{}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{chemfig}
+\usepackage{longtable,booktabs}
+\usepackage{adjustbox}
+\providecommand{\errorpart}[2]{$\underset{\textbf{#1}}{\underline{\text{#2}}}$}
+\usepackage[top=0.8in, left=0.75in, right=0.75in, bottom=0.85in, headheight=38pt, headsep=18pt, footskip=1.2cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue]{hyperref}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 2pt minus 1pt}
+
+\setlist[enumerate]{itemsep=4pt, parsep=2pt, topsep=4pt, partopsep=2pt}
+\setlist[itemize]{itemsep=4pt, parsep=2pt, topsep=4pt}
+
+\makeatletter
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{LecturingLastPage}{{}{\thepage}{}{}{}}}}
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{LecturingPageCount}{{}{\two@digits{\value{page}}}{}{}{}}}}
+\makeatother
+\pagestyle{fancy}
+\fancyhf{}
+\cfoot{\small Trang \thepage/\pageref*{LecturingLastPage} - Mã đề thi 2161}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\begin{document}
+
+\sloppy
+
+\noindent
+\begin{minipage}[t]{0.37\textwidth}
+    \small
+    \centering
+    \IfFileExists{logo.png}{\includegraphics[height=0.9cm]{logo.png}\\[0.1cm]}{%
+      \IfFileExists{logo.jpg}{\includegraphics[height=0.9cm]{logo.jpg}\\[0.1cm]}{}%
+    }
+    {\bfseries \mbox{}}\\[-0.2cm]
+    \rule{3cm}{0.5pt}\\[0.1cm]
+    {\bfseries ĐỀ LUYỆN TẬP}\\{\small (Đề thi có \pageref*{LecturingPageCount} trang)}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.62\textwidth}
+    \small
+    \centering
+    {\bfseries \sbox0{KỲ THI TỐT NGHIỆP TRUNG HỌC PHỔ THÔNG NĂM 2026}\ifdim\wd0>\linewidth KỲ THI TỐT NGHIỆP TRUNG HỌC PHỔ~THÔNG\\NĂM 2026\else\usebox0\fi}\\[0.15cm]
+    {\bfseries Môn thi: GIÁO DỤC KINH TẾ VÀ PHÁP LUẬT}\\[0.15cm]
+    {\itshape Thời gian làm bài: 50 phút, không kể thời gian phát đề}
+\end{minipage}
+
+\vspace{0.4cm}
+\noindent
+\begin{minipage}[t]{0.68\textwidth}
+    Họ, tên thí sinh: \dotfill\\[0.15cm]
+    Số báo danh: \dotfill
+\end{minipage}%
+\hfill
+\fbox{\begin{minipage}{3.6cm}\centering\textbf{Mã đề: 2161}\end{minipage}}
+
+\vspace{0.5cm}
+
+% LECTURING-PART: P1
+\textbf{Phần I: Trắc nghiệm nhiều lựa chọn} \textit{Thí sinh trả lời từ câu 1 đến câu 24. Mỗi câu hỏi thí sinh chỉ chọn một phương án.}
+
+\noindent \textbf{Dựa vào thông tin sau, trả lời câu 1 đến câu 2:} ``Theo bà Nguyễn Thị Hương, Cục trưởng Cục Thống kê, GDP năm 2025 tăng trưởng khá với mức tăng ước đạt 8,02\% so với năm trước, chỉ thấp hơn tốc độ tăng của năm 2022 trong giai đoạn 2011 - 2025. [...] Về cơ cấu nền kinh tế năm 2025, khu vực nông, lâm nghiệp và thủy sản chiếm tỉ trọng 11,64\%, khu vực công nghiệp và xây dựng chiếm 37,65\%, khu vực dịch vụ chiếm 42,75\%, thuế sản phẩm trừ trợ cấp sản phẩm chiếm 7,96\%.''\\
+\hspace*{\fill}\textit{(Theo Tuổi Trẻ Online, ngày 05/01/2026, số liệu của Cục Thống kê)}
+
+\noindent \textbf{Câu 1:} Số liệu về tỉ trọng của các khu vực trong cơ cấu nền kinh tế năm 2025 ở thông tin trên là căn cứ để đánh giá nội dung nào sau đây của phát triển kinh tế?\\
+% LECTURING-MATRIX: topic=Tăng trưởng và phát triển kinh tế; level=NB\\
+\noindent\makebox[0.48\textwidth][l]{A. Bảo vệ môi trường.}\makebox[0.48\textwidth][l]{B. Chuyển dịch cơ cấu kinh tế.}\\
+\noindent\makebox[0.48\textwidth][l]{C. Tiến bộ xã hội.}\makebox[0.48\textwidth][l]{D. Phân phối thu nhập.}
+
+\noindent \textbf{Câu 2:} Từ thông tin trên, có thể rút ra kết luận nào sau đây về nền kinh tế Việt Nam năm 2025?\\
+% LECTURING-MATRIX: topic=Tăng trưởng và phát triển kinh tế; level=TH\\
+\noindent A. Nền kinh tế đã phát triển bền vững vì GDP tăng trưởng khá.\\
+\noindent B. Khu vực nông, lâm nghiệp và thủy sản chiếm tỉ trọng lớn hơn khu vực công nghiệp và xây dựng.\\
+\noindent C. Khu vực dịch vụ chiếm tỉ trọng lớn nhất trong cơ cấu nền kinh tế.\\
+\noindent D. Tốc độ tăng GDP năm 2025 là cao nhất trong giai đoạn 2011 - 2025.
+
+\noindent \textbf{Câu 3:} Sự gia tăng về tổng sản phẩm quốc nội (GDP) hoặc tổng thu nhập quốc dân (GNI) trong một thời gian nhất định so với thời kì gốc được gọi là\\
+% LECTURING-MATRIX: topic=Tăng trưởng và phát triển kinh tế; level=NB\\
+\noindent\makebox[0.48\textwidth][l]{A. hội nhập kinh tế.}\makebox[0.48\textwidth][l]{B. tăng trưởng kinh tế.}\\
+\noindent\makebox[0.48\textwidth][l]{C. cơ cấu kinh tế.}\makebox[0.48\textwidth][l]{D. phát triển kinh tế.}
+
+\noindent \textbf{Câu 4:} ``Không ai bị bắt nếu không có quyết định của Tòa án nhân dân, quyết định hoặc phê chuẩn của Viện kiểm sát nhân dân, trừ trường hợp phạm tội quả tang.''\\
+\hspace*{\fill}\textit{(Khoản 2 Điều 20 Hiến pháp năm 2013)}\\
+Quy định trên thể hiện quyền nào sau đây của công dân?\\
+% LECTURING-MATRIX: topic=Quyền và nghĩa vụ công dân; level=NB\\
+\noindent A. Quyền bí mật thư tín, điện thoại, điện tín.\\
+\noindent B. Quyền tự do ngôn luận.\\
+\noindent C. Quyền bất khả xâm phạm về thân thể.\\
+\noindent D. Quyền bất khả xâm phạm về chỗ ở.
+
+\noindent \textbf{Câu 5:} Hội nhập kinh tế quốc tế mang lại cơ hội nào sau đây cho các doanh nghiệp Việt Nam?\\
+% LECTURING-MATRIX: topic=Hội nhập kinh tế quốc tế; level=NB\\
+\noindent A. Không phải cạnh tranh với các doanh nghiệp nước ngoài.\\
+\noindent B. Được Nhà nước bảo hộ tuyệt đối trước hàng hóa nhập khẩu.\\
+\noindent C. Mở rộng thị trường xuất khẩu, tiếp cận nguồn vốn và công nghệ tiên tiến.\\
+\noindent D. Được miễn thực hiện mọi nghĩa vụ thuế ở trong nước.
+
+\noindent \textbf{Câu 6:} Văn bản nào sau đây là nguồn cơ bản của pháp luật quốc tế?\\
+% LECTURING-MATRIX: topic=Pháp luật quốc tế; level=NB\\
+\noindent\makebox[0.48\textwidth][l]{A. Nghị quyết của Hội đồng nhân dân.}\makebox[0.48\textwidth][l]{B. Điều ước quốc tế.}\\
+\noindent\makebox[0.48\textwidth][l]{C. Điều lệ của doanh nghiệp.}\makebox[0.48\textwidth][l]{D. Hiến pháp của một quốc gia.}
+
+\noindent \textbf{Câu 7:} Trong quản lí thu, chi của gia đình, khoản chi nào sau đây thuộc nhóm chi thiết yếu?\\
+% LECTURING-MATRIX: topic=Quản lí thu chi và kinh doanh; level=NB\\
+\noindent\makebox[0.48\textwidth][l]{A. Đi du lịch nước ngoài.}\makebox[0.48\textwidth][l]{B. Mua đồ trang trí theo sở thích.}\\
+\noindent\makebox[0.48\textwidth][l]{C. Mua thiết bị giải trí đắt tiền.}\makebox[0.48\textwidth][l]{D. Trả tiền điện, nước sinh hoạt.}
+
+\noindent \textbf{Câu 8:} Trường hợp nào sau đây thể hiện tăng trưởng kinh tế nhưng chưa gắn với tiến bộ và công bằng xã hội?\\
+% LECTURING-MATRIX: topic=Tăng trưởng và phát triển kinh tế; level=TH\\
+\noindent A. Sản lượng tăng, tỉ lệ lao động qua đào tạo có bằng, chứng chỉ tăng.\\
+\noindent B. GDP tăng liên tục, đồng thời tỉ lệ hộ nghèo đa chiều giảm qua các năm.\\
+\noindent C. Thu nhập bình quân tăng nhưng khoảng cách giàu nghèo giữa các nhóm dân cư ngày càng lớn.\\
+\noindent D. GNI bình quân đầu người tăng, tuổi thọ trung bình của người dân tăng.
+
+\noindent \textbf{Dựa vào thông tin sau, trả lời câu 9 đến câu 10:} Khi các cam kết cắt giảm thuế quan giữa các nước ASEAN được thực hiện, bánh kẹo nhập khẩu từ nhiều nước trong khu vực vào Việt Nam với giá cạnh tranh, khiến thị phần trong nước của Công ty bánh kẹo N bị thu hẹp. Trước tình hình đó, Công ty N đầu tư dây chuyền sản xuất mới, đa dạng hóa sản phẩm, xây dựng thương hiệu và bắt đầu tìm kiếm khách hàng ở thị trường các nước ASEAN khác.
+
+\noindent \textbf{Câu 9:} Thông tin trên cho thấy hội nhập kinh tế quốc tế tác động như thế nào đến Công ty N?\\
+% LECTURING-MATRIX: topic=Hội nhập kinh tế quốc tế; level=TH\\
+\noindent A. Buộc công ty phải thu hẹp quy mô và ngừng đổi mới sản xuất.\\
+\noindent B. Chỉ tạo sức ép cạnh tranh mà không mang lại cơ hội nào.\\
+\noindent C. Giúp công ty không còn đối thủ cạnh tranh ở thị trường trong nước.\\
+\noindent D. Vừa tạo sức ép cạnh tranh, vừa mở ra cơ hội mở rộng thị trường.
+
+\noindent \textbf{Câu 10:} Để tiếp tục nâng cao năng lực cạnh tranh trong bối cảnh trên, Công ty N nên lựa chọn cách làm nào sau đây?\\
+% LECTURING-MATRIX: topic=Hội nhập kinh tế quốc tế; level=VD\\
+\noindent A. Đề nghị Nhà nước áp thuế cao trở lại đối với bánh kẹo nhập khẩu từ các nước ASEAN.\\
+\noindent B. Nghiên cứu thị hiếu người tiêu dùng ở các thị trường mới để phát triển sản phẩm phù hợp.\\
+\noindent C. Ngừng đầu tư đổi mới vì hàng nhập khẩu đã chiếm lĩnh thị trường trong nước.\\
+\noindent D. Giảm giá bán bằng cách sử dụng nguyên liệu không rõ nguồn gốc.
+
+\noindent \textbf{Câu 11:} Hình thức liên kết kinh tế quốc tế trong đó các nước thành viên loại bỏ thuế quan và các hạn chế định lượng đối với phần lớn hàng hóa trao đổi giữa các nước trong khối, nhưng mỗi nước vẫn giữ biểu thuế riêng đối với các nước ngoài khối được gọi là\\
+% LECTURING-MATRIX: topic=Hội nhập kinh tế quốc tế; level=NB\\
+\noindent\makebox[0.48\textwidth][l]{A. khu vực mậu dịch tự do.}\makebox[0.48\textwidth][l]{B. liên minh kinh tế - tiền tệ.}\\
+\noindent\makebox[0.48\textwidth][l]{C. thị trường chung.}\makebox[0.48\textwidth][l]{D. liên minh thuế quan.}
+
+\noindent \textbf{Câu 12:} Theo Công ước của Liên hợp quốc về Luật biển năm 1982, vùng nước nằm phía trong đường cơ sở và tiếp giáp với bờ biển của quốc gia ven biển là\\
+% LECTURING-MATRIX: topic=Pháp luật quốc tế; level=NB\\
+\noindent\makebox[0.48\textwidth][l]{A. vùng tiếp giáp lãnh hải.}\makebox[0.48\textwidth][l]{B. nội thủy.}\\
+\noindent\makebox[0.48\textwidth][l]{C. vùng đặc quyền kinh tế.}\makebox[0.48\textwidth][l]{D. lãnh hải.}
+
+\noindent \textbf{Câu 13:} Công dân vi phạm pháp luật với tính chất, mức độ như nhau thì đều phải chịu trách nhiệm pháp lí như nhau, không phân biệt địa vị, thành phần xã hội. Điều này thể hiện công dân bình đẳng về\\
+% LECTURING-MATRIX: topic=Quyền và nghĩa vụ công dân; level=NB\\
+\noindent\makebox[0.48\textwidth][l]{A. quyền chính trị.}\makebox[0.48\textwidth][l]{B. trách nhiệm pháp lí.}\\
+\noindent\makebox[0.48\textwidth][l]{C. cơ hội việc làm.}\makebox[0.48\textwidth][l]{D. nghĩa vụ lao động.}
+
+\noindent \textbf{Dựa vào thông tin sau, trả lời câu 14 đến câu 15:} ``Luật Bảo hiểm xã hội 2024 quy định mở rộng đối tượng được tham gia và thụ hưởng đầy đủ các chế độ BHXH bằng việc mở rộng đối tượng tham gia BHXH bắt buộc đối với chủ hộ kinh doanh của hộ kinh doanh có đăng ký kinh doanh; Người hoạt động không chuyên trách ở cấp xã, ở thôn, tổ dân phố; Người lao động làm việc không trọn thời gian; Người quản lý doanh nghiệp, người quản lý điều hành hợp tác xã không hưởng tiền lương.''\\
+\hspace*{\fill}\textit{(Theo Sở Tư pháp thành phố Cần Thơ, 15 điểm mới Luật Bảo hiểm xã hội 2024)}
+
+\noindent \textbf{Câu 14:} Theo thông tin trên, đối tượng nào sau đây thuộc diện tham gia bảo hiểm xã hội bắt buộc?\\
+% LECTURING-MATRIX: topic=Bảo hiểm và an sinh xã hội; level=NB\\
+\noindent A. Học sinh, sinh viên đang theo học tại các cơ sở giáo dục.\\
+\noindent B. Chủ hộ kinh doanh của hộ kinh doanh có đăng ký kinh doanh.\\
+\noindent C. Người đang hưởng lương hưu hằng tháng.\\
+\noindent D. Người cao tuổi đang hưởng trợ cấp hưu trí xã hội.
+
+\noindent \textbf{Câu 15:} Việc mở rộng đối tượng tham gia bảo hiểm xã hội bắt buộc trong thông tin trên có ý nghĩa nào sau đây?\\
+% LECTURING-MATRIX: topic=Bảo hiểm và an sinh xã hội; level=TH\\
+\noindent A. Giúp người lao động được tự do lựa chọn tham gia hoặc không tham gia bảo hiểm xã hội.\\
+\noindent B. Giúp các doanh nghiệp giảm chi phí sử dụng lao động.\\
+\noindent C. Giúp Nhà nước tăng nguồn thu để bù đắp bội chi ngân sách.\\
+\noindent D. Giúp nhiều người lao động được bảo đảm một phần thu nhập khi gặp rủi ro, góp phần bảo đảm an sinh xã hội.
+
+\noindent \textbf{Câu 16:} Anh K mua bảo hiểm vật chất cho chiếc ô tô của gia đình tại một doanh nghiệp bảo hiểm. Loại hình bảo hiểm mà anh K tham gia là\\
+% LECTURING-MATRIX: topic=Bảo hiểm và an sinh xã hội; level=TH\\
+\noindent\makebox[0.48\textwidth][l]{A. bảo hiểm thất nghiệp.}\makebox[0.48\textwidth][l]{B. bảo hiểm xã hội.}\\
+\noindent\makebox[0.48\textwidth][l]{C. bảo hiểm y tế.}\makebox[0.48\textwidth][l]{D. bảo hiểm thương mại.}
+
+\noindent \textbf{Câu 17:} Chị M nhận thấy khu dân cư mới nơi mình sinh sống chưa có cửa hàng giặt là, trong khi nhiều gia đình trẻ ở đây bận rộn và có nhu cầu sử dụng dịch vụ này. Việc làm của chị M là cơ sở để\\
+% LECTURING-MATRIX: topic=Quản lí thu chi và kinh doanh; level=TH\\
+\noindent A. xác định mức thuế mà cửa hàng phải nộp hằng năm.\\
+\noindent B. đánh giá rủi ro sau khi đã kết thúc hoạt động kinh doanh.\\
+\noindent C. điều chỉnh kế hoạch kinh doanh đã thực hiện xong.\\
+\noindent D. hình thành ý tưởng kinh doanh xuất phát từ nhu cầu của thị trường.
+
+\noindent \textbf{Câu 18:} Hai quốc gia lựa chọn giải quyết tranh chấp về đường biên giới bằng thương lượng, hòa giải thay vì đe dọa sử dụng vũ lực là thể hiện nguyên tắc nào sau đây của pháp luật quốc tế?\\
+% LECTURING-MATRIX: topic=Pháp luật quốc tế; level=TH\\
+\noindent A. Tôn trọng quyền con người và các quyền tự do cơ bản.\\
+\noindent B. Các quốc gia có nghĩa vụ hợp tác với nhau.\\
+\noindent C. Hòa bình giải quyết các tranh chấp quốc tế.\\
+\noindent D. Không can thiệp vào công việc nội bộ của quốc gia khác.
+
+\noindent \textbf{Câu 19:} Anh B kí hợp đồng lao động thời hạn 02 năm với Công ty Q. Giám đốc công ty đề nghị không đóng bảo hiểm xã hội bắt buộc cho anh B mà cộng thêm khoản tiền tương ứng vào lương hằng tháng, anh B đồng ý. Nhận định nào sau đây là đúng?\\
+% LECTURING-MATRIX: topic=Bảo hiểm và an sinh xã hội; level=VD\\
+\noindent A. Thỏa thuận này hợp pháp vì dựa trên sự tự nguyện của cả hai bên.\\
+\noindent B. Thỏa thuận này trái pháp luật vì tham gia bảo hiểm xã hội bắt buộc là nghĩa vụ của người lao động và người sử dụng lao động.\\
+\noindent C. Chỉ Công ty Q vi phạm pháp luật, còn anh B có lợi vì được nhận thêm tiền lương.\\
+\noindent D. Anh B được hưởng đầy đủ các chế độ bảo hiểm xã hội bắt buộc dù không đóng.
+
+\noindent \textbf{Câu 20:} Quốc gia H và quốc gia K kí kết hiệp định hợp tác về nghề cá. Một thời gian sau, quốc gia H ban hành luật trong nước có nội dung trái với hiệp định và viện dẫn luật này để từ chối thực hiện cam kết đã kí. Nhận định nào sau đây là đúng?\\
+% LECTURING-MATRIX: topic=Pháp luật quốc tế; level=VD\\
+\noindent A. Quốc gia K được quyền sử dụng vũ lực để buộc quốc gia H thực hiện hiệp định.\\
+\noindent B. Quốc gia H có quyền làm như vậy vì luật trong nước luôn có hiệu lực cao hơn điều ước quốc tế.\\
+\noindent C. Quốc gia H đã vi phạm nguyên tắc tận tâm, thiện chí thực hiện các cam kết quốc tế.\\
+\noindent D. Quốc gia K phải sửa đổi luật của mình cho phù hợp với luật của quốc gia H.
+
+\noindent \textbf{Dựa vào thông tin sau, trả lời câu 21 đến câu 22:} Gia đình anh T có tổng thu nhập 32 triệu đồng mỗi tháng. Trước đây, gia đình thường chi tiêu hết thu nhập, có tháng phải vay mượn. Từ đầu năm 2026, anh T lập sổ ghi chép thu chi, xác định các khoản chi thiết yếu là 20 triệu đồng mỗi tháng, cắt giảm các khoản chi không thiết yếu xuống còn 4 triệu đồng mỗi tháng và gửi tiết kiệm toàn bộ phần thu nhập còn lại.
+
+\noindent \textbf{Câu 21:} Việc làm của anh T thể hiện ý nghĩa nào sau đây của quản lí thu, chi trong gia đình?\\
+% LECTURING-MATRIX: topic=Quản lí thu chi và kinh doanh; level=TH\\
+\noindent A. Giúp gia đình không phải chi cho các khoản thiết yếu.\\
+\noindent B. Giúp gia đình tăng tổng thu nhập hằng tháng.\\
+\noindent C. Giúp gia đình chủ động về tài chính, hạn chế rơi vào tình trạng nợ nần.\\
+\noindent D. Giúp các thành viên trong gia đình không cần tham gia lao động.
+
+\noindent \textbf{Câu 22:} Với cách phân bổ trên, tỉ lệ thu nhập hằng tháng mà gia đình anh T dành để tiết kiệm là\\
+% LECTURING-MATRIX: topic=Quản lí thu chi và kinh doanh; level=VD\\
+\noindent\makebox[0.24\textwidth][l]{A. 12,5\%.}\makebox[0.24\textwidth][l]{B. 37,5\%.}\makebox[0.24\textwidth][l]{C. 62,5\%.}\makebox[0.24\textwidth][l]{D. 25\%.}
+
+\noindent \textbf{Dựa vào thông tin sau, trả lời câu 23 đến câu 24:} Ông Q là Chủ tịch Ủy ban nhân dân xã X. Nghi ngờ chị T nhặt được chiếc điện thoại mình đánh rơi, ông Q chỉ đạo anh V là công an xã đến nhà chị T khám xét khi không có quyết định của cơ quan có thẩm quyền. Không tìm thấy chiếc điện thoại, anh V còn tự ý mở và đọc tin nhắn trong điện thoại cá nhân của chị T. Sau đó, chị T làm đơn gửi cơ quan có thẩm quyền đề nghị xem xét hành vi của ông Q và anh V.
+
+\noindent \textbf{Câu 23:} Hành vi của anh V trong tình huống trên đã xâm phạm những quyền nào sau đây của chị T?\\
+% LECTURING-MATRIX: topic=Quyền và nghĩa vụ công dân; level=TH\\
+\noindent A. Quyền bầu cử và quyền ứng cử.\\
+\noindent B. Quyền bất khả xâm phạm về chỗ ở và quyền bí mật thư tín, điện thoại, điện tín.\\
+\noindent C. Quyền tự do đi lại và quyền tự do cư trú.\\
+\noindent D. Quyền tự do ngôn luận và quyền tự do báo chí.
+
+\noindent \textbf{Câu 24:} Những ai trong tình huống trên đã vi phạm quyền bất khả xâm phạm về chỗ ở của công dân?\\
+% LECTURING-MATRIX: topic=Quyền và nghĩa vụ công dân; level=TH\\
+\noindent\makebox[0.24\textwidth][l]{A. Chỉ ông Q.}\makebox[0.24\textwidth][l]{B. Chị T và anh V.}\makebox[0.24\textwidth][l]{C. Chỉ anh V.}\makebox[0.24\textwidth][l]{D. Ông Q và anh V.}
+
+\vspace{0.5cm}
+% LECTURING-PART: P2
+\textbf{Phần II: Trắc nghiệm đúng/sai} \textit{Thí sinh trả lời từ câu 1 đến câu 4. Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn đúng hoặc sai.}
+
+\noindent \textbf{Câu 1:} Đọc thông tin sau: ``Giá trị tăng thêm ngành công nghiệp năm 2025 ước tăng 8,8\% so với năm trước, đóng góp 35,15\% vào tốc độ tăng tổng giá trị tăng thêm toàn nền kinh tế. Trong đó, ngành công nghiệp chế biến, chế tạo tăng 9,97\%, là mức tăng cao nhất trong giai đoạn 2019 - 2025.''\\
+\hspace*{\fill}\textit{(Theo Tuổi Trẻ Online, ngày 05/01/2026, số liệu của Cục Thống kê)}\\
+Tại tỉnh M, nhiều doanh nghiệp chế biến, chế tạo liên tục tăng ca để kịp tiến độ đơn hàng. Tuy nhiên, tỉ lệ lao động có bằng cấp, chứng chỉ của tỉnh còn thấp nên phần lớn các công đoạn có giá trị gia tăng cao vẫn phải thuê chuyên gia nước ngoài đảm nhận. Trước thực trạng đó, Doanh nghiệp K ở tỉnh M đã liên kết với một trường cao đẳng để đào tạo kĩ thuật viên cho chính công nhân của mình.\\
+% LECTURING-MATRIX: topic=Tăng trưởng và phát triển kinh tế; level=TH\\
+\noindent a) Theo thông tin trên, ngành công nghiệp chế biến, chế tạo đóng góp 35,15\% vào tốc độ tăng tổng giá trị tăng thêm toàn nền kinh tế năm 2025.\\
+
+
+\noindent b) Mức tăng 8,8\% của giá trị tăng thêm ngành công nghiệp năm 2025 là biểu hiện của tăng trưởng kinh tế.\\
+
+
+\noindent c) Việc Doanh nghiệp K liên kết đào tạo kĩ thuật viên cho công nhân góp phần nâng cao chất lượng nguồn nhân lực, tạo cơ sở để tăng trưởng kinh tế dựa vào năng suất lao động.\\
+
+
+\noindent d) Để duy trì tốc độ tăng trưởng cao, các doanh nghiệp ở tỉnh M chỉ cần tiếp tục tăng ca, kéo dài thời gian làm việc của công nhân mà không cần đầu tư nâng cao trình độ người lao động.
+
+\noindent \textbf{Câu 2:} Công ty cà phê G ở Tây Nguyên trước đây chủ yếu xuất khẩu cà phê nhân thô qua các doanh nghiệp trung gian. Tận dụng ưu đãi thuế quan từ các hiệp định thương mại tự do thế hệ mới mà Việt Nam là thành viên, Công ty G đã đầu tư nhà máy rang xay, đăng kí bảo hộ nhãn hiệu tại một số thị trường nước ngoài và trực tiếp kí hợp đồng với các nhà phân phối ở châu Âu. Sau một thời gian, Công ty G phát hiện một doanh nghiệp nước ngoài sao chép bao bì sản phẩm của mình để bán tại nước sở tại nên đã khởi kiện doanh nghiệp này ra cơ quan tài phán có thẩm quyền của nước đó.\\
+% LECTURING-MATRIX: topic=Hội nhập kinh tế quốc tế; level=TH\\
+\noindent a) Xét theo mức độ liên kết, các hiệp định thương mại tự do mà Công ty G tận dụng là hình thức liên minh thuế quan.\\
+
+
+\noindent b) Việc Công ty G trực tiếp kí hợp đồng với các nhà phân phối ở châu Âu cho thấy hội nhập kinh tế quốc tế giúp doanh nghiệp mở rộng thị trường.\\
+
+
+\noindent c) Việc Công ty G đăng kí bảo hộ nhãn hiệu tại thị trường nước ngoài là không cần thiết vì nhãn hiệu của công ty đã được bảo hộ tại Việt Nam.\\
+
+
+\noindent d) Việc Công ty G khởi kiện doanh nghiệp nước ngoài sao chép bao bì sản phẩm là cách làm phù hợp để bảo vệ quyền và lợi ích hợp pháp của doanh nghiệp trong quá trình hội nhập.
+
+\noindent \textbf{Câu 3:} Chị H là công dân Việt Nam, kết hôn với anh J là công dân của quốc gia Z. Anh J đã thường trú tại Việt Nam được 3 năm và đang làm việc tại một công ty ở Hà Nội. Khi đăng kí khai sinh cho con gái là bé L sinh ra tại Hà Nội, hai vợ chồng đã thỏa thuận bằng văn bản lựa chọn quốc tịch Việt Nam cho con. Trong cuộc bầu cử đại biểu Hội đồng nhân dân tại địa phương, anh J đề nghị được ghi tên vào danh sách cử tri nhưng không được chấp nhận.\\
+% LECTURING-MATRIX: topic=Pháp luật quốc tế; level=TH\\
+\noindent a) Bé L có quốc tịch Việt Nam vì cha mẹ đã thỏa thuận bằng văn bản lựa chọn quốc tịch Việt Nam cho con vào thời điểm đăng kí khai sinh.\\
+
+
+\noindent b) Là người nước ngoài thường trú tại Việt Nam nên anh J được hưởng đầy đủ các quyền chính trị như công dân Việt Nam, trong đó có quyền bầu cử.\\
+
+
+\noindent c) Nếu muốn nhập quốc tịch Việt Nam, anh J chỉ cần chứng minh có vợ là công dân Việt Nam mà không phải đáp ứng bất kì điều kiện nào khác.\\
+
+
+\noindent d) Trong thời gian cư trú tại Việt Nam, anh J có nghĩa vụ tuân thủ Hiến pháp và pháp luật Việt Nam.
+
+\noindent \textbf{Câu 4:} Ủy ban nhân dân xã X tổ chức lấy ý kiến Nhân dân về dự án mở rộng tuyến đường liên thôn. Ông P là trưởng thôn A đã cố tình không thông báo lịch họp cho một số hộ gia đình mà ông biết là có ý kiến khác với phương án đền bù. Không thể đến dự họp, chị G gửi ý kiến góp ý bằng văn bản qua hòm thư góp ý của Ủy ban nhân dân xã. Trong khi đó, anh H đăng tải lên mạng xã hội thông tin sai sự thật rằng cán bộ xã đã nhận tiền của nhà thầu để thay đổi phương án đền bù.\\
+% LECTURING-MATRIX: topic=Quyền và nghĩa vụ công dân; level=TH\\
+\noindent a) Việc người dân xã X góp ý kiến về dự án mở rộng tuyến đường liên thôn là thực hiện quyền tham gia quản lí nhà nước và xã hội.\\
+
+
+\noindent b) Ông P cố tình không thông báo lịch họp cho một số hộ gia đình là vi phạm quyền tham gia quản lí nhà nước và xã hội của công dân.\\
+
+
+\noindent c) Anh H đăng tải thông tin về cán bộ xã lên mạng xã hội là thực hiện đúng quyền tự do ngôn luận của công dân.\\
+
+
+\noindent d) Ý kiến của chị G không được xem xét vì chị không trực tiếp phát biểu tại cuộc họp lấy ý kiến.\vspace{0.6cm}
+\begin{center}
+{\bfseries -{}-{}-{}-{}-{}-}\ \textbf{HẾT}\ {\bfseries -{}-{}-{}-{}-{}-}
+\end{center}
+\vspace{0.15cm}
+{\small\itshape
+Thí sinh không được sử dụng tài liệu. Cán bộ coi thi không giải thích gì thêm.}
+
+\end{document}

@@ -1,0 +1,85 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "d52380b34fdd891a",
+    "topic": "Biến ngẫu nhiên và kỳ vọng",
+    "part": "P3",
+    "level": "TH",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Một phép chọn ngẫu nhiên từ các phần bằng nhau, các nhóm phần thưởng có giá trị khác nhau và phí tham gia cố định.",
+        "task": "Tính khoản thu ròng trung bình cho mỗi lượt.",
+        "reasoning": [
+          "Suy ra xác suất mỗi mức thưởng từ tỉ lệ phần tương ứng.",
+          "Tính giá trị phần thưởng trung bình bằng tổng các giá trị có trọng số xác suất.",
+          "Lấy phí tham gia trừ giá trị thưởng trung bình và giữ đúng đơn vị."
+        ],
+        "combines": [
+          "Xác suất trên các kết quả đồng khả năng",
+          "Trung bình có trọng số",
+          "Thu ròng"
+        ],
+        "difficulty_source": "Phân biệt số tiền thu vào với khoản thu ròng sau phần thưởng kỳ vọng.",
+        "evidence_uncertainty": "Danh mục tham chiếu không nêu rõ bài kỳ vọng của biến ngẫu nhiên nên chưa gán lớp chắc chắn. Không có khóa để đối chiếu kết quả cuối.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "aceb17d936f5|P3|6|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "d52380b34fdd891a",
+    "stem": "Một gian trò chơi dùng hộp chứa 10 thẻ giống nhau về kích thước và chất liệu, gồm 5 thẻ không thưởng, 3 thẻ thưởng 20 nghìn đồng và 2 thẻ thưởng 40 nghìn đồng. Mỗi lượt, người chơi trả 18 nghìn đồng rồi rút ngẫu nhiên một thẻ. Sau khi trả thưởng, thẻ được đặt lại vào hộp. Không tính các chi phí khác, khoản thu ròng trung bình của gian trò chơi trong mỗi lượt là bao nhiêu nghìn đồng?",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "4",
+        "level": "TH"
+      }
+    ],
+    "solution": "Các thẻ có cùng khả năng được rút. Giá trị phần thưởng trung bình là (5 × 0 + 3 × 20 + 2 × 40)/10 = 14 nghìn đồng. Khoản thu ròng trung bình của gian trò chơi là 18 − 14 = 4 nghìn đồng mỗi lượt.",
+    "distractors": [],
+    "level_reason": "Học sinh thực hiện quy trình quen thuộc: xác định xác suất từ số thẻ, tính trung bình có trọng số rồi trừ tiền thưởng trung bình khỏi phí tham gia. Các bước tính này thuộc mức TH.",
+    "prerequisites": [
+      "Xác suất trên các kết quả đồng khả năng",
+      "Trung bình có trọng số",
+      "Phân biệt doanh thu và khoản thu ròng"
+    ],
+    "variation_guidance": "Có thể thay số thẻ, mức thưởng và phí tham gia; cần giữ rõ đối tượng tính thu ròng là bên tổ chức và quy định thẻ được hoàn lại sau mỗi lượt.",
+    "uncertainties": [
+      "Đây là câu hỏi minh họa tổng hợp, chỉ dựa trên dạng quan sát từ nguồn cấp tỉnh qua bên thứ ba; không phải bằng chứng đề thi thực tế hoặc chuẩn ra đề chính thức.",
+      "Dữ liệu cung cấp chưa xác định chắc chắn vị trí của nội dung kỳ vọng trong chương trình hoặc lớp học cụ thể; giáo viên cần đối chiếu phạm vi đã dạy."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "d52380b34fdd891a",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "4",
+        "level": "TH"
+      }
+    ],
+    "solution": "Tiền thưởng trung bình mỗi lượt là (5×0 + 3×20 + 2×40)/10 = 14 nghìn đồng. Thu ròng trung bình là 18 − 14 = 4 nghìn đồng.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Tính trung bình có trọng số theo xác suất rồi trừ khỏi tiền thu là quy trình quen thuộc."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/c06069fe7f19026ae68b070924aa7f8fdde5fd14e3ef011908f479f62b43b116.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/c06069fe7f19026ae68b070924aa7f8fdde5fd14e3ef011908f479f62b43b116.resolve.json"
+}

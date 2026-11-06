@@ -4,14 +4,16 @@
 
 Trích xuất và aggregate đã qua kiểm kỹ thuật; nhận định vẫn chờ giáo viên rà.
 
-[Đọc cách hỏi theo từng chủ đề](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/toan/TOPICS.md)
+[Đọc cách hỏi theo từng chủ đề](TOPICS.md)
 
 **Các phần của hồ sơ:**
 
-- [Audit ma trận](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/matrices/toan.md) — đã có bản, còn chờ rà.
-- [Audit prototype](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/prototypes/toan.md) — đã có bản, còn chờ rà.
-- [NB/TH/VD](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/profiles/toan/LEVELS.md) — đã có bản, còn chờ rà.
-- Câu mẫu mới: đang bổ sung, chưa nghiệm thu.
+- [Hồ sơ tích hợp và mục lục từng chủ đề](PROFILE.md) — đã có bản, còn chờ rà.
+- [Audit ma trận](../../audit/matrices/toan.md) — đã có bản, còn chờ rà.
+- [Audit prototype](../../audit/prototypes/toan.md) — đã có bản, còn chờ rà.
+- [NB/TH/VD](LEVELS.md) — đã có bản, còn chờ rà.
+- [Câu mẫu mới](SAMPLES.md) — đã có bản, còn chờ rà.
+- [Kiểm tra bổ sung bằng số học và bản in](../../audit/prototypes/toan-parent-review.md) — đã có bản, còn chờ rà.
 
 **Bằng chứng:** chính thức 2 đề; tỉnh/trường 20 đề; 748 câu/ý được gắn nhãn. Model EXTRACT: gpt-6.1-sol. Hai nguồn được tổng hợp riêng.
 Khóa khớp đã chấp nhận: chính thức 2/2, tỉnh/trường 10/20.
@@ -54,8 +56,12 @@ Các cột đếm câu/ý trong mẫu đã phân tích, không phải tần su�
 
 **Phương án nhiễu:**
 
-- Chính thức: liên hệ được một kiểu nhầm cụ thể ở 80/86 phương án đã phán đoán (93.0%); chưa xác minh 0.
-- Tỉnh/trường: liên hệ được một kiểu nhầm cụ thể ở 377/409 phương án đã phán đoán (92.2%); chưa xác minh 656.
+- Chính thức / phương án MCQ: liên hệ được một kiểu nhầm cụ thể ở 67/72 mục đã phán đoán (93.1%); chưa xác minh 0.
+- Chính thức / nhận định TF: liên hệ được một kiểu nhầm cụ thể ở 13/14 mục đã phán đoán (92.9%); chưa xác minh 0.
+- Tỉnh/trường / phương án MCQ: liên hệ được một kiểu nhầm cụ thể ở 329/353 mục đã phán đoán (93.2%); chưa xác minh 487.
+- Tỉnh/trường / nhận định TF: liên hệ được một kiểu nhầm cụ thể ở 48/56 mục đã phán đoán (85.7%); chưa xác minh 169.
+
+Các mẫu số trên tách MCQ và TF. Chỉ tiêu distractors gộp trong bản aggregate lịch sử chứa cả hai, không được đọc như tỷ lệ riêng của phương án MCQ.
 
 Chưa phán đoán được mức phân hóa ở chính thức 0, tỉnh/trường 6 slot. Xem evidence_uncertainty trong từng hàng để biết ngữ cảnh/hình/bảng còn thiếu.
 

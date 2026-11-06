@@ -1,0 +1,199 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "430bc7239b7e2939",
+    "topic": "Số đặc trưng của mẫu số liệu ghép nhóm",
+    "part": "P1",
+    "level": "TH",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một bảng các khoảng giá trị và tần số của mẫu ghép nhóm.",
+        "task": "Xác định nhóm chứa trung vị.",
+        "reasoning": [
+          "Xác định vị trí trung tâm của mẫu từ kích thước mẫu.",
+          "Tính tần số tích lũy qua các nhóm.",
+          "Tìm nhóm chứa các vị trí trung tâm."
+        ],
+        "combines": [
+          "Trung vị",
+          "Tần số tích lũy"
+        ],
+        "difficulty_source": "Dùng tần số tích lũy để định vị trung vị, không cần nội suy.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Bảng các khoảng ghép nhóm có cùng độ rộng và tần số tương ứng của một đại lượng đo.",
+        "task": "Tính tứ phân vị phía trên của mẫu ghép nhóm.",
+        "reasoning": [
+          "Cộng các tần số để xác định kích thước mẫu.",
+          "Dùng tần số tích lũy xác định lớp chứa tứ phân vị cần tìm.",
+          "Nội suy trong lớp theo công thức tứ phân vị."
+        ],
+        "combines": [
+          "Bảng tần số ghép nhóm",
+          "Tần số tích lũy",
+          "Nội suy thống kê"
+        ],
+        "difficulty_source": "Xác định đúng lớp và nội suy theo tần số tích lũy.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Bảng khoảng lớp và tần số của một đại lượng đo.",
+        "task": "Xác định lớp chứa tứ phân vị dưới.",
+        "reasoning": [
+          "Cộng tần số để xác định cỡ mẫu.",
+          "Xác định vị trí tứ phân vị dưới.",
+          "Dùng tần số tích lũy tìm lớp chứa vị trí đó."
+        ],
+        "combines": [
+          "Tứ phân vị",
+          "Tần số tích lũy"
+        ],
+        "difficulty_source": "Chỉ cần xác định lớp, không cần nội suy giá trị phân vị.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Bảng các khoảng giá trị và tần số của một đại lượng đo.",
+        "task": "Chọn trung vị ước lượng của mẫu ghép nhóm.",
+        "reasoning": [
+          "Cộng tần số để xác định cỡ mẫu.",
+          "Dùng tần số tích lũy xác định nhóm chứa trung vị.",
+          "Thay các đặc trưng của nhóm vào công thức nội suy."
+        ],
+        "combines": [
+          "Tần số tích lũy",
+          "Trung vị ghép nhóm"
+        ],
+        "difficulty_source": "Chọn đúng nhóm trung vị trước khi nội suy theo công thức quen thuộc.",
+        "evidence_uncertainty": "Chưa xác nhận được khóa đáp án khớp mã.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "023e74626dd8|P1|11|None",
+      "163f20908cf7|P1|3|None",
+      "0968e8bc9e2d|P1|6|None",
+      "0ecb85132b84|P1|2|None",
+      "11d88d9a96ad|P1|8|None",
+      "3b4cca11ea82|P1|1|None",
+      "3f1b2aa3cb72|P1|1|None",
+      "525d3542283a|P1|10|None",
+      "54e9a2a276ca|P1|9|None",
+      "6aa30214ba7e|P1|1|None",
+      "7ab78715480e|P1|7|None",
+      "85efdd1a7e54|P1|3|None",
+      "9ed45d16a975|P1|10|None",
+      "acc00d945397|P1|10|None",
+      "acc00d945397|P1|4|None",
+      "aceb17d936f5|P1|3|None",
+      "adb051fd8253|P1|1|None",
+      "beee25b53250|P1|11|None",
+      "c6340827ba59|P1|10|None",
+      "ccae0b94a82d|P1|6|None",
+      "de5833d227dd|P1|11|None",
+      "ecd76ac672e5|P1|10|None",
+      "fc12a8146279|P1|9|None"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "430bc7239b7e2939",
+    "stem": "Thời gian hoàn thành một hoạt động, tính bằng phút, của một nhóm học sinh được ghép thành các khoảng: [10;15) có 4 học sinh, [15;20) có 8 học sinh, [20;25) có 12 học sinh và [25;30) có 6 học sinh. Dùng công thức trung vị của mẫu số liệu ghép nhóm, trung vị ước lượng bằng bao nhiêu phút? Làm tròn đến hàng phần trăm.",
+    "options": [
+      {
+        "label": "A",
+        "text": "22,50 phút"
+      },
+      {
+        "label": "B",
+        "text": "20,00 phút"
+      },
+      {
+        "label": "C",
+        "text": "21,25 phút"
+      },
+      {
+        "label": "D",
+        "text": "24,58 phút"
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "C",
+        "level": "TH"
+      }
+    ],
+    "solution": "Cỡ mẫu là n=4+8+12+6=30. Tần số tích lũy lần lượt là 4, 12, 24, 30 nên nhóm chứa trung vị là [20;25). Trung vị ước lượng là M=20+[(30/2−12)/12]×5=21,25 phút. A lấy trung điểm nhóm chứa trung vị. B lấy cận dưới của nhóm và bỏ qua phần nội suy. D chỉ dùng tần số nhóm đầu làm tần số tích lũy trước nhóm trung vị: 20+[(15−4)/12]×5≈24,58.",
+    "distractors": [
+      {
+        "label": "A",
+        "sub": null,
+        "mistake": "Dùng trung điểm của nhóm chứa trung vị thay cho công thức nội suy.",
+        "why_plausible": "Học sinh nhầm giá trị đại diện của một nhóm với trung vị ước lượng của toàn mẫu."
+      },
+      {
+        "label": "B",
+        "sub": null,
+        "mistake": "Chọn cận dưới 20 của nhóm chứa trung vị làm trung vị.",
+        "why_plausible": "Học sinh xác định đúng nhóm nhưng chưa thực hiện bước nội suy trong nhóm."
+      },
+      {
+        "label": "D",
+        "sub": null,
+        "mistake": "Dùng 4 thay cho tần số tích lũy 12 đứng trước nhóm trung vị.",
+        "why_plausible": "Học sinh nhầm một tần số riêng lẻ với tổng tần số của tất cả các nhóm trước đó."
+      }
+    ],
+    "level_reason": "Học sinh đọc dữ liệu ghép nhóm, tính tần số tích lũy, xác định nhóm trung vị và thay vào công thức nội suy quen thuộc. Các bước này thuộc mức TH.",
+    "prerequisites": [
+      "Cỡ mẫu và tần số tích lũy",
+      "Nhóm chứa trung vị",
+      "Công thức trung vị của mẫu số liệu ghép nhóm",
+      "Làm tròn số"
+    ],
+    "variation_guidance": "Thay đại lượng đo, khoảng nhóm và tần số; nên chọn dữ liệu để vị trí trung vị nằm trong một nhóm rõ ràng và các phương án sai không trùng nhau sau làm tròn.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "430bc7239b7e2939",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "C",
+        "level": "TH"
+      }
+    ],
+    "solution": "Tổng số học sinh là n=30. Tần số tích lũy lần lượt là 4, 12, 24, 30 nên nhóm chứa trung vị là [20;25). Trung vị ước lượng bằng 20+((15−12)/12)×5=21,25 phút. Chọn C.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Xác định nhóm chứa trung vị rồi thay số vào công thức trung vị mẫu ghép nhóm là quy trình quen thuộc thuộc TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/d05ca70e548abf6592dc38a3527ea48a9dd6a784b29610cbb4e9bccbc1439b89.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/d05ca70e548abf6592dc38a3527ea48a9dd6a784b29610cbb4e9bccbc1439b89.resolve.json"
+}

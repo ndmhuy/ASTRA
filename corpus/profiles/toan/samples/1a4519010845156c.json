@@ -1,0 +1,186 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "1a4519010845156c",
+    "topic": "Ứng dụng tích phân: tính diện tích và thể tích",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Đồ thị liên tục ghép bởi cung parabol và đoạn thẳng, có các mốc tọa độ cần thiết.",
+        "task": "Kiểm tra diện tích giữa đồ thị và trục hoành sau khi làm tròn.",
+        "reasoning": [
+          "Xác định biểu thức trên từng khoảng của đồ thị.",
+          "Tìm các giao điểm với trục hoành trong miền xét.",
+          "Chia miền theo điểm ghép và các vị trí đổi dấu.",
+          "Tính rồi cộng diện tích các phần.",
+          "Làm tròn và đối chiếu nhận định."
+        ],
+        "combines": [
+          "Hàm số bậc hai",
+          "Hàm số bậc nhất",
+          "Diện tích bằng tích phân",
+          "Làm tròn số"
+        ],
+        "difficulty_source": "Chia miền đúng theo cả điểm ghép công thức và điểm đổi dấu.",
+        "evidence_uncertainty": "Phạm vi ảnh cắt chưa được kiểm chứng độc lập; hình và bản chép cung cấp đủ dữ kiện để lập công thức.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Miền tô đậm giữa một elip và đường tròn đồng tâm trong ảnh, cùng một biểu thức tích phân được đề xuất.",
+        "task": "Kiểm tra biểu thức tính diện tích toàn miền tô đậm.",
+        "reasoning": [
+          "Biểu diễn các nửa đường cong phía trên bằng căn thức.",
+          "Nhận ra tích phân được nêu chỉ đo phần phía trên trục.",
+          "Dùng đối xứng để đối chiếu diện tích toàn miền."
+        ],
+        "combines": [
+          "Elip và đường tròn",
+          "Diện tích bằng tích phân",
+          "Đối xứng"
+        ],
+        "difficulty_source": "Đọc đúng phạm vi hình học mà căn thức đang biểu diễn.",
+        "evidence_uncertainty": "Ảnh cắt thể hiện được miền tô đậm; phạm vi cắt chưa được kiểm chứng độc lập.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Miền giữa elip và đường tròn đồng tâm được quay quanh trục đối xứng nằm ngang.",
+        "task": "Kiểm tra thể tích sau khi làm tròn.",
+        "reasoning": [
+          "Nhận diện khối ngoài và khối bị loại khi quay.",
+          "Lập hiệu các tích phân bình phương bán kính trên đúng miền xác định.",
+          "Tính thể tích rồi làm tròn để đối chiếu."
+        ],
+        "combines": [
+          "Phương trình conic",
+          "Khối tròn xoay",
+          "Làm tròn"
+        ],
+        "difficulty_source": "Chuyển miền phẳng có phần khuyết thành hiệu hai thể tích.",
+        "evidence_uncertainty": "Ảnh cắt thể hiện được trục quay và miền; phạm vi cắt chưa được kiểm chứng độc lập.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "ccae0b94a82d|P2|2|d",
+      "de5833d227dd|P2|1|c",
+      "de5833d227dd|P2|1|d"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "1a4519010845156c",
+    "stem": "Cho hàm số liên tục trên đoạn [−2;2], xác định bởi f(x)=x²−1 khi −2≤x≤0 và f(x)=x−1 khi 0<x≤2. Gọi H là miền phẳng gồm các điểm (x;y) thỏa mãn −2≤x≤2 và min{0;f(x)}≤y≤max{0;f(x)}. Xét tính đúng hoặc sai của các khẳng định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Đồ thị hàm số cắt trục hoành tại đúng hai điểm có hoành độ −1 và 1."
+      },
+      {
+        "sub": "b",
+        "text": "Tích phân từ −2 đến 0 của f(x) bằng 2/3."
+      },
+      {
+        "sub": "c",
+        "text": "Diện tích phần của H nằm trong dải −2≤x≤0 bằng 2/3."
+      },
+      {
+        "sub": "d",
+        "text": "Thể tích khối tạo thành khi quay H quanh trục Ox, làm tròn đến hàng phần mười, bằng 11,7."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "Trên [−2;0], phương trình x²−1=0 chỉ có nghiệm −1 thuộc khoảng xét; trên (0;2], phương trình x−1=0 có nghiệm 1. Vì vậy a đúng. Tích phân từ −2 đến 0 của (x²−1) bằng [x³/3−x] từ −2 đến 0, tức 2/3: b đúng. Hàm số không âm trên [−2;−1] và không dương trên [−1;0]. Diện tích tương ứng bằng tích phân từ −2 đến −1 của (x²−1) cộng tích phân từ −1 đến 0 của (1−x²), tức 4/3+2/3=2, nên c sai. Khi quay H quanh Ox, mỗi thiết diện vuông góc với Ox là hình tròn có bán kính |f(x)|. Do đó V=π nhân tổng của tích phân từ −2 đến 0 của (x²−1)² và tích phân từ 0 đến 2 của (x−1)². Hai tích phân lần lượt bằng 46/15 và 2/3, nên V=56π/15≈11,7286. Làm tròn đến hàng phần mười được 11,7: d đúng. Diện tích và thể tích được tính theo đơn vị diện tích và đơn vị thể tích tương ứng với hệ tọa độ.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "c",
+        "mistake": "Đồng nhất diện tích với tích phân có dấu trên đoạn [−2;0].",
+        "why_plausible": "Giá trị 2/3 là kết quả tích phân đúng ở ý b, nhưng phần đồ thị dưới trục hoành phải đóng góp diện tích dương."
+      }
+    ],
+    "level_reason": "Mức cao nhất là TH. Công thức từng đoạn và miền quay đã được cho đầy đủ. Học sinh thực hiện quy trình quen thuộc: giải phương trình tìm giao điểm, xét dấu để tính diện tích và dùng công thức thể tích tròn xoay. Các phép tính nối tiếp không tự làm tăng mức lên VD.",
+    "prerequisites": [
+      "Hàm số xác định từng đoạn",
+      "Nghiệm và dấu của tam thức bậc hai",
+      "Tính tích phân đa thức",
+      "Diện tích hình phẳng bằng tích phân giá trị tuyệt đối",
+      "Thể tích khối tròn xoay quanh Ox",
+      "Làm tròn số"
+    ],
+    "variation_guidance": "Có thể thay điểm ghép và các đa thức đơn giản, nhưng cần bảo đảm tính liên tục, nêu đủ miền xét và xác định lại các điểm đổi dấu trước khi viết nhận định về diện tích.",
+    "uncertainties": [
+      "Đây là mẫu minh họa tổng hợp nguyên gốc. Quan sát định hướng chỉ thuộc nguồn cấp tỉnh qua bên thứ ba; phạm vi ảnh cắt nguồn chưa được kiểm chứng độc lập. Mẫu này dùng dữ kiện văn bản đầy đủ và không phải bằng chứng đề thi thật."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "1a4519010845156c",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "Trên từng khoảng xác định, f(x)=0 cho x=−1 và x=1. Tích phân từ −2 đến 0 là [x³/3−x] từ −2 đến 0, bằng 2/3. Trên [−2;−1], f không âm, còn trên [−1;0], f không dương; diện tích tương ứng là 4/3 và 2/3 nên tổng diện tích bằng 2. Khi quay H quanh Ox, V=π(∫ từ −2 đến 0 của (x²−1)² dx+∫ từ 0 đến 2 của (x−1)² dx)=π(46/15+2/3)=56π/15≈11,7286, làm tròn đến hàng phần mười được 11,7.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Ý a giải phương trình theo từng nhánh; ý b tính tích phân; ý c chia khoảng theo dấu để tính diện tích; ý d áp dụng công thức thể tích khối tròn xoay. Đây đều là các quy trình chuẩn ở mức TH; số phép tính không làm tăng mức lên VD."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/8a0810f74c745a69f1a811fbeb46f5688d22bef3c2f2595253ee17b274b87334.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/8a0810f74c745a69f1a811fbeb46f5688d22bef3c2f2595253ee17b274b87334.resolve.json"
+}

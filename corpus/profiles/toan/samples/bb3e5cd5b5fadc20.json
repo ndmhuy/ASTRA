@@ -1,0 +1,157 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "bb3e5cd5b5fadc20",
+    "topic": "Phương pháp tọa độ trong không gian",
+    "part": "P3",
+    "level": "VD",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Một mặt cầu, một điểm ngoài, một điểm đích trên mặt cầu và tốc độ khác nhau cho hai chặng chuyển động.",
+        "task": "Tìm thời gian nhỏ nhất khi chặng đầu tiếp xúc mặt cầu và chặng sau đi trên mặt cầu.",
+        "reasoning": [
+          "Tính tâm, bán kính và khoảng cách từ điểm xuất phát đến tâm.",
+          "Nhận ra độ dài đoạn tiếp tuyến không phụ thuộc tiếp điểm.",
+          "Quy bài toán về chọn tiếp điểm làm nhỏ nhất khoảng cách cầu đến đích.",
+          "Xét đường tròn tiếp điểm và góc ở tâm để xác định cung tròn lớn ngắn nhất.",
+          "Cộng thời gian hai chặng và làm tròn."
+        ],
+        "combines": [
+          "Tiếp tuyến mặt cầu",
+          "Quỹ tích tiếp điểm",
+          "Góc giữa vectơ",
+          "Độ dài cung tròn lớn",
+          "Tối ưu thời gian"
+        ],
+        "difficulty_source": "Loại phần thời gian bất biến rồi tối ưu cung trên mặt cầu dưới ràng buộc tiếp xúc.",
+        "evidence_uncertainty": "Cụm mô tả chuyển động theo phương thẳng đứng không hoàn toàn nhất quán với điều kiện tiếp tuyến; phân tích dùng điều kiện tiếp tuyến được nêu tường minh. Kiến thức cung tròn lớn huy động thêm hình học từ cấp học trước.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Các điểm trong không gian, họ mặt phẳng qua một điểm với một hệ số pháp tuyến cố định, điều kiện hai điểm cùng phía và tổng khoảng cách có trọng số.",
+        "task": "Tìm một tổ hợp hệ số của mặt phẳng khi tổng khoảng cách đạt lớn nhất.",
+        "reasoning": [
+          "Dùng điều kiện đi qua điểm cố định để khử hệ số tự do.",
+          "Tính giá trị có dấu của phương trình mặt phẳng tại các điểm còn lại.",
+          "Dùng điều kiện cùng phía để xử lý dấu và xác định miền tham số.",
+          "Viết tổng khoảng cách thành thương giữa biểu thức tuyến tính của pháp tuyến và độ dài pháp tuyến.",
+          "Dùng bất đẳng thức tích vô hướng hoặc tối ưu tương đương để tìm cận trên và điều kiện đạt được.",
+          "Kiểm tra điều kiện đạt dấu bằng phù hợp với hệ số cố định và điều kiện cùng phía.",
+          "Khôi phục các hệ số rồi tính tổ hợp được yêu cầu."
+        ],
+        "combines": [
+          "Phương trình mặt phẳng",
+          "Khoảng cách từ điểm đến mặt phẳng",
+          "Vị trí cùng phía",
+          "Bất đẳng thức tích vô hướng",
+          "Tối ưu có điều kiện"
+        ],
+        "difficulty_source": "Biến điều kiện cùng phía thành kiểm soát dấu để tối ưu biểu thức theo hướng pháp tuyến.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Vị trí ban đầu, phương chuyển động thẳng, hướng tiến, vận tốc không đổi và miền phát hiện dạng khối cầu.",
+        "task": "Tính thời gian đến vị trí đầu tiên đi vào miền phát hiện rồi đổi đơn vị và làm tròn.",
+        "reasoning": [
+          "Tham số hóa quỹ đạo theo hướng chuyển động.",
+          "Lập phương trình giao quỹ đạo với mặt cầu biên.",
+          "Chọn nghiệm tương ứng lần đi vào đầu tiên theo hướng tiến.",
+          "Tính độ dài đoạn đã đi từ tham số và độ dài vectơ chỉ phương.",
+          "Chia quãng đường cho vận tốc, đổi đơn vị rồi làm tròn."
+        ],
+        "combines": [
+          "Đường thẳng tham số",
+          "Mặt cầu",
+          "Phương trình bậc hai",
+          "Chuyển động đều"
+        ],
+        "difficulty_source": "Chọn đúng giao điểm đầu tiên và phân biệt tham số đường thẳng với quãng đường.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một mặt cầu, đường thẳng chuyển động của nguồn phát và điểm cố định mà mặt phẳng chứa các tiếp điểm phải đi qua; có hình không gian minh họa.",
+        "task": "Tính khoảng cách từ vị trí nguồn thỏa điều kiện đến tâm cầu rồi làm tròn.",
+        "reasoning": [
+          "Gọi một tiếp điểm bất kì và dùng bán kính vuông góc với tiếp tuyến để lập quan hệ tích vô hướng.",
+          "Kết hợp điều kiện tiếp điểm thuộc mặt cầu để suy ra phương trình mặt phẳng chứa đường tròn tiếp xúc theo vị trí nguồn.",
+          "Thay điểm cố định vào phương trình mặt phẳng và tham số hóa nguồn trên đường thẳng.",
+          "Giải tham số và kiểm tra nguồn nằm ngoài mặt cầu.",
+          "Tính khoảng cách đến tâm rồi làm tròn."
+        ],
+        "combines": [
+          "Tiếp tuyến của mặt cầu",
+          "Tích vô hướng",
+          "Phương trình mặt phẳng",
+          "Phương trình đường thẳng",
+          "Khoảng cách trong không gian"
+        ],
+        "difficulty_source": "Suy ra mặt phẳng tiếp điểm từ điều kiện tiếp xúc thay vì dùng trực tiếp một công thức được cung cấp.",
+        "evidence_uncertainty": "Hình minh họa là ảnh cắt chưa kiểm chứng độc lập; dữ kiện chữ đủ xác định quan hệ tiếp xúc và điều kiện mặt phẳng.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "54e9a2a276ca|P3|3|None",
+      "6aa30214ba7e|P3|6|None",
+      "85efdd1a7e54|P3|1|None",
+      "9ed45d16a975|P3|6|None",
+      "aceb17d936f5|P3|2|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "bb3e5cd5b5fadc20",
+    "stem": "Trong không gian Oxyz, cho H(1; −1; 2), A(3; −1; 3) và B(1; 1; 3). Xét các mặt phẳng (P): ax + by + z + d = 0 đi qua H và có A, B nằm cùng một phía. Khi tổng khoảng cách d(A, (P)) + 2d(B, (P)) lớn nhất, tính 3a + 6b − 3d.",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "14",
+        "level": "VD"
+      }
+    ],
+    "solution": "Đặt n = (a; b; 1). Vì (P) đi qua H nên d = −a + b − 2. Ta có HA = (2; 0; 1), HB = (0; 2; 1). Hai giá trị có dấu của phương trình mặt phẳng tại A, B lần lượt là 2a + 1 và 2b + 1. Do A, B cùng phía, tổng khoảng cách bằng |(2a + 1) + 2(2b + 1)|/√(a² + b² + 1) = |n·(2; 4; 3)|/||n||. Bất đẳng thức Cauchy–Schwarz cho tổng này không vượt quá √29. Dấu bằng đòi hỏi n song song với (2; 4; 3). Do tọa độ thứ ba của n bằng 1, suy ra a = 2/3, b = 4/3, d = −4/3. Khi đó 2a + 1 = 7/3 và 2b + 1 = 11/3 đều dương, nên mặt phẳng thỏa điều kiện cùng phía và đạt cận trên. Giá trị cần tìm là 2 + 8 + 4 = 14.",
+    "distractors": [],
+    "level_reason": "Học sinh phải chuyển điều kiện cùng phía thành quan hệ dấu, gộp tổng khoảng cách thành một tích vô hướng, xây dựng cận trên và kiểm tra khả năng đạt cận dưới ràng buộc hệ số pháp tuyến. Đây là chuỗi suy luận kết nối nhiều kiến thức, không chỉ thay số vào công thức khoảng cách.",
+    "prerequisites": [
+      "Phương trình mặt phẳng và vectơ pháp tuyến",
+      "Khoảng cách từ điểm đến mặt phẳng",
+      "Điều kiện hai điểm nằm cùng phía một mặt phẳng",
+      "Bất đẳng thức Cauchy–Schwarz và điều kiện dấu bằng"
+    ],
+    "variation_guidance": "Có thể thay điểm cố định, các vectơ nối đến hai điểm và trọng số. Cần kiểm tra hướng pháp tuyến đạt cận có hệ số thứ ba khác 0 và thực sự đặt hai điểm cùng phía.",
+    "uncertainties": [
+      "Mẫu tự biên soạn chỉ được gợi cấu trúc bởi các quan sát cấp tỉnh do bên thứ ba cung cấp; chưa có neo đề chính thức."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "bb3e5cd5b5fadc20",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "14",
+        "level": "VD"
+      }
+    ],
+    "solution": "Vì (P) qua H nên d=−a+b−2. Giá trị biểu thức mặt phẳng tại A và B lần lượt là 2a+1 và 2b+1. Do A, B cùng phía, tổng khoảng cách cần tối đa bằng |2a+4b+3|/√(a²+b²+1) ≤ √29 theo bất đẳng thức Cauchy–Schwarz. Dấu bằng đạt tại a=2/3, b=4/3; khi đó hai giá trị trên đều dương, thỏa điều kiện cùng phía. Suy ra d=−4/3 và 3a+6b−3d=14.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "VD: Cần dùng điều kiện cùng phía để gộp các khoảng cách thành một biểu thức, xác định chặn tối ưu và kiểm tra điều kiện đạt dấu bằng."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/60df2dc43ad0ceca3a3a698dbe51e9473a290f7dca71335460a4c53cb0b65fd7.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/60df2dc43ad0ceca3a3a698dbe51e9473a290f7dca71335460a4c53cb0b65fd7.resolve.json"
+}

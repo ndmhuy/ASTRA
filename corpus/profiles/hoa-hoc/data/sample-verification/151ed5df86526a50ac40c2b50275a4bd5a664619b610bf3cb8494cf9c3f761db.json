@@ -1,0 +1,52 @@
+{
+  "input_sha256": "151ed5df86526a50ac40c2b50275a4bd5a664619b610bf3cb8494cf9c3f761db",
+  "model": "gpt-6.1-sol",
+  "unkeyed_invocation": true,
+  "independent_teacher_review": false,
+  "request_tag": "finish-three-sample-resolve-hoa-hoc-151ed5df8652",
+  "checks": [
+    {
+      "id": "HH-N-3ba3d7087d4d",
+      "answers": [
+        {
+          "sub": null,
+          "value": 3,
+          "level": "NB",
+          "reason": "Nhận diện trực tiếp ba ester từ tên gọi: methyl propanoate, ethyl pentanoate và propyl ethanoate. Ba chất còn lại là muối carboxylate."
+        }
+      ],
+      "solution": "Có 3 chất thuộc loại ester.",
+      "issues": [],
+      "unique_answer": true
+    },
+    {
+      "id": "HH-N-6372ec510266",
+      "answers": [
+        {
+          "sub": null,
+          "value": 101.6,
+          "level": "VD",
+          "reason": "Phải lập mô hình tối ưu với lượng triglyceride và mức hydrogen hóa được lựa chọn, kết hợp giới hạn nguyên liệu với khoảng thành phần muối, rồi chứng minh cận trên đạt được."
+        }
+      ],
+      "solution": "Gọi x, y lần lượt là số mol triolein, tristearin và h là số mol H₂ phản ứng. Số mol sodium oleate O=3x−h; sodium stearate S=3y+h. Các ràng buộc gồm 0≤x≤0,160; 0≤y≤0,030; 0≤h≤min(0,090;3x); 3(x+y)≤0,540. Do S/(O+S)≥0,35 nên O≤(13/7)S. Đồng thời S≤3×0,030+0,090=0,180 mol, suy ra O≤0,334285714 mol. Cận này đạt được khi y=0,030; h=0,090; x=0,141428571 mol: tổng muối bằng 0,514285714 mol, tiêu thụ cùng số mol NaOH, và stearate chiếm đúng 35,0%. Mọi giới hạn đều được thỏa mãn. Khối lượng oleate lớn nhất là 0,334285714×304=101,622857 g, làm tròn thành 101,6 g.",
+      "issues": [],
+      "unique_answer": true
+    },
+    {
+      "id": "HH-N-5f591d640865",
+      "answers": [
+        {
+          "sub": null,
+          "value": 2,
+          "level": "NB",
+          "reason": "Nhớ và nhận diện trực tiếp ribose, galactose là monosaccharide; maltose và sucrose là disaccharide, cellulose là polysaccharide."
+        }
+      ],
+      "solution": "Có 2 monosaccharide: ribose và galactose.",
+      "issues": [],
+      "unique_answer": true
+    }
+  ],
+  "limits": []
+}

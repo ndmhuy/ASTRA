@@ -1,0 +1,109 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "696119dd11b1df3c",
+    "topic": "Nguyên hàm và tăng trưởng mũ",
+    "part": "P3",
+    "level": "TH",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Một đại lượng dương có tốc độ biến thiên tương đối không đổi, giá trị ban đầu, một quan sát về sau và ngưỡng cần đạt.",
+        "task": "Tìm thời gian để đại lượng đạt ngưỡng rồi làm tròn.",
+        "reasoning": [
+          "Lấy nguyên hàm quan hệ tốc độ tương đối để suy ra mô hình hàm mũ.",
+          "Dùng điều kiện ban đầu xác định hệ số của mô hình.",
+          "Dùng quan sát tiếp theo xác định hằng số suy giảm.",
+          "Giải phương trình hàm mũ ứng với ngưỡng và làm tròn thời gian."
+        ],
+        "combines": [
+          "Nguyên hàm",
+          "Hàm số mũ",
+          "Lôgarit",
+          "Mô hình tốc độ biến thiên"
+        ],
+        "difficulty_source": "Chuyển quan hệ đạo hàm tương đối thành mô hình mũ; dữ kiện đã cung cấp quy luật.",
+        "evidence_uncertainty": "Xếp lớp theo thao tác nguyên hàm; mô hình còn dùng hàm mũ và lôgarit của lớp trước. Không có khóa để đối chiếu kết quả cuối.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một đại lượng dương có tốc độ biến thiên tỉ lệ với chính nó, một biểu diễn hàm mũ và các giá trị quan sát theo thời gian.",
+        "task": "Tính giá trị dự báo tại một thời điểm khác.",
+        "reasoning": [
+          "Dùng đạo hàm của hàm hợp mũ để suy ra số mũ có đạo hàm không đổi.",
+          "Suy ra dạng hàm mũ theo thời gian.",
+          "Dùng các quan sát để xác định hệ số hoặc hệ số thay đổi theo khoảng thời gian.",
+          "Tính giá trị tại thời điểm cần dự báo.",
+          "Làm tròn theo yêu cầu."
+        ],
+        "combines": [
+          "Đạo hàm hàm hợp",
+          "Nguyên hàm của hằng số",
+          "Hàm mũ",
+          "Xác định tham số từ dữ kiện"
+        ],
+        "difficulty_source": "Nhận ra mô hình mũ từ điều kiện tốc độ tỉ lệ và dùng tỉ số quan sát để ngoại suy.",
+        "evidence_uncertainty": "Xếp lớp theo việc khôi phục hàm từ đạo hàm; kiến thức hàm mũ và đạo hàm hàm hợp thuộc lớp trước.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "aceb17d936f5|P3|3|None",
+      "beee25b53250|P3|5|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "696119dd11b1df3c",
+    "stem": "Một bể xử lí chứa 80 gam chất màu tại thời điểm t=0. Gọi M(t)>0 là khối lượng chất màu còn lại sau t giờ. Trong mô hình đang xét, M có đạo hàm và M'(t)/M(t)=k với k là hằng số âm. Sau 4 giờ, bể còn 50 gam chất màu. Hỏi sau bao nhiêu giờ kể từ thời điểm ban đầu, khối lượng chất màu còn lại bằng 20 gam? Làm tròn kết quả đến hàng phần mười.",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "11,8",
+        "level": "TH"
+      }
+    ],
+    "solution": "Do (ln M(t))'=M'(t)/M(t)=k, lấy nguyên hàm được ln M(t)=kt+C. Điều kiện M(0)=80 cho M(t)=80e^(kt). Từ M(4)=50 suy ra e^(4k)=5/8 và k=ln(5/8)/4. Khi M(t)=20, ta có e^(kt)=1/4, nên t=4ln(1/4)/ln(5/8)≈11,798 giờ. Vì k<0 và M(t)>0 nên M giảm nghiêm ngặt, do đó thời điểm này là duy nhất. Kết quả làm tròn là 11,8 giờ.",
+    "distractors": [],
+    "level_reason": "TH vì quy luật tốc độ biến thiên tương đối đã được cung cấp. Học sinh khôi phục hàm bằng nguyên hàm, dùng dữ kiện xác định tham số rồi giải phương trình mũ theo quy trình quen thuộc; số bước tính không tự làm tăng mức lên VD.",
+    "prerequisites": [
+      "Đạo hàm của hàm lôgarit hợp",
+      "Nguyên hàm của hằng số",
+      "Giải phương trình mũ bằng lôgarit",
+      "Làm tròn số thập phân"
+    ],
+    "variation_guidance": "Thay bối cảnh bằng một đại lượng suy giảm dương khác, thay tỉ số quan sát và ngưỡng; luôn nêu rõ quy luật tốc độ tương đối, mốc thời gian và yêu cầu làm tròn.",
+    "uncertainties": [
+      "Đây là mẫu minh họa tổng hợp dựa trên cấu trúc quan sát cấp tỉnh qua nguồn bên thứ ba; không có neo đề chính thức hoặc khóa kết quả tương ứng.",
+      "Việc ghép nguyên hàm với mô hình suy giảm cần được giáo viên đối chiếu với tiến độ dạy học; lời giải không sử dụng phương pháp phương trình vi phân ở đại học."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "696119dd11b1df3c",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "11.8",
+        "level": "TH"
+      }
+    ],
+    "solution": "Từ (ln M(t))'=k suy ra M(t)=80e^(kt). Điều kiện M(4)=50 cho k=ln(5/8)/4. Khi M(t)=20, t=4ln(1/4)/ln(5/8)≈11,798 giờ. Làm tròn đến hàng phần mười được 11,8 giờ.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Mô hình đã được cung cấp. Chỉ cần lấy nguyên hàm của đạo hàm logarit, thay điều kiện và giải phương trình mũ theo quy trình quen thuộc; không cần phương pháp ngoài kiến thức đạo hàm, nguyên hàm và logarit. Mức TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/6e56a3c325b185cbeee3fecc43660d5c401ace967d81f8ef1c9d4e79a5c538fb.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/6e56a3c325b185cbeee3fecc43660d5c401ace967d81f8ef1c9d4e79a5c538fb.resolve.json"
+}

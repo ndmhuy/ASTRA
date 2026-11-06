@@ -1,0 +1,93 @@
+{
+  "samples": [
+    {
+      "id": "KT-F-025",
+      "topic_id": "T06",
+      "part": "P2",
+      "qtype": "true_false",
+      "stem": "Ngữ liệu tự biên soạn, số liệu giả định. Một nhóm nghiên cứu đánh giá chương trình ở vùng A, dùng vùng B làm đối chứng. Bảng ghi GDP theo giá hiện hành (tỉ đồng), chỉ số giá GDP (năm đầu=100), dân số (nghìn người):\n\n| Vùng và thời điểm | GDP hiện hành | Chỉ số giá | Dân số | Tỉ lệ nghèo |\n|---|---:|---:|---:|---:|\n| A trước chương trình | 1000 | 100 | 100 | 12% |\n| A sau chương trình | 1452 | 110 | 110 | 11% |\n| B cùng thời điểm đầu | 1800 | 100 | 200 | 20% |\n| B cùng thời điểm sau | 2376 | 110 | 220 | 18% |\n\nChấp nhận mô hình giả định: nếu không có chương trình thì GDP thực bình quân đầu người của A tăng cùng tỉ lệ với B; chương trình không làm thay đổi dân số hay chỉ số giá so với bảng. Hiệu quả tương đối được đo bằng mức GDP thực bình quân quan sát của A so với mức phản thực theo mô hình, không phải chênh lệch tốc độ tăng GDP tổng. Không suy từ mô hình này ra tác động nhân quả trong một nghiên cứu thực tế.",
+      "options": {},
+      "statements": [
+        {
+          "sub": "a",
+          "text": "GDP trong cột thứ hai của bảng được ghi theo giá hiện hành."
+        },
+        {
+          "sub": "b",
+          "text": "Số người nghèo ở A sau chương trình ít hơn trước vì tỉ lệ nghèo giảm."
+        },
+        {
+          "sub": "c",
+          "text": "Theo mô hình đối chứng đã chấp nhận, hiệu quả tương đối của chương trình đối với GDP thực bình quân đầu người của A là 10%."
+        },
+        {
+          "sub": "d",
+          "text": "Lấy chênh lệch tốc độ tăng GDP thực tổng của A và B sẽ cho đúng con số hiệu quả tương đối ở nhận định c."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "NB",
+          "solution": "Đọc tên đại lượng trong phần giới thiệu bảng."
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH",
+          "solution": "Trước có12000người nghèo; sau110000×11%=12100, tăng100người dù tỉ lệ giảm."
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "VD",
+          "solution": "Khử biến động giá rồi chuyển từ tổng sang bình quân ở cả hai vùng; tính hệ số tăng đối chứng12/11; dựng mức phản thực của A=10×12/11=120/11; so mức quan sát12 với phản thực được12/(120/11)-1=10%."
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "TH",
+          "solution": "GDP thực tổng A tăng32%, B tăng20%; chênh lệch12điểm phần trăm khác hiệu quả tương đối10%. Hai đại lượng đo khác nhau."
+        }
+      ],
+      "solution": "GDP thực bình quân A:1000/100=10 và(1452/1.10)/110=12. B:1800/200=9 và(2376/1.10)/220=108/11. Hệ số tăng bình quân B=(108/11)/9=12/11. Phản thực A=120/11. Hiệu quả tương đối=(12-120/11)/(120/11)=0.10. Không lấy tăngGDP danh nghĩa hoặc chênh lệch tăng tổng để thay chỉ tiêu này. Số nghèo A:12000→12100.",
+      "cognitive_rationale": "Ý c buộc dựng biến kết quả thực bình quân, tái tạo phản thực từ vùng đối chứng rồi chọn mẫu số hiệu quả; ba quan hệ phụ thuộc nối đo lường tăng trưởng và suy luận đối chứng. Đọc một hàng hoặc thay một công thức không xác định được hiệu ứng cần hỏi.",
+      "distractor_mechanisms": {
+        "b": "Lẫn tỉ lệ nghèo với số người khi dân số thay đổi.",
+        "c": "DùngGDP danh nghĩa/tổng hoặc lấy chênh lệch tốcđộ tăng thay so với phản thực.",
+        "d": "Đồng nhất mức tăngGDP tổng với hiệu quả tương đối củaGDP bình quân."
+      },
+      "easier": "Cho sẵnGDP thực bình quân và mức phản thực, chỉ yêu cầu tính một tỉ lệ; mứcTH.",
+      "harder": "Cho thêm giai đoạn trước can thiệp để đánh giá độ thích hợp của giả định đối chứng, giữ riêng kết quả tính và hạn chế suy luận nhân quả.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-bce97cf9f801"
+      ],
+      "rubric": [
+        {
+          "criterion": "Chọn đúng và lí giải phù hợp dữ kiện a",
+          "points": 0.25
+        },
+        {
+          "criterion": "Chọn đúng và lí giải phù hợp dữ kiện b",
+          "points": 0.25
+        },
+        {
+          "criterion": "Chọn đúng và lí giải phù hợp dữ kiện c",
+          "points": 0.25
+        },
+        {
+          "criterion": "Chọn đúng và lí giải phù hợp dữ kiện d",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": [
+        "Dùng bảng đối chiếu dữ kiện với từng điều kiện thay cho trình bày bằng lời."
+      ]
+    }
+  ],
+  "method": "Parent Sol concrete redesign, no change to source or candidate corpus"
+}

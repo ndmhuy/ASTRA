@@ -1,0 +1,86 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "6a402c2b699c873e",
+    "topic": "Dãy số, cấp số cộng và cấp số nhân",
+    "part": "P3",
+    "level": "TH",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Chi phí ban đầu, tỉ lệ tăng cố định theo năm và ngưỡng chi phí.",
+        "task": "Xác định năm đầu tiên chi phí riêng của năm vượt ngưỡng.",
+        "reasoning": [
+          "Mô hình hóa chi phí từng năm bằng cấp số nhân.",
+          "Lập bất phương trình vượt ngưỡng.",
+          "Tìm số chu kỳ nguyên nhỏ nhất thỏa mãn.",
+          "Đổi số chu kỳ thành năm lịch và kiểm tra năm liền trước."
+        ],
+        "combines": [
+          "Cấp số nhân",
+          "Bất phương trình mũ",
+          "Chỉ số thời gian rời rạc"
+        ],
+        "difficulty_source": "Phân biệt chi phí từng năm với chi phí cộng dồn và giữ đúng mốc năm.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "0ecb85132b84|P3|1|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "6a402c2b699c873e",
+    "stem": "Năm 2027, chi phí bảo dưỡng thiết bị của một xưởng là 40 triệu đồng. Theo kế hoạch, chi phí bảo dưỡng của mỗi năm sau tăng 10% so với năm liền trước. Năm đầu tiên chi phí bảo dưỡng riêng của năm đó vượt 53 triệu đồng là năm nào?",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "2030",
+        "level": "TH"
+      }
+    ],
+    "solution": "Gọi n là số năm tính từ năm 2027, với n là số nguyên không âm. Chi phí năm 2027 + n là 40 × 1,1^n triệu đồng. Các chi phí năm 2028, 2029 và 2030 lần lượt là 44; 48,4; 53,24 triệu đồng. Vì dãy chi phí tăng, năm 2029 vẫn chưa vượt 53 triệu đồng còn năm 2030 đã vượt, nên năm đầu tiên cần tìm là 2030.",
+    "distractors": [],
+    "level_reason": "Học sinh nhận ra quy luật tăng theo tỉ lệ cố định, sử dụng cấp số nhân và kiểm tra hai năm liên tiếp quanh ngưỡng. Đây là bài toán quen thuộc ở mức TH.",
+    "prerequisites": [
+      "Tăng trưởng theo tỉ lệ phần trăm",
+      "Số hạng của cấp số nhân",
+      "Phân biệt chi phí từng năm với chi phí cộng dồn",
+      "Quy đổi chỉ số dãy thành năm lịch"
+    ],
+    "variation_guidance": "Thay năm gốc, chi phí ban đầu, tỉ lệ tăng và ngưỡng. Cần ghi rõ điều kiện vượt ngưỡng là bất đẳng thức nghiêm và kiểm tra năm liền trước.",
+    "uncertainties": [
+      "Đây là câu hỏi minh họa tổng hợp, chỉ dựa trên dạng quan sát từ nguồn cấp tỉnh qua bên thứ ba; không phải dữ liệu chi phí thực tế hoặc bằng chứng đề thi chính thức."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "6a402c2b699c873e",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "2030",
+        "level": "TH"
+      }
+    ],
+    "solution": "Chi phí các năm 2028, 2029 và 2030 lần lượt là 44; 48,4; 53,24 triệu đồng. Vì chi phí tăng mỗi năm và 48,4 < 53 < 53,24 nên năm đầu tiên vượt 53 triệu đồng là 2030.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Thực hiện liên tiếp phép tăng 10% và so sánh với ngưỡng là thủ tục tính toán quen thuộc."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/c06069fe7f19026ae68b070924aa7f8fdde5fd14e3ef011908f479f62b43b116.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/c06069fe7f19026ae68b070924aa7f8fdde5fd14e3ef011908f479f62b43b116.resolve.json"
+}

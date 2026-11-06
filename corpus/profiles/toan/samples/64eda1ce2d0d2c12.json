@@ -1,0 +1,208 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "64eda1ce2d0d2c12",
+    "topic": "Tích phân và tích lũy",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Quan hệ giữa tốc độ và đại lượng tích lũy, cùng một biểu thức tích phân trên khoảng thời gian bất kỳ.",
+        "task": "Đánh giá biểu thức tính lượng tích lũy trong khoảng.",
+        "reasoning": [
+          "Nhận diện đại lượng cần tính là mức tăng giữa các thời điểm.",
+          "Áp dụng quan hệ giữa tích phân tốc độ và hiệu giá trị tích lũy."
+        ],
+        "combines": [
+          "Ý nghĩa của tích phân",
+          "Tốc độ biến thiên"
+        ],
+        "difficulty_source": "Nhận biết trực tiếp ý nghĩa tích lũy của tích phân.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Hàm tốc độ đa thức, một khoảng thời gian cụ thể và một nhận định so sánh lượng tích lũy với ngưỡng.",
+        "task": "Kiểm tra quan hệ so sánh được nêu.",
+        "reasoning": [
+          "Lập tích phân của tốc độ trên khoảng được xét.",
+          "Tính bằng hiệu các giá trị nguyên hàm.",
+          "So sánh kết quả với ngưỡng trong nhận định."
+        ],
+        "combines": [
+          "Tích phân đa thức",
+          "So sánh đại lượng"
+        ],
+        "difficulty_source": "Tính hiệu nguyên hàm chính xác trước khi so sánh ngưỡng.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Một hàm tốc độ không hằng và một khẳng định tỉ lệ giữa lượng tích lũy trên các khoảng có chung thời điểm đầu.",
+        "task": "Kiểm tra tỉ lệ tích lũy được đề xuất.",
+        "reasoning": [
+          "Biểu diễn lượng tích lũy trên từng khoảng bằng tích phân.",
+          "Tính các hiệu nguyên hàm tương ứng.",
+          "Đối chiếu tỉ lệ thực tế với khẳng định."
+        ],
+        "combines": [
+          "Tích phân xác định",
+          "Tỉ lệ giữa các đại lượng",
+          "Tốc độ không hằng"
+        ],
+        "difficulty_source": "Phân biệt thời lượng với tích phân của tốc độ không hằng.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Tốc độ biến thiên chứa tham số, lượng ban đầu và lượng tại một thời điểm kiểm chuẩn.",
+        "task": "Kiểm tra lượng tích lũy tại một thời điểm khác.",
+        "reasoning": [
+          "Tích phân tốc độ để tìm dạng hàm tích lũy.",
+          "Dùng lượng ban đầu xác định hằng số tích phân.",
+          "Dùng mốc kiểm chuẩn xác định tham số.",
+          "Thay thời điểm cần xét rồi đối chiếu."
+        ],
+        "combines": [
+          "Nguyên hàm",
+          "Điều kiện ban đầu",
+          "Xác định tham số"
+        ],
+        "difficulty_source": "Hiệu chỉnh tham số từ lượng tăng thay vì từ tổng lượng.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "023e74626dd8|P2|1|b",
+      "023e74626dd8|P2|1|c",
+      "023e74626dd8|P2|1|d",
+      "0968e8bc9e2d|P2|4|c",
+      "0968e8bc9e2d|P2|4|d",
+      "3b4cca11ea82|P2|3|c",
+      "54e9a2a276ca|P2|2|b",
+      "54e9a2a276ca|P2|2|c",
+      "aceb17d936f5|P2|1|a",
+      "aceb17d936f5|P2|1|b",
+      "fc12a8146279|P2|2|b",
+      "fc12a8146279|P2|2|c"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "64eda1ce2d0d2c12",
+    "stem": "Một bể ban đầu chứa 20 lít nước. Trong khoảng 0 ≤ t ≤ 4, nước chỉ được bơm vào bể với lưu lượng q(t) = at + 3 (lít/phút), trong đó t tính bằng phút và a là hằng số dương. Không có nước chảy ra, bể không bị tràn. Gọi V(t) là lượng nước trong bể tại thời điểm t. Biết V(2) = 30 lít. Xét tính đúng, sai của các khẳng định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Với 0 ≤ r < s ≤ 4, lượng nước được bơm thêm từ thời điểm r đến thời điểm s bằng ∫ᵣˢq(t)dt."
+      },
+      {
+        "sub": "b",
+        "text": "Giá trị của a là 12."
+      },
+      {
+        "sub": "c",
+        "text": "Tại thời điểm t = 4, bể chứa 48 lít nước."
+      },
+      {
+        "sub": "d",
+        "text": "Lượng nước được bơm thêm trong 4 phút đầu bằng hai lần lượng nước được bơm thêm trong 2 phút đầu."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) Tích phân lưu lượng trên một khoảng thời gian chính là lượng nước được bơm thêm trong khoảng đó, nên khẳng định đúng. b) V(2) − V(0) = ∫₀²(at + 3)dt, do đó 30 − 20 = 2a + 6, suy ra a = 2, không phải 12. c) V(4) = 20 + ∫₀⁴(2t + 3)dt = 20 + 16 + 12 = 48 lít. Khẳng định đúng. d) Lượng bơm thêm trong 4 phút đầu là 28 lít; trong 2 phút đầu là 10 lít. Vì 28 ≠ 2·10 nên khẳng định sai.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Đặt ∫₀²(at + 3)dt = 30, từ đó tính được a = 12.",
+        "why_plausible": "Học sinh nhầm lượng nước đang có trong bể với lượng nước được bơm thêm và bỏ qua 20 lít ban đầu."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Cho rằng thời gian tăng gấp đôi thì lượng nước bơm thêm cũng tăng gấp đôi.",
+        "why_plausible": "Quan hệ tỉ lệ này đúng với lưu lượng không đổi, nhưng lưu lượng trong bài tăng theo thời gian."
+      }
+    ],
+    "level_reason": "Mức cao nhất của mẫu là TH. Học sinh diễn giải tích phân lưu lượng, phân biệt lượng ban đầu với lượng tăng thêm và thực hiện phép tính tích phân đa thức theo quy trình quen thuộc. Việc xác định tham số từ mốc đã cho không đòi hỏi xây dựng mô hình mới.",
+    "prerequisites": [
+      "Ý nghĩa tích lũy của tích phân.",
+      "Quan hệ V(s) − V(r) = ∫ᵣˢq(t)dt.",
+      "Tích phân hàm bậc nhất."
+    ],
+    "variation_guidance": "Đây là mẫu minh họa tự tạo, không phải bằng chứng đề thi thật. Có thể thay lượng nước ban đầu, mốc kiểm chuẩn và lưu lượng; cần phân biệt rõ lượng đang có với lượng được bơm thêm.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "64eda1ce2d0d2c12",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Lượng nước bơm thêm từ r đến s là ∫ᵣˢq(t)dt. V(t)=20+(a/2)t²+3t. Từ V(2)=30 suy ra 20+2a+6=30, nên a=2. Do đó V(4)=20+16+12=48 lít. Lượng nước bơm thêm trong 4 phút là 28 lít, trong 2 phút là 10 lít; 28≠2·10.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Ý a nhận biết trực tiếp công thức lượng tích lũy từ lưu lượng, thuộc NB. Các ý b, c, d dùng công thức tích phân và tính toán, so sánh theo quy trình quen thuộc, thuộc TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/9fca1293de6148d007a3727b736b714a49999da3f79542ac3c2cd1e37aead87d.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/9fca1293de6148d007a3727b736b714a49999da3f79542ac3c2cd1e37aead87d.resolve.json"
+}

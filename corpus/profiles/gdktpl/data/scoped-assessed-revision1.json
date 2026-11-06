@@ -1,0 +1,722 @@
+{
+  "samples": [
+    {
+      "id": "KT-F-024",
+      "topic_id": "T05",
+      "part": "P2",
+      "qtype": "true_false",
+      "stem": "Toàn bộ quy tắc sau là hợp đồng giả định, không phải quy định pháp luật hiện hành. S sở hữu máy, cho R thuê; bán máy cần S chấp thuận bằng văn bản. R nhận của T khoản đặt trước 6, giữ riêng chưa dùng. Hợp đồng R–T quy định: nếu S từ chối, R trả nguyên 6 cho T; nếu đồng ý, 6 được chuyển cho S và R phải bổ sung 4 mới được nhận tiền bán hàng 8 từ T sau khi giao máy. R hiện không có tiền riêng. Nếu thay vì giữ riêng, R dùng 6 để sửa máy ngay, tiền này không thu hồi được và không thay cho 4 phải bổ sung; chưa biết S có đồng ý không. Không bên nào cho vay hay cấp thêm tiền. Xét cả quyền định đoạt và khả năng thực hiện cam kết.",
+      "options": {},
+      "statements": [
+        {
+          "sub": "a",
+          "text": "R đang thuê nên có thể tự bán mà không cần S."
+        },
+        {
+          "sub": "b",
+          "text": "Giữ riêng 6 đủ để bảo đảm hoàn trả nếu S từ chối nhưng chưa bảo đảm giao dịch hoàn tất nếu S đồng ý."
+        },
+        {
+          "sub": "c",
+          "text": "Khoản 8 nhận sau giao máy có thể dùng trước để bổ sung 4, nên nhánh đồng ý đã tự cân đối."
+        },
+        {
+          "sub": "d",
+          "text": "Dùng 6 sửa máy trước sẽ tạo nguy cơ không thực hiện được cả nhánh từ chối lẫn nhánh đồng ý."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "value": "S",
+          "level": "TH",
+          "solution": "Quyền sử dụng không thay quyền định đoạt của S theo hợp đồng."
+        },
+        {
+          "sub": "b",
+          "value": "D",
+          "level": "VD",
+          "solution": "Dựng hai nhánh: từ chối cần trả 6 và có sẵn 6; đồng ý phải chuyển đủ 6 cho S rồi bổ sung 4 trước khi có 8, nên thiếu vốn cầu nối."
+        },
+        {
+          "sub": "c",
+          "value": "S",
+          "level": "VD",
+          "solution": "Không thể dùng dòng tiền chỉ xuất hiện sau giao máy để đáp ứng điều kiện có trước giao máy; vòng phụ thuộc không có nguồn khởi động."
+        },
+        {
+          "sub": "d",
+          "value": "D",
+          "level": "VD",
+          "solution": "Nếu từ chối thì mất nguồn trả 6; nếu đồng ý thì thiếu cả khoản chuyển S và vốn bổ sung. Sửa máy không tạo quyền bán hay nguồn tiền, nên phải kiểm tra cả hai nhánh."
+        }
+      ],
+      "solution": "Quyền sử dụng không thay quyền định đoạt của S theo hợp đồng. Dựng hai nhánh: từ chối cần trả 6 và có sẵn 6; đồng ý phải chuyển đủ 6 cho S rồi bổ sung 4 trước khi có 8, nên thiếu vốn cầu nối. Không thể dùng dòng tiền chỉ xuất hiện sau giao máy để đáp ứng điều kiện có trước giao máy; vòng phụ thuộc không có nguồn khởi động. Nếu từ chối thì mất nguồn trả 6; nếu đồng ý thì thiếu cả khoản chuyển S và vốn bổ sung. Sửa máy không tạo quyền bán hay nguồn tiền, nên phải kiểm tra cả hai nhánh.",
+      "cognitive_rationale": "b–d phải dựng cây chấp thuận và thứ tự dòng tiền, phát hiện vòng phụ thuộc giao máy–thu tiền; đọc riêng quy tắc quyền sở hữu hay cộng số tiền không đủ.",
+      "distractor_mechanisms": {
+        "a": "Đồng nhất sử dụng với định đoạt.",
+        "c": "Đảo thứ tự dòng tiền, dùng khoản thu tương lai tài trợ điều kiện của chính khoản thu."
+      },
+      "easier": "Cung cấp sẵn bảng diễn biến ở từng nhánh thay vì yêu cầu tự dựng.",
+      "harder": "Thêm một nhánh bất định và yêu cầu chỉ rõ dữ kiện nào làm phương án tối ưu thay đổi.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "hold",
+      "target_cell_ids": [
+        "CELL-38433ef24033"
+      ],
+      "rubric": [
+        {
+          "criterion": "Chọn đúng và lí giải phù hợp dữ kiện a",
+          "points": 0.25
+        },
+        {
+          "criterion": "Chọn đúng và lí giải phù hợp dữ kiện b",
+          "points": 0.25
+        },
+        {
+          "criterion": "Chọn đúng và lí giải phù hợp dữ kiện c",
+          "points": 0.25
+        },
+        {
+          "criterion": "Chọn đúng và lí giải phù hợp dữ kiện d",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": [
+        "Dùng bảng đối chiếu dữ kiện với từng điều kiện thay cho trình bày bằng lời."
+      ],
+      "review": {
+        "id": "KT-F-024",
+        "answers": [
+          {
+            "sub": "a",
+            "value": "S",
+            "level": "TH",
+            "reason": "Quyền thuê không đáp ứng điều kiện chấp thuận bán bằng văn bản."
+          },
+          {
+            "sub": "b",
+            "value": "D",
+            "level": "VD",
+            "reason": "Xét hai nhánh dòng tiền: giữ 6 đủ hoàn trả, nhưng đồng ý còn cần 4 trước khi nhận 8; R không có nguồn cho khoản 4."
+          },
+          {
+            "sub": "c",
+            "value": "S",
+            "level": "TH",
+            "reason": "Khoản 8 chỉ đến sau giao máy, không thể dùng trước để đáp ứng điều kiện giao."
+          },
+          {
+            "sub": "d",
+            "value": "D",
+            "level": "VD",
+            "reason": "Sau khi chi hết 6, nhánh từ chối thiếu tiền hoàn; nhánh đồng ý thiếu cả 6 chuyển S và 4 bổ sung, còn 8 chưa được nhận."
+          }
+        ],
+        "solution": "Theo hợp đồng giả định: phải xin S; giữ tiền giải quyết được nhánh từ chối nhưng chưa giải quyết được vốn nhánh đồng ý. Dùng trước tiền phá khả năng thực hiện cả hai nhánh.",
+        "issues": [],
+        "unique_answer": true
+      },
+      "flags": [
+        {
+          "kind": "level_disagreement",
+          "sub": "c",
+          "intended": "VD",
+          "solved": "TH"
+        }
+      ]
+    },
+    {
+      "id": "KT-F-025",
+      "topic_id": "T06",
+      "part": "P2",
+      "qtype": "true_false",
+      "stem": "Dữ liệu kinh tế giả định: địa phương có 100 lao động, mỗi người đang làm việc tạo 1 đơn vị sản lượng thực mỗi kì. Không đầu tư thì cả 100 làm việc. Dự án A tạo thêm 15 đơn vị mỗi kì nhưng ô nhiễm khiến 20 lao động nghỉ ở kì sau; kì đầu chưa ai nghỉ. Dự án B tạo thêm 8 đơn vị mỗi kì, không gây nghỉ việc. Không có tác động khác; lao động nghỉ không tạo sản lượng. Mục tiêu là sản lượng thực mỗi kì không thấp hơn mức không đầu tư và tránh giảm khả năng lao động. Chỉ xét hai kì.",
+      "options": {},
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Sản lượng thực kì đầu của A cao hơn B."
+        },
+        {
+          "sub": "b",
+          "text": "So mức tăng trực tiếp 15 và 8 đủ kết luận A đáp ứng mục tiêu cả hai kì."
+        },
+        {
+          "sub": "c",
+          "text": "B đáp ứng mục tiêu còn A không, dù A có mức tăng trực tiếp lớn hơn."
+        },
+        {
+          "sub": "d",
+          "text": "Nếu ô nhiễm A được loại bỏ hoàn toàn trước kì sau mà không có chi phí hay tác động khác, kết luận về A không đáp ứng mục tiêu sản lượng sẽ phải đổi."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH",
+          "solution": "Kì đầu A là 115, B là 108."
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH",
+          "solution": "Mức tăng trực tiếp chưa tính phản hồi môi trường lên lực lượng lao động kì sau."
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "VD",
+          "solution": "Cần dựng chuỗi ô nhiễm→nghỉ việc→mất sản lượng nền: A kì sau là 80+15=95, dưới 100; B vẫn 108 và giữ năng lực lao động. Không thể xếp hạng chỉ theo phần tăng trực tiếp."
+        },
+        {
+          "sub": "d",
+          "value": "D",
+          "level": "VD",
+          "solution": "Trong phản thực không còn nghỉ việc, nền sản xuất A vẫn 100 nên kì sau đạt 115; phải thay đúng mắt xích ô nhiễm–lao động, không giữ nguyên kết quả 95."
+        }
+      ],
+      "solution": "Kì đầu A là 115, B là 108. Mức tăng trực tiếp chưa tính phản hồi môi trường lên lực lượng lao động kì sau. Cần dựng chuỗi ô nhiễm→nghỉ việc→mất sản lượng nền: A kì sau là 80+15=95, dưới 100; B vẫn 108 và giữ năng lực lao động. Không thể xếp hạng chỉ theo phần tăng trực tiếp. Trong phản thực không còn nghỉ việc, nền sản xuất A vẫn 100 nên kì sau đạt 115; phải thay đúng mắt xích ô nhiễm–lao động, không giữ nguyên kết quả 95.",
+      "cognitive_rationale": "c–d đòi dựng quan hệ nội sinh giữa môi trường, vốn con người và sản lượng qua thời gian rồi tái lập phản thực; dữ kiện không cho sẵn tổng sản lượng để chỉ so ngưỡng.",
+      "distractor_mechanisms": {
+        "b": "Xem sản lượng tăng trực tiếp là tăng ròng.",
+        "c": "Nhiễu ngược: giữ nguyên 100 lao động cho cả hai kì.",
+        "d": "Nhiễu ngược: giữ hậu quả nghỉ việc sau khi đã loại nguyên nhân."
+      },
+      "easier": "Cung cấp sẵn bảng diễn biến ở từng nhánh thay vì yêu cầu tự dựng.",
+      "harder": "Thêm một nhánh bất định và yêu cầu chỉ rõ dữ kiện nào làm phương án tối ưu thay đổi.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "hold",
+      "target_cell_ids": [
+        "CELL-bce97cf9f801"
+      ],
+      "rubric": [
+        {
+          "criterion": "Chọn đúng và lí giải phù hợp dữ kiện a",
+          "points": 0.25
+        },
+        {
+          "criterion": "Chọn đúng và lí giải phù hợp dữ kiện b",
+          "points": 0.25
+        },
+        {
+          "criterion": "Chọn đúng và lí giải phù hợp dữ kiện c",
+          "points": 0.25
+        },
+        {
+          "criterion": "Chọn đúng và lí giải phù hợp dữ kiện d",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": [
+        "Dùng bảng đối chiếu dữ kiện với từng điều kiện thay cho trình bày bằng lời."
+      ],
+      "review": {
+        "id": "KT-F-025",
+        "answers": [
+          {
+            "sub": "a",
+            "value": "D",
+            "level": "TH",
+            "reason": "Kì đầu A = 100+15=115, B = 100+8=108."
+          },
+          {
+            "sub": "b",
+            "value": "S",
+            "level": "TH",
+            "reason": "A kì sau chỉ còn 80+15=95, dưới mức 100; so riêng 15 và 8 bỏ qua lao động nghỉ."
+          },
+          {
+            "sub": "c",
+            "value": "D",
+            "level": "TH",
+            "reason": "B đạt 108 cả hai kì và không mất lao động; A đạt 115 rồi 95 và mất 20 lao động."
+          },
+          {
+            "sub": "d",
+            "value": "D",
+            "level": "TH",
+            "reason": "Bỏ hoàn toàn tác động ô nhiễm thì A giữ 100 lao động và đạt 115 cả hai kì, vượt 100."
+          }
+        ],
+        "solution": "Đọc cơ chế sản lượng đã cho và tính thường quy: A 115 rồi 95; B 108 cả hai kì. Nếu bỏ ô nhiễm miễn phí, A 115 cả hai kì.",
+        "issues": [
+          {
+            "kind": "content",
+            "severity": "note",
+            "detail": "Các nhận định vẫn chủ yếu thay số vào cơ chế sản lượng đơn giản được mô tả trực tiếp; hai kì và phản thực ở d chưa tự làm mức tối thiểu thành VD."
+          }
+        ],
+        "unique_answer": true
+      },
+      "flags": [
+        {
+          "kind": "level_disagreement",
+          "sub": "c",
+          "intended": "VD",
+          "solved": "TH"
+        },
+        {
+          "kind": "level_disagreement",
+          "sub": "d",
+          "intended": "VD",
+          "solved": "TH"
+        }
+      ]
+    },
+    {
+      "id": "KT-F-027",
+      "topic_id": "T11",
+      "part": "P1",
+      "qtype": "mcq",
+      "stem": "Doanh nghiệp có 12 đơn vị tiền để vào thị trường mới, không được vay; tiền giữ lại chuyển được sang giai đoạn sau. Giai đoạn 1 cần 8 để đạt chứng nhận xuất khẩu. Sau chứng nhận, khách chỉ trả trước 3 khi doanh nghiệp đã mua được nguyên liệu giá 7; khoản còn lại 12 chỉ trả sau giao hàng. Có ba thỏa thuận có thể chọn ngay, mỗi thỏa thuận đều giữ doanh thu cuối 12: M trả phí môi giới 1 ngay, không đổi lịch thanh toán; N nhận trước 4 từ một nhà đầu tư ngay và trả họ 5 sau khi thu đủ tiền khách; P được người bán nguyên liệu cho trả 3 sau giao hàng, trả 4 khi mua. Chọn cách có thể hoàn thành đơn hàng và để lại tiền cuối cùng nhiều nhất. Mọi bên giữ đúng cam kết, không có chi phí khác.",
+      "options": {
+        "A": "Chọn M, vì phí 1 nhỏ hơn khoản trả nhà đầu tư",
+        "B": "Chọn N, vì khoản vốn bổ sung làm dư tiền cuối lớn nhất",
+        "C": "Chọn P, vì tín dụng đầu vào tháo nút vốn trước khoản trả trước",
+        "D": "Không chọn thỏa thuận nào, dùng khoản 3 của khách mua nguyên liệu"
+      },
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": "C",
+          "level": "VD",
+          "solution": "Phải nhận ra khoản 3 chỉ đến sau mua nguyên liệu. Không hỗ trợ còn 4 sau chứng nhận, thiếu 3; M còn 3 nên vẫn thiếu. N có 8 sau chứng nhận, mua 7 còn 1, thu 3 rồi 12 và trả 5 còn 11. P còn 4, mua trả 4 còn 0, thu 3 rồi 12, trả nợ nguyên liệu 3 còn 12. P khả thi và nhiều tiền cuối hơn N."
+        }
+      ],
+      "solution": "Phải nhận ra khoản 3 chỉ đến sau mua nguyên liệu. Không hỗ trợ còn 4 sau chứng nhận, thiếu 3; M còn 3 nên vẫn thiếu. N có 8 sau chứng nhận, mua 7 còn 1, thu 3 rồi 12 và trả 5 còn 11. P còn 4, mua trả 4 còn 0, thu 3 rồi 12, trả nợ nguyên liệu 3 còn 12. P khả thi và nhiều tiền cuối hơn N.",
+      "cognitive_rationale": "Cần mô hình hóa nút thanh khoản do chứng nhận và thanh toán phụ thuộc mua nguyên liệu, rồi so hai cách tài trợ theo thời điểm và chi phí; không thể lọc điều kiện độc lập hoặc so phí danh nghĩa.",
+      "distractor_mechanisms": {
+        "A": "So phí thấp nhưng bỏ khả năng khởi động chuỗi.",
+        "B": "Đồng nhất có thêm vốn với lợi ích ròng cao nhất.",
+        "D": "Dùng khoản trả trước chưa phát sinh để tạo điều kiện nhận chính nó."
+      },
+      "easier": "Cung cấp sẵn bảng diễn biến ở từng nhánh thay vì yêu cầu tự dựng.",
+      "harder": "Thêm một nhánh bất định và yêu cầu chỉ rõ dữ kiện nào làm phương án tối ưu thay đổi.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "model_checked_pending_teacher_review",
+      "target_cell_ids": [
+        "CELL-f6648c382ee4"
+      ],
+      "rubric": [
+        {
+          "criterion": "Chọn đúng và lí giải phù hợp dữ kiện câu hỏi",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": [
+        "Dùng bảng đối chiếu dữ kiện với từng điều kiện thay cho trình bày bằng lời."
+      ],
+      "review": {
+        "id": "KT-F-027",
+        "answers": [
+          {
+            "sub": null,
+            "value": "C",
+            "level": "VD",
+            "reason": "Theo dõi nút thanh khoản trước khoản khách trả 3: M còn 3 nên không mua nổi nguyên liệu 7; N mua được, cuối còn 12+4−8−7+3+12−5=11; P mua với 4 còn lại, cuối còn 12−8−4+3+12−3=12. P khả thi và nhiều tiền nhất."
+          }
+        ],
+        "solution": "Theo dõi nút thanh khoản trước khoản khách trả 3: M còn 3 nên không mua nổi nguyên liệu 7; N mua được, cuối còn 12+4−8−7+3+12−5=11; P mua với 4 còn lại, cuối còn 12−8−4+3+12−3=12. P khả thi và nhiều tiền nhất.",
+        "issues": [
+          {
+            "kind": "ambiguity",
+            "severity": "note",
+            "detail": "Không được vay nhưng N nhận vốn nhà đầu tư rồi trả 5 có thể bị đọc thành khoản vay bị cấm. Các lựa chọn cho phép hiểu N là thỏa thuận đầu tư ngoại lệ; nên xác định rõ vốn đầu tư có được phép theo điều kiện không vay. Không làm đổi đáp án C vì P vẫn trội hơn N ngay khi N được xét."
+          }
+        ],
+        "unique_answer": true
+      },
+      "flags": []
+    },
+    {
+      "id": "KT-F-028",
+      "topic_id": "T11",
+      "part": "P2",
+      "qtype": "true_false",
+      "stem": "Doanh nghiệp thử gói hỗ trợ hội nhập gồm đạt chứng nhận và học quy trình xuất khẩu. Trước thử nghiệm, nhóm tham gia có 20 đơn bán được, nhóm đối chiếu tương đồng có 18. Sau thử nghiệm, hai nhóm lần lượt có 32 và 25. Trong mô hình giả định, không có tác động lan tỏa; nếu không có gói hỗ trợ, biến động thị trường sẽ làm số đơn của hai nhóm thay đổi cùng một lượng. Chi phí gói là 4 đơn vị; mỗi đơn tăng thêm do gói tạo lợi nhuận 1. Chưa có dữ liệu tách riêng hai thành phần của gói.",
+      "options": {},
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Nhóm tham gia tăng 12 đơn so với trước."
+        },
+        {
+          "sub": "b",
+          "text": "Có thể coi cả 12 đơn tăng là tác động riêng của chứng nhận."
+        },
+        {
+          "sub": "c",
+          "text": "Theo mô hình đối chứng, gói tạo thêm 5 đơn và lợi ích ròng 1 đơn vị."
+        },
+        {
+          "sub": "d",
+          "text": "Nếu sau thử nghiệm nhóm đối chiếu chỉ đạt 22 thay vì 25, giữ nguyên giả định mô hình, lợi ích ròng của gói sẽ tăng thêm 3."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH",
+          "solution": "32−20=12 là thay đổi quan sát, chưa phải tác động nhân quả."
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH",
+          "solution": "Không loại xu hướng thị trường và không tách được hai thành phần gói."
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "VD",
+          "solution": "Phải dựng phản thực: đối chiếu tăng 7, nên nhóm tham gia không có gói sẽ đạt 27; phần vượt 32−27=5 mới là lợi ích do gói, trừ chi phí 4 còn 1."
+        },
+        {
+          "sub": "d",
+          "value": "D",
+          "level": "VD",
+          "solution": "Đối chiếu mới tăng 4, phản thực nhóm tham gia là 24; tác động gói là 8, ròng 4, cao hơn ròng cũ 1 đúng 3. Phải dựng lại phản thực chứ không chỉ đổi số đơn của nhóm thử."
+        }
+      ],
+      "solution": "32−20=12 là thay đổi quan sát, chưa phải tác động nhân quả. Không loại xu hướng thị trường và không tách được hai thành phần gói. Phải dựng phản thực: đối chiếu tăng 7, nên nhóm tham gia không có gói sẽ đạt 27; phần vượt 32−27=5 mới là lợi ích do gói, trừ chi phí 4 còn 1. Đối chiếu mới tăng 4, phản thực nhóm tham gia là 24; tác động gói là 8, ròng 4, cao hơn ròng cũ 1 đúng 3. Phải dựng lại phản thực chứ không chỉ đổi số đơn của nhóm thử.",
+      "cognitive_rationale": "c–d yêu cầu lựa chọn mô hình phản thực từ giả định xu hướng chung, tách thay đổi quan sát khỏi tác động, rồi nối tác động với chi phí; đề không cho công thức hay trực tiếp số đơn do gói tạo ra.",
+      "distractor_mechanisms": {
+        "b": "Gán biến động chung và tác động gói cho một thành phần.",
+        "c": "Nhiễu ngược: lấy 12 trừ 4 thay vì dựng phản thực.",
+        "d": "Nhiễu ngược: coi thay nhóm đối chứng không ảnh hưởng ước lượng."
+      },
+      "easier": "Cung cấp sẵn bảng diễn biến ở từng nhánh thay vì yêu cầu tự dựng.",
+      "harder": "Thêm một nhánh bất định và yêu cầu chỉ rõ dữ kiện nào làm phương án tối ưu thay đổi.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "hold",
+      "target_cell_ids": [
+        "CELL-6d0df6654736"
+      ],
+      "rubric": [
+        {
+          "criterion": "Chọn đúng và lí giải phù hợp dữ kiện a",
+          "points": 0.25
+        },
+        {
+          "criterion": "Chọn đúng và lí giải phù hợp dữ kiện b",
+          "points": 0.25
+        },
+        {
+          "criterion": "Chọn đúng và lí giải phù hợp dữ kiện c",
+          "points": 0.25
+        },
+        {
+          "criterion": "Chọn đúng và lí giải phù hợp dữ kiện d",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": [
+        "Dùng bảng đối chiếu dữ kiện với từng điều kiện thay cho trình bày bằng lời."
+      ],
+      "review": {
+        "id": "KT-F-028",
+        "answers": [
+          {
+            "sub": "a",
+            "value": "D",
+            "level": "TH",
+            "reason": "32−20=12."
+          },
+          {
+            "sub": "b",
+            "value": "S",
+            "level": "TH",
+            "reason": "Có biến động thị trường và hai thành phần hỗ trợ chưa tách; không quy toàn bộ 12 cho chứng nhận."
+          },
+          {
+            "sub": "c",
+            "value": "D",
+            "level": "VD",
+            "reason": "Dựng số đơn không có gói: 20+(25−18)=27; tác động 32−27=5; ròng 5−4=1."
+          },
+          {
+            "sub": "d",
+            "value": "D",
+            "level": "TH",
+            "reason": "Đối chiếu sau giảm 3 làm phần thị trường giảm 3, tác động gói và lợi ích ròng tăng 3; ròng mới 4."
+          }
+        ],
+        "solution": "Tăng quan sát 12; tăng đối chứng 7; tác động gói 5, ròng 1. Đối chứng sau 22 cho tác động 8, ròng 4. Chưa tách tác động riêng chứng nhận.",
+        "issues": [],
+        "unique_answer": true
+      },
+      "flags": [
+        {
+          "kind": "level_disagreement",
+          "sub": "d",
+          "intended": "VD",
+          "solved": "TH"
+        }
+      ]
+    },
+    {
+      "id": "KT-F-029",
+      "topic_id": "T12",
+      "part": "P2",
+      "qtype": "true_false",
+      "stem": "Hiệp định hoàn toàn giả định giữa A và B: khi dữ liệu so sánh được cho thấy công trình của A làm giảm nước đến B, hai bên phải thương lượng biện pháp; khi chưa phân biệt được ảnh hưởng công trình với thời tiết thì cùng quan trắc tiếp, chưa được tự đổi nghĩa vụ. Có hai lưu vực tương đồng: lưu vực X có công trình, Y không có. Trước công trình, nước đến hạ lưu X là 100, Y là 80; sau đó X là 70, Y là 64. Nhóm chuyên gia chung thống nhất: nếu không có công trình, thời tiết làm hai lưu vực giảm cùng tỉ lệ; không có nguyên nhân khác. Số liệu đều cùng đơn vị và đã được kiểm định.",
+      "options": {},
+      "statements": [
+        {
+          "sub": "a",
+          "text": "X giảm 30 đơn vị so với trước."
+        },
+        {
+          "sub": "b",
+          "text": "Phần giảm do công trình theo mô hình là 10, nên đã có căn cứ vào giai đoạn thương lượng chứ không chỉ quan trắc chờ thêm."
+        },
+        {
+          "sub": "c",
+          "text": "Nếu phát hiện Y cũng chịu một công trình mới làm giảm nước, phép đối chứng trên không còn đủ để tách tác động công trình X, nên cần làm rõ dữ liệu trước khi viện kết quả 10."
+        },
+        {
+          "sub": "d",
+          "text": "Toàn bộ 30 đơn vị giảm ở X phải được xem là tác động công trình A."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH",
+          "solution": "100−70=30 là giảm quan sát."
+        },
+        {
+          "sub": "b",
+          "value": "D",
+          "level": "VD",
+          "solution": "Y giảm 20%, nên phản thực X không có công trình là 80; X thực tế 70, phần công trình là 10. Cần nối kết luận nhân quả đã kiểm định với điều kiện thủ tục của hiệp định."
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "VD",
+          "solution": "Đối chứng bị tác động không còn chỉ đo thời tiết; phải rút lại phép dựng phản thực trước khi áp dụng điều kiện thương lượng từ số 10."
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "TH",
+          "solution": "Một phần giảm thuộc thời tiết theo mô hình, nên không thể gán hết cho công trình."
+        }
+      ],
+      "solution": "100−70=30 là giảm quan sát. Y giảm 20%, nên phản thực X không có công trình là 80; X thực tế 70, phần công trình là 10. Cần nối kết luận nhân quả đã kiểm định với điều kiện thủ tục của hiệp định. Đối chứng bị tác động không còn chỉ đo thời tiết; phải rút lại phép dựng phản thực trước khi áp dụng điều kiện thương lượng từ số 10. Một phần giảm thuộc thời tiết theo mô hình, nên không thể gán hết cho công trình.",
+      "cognitive_rationale": "b–c kết hợp suy luận phản thực tỉ lệ, tính hợp lệ của đối chứng và lựa chọn bước thực hiện cam kết; không thể giải chỉ bằng tra thứ tự thủ tục.",
+      "distractor_mechanisms": {
+        "d": "Gán toàn bộ thay đổi quan sát cho một nguyên nhân.",
+        "b": "Nhiễu ngược: chờ vô hạn dù đã phân biệt được tác động.",
+        "c": "Nhiễu ngược: giữ kết luận sau khi giả định đối chứng hỏng."
+      },
+      "easier": "Cung cấp sẵn bảng diễn biến ở từng nhánh thay vì yêu cầu tự dựng.",
+      "harder": "Thêm một nhánh bất định và yêu cầu chỉ rõ dữ kiện nào làm phương án tối ưu thay đổi.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "hold",
+      "target_cell_ids": [
+        "CELL-58bea9f2c0c7"
+      ],
+      "rubric": [
+        {
+          "criterion": "Chọn đúng và lí giải phù hợp dữ kiện a",
+          "points": 0.25
+        },
+        {
+          "criterion": "Chọn đúng và lí giải phù hợp dữ kiện b",
+          "points": 0.25
+        },
+        {
+          "criterion": "Chọn đúng và lí giải phù hợp dữ kiện c",
+          "points": 0.25
+        },
+        {
+          "criterion": "Chọn đúng và lí giải phù hợp dữ kiện d",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": [
+        "Dùng bảng đối chiếu dữ kiện với từng điều kiện thay cho trình bày bằng lời."
+      ],
+      "review": {
+        "id": "KT-F-029",
+        "answers": [
+          {
+            "sub": "a",
+            "value": "D",
+            "level": "TH",
+            "reason": "100−70=30."
+          },
+          {
+            "sub": "b",
+            "value": "D",
+            "level": "VD",
+            "reason": "Y giữ 64/80=0,8; X không công trình dự kiến 80, thực tế 70 nên tác động 10; theo điều kiện hiệp định chuyển sang thương lượng."
+          },
+          {
+            "sub": "c",
+            "value": "D",
+            "level": "TH",
+            "reason": "Y có công trình mới vi phạm giả định đối chứng chỉ chịu thời tiết, nên không còn được dùng nguyên kết quả cũ."
+          },
+          {
+            "sub": "d",
+            "value": "S",
+            "level": "TH",
+            "reason": "Mô hình còn có tác động thời tiết: 20 trong 30 giảm ở X; công trình chỉ giải thích 10."
+          }
+        ],
+        "solution": "Theo mô hình tỉ lệ đã thống nhất, nước X phản thực là 80 và chênh do công trình 10. Điều này đủ kích hoạt thương lượng giả định; đối chứng bị can thiệp sẽ cần kiểm tra lại.",
+        "issues": [],
+        "unique_answer": true
+      },
+      "flags": [
+        {
+          "kind": "level_disagreement",
+          "sub": "c",
+          "intended": "VD",
+          "solved": "TH"
+        }
+      ]
+    },
+    {
+      "id": "KT-F-030",
+      "topic_id": "T13",
+      "part": "P1",
+      "qtype": "mcq",
+      "stem": "Quy tắc hàng hải giả định: lấy mẫu tài nguyên ở vùng R cần A đồng ý; vùng S không cần sự đồng ý đó. Không suy luật hiện hành ngoài bài. Chuyến tàu có hai đợt lấy mẫu, một ở R và một ở S; thùng của hai đợt niêm phong riêng, có đúng hai mã M và N, không biết mã nào thuộc đợt nào. Mã M được chuyển sang tàu tiếp nhận trước khi tàu lấy mẫu rời R; mọi mẫu vùng S chỉ được lấy sau khi rời R, không chuyển ngược về quá khứ. Hồ sơ A chỉ đồng ý lấy mẫu cho thùng N, không cho M. Bản khai chung ghi cả chuyến được phép. Kết luận nào được toàn bộ chuỗi chứng cứ hỗ trợ?",
+      "options": {
+        "A": "M là mẫu vùng R và đợt này thiếu đồng ý theo quy tắc",
+        "B": "N là mẫu vùng R vì N có hồ sơ đồng ý",
+        "C": "Không thể xác định thùng nào thuộc R do bản khai không tách đợt",
+        "D": "Cả hai thùng đều được phép vì N có hồ sơ đồng ý"
+      },
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": "A",
+          "level": "VD",
+          "solution": "Phải dựng quan hệ thời gian và loại trừ: M đã rời tàu trước lúc rời R, nên không thể chứa mẫu chỉ được lấy ở S sau đó; mỗi đợt có thùng riêng và chỉ hai mã nên M thuộc R. Sau khi xác lập địa điểm bằng chứng cứ độc lập mới đối chiếu hồ sơ: A chỉ đồng ý N, nên M thiếu đồng ý. Tên bản khai hay chính việc có phép không xác định được nguồn mẫu."
+        }
+      ],
+      "solution": "Phải dựng quan hệ thời gian và loại trừ: M đã rời tàu trước lúc rời R, nên không thể chứa mẫu chỉ được lấy ở S sau đó; mỗi đợt có thùng riêng và chỉ hai mã nên M thuộc R. Sau khi xác lập địa điểm bằng chứng cứ độc lập mới đối chiếu hồ sơ: A chỉ đồng ý N, nên M thiếu đồng ý. Tên bản khai hay chính việc có phép không xác định được nguồn mẫu.",
+      "cognitive_rationale": "Cần suy ngược gán mã–sự kiện từ quan hệ thời gian, dùng tính tách biệt của thùng để loại nhánh, rồi áp điều kiện quyền tài nguyên; tra một quy tắc không cho biết thùng nào thuộc vùng nào.",
+      "distractor_mechanisms": {
+        "B": "Suy nơi lấy mẫu từ việc có phép, đảo chiều chứng minh.",
+        "C": "Bỏ qua chứng cứ thời gian có khả năng loại trừ.",
+        "D": "Mở rộng chấp thuận của một thùng sang cả chuyến."
+      },
+      "easier": "Cung cấp sẵn bảng diễn biến ở từng nhánh thay vì yêu cầu tự dựng.",
+      "harder": "Thêm một nhánh bất định và yêu cầu chỉ rõ dữ kiện nào làm phương án tối ưu thay đổi.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "model_checked_pending_teacher_review",
+      "target_cell_ids": [
+        "CELL-cee5a04d00c6"
+      ],
+      "rubric": [
+        {
+          "criterion": "Chọn đúng và lí giải phù hợp dữ kiện câu hỏi",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": [
+        "Dùng bảng đối chiếu dữ kiện với từng điều kiện thay cho trình bày bằng lời."
+      ],
+      "review": {
+        "id": "KT-F-030",
+        "answers": [
+          {
+            "sub": null,
+            "value": "A",
+            "level": "VD",
+            "reason": "M đã chuyển trước lúc rời R, còn mẫu S chỉ lấy sau đó, nên M không thể từ S; hai thùng ứng hai đợt nên M thuộc R. Đồng ý chỉ cho N không bao phủ M; bản khai chung không thay chấp thuận."
+          }
+        ],
+        "solution": "M đã chuyển trước lúc rời R, còn mẫu S chỉ lấy sau đó, nên M không thể từ S; hai thùng ứng hai đợt nên M thuộc R. Đồng ý chỉ cho N không bao phủ M; bản khai chung không thay chấp thuận.",
+        "issues": [
+          {
+            "kind": "distractor",
+            "severity": "note",
+            "detail": "B suy vị trí từ hồ sơ đồng ý, C bỏ chứng cứ thời gian, D mở rộng chấp thuận N sang M; các nhiễu phân biệt được và cùng xoay quanh chuỗi chứng cứ."
+          }
+        ],
+        "unique_answer": true
+      },
+      "flags": []
+    },
+    {
+      "id": "KT-F-032",
+      "topic_id": "T18",
+      "part": "P1",
+      "qtype": "mcq",
+      "stem": "Một hộ sau lũ cần 6 đơn vị ăn mỗi tuần trong hai tuần, hiện không có dự trữ. Nếu làm công ngay thì kiếm 4 mỗi tuần. Nếu học nghề tuần 1 thì không có thu nhập tuần đó, nhưng tuần 2 có việc đã cam kết trả 8. Hộ không vay được; khoản ăn thiếu phải được bù trong đúng tuần. Chương trình có 6 đơn vị trợ giúp tiêu dùng có thể cấp theo lịch, không thu hồi; thêm một suất học nghề miễn phí. Mục tiêu là bảo đảm đủ ăn cả hai tuần và sau trợ giúp có năng lực tự trang trải tốt hơn. Thức ăn dư giữ được sang tuần sau, không có nguồn khác. Phương án nào đạt cả hai mục tiêu?",
+      "options": {
+        "A": "Cấp 3 mỗi tuần, hộ học nghề tuần 1",
+        "B": "Cấp cả 6 tuần 2, hộ học nghề tuần 1",
+        "C": "Cấp cả 6 tuần 1, hộ học nghề tuần 1",
+        "D": "Cấp 2 mỗi tuần, hộ làm công cả hai tuần"
+      },
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": "C",
+          "level": "VD",
+          "solution": "Cần nối trợ giúp khẩn cấp với chi phí cơ hội đào tạo và dòng sống tối thiểu theo tuần. Học nghề tuần 1 làm mất 4 thu nhập ngay nên phải cấp đủ 6 lúc đó; tuần 2 việc mới trả 8 đủ ăn 6 và có 2 dư, tạo tự chủ. A chỉ có 3 tuần 1, B chưa có ăn tuần 1. D đủ ăn 4+2 mỗi tuần nhưng vẫn cần trợ giúp 2 mỗi tuần về sau, nên không đạt cải thiện tự trang trải bằng học nghề."
+        }
+      ],
+      "solution": "Cần nối trợ giúp khẩn cấp với chi phí cơ hội đào tạo và dòng sống tối thiểu theo tuần. Học nghề tuần 1 làm mất 4 thu nhập ngay nên phải cấp đủ 6 lúc đó; tuần 2 việc mới trả 8 đủ ăn 6 và có 2 dư, tạo tự chủ. A chỉ có 3 tuần 1, B chưa có ăn tuần 1. D đủ ăn 4+2 mỗi tuần nhưng vẫn cần trợ giúp 2 mỗi tuần về sau, nên không đạt cải thiện tự trang trải bằng học nghề.",
+      "cognitive_rationale": "Phải dựng hai quỹ đạo sinh kế với thu nhập phụ thuộc quyết định đào tạo, xác định nút thiếu ăn ngăn đầu tư kĩ năng, rồi thiết kế thời điểm trợ giúp để tháo nút; tổng hỗ trợ hay điều kiện riêng lẻ không xác định được phương án.",
+      "distractor_mechanisms": {
+        "A": "Chia đều hỗ trợ, bỏ chi phí cơ hội học nghề tuần đầu.",
+        "B": "Bù đủ tổng hai tuần nhưng quá muộn cho nhu cầu tuần đầu.",
+        "D": "Chỉ bảo đảm ăn hiện tại, bỏ chuyển đổi năng lực tự chủ."
+      },
+      "easier": "Cung cấp sẵn bảng diễn biến ở từng nhánh thay vì yêu cầu tự dựng.",
+      "harder": "Thêm một nhánh bất định và yêu cầu chỉ rõ dữ kiện nào làm phương án tối ưu thay đổi.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "model_checked_pending_teacher_review",
+      "target_cell_ids": [
+        "CELL-a6146278bba9"
+      ],
+      "rubric": [
+        {
+          "criterion": "Chọn đúng và lí giải phù hợp dữ kiện câu hỏi",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": [
+        "Dùng bảng đối chiếu dữ kiện với từng điều kiện thay cho trình bày bằng lời."
+      ],
+      "review": {
+        "id": "KT-F-032",
+        "answers": [
+          {
+            "sub": null,
+            "value": "C",
+            "level": "VD",
+            "reason": "Học nghề làm thu tuần 1 bằng 0 nên phải cấp đủ 6 ngay; tuần 2 thu 8 đủ nhu cầu 6 và năng lực thu cao hơn làm công 4. A và B thiếu ăn tuần 1; D đủ ăn khi trợ giúp nhưng thu thường xuyên 4 vẫn dưới nhu cầu 6 và không tăng năng lực."
+          }
+        ],
+        "solution": "Học nghề làm thu tuần 1 bằng 0 nên phải cấp đủ 6 ngay; tuần 2 thu 8 đủ nhu cầu 6 và năng lực thu cao hơn làm công 4. A và B thiếu ăn tuần 1; D đủ ăn khi trợ giúp nhưng thu thường xuyên 4 vẫn dưới nhu cầu 6 và không tăng năng lực.",
+        "issues": [],
+        "unique_answer": true
+      },
+      "flags": []
+    }
+  ]
+}

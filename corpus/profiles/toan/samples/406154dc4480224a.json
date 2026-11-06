@@ -1,0 +1,178 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "406154dc4480224a",
+    "topic": "Vectơ và hệ trục tọa độ trong không gian",
+    "part": "P1",
+    "level": "NB",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một vectơ viết dưới dạng tổ hợp các vectơ đơn vị.",
+        "task": "Đọc tọa độ theo thứ tự các trục.",
+        "reasoning": [
+          "Ghép hệ số với từng vectơ đơn vị.",
+          "Viết bộ tọa độ theo đúng thứ tự và dấu."
+        ],
+        "combines": [
+          "Cơ sở vectơ đơn vị",
+          "Tọa độ vectơ"
+        ],
+        "difficulty_source": "Đọc trực tiếp hệ số, không cần tính toán.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một vectơ được khai triển theo các vectơ đơn vị của hệ tọa độ.",
+        "task": "Chọn bộ tọa độ tương ứng.",
+        "reasoning": [
+          "Đọc hệ số theo thứ tự các vectơ đơn vị.",
+          "Giữ nguyên dấu và ghép thành bộ tọa độ."
+        ],
+        "combines": [
+          "Tọa độ vectơ trong không gian"
+        ],
+        "difficulty_source": "Đọc trực tiếp hệ số với đúng thứ tự và dấu.",
+        "evidence_uncertainty": "Chưa xác nhận được khóa đáp án khớp mã.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một vectơ được biểu diễn theo một số vectơ đơn vị của hệ trục không gian.",
+        "task": "Chọn bộ tọa độ tương ứng.",
+        "reasoning": [
+          "Đọc hệ số theo đúng thứ tự các trục.",
+          "Bổ sung thành phần triệt tiêu và giữ nguyên dấu.",
+          "Đối chiếu các lựa chọn."
+        ],
+        "combines": [
+          "Vectơ đơn vị",
+          "Tọa độ vectơ"
+        ],
+        "difficulty_source": "Giữ đúng thứ tự trục và dấu của hệ số.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Hình lập phương có các đỉnh được gắn nhãn và hình phối cảnh nhìn thấy được.",
+        "task": "Chọn đẳng thức phân tích vectơ đường chéo khối.",
+        "reasoning": [
+          "Xác định vectơ đường chéo và các vectơ cạnh cùng gốc.",
+          "Áp dụng quy tắc hình hộp.",
+          "Kiểm tra hướng và điểm cuối của tổng vectơ."
+        ],
+        "combines": [
+          "Quy tắc cộng vectơ",
+          "Cấu trúc hình lập phương"
+        ],
+        "difficulty_source": "Đọc hướng vectơ trên hình phối cảnh.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "0968e8bc9e2d|P1|12|None",
+      "0ecb85132b84|P1|5|None",
+      "3b4cca11ea82|P1|2|None",
+      "3b4cca11ea82|P1|4|None",
+      "adb051fd8253|P1|11|None",
+      "de5833d227dd|P1|4|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "406154dc4480224a",
+    "stem": "Trong không gian với hệ trục tọa độ Oxyz và các vectơ đơn vị tương ứng i, j, k, cho vectơ u = 7j − 4k − 2i. Tọa độ của u là",
+    "options": [
+      {
+        "label": "A",
+        "text": "(7; −4; −2)."
+      },
+      {
+        "label": "B",
+        "text": "(−2; 7; −4)."
+      },
+      {
+        "label": "C",
+        "text": "(2; 7; −4)."
+      },
+      {
+        "label": "D",
+        "text": "(−2; −4; 7)."
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "NB"
+      }
+    ],
+    "solution": "Theo định nghĩa, tọa độ của u lần lượt là hệ số của i, j, k. Viết u = −2i + 7j − 4k, suy ra u có tọa độ (−2; 7; −4). Chọn B. Phương án A lấy hệ số theo thứ tự xuất hiện trong biểu thức; C làm mất dấu âm của hệ số của i; D đổi chỗ hai thành phần theo j và k.",
+    "distractors": [
+      {
+        "label": "A",
+        "sub": null,
+        "mistake": "Ghi các hệ số theo thứ tự xuất hiện thay vì thứ tự i, j, k.",
+        "why_plausible": "Biểu thức cho trước viết các hạng tử theo thứ tự j, k, i."
+      },
+      {
+        "label": "C",
+        "sub": null,
+        "mistake": "Đọc hệ số −2 của i thành 2.",
+        "why_plausible": "Học sinh nhận đúng vị trí các thành phần nhưng bỏ sót dấu âm."
+      },
+      {
+        "label": "D",
+        "sub": null,
+        "mistake": "Đổi chỗ tọa độ theo trục Oy và Oz.",
+        "why_plausible": "Học sinh xác định đúng thành phần theo i nhưng nhầm thứ tự hai vectơ đơn vị còn lại."
+      }
+    ],
+    "level_reason": "Chỉ yêu cầu nhận biết tọa độ vectơ từ các hệ số theo cơ sở i, j, k; không cần tính toán hay kết nối nhiều đơn vị kiến thức.",
+    "prerequisites": [
+      "Các vectơ đơn vị i, j, k tương ứng với các trục Ox, Oy, Oz.",
+      "Định nghĩa tọa độ của vectơ trong không gian."
+    ],
+    "variation_guidance": "Có thể đổi các hệ số và thứ tự viết các hạng tử, đồng thời xây dựng lại phương án nhiễu từ lỗi thứ tự trục hoặc lỗi dấu.",
+    "uncertainties": [
+      "Mẫu tự biên soạn; quan sát cấu trúc chỉ đến từ nguồn cấp tỉnh qua bên thứ ba, không có neo chính thức. Một quan sát chưa xác nhận khóa đáp án khớp mã; đáp án mẫu này được suy ra từ dữ kiện tự chứa."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "406154dc4480224a",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "NB"
+      }
+    ],
+    "solution": "Theo định nghĩa tọa độ vectơ trong cơ sở i, j, k, ta có u = −2i + 7j − 4k nên u có tọa độ (−2; 7; −4).",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Chỉ cần nhận biết các hệ số tương ứng của i, j, k theo định nghĩa tọa độ vectơ."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/74a043ab077d344b9e5ae04dfd42e00f483d9941e82d7c15c872e4eae0dd710a.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/74a043ab077d344b9e5ae04dfd42e00f483d9941e82d7c15c872e4eae0dd710a.resolve.json"
+}

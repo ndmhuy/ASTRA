@@ -1,0 +1,143 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "9924fe6acf63d0dd",
+    "topic": "Hàm lượng giác",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một hàm sin có biên độ và pha ban đầu, kèm hình minh họa chuyển động và nhận định về giá trị nhỏ nhất.",
+        "task": "Kiểm tra giá trị nhỏ nhất của hàm số.",
+        "reasoning": [
+          "Dùng miền giá trị của hàm sin.",
+          "Xét ảnh hưởng của hệ số biên độ.",
+          "Đối chiếu cận dưới với nhận định."
+        ],
+        "combines": [
+          "Tập giá trị hàm lượng giác",
+          "Biến đổi biên độ"
+        ],
+        "difficulty_source": "Phân biệt miền giá trị của hàm lượng giác cơ bản với hàm đã nhân biên độ.",
+        "evidence_uncertainty": "Thiếu khóa đáp án khớp mã đề; hình chỉ minh họa, công thức cung cấp dữ kiện tính toán.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "beee25b53250|P2|2|a"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "9924fe6acf63d0dd",
+    "stem": "Độ cao của một điểm trên mô hình đu quay được cho bởi h(t)=5−3sin(2t+π/6), trong đó h tính bằng mét, t tính bằng giây và t≥0. Xét tính đúng sai của các phát biểu sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Độ cao nhỏ nhất của điểm đó là 2 m."
+      },
+      {
+        "sub": "b",
+        "text": "Độ cao lớn nhất của điểm đó là 5 m."
+      },
+      {
+        "sub": "c",
+        "text": "Tại thời điểm t=0, điểm đó có độ cao 3,5 m."
+      },
+      {
+        "sub": "d",
+        "text": "Sau mỗi khoảng thời gian π giây, điểm đó trở lại cùng độ cao; tức là h(t+π)=h(t) với mọi t≥0."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "Vì −1≤sin(2t+π/6)≤1 nên 2≤h(t)≤8. Khi t≥0, pha tăng không bị chặn nên cả hai cận đều đạt được. Do đó a đúng, b sai: độ cao lớn nhất là 8 m. Tại t=0, h(0)=5−3·sin(π/6)=3,5 m nên c đúng. Khi thay t bởi t+π, pha tăng thêm 2π nên giá trị sin không đổi; d đúng.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Coi số hạng 5 là độ cao lớn nhất.",
+        "why_plausible": "Học sinh có thể nhầm độ cao của đường trung bình với cận trên, bỏ qua phần dao động có biên độ 3."
+      }
+    ],
+    "level_reason": "Mức cao nhất là TH: học sinh xác định miền giá trị qua phép biến đổi quen thuộc, thay thời điểm và sử dụng tính tuần hoàn của sin. Không cần xây dựng mô hình vì công thức đã được cung cấp.",
+    "prerequisites": [
+      "Miền giá trị của hàm sin",
+      "Giá trị sin(π/6)",
+      "Tính tuần hoàn của hàm sin"
+    ],
+    "variation_guidance": "Có thể thay độ cao trung bình, biên độ và pha ban đầu; giữ độ cao trung bình lớn hơn biên độ nếu tiếp tục dùng bối cảnh đu quay phía trên mặt đất.",
+    "uncertainties": [
+      "Mẫu tự tạo chỉ tham khảo cấu trúc từ quan sát đề cấp tỉnh qua nguồn bên thứ ba; không có neo chính thức để khẳng định tính đại diện cho đề thi."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "9924fe6acf63d0dd",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "a,b) Vì −1≤sin(2t+π/6)≤1 nên 2≤h(t)≤8. Với t≥0, cả hai giá trị biên đều đạt được; độ cao nhỏ nhất là 2 m, lớn nhất là 8 m. c) h(0)=5−3sin(π/6)=3,5 m. d) h(t+π)=5−3sin(2t+π/6+2π)=h(t).",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a,b) Áp dụng miền giá trị của hàm sin để xác định cực trị. c) Thay trực tiếp thời điểm vào công thức. d) Áp dụng tính tuần hoàn của sin. Từng ý đều là thao tác quen thuộc, thuộc TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/4f4f4abb6fe53e850c01ef46e0ef66993bc5081bd77a1b23e3fd5c80b7df6cec.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/4f4f4abb6fe53e850c01ef46e0ef66993bc5081bd77a1b23e3fd5c80b7df6cec.resolve.json"
+}

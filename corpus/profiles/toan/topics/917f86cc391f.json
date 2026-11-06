@@ -1,0 +1,1148 @@
+{
+  "schema_version": "research-topic-pack-v1",
+  "origin": "mixed_abstract_evidence_and_explicit_synthetic_examples",
+  "subject": "toan",
+  "topic": {
+    "topic": "Tổ hợp có ràng buộc",
+    "display_topic": "Tổ hợp có ràng buộc",
+    "parent_topic_annotation": {},
+    "raw_topics": [
+      "Quy tắc đếm kết hợp điều kiện lôgarit và tổng các cặp",
+      "Quy tắc đếm và hoán vị với điều kiện chia hết của tổng bình phương",
+      "Quy tắc đếm và tổ hợp: bố trí hai loại phần tử theo hàng và cột",
+      "Quy tắc đếm: dãy có điều kiện phân bổ tuần tự",
+      "Quy tắc đếm: phân phối vật giống nhau với ràng buộc trên và dưới",
+      "Quy tắc đếm: điền số có ràng buộc đồng dư theo hàng và cột",
+      "Quy tắc đếm: điền số phân biệt dưới ràng buộc tổng",
+      "Tổ hợp: chọn các vị trí không kề nhau trên vòng",
+      "Tổ hợp; đếm cách chọn có điều kiện kéo theo"
+    ],
+    "grades": [
+      "10"
+    ],
+    "classes": {
+      "official": {
+        "distinct_papers": 1,
+        "rows": 1,
+        "parts": {
+          "P2": {
+            "papers": 0,
+            "questions": 0,
+            "rows": 0,
+            "discrimination": {}
+          },
+          "P3": {
+            "papers": 1,
+            "questions": 1,
+            "rows": 1,
+            "discrimination": {
+              "high": 1
+            }
+          }
+        }
+      },
+      "provincial_third_party": {
+        "distinct_papers": 8,
+        "rows": 8,
+        "parts": {
+          "P2": {
+            "papers": 1,
+            "questions": 1,
+            "rows": 1,
+            "discrimination": {
+              "medium": 1
+            }
+          },
+          "P3": {
+            "papers": 7,
+            "questions": 7,
+            "rows": 7,
+            "discrimination": {
+              "high": 5,
+              "medium": 2
+            }
+          }
+        }
+      }
+    },
+    "patterns_by_class": {
+      "official": [
+        {
+          "part_kind": "short_answer",
+          "topic": "Đếm cấu hình có ràng buộc cục bộ",
+          "grade": null,
+          "construction": "Cho các giá trị phân biệt được gán vào vị trí có nhãn cùng điều kiện giữa những vị trí liên quan; chuyển điều kiện sang đặc trưng số học, suy ra cấu hình toàn cục, chia trường hợp rồi khôi phục sự phân biệt của các giá trị.",
+          "wrong_options": null,
+          "difficulty_source": "Phối hợp ràng buộc cục bộ với số lượng từng loại và điều kiện không trùng.",
+          "discrimination": "high",
+          "typical_steps": 6,
+          "refs": [
+            "163f20908cf7|P3|1|None",
+            "023e74626dd8|P3|3|None"
+          ],
+          "paper_count": 2,
+          "row_count": 2,
+          "topic_support_refs": [
+            "023e74626dd8|P3|3|None"
+          ]
+        }
+      ],
+      "provincial_third_party": [
+        {
+          "part_kind": "true_false",
+          "topic": "Mô hình rời rạc và cấu hình theo quy tắc",
+          "grade": null,
+          "construction": "Chuyển quy tắc thành quan hệ giữa các lượng hoặc cấu hình vị trí; dùng quan hệ tuyến tính, nhân hay phép đếm phù hợp. Chỉ tổng hợp thành phần còn hợp lệ; với điều kiện kề nhau, phân trường hợp hoặc đếm bù và giữ mối kề khép vòng.",
+          "wrong_options": "Bỏ thành phần có dấu âm, thiếu loại, cộng phần không còn tồn tại, bỏ tính phân biệt vị trí hoặc đếm lặp.",
+          "difficulty_source": "Diễn đạt đủ quy tắc và giữ tính hợp lệ của toàn cấu hình.",
+          "discrimination": "medium",
+          "typical_steps": 4,
+          "evidence_status": "Quan hệ đại lượng, cấu hình nhị phân và kề nhau là các nhánh riêng. Đếm nhị phân trực tiếp nhẹ hơn xác suất kề nhau tổng hợp; nhiều dòng thiếu khóa.",
+          "refs": [
+            "6aa30214ba7e|P2|2|d",
+            "6aa30214ba7e|P2|3|a",
+            "6aa30214ba7e|P2|3|c",
+            "aceb17d936f5|P2|2|a",
+            "aceb17d936f5|P2|2|b",
+            "aceb17d936f5|P2|2|c",
+            "aceb17d936f5|P2|2|d"
+          ],
+          "paper_count": 2,
+          "row_count": 7,
+          "topic_support_refs": [
+            "aceb17d936f5|P2|2|c"
+          ]
+        },
+        {
+          "part_kind": "short_answer",
+          "topic": "Đếm cấu hình dưới nhiều ràng buộc",
+          "grade": [
+            10,
+            11
+          ],
+          "construction": "Xác lập không gian có nhãn và cơ chế đồng khả năng khi tính xác suất; đổi điều kiện thành ràng buộc cấu hình rồi phân loại và đếm không trùng. Dùng phần dư, chẵn lẻ, thừa số hoặc biến đổi lôgarit để lọc cấu trúc khi có căn cứ; giữ thứ tự, lặp, điều kiện kéo theo và phần giao.",
+          "wrong_options": null,
+          "difficulty_source": "Giữ đồng thời điều kiện cục bộ và toàn cấu hình, phân biệt kéo theo với tương đương.",
+          "discrimination": "high",
+          "typical_steps": 6,
+          "evidence_status": "Các cơ chế ràng buộc là biến thể riêng; một mô hình đồng khả năng chưa tường minh. Một số biến thể đếm trực tiếp được đánh giá nhẹ hơn.",
+          "refs": [
+            "adb051fd8253|P3|3|None",
+            "85efdd1a7e54|P3|3|None",
+            "6aa30214ba7e|P3|2|None",
+            "ccae0b94a82d|P3|4|None",
+            "fc12a8146279|P3|3|None",
+            "fc12a8146279|P3|6|None",
+            "54e9a2a276ca|P3|4|None",
+            "525d3542283a|P3|3|None",
+            "3f1b2aa3cb72|P3|3|None",
+            "beee25b53250|P3|1|None",
+            "acc00d945397|P3|6|None",
+            "3b4cca11ea82|P3|6|None",
+            "de5833d227dd|P3|2|None",
+            "11d88d9a96ad|P3|3|None",
+            "11d88d9a96ad|P3|6|None",
+            "0ecb85132b84|P3|5|None"
+          ],
+          "paper_count": 14,
+          "row_count": 16,
+          "topic_support_refs": [
+            "11d88d9a96ad|P3|3|None",
+            "3b4cca11ea82|P3|6|None",
+            "525d3542283a|P3|3|None",
+            "54e9a2a276ca|P3|4|None",
+            "adb051fd8253|P3|3|None",
+            "beee25b53250|P3|1|None",
+            "de5833d227dd|P3|2|None"
+          ]
+        }
+      ]
+    },
+    "support_refs": [
+      "023e74626dd8|P3|3|None",
+      "11d88d9a96ad|P3|3|None",
+      "3b4cca11ea82|P3|6|None",
+      "525d3542283a|P3|3|None",
+      "54e9a2a276ca|P3|4|None",
+      "aceb17d936f5|P2|2|c",
+      "adb051fd8253|P3|3|None",
+      "beee25b53250|P3|1|None",
+      "de5833d227dd|P3|2|None"
+    ],
+    "cognitive_level_status": "abstract_classification_complete_pending_original_item_review",
+    "sample_status": "examples_published_pending_teacher",
+    "prototype_status": "no_mapped_case_not_evidence_of_absence",
+    "component_details": {
+      "reasoning_moves": [
+        {
+          "class": "official",
+          "move": {
+            "move": "Thay đối tượng ban đầu bằng biểu diễn giữ lại đúng thông tin cần thiết.",
+            "how_to_apply": "Buộc người giải tự chọn tọa độ, hình chiếu, lớp số học hoặc tập vị trí; biểu diễn mới phải làm bài toán đơn giản hơn nhưng vẫn bảo toàn điều kiện.",
+            "refs": [
+              "163f20908cf7|P3|1|None",
+              "163f20908cf7|P3|4|None",
+              "023e74626dd8|P2|4|c",
+              "023e74626dd8|P2|4|d",
+              "023e74626dd8|P3|3|None",
+              "023e74626dd8|P3|6|None"
+            ],
+            "paper_count": 2,
+            "row_count": 6
+          },
+          "topic_support_refs": [
+            "023e74626dd8|P3|3|None"
+          ],
+          "distinct_papers_in_topic": 1
+        },
+        {
+          "class": "official",
+          "move": {
+            "move": "Nối ràng buộc cục bộ thành điều kiện toàn cục.",
+            "how_to_apply": "Đặt điều kiện trên các nhóm vị trí giao nhau, đồng thời cố định nguồn đối tượng; lời giải phải xét tính tương thích giữa các nhóm thay vì xử lý riêng từng nhóm.",
+            "refs": [
+              "163f20908cf7|P3|1|None",
+              "023e74626dd8|P3|3|None",
+              "023e74626dd8|P3|6|None"
+            ],
+            "paper_count": 2,
+            "row_count": 3
+          },
+          "topic_support_refs": [
+            "023e74626dd8|P3|3|None"
+          ],
+          "distinct_papers_in_topic": 1
+        },
+        {
+          "class": "official",
+          "move": {
+            "move": "Phân biệt cấu hình bản chất với nhãn riêng của đối tượng.",
+            "how_to_apply": "Cho đối tượng vừa có thuộc tính chung vừa phân biệt riêng; yêu cầu quyết định lúc nào đếm theo thuộc tính, lúc nào phải khôi phục hoán vị và vì sao mô hình xác suất vẫn đồng khả năng.",
+            "refs": [
+              "163f20908cf7|P3|1|None",
+              "023e74626dd8|P3|3|None",
+              "023e74626dd8|P3|6|None"
+            ],
+            "paper_count": 2,
+            "row_count": 3
+          },
+          "topic_support_refs": [
+            "023e74626dd8|P3|3|None"
+          ],
+          "distinct_papers_in_topic": 1
+        },
+        {
+          "class": "official",
+          "move": {
+            "move": "Yêu cầu chứng minh điều kiện hợp lệ của phép rút gọn.",
+            "how_to_apply": "Sau khi tìm được mô hình ngắn, vẫn buộc kiểm tra không trùng đối tượng, không đếm lặp, vị trí cực tiểu thuộc đoạn và quan hệ hình học cho phép chuyển bài toán.",
+            "refs": [
+              "163f20908cf7|P3|1|None",
+              "023e74626dd8|P2|4|d",
+              "023e74626dd8|P3|3|None",
+              "023e74626dd8|P3|6|None"
+            ],
+            "paper_count": 2,
+            "row_count": 4
+          },
+          "topic_support_refs": [
+            "023e74626dd8|P3|3|None"
+          ],
+          "distinct_papers_in_topic": 1
+        },
+        {
+          "class": "provincial_third_party",
+          "move": {
+            "move": "Tự dựng biểu diễn và đối tượng trung gian",
+            "how_to_apply": "Chọn biến, tọa độ, hình phụ, thiết diện, hình khai triển hoặc quỹ tích; dùng điều kiện gián tiếp khôi phục quan hệ trước khi tính. Đọc cấu trúc phương trình, hướng và điểm xuất phát trước khi thao tác.",
+            "evidence_scope": "Thao tác chung có bằng chứng giữa các đề; từng biểu diễn, phép đo và tổ hợp điều kiện vẫn là biến thể riêng.",
+            "refs": [
+              "adb051fd8253|P3|2|None",
+              "85efdd1a7e54|P2|1|d",
+              "85efdd1a7e54|P3|6|None",
+              "ecd76ac672e5|P3|5|None",
+              "6aa30214ba7e|P2|4|d",
+              "6aa30214ba7e|P3|3|None",
+              "c6340827ba59|P3|5|None",
+              "ccae0b94a82d|P3|1|None",
+              "ccae0b94a82d|P3|3|None",
+              "adb051fd8253|P3|5|None",
+              "85efdd1a7e54|P3|4|None",
+              "85efdd1a7e54|P3|5|None",
+              "6aa30214ba7e|P3|4|None",
+              "fc12a8146279|P3|5|None",
+              "54e9a2a276ca|P3|2|None",
+              "54e9a2a276ca|P3|5|None",
+              "9ed45d16a975|P2|4|d",
+              "9ed45d16a975|P3|4|None",
+              "525d3542283a|P3|1|None",
+              "7ab78715480e|P3|1|None",
+              "7ab78715480e|P3|6|None",
+              "3f1b2aa3cb72|P2|3|d",
+              "3f1b2aa3cb72|P3|1|None",
+              "3f1b2aa3cb72|P3|3|None",
+              "beee25b53250|P3|1|None",
+              "beee25b53250|P3|6|None",
+              "3b4cca11ea82|P3|2|None",
+              "0968e8bc9e2d|P3|3|None",
+              "0968e8bc9e2d|P3|6|None",
+              "de5833d227dd|P2|2|d",
+              "11d88d9a96ad|P3|2|None",
+              "0ecb85132b84|P3|2|None",
+              "0ecb85132b84|P3|4|None",
+              "fc12a8146279|P1|10|None",
+              "54e9a2a276ca|P1|11|None",
+              "fc12a8146279|P1|11|None",
+              "fc12a8146279|P1|12|None",
+              "beee25b53250|P2|1|b"
+            ],
+            "paper_count": 18,
+            "row_count": 38
+          },
+          "topic_support_refs": [
+            "beee25b53250|P3|1|None"
+          ],
+          "distinct_papers_in_topic": 1
+        },
+        {
+          "class": "provincial_third_party",
+          "move": {
+            "move": "Phân loại cấu hình và làm lộ ràng buộc số học",
+            "how_to_apply": "Giữ nhãn, thứ tự và điều kiện không lặp; chọn phân hoạch đầy đủ, xử lý phần giao hoặc biến cố bù. Khi phù hợp, đổi lôgarit thành tích, dùng thừa số hoặc phân bố trung gian có trọng số; giữ mối kề khép vòng và quy tắc tuần tự.",
+            "evidence_scope": "Khung phân loại có bằng chứng giữa các đề; ràng buộc số học, tuần tự, khép vòng và phân bố trung gian là các biến thể riêng.",
+            "refs": [
+              "adb051fd8253|P3|3|None",
+              "85efdd1a7e54|P3|3|None",
+              "ccae0b94a82d|P3|4|None",
+              "fc12a8146279|P3|3|None",
+              "fc12a8146279|P3|6|None",
+              "54e9a2a276ca|P3|4|None",
+              "3f1b2aa3cb72|P3|3|None",
+              "beee25b53250|P3|1|None",
+              "beee25b53250|P3|4|None",
+              "525d3542283a|P3|3|None",
+              "de5833d227dd|P3|2|None",
+              "aceb17d936f5|P2|2|d",
+              "3f1b2aa3cb72|P2|2|a"
+            ],
+            "paper_count": 10,
+            "row_count": 13
+          },
+          "topic_support_refs": [
+            "525d3542283a|P3|3|None",
+            "54e9a2a276ca|P3|4|None",
+            "adb051fd8253|P3|3|None",
+            "beee25b53250|P3|1|None",
+            "de5833d227dd|P3|2|None"
+          ],
+          "distinct_papers_in_topic": 5
+        }
+      ],
+      "cognitive_counts": [
+        {
+          "class": "official",
+          "part": "P3",
+          "topic": "Tổ hợp có ràng buộc",
+          "counts": {
+            "VD": 1
+          }
+        },
+        {
+          "class": "provincial_third_party",
+          "part": "P2",
+          "topic": "Tổ hợp có ràng buộc",
+          "counts": {
+            "TH": 1
+          }
+        },
+        {
+          "class": "provincial_third_party",
+          "part": "P3",
+          "topic": "Tổ hợp có ràng buộc",
+          "counts": {
+            "VD": 7
+          }
+        }
+      ],
+      "containing_question_cognitive_counts": [
+        {
+          "class": "official",
+          "part": "P3",
+          "counts": {
+            "VD": 1
+          }
+        },
+        {
+          "class": "provincial_third_party",
+          "part": "P2",
+          "counts": {
+            "VD": 1
+          }
+        },
+        {
+          "class": "provincial_third_party",
+          "part": "P3",
+          "counts": {
+            "VD": 7
+          }
+        }
+      ],
+      "matrix_comparison": [
+        {
+          "part": "P2",
+          "topic": "Tổ hợp có ràng buộc",
+          "grades": [
+            10
+          ],
+          "default_count": 0,
+          "default_topics": [],
+          "official_papers": 0,
+          "provincial_papers": 1,
+          "official_ids": [],
+          "provincial_ids": [
+            "aceb17d936f5"
+          ],
+          "official_mean_questions": 0.0,
+          "provincial_mean_questions": 0.05
+        },
+        {
+          "part": "P3",
+          "topic": "Tổ hợp có ràng buộc",
+          "grades": [
+            10
+          ],
+          "default_count": 0,
+          "default_topics": [],
+          "official_papers": 1,
+          "provincial_papers": 7,
+          "official_ids": [
+            "023e74626dd8"
+          ],
+          "provincial_ids": [
+            "11d88d9a96ad",
+            "3b4cca11ea82",
+            "525d3542283a",
+            "54e9a2a276ca",
+            "adb051fd8253",
+            "beee25b53250",
+            "de5833d227dd"
+          ],
+          "official_mean_questions": 0.5,
+          "provincial_mean_questions": 0.35
+        }
+      ],
+      "prototype_cases": [],
+      "sample_ids": [
+        "a7d57d38b7771d61",
+        "ce6796cbe1814216"
+      ],
+      "sample_cells_planned": 2
+    }
+  },
+  "construction_observations": [
+    {
+      "part": "P3",
+      "idx": 3,
+      "sub": null,
+      "topic": "Quy tắc đếm: điền số có ràng buộc đồng dư theo hàng và cột",
+      "grade": 10,
+      "given": "Một tập số nguyên phân biệt và hình lưới bậc thang có các ô được xác định theo hàng, cột; các số phải dùng hết và không được trùng lớp dư trong cùng hàng hoặc cột.",
+      "task": "Đếm các phép gán hợp lệ vào vị trí có nhãn rồi thực hiện phép chuẩn hóa được yêu cầu.",
+      "reasoning": [
+        "Chuyển điều kiện về hiệu chia hết thành điều kiện các lớp dư khác nhau trong từng hàng và cột.",
+        "Phân loại các số theo lớp dư và xác định số phần tử của mỗi lớp.",
+        "Khai thác các hàng, cột dài và hình dạng bậc thang để suy ra ràng buộc lên vị trí của từng lớp dư.",
+        "Đếm các cấu hình lớp dư hợp lệ, phân biệt các nhánh và tránh đếm lặp.",
+        "Đếm các hoán vị của những số phân biệt trong mỗi lớp dư.",
+        "Nhân các hệ số đếm rồi thực hiện phép chuẩn hóa."
+      ],
+      "steps": 6,
+      "combines": [
+        "Chia hết và đồng dư",
+        "Quy tắc đếm",
+        "Hoán vị",
+        "Ràng buộc hàng và cột"
+      ],
+      "wrong_options": null,
+      "wrong_option_details": [],
+      "cue_use": "needed in reasoning",
+      "difficulty_source": "Biến ràng buộc cục bộ theo hàng và cột thành cấu hình lớp dư toàn cục có số lượng cố định.",
+      "discrimination": "high",
+      "evidence_uncertainty": "Các công cụ đếm được xếp theo chương tổ hợp; điều kiện đồng dư huy động kiến thức số học từ cấp học trước.",
+      "optional_path": null,
+      "paper_id": "023e74626dd8",
+      "year": "2026",
+      "evidence_class": "official",
+      "ref": "023e74626dd8|P3|3|None",
+      "printed_idx": 3
+    },
+    {
+      "part": "P3",
+      "idx": 3,
+      "sub": null,
+      "topic": "Quy tắc đếm và tổ hợp: bố trí hai loại phần tử theo hàng và cột",
+      "grade": 10,
+      "given": "Một bảng ô vuông có vị trí phân biệt, các vật thuộc hai loại giống nhau trong từng loại và yêu cầu cân bằng số lượng trên mọi hàng, cột; có hình minh họa.",
+      "task": "Đếm số cách bố trí thỏa đồng thời các ràng buộc.",
+      "reasoning": [
+        "Biểu diễn mỗi cách bố trí bằng tập vị trí của một loại vật.",
+        "Chọn các vị trí trên một hàng làm mốc.",
+        "Phân loại các hàng tiếp theo theo mức trùng vị trí với hàng mốc.",
+        "Dùng số lượng còn thiếu ở mỗi cột để đếm các cách hoàn tất trong từng loại.",
+        "Cộng các trường hợp không trùng và tính hệ số lựa chọn hàng mốc."
+      ],
+      "steps": 5,
+      "combines": [
+        "Tổ hợp",
+        "Quy tắc cộng và nhân",
+        "Ràng buộc hàng và cột"
+      ],
+      "wrong_options": null,
+      "wrong_option_details": [],
+      "cue_use": "needed in reasoning",
+      "difficulty_source": "Phân loại cấu hình để giữ đồng thời điều kiện hàng và cột mà không đếm trùng.",
+      "discrimination": "high",
+      "evidence_uncertainty": null,
+      "optional_path": null,
+      "paper_id": "adb051fd8253",
+      "year": "2026",
+      "evidence_class": "provincial_third_party",
+      "ref": "adb051fd8253|P3|3|None",
+      "printed_idx": 3
+    },
+    {
+      "part": "P3",
+      "idx": 4,
+      "sub": null,
+      "topic": "Quy tắc đếm: phân phối vật giống nhau với ràng buộc trên và dưới",
+      "grade": 10,
+      "given": "Các vật giống nhau được phân vào những nơi nhận phân biệt, mỗi nơi có giới hạn dưới và trên, còn tổng số vật nằm trong một khoảng.",
+      "task": "Đếm tất cả phương án phân phối hợp lệ.",
+      "reasoning": [
+        "Đặt các biến nguyên biểu diễn số vật từng nơi nhận.",
+        "Trừ mức tối thiểu để chuyển về biến không âm có chặn trên.",
+        "Biểu diễn điều kiện tổng bằng khoảng giá trị mới.",
+        "Đếm các nghiệm có tổng trong khoảng bằng tổ hợp và nguyên lí bù trừ hoặc truy hồi.",
+        "Cộng các trường hợp và kiểm tra không đếm lặp."
+      ],
+      "steps": 5,
+      "combines": [
+        "Quy tắc đếm",
+        "Nghiệm nguyên không âm",
+        "Ràng buộc tổng",
+        "Nguyên lí bù trừ"
+      ],
+      "wrong_options": null,
+      "wrong_option_details": [],
+      "cue_use": "needed in reasoning",
+      "difficulty_source": "Xử lý đồng thời giới hạn từng biến và khoảng tổng thay đổi, thay vì dùng một công thức phân phối không chặn.",
+      "discrimination": "high",
+      "evidence_uncertainty": "Xếp lớp theo công cụ đếm và tổ hợp; kỹ thuật đếm nghiệm nguyên có chặn không có bài riêng trong danh mục chương trình được cung cấp.",
+      "optional_path": null,
+      "paper_id": "54e9a2a276ca",
+      "year": "2026",
+      "evidence_class": "provincial_third_party",
+      "ref": "54e9a2a276ca|P3|4|None",
+      "printed_idx": 4
+    },
+    {
+      "part": "P3",
+      "idx": 3,
+      "sub": null,
+      "topic": "Quy tắc đếm: dãy có điều kiện phân bổ tuần tự",
+      "grade": 10,
+      "given": "Một cơ chế nhận vật theo thứ tự với các vị trí có sức chứa tăng dần, mỗi vị trí chỉ dùng một lần, cùng ràng buộc số lần xuất hiện của một số kích cỡ; có hình minh họa.",
+      "task": "Đếm các dãy kích cỡ khiến mọi vật được nhận vào vị trí hợp lệ.",
+      "reasoning": [
+        "Mô hình hóa quy tắc mỗi vật chiếm vị trí còn trống đầu tiên đủ sức chứa.",
+        "Tìm điều kiện cần và đủ trên phân bố kích cỡ để toàn bộ dãy được tiếp nhận.",
+        "Kết hợp điều kiện đó với số lần xuất hiện đã bị cố định.",
+        "Phân loại các đa tập kích cỡ còn lại thỏa điều kiện.",
+        "Đếm các thứ tự của từng đa tập, chia cho hoán vị giữa những kích cỡ lặp.",
+        "Cộng các trường hợp và kiểm tra không đếm lặp."
+      ],
+      "steps": 6,
+      "combines": [
+        "Mô hình hóa thuật toán tuần tự",
+        "Điều kiện cần và đủ",
+        "Quy tắc đếm",
+        "Hoán vị có phần tử lặp"
+      ],
+      "wrong_options": null,
+      "wrong_option_details": [],
+      "cue_use": "needed in reasoning",
+      "difficulty_source": "Chuyển quy tắc tiếp nhận tuần tự thành điều kiện toàn cục để đếm dãy mà không phân biệt các vật cùng kích cỡ.",
+      "discrimination": "high",
+      "optional_path": null,
+      "evidence_uncertainty": "Xếp lớp theo công cụ tổ hợp; tiêu chuẩn khả thi của cơ chế phân bổ và công thức hoán vị có lặp không được liệt kê thành bài riêng trong danh mục tham chiếu. Không có đáp án chuẩn để đối chiếu.",
+      "paper_id": "525d3542283a",
+      "year": "2026",
+      "evidence_class": "provincial_third_party",
+      "ref": "525d3542283a|P3|3|None",
+      "printed_idx": 3
+    },
+    {
+      "part": "P3",
+      "idx": 1,
+      "sub": null,
+      "topic": "Quy tắc đếm: điền số phân biệt dưới ràng buộc tổng",
+      "grade": 10,
+      "given": "Một tập số nguyên liên tiếp và hình ô vuông bậc thang có các cột dài ngắn khác nhau; ảnh hình được cung cấp.",
+      "task": "Đếm các phép điền số không lặp làm tổng các cột bằng nhau.",
+      "reasoning": [
+        "Dùng cột đơn làm giá trị tổng chung để phân loại trường hợp.",
+        "Tìm các nhóm số có lực lượng phù hợp với từng cột và cùng tổng.",
+        "Loại các lựa chọn trùng số giữa các cột hoặc vượt ngoài tập cho phép.",
+        "Đếm các cách sắp thứ tự số trong từng cột.",
+        "Cộng các trường hợp rời nhau."
+      ],
+      "steps": 5,
+      "combines": [
+        "Quy tắc cộng và nhân",
+        "Chọn tập con theo tổng",
+        "Hoán vị",
+        "Ràng buộc không lặp"
+      ],
+      "wrong_options": null,
+      "wrong_option_details": [],
+      "cue_use": "needed in reasoning",
+      "difficulty_source": "Khai thác cột đơn để ghép các nhóm cùng tổng mà vẫn bảo đảm không trùng số.",
+      "discrimination": "high",
+      "evidence_uncertainty": null,
+      "optional_path": null,
+      "paper_id": "beee25b53250",
+      "year": "2026",
+      "evidence_class": "provincial_third_party",
+      "ref": "beee25b53250|P3|1|None",
+      "printed_idx": 1
+    },
+    {
+      "part": "P3",
+      "idx": 6,
+      "sub": null,
+      "topic": "Quy tắc đếm và hoán vị với điều kiện chia hết của tổng bình phương",
+      "grade": 10,
+      "given": "Một tập số nguyên liên tiếp, các vị trí phân biệt trên hình nhìn thấy được và điều kiện chia hết áp lên tổng bình phương các số được điền.",
+      "task": "Đếm các phép gán số phân biệt thỏa mãn điều kiện.",
+      "reasoning": [
+        "Phân loại các số theo phần dư của bình phương đối với môđun yêu cầu.",
+        "Đếm số phần tử trong từng nhóm phần dư.",
+        "Liệt kê các kiểu phối hợp nhóm làm tổng phần dư hợp lệ.",
+        "Đếm cách chọn các số phân biệt trong từng kiểu.",
+        "Tính số cách gán vào các vị trí phân biệt và cộng các trường hợp."
+      ],
+      "steps": 5,
+      "combines": [
+        "Số dư và tính chia hết",
+        "Quy tắc cộng và nhân",
+        "Tổ hợp",
+        "Hoán vị"
+      ],
+      "wrong_options": null,
+      "wrong_option_details": [],
+      "cue_use": "needed in reasoning",
+      "difficulty_source": "Chuyển điều kiện tổng bình phương thành một số kiểu phần dư rồi phân biệt chọn số với xếp số.",
+      "discrimination": "medium",
+      "evidence_uncertainty": "Chủ đề đếm thuộc lớp được gán; công cụ số dư huy động kiến thức số học từ cấp học trước.",
+      "optional_path": null,
+      "paper_id": "3b4cca11ea82",
+      "year": "2026",
+      "evidence_class": "provincial_third_party",
+      "ref": "3b4cca11ea82|P3|6|None",
+      "printed_idx": 6
+    },
+    {
+      "part": "P3",
+      "idx": 2,
+      "sub": null,
+      "topic": "Quy tắc đếm kết hợp điều kiện lôgarit và tổng các cặp",
+      "grade": 10,
+      "given": "Một tập số nguyên dương hữu hạn; cần chọn và xếp các phần tử phân biệt với điều kiện tổng lôgarit nguyên và các tổng cặp bằng nhau.",
+      "task": "Đếm các dãy có thứ tự thỏa mãn đồng thời các ràng buộc.",
+      "reasoning": [
+        "Gộp tổng lôgarit thành lôgarit của tích.",
+        "Dùng tính nguyên và phân tích thừa số để giới hạn các phần tử có thể nằm ở nhóm vị trí đầu.",
+        "Liệt kê các bộ phân biệt thỏa mãn điều kiện tích.",
+        "Đặt tổng chung để xác định các phần tử ghép cặp còn lại.",
+        "Kiểm tra thuộc tập và không trùng ở toàn bộ dãy.",
+        "Đếm các thứ tự hợp lệ mà không đếm lặp."
+      ],
+      "steps": 6,
+      "combines": [
+        "Quy tắc đếm",
+        "Lôgarit",
+        "Phân tích thừa số",
+        "Ràng buộc tổng",
+        "Tính phân biệt"
+      ],
+      "wrong_options": null,
+      "wrong_option_details": [],
+      "cue_use": "needed in reasoning",
+      "difficulty_source": "Biến điều kiện lôgarit thành cấu trúc số học rồi kết hợp ràng buộc ghép cặp và không trùng.",
+      "discrimination": "high",
+      "optional_path": null,
+      "evidence_uncertainty": "Xếp lớp theo nhiệm vụ đếm; công cụ lôgarit thuộc lớp sau, còn phân tích thừa số huy động kiến thức cấp học trước.",
+      "paper_id": "de5833d227dd",
+      "year": "2026",
+      "evidence_class": "provincial_third_party",
+      "ref": "de5833d227dd|P3|2|None",
+      "printed_idx": 2
+    },
+    {
+      "part": "P2",
+      "idx": 2,
+      "sub": "c",
+      "topic": "Tổ hợp: chọn các vị trí không kề nhau trên vòng",
+      "grade": 10,
+      "given": "Những vị trí phân biệt trên vòng cùng điều kiện chọn một cặp không liền kề.",
+      "task": "Kiểm tra số kết quả có cặp vị trí được chọn không kề nhau.",
+      "reasoning": [
+        "Đếm tất cả các cặp vị trí không thứ tự.",
+        "Đếm các cặp liền kề, kể cả cặp khép vòng.",
+        "Lấy hiệu để tìm số cặp hợp lệ rồi đối chiếu."
+      ],
+      "steps": 3,
+      "combines": [
+        "Tổ hợp",
+        "Đếm bằng phần bù",
+        "Quan hệ kề trên vòng"
+      ],
+      "wrong_options": null,
+      "wrong_option_details": [
+        {
+          "label": "c",
+          "identifiable_error": null,
+          "mistake_kind": null,
+          "reason": "Không có khóa đối sánh để xác định nhận định có sai hay không."
+        }
+      ],
+      "cue_use": "needed in reasoning",
+      "difficulty_source": "Giữ đúng cấu trúc vòng và tránh đếm cặp có thứ tự.",
+      "discrimination": "medium",
+      "evidence_uncertainty": "Không có khóa đáp án đối sánh; không gán đúng sai cho nhận định.",
+      "optional_path": null,
+      "paper_id": "aceb17d936f5",
+      "year": "2026",
+      "evidence_class": "provincial_third_party",
+      "ref": "aceb17d936f5|P2|2|c",
+      "printed_idx": 2
+    },
+    {
+      "part": "P3",
+      "idx": 3,
+      "sub": null,
+      "topic": "Tổ hợp; đếm cách chọn có điều kiện kéo theo",
+      "grade": 10,
+      "given": "Một tập người chia thành các nhóm thuộc tính, với giới hạn thành phần của tập con và điều kiện tham gia phụ thuộc giữa các cá nhân được chỉ định.",
+      "task": "Đếm các tập con thỏa đồng thời điều kiện thành phần và điều kiện kéo theo.",
+      "reasoning": [
+        "Liệt kê các cơ cấu thành phần được phép của tập con.",
+        "Diễn giải điều kiện kéo theo thành cấu hình bị cấm hoặc các trường hợp theo sự có mặt của cá nhân chỉ định.",
+        "Dùng tổ hợp đếm các lựa chọn trong từng trường hợp, giữ đúng số chỗ còn lại ở mỗi nhóm.",
+        "Cộng các trường hợp rời nhau hoặc trừ các cấu hình bị cấm khỏi tổng."
+      ],
+      "steps": 4,
+      "combines": [
+        "Tổ hợp",
+        "Quy tắc cộng và nhân",
+        "Mệnh đề kéo theo",
+        "Đếm bù"
+      ],
+      "wrong_options": null,
+      "wrong_option_details": [],
+      "cue_use": "needed in reasoning",
+      "difficulty_source": "Phân biệt điều kiện kéo theo một chiều với yêu cầu các cá nhân luôn cùng tham gia.",
+      "discrimination": "medium",
+      "evidence_uncertainty": null,
+      "optional_path": null,
+      "paper_id": "11d88d9a96ad",
+      "year": "2026",
+      "evidence_class": "provincial_third_party",
+      "ref": "11d88d9a96ad|P3|3|None",
+      "printed_idx": 3
+    }
+  ],
+  "level_assignments": [
+    {
+      "ref": "023e74626dd8|P3|3|None",
+      "level": "VD",
+      "confidence": "medium",
+      "justification": "Phải chuyển điều kiện số học thành ràng buộc cấu hình, suy ra các nhánh khả thi và tổ chức phép đếm tránh trùng lặp.",
+      "decisive_demand": "Xây dựng và phân loại cấu hình thỏa mãn các ràng buộc liên kết.",
+      "uncertainty": "Không có bố trí cụ thể để kiểm tra khả năng tồn tại lối đếm ngắn hơn; nhận định dựa trên cấu trúc suy luận của bản trích xuất."
+    },
+    {
+      "ref": "adb051fd8253|P3|3|None",
+      "level": "VD",
+      "confidence": "high",
+      "justification": "Các ràng buộc đồng thời đòi hỏi thiết kế cách phân loại và đếm hoàn tất, đồng thời bảo đảm các trường hợp không trùng.",
+      "decisive_demand": "Tổ chức chuỗi suy luận đếm có điều kiện và kiểm soát trùng lặp.",
+      "uncertainty": null
+    },
+    {
+      "ref": "54e9a2a276ca|P3|4|None",
+      "level": "VD",
+      "confidence": "medium",
+      "justification": "Cần mô hình hóa điều kiện phân phối thành ràng buộc nghiệm nguyên và tổ chức phép đếm có kiểm soát trùng lặp.",
+      "decisive_demand": "Xây dựng mô hình đếm có chặn và phối hợp các trường hợp hợp lệ.",
+      "uncertainty": "Bản trích xuất chưa xác định mức độ quen thuộc của kỹ thuật đếm; nhận định dựa trên yêu cầu tự thiết lập mô hình và cách đếm."
+    },
+    {
+      "ref": "525d3542283a|P3|3|None",
+      "level": "VD",
+      "confidence": "medium",
+      "justification": "Cần chuyển cơ chế tuần tự thành điều kiện khả thi, lập luận về tính cần và đủ rồi dùng điều kiện đó để tổ chức phép đếm.",
+      "decisive_demand": "Xây dựng và biện minh tiêu chuẩn khả thi trước khi phân loại, đếm.",
+      "uncertainty": "Chưa có đáp án chuẩn hoặc mô tả nguyên bản để kiểm tra tiêu chuẩn khả thi và khả năng tồn tại cách giải đơn giản hơn."
+    },
+    {
+      "ref": "beee25b53250|P3|1|None",
+      "level": "VD",
+      "confidence": "medium",
+      "justification": "Cần tổ chức các trường hợp tương thích giữa ràng buộc tổng, số lượng phần tử và điều kiện không lặp, rồi bảo đảm phép đếm đầy đủ.",
+      "decisive_demand": "Xây dựng phân loại trường hợp và phối hợp các ràng buộc để đếm không trùng.",
+      "uncertainty": "Cấu trúc chi tiết của biểu diễn không có trong bản trích xuất; chưa loại trừ được khả năng có đối xứng giúp rút ngắn đáng kể."
+    },
+    {
+      "ref": "3b4cca11ea82|P3|6|None",
+      "level": "VD",
+      "confidence": "medium",
+      "justification": "Cần chuyển điều kiện số học thành các kiểu lựa chọn hợp lệ rồi phối hợp việc chọn và sắp xếp mà không đếm trùng.",
+      "decisive_demand": "Thiết lập phân hoạch theo tính chất số học và tổ chức phép đếm có ràng buộc.",
+      "uncertainty": "Trích xuất chưa cung cấp cấu trúc cụ thể để loại trừ khả năng điều kiện số học rút gọn đáng kể; mức độ được suy từ chuỗi lập luận mô tả."
+    },
+    {
+      "ref": "de5833d227dd|P3|2|None",
+      "level": "VD",
+      "confidence": "high",
+      "justification": "Cần dùng ràng buộc đại số để thu hẹp khả năng, phối hợp các điều kiện và tổ chức phép đếm không trùng.",
+      "decisive_demand": "Kết nối điều kiện đại số với phân loại và đếm các cấu hình hợp lệ.",
+      "uncertainty": null
+    },
+    {
+      "ref": "aceb17d936f5|P2|2|c",
+      "level": "TH",
+      "confidence": "high",
+      "justification": "Đếm toàn bộ rồi loại các trường hợp vi phạm là quy trình phần bù quen thuộc với ràng buộc trực tiếp.",
+      "decisive_demand": "Áp dụng phép đếm bằng phần bù và tính đúng quan hệ khép vòng.",
+      "uncertainty": null
+    },
+    {
+      "ref": "11d88d9a96ad|P3|3|None",
+      "level": "VD",
+      "confidence": "high",
+      "justification": "Phải chuyển ràng buộc logic thành các trường hợp đếm hợp lệ và bảo đảm chúng không bỏ sót hoặc trùng nhau.",
+      "decisive_demand": "Thiết kế cách phân trường hợp hoặc đếm bù từ các điều kiện phụ thuộc.",
+      "uncertainty": null
+    }
+  ],
+  "examples": [
+    {
+      "origin": "synthetic_not_corpus_evidence",
+      "model": "gpt-6.1-sol",
+      "target": {
+        "id": "a7d57d38b7771d61",
+        "topic": "Tổ hợp có ràng buộc",
+        "part": "P2",
+        "level": "TH",
+        "qtype": "true_false",
+        "option_labels": [],
+        "slot_keys": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        "canonical_answer_alphabet": [
+          "D",
+          "S"
+        ],
+        "abstract_observations": [
+          {
+            "given": "Những vị trí phân biệt trên vòng cùng điều kiện chọn một cặp không liền kề.",
+            "task": "Kiểm tra số kết quả có cặp vị trí được chọn không kề nhau.",
+            "reasoning": [
+              "Đếm tất cả các cặp vị trí không thứ tự.",
+              "Đếm các cặp liền kề, kể cả cặp khép vòng.",
+              "Lấy hiệu để tìm số cặp hợp lệ rồi đối chiếu."
+            ],
+            "combines": [
+              "Tổ hợp",
+              "Đếm bằng phần bù",
+              "Quan hệ kề trên vòng"
+            ],
+            "difficulty_source": "Giữ đúng cấu trúc vòng và tránh đếm cặp có thứ tự.",
+            "evidence_uncertainty": "Không có khóa đáp án đối sánh; không gán đúng sai cho nhận định.",
+            "evidence_class": "provincial_third_party"
+          }
+        ],
+        "support_refs": [
+          "aceb17d936f5|P2|2|c"
+        ],
+        "official_anchor_available": false
+      },
+      "sample": {
+        "id": "a7d57d38b7771d61",
+        "stem": "Một vòng trang trí có 9 móc cố định, đánh số từ 1 đến 9 theo chiều kim đồng hồ. Hai móc được coi là kề nhau khi số của chúng liên tiếp hoặc chúng mang số 1 và 9. Chọn hai móc để treo hai dải ruy băng giống nhau, mỗi móc treo một dải. Mỗi cách chọn được xác định bởi cặp móc, không xét thứ tự. Xét tính đúng sai của các nhận định sau.",
+        "options": [],
+        "statements": [
+          {
+            "sub": "a",
+            "text": "Nếu chưa đặt điều kiện về sự kề nhau thì có 36 cách chọn."
+          },
+          {
+            "sub": "b",
+            "text": "Có 8 cách chọn hai móc kề nhau."
+          },
+          {
+            "sub": "c",
+            "text": "Có 27 cách chọn hai móc không kề nhau."
+          },
+          {
+            "sub": "d",
+            "text": "Có 7 cách chọn hai móc không kề nhau mà một trong hai móc là móc số 1."
+          }
+        ],
+        "answers": [
+          {
+            "sub": "a",
+            "answer": "D",
+            "level": "TH"
+          },
+          {
+            "sub": "b",
+            "answer": "S",
+            "level": "TH"
+          },
+          {
+            "sub": "c",
+            "answer": "D",
+            "level": "TH"
+          },
+          {
+            "sub": "d",
+            "answer": "S",
+            "level": "TH"
+          }
+        ],
+        "solution": "a) Đúng. Có C_9^2 = 36 cặp móc. b) Sai. Có tám cặp (1,2), (2,3), …, (8,9) và thêm cặp (9,1), tổng cộng chín cặp kề nhau. c) Đúng. Lấy tất cả các cặp trừ các cặp kề nhau được 36 − 9 = 27. d) Sai. Khi đã chọn móc số 1, móc còn lại phải thuộc các số 3, 4, 5, 6, 7, 8 nên có sáu cách.",
+        "distractors": [
+          {
+            "label": null,
+            "sub": "b",
+            "mistake": "Đếm các cặp liên tiếp từ 1 đến 9 như trên một hàng và bỏ sót cặp khép vòng (9,1).",
+            "why_plausible": "Cách đánh số liên tiếp dễ khiến học sinh áp dụng cách đếm của một dãy thẳng."
+          },
+          {
+            "label": null,
+            "sub": "d",
+            "mistake": "Trong tám móc khác móc số 1, chỉ loại móc số 2 mà quên loại móc số 9.",
+            "why_plausible": "Học sinh có thể nhận ra một phía kề móc số 1 nhưng bỏ qua phía khép vòng."
+          }
+        ],
+        "level_reason": "Mức cao nhất là TH. Học sinh đọc quan hệ kề đã cho, đếm các cặp bằng tổ hợp và áp dụng phép đếm phần bù quen thuộc; cấu trúc vòng không tạo thêm yêu cầu mô hình hóa.",
+        "prerequisites": [
+          "Đếm cặp không thứ tự bằng tổ hợp.",
+          "Đếm bằng phần bù.",
+          "Nhận diện quan hệ kề trong một vòng có vị trí phân biệt."
+        ],
+        "variation_guidance": "Có thể thay số móc hoặc móc được chỉ định. Luôn nêu rõ cặp khép vòng và giữ các móc được đánh số cố định để tránh nhầm với bài toán đồng nhất các cấu hình qua phép quay.",
+        "uncertainties": [
+          "Quan sát tham khảo chỉ thuộc nguồn cấp tỉnh qua bên thứ ba, không có khóa đúng sai đối sánh hay điểm neo chính thức. Câu này là minh họa mới trong phạm vi cấu trúc đếm đã quan sát."
+        ],
+        "missing_assets": []
+      },
+      "independent_review": {
+        "id": "a7d57d38b7771d61",
+        "answers": [
+          {
+            "sub": "a",
+            "answer": "D",
+            "level": "TH"
+          },
+          {
+            "sub": "b",
+            "answer": "S",
+            "level": "TH"
+          },
+          {
+            "sub": "c",
+            "answer": "D",
+            "level": "TH"
+          },
+          {
+            "sub": "d",
+            "answer": "S",
+            "level": "TH"
+          }
+        ],
+        "solution": "a: Có C(9,2) = 36 cặp móc. b: Có 9 cặp kề nhau, gồm 8 cặp mang số liên tiếp và cặp {1,9}. c: Có 36 − 9 = 27 cặp không kề nhau. d: Khi có móc 1, móc còn lại được chọn trong các móc 3, 4, 5, 6, 7, 8 nên có 6 cách.",
+        "confidence": "high",
+        "error_flags": [],
+        "level_reason": "Ý a tính tổ hợp trực tiếp; ý b diễn giải và đếm theo định nghĩa kề nhau; ý c đếm phần bù; ý d loại các móc không hợp lệ. Đây đều là thao tác quen thuộc ở mức TH."
+      },
+      "key_agreement": true,
+      "level_agreement": true,
+      "status": "model_checks_passed_pending_teacher_review",
+      "generation_receipt": "audit/outputs/topic-samples/toan/ddbff3d8f195ef1a1ebf720c918397a4a31bbaaa651a63d80c531be6cea863fb.draft.json",
+      "resolve_receipt": "audit/outputs/topic-samples/toan/ddbff3d8f195ef1a1ebf720c918397a4a31bbaaa651a63d80c531be6cea863fb.resolve.json"
+    },
+    {
+      "origin": "synthetic_not_corpus_evidence",
+      "model": "gpt-6.1-sol",
+      "target": {
+        "id": "ce6796cbe1814216",
+        "topic": "Tổ hợp có ràng buộc",
+        "part": "P3",
+        "level": "VD",
+        "qtype": "short_answer",
+        "option_labels": [],
+        "slot_keys": [
+          null
+        ],
+        "canonical_answer_alphabet": [],
+        "abstract_observations": [
+          {
+            "given": "Một tập số nguyên phân biệt và hình lưới bậc thang có các ô được xác định theo hàng, cột; các số phải dùng hết và không được trùng lớp dư trong cùng hàng hoặc cột.",
+            "task": "Đếm các phép gán hợp lệ vào vị trí có nhãn rồi thực hiện phép chuẩn hóa được yêu cầu.",
+            "reasoning": [
+              "Chuyển điều kiện về hiệu chia hết thành điều kiện các lớp dư khác nhau trong từng hàng và cột.",
+              "Phân loại các số theo lớp dư và xác định số phần tử của mỗi lớp.",
+              "Khai thác các hàng, cột dài và hình dạng bậc thang để suy ra ràng buộc lên vị trí của từng lớp dư.",
+              "Đếm các cấu hình lớp dư hợp lệ, phân biệt các nhánh và tránh đếm lặp.",
+              "Đếm các hoán vị của những số phân biệt trong mỗi lớp dư.",
+              "Nhân các hệ số đếm rồi thực hiện phép chuẩn hóa."
+            ],
+            "combines": [
+              "Chia hết và đồng dư",
+              "Quy tắc đếm",
+              "Hoán vị",
+              "Ràng buộc hàng và cột"
+            ],
+            "difficulty_source": "Biến ràng buộc cục bộ theo hàng và cột thành cấu hình lớp dư toàn cục có số lượng cố định.",
+            "evidence_uncertainty": "Các công cụ đếm được xếp theo chương tổ hợp; điều kiện đồng dư huy động kiến thức số học từ cấp học trước.",
+            "evidence_class": "official"
+          },
+          {
+            "given": "Một tập người chia thành các nhóm thuộc tính, với giới hạn thành phần của tập con và điều kiện tham gia phụ thuộc giữa các cá nhân được chỉ định.",
+            "task": "Đếm các tập con thỏa đồng thời điều kiện thành phần và điều kiện kéo theo.",
+            "reasoning": [
+              "Liệt kê các cơ cấu thành phần được phép của tập con.",
+              "Diễn giải điều kiện kéo theo thành cấu hình bị cấm hoặc các trường hợp theo sự có mặt của cá nhân chỉ định.",
+              "Dùng tổ hợp đếm các lựa chọn trong từng trường hợp, giữ đúng số chỗ còn lại ở mỗi nhóm.",
+              "Cộng các trường hợp rời nhau hoặc trừ các cấu hình bị cấm khỏi tổng."
+            ],
+            "combines": [
+              "Tổ hợp",
+              "Quy tắc cộng và nhân",
+              "Mệnh đề kéo theo",
+              "Đếm bù"
+            ],
+            "difficulty_source": "Phân biệt điều kiện kéo theo một chiều với yêu cầu các cá nhân luôn cùng tham gia.",
+            "evidence_uncertainty": null,
+            "evidence_class": "provincial_third_party"
+          },
+          {
+            "given": "Một tập số nguyên liên tiếp, các vị trí phân biệt trên hình nhìn thấy được và điều kiện chia hết áp lên tổng bình phương các số được điền.",
+            "task": "Đếm các phép gán số phân biệt thỏa mãn điều kiện.",
+            "reasoning": [
+              "Phân loại các số theo phần dư của bình phương đối với môđun yêu cầu.",
+              "Đếm số phần tử trong từng nhóm phần dư.",
+              "Liệt kê các kiểu phối hợp nhóm làm tổng phần dư hợp lệ.",
+              "Đếm cách chọn các số phân biệt trong từng kiểu.",
+              "Tính số cách gán vào các vị trí phân biệt và cộng các trường hợp."
+            ],
+            "combines": [
+              "Số dư và tính chia hết",
+              "Quy tắc cộng và nhân",
+              "Tổ hợp",
+              "Hoán vị"
+            ],
+            "difficulty_source": "Chuyển điều kiện tổng bình phương thành một số kiểu phần dư rồi phân biệt chọn số với xếp số.",
+            "evidence_uncertainty": "Chủ đề đếm thuộc lớp được gán; công cụ số dư huy động kiến thức số học từ cấp học trước.",
+            "evidence_class": "provincial_third_party"
+          },
+          {
+            "given": "Một cơ chế nhận vật theo thứ tự với các vị trí có sức chứa tăng dần, mỗi vị trí chỉ dùng một lần, cùng ràng buộc số lần xuất hiện của một số kích cỡ; có hình minh họa.",
+            "task": "Đếm các dãy kích cỡ khiến mọi vật được nhận vào vị trí hợp lệ.",
+            "reasoning": [
+              "Mô hình hóa quy tắc mỗi vật chiếm vị trí còn trống đầu tiên đủ sức chứa.",
+              "Tìm điều kiện cần và đủ trên phân bố kích cỡ để toàn bộ dãy được tiếp nhận.",
+              "Kết hợp điều kiện đó với số lần xuất hiện đã bị cố định.",
+              "Phân loại các đa tập kích cỡ còn lại thỏa điều kiện.",
+              "Đếm các thứ tự của từng đa tập, chia cho hoán vị giữa những kích cỡ lặp.",
+              "Cộng các trường hợp và kiểm tra không đếm lặp."
+            ],
+            "combines": [
+              "Mô hình hóa thuật toán tuần tự",
+              "Điều kiện cần và đủ",
+              "Quy tắc đếm",
+              "Hoán vị có phần tử lặp"
+            ],
+            "difficulty_source": "Chuyển quy tắc tiếp nhận tuần tự thành điều kiện toàn cục để đếm dãy mà không phân biệt các vật cùng kích cỡ.",
+            "evidence_uncertainty": "Xếp lớp theo công cụ tổ hợp; tiêu chuẩn khả thi của cơ chế phân bổ và công thức hoán vị có lặp không được liệt kê thành bài riêng trong danh mục tham chiếu. Không có đáp án chuẩn để đối chiếu.",
+            "evidence_class": "provincial_third_party"
+          }
+        ],
+        "support_refs": [
+          "023e74626dd8|P3|3|None",
+          "11d88d9a96ad|P3|3|None",
+          "3b4cca11ea82|P3|6|None",
+          "525d3542283a|P3|3|None",
+          "54e9a2a276ca|P3|4|None",
+          "adb051fd8253|P3|3|None",
+          "beee25b53250|P3|1|None",
+          "de5833d227dd|P3|2|None"
+        ],
+        "official_anchor_available": true
+      },
+      "sample": {
+        "id": "ce6796cbe1814216",
+        "stem": "Một bảng có bảy ô được gắn nhãn theo hàng và cột. Hàng 1 gồm các ô (1,1), (1,2), (1,3); hàng 2 gồm các ô (2,1), (2,2), (2,3); hàng 3 chỉ có ô (3,1). Điền các số nguyên từ 1 đến 7 vào bảng, mỗi số dùng đúng một lần. Hai số nằm trong cùng một hàng hoặc cùng một cột phải có hiệu không chia hết cho 3. Có bao nhiêu cách điền thỏa mãn yêu cầu? Hai cách điền được xem là khác nhau nếu có ít nhất một ô nhận các số khác nhau.",
+        "options": [],
+        "statements": [],
+        "answers": [
+          {
+            "sub": null,
+            "answer": "96",
+            "level": "VD"
+          }
+        ],
+        "solution": "Chia các số thành ba lớp dư modulo 3: R0 = {3,6}, R1 = {1,4,7}, R2 = {2,5}. Điều kiện đề bài tương đương các ô cùng hàng hoặc cùng cột có lớp dư đôi một khác nhau. Mỗi hàng trong hai hàng đầu có ba ô nên phải chứa đủ ba lớp dư. Sau khi điền hai hàng đó, chỉ còn một số thuộc R1; vì vậy ô (3,1) phải thuộc R1. Cột 1 có ba ô nên hai ô (1,1), (2,1) phải lần lượt thuộc R0, R2 hoặc R2, R0. Có 2 cách chọn thứ tự này. Với mỗi cách, hai ô còn lại của hàng 1 nhận hai lớp dư còn lại theo 2 thứ tự. Hàng 2 khi đó được xác định duy nhất: lớp dư trùng với ô (1,1) phải đặt vào cột mà hàng 1 mang lớp dư của ô (2,1), còn lớp dư R1 đặt vào cột còn lại. Cách điền này thỏa điều kiện của cả cột 2 và cột 3. Do đó có 2 × 2 = 4 cấu hình lớp dư. Trong mỗi cấu hình, các số của R1 có 3! cách phân vào các ô tương ứng, còn R0 và R2 mỗi lớp có 2! cách. Số cách điền là 4 × 3! × 2! × 2! = 96.",
+        "distractors": [],
+        "level_reason": "Bài toán yêu cầu chuyển điều kiện chia hết sang cấu hình lớp dư, phối hợp số lượng phần tử mỗi lớp với các hàng và cột dài để buộc lớp dư của ô cuối, rồi chứng minh cách hoàn thành hai hàng đầu. Đây là chuỗi suy luận về ràng buộc toàn cục trước khi áp dụng quy tắc nhân.",
+        "prerequisites": [
+          "Lớp dư modulo 3",
+          "Điều kiện hiệu hai số chia hết cho 3",
+          "Quy tắc cộng và quy tắc nhân",
+          "Hoán vị các phần tử phân biệt"
+        ],
+        "variation_guidance": "Có thể thay bộ số bằng một bộ khác có cùng số lượng phần tử trong từng lớp dư. Nếu thay vị trí ô ở hàng 3 hoặc thay số lượng phần tử mỗi lớp, phải đếm lại cấu hình lớp dư trước khi nhân các giai thừa.",
+        "uncertainties": [],
+        "missing_assets": []
+      },
+      "independent_review": {
+        "id": "ce6796cbe1814216",
+        "answers": [
+          {
+            "sub": null,
+            "answer": "96",
+            "level": "VD"
+          }
+        ],
+        "solution": "Xét phần dư modulo 3. Các lớp dư 1, 2, 0 lần lượt có 3, 2, 2 số. Mỗi hàng gồm ba ô phải chứa đủ ba lớp dư; vì thế hai hàng đầu sử dụng mỗi lớp dư đúng hai lần, buộc ô (3,1) có dư 1. Hai ô còn lại của cột 1 phải có dư 0 và 2, có 2 cách sắp. Với mỗi cách đó, hàng đầu có 2 cách điền hai lớp dư còn lại vào cột 2 và 3. Hàng thứ hai sau đó được xác định duy nhất bởi điều kiện khác lớp dư trong từng cột. Có 2×2=4 bảng phần dư. Với mỗi bảng, hoán vị các số trong từng lớp dư được 3!×2!×2!=24 cách. Tổng cộng có 4×24=96 cách.",
+        "confidence": "high",
+        "error_flags": [],
+        "level_reason": "Cần chuyển điều kiện chia hết thành mô hình lớp dư, phối hợp ràng buộc hàng và cột để đếm các bảng phần dư, rồi tính số cách gán các số cụ thể."
+      },
+      "key_agreement": true,
+      "level_agreement": true,
+      "status": "model_checks_passed_pending_teacher_review",
+      "generation_receipt": "audit/outputs/topic-samples/toan/ca57e2a1488a4c03c08c749147887c884e0ddb8b4463091bb3ae34f2cfe49339.draft.json",
+      "resolve_receipt": "audit/outputs/topic-samples/toan/ca57e2a1488a4c03c08c749147887c884e0ddb8b4463091bb3ae34f2cfe49339.resolve.json"
+    }
+  ],
+  "unready_example_ids": [],
+  "missing_example_ids": [],
+  "teacher_approved": false
+}

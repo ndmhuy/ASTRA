@@ -1,0 +1,159 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "385b284633713d91",
+    "topic": "Xác suất cổ điển và tổ hợp",
+    "part": "P3",
+    "level": "VD",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Một đa giác đều có hình vẽ, các vật phân biệt thuộc những nhóm màu với số lượng cố định và phép gán ngẫu nhiên vào các đỉnh; yêu cầu mọi hình vuông tạo bởi các đỉnh đều gặp một màu chỉ định.",
+        "task": "Tính xác suất thỏa mãn điều kiện rồi nhân với hệ số được yêu cầu.",
+        "reasoning": [
+          "Nhận diện tất cả hình vuông nội tiếp có đỉnh thuộc đa giác và quan hệ giữa các tập đỉnh của chúng.",
+          "Rút không gian mẫu từ phép gán vật phân biệt về phép chọn vị trí của màu chỉ định, giải thích tính đồng khả năng.",
+          "Chuyển điều kiện hình học thành yêu cầu mỗi nhóm đỉnh của một hình vuông đều nhận màu chỉ định.",
+          "Phân loại các cách phân bố số vị trí mang màu chỉ định giữa các nhóm.",
+          "Đếm các lựa chọn vị trí thuận lợi trong từng kiểu phân bố.",
+          "Lập xác suất và thực hiện phép nhân cuối."
+        ],
+        "combines": [
+          "Hình học đa giác đều",
+          "Hình vuông nội tiếp",
+          "Tổ hợp",
+          "Quy tắc đếm",
+          "Xác suất cổ điển"
+        ],
+        "difficulty_source": "Nhận ra cấu trúc các hình vuông và loại bỏ sự phân biệt không cần thiết giữa các vật cùng màu khi đếm xác suất.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Một tập số nguyên liên tiếp, phép chọn và gán các số phân biệt vào sơ đồ tam giác có vị trí ở đỉnh và trên cạnh; hình vẽ thể hiện các bộ vị trí liên quan.",
+        "task": "Tính nghịch đảo xác suất để các bộ vị trí đều thỏa mãn điều kiện cấp số cộng.",
+        "reasoning": [
+          "Mô hình hóa không gian mẫu bằng các phép gán không lặp vào vị trí có nhãn.",
+          "Dùng tính chất trung bình cộng để biểu diễn giá trị tại mỗi vị trí trên cạnh theo hai đỉnh.",
+          "Suy ra điều kiện chẵn lẻ và điều kiện thuộc tập cho các giá trị đỉnh.",
+          "Loại các cấu hình làm trùng giá trị giữa những vị trí khác nhau.",
+          "Đếm các cấu hình hợp lệ có xét thứ tự vị trí.",
+          "Lập xác suất rồi lấy nghịch đảo."
+        ],
+        "combines": [
+          "Cấp số cộng",
+          "Chỉnh hợp",
+          "Tính chẵn lẻ",
+          "Xác suất cổ điển"
+        ],
+        "difficulty_source": "Biến điều kiện cục bộ trên các cạnh thành ràng buộc toàn cục về chẵn lẻ và không trùng số.",
+        "evidence_uncertainty": "Chủ đề chính đặt ở lớp học cấp số cộng; công cụ đếm và xác suất cổ điển thuộc lớp trước.",
+        "evidence_class": "official"
+      },
+      {
+        "given": "Một lưới điểm có tọa độ nguyên trong miền vuông hữu hạn và phép chọn các điểm phân biệt để lập trung điểm.",
+        "task": "Tính xác suất trung điểm có tọa độ nguyên rồi thực hiện phép chuẩn hóa.",
+        "reasoning": [
+          "Chuyển điều kiện tọa độ trung điểm nguyên thành điều kiện cùng tính chẵn lẻ trên từng trục.",
+          "Phân hoạch lưới thành các lớp theo cặp tính chẵn lẻ.",
+          "Đếm các cặp điểm phân biệt nằm cùng lớp.",
+          "Đếm toàn bộ cặp điểm theo cùng quy ước có thứ tự hoặc không thứ tự.",
+          "Lập xác suất và thực hiện phép chuẩn hóa."
+        ],
+        "combines": [
+          "Tọa độ trung điểm",
+          "Tính chẵn lẻ",
+          "Tổ hợp",
+          "Xác suất cổ điển"
+        ],
+        "difficulty_source": "Nhận ra phân hoạch theo chẵn lẻ để thay bài toán hình học bằng đếm các cặp.",
+        "evidence_uncertainty": "Lớp được gán theo tổ hợp và xác suất cổ điển; điều kiện chẵn lẻ sử dụng kiến thức từ cấp học trước.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một chuỗi ký tự số có độ dài cố định, cho phép ký tự đầu là chữ số không; điều kiện hợp lệ quy định một mức lặp đặc biệt và các ký tự còn lại phân biệt.",
+        "task": "Tính xác suất chuỗi hợp lệ rồi khai thác các chữ số trong cách viết thập phân được chỉ định.",
+        "reasoning": [
+          "Mô hình hóa không gian mẫu bằng tất cả chuỗi cùng độ dài, kể cả chuỗi bắt đầu bằng chữ số không.",
+          "Nhận ra điều kiện các ký tự còn lại phân biệt làm ký tự có mức lặp đặc biệt được xác định duy nhất.",
+          "Chọn ký tự lặp và chọn các vị trí dành cho ký tự đó.",
+          "Gán có thứ tự các ký tự phân biệt còn lại từ tập chưa dùng.",
+          "Chia số chuỗi thuận lợi cho số chuỗi toàn bộ.",
+          "Viết xác suất theo dạng yêu cầu và thực hiện phép tính trên các chữ số được hỏi."
+        ],
+        "combines": [
+          "Quy tắc nhân",
+          "Tổ hợp chọn vị trí",
+          "Chỉnh hợp",
+          "Xác suất cổ điển",
+          "Biểu diễn thập phân"
+        ],
+        "difficulty_source": "Phân biệt chuỗi với số tự nhiên và đếm đúng cấu trúc lặp mà không đếm trùng.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "023e74626dd8|P3|6|None",
+      "163f20908cf7|P3|1|None",
+      "0ecb85132b84|P3|5|None",
+      "11d88d9a96ad|P3|6|None",
+      "3b4cca11ea82|P3|1|None",
+      "6aa30214ba7e|P3|2|None",
+      "85efdd1a7e54|P3|3|None",
+      "acc00d945397|P3|6|None",
+      "ccae0b94a82d|P3|4|None",
+      "fc12a8146279|P3|3|None"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "385b284633713d91",
+    "stem": "Trên mặt phẳng tọa độ, cho tập G gồm chín điểm (x; y), trong đó x và y đều thuộc {0; 1; 2}. Chọn ngẫu nhiên một tập gồm ba điểm phân biệt của G; mọi tập ba điểm đều có khả năng được chọn như nhau. Tính xác suất để ba điểm được chọn là ba đỉnh của một tam giác, đồng thời trên mỗi đường thẳng x = 0, x = 1, x = 2 và y = 0, y = 1, y = 2 đều có đúng một điểm được chọn. Viết kết quả dưới dạng phân số tối giản.",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "1/21",
+        "level": "VD"
+      }
+    ],
+    "solution": "Không gian mẫu có C(9,3) = 84 phần tử. Điều kiện trên ba đường thẳng đứng buộc tập điểm có dạng {(0; a), (1; b), (2; c)}. Điều kiện trên ba đường thẳng ngang tương đương với việc (a,b,c) là một hoán vị của (0,1,2), nên có 6 tập điểm ứng viên. Ba điểm này thẳng hàng khi và chỉ khi hệ số góc của hai đoạn nối liên tiếp bằng nhau, tức b − a = c − b hay 2b = a + c. Do a + b + c = 3, điều này buộc b = 1; hai hoán vị tương ứng là (0,1,2) và (2,1,0). Loại hai tập thẳng hàng, còn 4 tập tạo thành tam giác. Xác suất cần tìm là 4/84 = 1/21.",
+    "distractors": [],
+    "level_reason": "Học sinh phải chuyển các ràng buộc theo hàng và cột thành mô hình hoán vị, sau đó kết nối mô hình này với điều kiện thẳng hàng để loại cấu hình suy biến trước khi tính xác suất. Chỉ đếm các cách chọn điểm hoặc thay số vào công thức xác suất chưa đủ.",
+    "prerequisites": [
+      "Tổ hợp và hoán vị",
+      "Xác suất cổ điển",
+      "Điều kiện ba điểm thẳng hàng trong mặt phẳng tọa độ"
+    ],
+    "variation_guidance": "Đây là mẫu tổng hợp minh họa, không phải bằng chứng đề thi thật. Có thể thay tập tọa độ hoặc điều kiện hình học, nhưng phải đếm lại các cấu hình suy biến và giữ rõ quy tắc chọn ngẫu nhiên.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "385b284633713d91",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "1/21",
+        "level": "VD"
+      }
+    ],
+    "solution": "Có C(9,3)=84 tập ba điểm đồng khả năng. Điều kiện mỗi hàng và mỗi cột có đúng một điểm tương ứng với một hoán vị của ba giá trị tung độ, nên có 3!=6 tập. Trong số đó, chỉ hai tập nằm trên các đường thẳng y=x và y=2−x là thẳng hàng: nếu ba điểm thẳng hàng thì tung độ tại x=1 phải là trung bình cộng của tung độ tại x=0 và x=2. Vì vậy có 6−2=4 tập thỏa mãn. Xác suất bằng 4/84=1/21.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Cần chuyển điều kiện hàng và cột thành mô hình hoán vị, rồi kết hợp điều kiện không thẳng hàng để đếm các tập thuận lợi."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/5e6c635d98eb6f814d35e53267596ad6ab037f76b127f28353864ec3671675c4.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/5e6c635d98eb6f814d35e53267596ad6ab037f76b127f28353864ec3671675c4.resolve.json"
+}

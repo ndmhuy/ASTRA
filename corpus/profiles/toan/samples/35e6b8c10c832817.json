@@ -1,0 +1,147 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "35e6b8c10c832817",
+    "topic": "Ứng dụng đạo hàm và khảo sát hàm số",
+    "part": "P3",
+    "level": "TH",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Các hàm chi phí, doanh thu theo sản lượng và một khoảng sản lượng khả thi.",
+        "task": "Tính lợi nhuận lớn nhất trên miền cho phép.",
+        "reasoning": [
+          "Lập hàm lợi nhuận bằng doanh thu trừ chi phí.",
+          "Tính đạo hàm và tìm các điểm dừng thuộc miền khả thi.",
+          "Dùng chiều biến thiên hoặc so sánh với các đầu mút để xác định điểm đạt lớn nhất.",
+          "Tính lợi nhuận tại điểm đó."
+        ],
+        "combines": [
+          "Mô hình lợi nhuận",
+          "Đạo hàm",
+          "Giá trị lớn nhất trên đoạn"
+        ],
+        "difficulty_source": "Lập đúng hàm mục tiêu và kiểm tra miền công suất trong một quy trình tối ưu quen thuộc.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Một hàm đa thức mô tả quãng đường theo thời gian và một khoảng thời gian hữu hạn.",
+        "task": "Tính tốc độ lớn nhất trong khoảng xét.",
+        "reasoning": [
+          "Lấy đạo hàm quãng đường để tìm tốc độ và kiểm tra dấu trên miền xét.",
+          "Tìm điểm có thể đạt giá trị lớn nhất của hàm tốc độ.",
+          "So sánh với các giá trị ở biên để kết luận."
+        ],
+        "combines": [
+          "Ý nghĩa của đạo hàm",
+          "Hàm bậc hai",
+          "Giá trị lớn nhất trên đoạn"
+        ],
+        "difficulty_source": "Tối ưu một hàm tốc độ bậc hai theo quy trình quen thuộc.",
+        "evidence_uncertainty": "Không có đáp án chuẩn để đối chiếu kết quả; dữ kiện và miền thời gian đọc được đầy đủ.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Các hàm doanh thu, chi phí bình quân theo sản phẩm và tổng chi phí khác, dùng các đơn vị tiền khác nhau, cùng giới hạn sản lượng nguyên.",
+        "task": "Tìm sản lượng nguyên làm lợi nhuận lớn nhất.",
+        "reasoning": [
+          "Đưa các đại lượng tiền về cùng đơn vị.",
+          "Nhân chi phí bình quân với sản lượng để được tổng chi phí tương ứng.",
+          "Lập hàm lợi nhuận từ doanh thu và các tổng chi phí.",
+          "Dùng đạo hàm để xác định vùng đạt cực đại trên miền sản lượng.",
+          "So sánh các giá trị nguyên thích hợp cùng các biên để chọn sản lượng."
+        ],
+        "combines": [
+          "Mô hình lợi nhuận",
+          "Chi phí bình quân và tổng chi phí",
+          "Đổi đơn vị",
+          "Tối ưu bằng đạo hàm",
+          "Miền nguyên"
+        ],
+        "difficulty_source": "Lập đúng tổng chi phí trước khi thực hiện quy trình tối ưu quen thuộc.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Hàm đơn giá theo sản lượng, hàm tổng chi phí, thuế tính trên mỗi sản phẩm và khoảng sản lượng cho phép.",
+        "task": "Tính lợi nhuận lớn nhất.",
+        "reasoning": [
+          "Lập doanh thu bằng sản lượng nhân với đơn giá.",
+          "Trừ tổng chi phí và tổng thuế để lập hàm lợi nhuận.",
+          "Tìm điểm cực đại và kiểm tra trong miền sản lượng cho phép.",
+          "Tính lợi nhuận tại phương án tối ưu."
+        ],
+        "combines": [
+          "Mô hình doanh thu và chi phí",
+          "Hàm số bậc hai",
+          "Tối ưu trên đoạn"
+        ],
+        "difficulty_source": "Phân biệt đơn giá với doanh thu và chuyển thuế theo sản phẩm thành tổng thuế.",
+        "evidence_uncertainty": "Sản lượng mang ý nghĩa số nguyên; điểm tối ưu của mô hình liên tục phù hợp điều kiện này nên không phát sinh bước chọn số nguyên lân cận.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "023e74626dd8|P3|4|None",
+      "525d3542283a|P3|2|None",
+      "6aa30214ba7e|P3|5|None",
+      "7ab78715480e|P3|3|None",
+      "acc00d945397|P3|1|None",
+      "aceb17d936f5|P3|5|None",
+      "c6340827ba59|P3|4|None",
+      "ecd76ac672e5|P3|3|None"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "35e6b8c10c832817",
+    "stem": "Một xưởng làm hộp quà có thể sản xuất và bán hết x hộp mỗi ngày, với x là số nguyên và 0 ≤ x ≤ 30. Doanh thu và tổng chi phí trong ngày lần lượt là R(x) = −2x² + 100x và C(x) = 20x + 200, cùng tính bằng nghìn đồng. Theo mô hình này, lợi nhuận lớn nhất trong một ngày là bao nhiêu nghìn đồng?",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "600",
+        "level": "TH"
+      }
+    ],
+    "solution": "Lợi nhuận là P(x) = R(x) − C(x) = −2x² + 80x − 200. Ta có P′(x) = −4x + 80, bằng 0 khi x = 20. Hàm P tăng trên [0; 20] và giảm trên [20; 30], nên đạt giá trị lớn nhất tại x = 20. Giá trị này phù hợp điều kiện sản lượng nguyên. Lợi nhuận lớn nhất là P(20) = 600 nghìn đồng.",
+    "distractors": [],
+    "level_reason": "Học sinh thực hiện quy trình quen thuộc: lấy doanh thu trừ tổng chi phí, xét dấu đạo hàm và tính giá trị lớn nhất trên miền cho phép. Các hàm và miền sản lượng đã được cung cấp trực tiếp; yêu cầu thuộc mức TH.",
+    "prerequisites": [
+      "Lợi nhuận bằng doanh thu trừ tổng chi phí",
+      "Đạo hàm của hàm đa thức",
+      "Quan hệ giữa dấu đạo hàm và tính đơn điệu",
+      "Giá trị lớn nhất của hàm số trên đoạn"
+    ],
+    "variation_guidance": "Có thể thay các hệ số và giới hạn công suất, giữ điểm đạt cực đại là một sản lượng nguyên trong miền để duy trì quy trình TH.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "35e6b8c10c832817",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "600",
+        "level": "TH"
+      }
+    ],
+    "solution": "Lợi nhuận là P(x)=R(x)−C(x)=−2x²+80x−200=600−2(x−20)². Vì x=20 là số nguyên thuộc [0;30], lợi nhuận lớn nhất bằng 600 nghìn đồng.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Lập hiệu doanh thu và chi phí rồi tìm giá trị lớn nhất của tam thức bậc hai là quy trình quen thuộc; điều kiện nguyên không làm thay đổi điểm cực đại."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/21df0cefa93e87dacca997b2a5466bc9eb2dec3dd2a9eda51579db1352794c8e.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/21df0cefa93e87dacca997b2a5466bc9eb2dec3dd2a9eda51579db1352794c8e.resolve.json"
+}
