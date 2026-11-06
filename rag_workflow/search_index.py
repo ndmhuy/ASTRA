@@ -1,4 +1,5 @@
 """Small local BM25 passage index. Offsets refer to the unchanged source text."""
+
 from collections import Counter
 from dataclasses import dataclass
 import math

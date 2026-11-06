@@ -1,6 +1,8 @@
 """The public retrieval entry point; failures have explicit machine-readable gaps."""
+
 from pathlib import Path
 from .document_loader import load_documents
+from .existing_corpus import search_existing
 from .models import Gap, RetrievalRequest, RetrievalResponse
 from .query_parser import parse
 from .retriever import retrieve
@@ -10,8 +12,12 @@ def run(payload: dict, corpus_path: Path) -> RetrievalResponse:
     return _run(payload, lambda: load_documents(corpus_path))
 
 
-def run_documents(payload: dict, documents, corpus_sha256: str) -> RetrievalResponse:
+def run_documents(
+    payload: dict, documents, corpus_sha256: str, corpus_info=None
+) -> RetrievalResponse:
     """Use the same pipeline with an in-memory local collection."""
+    if corpus_info is not None:
+        return search_existing(payload, documents, corpus_info["snapshot"], corpus_sha256)
     return _run(payload, lambda: (documents, corpus_sha256))
 
 

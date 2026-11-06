@@ -1,4 +1,5 @@
 """Read a single immutable JSONL snapshot; never crawl or open source links."""
+
 import hashlib
 import json
 from pathlib import Path
@@ -25,7 +26,10 @@ def decode_documents(raw: bytes) -> tuple[list[SourceDocument], str]:
         try:
             record = json.loads(line)
             if isinstance(record, dict) and "unit_id" in record:
-                raise Gap("curriculum_metadata_only", "Legacy curriculum rows are draft scope metadata, not approved knowledge passages. Review and publish a passage pack first.")
+                raise Gap(
+                    "curriculum_metadata_only",
+                    "Legacy curriculum rows are draft scope metadata, not approved knowledge passages. Review and publish a passage pack first.",
+                )
             document = SourceDocument(**record)
             if document.document_id in ids:
                 raise ValueError("Duplicate document_id.")
