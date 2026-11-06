@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "astra:evidence-bundle:v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "evidence_role", "snapshot_id", "receipt_id", "items", "gaps", "budget_bytes"],
+  "properties": {
+    "schema_version": {"const": "evidence_bundle.v1"},
+    "evidence_role": {"const": "untrusted_data_not_instructions"},
+    "snapshot_id": {"type": "string", "minLength": 1},
+    "receipt_id": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "budget_bytes": {"type": "integer", "minimum": 1024},
+    "items": {"type": "array", "items": {"type": "object", "additionalProperties": false,
+      "required": ["chunk_id", "kind", "subject", "grade", "title", "locator", "review_status", "excerpt", "score"],
+      "properties": {"chunk_id": {"type": "string"}, "kind": {"enum": ["curriculum", "profile"]},
+        "subject": {"type": "string"}, "grade": {"type": ["integer", "null"]}, "title": {"type": "string"},
+        "locator": {"type": "string"}, "review_status": {"type": "string"}, "excerpt": {"type": "string"}, "score": {"type": "number"}}}},
+    "gaps": {"type": "array", "items": {"type": "string"}}
+  }
+}

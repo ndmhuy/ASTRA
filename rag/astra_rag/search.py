@@ -2,6 +2,7 @@
 import argparse
 import datetime
 import json
+import hashlib
 import sqlite3
 from contextlib import closing
 from .index import INDEX, SUBJECTS, build, cm, tokens
@@ -66,6 +67,7 @@ def search(query, subject=None, grades=None, kind='both', limit=5, rebuild=False
         receipt = {'query': query, 'filters': filters, 'ranked_chunk_ids': [h['chunk_id'] for h in hits],
                    'snapshot_id': snap, 'retriever_version': VERSION,
                    'timestamp': datetime.datetime.now(datetime.timezone.utc).isoformat()}
+        receipt['receipt_id'] = hashlib.sha256(json.dumps(receipt, sort_keys=True, ensure_ascii=False).encode('utf-8')).hexdigest()
         with (INDEX.parent / 'receipts.jsonl').open('a', encoding='utf-8') as f:
             f.write(json.dumps(receipt, ensure_ascii=False) + '\n')
         return {'hits': hits, 'gap': gap, 'receipt': receipt}
