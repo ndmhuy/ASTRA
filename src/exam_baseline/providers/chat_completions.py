@@ -1,5 +1,6 @@
 """HTTP Chat Completions adapter. Wire-level assumptions stay in this module."""
 
+import base64
 from typing import Any
 
 import httpx
@@ -14,6 +15,9 @@ class ChatCompletionsProvider:
 
     def __init__(self, settings: Settings, client: httpx.AsyncClient):
         self.model = settings.model
+        self.supports_images = settings.supports_images
+        self.input_price_per_million = settings.input_price_per_million
+        self.output_price_per_million = settings.output_price_per_million
         self.client = client
         self.url = settings.base_url.rstrip("/") + "/chat/completions"
         self.timeout = settings.timeout_seconds
@@ -28,11 +32,25 @@ class ChatCompletionsProvider:
             self.parameters["seed"] = settings.seed
 
     async def complete(self, request: CompletionRequest) -> Completion:
+        if request.images and not self.supports_images:
+            raise ProviderError("vision_required", "This provider is not configured for images.")
+        content: Any = request.user
+        if request.images:
+            content = [{"type": "text", "text": request.user}] + [
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": f"data:{image.mime};base64,"
+                        + base64.b64encode(image.data).decode("ascii")
+                    },
+                }
+                for image in request.images
+            ]
         payload = {
             "model": self.model,
             "messages": [
                 {"role": "system", "content": request.system},
-                {"role": "user", "content": request.user},
+                {"role": "user", "content": content},
             ],
             **self.parameters,
         }
@@ -53,11 +71,22 @@ class ChatCompletionsProvider:
                 403: ("provider_access_denied", "Provider denied access to this model or project."),
                 404: ("provider_not_found", "Provider endpoint or model was not found."),
                 429: ("provider_rate_limited", "Provider quota or rate limit was exceeded."),
+                500: ("provider_internal_error", "Provider encountered an internal server error."),
+                502: (
+                    "provider_bad_gateway",
+                    "Provider gateway could not reach its upstream service.",
+                ),
+                503: ("provider_unavailable", "Provider is temporarily unavailable or overloaded."),
+                504: ("provider_gateway_timeout", "Provider gateway timed out."),
             }.get(
                 exc.response.status_code,
                 ("provider_http_error", "LLM provider rejected the request."),
             )
-            raise ProviderError(code, message) from exc
+            raise ProviderError(
+                code,
+                f"HTTP {exc.response.status_code}: {message}",
+                http_status=exc.response.status_code,
+            ) from exc
         except httpx.RequestError as exc:
             raise ProviderError("provider_unreachable", "Could not reach LLM provider.") from exc
         completion = None

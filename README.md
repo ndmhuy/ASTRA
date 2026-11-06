@@ -72,7 +72,26 @@ Sửa file đó rồi gửi đến server:
 .\.venv-win\Scripts\python.exe -m exam_baseline.cli --live --request inputs/request.json
 ```
 
-## 5. Chạy tests
+## 5. Pipeline Composer → Illustrator → Solver → Reviewer
+
+Chạy thử offline, nhận một file đề `runs/pipeline/demo/de_thi.tex`:
+
+```powershell
+.\.venv-win\Scripts\python.exe -m exam_baseline.pipeline_cli --request examples/pipeline/text_01/input.json --fixture-dir examples/pipeline/text_01 --output runs/pipeline/demo
+```
+
+Để gọi model thật, bỏ `--fixture-dir` và dùng `.env` ở mục 3. Không cần khởi động server
+khi chạy CLI. Thư mục output phải chưa tồn tại. Cả bốn vai trò là agent riêng;
+Illustrator sinh code **TikZ/PGFPlots**, ghép trực tiếp với đề vào một file `.tex`.
+Reviewer gửi phản hồi về Composer tối đa **một lần**, sau đó dừng để bạn kiểm tra bằng mắt.
+Solver đọc LaTeX/code hình, không cần bật vision. Dùng **XeLaTeX hoặc LuaLaTeX**;
+thêm `--compile` nếu máy đã cài compiler. JSON/đáp án/review/trace nằm trong `_internal/`,
+cùng `human_review.md` liệt kê những điểm cần kiểm tra.
+Qua API, `POST /v2/exams/generate` trả trực tiếp file LaTeX khi đạt kiểm tra.
+
+[Điều phối, vòng sửa, cấu hình và benchmark](docs/PIPELINE_PLAN_AND_BENCHMARK.md).
+
+## 6. Chạy tests
 
 ```powershell
 .\.venv-win\Scripts\python.exe -m pytest -q

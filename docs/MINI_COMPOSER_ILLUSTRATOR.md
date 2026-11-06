@@ -1,5 +1,10 @@
 # ASTRA mini — bàn giao người 1
 
+> Cập nhật phần người 2: full pipeline dùng `exam_baseline.pipeline_cli`, có Solver,
+> Reviewer, Orchestrator và file LaTeX tự chứa hình. Xem
+> [pipeline hiện tại](PIPELINE_PLAN_AND_BENCHMARK.md). Phần dưới mô tả bàn giao mini cũ;
+> các ghi chú “chưa có exporter” đã được thay bằng `latex_export.py` ở commit sau.
+
 ## Trạng thái và ranh giới
 
 Branch gốc `multiagent` tại `42f3244bc886b443aaca795495fb9dcc744a58cd` là baseline một agent. Repo này không chứa schema RAG, truy hồi, exporter LaTeX, `SolutionBook` hay `ReviewReport`. Những phần đó chưa được xác nhận là đã triển khai. Module `exam_baseline.mini` là đường draft-only độc lập; endpoint V1 giữ nguyên.

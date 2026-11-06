@@ -4,11 +4,13 @@
 ASTRA/
 ├── src/exam_baseline/       Mã nguồn backend
 │   ├── providers/          Các adapter gọi dịch vụ model và mock offline
+│   ├── pipeline/           Orchestrator, Solver, Reviewer, LaTeX và benchmark
 │   ├── prompts/            Nội dung prompt theo phiên bản
 │   └── fixtures/           Request mẫu và đề mock cố định
 ├── tests/                  Tests tự động, không gọi model thật
 ├── scripts/                Script kiểm tra server và file chuẩn bị đưa lên Git
-├── docs/                   Tài liệu mô tả cấu trúc thư mục
+├── examples/pipeline/      Input và replay fixtures để test pipeline không gọi API
+├── docs/                   Cấu trúc thư mục và kế hoạch phát triển/benchmark
 ├── .github/workflows/      Cấu hình CI chạy kiểm tra khi push hoặc tạo pull request
 ├── inputs/                 JSON đầu vào cá nhân, tạo khi xuất ví dụ
 ├── runs/                   Kết quả từng lần chạy: đề, phản hồi JSON và báo cáo
@@ -38,6 +40,14 @@ tồn tại trong một bản clone mới. `.git/` do Git quản lý để lưu 
 | `cli.py` | Chạy offline hoặc gửi request tới server, lưu kết quả |
 | `reporting.py` | Tạo bản kết quả Markdown dễ đọc |
 | `samples.py` | Đọc request mẫu dùng chung |
+| `mini.py`, `mini_cli.py` | Composer/Illustrator và đường chạy draft-only |
+| `pipeline_cli.py` | Chạy full pipeline, xuất đề LaTeX sau kiểm tra |
+| `pipeline/contracts.py` | Hợp đồng solution/review/result và config/budget |
+| `pipeline/orchestrator.py` | Điều phối stages, vòng sửa, revision và điều kiện xuất |
+| `pipeline/agents.py`, `pipeline/stages.py`, `pipeline/views.py` | Solver/Reviewer và dữ liệu riêng từng vai trò |
+| `pipeline/runtime.py`, `pipeline/bootstrap.py` | Tracing, deadlines và ghép provider theo role |
+| `pipeline/latex.py` | Kiểm format và ghép TikZ/PGFPlots vào một file LaTeX |
+| `pipeline/benchmark.py`, `pipeline/reviewer_benchmark.py` | Pilot đối chứng và đo riêng Reviewer |
 
 ## Các file ở thư mục gốc
 

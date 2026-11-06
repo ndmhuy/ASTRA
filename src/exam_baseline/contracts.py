@@ -7,10 +7,19 @@ from .models import GeneratedExam, GenerationRequest, GenerationResponse, TokenU
 
 
 @dataclass(frozen=True)
+class ImageInput:
+    """Actual image bytes; paths and visual specifications are not vision inputs."""
+
+    data: bytes
+    mime: str = "image/png"
+
+
+@dataclass(frozen=True)
 class CompletionRequest:
     system: str
     user: str
     output_schema: dict[str, Any]
+    images: tuple[ImageInput, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -22,10 +31,18 @@ class Completion:
 
 
 class ProviderError(Exception):
-    def __init__(self, code: str, message: str, completion: Completion | None = None):
+    def __init__(
+        self,
+        code: str,
+        message: str,
+        completion: Completion | None = None,
+        *,
+        http_status: int | None = None,
+    ):
         super().__init__(message)
         self.code = code
         self.completion = completion
+        self.http_status = http_status
 
 
 class LLMProvider(Protocol):

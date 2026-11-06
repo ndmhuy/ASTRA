@@ -86,7 +86,11 @@ def test_compatible_provider_options():
         (403, "provider_access_denied"),
         (404, "provider_not_found"),
         (429, "provider_rate_limited"),
-        (500, "provider_http_error"),
+        (500, "provider_internal_error"),
+        (502, "provider_bad_gateway"),
+        (503, "provider_unavailable"),
+        (504, "provider_gateway_timeout"),
+        (418, "provider_http_error"),
     ],
 )
 def test_http_errors_are_sanitized_without_retry(status, code):
@@ -100,6 +104,8 @@ def test_http_errors_are_sanitized_without_retry(status, code):
         invoke(handler)
     assert caught.value.code == code
     assert "do-not-leak" not in str(caught.value)
+    assert caught.value.http_status == status
+    assert f"HTTP {status}" in str(caught.value)
     assert len(calls) == 1
 
 

@@ -40,10 +40,14 @@ async def run(args) -> int:
             args.bank.read_text(encoding="utf-8-sig")
         )
     for index, path in enumerate(args.material, start=1):
-        payload.evidence.append(Evidence(
-            id=f"raw-material-{index}", text=path.read_text(encoding="utf-8-sig"),
-            role="content_support", locator=str(path),
-        ))
+        payload.evidence.append(
+            Evidence(
+                id=f"raw-material-{index}",
+                text=path.read_text(encoding="utf-8-sig"),
+                role="content_support",
+                locator=str(path),
+            )
+        )
     payload = MiniRequest.model_validate(payload.model_dump())
     if args.fixture:
         result = await create_draft(payload, FixtureProvider(args.fixture), args.output)
@@ -81,8 +85,13 @@ def main() -> int:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--fixture", type=Path, help="Replay a Composer JSON fixture")
     parser.add_argument("--template", type=Path, help="LaTeX template with %% ASTRA_BODY %%")
-    parser.add_argument("--material", type=Path, action="append", default=[],
-                        help="Raw UTF-8 RAG/bank material; may be repeated")
+    parser.add_argument(
+        "--material",
+        type=Path,
+        action="append",
+        default=[],
+        help="Raw UTF-8 RAG/bank material; may be repeated",
+    )
     parser.add_argument("--bank", type=Path, help="Normalized QuestionBank JSON")
     parser.add_argument("--prompt", help="Optional user modification prompt")
     args = parser.parse_args()

@@ -1,5 +1,10 @@
 # LaTeX input → mini Composer → LaTeX output
 
+> Đây là exporter draft-only của `mini_cli`. Pipeline có Solver/Reviewer dùng
+> `pipeline_cli`, có bốn agent, xuất TikZ/PGFPlots native và chuyển người dùng duyệt
+> sau tối đa một phản hồi Reviewer về Composer. Dùng XeLaTeX/LuaLaTeX. Xem
+> [pipeline hiện tại](PIPELINE_PLAN_AND_BENCHMARK.md).
+
 CLI nhận request JSON gồm ma trận đề và `exam_family` (`hcm_dgnl` hoặc `thpt`), một file LaTeX mẫu, tùy chọn một kho `QuestionBank` JSON đã chuẩn hóa, nhiều file raw material UTF-8 và prompt điều chỉnh. `--material` được đưa vào Composer dưới dạng `content_support` evidence; file LaTeX mẫu là tham chiếu hình thức. Nội dung file đầu vào không được xem là lệnh hệ thống.
 
 File LaTeX mẫu phải chứa đúng một dòng `%% ASTRA_BODY %%` trong `document`. Giữ preamble, font, margin và lệnh định dạng của nhóm bạn trong mẫu; ASTRA thay marker bằng nội dung đề, đáp án hoặc phiếu tô. Xem `examples/latex_template.tex`. Mẫu không có marker sẽ bị từ chối.

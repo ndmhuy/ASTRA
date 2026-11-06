@@ -14,4 +14,6 @@ python -m exam_baseline.mini_cli --request examples/hcm_de11/input.json --output
 
 Nếu dùng RAG, thêm từng mẩu vào `evidence` với `role: "content_support"`, `id`, `text` và `locator`, bật `require_evidence: true`. Nếu dùng đề mẫu chỉ làm khung hình thức, thêm đoạn mô tả hoặc trích đoạn với `role: "form_example"`; không coi đó là bằng chứng đúng về nội dung. Không đặt lệnh điều khiển trong văn bản evidence. Khi có biểu đồ/hình bắt buộc, khai báo ID câu trong `required_visual_question_ids`; Illustrator mini chỉ hỗ trợ các loại hình trong `VisualSpec`.
 
-Đầu ra là `exam_draft.json`, `student_view.json`, các hình PNG nếu có, và đáp án riêng. Đây là draft JSON, chưa có bộ xuất PDF/LaTeX hay xác minh học thuật.
+Mini CLI xuất draft JSON/PNG và ba file LaTeX chưa qua Solver/Reviewer. Full pipeline
+đã kiểm tra dùng `pipeline_cli`, xem [pipeline hiện tại](PIPELINE_PLAN_AND_BENCHMARK.md).
+Chưa có kết quả chấm học thuật độc lập cho đề HCM 120 câu.

@@ -24,7 +24,8 @@ class PromptBuilder:
                 "request": context.request.model_dump(mode="json"),
                 "output_schema": schema,
                 "format_instructions": hcm_de11_prompt()
-                if context.request.format_profile == "hcm_dgnl_de11" else None,
+                if context.request.format_profile == "hcm_dgnl_de11"
+                else None,
             },
             ensure_ascii=False,
             sort_keys=True,

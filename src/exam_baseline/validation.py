@@ -72,28 +72,43 @@ class ExamValidator:
         unique("duplicate_stems", [normalized_text(q.stem) for q in questions])
 
         if request.format_profile == "hcm_dgnl_de11":
-            check("profile_question_ids", [f"q{i}" for i in range(1, 121)],
-                  [q.id for q in questions])
+            check(
+                "profile_question_ids", [f"q{i}" for i in range(1, 121)], [q.id for q in questions]
+            )
             expected_topics = [
-                topic_id for start, end, topic_id, _ in HCM_DE11_SECTIONS
+                topic_id
+                for start, end, topic_id, _ in HCM_DE11_SECTIONS
                 for _ in range(start, end + 1)
             ]
             check("profile_section_order", expected_topics, [q.topic_id for q in questions])
-            check("profile_choice_keys", [], [
-                q.id for q in questions if set(q.choices) != {"A", "B", "C", "D"}
-            ])
+            check(
+                "profile_choice_keys",
+                [],
+                [q.id for q in questions if set(q.choices) != {"A", "B", "C", "D"}],
+            )
             expected_ranges = list(HCM_DE11_PASSAGES)
             actual_ranges = [(p.start_question, p.end_question) for p in exam.shared_passages]
             check("profile_passage_ranges", expected_ranges, actual_ranges)
-            check("profile_passage_content", [], [
-                f"{p.start_question}-{p.end_question}" for p in exam.shared_passages
-                if len(p.text.split()) < 15
-            ])
-            check("profile_passage_duplicates", [], sorted(
-                text for text, count in Counter(
-                    normalized_text(p.text) for p in exam.shared_passages
-                ).items() if count > 1
-            ))
+            check(
+                "profile_passage_content",
+                [],
+                [
+                    f"{p.start_question}-{p.end_question}"
+                    for p in exam.shared_passages
+                    if len(p.text.split()) < 15
+                ],
+            )
+            check(
+                "profile_passage_duplicates",
+                [],
+                sorted(
+                    text
+                    for text, count in Counter(
+                        normalized_text(p.text) for p in exam.shared_passages
+                    ).items()
+                    if count > 1
+                ),
+            )
 
         topic_map = {t.id: t for t in matrix.topics}
         check("known_topics", [], sorted({q.topic_id for q in questions} - set(topic_map)))

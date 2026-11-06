@@ -7,9 +7,7 @@ from exam_baseline.latex_export import latex_text
 
 
 def test_latex_text_escapes_prose_and_preserves_math():
-    assert latex_text(r"Tỉ lệ 50% & $x_1+2$ là đúng") == (
-        r"Tỉ lệ 50\% \& $x_1+2$ là đúng"
-    )
+    assert latex_text(r"Tỉ lệ 50% & $x_1+2$ là đúng") == (r"Tỉ lệ 50\% \& $x_1+2$ là đúng")
 
 
 def test_cli_exports_three_tex_files_with_template_and_material(tmp_path):
@@ -19,11 +17,26 @@ def test_cli_exports_three_tex_files_with_template_and_material(tmp_path):
     material.write_text("Nguồn kiến thức cho đề mới", encoding="utf-8")
     output = tmp_path / "run"
     result = subprocess.run(
-        [sys.executable, "-m", "exam_baseline.mini_cli", "--request", str(case / "input.json"),
-         "--fixture", str(case / "composer_fixture.json"), "--template",
-         str(root / "examples/latex_template.tex"), "--material", str(material),
-         "--prompt", "Tăng tính thực tiễn", "--output", str(output)],
-        capture_output=True, text=True, check=False,
+        [
+            sys.executable,
+            "-m",
+            "exam_baseline.mini_cli",
+            "--request",
+            str(case / "input.json"),
+            "--fixture",
+            str(case / "composer_fixture.json"),
+            "--template",
+            str(root / "examples/latex_template.tex"),
+            "--material",
+            str(material),
+            "--prompt",
+            "Tăng tính thực tiễn",
+            "--output",
+            str(output),
+        ],
+        capture_output=True,
+        text=True,
+        check=False,
     )
     assert result.returncode == 0, result.stderr or result.stdout
     paths = json.loads(result.stdout)["latex"]

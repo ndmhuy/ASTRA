@@ -202,7 +202,10 @@ def validate_output(
     report = ExamValidator().validate(output.exam, payload.request)
     for check in report.checks:
         if not check.passed:
-            errors.append(StageError(code=check.code, stage="composer", message=check.message))
+            detail = f"{check.code}: {check.message}"
+            if isinstance(check.expected, (int, float)) and isinstance(check.actual, (int, float)):
+                detail = f"{check.code}: expected {check.expected}, received {check.actual}."
+            errors.append(StageError(code=check.code, stage="composer", message=detail))
     ids = [q.id for q in output.exam.questions]
     if Counter(ids) != Counter(q.id for q in output.questions):
         errors.append(
@@ -492,7 +495,13 @@ def verify_handoff(draft: ExamDraft, root: Path) -> list[StageError]:
 
 
 async def create_draft(
-    payload: MiniRequest, provider: LLMProvider, output_dir: Path
+    payload: MiniRequest,
+    provider: LLMProvider,
+    output_dir: Path,
+    *,
+    revision: int = 1,
+    repair_feedback: dict | None = None,
+    render_figures: bool = True,
 ) -> ExamDraft | StageResult:
     if payload.require_evidence and not payload.evidence:
         return StageResult(
@@ -511,10 +520,13 @@ async def create_draft(
                 "request": payload.model_dump(mode="json"),
                 "output_schema": schema,
                 "format_instructions": hcm_de11_prompt()
-                if payload.request.format_profile == "hcm_dgnl_de11" else None,
+                if payload.request.format_profile == "hcm_dgnl_de11"
+                else None,
                 "user_prompt": payload.user_prompt,
                 "latex_template_reference": payload.latex_template,
                 "exam_family": payload.exam_family,
+                "revision": revision,
+                "repair_feedback": repair_feedback,
             },
             ensure_ascii=False,
         ),
@@ -530,6 +542,10 @@ async def create_draft(
             latency_ms=(perf_counter() - start) * 1000,
             errors=[StageError(code=exc.code, stage="composer", message=str(exc))],
         )
+    if not render_figures:
+        # Private diagnostic artifact for the next Composer schema/format correction.
+        output_dir.mkdir(parents=True, exist_ok=True)
+        (output_dir / "composer_last_response.json").write_text(completion.text, encoding="utf-8")
     try:
         produced = COMPOSER_RESPONSE.validate_json(completion.text)
     except ValidationError:
@@ -558,7 +574,18 @@ async def create_draft(
                 )
             ],
         )
-    errors = validate_output(produced, payload)
+    errors = validate_output(produced, payload, revision)
+    previous = (repair_feedback or {}).get("previous_output", {}).get("exam", {})
+    if previous and [q.id for q in produced.exam.questions] != [
+        q["id"] for q in previous["questions"]
+    ]:
+        errors.append(
+            StageError(
+                code="repair_question_ids",
+                stage="composer",
+                message="Content repairs must preserve ordered question IDs.",
+            )
+        )
     if errors:
         return StageResult(
             status="failed",
@@ -576,7 +603,7 @@ async def create_draft(
     illustrator_start = perf_counter()
     figures = []
     figure_errors = []
-    for spec in produced.visuals:
+    for spec in produced.visuals if render_figures else []:
         try:
             figures.append(render_visual(spec, output_dir / "figures" / f"{spec.visual_id}.png"))
         except (ValueError, OSError, RuntimeError) as exc:
@@ -599,10 +626,18 @@ async def create_draft(
         latency_ms=(perf_counter() - illustrator_start) * 1000,
     )
     input_hash = digest(payload.model_dump_json().encode())
+    if revision != 1 or repair_feedback:
+        input_hash = digest(
+            json.dumps(
+                {"input": input_hash, "revision": revision, "feedback": repair_feedback},
+                sort_keys=True,
+            ).encode()
+        )
     output_hash = digest(completion.text.encode())
     draft = ExamDraft(
         exam_id=str(uuid5(NAMESPACE_URL, input_hash)),
         draft_id=str(uuid5(NAMESPACE_URL, input_hash + output_hash)),
+        revision=revision,
         exam=student,
         questions=produced.questions,
         visuals=produced.visuals,

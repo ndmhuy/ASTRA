@@ -28,6 +28,7 @@ class Settings(BaseSettings):
     temperature: float | None = Field(default=None, ge=0, le=2, allow_inf_nan=False)
     seed: int | None = None
     max_prompt_chars: int = Field(default=200000, gt=0)
+    supports_images: bool = False
     input_price_per_million: float | None = Field(default=None, ge=0, allow_inf_nan=False)
     output_price_per_million: float | None = Field(default=None, ge=0, allow_inf_nan=False)
     evaluation_jsonl: Path | None = None
