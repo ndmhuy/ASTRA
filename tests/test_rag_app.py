@@ -23,7 +23,9 @@ class AppTests(unittest.TestCase):
 
     def request(self, path, data=None, headers=None):
         raw = json.dumps(data).encode() if data is not None else None
-        with urlopen(Request(self.url + path, data=raw, headers=headers or {}), timeout=5) as response:
+        with urlopen(
+            Request(self.url + path, data=raw, headers=headers or {}), timeout=5
+        ) as response:
             body = response.read()
             return json.loads(body) if "json" in response.headers["Content-Type"] else body
 
@@ -33,7 +35,9 @@ class AppTests(unittest.TestCase):
         self.assertIn(b"@media", self.request("/style.css"))
 
     def test_demo_query_retrieves_full_sources(self):
-        response = self.request("/api/search", {"query_text": "Vật lí lớp 11 chương 4 về định luật Ohm"})
+        response = self.request(
+            "/api/search", {"query_text": "Vật lí lớp 11 chương 4 về định luật Ohm"}
+        )
         self.assertEqual(response["status"], "success")
         self.assertEqual(len(response["documents"]), 2)
         for hit in response["documents"]:
@@ -43,18 +47,34 @@ class AppTests(unittest.TestCase):
             self.assertEqual(full["content_sha256"], hit["content_sha256"])
 
     def test_import_becomes_retrievable_and_preserves_text(self):
-        payload = dict(subject="toan", grade=10, chapter=7, title="My local geometry note",
-                       content="<script>alert('test')</script> Vector geometry note about perpendicular vectors.",
-                       permission_confirmed=True, source_locator="Personal notes, section 7")
+        payload = dict(
+            subject="toan",
+            grade=10,
+            chapter=7,
+            title="My local geometry note",
+            content="<script>alert('test')</script> Vector geometry note about perpendicular vectors.",
+            permission_confirmed=True,
+            source_locator="Personal notes, section 7",
+        )
         receipt = self.request("/api/documents", payload)
         response = self.request("/api/search", {"query_text": "Toán lớp 10 chương 7 về vector"})
         self.assertEqual(response["documents"][0]["document_id"], receipt["document_id"])
-        self.assertEqual(self.request("/api/documents/" + receipt["document_id"])["content"], payload["content"])
+        self.assertEqual(
+            self.request("/api/documents/" + receipt["document_id"])["content"], payload["content"]
+        )
 
     def test_import_requires_permission_and_valid_metadata(self):
-        for payload in ({"permission_confirmed": False}, {"permission_confirmed": True},
-                        dict(permission_confirmed=True, subject="toan", grade=10,
-                             title="Invalid note", content=None)):
+        for payload in (
+            {"permission_confirmed": False},
+            {"permission_confirmed": True},
+            dict(
+                permission_confirmed=True,
+                subject="toan",
+                grade=10,
+                title="Invalid note",
+                content=None,
+            ),
+        ):
             with self.assertRaises(HTTPError) as error:
                 self.request("/api/documents", payload)
             self.assertEqual(error.exception.code, 400)

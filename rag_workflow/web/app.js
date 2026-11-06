@@ -1,7 +1,13 @@
 const $ = id => document.getElementById(id);
 let subjects = {}, searchSequence = 0, existingCorpus = false;
 const label = key => subjects[key]?.[0] || key;
-const node = (tag, className, text) => { const el = document.createElement(tag); if (className) el.className = className; if (text !== undefined) el.textContent = text; return el; };
+// Source text is always rendered as text, including imported Markdown/HTML.
+const node = (tag, className, text) => {
+  const el = document.createElement(tag);
+  if (className) el.className = className;
+  if (text !== undefined) el.textContent = text;
+  return el;
+};
 async function api(path, data) {
   const response = await fetch(path, data === undefined ? {} : {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data)});
   const payload = await response.json();
@@ -14,7 +20,8 @@ async function openDocument(id) {
     $('doc-title').textContent = d.title;
     $('doc-meta').textContent = `${label(d.subject)} · ${d.grade ? 'Grade ' + d.grade : 'Grade mapping unknown'} · ${d.chapter ? 'Chapter ' + d.chapter : 'Chapter mapping unknown'} · ${d.edition} · ${d.approval_status} · ${d.evidence_class}`;
     $('doc-text').textContent = d.content;
-    const {content, ...metadata} = d; $('doc-json').textContent = JSON.stringify(metadata, null, 2);
+    const {content, ...metadata} = d;
+    $('doc-json').textContent = JSON.stringify(metadata, null, 2);
     $('document-dialog').showModal();
   } catch (error) { showNotice('Could not open source', error.message); }
 }
@@ -26,7 +33,7 @@ async function loadCollection() {
   if (existingCorpus) {
     const info = data.corpus_info;
     $('corpus-note').textContent = `${info.curriculum_rows} curriculum rows · ${info.exam_papers} searchable papers · ${info.excluded_papers} excluded papers. Internal prototype; draft/OCR status retained.`;
-    document.querySelector('footer').textContent = `Local BM25 search · corpus snapshot ${info.snapshot.slice(0, 12)} · Curriculum rows describe scope; exam text may contain OCR errors and require figures. Keys and audits are excluded.`;
+    document.querySelector('footer').textContent = `Corpus snapshot ${info.snapshot.slice(0, 12)} · Curriculum rows describe scope. Exam transcriptions may contain OCR errors and require figures.`;
     $('query').value = 'Vật lí lớp 11 chương 1 về dao động';
   }
   $('count').textContent = data.documents.length;
@@ -38,7 +45,8 @@ async function loadCollection() {
   for (const d of data.documents) {
     const button = node('button', 'source-link', d.title);
     button.append(node('small', '', `${label(d.subject)}${d.grade ? ' · Lớp ' + d.grade : ' · Grade unknown'}${d.chapter ? ' · Ch. ' + d.chapter : ''} · ${d.approval_status}`));
-    button.addEventListener('click', () => openDocument(d.document_id)); $('collection').append(button);
+    button.addEventListener('click', () => openDocument(d.document_id));
+    $('collection').append(button);
   }
   if (!$('import-subject').options.length) {
     for (const [key, aliases] of Object.entries(subjects)) { const o = node('option', '', aliases[0]); o.value = key; $('import-subject').append(o); }
@@ -46,7 +54,9 @@ async function loadCollection() {
   }
 }
 function showNotice(title, message) {
-  const box = node('div', 'notice'); box.append(node('strong', '', title), node('span', '', message)); $('notice').replaceChildren(box);
+  const box = node('div', 'notice');
+  box.append(node('strong', '', title), node('span', '', message));
+  $('notice').replaceChildren(box);
 }
 async function search(event) {
   event?.preventDefault();
@@ -67,17 +77,27 @@ async function search(event) {
       for (const text of [label(s.subject), s.grade ? 'Grade ' + s.grade : 'Grade mapping unknown', range]) $('scope').append(node('span', 'tag', text));
     }
     if (data.status !== 'success') {
-      const hints = {no_documents_in_scope: 'Try a different chapter or add a document with this subject and scope.', missing_grade: 'Include a grade, for example “lớp 11”.', missing_subject: 'Include a subject, for example “Vật lí”.', ambiguous_range: 'Specify an exact chapter or lesson range, for example “chương 1–4”.', no_relevant_match: 'Try another keyword or inspect the source collection.'};
+      const hints = {
+        no_documents_in_scope: existingCorpus ? 'Try another scope or inspect the source collection.' : 'Try another scope or add a matching document.',
+        missing_grade: 'Include a grade, for example “lớp 11”.',
+        missing_subject: 'Include a subject, for example “Vật lí”.',
+        ambiguous_range: 'Specify an exact chapter or lesson range, for example “chương 1–4”.',
+        no_relevant_match: 'Try another keyword or inspect the source collection.'
+      };
       showNotice('No documents retrieved', data.gaps.map(g => hints[g.code] || g.message).join(' '));
       return;
     }
     data.documents.forEach((d, i) => {
       const card = node('article', 'result-card'), top = node('div', 'card-top');
-      top.append(node('span', '', `${i + 1}. ${d.content_kind || 'knowledge'} · ${d.approval_status}`), node('span', '', `BM25 score ${d.relevance_score.toFixed(2)}`));
+      const sourceLabel = d.evidence_class === 'synthetic' ? 'Demo note · illustrative' : `${d.content_kind || 'knowledge'} · ${d.approval_status}`;
+      top.append(node('span', '', `${i + 1}. ${sourceLabel}`), node('span', '', `BM25 score ${d.relevance_score.toFixed(2)}`));
       const bottom = node('div', 'card-bottom');
       bottom.append(node('span', '', `${d.source_id} · characters ${d.excerpt_start}–${d.excerpt_end}`));
-      const button = node('button', 'text-button', 'Read full document ↗'); button.addEventListener('click', () => openDocument(d.document_id)); bottom.append(button);
-      card.append(top, node('h3', '', d.title), node('p', '', d.excerpt), bottom); $('results').append(card);
+      const button = node('button', 'text-button', 'Read full document ↗');
+      button.addEventListener('click', () => openDocument(d.document_id));
+      bottom.append(button);
+      card.append(top, node('h3', '', d.title), node('p', '', d.excerpt), bottom);
+      $('results').append(card);
     });
   } catch (error) { if (sequence === searchSequence) { showNotice('Retrieval failed', error.message); $('json').textContent = error.message; } }
   finally { if (sequence === searchSequence) { $('search-button').disabled = false; $('search-button').textContent = 'Retrieve documents'; $('results-section').setAttribute('aria-busy', 'false'); } }
