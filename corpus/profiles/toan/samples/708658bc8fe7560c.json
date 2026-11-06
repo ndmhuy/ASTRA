@@ -1,0 +1,203 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "708658bc8fe7560c",
+    "topic": "Quy tắc đạo hàm",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một hàm đa thức và biểu thức đạo hàm được đề xuất.",
+        "task": "Kiểm tra công thức đạo hàm.",
+        "reasoning": [
+          "Lấy đạo hàm từng số hạng của đa thức.",
+          "Thu gọn và đối chiếu biểu thức đề xuất."
+        ],
+        "combines": [
+          "Đạo hàm lũy thừa",
+          "Đạo hàm của tổng"
+        ],
+        "difficulty_source": "Áp dụng trực tiếp quy tắc đạo hàm đa thức.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Một hàm đa thức và biểu thức đạo hàm được đề xuất.",
+        "task": "Đánh giá tính đúng sai của biểu thức đạo hàm.",
+        "reasoning": [
+          "Lấy đạo hàm từng hạng tử.",
+          "So sánh kết quả với biểu thức đề xuất."
+        ],
+        "combines": [
+          "Đạo hàm lũy thừa",
+          "Đạo hàm của tổng"
+        ],
+        "difficulty_source": "Áp dụng trực tiếp quy tắc đạo hàm đa thức.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Một hàm đa thức và biểu thức đạo hàm đề xuất.",
+        "task": "Kiểm tra công thức đạo hàm.",
+        "reasoning": [
+          "Lấy đạo hàm từng hạng tử.",
+          "Cộng các kết quả và đối chiếu."
+        ],
+        "combines": [
+          "Đạo hàm lũy thừa",
+          "Đạo hàm của tổng"
+        ],
+        "difficulty_source": "Áp dụng trực tiếp các quy tắc đạo hàm.",
+        "evidence_uncertainty": "Chưa xác nhận được khóa đúng sai khớp mã.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một hàm đa thức và biểu thức được đề xuất làm đạo hàm.",
+        "task": "Kiểm tra biểu thức đạo hàm.",
+        "reasoning": [
+          "Lấy đạo hàm từng hạng tử theo quy tắc lũy thừa.",
+          "Cộng các kết quả và đối chiếu biểu thức đề xuất."
+        ],
+        "combines": [
+          "Đạo hàm lũy thừa",
+          "Đạo hàm của tổng"
+        ],
+        "difficulty_source": "Áp dụng trực tiếp quy tắc đạo hàm đa thức.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "023e74626dd8|P2|2|a",
+      "163f20908cf7|P2|1|a",
+      "0ecb85132b84|P2|3|b",
+      "3b4cca11ea82|P2|1|a",
+      "525d3542283a|P2|3|a",
+      "54e9a2a276ca|P2|1|a",
+      "6aa30214ba7e|P2|2|c",
+      "7ab78715480e|P2|1|b",
+      "85efdd1a7e54|P2|3|a",
+      "beee25b53250|P2|4|c",
+      "c6340827ba59|P2|1|d",
+      "ccae0b94a82d|P2|4|a"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "708658bc8fe7560c",
+    "stem": "Cho hai hàm số f(x)=x⁴−3x²+2x−7 và g(x)=2x³+5x²−4 xác định trên R. Xét tính đúng sai của các nhận định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Với mọi x thuộc R, f′(x)=4x³−6x+2."
+      },
+      {
+        "sub": "b",
+        "text": "Với mọi x thuộc R, g′(x)=6x²+5x."
+      },
+      {
+        "sub": "c",
+        "text": "f′(1)=0."
+      },
+      {
+        "sub": "d",
+        "text": "g′(−1)=4."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Lấy đạo hàm từng hạng tử được f′(x)=4x³−6x+2 và g′(x)=6x²+10x. Vì vậy a đúng, b sai do đạo hàm của 5x² là 10x. Thay x=1 vào f′ được f′(1)=4−6+2=0 nên c đúng. Thay x=−1 vào g′ được g′(−1)=6−10=−4 nên d sai.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Lấy đạo hàm của 5x² thành 5x.",
+        "why_plausible": "Học sinh giảm số mũ nhưng quên nhân hệ số với số mũ ban đầu."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Đổi dấu kết quả 6−10, viết thành 4.",
+        "why_plausible": "Học sinh có thể lấy hiệu hai độ lớn theo thứ tự lớn trừ nhỏ và bỏ qua dấu của phép tính."
+      }
+    ],
+    "level_reason": "Mức cao nhất của các nhận định là TH. Việc lấy đạo hàm đa thức, đối chiếu biểu thức và thay giá trị vào đạo hàm đều là quy trình quen thuộc; không đòi hỏi xây dựng mô hình hoặc chuỗi suy luận mới.",
+    "prerequisites": [
+      "Đạo hàm của hàm lũy thừa",
+      "Đạo hàm của tổng",
+      "Đạo hàm của hằng số",
+      "Tính giá trị biểu thức"
+    ],
+    "variation_guidance": "Thay bậc, hệ số và điểm cần tính; giữ các nhận định trong phạm vi lấy đạo hàm đa thức và tính giá trị trực tiếp. Kiểm tra để lỗi dự kiến không vô tình cho cùng kết quả đúng tại điểm đã chọn.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "708658bc8fe7560c",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Ta có f′(x)=4x³−6x+2 và g′(x)=6x²+10x. Vì vậy a đúng, b sai. f′(1)=4−6+2=0 nên c đúng. g′(−1)=6−10=−4 nên d sai.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a và b yêu cầu thực hiện phép tính đạo hàm đa thức quen thuộc; c và d thêm thao tác thay giá trị vào đạo hàm. Mỗi nhận định đều thuộc TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/d05ca70e548abf6592dc38a3527ea48a9dd6a784b29610cbb4e9bccbc1439b89.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/d05ca70e548abf6592dc38a3527ea48a9dd6a784b29610cbb4e9bccbc1439b89.resolve.json"
+}

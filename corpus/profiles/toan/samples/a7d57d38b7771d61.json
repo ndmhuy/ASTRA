@@ -1,0 +1,150 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "a7d57d38b7771d61",
+    "topic": "Tổ hợp có ràng buộc",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Những vị trí phân biệt trên vòng cùng điều kiện chọn một cặp không liền kề.",
+        "task": "Kiểm tra số kết quả có cặp vị trí được chọn không kề nhau.",
+        "reasoning": [
+          "Đếm tất cả các cặp vị trí không thứ tự.",
+          "Đếm các cặp liền kề, kể cả cặp khép vòng.",
+          "Lấy hiệu để tìm số cặp hợp lệ rồi đối chiếu."
+        ],
+        "combines": [
+          "Tổ hợp",
+          "Đếm bằng phần bù",
+          "Quan hệ kề trên vòng"
+        ],
+        "difficulty_source": "Giữ đúng cấu trúc vòng và tránh đếm cặp có thứ tự.",
+        "evidence_uncertainty": "Không có khóa đáp án đối sánh; không gán đúng sai cho nhận định.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "aceb17d936f5|P2|2|c"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "a7d57d38b7771d61",
+    "stem": "Một vòng trang trí có 9 móc cố định, đánh số từ 1 đến 9 theo chiều kim đồng hồ. Hai móc được coi là kề nhau khi số của chúng liên tiếp hoặc chúng mang số 1 và 9. Chọn hai móc để treo hai dải ruy băng giống nhau, mỗi móc treo một dải. Mỗi cách chọn được xác định bởi cặp móc, không xét thứ tự. Xét tính đúng sai của các nhận định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Nếu chưa đặt điều kiện về sự kề nhau thì có 36 cách chọn."
+      },
+      {
+        "sub": "b",
+        "text": "Có 8 cách chọn hai móc kề nhau."
+      },
+      {
+        "sub": "c",
+        "text": "Có 27 cách chọn hai móc không kề nhau."
+      },
+      {
+        "sub": "d",
+        "text": "Có 7 cách chọn hai móc không kề nhau mà một trong hai móc là móc số 1."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) Đúng. Có C_9^2 = 36 cặp móc. b) Sai. Có tám cặp (1,2), (2,3), …, (8,9) và thêm cặp (9,1), tổng cộng chín cặp kề nhau. c) Đúng. Lấy tất cả các cặp trừ các cặp kề nhau được 36 − 9 = 27. d) Sai. Khi đã chọn móc số 1, móc còn lại phải thuộc các số 3, 4, 5, 6, 7, 8 nên có sáu cách.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Đếm các cặp liên tiếp từ 1 đến 9 như trên một hàng và bỏ sót cặp khép vòng (9,1).",
+        "why_plausible": "Cách đánh số liên tiếp dễ khiến học sinh áp dụng cách đếm của một dãy thẳng."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Trong tám móc khác móc số 1, chỉ loại móc số 2 mà quên loại móc số 9.",
+        "why_plausible": "Học sinh có thể nhận ra một phía kề móc số 1 nhưng bỏ qua phía khép vòng."
+      }
+    ],
+    "level_reason": "Mức cao nhất là TH. Học sinh đọc quan hệ kề đã cho, đếm các cặp bằng tổ hợp và áp dụng phép đếm phần bù quen thuộc; cấu trúc vòng không tạo thêm yêu cầu mô hình hóa.",
+    "prerequisites": [
+      "Đếm cặp không thứ tự bằng tổ hợp.",
+      "Đếm bằng phần bù.",
+      "Nhận diện quan hệ kề trong một vòng có vị trí phân biệt."
+    ],
+    "variation_guidance": "Có thể thay số móc hoặc móc được chỉ định. Luôn nêu rõ cặp khép vòng và giữ các móc được đánh số cố định để tránh nhầm với bài toán đồng nhất các cấu hình qua phép quay.",
+    "uncertainties": [
+      "Quan sát tham khảo chỉ thuộc nguồn cấp tỉnh qua bên thứ ba, không có khóa đúng sai đối sánh hay điểm neo chính thức. Câu này là minh họa mới trong phạm vi cấu trúc đếm đã quan sát."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "a7d57d38b7771d61",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a: Có C(9,2) = 36 cặp móc. b: Có 9 cặp kề nhau, gồm 8 cặp mang số liên tiếp và cặp {1,9}. c: Có 36 − 9 = 27 cặp không kề nhau. d: Khi có móc 1, móc còn lại được chọn trong các móc 3, 4, 5, 6, 7, 8 nên có 6 cách.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Ý a tính tổ hợp trực tiếp; ý b diễn giải và đếm theo định nghĩa kề nhau; ý c đếm phần bù; ý d loại các móc không hợp lệ. Đây đều là thao tác quen thuộc ở mức TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/ddbff3d8f195ef1a1ebf720c918397a4a31bbaaa651a63d80c531be6cea863fb.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/ddbff3d8f195ef1a1ebf720c918397a4a31bbaaa651a63d80c531be6cea863fb.resolve.json"
+}

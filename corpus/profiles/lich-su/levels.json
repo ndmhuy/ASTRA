@@ -1,1485 +1,2736 @@
 {
-  "schema_version": "profile-cognitive-levels-v1",
-  "model": "gpt-6.1-sol",
-  "status": "partial",
-  "evidence_basis": "abstract extraction only; no claim of original-item or teacher validation",
-  "definition_snapshot": {
-    "revision": "de8c614ada6e3ae9f9072cedb7521fb96c1d13e5",
-    "scheme_id": "default",
-    "scheme_version": 2,
-    "preamble": "A level is the performance a student must show to answer correctly. It is NOT the length of the text, NOT the amount of numbers to read, and NOT the verb used in the outcome sentence.",
-    "levels": [
-      {
-        "code": "NB",
-        "label": {
-          "vi": "Nhận biết",
-          "en": "Recall"
-        },
-        "ordinal": 1,
-        "status": "APPROVED",
-        "definition_en": "recognise or retrieve. The student recognises, names or restates a fact, concept, definition, symbol, property, formula or step as taught. The answer sits in ONE knowledge unit. A scenario, if any, is decoration.",
-        "samples": [],
-        "bands": []
-      },
-      {
-        "code": "TH",
-        "label": {
-          "vi": "Thông hiểu",
-          "en": "Comprehension"
-        },
-        "ordinal": 2,
-        "status": "APPROVED",
-        "definition_en": "Explain, distinguish, interpret, or execute a familiar routine procedure. The student reads a given representation or uses taught knowledge in a standard exercise. A single substitution of given values into a taught formula or equation is TH; several routine algebraic or numerical operations can also remain TH. Choosing the obvious familiar formula without its name being supplied does not by itself make a question VD.",
-        "samples": [],
-        "bands": []
-      },
-      {
-        "code": "VD",
-        "label": {
-          "vi": "Vận dụng",
-          "en": "Application"
-        },
-        "ordinal": 3,
-        "status": "APPROVED",
-        "definition_en": "Model a situation or construct a substantive chain of reasoning. The task requires the student to formulate a model, connect and apply multiple knowledge units, or plan and justify several dependent thinking steps rather than merely execute a familiar calculation. Judge the minimum cognitive work needed for a correct answer. A longer text, more numbers, more written calculation steps, or an unstated but obvious formula is not sufficient for VD. A standard multi-step calculation can remain TH; no single surface cue is a compulsory condition for all VD questions.",
-        "samples": [],
-        "bands": []
-      }
-    ],
-    "subject_layer": null
+ "schema_version": "profile-cognitive-levels-v1",
+ "model": "reuse_existing_source_observations_no_new_model_call",
+ "status": "working_labels_pending_teacher",
+ "evidence_basis": "data/source-observations-current.json",
+ "definition_snapshot": {
+  "revision": "de8c614ada6e3ae9f9072cedb7521fb96c1d13e5",
+  "scheme_id": "default",
+  "scheme_version": 2,
+  "preamble": "A level is the performance a student must show to answer correctly. It is NOT the length of the text, NOT the amount of numbers to read, and NOT the verb used in the outcome sentence.",
+  "levels": [
+   {
+    "code": "NB",
+    "label": {
+     "vi": "Nhận biết",
+     "en": "Recall"
+    },
+    "ordinal": 1,
+    "status": "APPROVED",
+    "definition_en": "recognise or retrieve. The student recognises, names or restates a fact, concept, definition, symbol, property, formula or step as taught. The answer sits in ONE knowledge unit. A scenario, if any, is decoration.",
+    "samples": [],
+    "bands": []
+   },
+   {
+    "code": "TH",
+    "label": {
+     "vi": "Thông hiểu",
+     "en": "Comprehension"
+    },
+    "ordinal": 2,
+    "status": "APPROVED",
+    "definition_en": "Explain, distinguish, interpret, or execute a familiar routine procedure. The student reads a given representation or uses taught knowledge in a standard exercise. A single substitution of given values into a taught formula or equation is TH; several routine algebraic or numerical operations can also remain TH. Choosing the obvious familiar formula without its name being supplied does not by itself make a question VD.",
+    "samples": [],
+    "bands": []
+   },
+   {
+    "code": "VD",
+    "label": {
+     "vi": "Vận dụng",
+     "en": "Application"
+    },
+    "ordinal": 3,
+    "status": "APPROVED",
+    "definition_en": "Model a situation or construct a substantive chain of reasoning. The task requires the student to formulate a model, connect and apply multiple knowledge units, or plan and justify several dependent thinking steps rather than merely execute a familiar calculation. Judge the minimum cognitive work needed for a correct answer. A longer text, more numbers, more written calculation steps, or an unstated but obvious formula is not sufficient for VD. A standard multi-step calculation can remain TH; no single surface cue is a compulsory condition for all VD questions.",
+    "samples": [],
+    "bands": []
+   }
+  ],
+  "subject_layer": null
+ },
+ "assignments": [
+  {
+   "ref": "08c8696055dd|P1|1|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ cuộc kháng chiến thất bại trong nhóm sự kiện được liệt kê.",
+   "decisive_demand": "Nhớ cuộc kháng chiến thất bại trong nhóm sự kiện được liệt kê.",
+   "uncertainty": null,
+   "source_record_id": "08c8696055dd|P1|1|-"
   },
-  "assignments": [
-    {
-      "ref": "26827f57f9f0|P1|1|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Phân biệt phạm vi phù hợp của một nguyên tắc đã học là yêu cầu thông hiểu; mô tả chưa cho thấy phải tự xây dựng chuỗi lập luận thực chất.",
-      "decisive_demand": "Phân biệt giá trị khái quát với điều kiện áp dụng riêng.",
-      "uncertainty": "Thiếu các phương án để xác định việc lựa chọn có thể chỉ dựa vào ghi nhớ hay không."
-    },
-    {
-      "ref": "26827f57f9f0|P1|2|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Yêu cầu đối chiếu phạm vi của nhận định với nội dung kiến thức đã học.",
-      "decisive_demand": "Phân biệt phạm vi tác động của các nhận định.",
-      "uncertainty": "Nếu phương án chỉ nhắc lại nguyên văn kiến thức đã học thì yêu cầu tối thiểu có thể là NB."
-    },
-    {
-      "ref": "26827f57f9f0|P1|3|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "So sánh những đặc điểm đã học theo tiêu chí có sẵn thuộc yêu cầu phân biệt, chưa đủ căn cứ xác lập VD.",
-      "decisive_demand": "Đối chiếu đặc điểm chung và đặc điểm khác biệt.",
-      "uncertainty": "Không có phương án để xác định mức độ trực tiếp của khác biệt cần nhận ra."
-    },
-    {
-      "ref": "26827f57f9f0|P1|4|None",
-      "level": "NB",
-      "confidence": "medium",
-      "justification": "Có thể trả lời bằng việc truy xuất một thuộc tính đã học trong một đơn vị kiến thức.",
-      "decisive_demand": "Nhớ và nhận diện thành phần thuộc một tập hợp.",
-      "uncertainty": "Phân loại dựa trên mô tả trừu tượng, chưa có nội dung phương án."
-    },
-    {
-      "ref": "26827f57f9f0|P1|5|None",
-      "level": "NB",
-      "confidence": "medium",
-      "justification": "Yêu cầu tối thiểu là nhận ra quan hệ thành viên đã học; mô tả chưa cho thấy cần suy luận từ kiến thức khác.",
-      "decisive_demand": "Truy xuất quan hệ thuộc về một tập hợp.",
-      "uncertainty": "Chưa rõ phương án có đặt ra yêu cầu phân biệt theo biến đổi thời gian hay không."
-    },
-    {
-      "ref": "26827f57f9f0|P1|6|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Đối chiếu các thông tin đã học với một giới hạn để phân loại là yêu cầu thông hiểu.",
-      "decisive_demand": "Phân biệt thông tin nằm trong và ngoài phạm vi thời gian.",
-      "uncertainty": "Nếu một lựa chọn được nhận ra trực tiếp bằng ghi nhớ thì yêu cầu tối thiểu có thể là NB."
-    },
-    {
-      "ref": "26827f57f9f0|P1|7|None",
-      "level": "NB",
-      "confidence": "medium",
-      "justification": "Các dấu hiệu cùng hướng tới việc nhận diện một đối tượng đã học, chưa thể hiện yêu cầu giải thích độc lập.",
-      "decisive_demand": "Nhớ đối tượng tương ứng với các thuộc tính gợi dẫn.",
-      "uncertainty": "Chưa rõ có cần xử lí sự giao thoa giữa các dấu hiệu hay chỉ nhận diện trực tiếp."
-    },
-    {
-      "ref": "26827f57f9f0|P1|8|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Phân biệt nguyên nhân phù hợp dựa trên quan hệ đã học và tính tương thích thời gian thuộc thông hiểu.",
-      "decisive_demand": "Đối chiếu quan hệ nhân quả với trình tự thời gian.",
-      "uncertainty": "Mô tả chưa chứng minh rằng học sinh phải tự thiết lập một chuỗi nhân quả mới."
-    },
-    {
-      "ref": "26827f57f9f0|P1|9|None",
-      "level": "NB",
-      "confidence": "medium",
-      "justification": "Việc nhận diện có thể dựa vào một liên kết sự kiện và thuộc tính đã được học.",
-      "decisive_demand": "Truy xuất liên kết giữa đối tượng và dấu mốc.",
-      "uncertainty": "Chưa có phương án để xác định có yêu cầu diễn giải bổ sung hay không."
-    },
-    {
-      "ref": "26827f57f9f0|P1|10|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Phân biệt mức độ và phạm vi của hệ quả là diễn giải kiến thức trong một bài tập quen thuộc.",
-      "decisive_demand": "Phân biệt hệ quả trực tiếp với kết quả bao quát hơn.",
-      "uncertainty": "Có thể giảm xuống NB nếu chỉ cần nhận ra một ý nghĩa đã được học nguyên dạng."
-    },
-    {
-      "ref": "26827f57f9f0|P1|11|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Đối chiếu các cách diễn đạt với bản chất và nguyên tắc của một khái niệm thuộc thông hiểu.",
-      "decisive_demand": "Phân biệt biểu đạt phù hợp và không phù hợp với bản chất khái niệm.",
-      "uncertainty": "Thiếu phương án để biết có thể trả lời bằng nhận diện trực tiếp một phát biểu đã học hay không."
-    },
-    {
-      "ref": "26827f57f9f0|P1|12|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Yêu cầu phân biệt tính chất chủ yếu với các khẳng định vượt phạm vi hoặc sai bối cảnh.",
-      "decisive_demand": "Diễn giải mức độ khái quát và phạm vi thời gian của nhận định.",
-      "uncertainty": "Ranh giới NB và TH phụ thuộc cách diễn đạt cụ thể của các lựa chọn."
-    },
-    {
-      "ref": "26827f57f9f0|P1|13|None",
-      "level": "NB",
-      "confidence": "medium",
-      "justification": "Theo đường giải tối thiểu được mô tả, chỉ cần nhận diện một thuộc tính phân loại đã biết.",
-      "decisive_demand": "Nhận ra đối tượng thuộc nhóm được chỉ định.",
-      "uncertainty": "Chưa rõ thuộc tính phân loại có đủ để lựa chọn duy nhất hay cần thêm kiến thức khác."
-    },
-    {
-      "ref": "26827f57f9f0|P1|14|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Kiểm tra mức bao quát của nhận định qua các đặc điểm đã học là yêu cầu khái quát và phân biệt; độ dài tiến trình không tự xác lập VD.",
-      "decisive_demand": "Đối chiếu một khái quát với phạm vi của cả tiến trình.",
-      "uncertainty": "Chưa rõ nhận định có sẵn trong kiến thức được học hay phải được hình thành bằng lập luận độc lập."
-    },
-    {
-      "ref": "26827f57f9f0|P1|15|None",
-      "level": "NB",
-      "confidence": "medium",
-      "justification": "Yêu cầu truy xuất một sự kiện thông qua các dấu hiệu nhận diện đã học.",
-      "decisive_demand": "Nhớ và ghép sự kiện với thuộc tính tương ứng.",
-      "uncertainty": "Chưa có phương án để kiểm tra có yêu cầu phân biệt ngoài việc ghi nhớ hay không."
-    },
-    {
-      "ref": "26827f57f9f0|P1|16|None",
-      "level": "NB",
-      "confidence": "medium",
-      "justification": "Có thể trả lời bằng việc nhớ một liên kết tiêu biểu trong một đơn vị kiến thức.",
-      "decisive_demand": "Truy xuất quan hệ giữa đối tượng và hoạt động đặc trưng.",
-      "uncertainty": "Mô tả không cho biết các phương án có đòi hỏi diễn giải quan hệ hay không."
-    },
-    {
-      "ref": "26827f57f9f0|P1|17|None",
-      "level": "NB",
-      "confidence": "medium",
-      "justification": "Yêu cầu nhận diện một thông tin đã học, không thể hiện thao tác diễn giải hay lập luận bắt buộc.",
-      "decisive_demand": "Nhớ đối tượng gắn với một sự kiện.",
-      "uncertainty": "Chỉ có mô tả trừu tượng về nhiệm vụ và lựa chọn."
-    },
-    {
-      "ref": "26827f57f9f0|P1|18|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Phân loại nội dung theo lĩnh vực và giai đoạn là vận hành kiến thức quen thuộc ở mức thông hiểu.",
-      "decisive_demand": "Phân biệt nội dung theo phạm vi và trạng thái phát triển.",
-      "uncertainty": "Có thể chỉ cần NB nếu một phương án khớp trực tiếp với nội dung đã học."
-    },
-    {
-      "ref": "26827f57f9f0|P1|19|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Nhận ra sự phù hợp của một nguyên tắc quen thuộc chưa chứng minh yêu cầu tự xây dựng mô hình hay chuỗi suy luận thực chất.",
-      "decisive_demand": "Diễn giải quan hệ đã học thành nguyên tắc và đối chiếu phạm vi áp dụng.",
-      "uncertainty": "Thiếu nội dung hoàn cảnh và phương án để xác định có yêu cầu chuyển giao kiến thức vượt bài tập quen thuộc hay không."
-    },
-    {
-      "ref": "26827f57f9f0|P1|20|None",
-      "level": "NB",
-      "confidence": "medium",
-      "justification": "Nhiệm vụ được mô tả là truy xuất một liên kết thời gian và sự kiện đã học.",
-      "decisive_demand": "Nhớ dấu mốc tương ứng với sự kiện.",
-      "uncertainty": "Chưa có phương án để xác định có thao tác diễn giải bổ sung hay không."
-    },
-    {
-      "ref": "26827f57f9f0|P1|21|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "So sánh các thuộc tính quen thuộc theo tiêu chí cho trước thuộc thông hiểu, dù có nhiều thuộc tính cần kiểm tra.",
-      "decisive_demand": "Phân biệt điểm chung và điểm khác giữa các đối tượng.",
-      "uncertainty": "Chưa rõ khác biệt cần chọn là nội dung được ghi nhớ trực tiếp hay phải suy ra."
-    },
-    {
-      "ref": "26827f57f9f0|P1|22|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Phân biệt đặc điểm của các giai đoạn dựa trên kiến thức đã học là yêu cầu thông hiểu.",
-      "decisive_demand": "Đối chiếu tính chất của nhận định với giai đoạn tương ứng.",
-      "uncertainty": "Thiếu phương án nên chưa loại trừ đường trả lời chỉ dựa vào nhận diện trực tiếp."
-    },
-    {
-      "ref": "26827f57f9f0|P1|23|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Kiểm tra sự tương thích giữa phương thức hành động và nguyên tắc đã học thuộc thông hiểu.",
-      "decisive_demand": "Phân biệt hành động phù hợp với phạm vi chức năng và thẩm quyền.",
-      "uncertainty": "Nếu phương thức được hỏi là một thông tin đã học nguyên dạng thì yêu cầu có thể chỉ là NB."
-    },
-    {
-      "ref": "26827f57f9f0|P1|24|None",
-      "level": "NB",
-      "confidence": "medium",
-      "justification": "Yêu cầu nhận diện chủ thể của một sự kiện thông qua kiến thức đã học.",
-      "decisive_demand": "Truy xuất chủ thể gắn với dấu mốc.",
-      "uncertainty": "Phân loại dựa trên mô tả trừu tượng, chưa có phương án gốc."
-    },
-    {
-      "ref": "26827f57f9f0|P2|1|a",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Đối chiếu thành phần được mô tả trong biểu đạt cho trước với một nhận định thuộc đọc hiểu.",
-      "decisive_demand": "Tách thông tin liên quan và kiểm tra sự tương ứng.",
-      "uncertainty": "Nếu chỉ cần nhận ra thông tin được lặp lại trực tiếp thì ranh giới với NB còn mở."
-    },
-    {
-      "ref": "26827f57f9f0|P2|1|b",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Diễn giải một vai trò thành ý nghĩa khái quát rồi đối chiếu nhận định thuộc thông hiểu.",
-      "decisive_demand": "Diễn giải quan hệ chức năng trong thông tin cho trước.",
-      "uncertainty": "Không có cách diễn đạt cụ thể để xác định mức độ trực tiếp của phép đối chiếu."
-    },
-    {
-      "ref": "26827f57f9f0|P2|1|c",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Phân biệt nguồn gốc với sự phát huy và kiểm tra phạm vi thời gian là thao tác thông hiểu quen thuộc.",
-      "decisive_demand": "Phân biệt các quan hệ thời gian trong một nhận định.",
-      "uncertainty": "Một vế có thể được kiểm tra chỉ bằng ghi nhớ, làm giảm yêu cầu tối thiểu xuống NB."
-    },
-    {
-      "ref": "26827f57f9f0|P2|1|d",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Phân biệt tính tiếp nối với tính khởi đầu đòi hỏi hiểu ý nghĩa của dấu hiệu và đối chiếu kiến thức đã học.",
-      "decisive_demand": "Phân biệt sự tái khẳng định với sự xác lập ban đầu.",
-      "uncertainty": "Chưa rõ dấu hiệu được mô tả có đủ trực tiếp để quyết định mà không cần diễn giải hay không."
-    },
-    {
-      "ref": "26827f57f9f0|P2|2|a",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Đối chiếu mức được mô tả với mức được khẳng định là yêu cầu diễn giải và phân biệt.",
-      "decisive_demand": "Phân biệt các mức trong một hệ phân loại.",
-      "uncertainty": "Nếu các mức chỉ được lặp lại nguyên dạng thì có thể gần NB."
-    },
-    {
-      "ref": "26827f57f9f0|P2|2|b",
-      "level": "NB",
-      "confidence": "low",
-      "justification": "Theo đường giải tối thiểu, một thuộc tính đã học có thể đủ để quyết định toàn bộ nhận định, không nhất thiết phải xử lí mọi vế.",
-      "decisive_demand": "Truy xuất một thuộc tính quyết định để kiểm tra khẳng định.",
-      "uncertainty": "Thiếu nhận định đầy đủ để xác định thuộc tính quyết định có thể được nhớ trực tiếp hay cần diễn giải ở mức TH."
-    },
-    {
-      "ref": "26827f57f9f0|P2|2|c",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Gom các thông tin thành nhóm và xác định phạm vi bao quát thuộc thông hiểu.",
-      "decisive_demand": "Khái quát phạm vi từ các nhóm thông tin.",
-      "uncertainty": "Chưa rõ nhận định có chỉ lặp lại trực tiếp một mô tả tổng quát có sẵn hay không."
-    },
-    {
-      "ref": "26827f57f9f0|P2|2|d",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Diễn giải ý nghĩa của kết quả hiện có thông qua một quan hệ phát triển quen thuộc chưa đòi hỏi chuỗi suy luận thực chất.",
-      "decisive_demand": "Giải thích quan hệ giữa điều kiện hiện có và khả năng phát triển.",
-      "uncertainty": "Thiếu nhận định cụ thể để xác định mức độ suy luận cần thiết."
-    },
-    {
-      "ref": "26827f57f9f0|P2|3|a",
-      "level": null,
-      "confidence": "insufficient",
-      "justification": "Mô tả chưa xác định quan hệ cần dùng để đi từ thông tin cho trước đến nhận định liên hệ; thông tin về kết quả chấm không xác lập yêu cầu nhận thức.",
-      "decisive_demand": "Chưa xác định được liệu cần nhớ một kết luận đã học hay tự xây dựng lập luận liên hệ.",
-      "uncertainty": "Thiếu nội dung nhận định và tiền đề kiến thức làm cơ sở cho phép liên hệ; chưa phân biệt được ghi nhớ, diễn giải và lập luận độc lập."
-    },
-    {
-      "ref": "26827f57f9f0|P2|3|b",
-      "level": "TH",
-      "confidence": "low",
-      "justification": "Theo thao tác được mô tả, học sinh phải diễn giải quan hệ và kiểm tra một sự phủ nhận bằng kiến thức quen thuộc.",
-      "decisive_demand": "Đối chiếu sự phủ nhận với quan hệ được mô tả hoặc đã học.",
-      "uncertainty": "Quan hệ nhân quả chưa được trình bày đầy đủ; thiếu nhận định cụ thể để xác định lượng kiến thức ngoài biểu đạt cần huy động."
-    },
-    {
-      "ref": "26827f57f9f0|P2|3|c",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Kiểm tra một nhận định có giữ đúng giới hạn của thông tin cho trước thuộc đọc hiểu và phân biệt phạm vi.",
-      "decisive_demand": "Phân biệt phạm vi bộ phận với phạm vi bao quát.",
-      "uncertainty": "Không có nội dung cụ thể để xác định phép đối chiếu trực tiếp đến mức nào."
-    },
-    {
-      "ref": "26827f57f9f0|P2|3|d",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Đối chiếu trạng thái được mô tả với trạng thái được khẳng định là thao tác hiểu nghĩa của biểu đạt.",
-      "decisive_demand": "Phân biệt trạng thái còn tồn tại với trạng thái hoàn tất.",
-      "uncertainty": "Nếu sự đối lập thể hiện hoàn toàn bằng thông tin lặp lại trực tiếp thì ranh giới với NB còn mở."
-    },
-    {
-      "ref": "26827f57f9f0|P2|4|a",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Phân biệt các thời điểm và diễn giải dấu hiệu về trình tự thuộc thông hiểu lịch sử quen thuộc.",
-      "decisive_demand": "Đối chiếu trình tự đã học với quan hệ thời gian trong nhận định.",
-      "uncertainty": "Có thể chỉ cần nhớ một quan hệ thời gian để quyết định; chưa có nhận định đầy đủ."
-    },
-    {
-      "ref": "26827f57f9f0|P2|4|b",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Phân biệt thông tin về bối cảnh với mục đích trực tiếp của một biểu đạt là yêu cầu đọc hiểu.",
-      "decisive_demand": "Xác định chức năng giao tiếp từ nội dung được mô tả.",
-      "uncertainty": "Thiếu biểu đạt cụ thể để xác định chức năng có được nêu trực tiếp hay phải diễn giải."
-    },
-    {
-      "ref": "26827f57f9f0|P2|4|c",
-      "level": "TH",
-      "confidence": "low",
-      "justification": "Các thao tác được mô tả là diễn giải dấu hiệu và đối chiếu với kiến thức quen thuộc; việc có nhiều vế chưa đủ xác lập VD.",
-      "decisive_demand": "Diễn giải các dấu hiệu và kiểm tra sự phù hợp với nguyên tắc đã học.",
-      "uncertainty": "Một phần kết luận cần kiến thức ngoài biểu đạt; thiếu nhận định đầy đủ để xác định có bắt buộc lập chuỗi suy luận thực chất hay không."
-    },
-    {
-      "ref": "26827f57f9f0|P2|4|d",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Nhận ra nguyên tắc thông qua biểu hiện được mô tả đòi hỏi khái quát ý nghĩa, thay vì chỉ gọi lại tên một thông tin.",
-      "decisive_demand": "Khái quát biểu hiện cụ thể thành nguyên tắc tương ứng.",
-      "uncertainty": "Nếu nguyên tắc được nêu trực tiếp trong biểu đạt thì yêu cầu tối thiểu có thể là NB."
-    },
-    {
-      "ref": "acc23c4ca4f8|P1|1|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Mô tả đòi hỏi phân biệt cách khái quát phù hợp với cách diễn đạt tuyệt đối hóa, thuộc thao tác hiểu kiến thức đã học.",
-      "decisive_demand": "Phân biệt phạm vi và mức độ của nhận định khái quát.",
-      "uncertainty": "Thiếu các lựa chọn nên chưa loại trừ khả năng chỉ cần nhận ra một đặc điểm đã học, tương ứng NB."
-    },
-    {
-      "ref": "acc23c4ca4f8|P1|2|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Yêu cầu được mô tả là phân biệt tác động theo loại hoạt động và giai đoạn, không chỉ nhận diện một sự kiện.",
-      "decisive_demand": "Phân biệt tác động phù hợp với nguồn phát sinh và phạm vi thời gian.",
-      "uncertainty": "Nếu tác động được trình bày nguyên dạng kiến thức đã học thì thao tác tối thiểu có thể là NB; thiếu lựa chọn để xác định chắc chắn."
-    },
-    {
-      "ref": "acc23c4ca4f8|P1|3|None",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Đối chiếu trình tự thời gian để kiểm tra một quan hệ giải thích là thao tác hiểu quen thuộc; chưa cần xây dựng chuỗi lập luận thực chất.",
-      "decisive_demand": "Kiểm tra tính phù hợp của quan hệ nhân quả bằng thứ tự thời gian.",
-      "uncertainty": null
-    },
-    {
-      "ref": "acc23c4ca4f8|P1|4|None",
-      "level": "NB",
-      "confidence": "high",
-      "justification": "Thao tác tối thiểu là truy hồi một liên hệ đã học giữa dấu mốc và đối tượng tương ứng.",
-      "decisive_demand": "Nhận diện đối tượng từ dấu mốc đã cho.",
-      "uncertainty": null
-    },
-    {
-      "ref": "acc23c4ca4f8|P1|5|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Mô tả hướng tới phân biệt kết quả với chủ trương và nhân tố tác động, thuộc hiểu và phân loại kiến thức quen thuộc.",
-      "decisive_demand": "Phân biệt loại nội dung và mức độ khẳng định của nhận định.",
-      "uncertainty": "Chưa làm rõ ranh giới giữa các lựa chọn có thể cùng hợp lí; thiếu nguyên văn lựa chọn và căn cứ phân biệt để xác định chắc chắn yêu cầu tối thiểu."
-    },
-    {
-      "ref": "acc23c4ca4f8|P1|6|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Nhận ra đặc điểm chung rồi liên hệ với một nguyên tắc đã học là khái quát và diễn giải; mô tả chưa chứng minh cần lập luận vượt thao tác quen thuộc.",
-      "decisive_demand": "Khái quát điểm chung và nhận diện nguyên tắc tương ứng.",
-      "uncertainty": "Chưa có nội dung cụ thể của các quyết định và lựa chọn để xác định độ trực tiếp của liên hệ."
-    },
-    {
-      "ref": "acc23c4ca4f8|P1|7|None",
-      "level": "NB",
-      "confidence": "medium",
-      "justification": "Có thể đáp ứng bằng việc truy hồi nhiệm vụ gắn với một giai đoạn đã học; giới hạn thời gian chủ yếu làm dấu hiệu nhận diện.",
-      "decisive_demand": "Truy hồi nhiệm vụ thuộc giai đoạn được chỉ định.",
-      "uncertainty": "Nếu các lựa chọn đòi hỏi phân biệt những phạm vi thời gian giao nhau thì có thể cần TH; bản trừu tượng chưa thể hiện điều đó."
-    },
-    {
-      "ref": "acc23c4ca4f8|P1|8|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Thao tác được mô tả là phân biệt các loại vai trò và nguồn tác động; yêu cầu chọn ngoại lệ tự nó không nâng mức độ.",
-      "decisive_demand": "Phân biệt vai trò trực tiếp với điều kiện tác động bên ngoài.",
-      "uncertainty": "Thiếu lựa chọn nên chưa xác định được liệu truy hồi một thuộc tính đã học có đủ hay không."
-    },
-    {
-      "ref": "acc23c4ca4f8|P1|9|None",
-      "level": "NB",
-      "confidence": "high",
-      "justification": "Chỉ cần nhận ra liên hệ sự kiện và dấu mốc trong một đơn vị kiến thức đã học.",
-      "decisive_demand": "Ghép hoạt động với dấu mốc bằng trí nhớ.",
-      "uncertainty": null
-    },
-    {
-      "ref": "acc23c4ca4f8|P1|10|None",
-      "level": "NB",
-      "confidence": "high",
-      "justification": "Các dấu hiệu dùng để truy hồi một liên hệ lịch sử đã học, không thể hiện yêu cầu giải thích hoặc suy luận mới.",
-      "decisive_demand": "Nhận diện đối tượng gắn với một dấu hiệu sự kiện.",
-      "uncertainty": null
-    },
-    {
-      "ref": "acc23c4ca4f8|P1|11|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Phân biệt phạm vi tác động và mức độ hoàn thành của một quá trình là biểu hiện hiểu ý nghĩa kiến thức.",
-      "decisive_demand": "Phân biệt phạm vi và mức độ của tác động.",
-      "uncertainty": "Có thể chỉ cần nhận ra một ý nghĩa được học trực tiếp; thiếu lựa chọn để phân định chắc chắn với NB."
-    },
-    {
-      "ref": "acc23c4ca4f8|P1|12|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Mô tả yêu cầu đối chiếu kết quả thực tế với cách diễn đạt nâng mức độ, thuộc phân biệt ý nghĩa và giới hạn kiến thức.",
-      "decisive_demand": "Phân biệt kết quả đạt được với kết luận vượt quá phạm vi.",
-      "uncertainty": "Nếu lựa chọn phù hợp là một đóng góp được ghi nhớ trực tiếp thì NB có thể đủ; chưa có lựa chọn để kiểm tra."
-    },
-    {
-      "ref": "acc23c4ca4f8|P1|13|None",
-      "level": "NB",
-      "confidence": "high",
-      "justification": "Nhiều dấu hiệu vẫn chỉ phục vụ truy hồi một liên hệ đã học giữa sự kiện và sản phẩm tương ứng.",
-      "decisive_demand": "Nhận diện thông tin gắn với sự kiện được chỉ định.",
-      "uncertainty": null
-    },
-    {
-      "ref": "acc23c4ca4f8|P1|14|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Đối chiếu một bước phát triển với trạng thái tổ chức tương ứng là vận dụng kiến thức theo cách quen thuộc, chưa thể hiện chuỗi suy luận thực chất.",
-      "decisive_demand": "Đối chiếu giai đoạn phát triển với bối cảnh phù hợp.",
-      "uncertainty": "Chưa rõ bối cảnh có phải một liên hệ đã học trực tiếp hay phải được khôi phục qua đối chiếu; ranh giới NB và TH còn mở."
-    },
-    {
-      "ref": "acc23c4ca4f8|P1|15|None",
-      "level": "NB",
-      "confidence": "high",
-      "justification": "Yêu cầu tối thiểu là nhớ nội dung thuộc một sự kiện đã được xác định rõ.",
-      "decisive_demand": "Truy hồi nội dung của sự kiện đã học.",
-      "uncertainty": null
-    },
-    {
-      "ref": "acc23c4ca4f8|P1|16|None",
-      "level": "NB",
-      "confidence": "medium",
-      "justification": "Mô tả cho phép trả lời bằng việc nhớ bối cảnh trực tiếp gắn với một chủ trương; chưa buộc phải tự giải thích quan hệ.",
-      "decisive_demand": "Nhận diện bối cảnh đã học của một chủ trương.",
-      "uncertainty": "Thiếu lựa chọn nên chưa rõ có cần phân biệt bản chất các điều kiện gần nhau ở mức TH hay không."
-    },
-    {
-      "ref": "acc23c4ca4f8|P1|17|None",
-      "level": "NB",
-      "confidence": "high",
-      "justification": "Đối tượng cần xác định là một kết quả trực tiếp thuộc đơn vị kiến thức về sự kiện đã học.",
-      "decisive_demand": "Truy hồi đối tượng gắn với kết quả sự kiện.",
-      "uncertainty": null
-    },
-    {
-      "ref": "acc23c4ca4f8|P1|18|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Theo mô tả, cần đối chiếu trình tự của các xu hướng với thời điểm sự kiện; đây là thao tác hiểu quen thuộc.",
-      "decisive_demand": "Đối chiếu niên biểu để nhận diện bối cảnh phù hợp.",
-      "uncertainty": "Nếu bối cảnh đã được học thành một liên hệ trực tiếp thì NB có thể đủ; thiếu lựa chọn để xác định đường trả lời tối thiểu."
-    },
-    {
-      "ref": "acc23c4ca4f8|P1|19|None",
-      "level": "NB",
-      "confidence": "high",
-      "justification": "Nhận diện một mục tiêu chính thức đã học có thể hoàn thành bằng truy hồi một đơn vị kiến thức.",
-      "decisive_demand": "Nhớ và nhận ra mục tiêu chính thức.",
-      "uncertainty": null
-    },
-    {
-      "ref": "acc23c4ca4f8|P1|20|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Mô tả yêu cầu phân biệt cách diễn đạt về đặc điểm và mức độ phát triển, phù hợp với hiểu kiến thức trong bài tập quen thuộc.",
-      "decisive_demand": "Đối chiếu nội hàm và mức độ của mô tả với đặc điểm đã học.",
-      "uncertainty": "Chưa có căn cứ phân biệt rõ các lựa chọn gần nghĩa; cần nội dung lựa chọn và căn cứ phân biệt để xác định chắc chắn yêu cầu tối thiểu."
-    },
-    {
-      "ref": "acc23c4ca4f8|P1|21|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Phân loại sự kiện rồi kiểm tra sự phù hợp với hai điều kiện là quy trình đối chiếu quen thuộc, không tự tạo thành VD.",
-      "decisive_demand": "Phân loại và đối chiếu sự kiện theo các điều kiện cho trước.",
-      "uncertainty": "Nếu một sự kiện được nhận ra trực tiếp qua dấu hiệu thì NB có thể đủ; thiếu lựa chọn để loại trừ khả năng này."
-    },
-    {
-      "ref": "acc23c4ca4f8|P1|22|None",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Mô tả thể hiện việc diễn giải một tác động trong tư liệu và phân biệt kết luận phù hợp với kết luận vượt phạm vi.",
-      "decisive_demand": "Diễn giải quan hệ tác động được thể hiện trong tư liệu.",
-      "uncertainty": null
-    },
-    {
-      "ref": "acc23c4ca4f8|P1|23|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Suy ra một hệ quả gần từ thông tin đã cho và kiến thức quen thuộc là thao tác hiểu; chưa có bằng chứng phải xây dựng chuỗi suy luận thực chất.",
-      "decisive_demand": "Diễn giải hệ quả trực tiếp đối với điều kiện thực hiện nhiệm vụ.",
-      "uncertainty": "Thiếu đoạn trích và lựa chọn nên chưa xác định được mức độ trực tiếp của liên hệ."
-    },
-    {
-      "ref": "acc23c4ca4f8|P1|24|None",
-      "level": "NB",
-      "confidence": "high",
-      "justification": "Bản trừu tượng xác định thông tin cần chọn được nêu trực tiếp; thao tác tối thiểu là nhận ra và đối chiếu một thông tin.",
-      "decisive_demand": "Nhận diện thông tin trực tiếp trong biểu đạt đã cho.",
-      "uncertainty": null
-    },
-    {
-      "ref": "acc23c4ca4f8|P2|1|a",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Phân biệt ý nghĩa của một dấu mốc với vị trí của nó trong tiến trình là diễn giải và đối chiếu kiến thức quen thuộc.",
-      "decisive_demand": "Phân biệt dấu mốc phát triển với điểm khởi đầu của tiến trình.",
-      "uncertainty": null
-    },
-    {
-      "ref": "acc23c4ca4f8|P2|1|b",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Kiểm tra một quan hệ điều kiện bằng trình tự sự kiện là thao tác đối chiếu quen thuộc, chưa đòi hỏi tự xây dựng mô hình giải thích.",
-      "decisive_demand": "Dùng thứ tự thời gian để kiểm tra quan hệ điều kiện.",
-      "uncertainty": null
-    },
-    {
-      "ref": "acc23c4ca4f8|P2|1|c",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Liên hệ một xu hướng với nhu cầu phát triển và phân biệt mức độ tác động phù hợp với giải thích kiến thức đã học.",
-      "decisive_demand": "Giải thích quan hệ tác động và phân biệt mức độ khẳng định.",
-      "uncertainty": "Chưa rõ quan hệ này được học trực tiếp hay cần tự xây dựng qua nhiều tiền đề; mô tả chưa đủ để khẳng định VD."
-    },
-    {
-      "ref": "acc23c4ca4f8|P2|1|d",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Xác định nội dung chung của một đoạn qua loại thông tin được trình bày là đọc hiểu và khái quát.",
-      "decisive_demand": "Khái quát chủ đề của đoạn từ các ý thành phần.",
-      "uncertainty": null
-    },
-    {
-      "ref": "acc23c4ca4f8|P2|2|a",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Đối chiếu chủ trương với mục đích thông qua một quan hệ giải thích quen thuộc thuộc mức hiểu.",
-      "decisive_demand": "Giải thích sự phù hợp giữa biện pháp và mục đích.",
-      "uncertainty": "Thiếu cách diễn đạt cụ thể nên chưa rõ chỉ cần nhận ra một mục đích đã học hay cần diễn giải quan hệ."
-    },
-    {
-      "ref": "acc23c4ca4f8|P2|2|b",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Phân biệt một chủ trương với lời giải thích đi kèm và kiểm tra phạm vi của lời giải thích là hiểu khái niệm; chưa đủ bằng chứng về chuỗi lập luận thực chất.",
-      "decisive_demand": "Phân biệt vai trò nền tảng với sự quy định tuyệt đối.",
-      "uncertainty": "Thiếu nội dung cụ thể và căn cứ của lời giải thích nên chưa xác định được độ sâu cần thiết của việc kết nối kiến thức."
-    },
-    {
-      "ref": "acc23c4ca4f8|P2|2|c",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Đối chiếu các thành phần nhận định với sự phân biệt có trong tư liệu là thao tác đọc hiểu trực tiếp.",
-      "decisive_demand": "Phân biệt yếu tố được duy trì với yếu tố được điều chỉnh.",
-      "uncertainty": null
-    },
-    {
-      "ref": "acc23c4ca4f8|P2|2|d",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Nhận định đòi hỏi hiểu quan hệ giữa các khái niệm và đối chiếu với nguyên tắc đã cho, không chỉ lặp lại một thông tin.",
-      "decisive_demand": "Diễn giải sự tương thích giữa tính ổn định và khả năng điều chỉnh.",
-      "uncertainty": null
-    },
-    {
-      "ref": "acc23c4ca4f8|P2|3|a",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Phân biệt nhiệm vụ ưu tiên với phạm vi giải quyết toàn bộ nhiệm vụ là hiểu giới hạn của một chủ trương trong bối cảnh đã học.",
-      "decisive_demand": "Đối chiếu phạm vi khẳng định với thứ tự ưu tiên của nhiệm vụ.",
-      "uncertainty": null
-    },
-    {
-      "ref": "acc23c4ca4f8|P2|3|b",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Đọc các thành phần của bảng rồi kiểm tra phạm vi của nhận định khái quát là diễn giải biểu diễn cho trước.",
-      "decisive_demand": "So sánh phạm vi nhận định với toàn bộ thông tin trong bảng.",
-      "uncertainty": null
-    },
-    {
-      "ref": "acc23c4ca4f8|P2|3|c",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Liên hệ các quyết định với chức năng chuẩn bị và đối chiếu ý nghĩa là giải thích quen thuộc; số mặt được nhắc tới không đủ xác lập VD.",
-      "decisive_demand": "Giải thích vai trò của các quyết định đối với một quá trình.",
-      "uncertainty": "Chưa rõ ý nghĩa có thể được truy hồi trực tiếp hay phải suy ra qua các liên hệ phụ thuộc; thiếu nội dung cụ thể để phân định."
-    },
-    {
-      "ref": "acc23c4ca4f8|P2|3|d",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Phân biệt ý định với kết quả và kiểm tra mức độ khẳng định bằng kiến thức đã học thuộc thao tác hiểu.",
-      "decisive_demand": "Phân biệt mục đích hành động với kết quả thực tế.",
-      "uncertainty": null
-    },
-    {
-      "ref": "acc23c4ca4f8|P2|4|a",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Liên hệ những tác động được mô tả với một khái niệm khái quát là diễn giải nội dung tư liệu.",
-      "decisive_demand": "Nhận diện vai trò khái quát từ các biểu hiện cụ thể.",
-      "uncertainty": null
-    },
-    {
-      "ref": "acc23c4ca4f8|P2|4|b",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Rút ra mục tiêu chung và phân biệt mục tiêu với hình thức thực hiện là khái quát kiến thức; chưa chứng minh cần chuỗi suy luận thực chất.",
-      "decisive_demand": "Khái quát yếu tố xuyên suốt từ các hoạt động được mô tả.",
-      "uncertainty": "Thiếu đoạn trích nên chưa rõ mục tiêu chung được nêu trực tiếp hay phải tự tổng hợp qua các quan hệ sâu hơn."
-    },
-    {
-      "ref": "acc23c4ca4f8|P2|4|c",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Đối chiếu chiều tác động trong nhận định với quan hệ đã học và thông tin cho trước là kiểm tra cách hiểu nhân quả quen thuộc.",
-      "decisive_demand": "Phân biệt chiều nguyên nhân và kết quả.",
-      "uncertainty": null
-    },
-    {
-      "ref": "acc23c4ca4f8|P2|4|d",
-      "level": "NB",
-      "confidence": "medium",
-      "justification": "Theo bản trừu tượng, nhận định chỉ diễn đạt lại một thông tin trực tiếp; yêu cầu tối thiểu có thể là nhận ra cùng một nội dung.",
-      "decisive_demand": "Nhận diện sự tương ứng của thông tin trực tiếp.",
-      "uncertainty": "Chưa có hai cách diễn đạt để xác định việc đối chiếu chỉ cần nhận diện hay cần diễn giải ở mức TH."
-    },
-    {
-      "ref": "686833f78102|P1|1|None",
-      "level": "NB",
-      "confidence": "medium",
-      "justification": "Yêu cầu có thể được đáp ứng bằng việc truy hồi một quan hệ sự kiện và đặc điểm đã học.",
-      "decisive_demand": "Nhận diện quan hệ kiến thức quen thuộc.",
-      "uncertainty": "Chưa rõ việc nhận diện bối cảnh có đòi hỏi diễn giải ngoài truy hồi trực tiếp hay không."
-    },
-    {
-      "ref": "686833f78102|P1|2|None",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Cần diễn giải ý nghĩa của thông tin và phân biệt kết luận phù hợp với kết luận vượt phạm vi.",
-      "decisive_demand": "Đối chiếu phạm vi kết luận với căn cứ được cung cấp.",
-      "uncertainty": null
-    },
-    {
-      "ref": "686833f78102|P1|3|None",
-      "level": "NB",
-      "confidence": "high",
-      "justification": "Đáp án dựa vào một quan hệ lịch sử đã học có thể truy hồi trực tiếp.",
-      "decisive_demand": "Nhớ và nhận diện một thuộc tính của sự kiện.",
-      "uncertainty": null
-    },
-    {
-      "ref": "686833f78102|P1|4|None",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Cần hiểu các quan hệ trong kiến thức đã học để phân biệt nhận định đúng với sự đảo lộn quan hệ.",
-      "decisive_demand": "Phân biệt quan hệ ưu tiên, điều kiện và kết quả.",
-      "uncertainty": null
-    },
-    {
-      "ref": "686833f78102|P1|5|None",
-      "level": "NB",
-      "confidence": "medium",
-      "justification": "Mô tả cho thấy có thể chỉ cần nhận ra một nội dung đường lối đã học.",
-      "decisive_demand": "Truy hồi nội dung kiến thức tương ứng.",
-      "uncertainty": "Chưa rõ các lựa chọn chỉ yêu cầu nhận diện hay cần phân biệt ý nghĩa của các mô hình."
-    },
-    {
-      "ref": "686833f78102|P1|6|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Đối chiếu tính phù hợp về thời gian và cơ chế tác động thể hiện yêu cầu hiểu nguyên nhân trong bối cảnh quen thuộc.",
-      "decisive_demand": "Giải thích sự phù hợp của nguyên nhân với bối cảnh.",
-      "uncertainty": "Nếu nguyên nhân được hỏi là một kết luận đã học nguyên dạng, truy hồi trực tiếp có thể đủ."
-    },
-    {
-      "ref": "686833f78102|P1|7|None",
-      "level": "NB",
-      "confidence": "high",
-      "justification": "Chỉ cần truy hồi một liên hệ trong niên biểu đã học.",
-      "decisive_demand": "Ghép thông tin thời gian với đối tượng tương ứng.",
-      "uncertainty": null
-    },
-    {
-      "ref": "686833f78102|P1|8|None",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Cần hiểu phạm vi một chức năng và phân loại biểu hiện theo chức năng đó.",
-      "decisive_demand": "Phân loại biểu hiện theo khái niệm.",
-      "uncertainty": null
-    },
-    {
-      "ref": "686833f78102|P1|9|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "So sánh các đặc điểm đã học để tìm phần chung có thể thực hiện bằng thao tác phân biệt quen thuộc.",
-      "decisive_demand": "Đối chiếu đặc điểm và xác định điểm chung.",
-      "uncertainty": "Chưa có căn cứ cho thấy phải tự xây dựng một chuỗi suy luận vượt ngoài so sánh thông thường."
-    },
-    {
-      "ref": "686833f78102|P1|10|None",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Cần vận dụng tiêu chí phân loại nguyên nhân để xác định yếu tố thuộc nhóm được hỏi.",
-      "decisive_demand": "Phân biệt các loại nguyên nhân.",
-      "uncertainty": null
-    },
-    {
-      "ref": "686833f78102|P1|11|None",
-      "level": "NB",
-      "confidence": "high",
-      "justification": "Yêu cầu nằm trong việc nhớ một quan hệ niên biểu.",
-      "decisive_demand": "Truy hồi sự kiện tương ứng với thời điểm.",
-      "uncertainty": null
-    },
-    {
-      "ref": "686833f78102|P1|12|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Cần dùng thông tin niên biểu đã nhớ để kiểm tra điều kiện thuộc một khoảng thời gian.",
-      "decisive_demand": "Đối chiếu thời điểm với giới hạn cho trước.",
-      "uncertainty": "Nếu chỉ một liên hệ niên biểu quen thuộc đã đủ nhận diện đáp án, mức NB cũng có thể phù hợp."
-    },
-    {
-      "ref": "686833f78102|P1|13|None",
-      "level": "NB",
-      "confidence": "medium",
-      "justification": "Các thông tin được mô tả chủ yếu đóng vai trò gợi lại một liên hệ đã học.",
-      "decisive_demand": "Nhận diện sự kiện từ đặc điểm quen thuộc.",
-      "uncertainty": "Chưa rõ có cần diễn giải quan hệ mục đích và hoàn cảnh thay vì chỉ nhớ liên hệ hay không."
-    },
-    {
-      "ref": "686833f78102|P1|14|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Yêu cầu phân biệt chức năng của các chủ thể thể hiện việc hiểu vai trò thay vì chỉ nhận ra tên gọi.",
-      "decisive_demand": "Phân biệt các vai trò có liên quan.",
-      "uncertainty": "Một liên hệ chức năng được học trực tiếp có thể khiến truy hồi đơn thuần đã đủ."
-    },
-    {
-      "ref": "686833f78102|P1|15|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Cần hiểu giới hạn của kiến thức đã học để nhận ra kết luận bị tuyệt đối hóa.",
-      "decisive_demand": "Phân biệt mức độ khẳng định phù hợp.",
-      "uncertainty": "Chưa rõ có thể chọn đáp án chỉ bằng nhận diện một thành tựu đã học hay không."
-    },
-    {
-      "ref": "686833f78102|P1|16|None",
-      "level": "NB",
-      "confidence": "high",
-      "justification": "Một quan hệ sự kiện và tư cách tham gia đã học có thể cung cấp trực tiếp đáp án.",
-      "decisive_demand": "Truy hồi một dữ kiện lịch sử.",
-      "uncertainty": null
-    },
-    {
-      "ref": "686833f78102|P1|17|None",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Cần diễn giải thông tin được cung cấp và khái quát đặc điểm chung trong phạm vi thông tin đó.",
-      "decisive_demand": "Rút ra nguyên tắc chung từ các biểu hiện.",
-      "uncertainty": null
-    },
-    {
-      "ref": "686833f78102|P1|18|None",
-      "level": "NB",
-      "confidence": "medium",
-      "justification": "Có thể nhận diện đối tượng bằng những thuộc tính nguồn gốc đã học trong một đơn vị kiến thức.",
-      "decisive_demand": "Nhớ và ghép các thuộc tính nhận diện.",
-      "uncertainty": "Chưa rõ các thuộc tính có cần được phân tích để phân biệt những đối tượng gần nhau hay không."
-    },
-    {
-      "ref": "686833f78102|P1|19|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Diễn giải ý nghĩa chung của những hoạt động quen thuộc chưa cho thấy bắt buộc phải xây dựng chuỗi lập luận mới.",
-      "decisive_demand": "Giải thích quan hệ giữa công cụ và ý nghĩa của hoạt động.",
-      "uncertainty": "Chưa rõ quan hệ cần xác định là kết luận đã học hay phải tự thiết lập từ nhiều căn cứ."
-    },
-    {
-      "ref": "686833f78102|P1|20|None",
-      "level": "NB",
-      "confidence": "high",
-      "justification": "Chỉ cần nhớ quan hệ giữa một sự kiện và kết quả trực tiếp của nó.",
-      "decisive_demand": "Truy hồi và nhận diện quan hệ sự kiện.",
-      "uncertainty": null
-    },
-    {
-      "ref": "686833f78102|P1|21|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Cần đối chiếu các hoạt động với ranh giới thời gian để xác định sự phù hợp.",
-      "decisive_demand": "Phân loại thông tin theo giới hạn thời gian.",
-      "uncertainty": "Nếu liên hệ giữa giai đoạn và hoạt động đã được học trực tiếp, mức NB có thể đủ."
-    },
-    {
-      "ref": "686833f78102|P1|22|None",
-      "level": "NB",
-      "confidence": "high",
-      "justification": "Thông tin cần chọn được mô tả là hiện diện trực tiếp, không cần diễn giải quan hệ hay suy luận bổ sung.",
-      "decisive_demand": "Định vị và nhận diện thông tin được nêu trực tiếp.",
-      "uncertainty": null
-    },
-    {
-      "ref": "686833f78102|P1|23|None",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Cần đọc hiểu thông tin và đối chiếu nhận định với đặc điểm bối cảnh được thể hiện.",
-      "decisive_demand": "Diễn giải thông tin để xác định nhận định phù hợp.",
-      "uncertainty": null
-    },
-    {
-      "ref": "686833f78102|P1|24|None",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Khái quát ý nghĩa và phân biệt cách hiểu phù hợp chưa tự nó đòi hỏi thiết lập một phương án vận dụng cụ thể.",
-      "decisive_demand": "Rút ra nguyên tắc từ quan hệ vấn đề và cách giải quyết.",
-      "uncertainty": "Thiếu mô tả về hoàn cảnh áp dụng để xác định có yêu cầu chuyển giao kiến thức và xây dựng lập luận mới hay không."
-    },
-    {
-      "ref": "686833f78102|P2|1|a",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Cần diễn giải hệ quả trực tiếp và hiểu quan hệ của nó với điều kiện tiếp theo.",
-      "decisive_demand": "Giải thích một quan hệ hệ quả quen thuộc.",
-      "uncertainty": null
-    },
-    {
-      "ref": "686833f78102|P2|1|b",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Đối chiếu nội dung đã học và phân biệt các phương diện của chúng có thể thực hiện bằng so sánh thông thường.",
-      "decisive_demand": "Phân biệt nội dung và kiểm tra một nhận định so sánh.",
-      "uncertainty": "Chưa rõ có phải kết nối các căn cứ độc lập để suy ra khác biệt hay chỉ nhận diện khác biệt đã học."
-    },
-    {
-      "ref": "686833f78102|P2|1|c",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Mô tả phù hợp với việc giải thích chiều tác động bằng quan hệ đã học; chưa chứng minh cần tự xây dựng chuỗi suy luận có nội dung đáng kể.",
-      "decisive_demand": "Diễn giải tác động dựa trên quan hệ giữa các quá trình.",
-      "uncertainty": "Chưa rõ quan hệ tác động đã được cung cấp hoặc học trực tiếp đến mức nào."
-    },
-    {
-      "ref": "686833f78102|P2|1|d",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Cần phân biệt tính chất và mức độ của kết quả để tránh đồng nhất các loại kết quả khác nhau.",
-      "decisive_demand": "Phân loại kết quả và diễn giải giới hạn ý nghĩa.",
-      "uncertainty": null
-    },
-    {
-      "ref": "686833f78102|P2|2|a",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Cần hiểu chức năng trong một mô hình và kiểm tra cách diễn giải chức năng đó.",
-      "decisive_demand": "Đối chiếu nhận định với ý nghĩa của khái niệm.",
-      "uncertainty": null
-    },
-    {
-      "ref": "686833f78102|P2|2|b",
-      "level": "NB",
-      "confidence": "medium",
-      "justification": "Mô tả cho phép đáp ứng bằng nhận diện nội dung được nêu trực tiếp và cách nhắc lại tương ứng.",
-      "decisive_demand": "Nhận diện thông tin được trình bày trực tiếp.",
-      "uncertainty": "Chưa rõ nhận định chỉ nhắc lại hay biến đổi cách diễn đạt đến mức cần diễn giải."
-    },
-    {
-      "ref": "686833f78102|P2|2|c",
-      "level": "NB",
-      "confidence": "medium",
-      "justification": "Vai trò cần kiểm tra được mô tả là đã được gán trực tiếp trong thông tin cung cấp.",
-      "decisive_demand": "Tìm và nhận diện một quan hệ được nêu sẵn.",
-      "uncertainty": "Nếu nhận định đòi hỏi suy ra ý nghĩa thay vì nhắc lại quan hệ đã nêu, mức TH sẽ phù hợp hơn."
-    },
-    {
-      "ref": "686833f78102|P2|2|d",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Cần hiểu quan hệ giữa các yêu cầu đồng thời và nhận ra suy luận không phù hợp với quan hệ đó.",
-      "decisive_demand": "Phân biệt quan hệ bổ trợ với quan hệ loại trừ.",
-      "uncertainty": null
-    },
-    {
-      "ref": "686833f78102|P2|3|a",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "Có thể đánh giá bằng cách hiểu mục tiêu và lợi ích của một quá trình quen thuộc.",
-      "decisive_demand": "Giải thích quan hệ giữa phương thức hành động và mục tiêu chung.",
-      "uncertainty": "Chưa rõ phải tự thiết lập quan hệ từ các căn cứ hay chỉ vận dụng một giải thích đã học."
-    },
-    {
-      "ref": "686833f78102|P2|3|b",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Cần đọc một biểu diễn thông tin, đối chiếu phân kì và khái quát phạm vi nội dung.",
-      "decisive_demand": "Diễn giải phạm vi thời gian và nội dung của bảng.",
-      "uncertainty": null
-    },
-    {
-      "ref": "686833f78102|P2|3|c",
-      "level": "VD",
-      "confidence": "medium",
-      "justification": "Mô tả yêu cầu nối cơ chế tác động với hệ quả và phản ứng thích nghi để đánh giá một nhận định gồm các quan hệ phụ thuộc.",
-      "decisive_demand": "Xây dựng chuỗi giải thích từ tác động đến hệ quả và phản ứng.",
-      "uncertainty": "Chưa có dữ liệu đo tác động; mô tả còn phụ thuộc vào cách ghép nhận định với khóa đáp án nên chưa xác lập chắc mức suy luận tối thiểu."
-    },
-    {
-      "ref": "686833f78102|P2|3|d",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Kiểm tra thứ tự thời gian đã có thể cung cấp căn cứ để bác bỏ một quan hệ nhân quả không phù hợp.",
-      "decisive_demand": "Dùng trình tự thời gian để phân biệt nguyên nhân và biểu hiện.",
-      "uncertainty": null
-    },
-    {
-      "ref": "686833f78102|P2|4|a",
-      "level": "TH",
-      "confidence": "medium",
-      "justification": "So sánh các quá trình đã học và phân biệt quá trình với thời điểm là yêu cầu hiểu kiến thức; chưa đủ căn cứ cho một chuỗi lập luận mới.",
-      "decisive_demand": "Đối chiếu các quá trình để xác định điểm tương đồng.",
-      "uncertainty": "Chưa rõ điểm tương đồng được nhận diện trực tiếp hay cần suy ra bằng nhiều căn cứ độc lập."
-    },
-    {
-      "ref": "686833f78102|P2|4|b",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Cần hiểu ý nghĩa chỉ đạo và nhận ra sự không tương thích của nhận định với ý nghĩa đó.",
-      "decisive_demand": "Diễn giải thông tin và đối chiếu sự phù hợp.",
-      "uncertainty": null
-    },
-    {
-      "ref": "686833f78102|P2|4|c",
-      "level": "VD",
-      "confidence": "medium",
-      "justification": "Mô tả yêu cầu kết nối đặc điểm được cung cấp với kinh nghiệm đã học và mục tiêu để giải thích sự kế thừa, phát triển.",
-      "decisive_demand": "Liên kết các căn cứ để giải thích quan hệ kế thừa và phát triển.",
-      "uncertainty": "Chưa rõ nhận định có thể được đánh giá chỉ bằng một kết luận quen thuộc đã học hay bắt buộc phải xây dựng chuỗi giải thích này."
-    },
-    {
-      "ref": "686833f78102|P2|4|d",
-      "level": "TH",
-      "confidence": "high",
-      "justification": "Cần phối hợp việc đọc thông tin xuất xứ với diễn giải mục đích được thể hiện để kiểm tra nhận định.",
-      "decisive_demand": "Đối chiếu thông tin và ý nghĩa trong tư liệu.",
-      "uncertainty": null
-    }
-  ],
-  "topic_level_counts": [
-    {
-      "class": "official",
-      "part": "P1",
-      "topic": "ASEAN: những chặng đường lịch sử",
-      "counts": {
-        "NB": 2,
-        "TH": 1
-      }
-    },
-    {
-      "class": "official",
-      "part": "P1",
-      "topic": "Chiến tranh bảo vệ Tổ quốc trước thời hiện đại",
-      "counts": {
-        "NB": 1
-      }
-    },
-    {
-      "class": "official",
-      "part": "P1",
-      "topic": "Cách mạng tháng Tám và kháng chiến chống thực dân Pháp",
-      "counts": {
-        "TH": 1,
-        "NB": 1
-      }
-    },
-    {
-      "class": "official",
-      "part": "P1",
-      "topic": "Công cuộc Đổi mới ở Việt Nam từ năm 1986",
-      "counts": {
-        "TH": 2
-      }
-    },
-    {
-      "class": "official",
-      "part": "P1",
-      "topic": "Di sản và sự tôn vinh Hồ Chí Minh",
-      "counts": {
-        "NB": 1
-      }
-    },
-    {
-      "class": "official",
-      "part": "P1",
-      "topic": "Kháng chiến chống Mỹ và thống nhất đất nước",
-      "counts": {
-        "TH": 3
-      }
-    },
-    {
-      "class": "official",
-      "part": "P1",
-      "topic": "Khởi nghĩa và chiến tranh giải phóng trước thời hiện đại",
-      "counts": {
-        "NB": 1
-      }
-    },
-    {
-      "class": "official",
-      "part": "P1",
-      "topic": "Liên hợp quốc",
-      "counts": {
-        "TH": 1
-      }
-    },
-    {
-      "class": "official",
-      "part": "P1",
-      "topic": "Lịch sử đối ngoại Việt Nam",
-      "counts": {
-        "NB": 2,
-        "TH": 2
-      }
-    },
-    {
-      "class": "official",
-      "part": "P1",
-      "topic": "Sự hình thành Liên bang Xô viết",
-      "counts": {
-        "NB": 1
-      }
-    },
-    {
-      "class": "official",
-      "part": "P1",
-      "topic": "Thế giới trong và sau Chiến tranh lạnh",
-      "counts": {
-        "TH": 2,
-        "NB": 1
-      }
-    },
-    {
-      "class": "official",
-      "part": "P1",
-      "topic": "Vai trò Hồ Chí Minh trong giải phóng dân tộc",
-      "counts": {
-        "TH": 1
-      }
-    },
-    {
-      "class": "official",
-      "part": "P1",
-      "topic": "Vai trò Hồ Chí Minh trong thành lập Đảng",
-      "counts": {
-        "TH": 1
-      }
-    },
-    {
-      "class": "official",
-      "part": "P2",
-      "topic": "Cách mạng tháng Tám và kháng chiến chống thực dân Pháp",
-      "counts": {
-        "TH": 4
-      }
-    },
-    {
-      "class": "official",
-      "part": "P2",
-      "topic": "Công cuộc Đổi mới ở Việt Nam từ năm 1986",
-      "counts": {
-        "TH": 3,
-        "NB": 1
-      }
-    },
-    {
-      "class": "official",
-      "part": "P2",
-      "topic": "Khối đại đoàn kết dân tộc Việt Nam",
-      "counts": {
-        "TH": 4
-      }
-    },
-    {
-      "class": "official",
-      "part": "P2",
-      "topic": "Sự xác lập và phát triển của chủ nghĩa tư bản",
-      "counts": {
-        "None": 1,
-        "TH": 3
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "topic": "ASEAN: những chặng đường lịch sử",
-      "counts": {
-        "NB": 2,
-        "TH": 4,
-        "None": 11
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "topic": "Bài học cách mạng Việt Nam",
-      "counts": {
-        "None": 1
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "topic": "Bảo vệ Tổ quốc sau thống nhất",
-      "counts": {
-        "NB": 1,
-        "TH": 1,
-        "None": 2
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "topic": "Chiến tranh bảo vệ Tổ quốc trước thời hiện đại",
-      "counts": {
-        "TH": 1,
-        "NB": 1,
-        "None": 4
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "topic": "Cuộc đời và con đường cứu nước của Hồ Chí Minh",
-      "counts": {
-        "NB": 1,
-        "None": 1
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "topic": "Cách mạng tháng Tám và kháng chiến chống thực dân Pháp",
-      "counts": {
-        "NB": 3,
-        "TH": 4,
-        "None": 8
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "topic": "Cách mạng và kháng chiến ở Việt Nam",
-      "counts": {
-        "TH": 1,
-        "None": 3
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "topic": "Công cuộc Đổi mới ở Việt Nam từ năm 1986",
-      "counts": {
-        "TH": 3,
-        "NB": 2,
-        "None": 7
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "topic": "Di sản và sự tôn vinh Hồ Chí Minh",
-      "counts": {
-        "None": 3
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "topic": "Kháng chiến chống Mỹ và thống nhất đất nước",
-      "counts": {
-        "TH": 3,
-        "NB": 1,
-        "None": 6
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "topic": "Khởi nghĩa và chiến tranh giải phóng trước thời hiện đại",
-      "counts": {
-        "NB": 2,
-        "None": 2
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "topic": "Liên hợp quốc",
-      "counts": {
-        "NB": 1,
-        "TH": 1,
-        "None": 3
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "topic": "Lịch sử đối ngoại Việt Nam",
-      "counts": {
-        "TH": 1,
-        "NB": 1,
-        "None": 4
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "topic": "So sánh các cuộc kháng chiến hiện đại",
-      "counts": {
-        "None": 1
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "topic": "Sự hình thành Liên bang Xô viết",
-      "counts": {
-        "TH": 1,
-        "NB": 2,
-        "None": 3
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "topic": "Sự phát triển của chủ nghĩa xã hội",
-      "counts": {
-        "TH": 1,
-        "None": 3
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "topic": "Thế giới trong và sau Chiến tranh lạnh",
-      "counts": {
-        "TH": 3,
-        "NB": 1,
-        "None": 5
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "topic": "Tư tưởng giải phóng dân tộc của Hồ Chí Minh",
-      "counts": {
-        "TH": 1,
-        "None": 3
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "topic": "Vai trò Hồ Chí Minh trong giải phóng dân tộc",
-      "counts": {
-        "NB": 1,
-        "TH": 1
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "topic": "Vai trò Hồ Chí Minh trong thành lập Đảng",
-      "counts": {
-        "NB": 1,
-        "TH": 1,
-        "None": 1
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "topic": "Việt Nam và Biển Đông",
-      "counts": {
-        "TH": 1,
-        "None": 1
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "topic": "ASEAN: những chặng đường lịch sử",
-      "counts": {
-        "TH": 4,
-        "VD": 1,
-        "None": 1
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "topic": "Cách mạng tháng Tám và kháng chiến chống thực dân Pháp",
-      "counts": {
-        "TH": 2,
-        "None": 9
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "topic": "Cách mạng và kháng chiến ở Việt Nam",
-      "counts": {
-        "TH": 1,
-        "None": 1
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "topic": "Công cuộc Đổi mới ở Việt Nam từ năm 1986",
-      "counts": {
-        "TH": 6,
-        "NB": 2,
-        "None": 12
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "topic": "Hợp tác đa phương trong quan hệ quốc tế",
-      "counts": {
-        "None": 1
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "topic": "Khái niệm hoạt động đối ngoại",
-      "counts": {
-        "None": 1
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "topic": "Kháng chiến chống Mỹ và thống nhất đất nước",
-      "counts": {
-        "TH": 4,
-        "VD": 1,
-        "None": 3
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "topic": "Lịch sử đối ngoại Việt Nam",
-      "counts": {
-        "TH": 7,
-        "NB": 1,
-        "None": 10
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "topic": "Thế giới trong và sau Chiến tranh lạnh",
-      "counts": {
-        "TH": 2,
-        "None": 10
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "topic": "Vai trò Hồ Chí Minh trong giải phóng dân tộc",
-      "counts": {
-        "TH": 1
-      }
-    }
-  ],
-  "question_level_counts": [
-    {
-      "class": "official",
-      "part": "P1",
-      "counts": {
-        "TH": 14,
-        "NB": 10
-      }
-    },
-    {
-      "class": "official",
-      "part": "P2",
-      "counts": {
-        "TH": 3,
-        "None": 1
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P1",
-      "counts": {
-        "TH": 28,
-        "NB": 20,
-        "None": 72
-      }
-    },
-    {
-      "class": "provincial_third_party",
-      "part": "P2",
-      "counts": {
-        "TH": 6,
-        "VD": 2,
-        "None": 12
-      }
-    }
-  ],
-  "question_count_policy": "Maximum level of all observed statement labels; any unknown statement makes question unknown. This is an explicit analytical proxy, not a printed exam declaration.",
-  "issues": [
-    "model prerequisite stopped"
-  ]
+  {
+   "ref": "08c8696055dd|P1|2|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt kết quả trực tiếp của hội nhập kinh tế với thay đổi kinh tế trong nước và vai trò đối ngoại nói chung.",
+   "decisive_demand": "Phân biệt kết quả trực tiếp của hội nhập kinh tế với thay đổi kinh tế trong nước và vai trò đối ngoại nói chung.",
+   "uncertainty": null,
+   "source_record_id": "08c8696055dd|P1|2|-"
+  },
+  {
+   "ref": "08c8696055dd|P1|3|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ tên một trụ cột chính thức của cộng đồng.",
+   "decisive_demand": "Nhớ tên một trụ cột chính thức của cộng đồng.",
+   "uncertainty": null,
+   "source_record_id": "08c8696055dd|P1|3|-"
+  },
+  {
+   "ref": "08c8696055dd|P1|4|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ quan hệ đã học giữa một chiến dịch và tác động chiến lược của nó.",
+   "decisive_demand": "Nhớ quan hệ đã học giữa một chiến dịch và tác động chiến lược của nó.",
+   "uncertainty": "[\"Phạm vi liệt kê của LS-T06 chưa nêu chiến dịch này; tên chủ đề vẫn bao quát kháng chiến chống thực dân Pháp.\"]",
+   "source_record_id": "08c8696055dd|P1|4|-"
+  },
+  {
+   "ref": "08c8696055dd|P1|5|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ những phương diện chuẩn bị trực tiếp cho việc thành lập Đảng.",
+   "decisive_demand": "Nhớ những phương diện chuẩn bị trực tiếp cho việc thành lập Đảng.",
+   "uncertainty": null,
+   "source_record_id": "08c8696055dd|P1|5|-"
+  },
+  {
+   "ref": "08c8696055dd|P1|6|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Liên hệ cơ hội dịch chuyển lao động với yêu cầu quen thuộc về năng lực nghề nghiệp và giao tiếp.",
+   "decisive_demand": "Liên hệ cơ hội dịch chuyển lao động với yêu cầu quen thuộc về năng lực nghề nghiệp và giao tiếp.",
+   "uncertainty": "[\"Cách nêu dịch chuyển lao động có tính khái quát, không thể hiện các giới hạn và điều kiện áp dụng trong thực tế.\"]",
+   "source_record_id": "08c8696055dd|P1|6|-"
+  },
+  {
+   "ref": "08c8696055dd|P1|7|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ đóng góp và mức độ hoàn thành nhiệm vụ thống nhất của phong trào.",
+   "decisive_demand": "Nhớ đóng góp và mức độ hoàn thành nhiệm vụ thống nhất của phong trào.",
+   "uncertainty": null,
+   "source_record_id": "08c8696055dd|P1|7|-"
+  },
+  {
+   "ref": "08c8696055dd|P1|8|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ nguyên tắc nền tảng của việc liên hiệp các nước cộng hòa.",
+   "decisive_demand": "Nhớ nguyên tắc nền tảng của việc liên hiệp các nước cộng hòa.",
+   "uncertainty": null,
+   "source_record_id": "08c8696055dd|P1|8|-"
+  },
+  {
+   "ref": "08c8696055dd|P1|9|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ xu hướng hợp tác khu vực trong bối cảnh thành lập tổ chức.",
+   "decisive_demand": "Nhớ xu hướng hợp tác khu vực trong bối cảnh thành lập tổ chức.",
+   "uncertainty": "[\"Phạm vi liệt kê của LS-T01 tập trung vào Cộng đồng ASEAN, chưa nêu riêng bối cảnh thành lập hiệp hội; tên chủ đề bao quát nội dung này.\"]",
+   "source_record_id": "08c8696055dd|P1|9|-"
+  },
+  {
+   "ref": "08c8696055dd|P1|10|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ đặc điểm nổi bật của giai đoạn phát triển được hỏi.",
+   "decisive_demand": "Nhớ đặc điểm nổi bật của giai đoạn phát triển được hỏi.",
+   "uncertainty": "[\"Phạm vi liệt kê của LS-T01 chưa nêu riêng tiến trình mở rộng thành viên; tên chủ đề vẫn phù hợp.\"]",
+   "source_record_id": "08c8696055dd|P1|10|-"
+  },
+  {
+   "ref": "08c8696055dd|P1|11|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt hệ quả của biến đổi trật tự với các diễn biến thuộc thời kì trước và nhận định sai về chính sách cường quốc.",
+   "decisive_demand": "Phân biệt hệ quả của biến đổi trật tự với các diễn biến thuộc thời kì trước và nhận định sai về chính sách cường quốc.",
+   "uncertainty": null,
+   "source_record_id": "08c8696055dd|P1|11|-"
+  },
+  {
+   "ref": "08c8696055dd|P1|12|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt ý nghĩa bảo vệ thành quả độc lập với ý nghĩa giành độc lập của giai đoạn trước.",
+   "decisive_demand": "Phân biệt ý nghĩa bảo vệ thành quả độc lập với ý nghĩa giành độc lập của giai đoạn trước.",
+   "uncertainty": null,
+   "source_record_id": "08c8696055dd|P1|12|-"
+  },
+  {
+   "ref": "08c8696055dd|P1|13|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ tổ chức gắn với mục tiêu hòa bình và an ninh ở phạm vi toàn cầu.",
+   "decisive_demand": "Nhớ tổ chức gắn với mục tiêu hòa bình và an ninh ở phạm vi toàn cầu.",
+   "uncertainty": null,
+   "source_record_id": "08c8696055dd|P1|13|-"
+  },
+  {
+   "ref": "08c8696055dd|P1|14|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận ra tên chiến thắng được nhắc ngay trong tên phong trào.",
+   "decisive_demand": "Nhận ra tên chiến thắng được nhắc ngay trong tên phong trào.",
+   "uncertainty": "[\"Thân câu chứa dấu hiệu tên gọi trực tiếp giúp nhận diện phương án.\", \"Phạm vi liệt kê của LS-T12 chưa nêu riêng phong trào thi đua gắn với chiến thắng.\"]",
+   "source_record_id": "08c8696055dd|P1|14|-"
+  },
+  {
+   "ref": "08c8696055dd|P1|15|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Đối chiếu kiến thức quen thuộc về kết thúc hai cuộc chiến để tách điểm khác với những điểm chung.",
+   "decisive_demand": "Đối chiếu kiến thức quen thuộc về kết thúc hai cuộc chiến để tách điểm khác với những điểm chung.",
+   "uncertainty": null,
+   "source_record_id": "08c8696055dd|P1|15|-"
+  },
+  {
+   "ref": "08c8696055dd|P1|16|None",
+   "level": "unknown",
+   "confidence": "insufficient",
+   "justification": "Dạng dự kiến yêu cầu nhớ hoạt động theo thời gian và địa bàn, nhưng tên tổ chức trong phương án liên quan không khớp sự kiện chuẩn.",
+   "decisive_demand": "Dạng dự kiến yêu cầu nhớ hoạt động theo thời gian và địa bàn, nhưng tên tổ chức trong phương án liên quan không khớp sự kiện chuẩn.",
+   "uncertainty": "[\"Phương án C dùng tên Hội Liên hiệp các dân tộc thuộc địa, trong khi sự kiện thành lập tại địa bàn và giai đoạn được hỏi thường được ghi là Hội Liên hiệp thuộc địa. Chưa có ảnh câu hỏi để phân biệt lỗi OCR với lỗi bản gốc; chưa xác định được phương án đúng nguyên trạng.\"]",
+   "source_record_id": "08c8696055dd|P1|16|-"
+  },
+  {
+   "ref": "08c8696055dd|P1|17|None",
+   "level": "NB",
+   "confidence": "medium",
+   "justification": "Nhớ định hướng kinh tế và nhận diện nó trong các phương án thuộc nhiều lĩnh vực.",
+   "decisive_demand": "Nhớ định hướng kinh tế và nhận diện nó trong các phương án thuộc nhiều lĩnh vực.",
+   "uncertainty": "[\"Cách gọi mô hình kinh tế trong phương án A rút gọn, chưa thể hiện đầy đủ thành phần kinh tế, cơ chế vận hành và định hướng; ảnh gốc chưa được cung cấp để đối chiếu.\"]",
+   "source_record_id": "08c8696055dd|P1|17|-"
+  },
+  {
+   "ref": "08c8696055dd|P1|18|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ kết luận khái quát đã học về ý nghĩa của các thành tựu.",
+   "decisive_demand": "Nhớ kết luận khái quát đã học về ý nghĩa của các thành tựu.",
+   "uncertainty": null,
+   "source_record_id": "08c8696055dd|P1|18|-"
+  },
+  {
+   "ref": "08c8696055dd|P1|19|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt xu hướng phát triển sức mạnh tổng hợp với đối đầu quân sự và các nhận định tuyệt đối hóa hợp tác.",
+   "decisive_demand": "Phân biệt xu hướng phát triển sức mạnh tổng hợp với đối đầu quân sự và các nhận định tuyệt đối hóa hợp tác.",
+   "uncertainty": null,
+   "source_record_id": "08c8696055dd|P1|19|-"
+  },
+  {
+   "ref": "08c8696055dd|P1|20|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ hoạt động lịch sử gắn với khoảng thời gian được nêu.",
+   "decisive_demand": "Nhớ hoạt động lịch sử gắn với khoảng thời gian được nêu.",
+   "uncertainty": null,
+   "source_record_id": "08c8696055dd|P1|20|-"
+  },
+  {
+   "ref": "08c8696055dd|P1|21|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ những lĩnh vực hợp tác được đặt ra khi thành lập hiệp hội.",
+   "decisive_demand": "Nhớ những lĩnh vực hợp tác được đặt ra khi thành lập hiệp hội.",
+   "uncertainty": "[\"Phạm vi liệt kê của LS-T01 chưa nêu riêng mục đích thành lập hiệp hội; tên chủ đề vẫn bao quát.\"]",
+   "source_record_id": "08c8696055dd|P1|21|-"
+  },
+  {
+   "ref": "08c8696055dd|P1|22|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Tìm lại địa bàn được nêu trực tiếp trong mục tiêu chiến dịch của tư liệu.",
+   "decisive_demand": "Tìm lại địa bàn được nêu trực tiếp trong mục tiêu chiến dịch của tư liệu.",
+   "uncertainty": null,
+   "source_record_id": "08c8696055dd|P1|22|-"
+  },
+  {
+   "ref": "08c8696055dd|P1|23|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt sự chuyển biến về quy mô tiến công với các bước ngoặt thuộc giai đoạn khác.",
+   "decisive_demand": "Phân biệt sự chuyển biến về quy mô tiến công với các bước ngoặt thuộc giai đoạn khác.",
+   "uncertainty": null,
+   "source_record_id": "08c8696055dd|P1|23|-"
+  },
+  {
+   "ref": "08c8696055dd|P1|24|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Diễn giải hai thông tin được tư liệu nêu trực tiếp thành lí do lựa chọn hướng tiến công.",
+   "decisive_demand": "Diễn giải hai thông tin được tư liệu nêu trực tiếp thành lí do lựa chọn hướng tiến công.",
+   "uncertainty": null,
+   "source_record_id": "08c8696055dd|P1|24|-"
+  },
+  {
+   "ref": "08c8696055dd|P2|1|a",
+   "level": "TH",
+   "confidence": "medium",
+   "justification": "Xét xem danh sách các mốc ngoại giao có đủ căn cứ cho kết luận về chiều sâu hội nhập kinh tế hay không.",
+   "decisive_demand": "Xét xem danh sách các mốc ngoại giao có đủ căn cứ cho kết luận về chiều sâu hội nhập kinh tế hay không.",
+   "uncertainty": "[\"Khái niệm mức độ hội nhập kinh tế trong mệnh đề chưa có tiêu chí xác định; tư liệu không cung cấp chỉ báo kinh tế để xác nhận mức độ đó.\"]",
+   "source_record_id": "08c8696055dd|P2|1|a"
+  },
+  {
+   "ref": "08c8696055dd|P2|1|b",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Đối chiếu thứ tự các mốc để kiểm tra việc coi sự kiện xảy ra sau là cơ sở của các sự kiện trước.",
+   "decisive_demand": "Đối chiếu thứ tự các mốc để kiểm tra việc coi sự kiện xảy ra sau là cơ sở của các sự kiện trước.",
+   "uncertainty": null,
+   "source_record_id": "08c8696055dd|P2|1|b"
+  },
+  {
+   "ref": "08c8696055dd|P2|1|c",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Giải thích một thành tựu ngoại giao như biểu hiện của chủ trương hòa giải đã học.",
+   "decisive_demand": "Giải thích một thành tựu ngoại giao như biểu hiện của chủ trương hòa giải đã học.",
+   "uncertainty": null,
+   "source_record_id": "08c8696055dd|P2|1|c"
+  },
+  {
+   "ref": "08c8696055dd|P2|1|d",
+   "level": "TH",
+   "confidence": "medium",
+   "justification": "Liên hệ các mốc mở rộng quan hệ với quá trình giảm cô lập và tăng khả năng tham gia quốc tế.",
+   "decisive_demand": "Liên hệ các mốc mở rộng quan hệ với quá trình giảm cô lập và tăng khả năng tham gia quốc tế.",
+   "uncertainty": "[\"Cách diễn đạt có thể làm mờ sự khác nhau giữa quá trình phá thế cô lập và thời điểm chấm dứt từng biện pháp cấm vận; tư liệu không trình bày riêng các mốc này.\"]",
+   "source_record_id": "08c8696055dd|P2|1|d"
+  },
+  {
+   "ref": "08c8696055dd|P2|2|a",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận ra chiến dịch được gọi tên trực tiếp trong tư liệu và gắn với cuộc kháng chiến tương ứng.",
+   "decisive_demand": "Nhận ra chiến dịch được gọi tên trực tiếp trong tư liệu và gắn với cuộc kháng chiến tương ứng.",
+   "uncertainty": "[\"Phạm vi liệt kê của LS-T06 chưa nêu riêng chiến dịch này; tên chủ đề bao quát nội dung.\"]",
+   "source_record_id": "08c8696055dd|P2|2|a"
+  },
+  {
+   "ref": "08c8696055dd|P2|2|b",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Kiểm tra thuật ngữ loại hình chiến dịch trong một mệnh đề ghép với kết quả chiến lược.",
+   "decisive_demand": "Kiểm tra thuật ngữ loại hình chiến dịch trong một mệnh đề ghép với kết quả chiến lược.",
+   "uncertainty": "[\"Phạm vi liệt kê của LS-T06 chưa nêu riêng phân loại chiến dịch; tên chủ đề vẫn phù hợp.\"]",
+   "source_record_id": "08c8696055dd|P2|2|b"
+  },
+  {
+   "ref": "08c8696055dd|P2|2|c",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ ý nghĩa đặc trưng của chiến thắng đã học.",
+   "decisive_demand": "Nhớ ý nghĩa đặc trưng của chiến thắng đã học.",
+   "uncertainty": "[\"Tư liệu chỉ nêu bối cảnh và mục tiêu, không trực tiếp cung cấp kết quả; cần kiến thức ngoài đoạn trích.\", \"Phạm vi liệt kê của LS-T06 chưa nêu riêng chiến dịch này.\"]",
+   "source_record_id": "08c8696055dd|P2|2|c"
+  },
+  {
+   "ref": "08c8696055dd|P2|2|d",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ chiến thắng nào gắn với bước kết thúc chiến tranh để nhận ra việc gán sai vai trò quyết định.",
+   "decisive_demand": "Nhớ chiến thắng nào gắn với bước kết thúc chiến tranh để nhận ra việc gán sai vai trò quyết định.",
+   "uncertainty": "[\"Phạm vi liệt kê của LS-T06 chưa nêu riêng chiến dịch này; tên chủ đề vẫn bao quát.\"]",
+   "source_record_id": "08c8696055dd|P2|2|d"
+  },
+  {
+   "ref": "08c8696055dd|P2|3|a",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận lại nội dung được tư liệu gọi tên trực tiếp.",
+   "decisive_demand": "Nhận lại nội dung được tư liệu gọi tên trực tiếp.",
+   "uncertainty": null,
+   "source_record_id": "08c8696055dd|P2|3|a"
+  },
+  {
+   "ref": "08c8696055dd|P2|3|b",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt mở rộng hội nhập với kết luận tất yếu về suy giảm bản sắc.",
+   "decisive_demand": "Phân biệt mở rộng hội nhập với kết luận tất yếu về suy giảm bản sắc.",
+   "uncertainty": "[\"Tư liệu không cung cấp thông tin riêng về văn hóa; đánh giá cần kiến thức nền ngoài đoạn trích.\"]",
+   "source_record_id": "08c8696055dd|P2|3|b"
+  },
+  {
+   "ref": "08c8696055dd|P2|3|c",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ một thành tựu cơ bản của công cuộc Đổi mới.",
+   "decisive_demand": "Nhớ một thành tựu cơ bản của công cuộc Đổi mới.",
+   "uncertainty": "[\"Thành tựu cụ thể trong mệnh đề không được nêu trực tiếp trong đoạn trích.\"]",
+   "source_record_id": "08c8696055dd|P2|3|c"
+  },
+  {
+   "ref": "08c8696055dd|P2|3|d",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Diễn giải quan hệ giữa điều kiện nội tại và xu thế thế giới thành một định hướng phát triển quen thuộc.",
+   "decisive_demand": "Diễn giải quan hệ giữa điều kiện nội tại và xu thế thế giới thành một định hướng phát triển quen thuộc.",
+   "uncertainty": null,
+   "source_record_id": "08c8696055dd|P2|3|d"
+  },
+  {
+   "ref": "08c8696055dd|P2|4|a",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Dùng dấu hiệu thời kì và mô tả các trung tâm quyền lực để xác định tư liệu thuộc trật tự nào.",
+   "decisive_demand": "Dùng dấu hiệu thời kì và mô tả các trung tâm quyền lực để xác định tư liệu thuộc trật tự nào.",
+   "uncertainty": null,
+   "source_record_id": "08c8696055dd|P2|4|a"
+  },
+  {
+   "ref": "08c8696055dd|P2|4|b",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận lại một nhân tố được nêu trực tiếp trong tư liệu.",
+   "decisive_demand": "Nhận lại một nhân tố được nêu trực tiếp trong tư liệu.",
+   "uncertainty": null,
+   "source_record_id": "08c8696055dd|P2|4|b"
+  },
+  {
+   "ref": "08c8696055dd|P2|4|c",
+   "level": "NB",
+   "confidence": "medium",
+   "justification": "Nhớ biểu hiện quen thuộc của xu hướng nhiều trung tâm quyền lực.",
+   "decisive_demand": "Nhớ biểu hiện quen thuộc của xu hướng nhiều trung tâm quyền lực.",
+   "uncertainty": "[\"Từ chỉ hiện tại không được gắn với một thời điểm cụ thể; đánh giá ở đây theo nội dung lịch sử và xu hướng được học, không xác nhận tình hình thời sự tại thời điểm trả lời.\"]",
+   "source_record_id": "08c8696055dd|P2|4|c"
+  },
+  {
+   "ref": "08c8696055dd|P2|4|d",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Diễn giải thông tin về cấu thành sức mạnh quốc gia thành nhận định về xu hướng phát triển.",
+   "decisive_demand": "Diễn giải thông tin về cấu thành sức mạnh quốc gia thành nhận định về xu hướng phát triển.",
+   "uncertainty": null,
+   "source_record_id": "08c8696055dd|P2|4|d"
+  },
+  {
+   "ref": "26827f57f9f0|P1|1|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt bài học có khả năng kế thừa trong xây dựng đất nước với biện pháp gắn riêng với chiến tranh.",
+   "decisive_demand": "Phân biệt bài học có khả năng kế thừa trong xây dựng đất nước với biện pháp gắn riêng với chiến tranh.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P1|1|-"
+  },
+  {
+   "ref": "26827f57f9f0|P1|2|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ ý nghĩa mở ra thời kì phát triển mới của dân tộc.",
+   "decisive_demand": "Nhớ ý nghĩa mở ra thời kì phát triển mới của dân tộc.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P1|2|-"
+  },
+  {
+   "ref": "26827f57f9f0|P1|3|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Đối chiếu bối cảnh tổ chức lãnh đạo để tách điểm mới khỏi những đặc điểm chung.",
+   "decisive_demand": "Đối chiếu bối cảnh tổ chức lãnh đạo để tách điểm mới khỏi những đặc điểm chung.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P1|3|-"
+  },
+  {
+   "ref": "26827f57f9f0|P1|4|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ một nước cộng hòa sáng lập.",
+   "decisive_demand": "Nhớ một nước cộng hòa sáng lập.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P1|4|-"
+  },
+  {
+   "ref": "26827f57f9f0|P1|5|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận ra một quốc gia thuộc ASEAN tại mốc lịch sử được hỏi.",
+   "decisive_demand": "Nhận ra một quốc gia thuộc ASEAN tại mốc lịch sử được hỏi.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P1|5|-"
+  },
+  {
+   "ref": "26827f57f9f0|P1|6|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận ra hoạt động thuộc một thời kì muộn hơn khoảng thời gian đề hỏi.",
+   "decisive_demand": "Nhận ra hoạt động thuộc một thời kì muộn hơn khoảng thời gian đề hỏi.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P1|6|-"
+  },
+  {
+   "ref": "26827f57f9f0|P1|7|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ tên mặt trận được thành lập tại mốc lịch sử đã nêu.",
+   "decisive_demand": "Nhớ tên mặt trận được thành lập tại mốc lịch sử đã nêu.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P1|7|-"
+  },
+  {
+   "ref": "26827f57f9f0|P1|8|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ một nguyên nhân được trình bày trong kiến thức về trật tự hai cực.",
+   "decisive_demand": "Nhớ một nguyên nhân được trình bày trong kiến thức về trật tự hai cực.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P1|8|-"
+  },
+  {
+   "ref": "26827f57f9f0|P1|9|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ văn kiện tương ứng với mốc kí kết.",
+   "decisive_demand": "Nhớ văn kiện tương ứng với mốc kí kết.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P1|9|-"
+  },
+  {
+   "ref": "26827f57f9f0|P1|10|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ tác động được học của thắng lợi quân sự này.",
+   "decisive_demand": "Nhớ tác động được học của thắng lợi quân sự này.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P1|10|-"
+  },
+  {
+   "ref": "26827f57f9f0|P1|11|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt thay đổi cách thực hiện mục tiêu với các cách hiểu sai về sở hữu, quản lí và quan hệ giữa các lĩnh vực.",
+   "decisive_demand": "Phân biệt thay đổi cách thực hiện mục tiêu với các cách hiểu sai về sở hữu, quản lí và quan hệ giữa các lĩnh vực.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P1|11|-"
+  },
+  {
+   "ref": "26827f57f9f0|P1|12|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ xu thế đối thoại và hợp tác.",
+   "decisive_demand": "Nhớ xu thế đối thoại và hợp tác.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P1|12|-"
+  },
+  {
+   "ref": "26827f57f9f0|P1|13|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận ra quốc gia phù hợp với giới hạn châu lục; cấu trúc phương án cho phép dùng kiến thức địa lí để chọn.",
+   "decisive_demand": "Nhận ra quốc gia phù hợp với giới hạn châu lục; cấu trúc phương án cho phép dùng kiến thức địa lí để chọn.",
+   "uncertainty": "[\"Có thể chọn bằng dấu hiệu châu lục mà không cần biết độc lập về công trình tưởng niệm.\"]",
+   "source_record_id": "26827f57f9f0|P1|13|-"
+  },
+  {
+   "ref": "26827f57f9f0|P1|14|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Khái quát chiều hướng phát triển từ các chặng đường đã học.",
+   "decisive_demand": "Khái quát chiều hướng phát triển từ các chặng đường đã học.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P1|14|-"
+  },
+  {
+   "ref": "26827f57f9f0|P1|15|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ cuộc khởi nghĩa tương ứng với niên đại và chính quyền đô hộ.",
+   "decisive_demand": "Nhớ cuộc khởi nghĩa tương ứng với niên đại và chính quyền đô hộ.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P1|15|-"
+  },
+  {
+   "ref": "26827f57f9f0|P1|16|None",
+   "level": "NB",
+   "confidence": "medium",
+   "justification": "Nhớ hướng vận động hỗ trợ từ bên ngoài của nhân vật được hỏi.",
+   "decisive_demand": "Nhớ hướng vận động hỗ trợ từ bên ngoài của nhân vật được hỏi.",
+   "uncertainty": "[\"Phạm vi chi tiết của LS-T16 chưa liệt kê hoạt động đối ngoại trước khi có chính quyền cách mạng; ánh xạ dựa trên tên chủ đề bao quát.\"]",
+   "source_record_id": "26827f57f9f0|P1|16|-"
+  },
+  {
+   "ref": "26827f57f9f0|P1|17|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ người chỉ huy gắn với cuộc kháng chiến.",
+   "decisive_demand": "Nhớ người chỉ huy gắn với cuộc kháng chiến.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P1|17|-"
+  },
+  {
+   "ref": "26827f57f9f0|P1|18|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ định hướng tiếp tục công nghiệp hóa, hiện đại hóa.",
+   "decisive_demand": "Nhớ định hướng tiếp tục công nghiệp hóa, hiện đại hóa.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P1|18|-"
+  },
+  {
+   "ref": "26827f57f9f0|P1|19|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Rút ra nguyên tắc ngoại giao quen thuộc từ quan hệ giữa thắng lợi thực tế và kết quả đàm phán.",
+   "decisive_demand": "Rút ra nguyên tắc ngoại giao quen thuộc từ quan hệ giữa thắng lợi thực tế và kết quả đàm phán.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P1|19|-"
+  },
+  {
+   "ref": "26827f57f9f0|P1|20|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ sự kiện gia nhập tổ chức quốc tế ứng với niên đại.",
+   "decisive_demand": "Nhớ sự kiện gia nhập tổ chức quốc tế ứng với niên đại.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P1|20|-"
+  },
+  {
+   "ref": "26827f57f9f0|P1|21|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt đặc trưng riêng của chiến lược sau với những yếu tố cùng có ở hai chiến lược.",
+   "decisive_demand": "Phân biệt đặc trưng riêng của chiến lược sau với những yếu tố cùng có ở hai chiến lược.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P1|21|-"
+  },
+  {
+   "ref": "26827f57f9f0|P1|22|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt đặc điểm của giai đoạn hội nhập sâu với nhiệm vụ mở đường ở giai đoạn trước.",
+   "decisive_demand": "Phân biệt đặc điểm của giai đoạn hội nhập sâu với nhiệm vụ mở đường ở giai đoạn trước.",
+   "uncertainty": "[\"Cụm thời gian mở đến hiện tại được hiểu trong phạm vi lịch sử của đề; không suy ra danh sách đối tác hiện hành.\"]",
+   "source_record_id": "26827f57f9f0|P1|22|-"
+  },
+  {
+   "ref": "26827f57f9f0|P1|23|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận diện một hoạt động thuộc chức năng bảo đảm quyền con người.",
+   "decisive_demand": "Nhận diện một hoạt động thuộc chức năng bảo đảm quyền con người.",
+   "uncertainty": "[\"Cách diễn đạt gộp việc xây dựng văn kiện với kí kết điều ước chưa phân biệt rõ vai trò của tổ chức và các quốc gia thành viên.\"]",
+   "source_record_id": "26827f57f9f0|P1|23|-"
+  },
+  {
+   "ref": "26827f57f9f0|P1|24|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ hai cường quốc gắn với sự kiện.",
+   "decisive_demand": "Nhớ hai cường quốc gắn với sự kiện.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P1|24|-"
+  },
+  {
+   "ref": "26827f57f9f0|P2|1|a",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Đối chiếu thành phần liên minh trong mệnh đề với thành phần được tư liệu xác định.",
+   "decisive_demand": "Đối chiếu thành phần liên minh trong mệnh đề với thành phần được tư liệu xác định.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P2|1|a"
+  },
+  {
+   "ref": "26827f57f9f0|P2|1|b",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Diễn giải quan hệ giữa lực lượng đoàn kết và chủ thể lãnh đạo từ tư liệu.",
+   "decisive_demand": "Diễn giải quan hệ giữa lực lượng đoàn kết và chủ thể lãnh đạo từ tư liệu.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P2|1|b"
+  },
+  {
+   "ref": "26827f57f9f0|P2|1|c",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ truyền thống đoàn kết đã hình thành trước thời kì Đổi mới để kiểm tra khẳng định về nguồn gốc.",
+   "decisive_demand": "Nhớ truyền thống đoàn kết đã hình thành trước thời kì Đổi mới để kiểm tra khẳng định về nguồn gốc.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P2|1|c"
+  },
+  {
+   "ref": "26827f57f9f0|P2|1|d",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ đường lối đoàn kết đã được xác lập từ trước để kiểm tra lời khẳng định đây là bước xác định ban đầu.",
+   "decisive_demand": "Nhớ đường lối đoàn kết đã được xác lập từ trước để kiểm tra lời khẳng định đây là bước xác định ban đầu.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P2|1|d"
+  },
+  {
+   "ref": "26827f57f9f0|P2|2|a",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt hai trạng thái phát triển khi đối chiếu mệnh đề với tư liệu.",
+   "decisive_demand": "Phân biệt hai trạng thái phát triển khi đối chiếu mệnh đề với tư liệu.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P2|2|a"
+  },
+  {
+   "ref": "26827f57f9f0|P2|2|b",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Kiểm tra mệnh đề ghép bằng cách phân biệt việc vận dụng một hình thức kinh tế với việc sáng tạo độc quyền hình thức đó.",
+   "decisive_demand": "Kiểm tra mệnh đề ghép bằng cách phân biệt việc vận dụng một hình thức kinh tế với việc sáng tạo độc quyền hình thức đó.",
+   "uncertainty": "[\"Tư liệu không tự cung cấp thông tin về nguồn gốc kinh tế hàng hóa; cần kiến thức ngoài đoạn trích.\"]",
+   "source_record_id": "26827f57f9f0|P2|2|b"
+  },
+  {
+   "ref": "26827f57f9f0|P2|2|c",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Khái quát các nhóm thông tin trong đoạn trích thành nhận định về phạm vi thành tựu.",
+   "decisive_demand": "Khái quát các nhóm thông tin trong đoạn trích thành nhận định về phạm vi thành tựu.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P2|2|c"
+  },
+  {
+   "ref": "26827f57f9f0|P2|2|d",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Giải thích quan hệ trực tiếp giữa tiềm lực được tích lũy và điều kiện tiếp tục phát triển.",
+   "decisive_demand": "Giải thích quan hệ trực tiếp giữa tiềm lực được tích lũy và điều kiện tiếp tục phát triển.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P2|2|d"
+  },
+  {
+   "ref": "26827f57f9f0|P2|3|a",
+   "level": "TH",
+   "confidence": "medium",
+   "justification": "Nhận diện cách liên hệ định hướng quen thuộc giữa hạn chế của một mô hình và lựa chọn mục tiêu của Việt Nam.",
+   "decisive_demand": "Nhận diện cách liên hệ định hướng quen thuộc giữa hạn chế của một mô hình và lựa chọn mục tiêu của Việt Nam.",
+   "uncertainty": "[\"Các hạn chế được nêu không tự chúng chứng minh đầy đủ kết luận đánh giá về một con đường phát triển khác.\", \"Nội dung kết nối chủ đề thường học ở hai lớp khác nhau nên không gán một lớp duy nhất.\"]",
+   "source_record_id": "26827f57f9f0|P2|3|a"
+  },
+  {
+   "ref": "26827f57f9f0|P2|3|b",
+   "level": "TH",
+   "confidence": "medium",
+   "justification": "Phân biệt việc tư liệu nêu hạn chế dân chủ với lời phủ nhận tuyệt đối vai trò của hạn chế đó.",
+   "decisive_demand": "Phân biệt việc tư liệu nêu hạn chế dân chủ với lời phủ nhận tuyệt đối vai trò của hạn chế đó.",
+   "uncertainty": "[\"Đoạn trích mô tả thách thức nhưng không trình bày đầy đủ quan hệ nguyên nhân cho toàn bộ giai đoạn mà mệnh đề bao quát.\"]",
+   "source_record_id": "26827f57f9f0|P2|3|b"
+  },
+  {
+   "ref": "26827f57f9f0|P2|3|c",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Khái quát đối tượng và giới hạn phản ánh của đoạn tư liệu.",
+   "decisive_demand": "Khái quát đối tượng và giới hạn phản ánh của đoạn tư liệu.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P2|3|c"
+  },
+  {
+   "ref": "26827f57f9f0|P2|3|d",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Đối chiếu khẳng định đã xử lí hoàn toàn với tư liệu mô tả vấn đề còn tiếp diễn.",
+   "decisive_demand": "Đối chiếu khẳng định đã xử lí hoàn toàn với tư liệu mô tả vấn đề còn tiếp diễn.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P2|3|d"
+  },
+  {
+   "ref": "26827f57f9f0|P2|4|a",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ hai sự kiện không diễn ra ngay cùng thời điểm.",
+   "decisive_demand": "Nhớ hai sự kiện không diễn ra ngay cùng thời điểm.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P2|4|a"
+  },
+  {
+   "ref": "26827f57f9f0|P2|4|b",
+   "level": "TH",
+   "confidence": "medium",
+   "justification": "Phân biệt việc nhắc lại nỗ lực hòa bình với mục đích trực tiếp phát động kháng chiến.",
+   "decisive_demand": "Phân biệt việc nhắc lại nỗ lực hòa bình với mục đích trực tiếp phát động kháng chiến.",
+   "uncertainty": "[\"Cách nói về việc thể hiện tính chủ động có thể được hiểu rộng là phản ánh nỗ lực hòa bình trước đó; mệnh đề chưa tách rõ cách hiểu này với mục đích trực tiếp của lời hiệu triệu.\"]",
+   "source_record_id": "26827f57f9f0|P2|4|b"
+  },
+  {
+   "ref": "26827f57f9f0|P2|4|c",
+   "level": "TH",
+   "confidence": "medium",
+   "justification": "Diễn giải giới hạn của nhân nhượng và đối chiếu lời huy động toàn dân với kiến thức về đường lối kháng chiến.",
+   "decisive_demand": "Diễn giải giới hạn của nhân nhượng và đối chiếu lời huy động toàn dân với kiến thức về đường lối kháng chiến.",
+   "uncertainty": "[\"Phần trích không trực tiếp nêu định hướng về thời gian kháng chiến; vế này cần kiến thức ngoài đoạn trích và có độ mở diễn giải.\"]",
+   "source_record_id": "26827f57f9f0|P2|4|c"
+  },
+  {
+   "ref": "26827f57f9f0|P2|4|d",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Khái quát ý nghĩa của việc sử dụng lực lượng và phương tiện sẵn có.",
+   "decisive_demand": "Khái quát ý nghĩa của việc sử dụng lực lượng và phương tiện sẵn có.",
+   "uncertainty": null,
+   "source_record_id": "26827f57f9f0|P2|4|d"
+  },
+  {
+   "ref": "5a9dffb03ca8|P1|1|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ hội nghị đã thống nhất mục tiêu đánh bại các thế lực phát xít.",
+   "decisive_demand": "Nhớ hội nghị đã thống nhất mục tiêu đánh bại các thế lực phát xít.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P1|1|-"
+  },
+  {
+   "ref": "5a9dffb03ca8|P1|2|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ kết quả giải phóng lãnh thổ gắn với thắng lợi của cuộc kháng chiến.",
+   "decisive_demand": "Nhớ kết quả giải phóng lãnh thổ gắn với thắng lợi của cuộc kháng chiến.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P1|2|-"
+  },
+  {
+   "ref": "5a9dffb03ca8|P1|3|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Đối chiếu hai mốc lịch sử để xác định trạng thái của chiến tranh.",
+   "decisive_demand": "Đối chiếu hai mốc lịch sử để xác định trạng thái của chiến tranh.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P1|3|-"
+  },
+  {
+   "ref": "5a9dffb03ca8|P1|4|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ định hướng hội nhập thuộc giai đoạn được hỏi.",
+   "decisive_demand": "Nhớ định hướng hội nhập thuộc giai đoạn được hỏi.",
+   "uncertainty": "[\"Mốc kết thúc mở trong câu hỏi được hiểu theo thời điểm biên soạn đề.\"]",
+   "source_record_id": "5a9dffb03ca8|P1|4|-"
+  },
+  {
+   "ref": "5a9dffb03ca8|P1|5|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận ra một mục đích thành lập đã học.",
+   "decisive_demand": "Nhận ra một mục đích thành lập đã học.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P1|5|-"
+  },
+  {
+   "ref": "5a9dffb03ca8|P1|6|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt hoạt động thuộc giai đoạn phát triển sau với đặc điểm thời kì đầu.",
+   "decisive_demand": "Phân biệt hoạt động thuộc giai đoạn phát triển sau với đặc điểm thời kì đầu.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P1|6|-"
+  },
+  {
+   "ref": "5a9dffb03ca8|P1|7|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ lực lượng đầu hàng gắn với sự xuất hiện thời cơ.",
+   "decisive_demand": "Nhớ lực lượng đầu hàng gắn với sự xuất hiện thời cơ.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P1|7|-"
+  },
+  {
+   "ref": "5a9dffb03ca8|P1|8|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Hiểu hệ quả của đối đầu để nhận ra định hướng phát triển phù hợp trong các lựa chọn.",
+   "decisive_demand": "Hiểu hệ quả của đối đầu để nhận ra định hướng phát triển phù hợp trong các lựa chọn.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P1|8|-"
+  },
+  {
+   "ref": "5a9dffb03ca8|P1|9|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ tác động quốc tế trực tiếp của sự kiện thành lập.",
+   "decisive_demand": "Nhớ tác động quốc tế trực tiếp của sự kiện thành lập.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P1|9|-"
+  },
+  {
+   "ref": "5a9dffb03ca8|P1|10|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Nhận ra cách khái quát đúng về hình thái đấu tranh qua các giai đoạn quen thuộc.",
+   "decisive_demand": "Nhận ra cách khái quát đúng về hình thái đấu tranh qua các giai đoạn quen thuộc.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P1|10|-"
+  },
+  {
+   "ref": "5a9dffb03ca8|P1|11|None",
+   "level": "NB",
+   "confidence": "medium",
+   "justification": "Nhớ quốc gia diễn ra hoạt động vận động ngoại giao.",
+   "decisive_demand": "Nhớ quốc gia diễn ra hoạt động vận động ngoại giao.",
+   "uncertainty": "[\"Các phạm vi liệt kê của LS-T16 tập trung vào thời kì sau thống nhất; ánh xạ ở đây dựa trên tên chủ đề rộng.\"]",
+   "source_record_id": "5a9dffb03ca8|P1|11|-"
+  },
+  {
+   "ref": "5a9dffb03ca8|P1|12|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt bài học phù hợp bối cảnh lịch sử với cách diễn đạt gắn thiết chế của thời đại sau.",
+   "decisive_demand": "Phân biệt bài học phù hợp bối cảnh lịch sử với cách diễn đạt gắn thiết chế của thời đại sau.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P1|12|-"
+  },
+  {
+   "ref": "5a9dffb03ca8|P1|13|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ lực lượng xâm lược tương ứng với mốc kháng chiến.",
+   "decisive_demand": "Nhớ lực lượng xâm lược tương ứng với mốc kháng chiến.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P1|13|-"
+  },
+  {
+   "ref": "5a9dffb03ca8|P1|14|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Kiểm tra xem một nhiệm vụ có thực sự đúng cho toàn bộ các sự kiện được so sánh hay không.",
+   "decisive_demand": "Kiểm tra xem một nhiệm vụ có thực sự đúng cho toàn bộ các sự kiện được so sánh hay không.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P1|14|-"
+  },
+  {
+   "ref": "5a9dffb03ca8|P1|15|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt thành tựu mới của thời kì Đổi mới với hoạt động đã có từ trước.",
+   "decisive_demand": "Phân biệt thành tựu mới của thời kì Đổi mới với hoạt động đã có từ trước.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P1|15|-"
+  },
+  {
+   "ref": "5a9dffb03ca8|P1|16|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận diện đối tượng được gọi tên trực tiếp trong tư liệu.",
+   "decisive_demand": "Nhận diện đối tượng được gọi tên trực tiếp trong tư liệu.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P1|16|-"
+  },
+  {
+   "ref": "5a9dffb03ca8|P1|17|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Chuyển nội dung tư liệu thành nhận định khái quát về đường lối giải phóng.",
+   "decisive_demand": "Chuyển nội dung tư liệu thành nhận định khái quát về đường lối giải phóng.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P1|17|-"
+  },
+  {
+   "ref": "5a9dffb03ca8|P1|18|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Giải thích hình ảnh và lập luận trong tư liệu thành quan hệ phối hợp đấu tranh.",
+   "decisive_demand": "Giải thích hình ảnh và lập luận trong tư liệu thành quan hệ phối hợp đấu tranh.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P1|18|-"
+  },
+  {
+   "ref": "5a9dffb03ca8|P1|19|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ một triển vọng cơ bản của cộng đồng.",
+   "decisive_demand": "Nhớ một triển vọng cơ bản của cộng đồng.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P1|19|-"
+  },
+  {
+   "ref": "5a9dffb03ca8|P1|20|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "So sánh các thuộc tính cơ bản để tìm tiêu chí tạo khác biệt.",
+   "decisive_demand": "So sánh các thuộc tính cơ bản để tìm tiêu chí tạo khác biệt.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P1|20|-"
+  },
+  {
+   "ref": "5a9dffb03ca8|P1|21|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ nhiệm vụ phù hợp với thời kì sau thống nhất.",
+   "decisive_demand": "Nhớ nhiệm vụ phù hợp với thời kì sau thống nhất.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P1|21|-"
+  },
+  {
+   "ref": "5a9dffb03ca8|P1|22|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt ý nghĩa đúng với mô tả sai về lực lượng bị lật đổ.",
+   "decisive_demand": "Phân biệt ý nghĩa đúng với mô tả sai về lực lượng bị lật đổ.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P1|22|-"
+  },
+  {
+   "ref": "5a9dffb03ca8|P1|23|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt đổi mới cách thức thực hiện với thay đổi mục tiêu hoặc giữ nguyên cơ chế cũ.",
+   "decisive_demand": "Phân biệt đổi mới cách thức thực hiện với thay đổi mục tiêu hoặc giữ nguyên cơ chế cũ.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P1|23|-"
+  },
+  {
+   "ref": "5a9dffb03ca8|P1|24|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ quốc gia lựa chọn con đường xã hội chủ nghĩa ở thời điểm được hỏi.",
+   "decisive_demand": "Nhớ quốc gia lựa chọn con đường xã hội chủ nghĩa ở thời điểm được hỏi.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P1|24|-"
+  },
+  {
+   "ref": "5a9dffb03ca8|P2|1|a",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Khái quát chủ đề chung của các sự kiện trong bảng.",
+   "decisive_demand": "Khái quát chủ đề chung của các sự kiện trong bảng.",
+   "uncertainty": "[\"Cách gọi các nội dung là chính có độ khái quát rộng; bảng chỉ cung cấp một tập sự kiện chọn lọc.\"]",
+   "source_record_id": "5a9dffb03ca8|P2|1|a"
+  },
+  {
+   "ref": "5a9dffb03ca8|P2|1|b",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Kiểm tra mức độ khẳng định nhân quả thay vì suy nguyên nhân từ việc các sự kiện cùng xuất hiện.",
+   "decisive_demand": "Kiểm tra mức độ khẳng định nhân quả thay vì suy nguyên nhân từ việc các sự kiện cùng xuất hiện.",
+   "uncertainty": "[\"Bảng niên biểu không tự cung cấp bằng chứng đầy đủ về quan hệ nhân quả.\"]",
+   "source_record_id": "5a9dffb03ca8|P2|1|b"
+  },
+  {
+   "ref": "5a9dffb03ca8|P2|1|c",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Đối chiếu nhận định về khởi đầu xu hướng với lịch sử hình thành tổ chức khu vực trước đó.",
+   "decisive_demand": "Đối chiếu nhận định về khởi đầu xu hướng với lịch sử hình thành tổ chức khu vực trước đó.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P2|1|c"
+  },
+  {
+   "ref": "5a9dffb03ca8|P2|1|d",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Giải thích các sự kiện hòa giải trong bảng như biểu hiện của một chiều hướng quan hệ quốc tế.",
+   "decisive_demand": "Giải thích các sự kiện hòa giải trong bảng như biểu hiện của một chiều hướng quan hệ quốc tế.",
+   "uncertainty": "[\"Bảng minh họa chiều hướng hòa giải, không chứng minh mọi xung đột trên thế giới đã chấm dứt.\"]",
+   "source_record_id": "5a9dffb03ca8|P2|1|d"
+  },
+  {
+   "ref": "5a9dffb03ca8|P2|2|a",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt thời điểm của văn kiện được dẫn với thời điểm bắt đầu công cuộc Đổi mới.",
+   "decisive_demand": "Phân biệt thời điểm của văn kiện được dẫn với thời điểm bắt đầu công cuộc Đổi mới.",
+   "uncertainty": "[\"Văn kiện được trích không tự chứng minh thời điểm nhận thức xuất hiện lần đầu; cần kiến thức lịch sử Đổi mới.\"]",
+   "source_record_id": "5a9dffb03ca8|P2|2|a"
+  },
+  {
+   "ref": "5a9dffb03ca8|P2|2|b",
+   "level": "TH",
+   "confidence": "medium",
+   "justification": "Giải thích định hướng sản xuất dựa vào tri thức bằng khái niệm tăng trưởng theo chiều sâu.",
+   "decisive_demand": "Giải thích định hướng sản xuất dựa vào tri thức bằng khái niệm tăng trưởng theo chiều sâu.",
+   "uncertainty": "[\"Khái niệm chuyển mô hình tăng trưởng không được nêu trực tiếp trong đoạn trích.\", \"Phát triển sản phẩm có giá trị gia tăng cao không tự nó chứng minh toàn bộ nền kinh tế đã chuyển mô hình.\"]",
+   "source_record_id": "5a9dffb03ca8|P2|2|b"
+  },
+  {
+   "ref": "5a9dffb03ca8|P2|2|c",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận ra nội dung được xác định trực tiếp trong tư liệu.",
+   "decisive_demand": "Nhận ra nội dung được xác định trực tiếp trong tư liệu.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P2|2|c"
+  },
+  {
+   "ref": "5a9dffb03ca8|P2|2|d",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt bổ sung, kết hợp nguồn lực với thay thế các nguồn lực khác.",
+   "decisive_demand": "Phân biệt bổ sung, kết hợp nguồn lực với thay thế các nguồn lực khác.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P2|2|d"
+  },
+  {
+   "ref": "5a9dffb03ca8|P2|3|a",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Liên hệ địa bàn tiến công với mục tiêu khai thông liên lạc và phá thế cô lập.",
+   "decisive_demand": "Liên hệ địa bàn tiến công với mục tiêu khai thông liên lạc và phá thế cô lập.",
+   "uncertainty": "[\"Ý nghĩa khai thông liên lạc quốc tế không được nêu trực tiếp trong đoạn trích.\"]",
+   "source_record_id": "5a9dffb03ca8|P2|3|a"
+  },
+  {
+   "ref": "5a9dffb03ca8|P2|3|b",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận diện chủ thể, thời điểm và định hướng chiến dịch được nêu trong tư liệu.",
+   "decisive_demand": "Nhận diện chủ thể, thời điểm và định hướng chiến dịch được nêu trong tư liệu.",
+   "uncertainty": "[\"Nhận định rút gọn điều kiện chuẩn bị và thời cơ mở chiến dịch; không nên hiểu thành mệnh lệnh tiến công tức thời.\"]",
+   "source_record_id": "5a9dffb03ca8|P2|3|b"
+  },
+  {
+   "ref": "5a9dffb03ca8|P2|3|c",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Kiểm tra tiền giả định rằng quyền chủ động chiến lược đã được giành trước chiến dịch.",
+   "decisive_demand": "Kiểm tra tiền giả định rằng quyền chủ động chiến lược đã được giành trước chiến dịch.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P2|3|c"
+  },
+  {
+   "ref": "5a9dffb03ca8|P2|3|d",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Quy các chi tiết về sức mình và hỗ trợ bên ngoài về quan hệ nội lực, ngoại lực.",
+   "decisive_demand": "Quy các chi tiết về sức mình và hỗ trợ bên ngoài về quan hệ nội lực, ngoại lực.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P2|3|d"
+  },
+  {
+   "ref": "5a9dffb03ca8|P2|4|a",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt tính linh hoạt của sách lược với sự kiên định nguyên tắc.",
+   "decisive_demand": "Phân biệt tính linh hoạt của sách lược với sự kiên định nguyên tắc.",
+   "uncertainty": null,
+   "source_record_id": "5a9dffb03ca8|P2|4|a"
+  },
+  {
+   "ref": "5a9dffb03ca8|P2|4|b",
+   "level": "NB",
+   "confidence": "medium",
+   "justification": "Nhận diện mục tiêu được nêu trực tiếp và được giữ nhất quán trong thời kì.",
+   "decisive_demand": "Nhận diện mục tiêu được nêu trực tiếp và được giữ nhất quán trong thời kì.",
+   "uncertainty": "[\"Tư liệu có mốc ban hành cụ thể; nhận định mở rộng ra cả thời kì nên cần kiến thức nền về tính nhất quán của mục tiêu.\", \"Ánh xạ LS-T16 dựa trên tên chủ đề rộng; các phạm vi liệt kê tập trung vào thời kì sau thống nhất.\"]",
+   "source_record_id": "5a9dffb03ca8|P2|4|b"
+  },
+  {
+   "ref": "5a9dffb03ca8|P2|4|c",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt hợp tác theo mục tiêu cụ thể với quan hệ đồng minh đáng tin cậy vô điều kiện.",
+   "decisive_demand": "Phân biệt hợp tác theo mục tiêu cụ thể với quan hệ đồng minh đáng tin cậy vô điều kiện.",
+   "uncertainty": "[\"Ánh xạ LS-T16 dựa trên tên chủ đề rộng; các phạm vi liệt kê tập trung vào thời kì sau thống nhất.\"]",
+   "source_record_id": "5a9dffb03ca8|P2|4|c"
+  },
+  {
+   "ref": "5a9dffb03ca8|P2|4|d",
+   "level": "TH",
+   "confidence": "medium",
+   "justification": "Khái quát đồng thời chủ trương hợp tác và giới hạn bảo vệ độc lập, đồng thời kiểm tra phạm vi của từ ngữ tuyệt đối.",
+   "decisive_demand": "Khái quát đồng thời chủ trương hợp tác và giới hạn bảo vệ độc lập, đồng thời kiểm tra phạm vi của từ ngữ tuyệt đối.",
+   "uncertainty": "[\"Từ ngữ về mọi sự can thiệp có phạm vi rộng hơn các hành vi xâm lược và hỗ trợ tái chiếm được tư liệu nêu cụ thể.\", \"Ánh xạ LS-T16 dựa trên tên chủ đề rộng; các phạm vi liệt kê tập trung vào thời kì sau thống nhất.\"]",
+   "source_record_id": "5a9dffb03ca8|P2|4|d"
+  },
+  {
+   "ref": "686833f78102|P1|1|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ mối liên hệ giữa một cuộc kháng chiến và kế sách tiêu biểu đã học.",
+   "decisive_demand": "Nhớ mối liên hệ giữa một cuộc kháng chiến và kế sách tiêu biểu đã học.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P1|1|-"
+  },
+  {
+   "ref": "686833f78102|P1|2|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt kết luận khái quát phù hợp với thành tựu được nêu và những kết luận vượt quá căn cứ.",
+   "decisive_demand": "Phân biệt kết luận khái quát phù hợp với thành tựu được nêu và những kết luận vượt quá căn cứ.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P1|2|-"
+  },
+  {
+   "ref": "686833f78102|P1|3|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ lực lượng xâm lược mà cuộc khởi nghĩa chống lại.",
+   "decisive_demand": "Nhớ lực lượng xâm lược mà cuộc khởi nghĩa chống lại.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P1|3|-"
+  },
+  {
+   "ref": "686833f78102|P1|4|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt cách diễn đạt đúng về định hướng Đổi mới với những cách đảo quan hệ hoặc tuyệt đối hóa điều kiện.",
+   "decisive_demand": "Phân biệt cách diễn đạt đúng về định hướng Đổi mới với những cách đảo quan hệ hoặc tuyệt đối hóa điều kiện.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P1|4|-"
+  },
+  {
+   "ref": "686833f78102|P1|5|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận ra một chủ trương kinh tế đã học.",
+   "decisive_demand": "Nhận ra một chủ trương kinh tế đã học.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P1|5|-"
+  },
+  {
+   "ref": "686833f78102|P1|6|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Liên hệ bối cảnh phân cực quốc tế với trở ngại hợp tác khu vực theo quan hệ nhân quả quen thuộc.",
+   "decisive_demand": "Liên hệ bối cảnh phân cực quốc tế với trở ngại hợp tác khu vực theo quan hệ nhân quả quen thuộc.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P1|6|-"
+  },
+  {
+   "ref": "686833f78102|P1|7|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ quốc gia gia nhập ứng với mốc thời gian đã cho.",
+   "decisive_demand": "Nhớ quốc gia gia nhập ứng với mốc thời gian đã cho.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P1|7|-"
+  },
+  {
+   "ref": "686833f78102|P1|8|None",
+   "level": "TH",
+   "confidence": "medium",
+   "justification": "Phân loại các hoạt động hoặc tác động theo lĩnh vực vai trò của tổ chức.",
+   "decisive_demand": "Phân loại các hoạt động hoặc tác động theo lĩnh vực vai trò của tổ chức.",
+   "uncertainty": "[\"Các vai trò có giao thoa; phương án về môi trường hợp tác thể hiện tác động gián tiếp, còn phi thực dân hóa cũng liên quan đến hòa bình.\"]",
+   "source_record_id": "686833f78102|P1|8|-"
+  },
+  {
+   "ref": "686833f78102|P1|9|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Đối chiếu những đặc điểm quen thuộc để nhận ra thuộc tính chung, không cần xây dựng một lập luận lịch sử mới.",
+   "decisive_demand": "Đối chiếu những đặc điểm quen thuộc để nhận ra thuộc tính chung, không cần xây dựng một lập luận lịch sử mới.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P1|9|-"
+  },
+  {
+   "ref": "686833f78102|P1|10|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận diện nguyên nhân bên trong từ các nguyên nhân thắng lợi đã học.",
+   "decisive_demand": "Nhận diện nguyên nhân bên trong từ các nguyên nhân thắng lợi đã học.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P1|10|-"
+  },
+  {
+   "ref": "686833f78102|P1|11|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ tên chiến dịch gắn với một năm.",
+   "decisive_demand": "Nhớ tên chiến dịch gắn với một năm.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P1|11|-"
+  },
+  {
+   "ref": "686833f78102|P1|12|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ thời điểm thông qua văn kiện để nhận ra văn kiện thuộc khoảng thời gian được hỏi.",
+   "decisive_demand": "Nhớ thời điểm thông qua văn kiện để nhận ra văn kiện thuộc khoảng thời gian được hỏi.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P1|12|-"
+  },
+  {
+   "ref": "686833f78102|P1|13|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ văn kiện gắn với thời điểm và mục đích ngoại giao đã học.",
+   "decisive_demand": "Nhớ văn kiện gắn với thời điểm và mục đích ngoại giao đã học.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P1|13|-"
+  },
+  {
+   "ref": "686833f78102|P1|14|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ tổ chức đảm nhiệm chức năng tập hợp và rèn luyện quần chúng.",
+   "decisive_demand": "Nhớ tổ chức đảm nhiệm chức năng tập hợp và rèn luyện quần chúng.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P1|14|-"
+  },
+  {
+   "ref": "686833f78102|P1|15|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận ra một thành tựu đã học giữa các khẳng định phóng đại.",
+   "decisive_demand": "Nhận ra một thành tựu đã học giữa các khẳng định phóng đại.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P1|15|-"
+  },
+  {
+   "ref": "686833f78102|P1|16|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ tổ chức gắn với một mốc hoạt động của nhân vật lịch sử.",
+   "decisive_demand": "Nhớ tổ chức gắn với một mốc hoạt động của nhân vật lịch sử.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P1|16|-"
+  },
+  {
+   "ref": "686833f78102|P1|17|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Khái quát nguyên tắc chung từ những hoạt động pháp lí và hợp tác được liệt kê.",
+   "decisive_demand": "Khái quát nguyên tắc chung từ những hoạt động pháp lí và hợp tác được liệt kê.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P1|17|-"
+  },
+  {
+   "ref": "686833f78102|P1|18|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ tổ chức quân sự do một phe thành lập.",
+   "decisive_demand": "Nhớ tổ chức quân sự do một phe thành lập.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P1|18|-"
+  },
+  {
+   "ref": "686833f78102|P1|19|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Diễn giải ý nghĩa chính trị chung của hai hoạt động kinh tế đối ứng.",
+   "decisive_demand": "Diễn giải ý nghĩa chính trị chung của hai hoạt động kinh tế đối ứng.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P1|19|-"
+  },
+  {
+   "ref": "686833f78102|P1|20|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ tên cuộc cách mạng gắn với việc lật đổ chính quyền tư sản lâm thời.",
+   "decisive_demand": "Nhớ tên cuộc cách mạng gắn với việc lật đổ chính quyền tư sản lâm thời.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P1|20|-"
+  },
+  {
+   "ref": "686833f78102|P1|21|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận diện nhiệm vụ thuộc giai đoạn sau thống nhất.",
+   "decisive_demand": "Nhận diện nhiệm vụ thuộc giai đoạn sau thống nhất.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P1|21|-"
+  },
+  {
+   "ref": "686833f78102|P1|22|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Tìm và nhận lại địa danh được nêu trực tiếp trong tư liệu.",
+   "decisive_demand": "Tìm và nhận lại địa danh được nêu trực tiếp trong tư liệu.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P1|22|-"
+  },
+  {
+   "ref": "686833f78102|P1|23|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận lại đặc điểm phong trào đã được tư liệu nêu trực tiếp.",
+   "decisive_demand": "Nhận lại đặc điểm phong trào đã được tư liệu nêu trực tiếp.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P1|23|-"
+  },
+  {
+   "ref": "686833f78102|P1|24|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Khái quát bài học trực tiếp từ việc khắc phục sự phân tán tổ chức; liên hệ hiện tại chưa đòi hỏi xử lí một tình huống mới.",
+   "decisive_demand": "Khái quát bài học trực tiếp từ việc khắc phục sự phân tán tổ chức; liên hệ hiện tại chưa đòi hỏi xử lí một tình huống mới.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P1|24|-"
+  },
+  {
+   "ref": "686833f78102|P2|1|a",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Diễn giải hệ quả của thay đổi tương quan lực lượng được tư liệu mô tả.",
+   "decisive_demand": "Diễn giải hệ quả của thay đổi tương quan lực lượng được tư liệu mô tả.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P2|1|a"
+  },
+  {
+   "ref": "686833f78102|P2|1|b",
+   "level": "VD",
+   "confidence": "medium",
+   "justification": "Kết nối nội dung của hai hiệp định, tách cam kết về quyền dân tộc khỏi quy định quân sự rồi kiểm tra kết luận so sánh.",
+   "decisive_demand": "Kết nối nội dung của hai hiệp định, tách cam kết về quyền dân tộc khỏi quy định quân sự rồi kiểm tra kết luận so sánh.",
+   "uncertainty": "[\"Tư liệu chung không cung cấp điều khoản cần thiết; câu đòi hỏi kiến thức ngoài đoạn trích.\", \"Cụm chỉ việc phân chia quản lí quân sự chưa xác định rõ đang nói đến giới tuyến hay vùng kiểm soát thực tế, làm giảm độ chắc chắn của cách diễn giải.\"]",
+   "source_record_id": "686833f78102|P2|1|b"
+  },
+  {
+   "ref": "686833f78102|P2|1|c",
+   "level": "TH",
+   "confidence": "medium",
+   "justification": "Giải thích tác động khu vực theo mối liên hệ lịch sử quen thuộc giữa các cuộc đấu tranh ở Đông Dương.",
+   "decisive_demand": "Giải thích tác động khu vực theo mối liên hệ lịch sử quen thuộc giữa các cuộc đấu tranh ở Đông Dương.",
+   "uncertainty": "[\"Ảnh hưởng khu vực không được trình bày trực tiếp trong tư liệu chung, cần kiến thức lịch sử bổ sung.\"]",
+   "source_record_id": "686833f78102|P2|1|c"
+  },
+  {
+   "ref": "686833f78102|P2|1|d",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt sự phản ánh kết quả chiến trường trong ngoại giao với bản thân một thắng lợi quân sự.",
+   "decisive_demand": "Phân biệt sự phản ánh kết quả chiến trường trong ngoại giao với bản thân một thắng lợi quân sự.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P2|1|d"
+  },
+  {
+   "ref": "686833f78102|P2|2|a",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt định hướng vĩ mô với việc loại trừ mọi hình thức can thiệp trực tiếp.",
+   "decisive_demand": "Phân biệt định hướng vĩ mô với việc loại trừ mọi hình thức can thiệp trực tiếp.",
+   "uncertainty": "[\"Đoạn trích không mô tả cụ thể các công cụ can thiệp; cần kiến thức về mô hình kinh tế ngoài tư liệu.\"]",
+   "source_record_id": "686833f78102|P2|2|a"
+  },
+  {
+   "ref": "686833f78102|P2|2|b",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận lại đặc điểm được nêu trực tiếp trong tư liệu.",
+   "decisive_demand": "Nhận lại đặc điểm được nêu trực tiếp trong tư liệu.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P2|2|b"
+  },
+  {
+   "ref": "686833f78102|P2|2|c",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận lại đánh giá đã được tư liệu khẳng định trực tiếp.",
+   "decisive_demand": "Nhận lại đánh giá đã được tư liệu khẳng định trực tiếp.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P2|2|c"
+  },
+  {
+   "ref": "686833f78102|P2|2|d",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Đọc quan hệ bổ trợ trong tư liệu để kiểm tra một suy luận biến hai mục tiêu thành đối lập.",
+   "decisive_demand": "Đọc quan hệ bổ trợ trong tư liệu để kiểm tra một suy luận biến hai mục tiêu thành đối lập.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P2|2|d"
+  },
+  {
+   "ref": "686833f78102|P2|3|a",
+   "level": "TH",
+   "confidence": "medium",
+   "justification": "Giải thích ý nghĩa của xây dựng cộng đồng bằng mục tiêu hợp tác đa phương quen thuộc.",
+   "decisive_demand": "Giải thích ý nghĩa của xây dựng cộng đồng bằng mục tiêu hợp tác đa phương quen thuộc.",
+   "uncertainty": "[\"Bảng chỉ nêu sự kiện và cấu trúc cộng đồng, không trực tiếp chứng minh mức độ cấp thiết của nhu cầu được nhận định.\", \"Tiêu đề hai cột bị đảo so với dữ liệu; vẫn xác định được cột thời gian và cột sự kiện.\"]",
+   "source_record_id": "686833f78102|P2|3|a"
+  },
+  {
+   "ref": "686833f78102|P2|3|b",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Tổng hợp các hàng của bảng để xác định chủ đề bao quát.",
+   "decisive_demand": "Tổng hợp các hàng của bảng để xác định chủ đề bao quát.",
+   "uncertainty": "[\"Tiêu đề hai cột bị đảo so với dữ liệu; không làm mất thông tin cần để phân loại.\"]",
+   "source_record_id": "686833f78102|P2|3|b"
+  },
+  {
+   "ref": "686833f78102|P2|3|c",
+   "level": "VD",
+   "confidence": "medium",
+   "justification": "Nối một thay đổi chính sách thương mại với rủi ro tăng trưởng, rồi suy ra động lực điều chỉnh năng lực kinh tế của khu vực.",
+   "decisive_demand": "Nối một thay đổi chính sách thương mại với rủi ro tăng trưởng, rồi suy ra động lực điều chỉnh năng lực kinh tế của khu vực.",
+   "uncertainty": "[\"Bảng chỉ nêu chính sách, không cung cấp dữ liệu tác động hay phản ứng thực tế; nhận định cần được hiểu là cơ chế và khả năng tác động.\", \"Tiêu đề hai cột bị đảo so với dữ liệu.\"]",
+   "source_record_id": "686833f78102|P2|3|c"
+  },
+  {
+   "ref": "686833f78102|P2|3|d",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Dùng trình tự lịch sử để kiểm tra chiều quan hệ nhân quả.",
+   "decisive_demand": "Dùng trình tự lịch sử để kiểm tra chiều quan hệ nhân quả.",
+   "uncertainty": "[\"Khoảng thời gian gộp trong bảng không thể hiện niên đại riêng của từng sự kiện; cần kiến thức niên biểu đã học.\", \"Tiêu đề hai cột bị đảo so với dữ liệu.\"]",
+   "source_record_id": "686833f78102|P2|3|d"
+  },
+  {
+   "ref": "686833f78102|P2|4|a",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Đối chiếu hai tiến trình đã học trên một tiêu chí quen thuộc về thời cơ.",
+   "decisive_demand": "Đối chiếu hai tiến trình đã học trên một tiêu chí quen thuộc về thời cơ.",
+   "uncertainty": "[\"Tư liệu chỉ trực tiếp phản ánh một tiến trình; trường hợp so sánh còn lại cần kiến thức đã học.\"]",
+   "source_record_id": "686833f78102|P2|4|a"
+  },
+  {
+   "ref": "686833f78102|P2|4|b",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Hiểu hướng hành động của chỉ đạo để phát hiện nhận định đảo ngược chủ trương.",
+   "decisive_demand": "Hiểu hướng hành động của chỉ đạo để phát hiện nhận định đảo ngược chủ trương.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P2|4|b"
+  },
+  {
+   "ref": "686833f78102|P2|4|c",
+   "level": "TH",
+   "confidence": "medium",
+   "justification": "Giải thích quan hệ giữa phương châm tiến công, kinh nghiệm chiến dịch và mục tiêu kết thúc chiến tranh theo kiến thức đã học.",
+   "decisive_demand": "Giải thích quan hệ giữa phương châm tiến công, kinh nghiệm chiến dịch và mục tiêu kết thúc chiến tranh theo kiến thức đã học.",
+   "uncertainty": "[\"Tư liệu không mô tả các chiến dịch trước; phần nhận định về kế thừa cần kiến thức bổ sung.\", \"Cách nói về đột phá chiến lược khá rộng, chưa chỉ rõ là tạo chuyển biến mới hay khai thác chuyển biến đã có.\"]",
+   "source_record_id": "686833f78102|P2|4|c"
+  },
+  {
+   "ref": "686833f78102|P2|4|d",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận lại mối liên hệ giữa thời điểm, phương châm và thời cơ được tư liệu nêu trực tiếp.",
+   "decisive_demand": "Nhận lại mối liên hệ giữa thời điểm, phương châm và thời cơ được tư liệu nêu trực tiếp.",
+   "uncertainty": null,
+   "source_record_id": "686833f78102|P2|4|d"
+  },
+  {
+   "ref": "acc23c4ca4f8|P1|1|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt một khái quát có giới hạn với các nhận định tuyệt đối hóa hoặc đánh tráo quan hệ nhân quả.",
+   "decisive_demand": "Phân biệt một khái quát có giới hạn với các nhận định tuyệt đối hóa hoặc đánh tráo quan hệ nhân quả.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P1|1|-"
+  },
+  {
+   "ref": "acc23c4ca4f8|P1|2|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt tác dụng của ngoại giao với kết quả trực tiếp của hoạt động quân sự.",
+   "decisive_demand": "Phân biệt tác dụng của ngoại giao với kết quả trực tiếp của hoạt động quân sự.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P1|2|-"
+  },
+  {
+   "ref": "acc23c4ca4f8|P1|3|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Kiểm tra quan hệ thời gian để loại một thành tựu không thể là nguyên nhân của biến cố trước nó.",
+   "decisive_demand": "Kiểm tra quan hệ thời gian để loại một thành tựu không thể là nguyên nhân của biến cố trước nó.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P1|3|-"
+  },
+  {
+   "ref": "acc23c4ca4f8|P1|4|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ tên cơ quan gắn với một quyết định lịch sử đã học.",
+   "decisive_demand": "Nhớ tên cơ quan gắn với một quyết định lịch sử đã học.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P1|4|-"
+  },
+  {
+   "ref": "acc23c4ca4f8|P1|5|None",
+   "level": "TH",
+   "confidence": "medium",
+   "justification": "Đối chiếu các kết luận với quan hệ nội lực, ngoại lực và mục tiêu xuyên suốt của Đổi mới.",
+   "decisive_demand": "Đối chiếu các kết luận với quan hệ nội lực, ngoại lực và mục tiêu xuyên suốt của Đổi mới.",
+   "uncertainty": "[\"Câu dẫn bao quát thành tựu rất rộng nhưng không cung cấp dẫn chứng cụ thể; phương án về vai trò ngoại lực cần được đọc cùng nguyên tắc phát huy nội lực.\"]",
+   "source_record_id": "acc23c4ca4f8|P1|5|-"
+  },
+  {
+   "ref": "acc23c4ca4f8|P1|6|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Nhận ra nguyên tắc chung trong một chuỗi lựa chọn tổ chức đã học.",
+   "decisive_demand": "Nhận ra nguyên tắc chung trong một chuỗi lựa chọn tổ chức đã học.",
+   "uncertainty": "[\"Cách diễn đạt quy toàn bộ việc tổ chức chính đảng ở các nước cho một cá nhân mang tính giản lược chủ thể lịch sử.\"]",
+   "source_record_id": "acc23c4ca4f8|P1|6|-"
+  },
+  {
+   "ref": "acc23c4ca4f8|P1|7|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ nhiệm vụ lịch sử tiêu biểu của giai đoạn được hỏi.",
+   "decisive_demand": "Nhớ nhiệm vụ lịch sử tiêu biểu của giai đoạn được hỏi.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P1|7|-"
+  },
+  {
+   "ref": "acc23c4ca4f8|P1|8|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt vai trò thực tế của mặt trận với việc gán thêm sự tham chiến trực tiếp của lực lượng quốc tế.",
+   "decisive_demand": "Phân biệt vai trò thực tế của mặt trận với việc gán thêm sự tham chiến trực tiếp của lực lượng quốc tế.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P1|8|-"
+  },
+  {
+   "ref": "acc23c4ca4f8|P1|9|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Truy hồi hoạt động gắn với một mốc trong tiểu sử cách mạng.",
+   "decisive_demand": "Truy hồi hoạt động gắn với một mốc trong tiểu sử cách mạng.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P1|9|-"
+  },
+  {
+   "ref": "acc23c4ca4f8|P1|10|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ cuộc khởi nghĩa gắn với tên chiến thắng.",
+   "decisive_demand": "Nhớ cuộc khởi nghĩa gắn với tên chiến thắng.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P1|10|-"
+  },
+  {
+   "ref": "acc23c4ca4f8|P1|11|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ một ý nghĩa quốc tế đã được học về sự kiện thành lập.",
+   "decisive_demand": "Nhớ một ý nghĩa quốc tế đã được học về sự kiện thành lập.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P1|11|-"
+  },
+  {
+   "ref": "acc23c4ca4f8|P1|12|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ đóng góp tiêu biểu của phong trào đối với nền độc lập dân tộc.",
+   "decisive_demand": "Nhớ đóng góp tiêu biểu của phong trào đối với nền độc lập dân tộc.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P1|12|-"
+  },
+  {
+   "ref": "acc23c4ca4f8|P1|13|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ văn kiện gắn với một hội nghị khu vực.",
+   "decisive_demand": "Nhớ văn kiện gắn với một hội nghị khu vực.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P1|13|-"
+  },
+  {
+   "ref": "acc23c4ca4f8|P1|14|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ đặc điểm bối cảnh quốc tế gắn với việc đề xuất xây dựng cộng đồng.",
+   "decisive_demand": "Nhớ đặc điểm bối cảnh quốc tế gắn với việc đề xuất xây dựng cộng đồng.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P1|14|-"
+  },
+  {
+   "ref": "acc23c4ca4f8|P1|15|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ quyết định tiêu biểu của một đại hội.",
+   "decisive_demand": "Nhớ quyết định tiêu biểu của một đại hội.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P1|15|-"
+  },
+  {
+   "ref": "acc23c4ca4f8|P1|16|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ tình trạng kinh tế đặt ra yêu cầu đổi mới.",
+   "decisive_demand": "Nhớ tình trạng kinh tế đặt ra yêu cầu đổi mới.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P1|16|-"
+  },
+  {
+   "ref": "acc23c4ca4f8|P1|17|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ chế độ bị lật đổ bởi một cuộc cách mạng.",
+   "decisive_demand": "Nhớ chế độ bị lật đổ bởi một cuộc cách mạng.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P1|17|-"
+  },
+  {
+   "ref": "acc23c4ca4f8|P1|18|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ xu hướng hợp tác khu vực gắn với sự ra đời tổ chức.",
+   "decisive_demand": "Nhớ xu hướng hợp tác khu vực gắn với sự ra đời tổ chức.",
+   "uncertainty": "[\"Danh mục nêu chủ yếu các phạm vi về Cộng đồng ASEAN; câu này thuộc lịch sử thành lập ASEAN, rộng hơn các phạm vi liệt kê nhưng phù hợp tên chủ đề.\"]",
+   "source_record_id": "acc23c4ca4f8|P1|18|-"
+  },
+  {
+   "ref": "acc23c4ca4f8|P1|19|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận ra một mục tiêu hoạt động đã học của tổ chức.",
+   "decisive_demand": "Nhận ra một mục tiêu hoạt động đã học của tổ chức.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P1|19|-"
+  },
+  {
+   "ref": "acc23c4ca4f8|P1|20|None",
+   "level": "TH",
+   "confidence": "medium",
+   "justification": "Phân biệt sự kết hợp nhiệm vụ đấu tranh với các mô tả sai về địa bàn, phương thức và mức độ kết quả.",
+   "decisive_demand": "Phân biệt sự kết hợp nhiệm vụ đấu tranh với các mô tả sai về địa bàn, phương thức và mức độ kết quả.",
+   "uncertainty": "[\"Danh mục chưa liệt kê riêng phong trào này trong phạm vi chủ đề.\", \"Phương án về giải quyết mâu thuẫn chưa nói rõ mức độ hoàn thành, làm ranh giới với phương án về kết hợp nhiệm vụ kém sắc nét.\"]",
+   "source_record_id": "acc23c4ca4f8|P1|20|-"
+  },
+  {
+   "ref": "acc23c4ca4f8|P1|21|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ sự kiện chính trị tiêu biểu trong khoảng thời gian đã cho.",
+   "decisive_demand": "Nhớ sự kiện chính trị tiêu biểu trong khoảng thời gian đã cho.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P1|21|-"
+  },
+  {
+   "ref": "acc23c4ca4f8|P1|22|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Diễn giải tác động chính trị quân sự trong tư liệu và phân biệt nó với các kết quả vượt quá thời điểm.",
+   "decisive_demand": "Diễn giải tác động chính trị quân sự trong tư liệu và phân biệt nó với các kết quả vượt quá thời điểm.",
+   "uncertainty": "[\"Tư liệu dùng mức diễn đạt mạnh hơn phương án về sự suy giảm ý chí; cần phân biệt lời đánh giá trong trích dẫn với kết luận lịch sử độc lập.\"]",
+   "source_record_id": "acc23c4ca4f8|P1|22|-"
+  },
+  {
+   "ref": "acc23c4ca4f8|P1|23|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Suy ra tác dụng đối với miền Bắc từ sự thay đổi hoạt động chiến tranh của đối phương.",
+   "decisive_demand": "Suy ra tác dụng đối với miền Bắc từ sự thay đổi hoạt động chiến tranh của đối phương.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P1|23|-"
+  },
+  {
+   "ref": "acc23c4ca4f8|P1|24|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận ra tên chiến lược được nêu trực tiếp trong đoạn trích.",
+   "decisive_demand": "Nhận ra tên chiến lược được nêu trực tiếp trong đoạn trích.",
+   "uncertainty": "[\"Yêu cầu trả lời theo tư liệu chỉ đòi hỏi nhận diện lời trích, không đồng nghĩa kiểm chứng độc lập toàn bộ đánh giá của tư liệu.\"]",
+   "source_record_id": "acc23c4ca4f8|P1|24|-"
+  },
+  {
+   "ref": "acc23c4ca4f8|P2|1|a",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt một dấu mốc phát triển với điểm bắt đầu của tiến trình đã diễn ra trước đó.",
+   "decisive_demand": "Phân biệt một dấu mốc phát triển với điểm bắt đầu của tiến trình đã diễn ra trước đó.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P2|1|a"
+  },
+  {
+   "ref": "acc23c4ca4f8|P2|1|b",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Dùng thứ tự thời gian để kiểm tra chiều tác động được khẳng định.",
+   "decisive_demand": "Dùng thứ tự thời gian để kiểm tra chiều tác động được khẳng định.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P2|1|b"
+  },
+  {
+   "ref": "acc23c4ca4f8|P2|1|c",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Nhận ra quan hệ thúc đẩy quen thuộc giữa biến đổi quốc tế và nhu cầu hội nhập.",
+   "decisive_demand": "Nhận ra quan hệ thúc đẩy quen thuộc giữa biến đổi quốc tế và nhu cầu hội nhập.",
+   "uncertainty": "[\"Cách gọi cuộc cách mạng khoa học kĩ thuật theo thứ tự trong mệnh đề chưa thật thống nhất với hệ thuật ngữ cách mạng công nghiệp; cần đọc theo nội dung khoa học công nghệ mà câu hướng tới.\"]",
+   "source_record_id": "acc23c4ca4f8|P2|1|c"
+  },
+  {
+   "ref": "acc23c4ca4f8|P2|1|d",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Khái quát nội dung của các nhận xét trong tư liệu thành chủ đề ý nghĩa sự kiện.",
+   "decisive_demand": "Khái quát nội dung của các nhận xét trong tư liệu thành chủ đề ý nghĩa sự kiện.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P2|1|d"
+  },
+  {
+   "ref": "acc23c4ca4f8|P2|2|a",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Giải thích quan hệ giữa thay đổi cơ chế kinh tế và việc huy động tiềm năng sản xuất.",
+   "decisive_demand": "Giải thích quan hệ giữa thay đổi cơ chế kinh tế và việc huy động tiềm năng sản xuất.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P2|2|a"
+  },
+  {
+   "ref": "acc23c4ca4f8|P2|2|b",
+   "level": "TH",
+   "confidence": "medium",
+   "justification": "Phân biệt vai trò nền tảng của kinh tế với khẳng định quá rộng về yếu tố quyết định bản chất chế độ.",
+   "decisive_demand": "Phân biệt vai trò nền tảng của kinh tế với khẳng định quá rộng về yếu tố quyết định bản chất chế độ.",
+   "uncertainty": "[\"Đoạn trích không nêu trực tiếp lí do lựa chọn trọng tâm.\", \"Cụm diễn đạt về bản chất chế độ có thể được hiểu khác nhau nếu không phân biệt nền tảng kinh tế với kết quả tăng trưởng kinh tế.\"]",
+   "source_record_id": "acc23c4ca4f8|P2|2|b"
+  },
+  {
+   "ref": "acc23c4ca4f8|P2|2|c",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Đối chiếu từng thành phần của mệnh đề với ranh giới mục tiêu và phương thức trong tư liệu.",
+   "decisive_demand": "Đối chiếu từng thành phần của mệnh đề với ranh giới mục tiêu và phương thức trong tư liệu.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P2|2|c"
+  },
+  {
+   "ref": "acc23c4ca4f8|P2|2|d",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt tính linh hoạt của nhận thức, biện pháp với tính ổn định của mục tiêu.",
+   "decisive_demand": "Phân biệt tính linh hoạt của nhận thức, biện pháp với tính ổn định của mục tiêu.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P2|2|d"
+  },
+  {
+   "ref": "acc23c4ca4f8|P2|3|a",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt việc tập hợp lực lượng cho nhiệm vụ ưu tiên với việc giải quyết toàn bộ nhiệm vụ chiến lược.",
+   "decisive_demand": "Phân biệt việc tập hợp lực lượng cho nhiệm vụ ưu tiên với việc giải quyết toàn bộ nhiệm vụ chiến lược.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P2|3|a"
+  },
+  {
+   "ref": "acc23c4ca4f8|P2|3|b",
+   "level": "TH",
+   "confidence": "medium",
+   "justification": "So sánh phạm vi thời gian, nội dung của cả bảng với phạm vi mà mệnh đề dùng để khái quát.",
+   "decisive_demand": "So sánh phạm vi thời gian, nội dung của cả bảng với phạm vi mà mệnh đề dùng để khái quát.",
+   "uncertainty": "[\"Mệnh đề không có từ giới hạn như chỉ hoặc toàn bộ. Nếu hiểu là xác nhận bảng có đề cập hoạt động trong tổng khởi nghĩa thì có căn cứ; nếu hiểu là khái quát toàn bảng thì phạm vi quá hẹp.\"]",
+   "source_record_id": "acc23c4ca4f8|P2|3|b"
+  },
+  {
+   "ref": "acc23c4ca4f8|P2|3|c",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ ý nghĩa tiêu biểu đã học của hội nghị đối với tiến trình chuẩn bị giành chính quyền.",
+   "decisive_demand": "Nhớ ý nghĩa tiêu biểu đã học của hội nghị đối với tiến trình chuẩn bị giành chính quyền.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P2|3|c"
+  },
+  {
+   "ref": "acc23c4ca4f8|P2|3|d",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt hoạt động tìm kiếm phối hợp với kết quả hỗ trợ thực tế và quy mô của hỗ trợ.",
+   "decisive_demand": "Phân biệt hoạt động tìm kiếm phối hợp với kết quả hỗ trợ thực tế và quy mô của hỗ trợ.",
+   "uncertainty": "[\"Bảng không trực tiếp cung cấp quy mô hỗ trợ; cần kiến thức ngoài bảng để đánh giá đầy đủ mệnh đề.\"]",
+   "source_record_id": "acc23c4ca4f8|P2|3|d"
+  },
+  {
+   "ref": "acc23c4ca4f8|P2|4|a",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Diễn giải hoạt động tranh thủ quốc tế trong tư liệu thành vai trò của một mặt trận đấu tranh.",
+   "decisive_demand": "Diễn giải hoạt động tranh thủ quốc tế trong tư liệu thành vai trò của một mặt trận đấu tranh.",
+   "uncertainty": "[\"Phạm vi danh mục về kháng chiến chống Mỹ chưa liệt kê riêng quá trình ngoại giao trở thành mặt trận, nhưng nội dung phù hợp chủ đề.\"]",
+   "source_record_id": "acc23c4ca4f8|P2|4|a"
+  },
+  {
+   "ref": "acc23c4ca4f8|P2|4|b",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Nhận ra mục tiêu xuyên suốt qua các hoạt động tranh thủ quốc tế và đàm phán được tư liệu mô tả.",
+   "decisive_demand": "Nhận ra mục tiêu xuyên suốt qua các hoạt động tranh thủ quốc tế và đàm phán được tư liệu mô tả.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P2|4|b"
+  },
+  {
+   "ref": "acc23c4ca4f8|P2|4|c",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Kiểm tra chiều tác động và thứ tự giữa thắng lợi quân sự với thỏa thuận ngoại giao.",
+   "decisive_demand": "Kiểm tra chiều tác động và thứ tự giữa thắng lợi quân sự với thỏa thuận ngoại giao.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P2|4|c"
+  },
+  {
+   "ref": "acc23c4ca4f8|P2|4|d",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận diện thông tin về thiết lập quan hệ ngoại giao được nêu trực tiếp trong tư liệu.",
+   "decisive_demand": "Nhận diện thông tin về thiết lập quan hệ ngoại giao được nêu trực tiếp trong tư liệu.",
+   "uncertainty": null,
+   "source_record_id": "acc23c4ca4f8|P2|4|d"
+  },
+  {
+   "ref": "dff65825f390|P1|1|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Hiểu rằng sự xuất hiện thêm các trung tâm quyền lực không đồng nghĩa với việc trung tâm đang dẫn đầu lập tức mất vị trí.",
+   "decisive_demand": "Hiểu rằng sự xuất hiện thêm các trung tâm quyền lực không đồng nghĩa với việc trung tâm đang dẫn đầu lập tức mất vị trí.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P1|1|-"
+  },
+  {
+   "ref": "dff65825f390|P1|2|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt nhân tố chung của các cuộc kháng chiến với kế sách chỉ phù hợp một số trường hợp.",
+   "decisive_demand": "Phân biệt nhân tố chung của các cuộc kháng chiến với kế sách chỉ phù hợp một số trường hợp.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P1|2|-"
+  },
+  {
+   "ref": "dff65825f390|P1|3|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ quan hệ giữa cuộc kháng chiến được hỏi và chiến thắng quyết định.",
+   "decisive_demand": "Nhớ quan hệ giữa cuộc kháng chiến được hỏi và chiến thắng quyết định.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P1|3|-"
+  },
+  {
+   "ref": "dff65825f390|P1|4|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt tác động tăng vị thế với những kết luận vượt quá tính chất và phạm vi của tổ chức.",
+   "decisive_demand": "Phân biệt tác động tăng vị thế với những kết luận vượt quá tính chất và phạm vi của tổ chức.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P1|4|-"
+  },
+  {
+   "ref": "dff65825f390|P1|5|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ văn kiện gắn với hội nghị được xác định.",
+   "decisive_demand": "Nhớ văn kiện gắn với hội nghị được xác định.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P1|5|-"
+  },
+  {
+   "ref": "dff65825f390|P1|6|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ kết quả trực tiếp của đại hội thành lập.",
+   "decisive_demand": "Nhớ kết quả trực tiếp của đại hội thành lập.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P1|6|-"
+  },
+  {
+   "ref": "dff65825f390|P1|7|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ chiến dịch tương ứng với mốc quyết định.",
+   "decisive_demand": "Nhớ chiến dịch tương ứng với mốc quyết định.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P1|7|-"
+  },
+  {
+   "ref": "dff65825f390|P1|8|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt đóng góp hạn chế xung đột với khả năng ngăn chặn toàn bộ đối đầu và chiến tranh.",
+   "decisive_demand": "Phân biệt đóng góp hạn chế xung đột với khả năng ngăn chặn toàn bộ đối đầu và chiến tranh.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P1|8|-"
+  },
+  {
+   "ref": "dff65825f390|P1|9|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Kiểm tra một đặc điểm có đúng với mọi quá trình được nêu hay chỉ đúng với một giai đoạn.",
+   "decisive_demand": "Kiểm tra một đặc điểm có đúng với mọi quá trình được nêu hay chỉ đúng với một giai đoạn.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P1|9|-"
+  },
+  {
+   "ref": "dff65825f390|P1|10|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận diện mục tiêu đã học của một trụ cột.",
+   "decisive_demand": "Nhận diện mục tiêu đã học của một trụ cột.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P1|10|-"
+  },
+  {
+   "ref": "dff65825f390|P1|11|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Khái quát nguyên tắc bảo vệ chủ quyền từ các hành động pháp lí được cung cấp.",
+   "decisive_demand": "Khái quát nguyên tắc bảo vệ chủ quyền từ các hành động pháp lí được cung cấp.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P1|11|-"
+  },
+  {
+   "ref": "dff65825f390|P1|12|None",
+   "level": "TH",
+   "confidence": "medium",
+   "justification": "Phân biệt nguyên tắc có giá trị xuyên suốt với biện pháp quan hệ đối ngoại phụ thuộc hoàn cảnh.",
+   "decisive_demand": "Phân biệt nguyên tắc có giá trị xuyên suốt với biện pháp quan hệ đối ngoại phụ thuộc hoàn cảnh.",
+   "uncertainty": "[\"Danh mục có các chủ đề về nhân vật và đối ngoại nhưng phạm vi được liệt kê chưa bao quát trực tiếp vai trò đối ngoại ở giai đoạn được hỏi.\"]",
+   "source_record_id": "dff65825f390|P1|12|-"
+  },
+  {
+   "ref": "dff65825f390|P1|13|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận diện một chủ trương chính trị đã học.",
+   "decisive_demand": "Nhận diện một chủ trương chính trị đã học.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P1|13|-"
+  },
+  {
+   "ref": "dff65825f390|P1|14|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ hoạt động xây dựng hậu phương thuộc giai đoạn được xác định.",
+   "decisive_demand": "Nhớ hoạt động xây dựng hậu phương thuộc giai đoạn được xác định.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P1|14|-"
+  },
+  {
+   "ref": "dff65825f390|P1|15|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ thời kì hoạt động của các nhân vật để nhận ra trường hợp ngoài phạm vi.",
+   "decisive_demand": "Nhớ thời kì hoạt động của các nhân vật để nhận ra trường hợp ngoài phạm vi.",
+   "uncertainty": "[\"Phạm vi LS-T16 được liệt kê tập trung vào đối ngoại sau thống nhất; các chủ đề về Hồ Chí Minh không bao quát toàn bộ nhóm nhân vật.\"]",
+   "source_record_id": "dff65825f390|P1|15|-"
+  },
+  {
+   "ref": "dff65825f390|P1|16|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ nhân tố được xác định là cơ bản nhất trong hệ thống bài học lịch sử.",
+   "decisive_demand": "Nhớ nhân tố được xác định là cơ bản nhất trong hệ thống bài học lịch sử.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P1|16|-"
+  },
+  {
+   "ref": "dff65825f390|P1|17|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ xu hướng phát triển chung đã học.",
+   "decisive_demand": "Nhớ xu hướng phát triển chung đã học.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P1|17|-"
+  },
+  {
+   "ref": "dff65825f390|P1|18|None",
+   "level": "NB",
+   "confidence": "medium",
+   "justification": "Nhận diện nguyên tắc tổ chức đã học giữa các yêu cầu và mục tiêu quản lí.",
+   "decisive_demand": "Nhận diện nguyên tắc tổ chức đã học giữa các yêu cầu và mục tiêu quản lí.",
+   "uncertainty": "[\"Từ chỉ thời điểm hiện hành không được gắn với văn kiện cụ thể; phân tích chỉ xác định yêu cầu kiến thức của câu hỏi, không xác nhận chính sách hiện hành.\"]",
+   "source_record_id": "dff65825f390|P1|18|-"
+  },
+  {
+   "ref": "dff65825f390|P1|19|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Đối chiếu nội dung đường lối với các xu thế phát triển và hợp tác quen thuộc.",
+   "decisive_demand": "Đối chiếu nội dung đường lối với các xu thế phát triển và hợp tác quen thuộc.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P1|19|-"
+  },
+  {
+   "ref": "dff65825f390|P1|20|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt tư tưởng chỉ đạo chung với hình thức đấu tranh hoặc chuyển hướng chỉ đúng từng thời điểm.",
+   "decisive_demand": "Phân biệt tư tưởng chỉ đạo chung với hình thức đấu tranh hoặc chuyển hướng chỉ đúng từng thời điểm.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P1|20|-"
+  },
+  {
+   "ref": "dff65825f390|P1|21|None",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ sự kiện đánh dấu giới hạn của thời cơ đã học.",
+   "decisive_demand": "Nhớ sự kiện đánh dấu giới hạn của thời cơ đã học.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P1|21|-"
+  },
+  {
+   "ref": "dff65825f390|P1|22|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Đọc tư liệu để chọn diễn giải đúng phạm vi của sự đánh giá.",
+   "decisive_demand": "Đọc tư liệu để chọn diễn giải đúng phạm vi của sự đánh giá.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P1|22|-"
+  },
+  {
+   "ref": "dff65825f390|P1|23|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Diễn giải tác động cổ vũ tinh thần từ nội dung tư liệu.",
+   "decisive_demand": "Diễn giải tác động cổ vũ tinh thần từ nội dung tư liệu.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P1|23|-"
+  },
+  {
+   "ref": "dff65825f390|P1|24|None",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Liên hệ ý nghĩa của sự tự khẳng định dân tộc với vai trò lãnh đạo giành độc lập.",
+   "decisive_demand": "Liên hệ ý nghĩa của sự tự khẳng định dân tộc với vai trò lãnh đạo giành độc lập.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P1|24|-"
+  },
+  {
+   "ref": "dff65825f390|P2|1|a",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Đối chiếu nhận định khái quát với quan hệ so sánh được thể hiện trong tư liệu.",
+   "decisive_demand": "Đối chiếu nhận định khái quát với quan hệ so sánh được thể hiện trong tư liệu.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P2|1|a"
+  },
+  {
+   "ref": "dff65825f390|P2|1|b",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ mục tiêu chiến lược của cuộc tổng tiến công.",
+   "decisive_demand": "Nhớ mục tiêu chiến lược của cuộc tổng tiến công.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P2|1|b"
+  },
+  {
+   "ref": "dff65825f390|P2|1|c",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Tách hai mục tiêu chiến lược để kiểm tra việc đồng nhất thành tựu từng bước với hoàn thành toàn bộ.",
+   "decisive_demand": "Tách hai mục tiêu chiến lược để kiểm tra việc đồng nhất thành tựu từng bước với hoàn thành toàn bộ.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P2|1|c"
+  },
+  {
+   "ref": "dff65825f390|P2|1|d",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhận diện nhân tố lãnh đạo đã học, đồng thời được tư liệu nhấn mạnh.",
+   "decisive_demand": "Nhận diện nhân tố lãnh đạo đã học, đồng thời được tư liệu nhấn mạnh.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P2|1|d"
+  },
+  {
+   "ref": "dff65825f390|P2|2|a",
+   "level": "TH",
+   "confidence": "medium",
+   "justification": "Đánh giá sự phù hợp của một bài học đối ngoại với yêu cầu nắm bắt tình hình và tận dụng khả năng hợp tác.",
+   "decisive_demand": "Đánh giá sự phù hợp của một bài học đối ngoại với yêu cầu nắm bắt tình hình và tận dụng khả năng hợp tác.",
+   "uncertainty": "[\"Tư liệu không trực tiếp trình bày toàn bộ bài học được khẳng định.\", \"Cách diễn đạt về khả năng chuyển đổi tình thế mang tính tu từ, chưa xác định rõ điều kiện áp dụng.\"]",
+   "source_record_id": "dff65825f390|P2|2|a"
+  },
+  {
+   "ref": "dff65825f390|P2|2|b",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Đối chiếu cách giới hạn chủ thể và không gian quan hệ với thông tin trong tư liệu.",
+   "decisive_demand": "Đối chiếu cách giới hạn chủ thể và không gian quan hệ với thông tin trong tư liệu.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P2|2|b"
+  },
+  {
+   "ref": "dff65825f390|P2|2|c",
+   "level": "TH",
+   "confidence": "medium",
+   "justification": "Tách các vế để đánh giá mức độ khẳng định về vai trò, thay vì chấp nhận toàn bộ vì có một vế hợp lí.",
+   "decisive_demand": "Tách các vế để đánh giá mức độ khẳng định về vai trò, thay vì chấp nhận toàn bộ vì có một vế hợp lí.",
+   "uncertainty": "[\"Tư liệu chỉ khẳng định vai trò quan trọng, chưa đủ để suy ra vị trí quyết định.\", \"Phát biểu chưa làm rõ điều kiện và nghĩa của vai trò quyết định nên có độ mơ hồ.\", \"Danh mục chưa có phạm vi trực tiếp về quan hệ giữa đối ngoại với các lĩnh vực đấu tranh khác.\"]",
+   "source_record_id": "dff65825f390|P2|2|c"
+  },
+  {
+   "ref": "dff65825f390|P2|2|d",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt nhận định tuyệt đối về bất lợi với khả năng tham gia hiệu quả mà tư liệu nêu.",
+   "decisive_demand": "Phân biệt nhận định tuyệt đối về bất lợi với khả năng tham gia hiệu quả mà tư liệu nêu.",
+   "uncertainty": "[\"Khả năng tham gia hiệu quả không tự nó chứng minh hoàn toàn không có khó khăn; cần đánh giá tính tuyệt đối của phát biểu.\"]",
+   "source_record_id": "dff65825f390|P2|2|d"
+  },
+  {
+   "ref": "dff65825f390|P2|3|a",
+   "level": "NB",
+   "confidence": "medium",
+   "justification": "Nhớ cách xác định vị trí của lĩnh vực này trong kiến thức đã học.",
+   "decisive_demand": "Nhớ cách xác định vị trí của lĩnh vực này trong kiến thức đã học.",
+   "uncertainty": "[\"Bảng không có thông tin trực tiếp về lĩnh vực được phát biểu.\", \"Cách ghép các từ chỉ vị trí chiến lược và tính bền vững chưa rõ quan hệ nghĩa; cần thận trọng nếu đáp án dựa vào khác biệt thuật ngữ.\"]",
+   "source_record_id": "dff65825f390|P2|3|a"
+  },
+  {
+   "ref": "dff65825f390|P2|3|b",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Phân biệt điều chỉnh phương thức thực hiện với thay đổi mục tiêu chiến lược.",
+   "decisive_demand": "Phân biệt điều chỉnh phương thức thực hiện với thay đổi mục tiêu chiến lược.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P2|3|b"
+  },
+  {
+   "ref": "dff65825f390|P2|3|c",
+   "level": "NB",
+   "confidence": "medium",
+   "justification": "Nhớ chính sách đối với thành phần kinh tế tư nhân trong mô hình kinh tế trước đó.",
+   "decisive_demand": "Nhớ chính sách đối với thành phần kinh tế tư nhân trong mô hình kinh tế trước đó.",
+   "uncertainty": "[\"Bảng không trực tiếp nêu chính sách trước Đổi mới.\", \"Phạm vi thời gian trước Đổi mới được khái quát rộng, chưa phân biệt các điều chỉnh và ngoại lệ.\"]",
+   "source_record_id": "dff65825f390|P2|3|c"
+  },
+  {
+   "ref": "dff65825f390|P2|3|d",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Khái quát các hàng của bảng thành nhận định chung về chuyển biến kinh tế.",
+   "decisive_demand": "Khái quát các hàng của bảng thành nhận định chung về chuyển biến kinh tế.",
+   "uncertainty": "[\"Bảng có nhận định so sánh quốc tế nhưng không kèm chỉ tiêu và khoảng thời gian; câu này chỉ yêu cầu khái quát thông tin được cho.\"]",
+   "source_record_id": "dff65825f390|P2|3|d"
+  },
+  {
+   "ref": "dff65825f390|P2|4|a",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Nhận ra khác biệt giữa đặt nền tảng và hoàn tất một quá trình lịch sử.",
+   "decisive_demand": "Nhận ra khác biệt giữa đặt nền tảng và hoàn tất một quá trình lịch sử.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P2|4|a"
+  },
+  {
+   "ref": "dff65825f390|P2|4|b",
+   "level": "NB",
+   "confidence": "high",
+   "justification": "Nhớ thời gian diễn ra hội nghị để phát hiện phần mô tả thời lượng không phù hợp.",
+   "decisive_demand": "Nhớ thời gian diễn ra hội nghị để phát hiện phần mô tả thời lượng không phù hợp.",
+   "uncertainty": null,
+   "source_record_id": "dff65825f390|P2|4|b"
+  },
+  {
+   "ref": "dff65825f390|P2|4|c",
+   "level": "TH",
+   "confidence": "high",
+   "justification": "Diễn giải quan hệ giữa một loại quyết định quốc tế và cấu trúc quyền lực hình thành sau đó.",
+   "decisive_demand": "Diễn giải quan hệ giữa một loại quyết định quốc tế và cấu trúc quyền lực hình thành sau đó.",
+   "uncertainty": "[\"Cách diễn đạt về tác động trực tiếp cần hiểu là tạo khuôn khổ, không phải hoàn tất ngay toàn bộ trật tự.\"]",
+   "source_record_id": "dff65825f390|P2|4|c"
+  },
+  {
+   "ref": "dff65825f390|P2|4|d",
+   "level": "VD",
+   "confidence": "medium",
+   "justification": "Kết nối các nhóm quyết định quốc tế khác nhau với điều kiện hành động và những trở ngại của cách mạng trong nước.",
+   "decisive_demand": "Kết nối các nhóm quyết định quốc tế khác nhau với điều kiện hành động và những trở ngại của cách mạng trong nước.",
+   "uncertainty": "[\"Tư liệu chỉ trình bày một hội nghị và không trực tiếp cung cấp các hệ quả đối với Việt Nam.\", \"Phát biểu không chỉ rõ thuận lợi và khó khăn nào; mức VD dựa trên yêu cầu tự nối các quyết định với hệ quả, không dựa vào độ dài mệnh đề.\"]",
+   "source_record_id": "dff65825f390|P2|4|d"
+  }
+ ],
+ "topic_level_counts": [
+  {
+   "class": "official",
+   "part": "P1",
+   "topic": "ASEAN: những chặng đường lịch sử",
+   "topic_key": "LS-T01",
+   "counts": {
+    "NB": 2,
+    "TH": 1
+   }
+  },
+  {
+   "class": "official",
+   "part": "P1",
+   "topic": "Chiến tranh bảo vệ Tổ quốc trước thời hiện đại",
+   "topic_key": "LS-T04",
+   "counts": {
+    "NB": 1
+   }
+  },
+  {
+   "class": "official",
+   "part": "P1",
+   "topic": "Cuộc đời và con đường cứu nước của Hồ Chí Minh",
+   "topic_key": "LS-T05",
+   "counts": {
+    "NB": 1
+   }
+  },
+  {
+   "class": "official",
+   "part": "P1",
+   "topic": "Cách mạng tháng Tám và kháng chiến chống thực dân Pháp",
+   "topic_key": "LS-T06",
+   "counts": {
+    "NB": 1
+   }
+  },
+  {
+   "class": "official",
+   "part": "P1",
+   "topic": "Công cuộc Đổi mới ở Việt Nam từ năm 1986",
+   "topic_key": "LS-T08",
+   "counts": {
+    "TH": 1,
+    "NB": 1
+   }
+  },
+  {
+   "class": "official",
+   "part": "P1",
+   "topic": "Di sản và sự tôn vinh Hồ Chí Minh",
+   "topic_key": "LS-T09",
+   "counts": {
+    "NB": 1
+   }
+  },
+  {
+   "class": "official",
+   "part": "P1",
+   "topic": "Kháng chiến chống Mỹ và thống nhất đất nước",
+   "topic_key": "LS-T12",
+   "counts": {
+    "TH": 3,
+    "NB": 1
+   }
+  },
+  {
+   "class": "official",
+   "part": "P1",
+   "topic": "Khối đại đoàn kết dân tộc Việt Nam",
+   "topic_key": "LS-T13",
+   "counts": {
+    "NB": 1
+   }
+  },
+  {
+   "class": "official",
+   "part": "P1",
+   "topic": "Khởi nghĩa và chiến tranh giải phóng trước thời hiện đại",
+   "topic_key": "LS-T14",
+   "counts": {
+    "NB": 1
+   }
+  },
+  {
+   "class": "official",
+   "part": "P1",
+   "topic": "Liên hợp quốc",
+   "topic_key": "LS-T15",
+   "counts": {
+    "NB": 1
+   }
+  },
+  {
+   "class": "official",
+   "part": "P1",
+   "topic": "Lịch sử đối ngoại Việt Nam",
+   "topic_key": "LS-T16",
+   "counts": {
+    "NB": 2,
+    "TH": 1
+   }
+  },
+  {
+   "class": "official",
+   "part": "P1",
+   "topic": "Sự hình thành Liên bang Xô viết",
+   "topic_key": "LS-T18",
+   "counts": {
+    "NB": 1
+   }
+  },
+  {
+   "class": "official",
+   "part": "P1",
+   "topic": "Thế giới trong và sau Chiến tranh lạnh",
+   "topic_key": "LS-T21",
+   "counts": {
+    "NB": 3
+   }
+  },
+  {
+   "class": "official",
+   "part": "P1",
+   "topic": "Vai trò Hồ Chí Minh trong giải phóng dân tộc",
+   "topic_key": "LS-T23",
+   "counts": {
+    "TH": 1
+   }
+  },
+  {
+   "class": "official",
+   "part": "P2",
+   "topic": "Cách mạng tháng Tám và kháng chiến chống thực dân Pháp",
+   "topic_key": "LS-T06",
+   "counts": {
+    "NB": 1,
+    "TH": 3
+   }
+  },
+  {
+   "class": "official",
+   "part": "P2",
+   "topic": "Công cuộc Đổi mới ở Việt Nam từ năm 1986",
+   "topic_key": "LS-T08",
+   "counts": {
+    "TH": 4
+   }
+  },
+  {
+   "class": "official",
+   "part": "P2",
+   "topic": "Khối đại đoàn kết dân tộc Việt Nam",
+   "topic_key": "LS-T13",
+   "counts": {
+    "TH": 2,
+    "NB": 2
+   }
+  },
+  {
+   "class": "official",
+   "part": "P2",
+   "topic": "Sự xác lập và phát triển của chủ nghĩa tư bản",
+   "topic_key": "LS-T20",
+   "counts": {
+    "TH": 4
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "topic": "ASEAN: những chặng đường lịch sử",
+   "topic_key": "LS-T01",
+   "counts": {
+    "NB": 13,
+    "TH": 4
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "topic": "Bài học cách mạng Việt Nam",
+   "topic_key": "LS-T02",
+   "counts": {
+    "NB": 1
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "topic": "Bảo vệ Tổ quốc sau thống nhất",
+   "topic_key": "LS-T03",
+   "counts": {
+    "TH": 1,
+    "NB": 3
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "topic": "Chiến tranh bảo vệ Tổ quốc trước thời hiện đại",
+   "topic_key": "LS-T04",
+   "counts": {
+    "NB": 4,
+    "TH": 1
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "topic": "Cuộc đời và con đường cứu nước của Hồ Chí Minh",
+   "topic_key": "LS-T05",
+   "counts": {
+    "None": 1,
+    "NB": 2
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "topic": "Cách mạng tháng Tám và kháng chiến chống thực dân Pháp",
+   "topic_key": "LS-T06",
+   "counts": {
+    "NB": 13,
+    "TH": 2
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "topic": "Cách mạng và kháng chiến ở Việt Nam",
+   "topic_key": "LS-T07",
+   "counts": {
+    "TH": 4
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "topic": "Công cuộc Đổi mới ở Việt Nam từ năm 1986",
+   "topic_key": "LS-T08",
+   "counts": {
+    "TH": 5,
+    "NB": 7
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "topic": "Di sản và sự tôn vinh Hồ Chí Minh",
+   "topic_key": "LS-T09",
+   "counts": {
+    "TH": 3
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "topic": "Kháng chiến chống Mỹ và thống nhất đất nước",
+   "topic_key": "LS-T12",
+   "counts": {
+    "NB": 3,
+    "TH": 7
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "topic": "Khối đại đoàn kết dân tộc Việt Nam",
+   "topic_key": "LS-T13",
+   "counts": {
+    "NB": 1
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "topic": "Khởi nghĩa và chiến tranh giải phóng trước thời hiện đại",
+   "topic_key": "LS-T14",
+   "counts": {
+    "NB": 4,
+    "TH": 1
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "topic": "Liên hợp quốc",
+   "topic_key": "LS-T15",
+   "counts": {
+    "NB": 2,
+    "TH": 3
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "topic": "Lịch sử đối ngoại Việt Nam",
+   "topic_key": "LS-T16",
+   "counts": {
+    "NB": 2,
+    "TH": 3
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "topic": "So sánh các cuộc kháng chiến hiện đại",
+   "topic_key": "LS-T17",
+   "counts": {
+    "TH": 1
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "topic": "Sự hình thành Liên bang Xô viết",
+   "topic_key": "LS-T18",
+   "counts": {
+    "NB": 6
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "topic": "Sự phát triển của chủ nghĩa xã hội",
+   "topic_key": "LS-T19",
+   "counts": {
+    "NB": 3,
+    "TH": 1
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "topic": "Thế giới trong và sau Chiến tranh lạnh",
+   "topic_key": "LS-T21",
+   "counts": {
+    "TH": 7,
+    "NB": 2
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "topic": "Tư tưởng giải phóng dân tộc của Hồ Chí Minh",
+   "topic_key": "LS-T22",
+   "counts": {
+    "NB": 1,
+    "TH": 3
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "topic": "Vai trò Hồ Chí Minh trong giải phóng dân tộc",
+   "topic_key": "LS-T23",
+   "counts": {
+    "TH": 1
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "topic": "Vai trò Hồ Chí Minh trong thành lập Đảng",
+   "topic_key": "LS-T24",
+   "counts": {
+    "NB": 3
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "topic": "Việt Nam và Biển Đông",
+   "topic_key": "LS-T25",
+   "counts": {
+    "TH": 2
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "topic": "ASEAN: những chặng đường lịch sử",
+   "topic_key": "LS-T01",
+   "counts": {
+    "TH": 1,
+    "VD": 1
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "topic": "Cách mạng tháng Tám và kháng chiến chống thực dân Pháp",
+   "topic_key": "LS-T06",
+   "counts": {
+    "NB": 5,
+    "TH": 4,
+    "VD": 1
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "topic": "Cách mạng và kháng chiến ở Việt Nam",
+   "topic_key": "LS-T07",
+   "counts": {
+    "TH": 2
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "topic": "Công cuộc Đổi mới ở Việt Nam từ năm 1986",
+   "topic_key": "LS-T08",
+   "counts": {
+    "NB": 7,
+    "TH": 13
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "topic": "Hợp tác đa phương trong quan hệ quốc tế",
+   "topic_key": "LS-T10",
+   "counts": {
+    "TH": 1
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "topic": "Khái niệm hoạt động đối ngoại",
+   "topic_key": "LS-T11",
+   "counts": {
+    "TH": 1
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "topic": "Kháng chiến chống Mỹ và thống nhất đất nước",
+   "topic_key": "LS-T12",
+   "counts": {
+    "TH": 7,
+    "NB": 3
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "topic": "Lịch sử đối ngoại Việt Nam",
+   "topic_key": "LS-T16",
+   "counts": {
+    "TH": 15,
+    "NB": 2
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "topic": "So sánh các cuộc kháng chiến hiện đại",
+   "topic_key": "LS-T17",
+   "counts": {
+    "VD": 1
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "topic": "Thế giới trong và sau Chiến tranh lạnh",
+   "topic_key": "LS-T21",
+   "counts": {
+    "TH": 10,
+    "NB": 3
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "topic": "Vai trò Hồ Chí Minh trong giải phóng dân tộc",
+   "topic_key": "LS-T23",
+   "counts": {
+    "TH": 3
+   }
+  }
+ ],
+ "question_level_counts": [
+  {
+   "class": "official",
+   "part": "P1",
+   "counts": {
+    "TH": 7,
+    "NB": 17
+   }
+  },
+  {
+   "class": "official",
+   "part": "P2",
+   "counts": {
+    "TH": 4
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P1",
+   "counts": {
+    "NB": 70,
+    "TH": 49,
+    "None": 1
+   }
+  },
+  {
+   "class": "provincial_third_party",
+   "part": "P2",
+   "counts": {
+    "TH": 17,
+    "VD": 3
+   }
+  }
+ ],
+ "question_count_policy": "Maximum level of all observed statement labels; any unknown statement makes question unknown. This is an explicit analytical proxy, not a printed exam declaration.",
+ "issues": []
 }

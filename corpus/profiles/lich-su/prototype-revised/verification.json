@@ -1,0 +1,59 @@
+{
+  "schema_version": "scoped-prototype-verification-v1",
+  "subject": "lich-su",
+  "artifacts": {
+    "tex": {
+      "path": "prototype.tex",
+      "sha256": "d87198f7da19acab0cbd5fb605221d4e3d004e58a460b324bb8195d051cad920"
+    },
+    "pdf": {
+      "path": "prototype.pdf",
+      "sha256": "54cae3cfa3bbd162d50437984322631d979b39d5fd7a77544b6a7ddcdced2071"
+    },
+    "answer_key": {
+      "path": "prototype_Answers.json",
+      "sha256": "d4994af3d5cf9c68fce6f79962e0f1c508f41dd5b84de157eb88ff4bac112d16"
+    }
+  },
+  "structure": {
+    "questions": 28,
+    "atomic_slots": 40,
+    "total_points": 10
+  },
+  "compile_evidence": {
+    "receipt": "compile-receipt.json",
+    "engine": "pdflatex",
+    "passes": 2,
+    "pages": 7,
+    "missing_glyph": false,
+    "tex_sha256_matches_receipt": true,
+    "pdf_sha256_matches_receipt": true
+  },
+  "visual_evidence": {
+    "review": "visual-review.json",
+    "status": "pass",
+    "reviewed_pages": 7,
+    "portable_frames": "pages/",
+    "frame_sha256": {
+      "page-1.png": "73dc4dfdef0c27507a7c99324d152e6eca85d1c15dca621a77b53cb6084643fd",
+      "page-2.png": "430838710458aedc116278d7137b2cbb0ee068ea636ec55d5ad8d0a560d8a70c",
+      "page-3.png": "42b3f1a34b546f73dfccc2016e460e6999e1668ebef5bb144f783cc0035471c1",
+      "page-4.png": "76aa8ed2a4f89c5a3883c882836b18d530084f2f0e3e44acbebe3cf35b86547f",
+      "page-5.png": "c14a9276421851f5b5494a8fe9c6b8f240ae99a97bf23970ba2711031b885fa7",
+      "page-6.png": "bc32236cf4d153ac77ba6878d738ba6564f4df21bb338d0079b5396f4b2c5d8a",
+      "page-7.png": "8892ef3ad5853722d7b9b93e3187458e7dcff8c8a1d635d194963a468775619e"
+    },
+    "scope": "Rendered layout only; no content or answer validation."
+  },
+  "content_scope": {
+    "accepted_bank_items": 70,
+    "reviewed_candidates": 64,
+    "candidate_total": 67,
+    "open_candidates": 3,
+    "note": "Seventy items are accepted in the current bank; 64 of 67 review candidates are closed and 3 remain open. Visual review does not validate content or answers."
+  },
+  "acceptance": {
+    "teacher_acceptance": false,
+    "runtime_acceptance": false
+  }
+}

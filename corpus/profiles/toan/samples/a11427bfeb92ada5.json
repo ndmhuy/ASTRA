@@ -1,0 +1,145 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "a11427bfeb92ada5",
+    "topic": "Tích phân xác định",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Cung parabol được xác định bởi đỉnh và các điểm đã đánh dấu trên đồ thị.",
+        "task": "Kiểm tra dấu của tích phân trên phần parabol.",
+        "reasoning": [
+          "Dùng đỉnh và một điểm để xác định biểu thức parabol.",
+          "Tính nguyên hàm và hiệu tại các cận.",
+          "Xét dấu kết quả rồi đối chiếu."
+        ],
+        "combines": [
+          "Hàm số bậc hai",
+          "Đọc đồ thị",
+          "Tích phân xác định"
+        ],
+        "difficulty_source": "Chuyển dữ kiện đồ thị thành biểu thức để đánh giá tích phân có dấu.",
+        "evidence_uncertainty": "Phạm vi ảnh cắt chưa được kiểm chứng độc lập; các dữ kiện xác định parabol đọc được rõ.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "ccae0b94a82d|P2|2|c"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "a11427bfeb92ada5",
+    "stem": "Cho hàm số bậc hai f có đồ thị là một parabol với đỉnh I(2;3) và đi qua điểm M(0;−1). Xét tính đúng sai của các nhận định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "f(x)=−x²+4x−1."
+      },
+      {
+        "sub": "b",
+        "text": "∫ từ 0 đến 2 của f(x)dx=10/3."
+      },
+      {
+        "sub": "c",
+        "text": "∫ từ 0 đến 1 của f(x)dx=−2/3."
+      },
+      {
+        "sub": "d",
+        "text": "∫ từ 0 đến 4 của f(x)dx=20/3."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "Từ tọa độ đỉnh, đặt f(x)=a(x−2)²+3. Vì f(0)=−1 nên 4a+3=−1, suy ra a=−1 và f(x)=−x²+4x−1. Một nguyên hàm là F(x)=−x³/3+2x²−x. Khi đó F(0)=0, F(1)=2/3, F(2)=10/3 và F(4)=20/3. Do đó a, b, d đúng; c sai vì tích phân từ 0 đến 1 bằng 2/3, không phải −2/3.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "c",
+        "mistake": "Lấy F(0)−F(1) thay cho F(1)−F(0).",
+        "why_plausible": "Đảo thứ tự giá trị tại hai cận làm đổi dấu kết quả, tạo đúng giá trị −2/3 trong nhận định."
+      }
+    ],
+    "level_reason": "Xác định hàm bậc hai từ đỉnh và một điểm, sau đó dùng công thức Newton–Leibniz là các thủ tục quen thuộc. Mức cao nhất của toàn mẫu là TH.",
+    "prerequisites": [
+      "Dạng đỉnh của hàm số bậc hai",
+      "Xác định hệ số từ tọa độ một điểm",
+      "Nguyên hàm của đa thức",
+      "Công thức Newton–Leibniz"
+    ],
+    "variation_guidance": "Đây là mẫu minh họa tự biên soạn, không phải bằng chứng đề thi thực hay một đề thi đầy đủ. Có thể đổi tọa độ đỉnh, điểm đi qua và các cận; luôn cung cấp đủ dữ kiện bằng chữ nếu không kèm đồ thị.",
+    "uncertainties": [
+      "Quan sát nguồn chỉ thuộc nguồn cấp tỉnh qua bên thứ ba và có hạn chế về phạm vi ảnh cắt. Mẫu tự biên soạn này cung cấp đầy đủ tọa độ, không phụ thuộc ảnh nguồn và không đại diện cho đề thi chính thức."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "a11427bfeb92ada5",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "Dạng đỉnh là f(x)=a(x−2)²+3. Đi qua M(0;−1) nên 4a+3=−1, suy ra a=−1 và f(x)=−x²+4x−1. Một nguyên hàm là F(x)=−x³/3+2x²−x. Do đó tích phân từ 0 đến 2 bằng 10/3; từ 0 đến 1 bằng 2/3, không phải −2/3; từ 0 đến 4 bằng 20/3.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Ý a xác định hàm bậc hai từ đỉnh và một điểm bằng quy trình chuẩn. Các ý b, c, d tính tích phân đa thức bằng nguyên hàm và thay cận; việc phải tìm biểu thức hàm trước vẫn là chuỗi thao tác quen thuộc."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/92ebcf2d68f94d6d1ca6b5d27f07efd3b6feb2ca1288f5a2f691c88e8dfa5d6c.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/92ebcf2d68f94d6d1ca6b5d27f07efd3b6feb2ca1288f5a2f691c88e8dfa5d6c.resolve.json"
+}

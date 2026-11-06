@@ -1,0 +1,211 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "11d105b9b1955297",
+    "topic": "Hình học không gian: góc, khoảng cách và thể tích",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Hai đầu mút của chuyển động thẳng trong hệ tọa độ cùng đơn vị.",
+        "task": "Kiểm tra độ dài hành trình.",
+        "reasoning": [
+          "Tính các hiệu tọa độ.",
+          "Áp dụng công thức khoảng cách giữa hai điểm.",
+          "Đối chiếu độ dài được nêu."
+        ],
+        "combines": [
+          "Tọa độ vectơ",
+          "Độ dài vectơ"
+        ],
+        "difficulty_source": "Áp dụng trực tiếp công thức độ dài.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Tâm mặt cầu suy ra từ phương trình và đường thẳng xác định bởi hai điểm.",
+        "task": "Kiểm tra khoảng cách ban đầu từ tâm tới đường thẳng.",
+        "reasoning": [
+          "Đọc tọa độ tâm và lập vectơ chỉ phương.",
+          "Tìm hình chiếu vuông góc của tâm lên đường thẳng.",
+          "Tính độ dài đoạn vuông góc và đối chiếu."
+        ],
+        "combines": [
+          "Phương trình mặt cầu",
+          "Hình chiếu vuông góc",
+          "Khoảng cách trong không gian"
+        ],
+        "difficulty_source": "Chọn đoạn vuông góc thích hợp từ dữ kiện tọa độ.",
+        "evidence_uncertainty": "Chưa xác nhận được khóa đúng sai khớp mã; thứ tự phát biểu được lấy theo ảnh đề gốc vì bản chép hoán đổi hai ý giữa câu.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một điểm chuyển động trên đường thẳng phải nằm phía trên mặt phẳng ngang và cách mặt phẳng một khoảng cho trước.",
+        "task": "Kiểm tra một biểu thức tọa độ của vị trí thỏa điều kiện.",
+        "reasoning": [
+          "Chuyển điều kiện phía trên và khoảng cách thành độ cao cần đạt.",
+          "Thay độ cao vào phương trình đường chuyển động để tìm tham số.",
+          "Tính các tọa độ còn lại.",
+          "Thay vào biểu thức cần kiểm tra và đối chiếu."
+        ],
+        "combines": [
+          "Phương trình tham số đường thẳng",
+          "Khoảng cách đến mặt phẳng",
+          "Điều kiện vị trí tương đối"
+        ],
+        "difficulty_source": "Chọn đúng nhánh độ cao từ điều kiện khoảng cách có dấu vị trí.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một đoạn nghiêng xuống từ điểm nằm trên mặt phẳng ngang, biết độ dài và góc nghiêng; có hình gắn hệ tọa độ.",
+        "task": "Kiểm tra cao độ đầu mút.",
+        "reasoning": [
+          "Nhận diện thành phần vuông góc với mặt phẳng ngang.",
+          "Dùng hệ thức lượng để tính độ giảm độ cao.",
+          "Gắn dấu theo hướng chuyển động và đối chiếu."
+        ],
+        "combines": [
+          "Góc giữa đường thẳng và mặt phẳng",
+          "Hệ thức lượng trong tam giác vuông",
+          "Tọa độ độ cao"
+        ],
+        "difficulty_source": "Phân biệt thành phần ngang và thành phần đứng của đoạn nghiêng.",
+        "evidence_uncertainty": "Thiếu khóa đúng sai hợp lệ; chủ đề chính thuộc góc trong không gian, cách ghi cao độ dùng thêm tọa độ không gian.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "0968e8bc9e2d|P2|2|c",
+      "0ecb85132b84|P2|4|b",
+      "11d88d9a96ad|P2|2|d",
+      "525d3542283a|P2|1|c",
+      "7ab78715480e|P2|2|b",
+      "85efdd1a7e54|P2|1|c",
+      "acc00d945397|P2|2|a",
+      "acc00d945397|P2|2|c",
+      "aceb17d936f5|P2|3|d"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "11d105b9b1955297",
+    "stem": "Trong hệ tọa độ Oxyz, mỗi đơn vị tọa độ ứng với 1 m và chiều dương Oz hướng lên trên. Cho A(1;2;6), B(4;6;6), mặt cầu (S): (x−1)²+(y−2)²+(z−1)²=9 và đường thẳng d có phương trình x=1+t, y=2+2t, z=6−2t, với t∈ℝ. Gọi I là tâm mặt cầu (S), C là điểm trên d nằm phía trên mặt phẳng (Oxy) và cách mặt phẳng này 2 m. Gọi α là góc giữa d và (Oxy). Xét tính đúng sai của các phát biểu sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Độ dài đoạn AB bằng 5 m."
+      },
+      {
+        "sub": "b",
+        "text": "Khoảng cách từ I đến đường thẳng AB bằng 2 m."
+      },
+      {
+        "sub": "c",
+        "text": "Điểm C có tọa độ (3;6;2)."
+      },
+      {
+        "sub": "d",
+        "text": "sin α=√5/3."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Ta có vectơ AB=(3;4;0), nên AB=√(3²+4²)=5 m; a đúng. Tâm mặt cầu là I(1;2;1). Vectơ IA=(0;0;5) vuông góc với vectơ AB, do đó A là hình chiếu vuông góc của I lên đường thẳng AB. Khoảng cách cần tìm là IA=5 m; b sai. Vì C phía trên (Oxy) và cách mặt phẳng này 2 m nên z_C=2. Từ 6−2t=2 suy ra t=2, cho C(3;6;2); c đúng. Đường thẳng d có vectơ chỉ phương (1;2;−2), độ dài bằng 3. Thành phần vuông góc với (Oxy) có độ lớn 2, nên sin α=2/3; d sai. Giá trị √5/3 là cos α.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Lấy IA−R=5−3=2 thay cho khoảng cách từ tâm I đến đường thẳng AB.",
+        "why_plausible": "Phương trình mặt cầu cung cấp bán kính 3, khiến học sinh có thể nhầm khoảng cách từ tâm với khoảng hở giữa mặt cầu và đường thẳng."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Dùng độ dài thành phần nằm ngang √(1²+2²)=√5 để tính sin của góc với mặt phẳng.",
+        "why_plausible": "Học sinh có thể nhầm cạnh đối với cạnh kề trong tam giác tạo bởi hướng đường thẳng và hình chiếu của nó lên mặt phẳng."
+      }
+    ],
+    "level_reason": "Mức cao nhất là TH: áp dụng các quy trình tọa độ quen thuộc để tính độ dài, xác định hình chiếu, dùng điều kiện độ cao và tính góc với mặt phẳng. Các đối tượng hình học đều được xác định trực tiếp trong đề.",
+    "prerequisites": [
+      "Độ dài và tích vô hướng của vectơ trong không gian",
+      "Đọc tâm và bán kính từ phương trình mặt cầu",
+      "Khoảng cách từ điểm đến mặt phẳng (Oxy)",
+      "Phương trình tham số đường thẳng",
+      "Góc giữa đường thẳng và mặt phẳng"
+    ],
+    "variation_guidance": "Có thể thay tọa độ nhưng nên giữ hình chiếu của tâm lên AB dễ xác định; khi thay hướng d cần tính lại cả vị trí C và tỉ số lượng giác của góc với mặt phẳng.",
+    "uncertainties": [
+      "Cấu trúc tham khảo chỉ từ quan sát đề cấp tỉnh qua nguồn bên thứ ba; một số khóa đúng sai của nguồn quan sát chưa được xác nhận. Lời giải ở đây được xây dựng theo dữ kiện mới của mẫu."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "11d105b9b1955297",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) AB=√((4−1)²+(6−2)²+(6−6)²)=5 m. b) I=(1;2;1). Vectơ AI=(0;0;−5) vuông góc với vectơ AB=(3;4;0), nên A là hình chiếu của I lên đường thẳng AB. Khoảng cách cần tìm bằng IA=5 m. c) C ở phía trên (Oxy) và cách mặt phẳng này 2 m nên z_C=2. Từ 6−2t=2 suy ra t=2, do đó C=(3;6;2). d) Vectơ chỉ phương của d là (1;2;−2); sin α=|−2|/√(1²+2²+(−2)²)=2/3.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a) Dùng công thức độ dài đoạn thẳng. b) Nhận ra hình chiếu vuông góc trong cấu hình đơn giản rồi tính khoảng cách. c) Diễn giải điều kiện độ cao và thay vào phương trình tham số. d) Áp dụng công thức góc giữa đường thẳng và mặt phẳng. Từng ý là bài tập chuẩn, thuộc TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/4f4f4abb6fe53e850c01ef46e0ef66993bc5081bd77a1b23e3fd5c80b7df6cec.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/4f4f4abb6fe53e850c01ef46e0ef66993bc5081bd77a1b23e3fd5c80b7df6cec.resolve.json"
+}

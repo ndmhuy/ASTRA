@@ -1,0 +1,89 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "ee50a6ae18968348",
+    "topic": "Tích phân và chuyển động",
+    "part": "P3",
+    "level": "VD",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Một chuyển động gồm giai đoạn vận tốc không đổi và giai đoạn giảm tốc với vận tốc bậc nhất theo thời gian, có tổng quãng đường và các tham số chưa biết.",
+        "task": "Tính một biểu thức giữa các tham số vận tốc.",
+        "reasoning": [
+          "Dùng sự liên tục của vận tốc ở thời điểm chuyển giai đoạn để liên hệ các tham số.",
+          "Xác định thời điểm dừng từ điều kiện vận tốc triệt tiêu.",
+          "Biểu diễn tổng quãng đường bằng diện tích dưới đồ thị vận tốc hoặc tích phân từng giai đoạn.",
+          "Giải điều kiện quãng đường và chọn nghiệm phù hợp với vận tốc ban đầu.",
+          "Tính biểu thức tham số được yêu cầu."
+        ],
+        "combines": [
+          "Tích phân và chuyển động",
+          "Hàm số từng đoạn",
+          "Phương trình đại số",
+          "Điều kiện vật lý"
+        ],
+        "difficulty_source": "Ghép hai giai đoạn chuyển động bằng điều kiện vận tốc tại thời điểm chuyển tiếp.",
+        "evidence_uncertainty": "Cách lập mô hình dùng giả thiết vận tốc liên tục khi bắt đầu giảm tốc, được ngữ cảnh gợi ra nhưng không viết thành một đẳng thức riêng.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "6aa30214ba7e|P3|1|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "ee50a6ae18968348",
+    "stem": "Một xe vận chuyển bắt đầu được theo dõi tại t = 0 và chạy với vận tốc không đổi trong T giây đầu, với T > 0. Từ thời điểm t = T, xe hãm với vận tốc v(t) = a − bt cho đến khi dừng, trong đó a, b > 0; t tính bằng giây và v tính bằng m/s. Vận tốc liên tục tại thời điểm bắt đầu hãm. Thời gian hãm bằng hai lần thời gian chạy đều và dài hơn 2 giây. Tổng quãng đường từ t = 0 đến khi dừng là 108 m; riêng trong 2 giây cuối trước khi dừng, xe đi được 6 m. Tính a.",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "27",
+        "level": "VD"
+      }
+    ],
+    "solution": "Gọi t_d là thời điểm xe dừng. Do thời gian hãm bằng 2T nên t_d = 3T. Điều kiện v(t_d) = 0 cho a = 3bT, vì thế trong giai đoạn hãm v(t) = b(3T − t). Hai giây cuối nằm hoàn toàn trong giai đoạn hãm, nên quãng đường khi đó là ∫ từ 3T − 2 đến 3T của b(3T − t) dt = 2b. Từ 2b = 6 suy ra b = 3. Vận tốc liên tục tại t = T nên vận tốc chạy đều là a − bT = 2bT. Quãng đường chạy đều là 2bT². Quãng đường hãm là diện tích tam giác có đáy 2T và chiều cao 2bT, bằng 2bT². Do đó 4bT² = 108. Thay b = 3 được T² = 9; vì T > 0 nên T = 3. Suy ra a = 3bT = 27. Thời gian hãm là 6 giây, phù hợp điều kiện dài hơn 2 giây.",
+    "distractors": [],
+    "level_reason": "Học sinh phải liên kết thời lượng hai giai đoạn với mốc thời gian chung, dùng điều kiện dừng để biểu diễn vận tốc theo thời gian còn lại, khai thác quãng đường cuối để tìm hệ số hãm, rồi ghép tính liên tục và tổng quãng đường. Các dữ kiện cần được tổ chức thành một mô hình phụ thuộc trước khi tính toán.",
+    "prerequisites": [
+      "Tích phân vận tốc",
+      "Điều kiện vận tốc bằng 0 khi dừng",
+      "Tính liên tục của vận tốc tại thời điểm chuyển giai đoạn",
+      "Diện tích dưới đồ thị vận tốc",
+      "Chọn nghiệm phù hợp với điều kiện thời gian"
+    ],
+    "variation_guidance": "Có thể thay tỉ lệ thời gian hãm với thời gian chạy đều hoặc độ dài khoảng thời gian cuối. Luôn nêu rõ tính liên tục của vận tốc và bảo đảm khoảng thời gian cuối nằm hoàn toàn trong giai đoạn hãm.",
+    "uncertainties": [
+      "Định hướng cấu trúc chỉ dựa trên quan sát cấp tỉnh do bên thứ ba cung cấp; chưa có điểm neo đề chính thức. Đây là câu hỏi minh họa tổng hợp, không phải bằng chứng đề thi."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "ee50a6ae18968348",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "27",
+        "level": "VD"
+      }
+    ],
+    "solution": "Gọi thời gian hãm là H=2T>2. Xe dừng tại t=3T nên a=3bT, còn vận tốc chạy đều là a−bT=2bT. Trong hai giây cuối, vận tốc giảm đều từ 2b về 0, nên quãng đường là (1/2)·2·2b=2b=6, suy ra b=3. Tổng quãng đường là 2bT·T+(1/2)·2T·2bT=4bT²=108. Vì T>0 nên T=3. Vậy a=3bT=27.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Cần liên kết thời gian chạy đều, thời gian hãm, điều kiện liên tục và thời điểm dừng, rồi khai thác quãng đường cuối để xác định mô hình và các tham số. Mức VD xuất phát từ chuỗi liên kết này."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/7dd47a7a552d2990282dc698237e2b6228ad184eb57d0b3f6ce187c1437acd20.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/7dd47a7a552d2990282dc698237e2b6228ad184eb57d0b3f6ce187c1437acd20.resolve.json"
+}

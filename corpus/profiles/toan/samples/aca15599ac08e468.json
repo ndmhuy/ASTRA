@@ -1,0 +1,127 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "aca15599ac08e468",
+    "topic": "Phương pháp tọa độ trong không gian",
+    "part": "P3",
+    "level": "TH",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Các vị trí xác định đường chuyển động thẳng và một điểm quan sát cố định trong hệ tọa độ; ảnh chỉ minh họa bối cảnh.",
+        "task": "Tìm vị trí gần điểm quan sát nhất rồi tính biểu thức theo tọa độ.",
+        "reasoning": [
+          "Lập vectơ chỉ phương và phương trình tham số của đường chuyển động.",
+          "Nhận ra vị trí gần nhất là hình chiếu vuông góc của điểm quan sát lên đường thẳng.",
+          "Dùng điều kiện tích vô hướng bằng không để tìm tham số.",
+          "Tính tọa độ vị trí và biểu thức được yêu cầu."
+        ],
+        "combines": [
+          "Đường thẳng trong không gian",
+          "Hình chiếu vuông góc",
+          "Tích vô hướng",
+          "Cực tiểu khoảng cách"
+        ],
+        "difficulty_source": "Nhận dạng bài toán gần nhất thành phép chiếu lên đường thẳng theo quy trình quen thuộc.",
+        "evidence_uncertainty": "Ảnh cắt chỉ minh họa và chưa kiểm chứng độc lập về phạm vi; dữ kiện tọa độ có đủ trong văn bản. Đường chuyển động được hiểu theo nguyên văn là đường thẳng, không bị giới hạn thành đoạn.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một điểm cố định, một mặt phẳng và một đường thẳng; đường cần tìm thỏa quan hệ giao điểm và trung điểm.",
+        "task": "Tính một tổ hợp tọa độ của giao điểm được chỉ định.",
+        "reasoning": [
+          "Tham số hóa điểm nằm trên đường thẳng đã biết.",
+          "Dùng điều kiện trung điểm để biểu diễn điểm trên mặt phẳng theo tham số đó.",
+          "Thay tọa độ vào phương trình mặt phẳng và giải tham số.",
+          "Tính tổ hợp tọa độ được yêu cầu."
+        ],
+        "combines": [
+          "Phương trình tham số đường thẳng",
+          "Tọa độ trung điểm",
+          "Điều kiện điểm thuộc mặt phẳng"
+        ],
+        "difficulty_source": "Chọn tham số ở điểm phù hợp để biến điều kiện giao nhau thành phương trình bậc nhất.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một điểm thuộc mặt phẳng, các giao điểm trên những tia tọa độ và quan hệ tỉ lệ giữa các đoạn chắn.",
+        "task": "Tính một tổng các đoạn chắn.",
+        "reasoning": [
+          "Dùng điều kiện nằm trên các tia để xác định dấu của các đoạn chắn.",
+          "Biểu diễn các đoạn chắn qua một tham số từ quan hệ tỉ lệ.",
+          "Viết phương trình mặt phẳng theo đoạn chắn.",
+          "Thay tọa độ điểm đã cho để tìm tham số.",
+          "Tính tổng được yêu cầu."
+        ],
+        "combines": [
+          "Phương trình mặt phẳng",
+          "Dạng đoạn chắn",
+          "Quan hệ tỉ lệ",
+          "Điều kiện dấu"
+        ],
+        "difficulty_source": "Chọn dạng đoạn chắn để biến điều kiện hình học thành phương trình một ẩn.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "3f1b2aa3cb72|P3|4|None",
+      "7ab78715480e|P3|2|None",
+      "acc00d945397|P3|2|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "aca15599ac08e468",
+    "stem": "Trong không gian Oxyz, một thiết bị có thể di chuyển trên toàn bộ đường thẳng đi qua A(1;−2;3) và B(3;−1;5). Trạm quan sát đặt tại C(4;2;0). Gọi H(a;b;c) là vị trí trên đường thẳng đó gần C nhất. Tính a+2b+c, làm tròn đến hàng phần trăm.",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "2,67",
+        "level": "TH"
+      }
+    ],
+    "solution": "Đường thẳng AB có vectơ chỉ phương u=(2;1;2). Viết H=(1+2t;−2+t;3+2t), với t thuộc R. Vì H là hình chiếu vuông góc của C lên AB nên CH vuông góc với u. Ta có vectơ CH=(−3+2t;−4+t;3+2t), do đó 2(−3+2t)+(−4+t)+2(3+2t)=0, suy ra 9t−4=0 và t=4/9. Vậy H=(17/9;−14/9;35/9), nên a+2b+c=(17−28+35)/9=8/3. Làm tròn đến hàng phần trăm được 2,67.",
+    "distractors": [],
+    "level_reason": "TH: nhận dạng vị trí gần nhất là hình chiếu vuông góc lên đường thẳng, rồi thực hiện quy trình tham số hóa và dùng tích vô hướng bằng không. Các phép biến đổi là thường quy.",
+    "prerequisites": [
+      "Vectơ chỉ phương của đường thẳng",
+      "Phương trình tham số của đường thẳng trong không gian",
+      "Điều kiện vuông góc bằng tích vô hướng",
+      "Hình chiếu vuông góc là điểm gần nhất trên đường thẳng"
+    ],
+    "variation_guidance": "Thay tọa độ hai điểm xác định đường thẳng và điểm quan sát; luôn nêu rõ miền chuyển động là cả đường thẳng nếu muốn giữ quy trình hình chiếu không kèm xét đầu mút.",
+    "uncertainties": [
+      "Các quan sát định hướng được cung cấp chỉ thuộc nguồn cấp tỉnh qua bên thứ ba và không có mốc chính thức. Mẫu tổng hợp này không xác lập phạm vi xuất hiện trong đề thi chính thức."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "aca15599ac08e468",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "2.67",
+        "level": "TH"
+      }
+    ],
+    "solution": "Đặt H=(1+2t;−2+t;3+2t). Vị trí gần C nhất là hình chiếu vuông góc của C lên đường thẳng AB, nên (C−H)·(2;1;2)=0, tức 4−9t=0. Suy ra t=4/9 và H=(17/9;−14/9;35/9). Do đó a+2b+c=8/3, làm tròn đến hàng phần trăm được 2,67.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Đây là bài tìm hình chiếu lên đường thẳng bằng tham số và điều kiện vuông góc, một quy trình hình học tọa độ quen thuộc. Bối cảnh thiết bị không làm phát sinh mô hình mới."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/418017903555eb9bb6dbe05c18e6b690487b190bf6478416bf94c01fee37ff2c.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/418017903555eb9bb6dbe05c18e6b690487b190bf6478416bf94c01fee37ff2c.resolve.json"
+}

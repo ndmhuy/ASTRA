@@ -1,0 +1,189 @@
+{
+ "schema": "profile-usability-review-v1",
+ "subject": "lich-su",
+ "date": "2026-11-06",
+ "input_commit": "6cc1751e4f1575b45bdf13adf7200f0f0547e0ee",
+ "input_sha256": {
+  "profiles/lich-su/samples.json": "43d5e08a0a3468054444a26813340bb87d19803dc3518a0c141424bfbe97e5ac",
+  "profiles/lich-su/data/scoped-final-bank.json": "a269048d77a2facb07113a8385be1ec9dda00df7c2105d78896151b1c24935c7",
+  "profiles/lich-su/data/scoped-review-vd-revision1-result.json": "531efa1280450e79e13403f139f36a344410a333cbed9c00b76dd36be677c676",
+  "profiles/lich-su/data/coverage-current.json": "597d360158cb750339f951560d095e708d573e0f67c1e3538616bb0ba1c569be",
+  "profiles/lich-su/completion.json": "c6b71a041ff3f36393f68def7b7f46c08dd297173113f3377e42c1bc6c5f0a55"
+ },
+ "reviewer": "gpt-6.1-sol",
+ "teacher_approved": false,
+ "approval_requirement": "Owner accepts agent review; no future teacher gate is required. Do not invent teacher approval.",
+ "axes": {
+  "validity": [
+   "valid",
+   "valid_with_conditions",
+   "unresolved",
+   "incorrect_as_written"
+  ],
+  "evidence": [
+   "source_confirmed",
+   "agent_reviewed",
+   "limited",
+   "missing"
+  ]
+ },
+ "decisions": [
+  {
+   "id": "LS-V-002",
+   "previous_validity": "invalid_as_written_incomplete_answer_to_dual_requirement",
+   "action": "repair_stem_and_retain_at_TH",
+   "current_level": "TH",
+   "current_key": "B",
+   "reason": "Đã bỏ yêu cầu kép Bắc–Nam không được đáp án B trả lời đủ. Nhiệm vụ hiện hành chỉ xét cơ chế giảm số đối thủ trực tiếp ở miền Bắc: giữ quân Trung Hoa Dân quốc khiến thỏa thuận với Pháp không tự loại bớt lực lượng đó; B nêu đúng hạn chế. A chuyển thành hiệu quả kiềm chế nhóm chống đối/ngừng chiến ở Nam, C gán công nhận chính trị thành sức ép lên chủ thể không ký, D chuyển sang tiếp tục chiến sự Nam; các hệ quả ấy không được giả định bảo đảm. Khóa duy nhất B, mức TH vì suy hệ quả trực tiếp từ một điều kiện đã cho.",
+   "previous_record_sha256": "6047af4b43df7977e94e3f8fb8e278701a836ae5ee3ad63b079e23320db08341",
+   "previous_record_location": "git:6cc1751e4f1575b45bdf13adf7200f0f0547e0ee:profiles/lich-su/data/scoped-final-bank.json#/held_samples/0"
+  },
+  {
+   "id": "LS-V-004",
+   "previous_validity": "valid_at_TH_not_supported_as_VD",
+   "action": "retain_at_existing_reviewed_TH",
+   "current_level": "TH",
+   "current_key": "C",
+   "reason": "Khóa duy nhất và nội dung đã được lượt giải tách xác nhận; cờ hold chỉ do không đạt mục tiêu VD. Giữ mức TH theo đường giải tối thiểu, không cần bỏ câu đúng hoặc chờ giáo viên để sử dụng làm mẫu TH.",
+   "previous_record_sha256": "dbac230369226f70537f2220b45bfc18fca61cc5fdf15454bbd949dbb251695b",
+   "previous_record_location": "git:6cc1751e4f1575b45bdf13adf7200f0f0547e0ee:profiles/lich-su/data/scoped-final-bank.json#/held_samples/1"
+  },
+  {
+   "id": "LS-V-007",
+   "previous_validity": "valid_at_TH_not_supported_as_VD",
+   "action": "retain_at_existing_reviewed_TH",
+   "current_level": "TH",
+   "current_key": "D",
+   "reason": "Khóa duy nhất và nội dung đã được lượt giải tách xác nhận; cờ hold chỉ do không đạt mục tiêu VD. Giữ mức TH theo đường giải tối thiểu, không cần bỏ câu đúng hoặc chờ giáo viên để sử dụng làm mẫu TH.",
+   "previous_record_sha256": "0734fec2b33b9a55c2a8490f89203ad55f075bef261528bbfab31802b0209e9b",
+   "previous_record_location": "git:6cc1751e4f1575b45bdf13adf7200f0f0547e0ee:profiles/lich-su/data/scoped-final-bank.json#/held_samples/2"
+  }
+ ],
+ "quantities": {
+  "source_official_distinct": 1,
+  "source_provincial_distinct": 5,
+  "source_papers_total": 6,
+  "partial_sources": 1,
+  "source_rows_current": 240,
+  "topics": 25,
+  "unknown_source_rows": 1,
+  "samples_current": 73,
+  "samples_solved_consistently": 72,
+  "samples_content_hold": 0,
+  "coverage_cells": 67,
+  "coverage_model_checked": 64,
+  "coverage_missing": 3,
+  "coverage_missing_level": "VD",
+  "coverage_strict_supported": 59,
+  "coverage_level_conditional": 5,
+  "samples_agent_adjudicated": 73,
+  "samples_repaired_without_new_blind_call": 1
+ },
+ "level_evidence": {
+  "conditional_VD_samples": {
+   "LS-V-001": "b",
+   "LS-V-003": "c",
+   "LS-V-005": null,
+   "LS-V-006": "a",
+   "LS-V-008": "c"
+  },
+  "conditional_does_not_mean_invalid": true,
+  "strict_coverage": {
+   "supported": 59,
+   "conditional": 5,
+   "proposed_unfilled": 3
+  },
+  "old_label_coverage": "64/67",
+  "unfilled_proposed_only": [
+   "CELL-be33f53d06ab",
+   "CELL-be64831a7097",
+   "CELL-1988a566675d"
+  ]
+ },
+ "confirmed_errors_repaired": [
+  {
+   "id": "LS-V-002",
+   "error": "No option met original dual-region requirement; narrowed to the question B actually answers."
+  },
+  {
+   "id": "TF-RUBRIC",
+   "error": "Four wrappers had points_each=.25 inconsistent with whole-question TF scoring; removed per-idea exam points and explicitly defer scoring to exam/registry."
+  }
+ ],
+ "content_not_discarded": [
+  "LS-V-004",
+  "LS-V-007",
+  "five conditional VD samples",
+  "one unknown source row and unmatched source keys retained as evidence-limited"
+ ],
+ "primary_sources_checked": [
+  {
+   "url": "https://tulieuvankien.dangcongsan.vn/van-kien-tu-lieu-ve-dang/book/lich-su-dang/lich-su-bien-nien-dang-cong-san-viet-nam-tap-3-176",
+   "locator": "NGÀY 6-3 / NGÀY 9-3, Hiệp định Sơ bộ and Hòa để tiến",
+   "supports": "Cơ chế quân Pháp thay quân Trung Hoa Dân quốc và mục tiêu giảm đối thủ, chuẩn bị lực lượng. Không dùng trang này xác nhận chính xác ngày ký Hiệp ước Hoa–Pháp vì trang có cách ghi khác."
+  },
+  {
+   "url": "https://mofa.gov.vn/tin-chi-tiet/chi-tiet/6-dau-moc-trong-75-nam-ngoai-giao-viet-nam-48977-251.html",
+   "locator": "Giai đoạn từ1986đến1995",
+   "supports": "Đổi mới đối ngoại, phá bao vây/cấm vận, đa dạng hóa và gia nhập ASEAN; giả định trong LS-V-004 được ghi rõ tự biên soạn."
+  },
+  {
+   "url": "https://vanban.chinhphu.vn/giai-doan-1955-1975-xay-dung-cnxh-va-dau-tranh-thong-nhat-dat-nuoc/5-hoi-nghi-pari-ve-viet-nam-cuoc-dam-phan-hoa-binh-gay-go-nhat-the-ky-xx-10001595",
+   "locator": "Mốc29-3-1973",
+   "supports": "Quân Mĩ rút khỏi miền Nam; các điều kiện phản thực tế của LS-V-007 là giả định, không phải trích hiệp định."
+  }
+ ],
+ "new_blind_review": false,
+ "source_transcriptions_rows_and_keys_unchanged": true,
+ "runtime_tested": false,
+ "checks": {
+  "all_json_parse": true,
+  "73_unique_samples_all_views": true,
+  "70_prior_sample_text_keys_and_reviews_unchanged": true,
+  "all_sample_text_answers_markdown_topic_copies_match": true,
+  "TF_rubrics_do_not_assign_per_statement_exam_points": true,
+  "coverage_59_supported_5_conditional_3_proposed_unfilled": true,
+  "source_de_rows_keys_unchanged": true,
+  "no_sample_deleted_only_invalid_stem_repaired": true
+ },
+ "output_sha256": {
+  "profiles/lich-su/samples.json": "23cba5ccadb7e278a5c89768247ea5e251543fd3e4114bf233347ca5d9b8b5fe",
+  "profiles/lich-su/data/scoped-final-bank.json": "6fcb0b79d267ae598d3eba5cc20966e4d581246e03dd2ae4260e7a5e32f7eac8",
+  "profiles/lich-su/data/coverage-current.json": "2848d08882a799cb42ea69e35f72219900e4b32812e46c41b2ee309df4f6a2f5",
+  "profiles/lich-su/completion.json": "4320c575eed9217e731d07426951dd2bd9fcffa0086491e76e5dc1b4f3c0457b"
+ },
+ "CLI": {
+  "input_commit": "8b66755088fbe1c48313f4dc122ff8e57d6d36b9",
+  "tool_commit": "293398fe7abca1fd6419e80ef6eae16cb7dd7f50",
+  "cwd": "/Users/huynguyen/Lecturing_Lab/wt-s-c2/Grading_Tools",
+  "index_stdout": "{\"subject\": \"lich-su\", \"papers\": 6, \"failed\": []}",
+  "pack_stdout": "{\"subject\": \"lich-su\", \"items\": 240, \"groups\": 5, \"patterns\": 32, \"samples\": 73, \"problems\": 0, \"gaps\": 0, \"revision\": \"9ca0494260aadf49\", \"bytes\": 568369, \"out\": \"/tmp/usable-lich-su-pack.json\"}",
+  "index_changed": false,
+  "pack_sha256": "6b1bf9d7b4d76120691d89209ed661ccdb0b9b919ea8a730e16986104e2ea4bd",
+  "pack_readback": {
+   "samples": 73,
+   "recovered_TH": [
+    "LS-V-002",
+    "LS-V-004",
+    "LS-V-007"
+   ],
+   "conditional_status_count": 5
+  },
+  "temp_pack_removed": true,
+  "consumer_condition": "Pack carries conditional status and level_reason. Consumer runtime quota handling has not been exercised; corpus authoring docs define strict_level_status separately."
+ },
+ "parent_schema_readback": {
+  "source_markdown_wrapper": "Preserved original object{path,text} for all73 entries; no string/object schema migration.",
+  "sample_text_or_answers_changed": false,
+  "actual_cli_pack": {
+   "source_commit": "ca0963f59133504c872e771a7287b245316e8681",
+   "samples": 73,
+   "revision": "9ca0494260aadf49",
+   "problems": 0,
+   "gaps": 0,
+   "sha256": "096dd1fe5ae57140894c902ba158fc5920c51b257c5a25c762934cc35b535c2f",
+   "out": "/tmp/usable-lich-su-parent-schema-pack.json",
+   "removed": true
+  }
+ }
+}

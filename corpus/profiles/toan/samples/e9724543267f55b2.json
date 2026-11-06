@@ -1,0 +1,130 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "e9724543267f55b2",
+    "topic": "Dãy số, cấp số cộng và cấp số nhân",
+    "part": "P1",
+    "level": "NB",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Số hạng tổng quát của một cấp số cộng là biểu thức bậc nhất theo chỉ số.",
+        "task": "Xác định công sai.",
+        "reasoning": [
+          "Lấy hiệu hai số hạng liên tiếp hoặc nhận hệ số của chỉ số.",
+          "Đối chiếu giá trị với các lựa chọn."
+        ],
+        "combines": [
+          "Cấp số cộng"
+        ],
+        "difficulty_source": "Nhận trực tiếp công sai từ dạng tuyến tính của số hạng.",
+        "evidence_uncertainty": "Thiếu khóa đáp án được xác nhận.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "85efdd1a7e54|P1|6|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "e9724543267f55b2",
+    "stem": "Cho cấp số cộng (uₙ) có công sai d. Theo định nghĩa công sai, đẳng thức nào sau đây đúng với mọi số nguyên n ≥ 1?",
+    "options": [
+      {
+        "label": "A",
+        "text": "d = uₙ − uₙ₊₁."
+      },
+      {
+        "label": "B",
+        "text": "d = uₙ₊₁ − uₙ."
+      },
+      {
+        "label": "C",
+        "text": "d = uₙ₊₁ + uₙ."
+      },
+      {
+        "label": "D",
+        "text": "d = uₙ₊₁ − u₁."
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "NB"
+      }
+    ],
+    "solution": "Theo định nghĩa, công sai của cấp số cộng là hiệu của một số hạng với số hạng đứng ngay trước nó: d = uₙ₊₁ − uₙ. Chọn B. Phương án A đảo thứ tự phép trừ nên cho −d. Phương án C dùng tổng thay cho hiệu hai số hạng liên tiếp. Phương án D lấy hiệu với số hạng đầu; hiệu này bằng nd, không phải công thức định nghĩa công sai.",
+    "distractors": [
+      {
+        "label": "A",
+        "sub": null,
+        "mistake": "Đảo thứ tự số hạng khi viết hiệu xác định công sai.",
+        "why_plausible": "Học sinh nhớ công sai là hiệu hai số hạng liên tiếp nhưng chưa nhớ phải lấy số hạng sau trừ số hạng trước."
+      },
+      {
+        "label": "C",
+        "sub": null,
+        "mistake": "Dùng tổng thay cho hiệu hai số hạng liên tiếp.",
+        "why_plausible": "Học sinh có thể nhớ đúng cặp chỉ số n và n + 1 nhưng lẫn phép cộng trong hệ thức uₙ₊₁ = uₙ + d với phép tính xác định d."
+      },
+      {
+        "label": "D",
+        "sub": null,
+        "mistake": "Nhầm độ tăng từ số hạng đầu đến số hạng thứ n + 1 với công sai.",
+        "why_plausible": "Học sinh nhớ công sai mô tả mức tăng của dãy nhưng bỏ qua yêu cầu hai số hạng phải liên tiếp."
+      }
+    ],
+    "level_reason": "Mức NB vì yêu cầu tối thiểu là nhận ra đúng định nghĩa công sai trong một đơn vị kiến thức đã học. Không phải tính công sai từ số hạng tổng quát hay thực hiện phép biến đổi đại số.",
+    "prerequisites": [
+      "Định nghĩa cấp số cộng và công sai",
+      "Kí hiệu hai số hạng liên tiếp của dãy số"
+    ],
+    "variation_guidance": "Có thể đổi kí hiệu dãy số hoặc thứ tự các lựa chọn, nhưng giữ yêu cầu nhận biết trực tiếp định nghĩa. Không thêm công thức số hạng tổng quát cần biến đổi nếu vẫn nhắm mức NB.",
+    "uncertainties": [
+      "Đây là mẫu minh họa tổng hợp nguyên gốc, không phải bằng chứng đề thi thật hoặc một đề thi đầy đủ.",
+      "Quan sát định hướng chỉ thuộc nguồn cấp tỉnh qua bên thứ ba và thiếu khóa nguồn được xác nhận. Mẫu đã chuyển từ tính công sai sang nhận biết định nghĩa để đáp ứng mức NB."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "e9724543267f55b2",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "NB"
+      }
+    ],
+    "solution": "Theo định nghĩa, công sai của cấp số cộng là d = uₙ₊₁ − uₙ với mọi n ≥ 1.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Chỉ cần nhận biết trực tiếp định nghĩa công sai của cấp số cộng."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/toan/d7fac40b9edbc456a96aa8cf303d74317b509e2863998b2f7531e1595803a8ac.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/toan/d7fac40b9edbc456a96aa8cf303d74317b509e2863998b2f7531e1595803a8ac.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 0,
+  "source_rows_sha256": "863dd6885185956ed9dabede84bf529993a764e4871f75f25629503cf8f2731a"
+}

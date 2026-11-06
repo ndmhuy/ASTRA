@@ -1,0 +1,5616 @@
+{
+  "status": "complete_pending_teacher_review",
+  "subject": "lich-su",
+  "extraction_model": "gpt-6.1-sol",
+  "evidence": {
+    "papers": [
+      {
+        "path": "transcriptions/lich-su/2026-paper/de.md",
+        "class": "official",
+        "year": "2026",
+        "model": "gpt-6.1-sol",
+        "has_matched_key": true,
+        "key_status": "exact_year_code_external_key",
+        "image_status": "original_official_pages",
+        "supplement_image_status": null,
+        "source_sha256": "b5b8a436634cc86223ca185b62725b93ea50943d5d30cfc20e882f8d8a303569"
+      },
+      {
+        "path": "transcriptions/lich-su/2026-provincial/de-thi-thu-tot-nghiep-2026-lich-su-so-gd-an-giang/de.md",
+        "class": "provincial_third_party",
+        "year": "2026",
+        "model": "gpt-6.1-sol",
+        "has_matched_key": true,
+        "key_status": "local_key",
+        "image_status": "original_OCR_pages",
+        "supplement_image_status": null,
+        "source_sha256": "03afcbc73a66655fd501150bba56207c4d2cd670d65bfc2d30048a9a6f6d4d32"
+      },
+      {
+        "path": "transcriptions/lich-su/2026-provincial/de-thi-thu-tot-nghiep-2026-lich-su-so-gd-bac-ninh-lan-2/de.md",
+        "class": "provincial_third_party",
+        "year": "2026",
+        "model": "gpt-6.1-sol",
+        "has_matched_key": true,
+        "key_status": "local_key",
+        "image_status": "original_OCR_pages",
+        "supplement_image_status": null,
+        "source_sha256": "954d7ff4a68a9f3ecb1422fb64406fe11707500be011836cbea8b6f3766c28c6"
+      },
+      {
+        "path": "transcriptions/lich-su/2026-provincial/de-thi-thu-tot-nghiep-2026-lich-su-so-gd-can-tho/de.md",
+        "class": "provincial_third_party",
+        "year": "2026",
+        "model": "gpt-6.1-sol",
+        "has_matched_key": true,
+        "key_status": "local_key",
+        "image_status": "original_OCR_pages",
+        "supplement_image_status": null,
+        "source_sha256": "5e5d8fad05e299bc685023eb76e681c125531703e1e4097e8eeaa04d505d371d"
+      },
+      {
+        "path": "transcriptions/lich-su/2026-provincial/de-thi-thu-tot-nghiep-2026-lich-su-so-gd-dien-bien/de.md",
+        "class": "provincial_third_party",
+        "year": "2026",
+        "model": "gpt-6.1-sol",
+        "has_matched_key": true,
+        "key_status": "local_key",
+        "image_status": "original_OCR_pages",
+        "supplement_image_status": "original_OCR_pages",
+        "source_sha256": "4afc5ee886ed39c1c5113c16ebcb937a71438b3449a8f83b7e13d0f3f1561e4f"
+      },
+      {
+        "path": "transcriptions/lich-su/2026-provincial/de-thi-thu-tot-nghiep-2026-lich-su-so-gd-gia-lai/de.md",
+        "class": "provincial_third_party",
+        "year": "2026",
+        "model": "gpt-6.1-sol",
+        "has_matched_key": true,
+        "key_status": "local_key",
+        "image_status": "original_OCR_pages",
+        "supplement_image_status": null,
+        "source_sha256": "e54ef7a2d78d29af32bf961786833437ae7a27c7558ae27d8601333b50207e24"
+      }
+    ],
+    "classes_separate": true
+  },
+  "profiles_by_class": {
+    "official": {
+      "evidence_limit": "Các dòng đều thuộc cùng một mã đề. Vì quan sát trong một đề không được coi là sự lặp lại giữa các đề, dữ liệu chưa đủ để xác lập các mẫu hỏi tái diễn. Không chia nhỏ hoặc đổi tên các quan sát để tạo danh sách mẫu giả. Dữ liệu cũng không có dòng được gán mức phân hóa cao; các mức phân hóa hiện có là nhận định theo cấu trúc, chưa được hiệu chuẩn chính thức.",
+      "patterns": [],
+      "discrimination_moves": [],
+      "easy_vs_hard": [
+        {
+          "topic": "Tiến trình hội nhập quốc tế",
+          "easy": "Cho mốc thời gian, yêu cầu ghép với sự kiện đã học; chủ yếu truy hồi đúng cặp mốc và sự kiện.",
+          "hard": "Cho một giai đoạn, yêu cầu xác định đặc điểm phát triển; phải phân biệt khởi đầu quan hệ với mở rộng và nâng cao quan hệ, đồng thời loại nhiệm vụ thuộc giai đoạn trước.",
+          "hard_level": "medium",
+          "easy_refs": [
+            "26827f57f9f0|P1|20|None"
+          ],
+          "hard_refs": [
+            "26827f57f9f0|P1|22|None"
+          ]
+        },
+        {
+          "topic": "Tổ chức và cộng đồng khu vực",
+          "easy": "Nhận diện thành viên hoặc ghép văn kiện với chủ thể và thời điểm ban hành.",
+          "hard": "Đánh giá nhận định bao quát cả tiến trình; phải kiểm tra đồng thời bản chất tổ chức, hướng hợp tác và giới hạn tồn tại của bối cảnh quốc tế.",
+          "hard_level": "medium",
+          "easy_refs": [
+            "26827f57f9f0|P1|5|None",
+            "26827f57f9f0|P1|9|None"
+          ],
+          "hard_refs": [
+            "26827f57f9f0|P1|14|None"
+          ]
+        },
+        {
+          "topic": "Đoàn kết cộng đồng",
+          "easy": "Đối chiếu thành phần hoặc nhận ra cách diễn đạt lại vai trò lãnh đạo đã thể hiện trong tư liệu.",
+          "hard": "Tách các vế thời gian của nhận định, dùng kiến thức nền để phân biệt nguồn gốc truyền thống với sự phát huy và phân biệt tái khẳng định với xác lập ban đầu.",
+          "hard_level": "medium",
+          "easy_refs": [
+            "26827f57f9f0|P2|1|a",
+            "26827f57f9f0|P2|1|b"
+          ],
+          "hard_refs": [
+            "26827f57f9f0|P2|1|c",
+            "26827f57f9f0|P2|1|d"
+          ]
+        },
+        {
+          "topic": "Thành tựu cải cách và phát triển",
+          "easy": "Đọc mức phát triển hoặc khái quát các lĩnh vực thành tựu được nêu trực tiếp.",
+          "hard": "Kiểm tra riêng từng vế của nhận định; một vế phù hợp với tư liệu không bảo đảm vế gán nguồn gốc độc quyền cho mô hình cũng đúng.",
+          "hard_level": "medium",
+          "easy_refs": [
+            "26827f57f9f0|P2|2|a",
+            "26827f57f9f0|P2|2|c"
+          ],
+          "hard_refs": [
+            "26827f57f9f0|P2|2|b"
+          ]
+        },
+        {
+          "topic": "Đường lối kháng chiến",
+          "easy": "Từ biểu hiện huy động nguồn lực sẵn có, khái quát thành nguyên tắc tự lực quen thuộc.",
+          "hard": "Kết nối phần giải thích hoàn cảnh với cách huy động lực lượng, rồi bổ sung kiến thức về đường lối để đánh giá toàn bộ nhận định.",
+          "hard_level": "medium",
+          "easy_refs": [
+            "26827f57f9f0|P2|4|d"
+          ],
+          "hard_refs": [
+            "26827f57f9f0|P2|4|c"
+          ]
+        }
+      ],
+      "fact_use": {
+        "scope": "Các mô tả sau chỉ áp dụng cho dữ liệu được cung cấp, chưa chứng minh đặc trưng ổn định giữa các đề.",
+        "common": [
+          {
+            "use": "Mốc thời gian làm khóa truy hồi sự kiện hoặc văn kiện. Nhiễu có thể là sự kiện có thật nhưng bị ghép sai thời điểm.",
+            "refs": [
+              "26827f57f9f0|P1|9|None",
+              "26827f57f9f0|P1|15|None",
+              "26827f57f9f0|P1|20|None"
+            ],
+            "paper_count": 1,
+            "row_count": 3
+          },
+          {
+            "use": "Tên riêng dùng để nhận diện thành viên, tổ chức, người thực hiện hoặc chủ thể của sự kiện. Việc chọn đáp án dựa vào ghép đúng vai trò với bối cảnh.",
+            "refs": [
+              "26827f57f9f0|P1|4|None",
+              "26827f57f9f0|P1|5|None",
+              "26827f57f9f0|P1|7|None",
+              "26827f57f9f0|P1|16|None",
+              "26827f57f9f0|P1|17|None",
+              "26827f57f9f0|P1|24|None"
+            ],
+            "paper_count": 1,
+            "row_count": 6
+          },
+          {
+            "use": "Niên biểu còn là công cụ kiểm tra lập luận: xác định hoạt động ngoài khoảng thời gian, bác nguyên nhân xuất hiện sau hệ quả hoặc phát hiện việc xóa bỏ giai đoạn trung gian.",
+            "refs": [
+              "26827f57f9f0|P1|6|None",
+              "26827f57f9f0|P1|8|None",
+              "26827f57f9f0|P2|4|a"
+            ],
+            "paper_count": 1,
+            "row_count": 3
+          },
+          {
+            "use": "Khái niệm được kiểm tra qua ranh giới ý nghĩa: mục tiêu với phương thức, quản lí với điều hành trực tiếp, thành phần tham gia với nền tảng, tiến bộ với đạt trình độ cao hơn.",
+            "refs": [
+              "26827f57f9f0|P1|11|None",
+              "26827f57f9f0|P2|1|a",
+              "26827f57f9f0|P2|2|a"
+            ],
+            "paper_count": 1,
+            "row_count": 3
+          },
+          {
+            "use": "Kiến thức ghi nhớ bổ sung cho tư liệu khi nhận định hỏi về nguồn gốc, tính kế thừa, đánh giá theo chương trình hoặc đường lối không được trình bày đầy đủ trong đoạn trích.",
+            "refs": [
+              "26827f57f9f0|P2|1|c",
+              "26827f57f9f0|P2|1|d",
+              "26827f57f9f0|P2|3|a",
+              "26827f57f9f0|P2|4|c"
+            ],
+            "paper_count": 1,
+            "row_count": 4
+          },
+          {
+            "use": "Điều kiện địa lí có thể cung cấp đường loại trừ mà không cần nhớ riêng chi tiết sự kiện.",
+            "refs": [
+              "26827f57f9f0|P1|5|None",
+              "26827f57f9f0|P1|13|None"
+            ],
+            "paper_count": 1,
+            "row_count": 2
+          }
+        ],
+        "not_observed": [
+          {
+            "observation": "Không thấy yêu cầu tính toán từ số liệu. Những dòng dùng mốc thời gian yêu cầu nhận diện hoặc kiểm tra trình tự, không yêu cầu phép tính.",
+            "refs": [
+              "26827f57f9f0|P1|6|None",
+              "26827f57f9f0|P1|9|None",
+              "26827f57f9f0|P1|20|None",
+              "26827f57f9f0|P2|4|a"
+            ],
+            "paper_count": 1,
+            "row_count": 4
+          },
+          {
+            "observation": "Không thấy yêu cầu tự viết định nghĩa nguyên văn hoặc chép lại tư liệu; khái niệm và nội dung nguồn được kiểm tra bằng lựa chọn hoặc đánh giá nhận định.",
+            "refs": [
+              "26827f57f9f0|P1|11|None",
+              "26827f57f9f0|P2|1|b",
+              "26827f57f9f0|P2|2|c",
+              "26827f57f9f0|P2|4|d"
+            ],
+            "paper_count": 1,
+            "row_count": 4
+          }
+        ]
+      },
+      "anti_patterns": [
+        {
+          "avoid": "Viết nhiễu như thông tin bịa đặt hoàn toàn và không liên quan đến yêu cầu.",
+          "supported_boundary": "Dữ liệu có nhiễu xa, nhưng cũng có nhiễu lấy sự kiện đúng rồi đổi thời điểm, chủ thể hoặc chiều so sánh. Không có cơ sở coi mọi nhiễu đều phải gần và tinh vi.",
+          "refs": [
+            "26827f57f9f0|P1|4|None",
+            "26827f57f9f0|P1|9|None",
+            "26827f57f9f0|P1|16|None",
+            "26827f57f9f0|P1|20|None",
+            "26827f57f9f0|P1|21|None"
+          ],
+          "paper_count": 1,
+          "row_count": 5
+        },
+        {
+          "avoid": "Chấp nhận một mô tả đúng chung làm đáp án cho yêu cầu tìm điểm mới hoặc khác biệt.",
+          "supported_boundary": "Ở các dòng so sánh, đáp án phải đáp ứng quan hệ giữa các đối tượng; tính đúng riêng lẻ chưa đủ.",
+          "refs": [
+            "26827f57f9f0|P1|3|None",
+            "26827f57f9f0|P1|21|None"
+          ],
+          "paper_count": 1,
+          "row_count": 2
+        },
+        {
+          "avoid": "Dùng kết cục cuối cùng thay cho hệ quả của một bước chuyển, hoặc bỏ qua giai đoạn trung gian.",
+          "supported_boundary": "Các dòng liên quan phân biệt mức độ thắng lợi và các thời điểm trong tiến trình; việc nén tiến trình được dùng làm sai lệch.",
+          "refs": [
+            "26827f57f9f0|P1|10|None",
+            "26827f57f9f0|P2|4|a"
+          ],
+          "paper_count": 1,
+          "row_count": 2
+        },
+        {
+          "avoid": "Chuyển nguyên biện pháp và nhiệm vụ của hoàn cảnh cũ thành bài học áp dụng hiện tại.",
+          "supported_boundary": "Các dòng vận dụng yêu cầu khái quát nguyên tắc và xét điều kiện áp dụng.",
+          "refs": [
+            "26827f57f9f0|P1|1|None",
+            "26827f57f9f0|P1|19|None"
+          ],
+          "paper_count": 1,
+          "row_count": 2
+        },
+        {
+          "avoid": "Coi thời điểm xuất hiện một văn kiện hoặc thời điểm tăng cường thực hiện là nguồn gốc của chủ trương và giá trị.",
+          "supported_boundary": "Các nhận định kiểu này bị kiểm tra bằng sự phân biệt giữa hình thành, kế thừa và phát huy.",
+          "refs": [
+            "26827f57f9f0|P1|22|None",
+            "26827f57f9f0|P2|1|c",
+            "26827f57f9f0|P2|1|d"
+          ],
+          "paper_count": 1,
+          "row_count": 3
+        },
+        {
+          "avoid": "Đánh giá toàn bộ nhận định nhiều vế chỉ từ vế đầu phù hợp.",
+          "supported_boundary": "Các dòng có nhận định ghép yêu cầu kiểm tra cả vế về thời điểm hoặc nguồn gốc, dù phần còn lại đúng và quen thuộc.",
+          "refs": [
+            "26827f57f9f0|P2|1|c",
+            "26827f57f9f0|P2|2|b"
+          ],
+          "paper_count": 1,
+          "row_count": 2
+        },
+        {
+          "avoid": "Thiết kế mọi nhận định kèm tư liệu như thể chỉ cần dò chữ trong đoạn trích.",
+          "supported_boundary": "Có dòng cần kiến thức ngoài đoạn trích. Với các dòng đã ghi nhận giới hạn chứng cứ, không nên mô tả kết luận theo khóa đáp án như hệ quả được riêng tư liệu chứng minh đầy đủ.",
+          "refs": [
+            "26827f57f9f0|P2|3|a",
+            "26827f57f9f0|P2|3|b",
+            "26827f57f9f0|P2|4|c"
+          ],
+          "paper_count": 1,
+          "row_count": 3
+        }
+      ]
+    },
+    "provincial_third_party": {
+      "patterns": [
+        {
+          "part_kind": "multiple_choice",
+          "topic": "Nhận diện sự kiện từ dấu hiệu định danh",
+          "grade": 12,
+          "construction": "Cho mốc thời gian, tên gọi hoặc hệ quả tiêu biểu; yêu cầu nhận diện sự kiện, hoạt động hay quyết định tương ứng.",
+          "wrong_options": "Dùng sự kiện có thật nhưng khác thời điểm, tiến trình hoặc vai trò.",
+          "difficulty_source": "Phải nối đúng dấu hiệu với sự kiện thay vì chỉ nhận ra thông tin quen thuộc.",
+          "discrimination": "low",
+          "typical_steps": 2,
+          "refs": [
+            "acc23c4ca4f8|P1|4|None",
+            "acc23c4ca4f8|P1|9|None",
+            "acc23c4ca4f8|P1|13|None",
+            "acc23c4ca4f8|P1|15|None",
+            "686833f78102|P1|7|None",
+            "686833f78102|P1|11|None",
+            "686833f78102|P1|16|None",
+            "dff65825f390|P1|7|None",
+            "08c8696055dd|P1|4|None",
+            "08c8696055dd|P1|14|None",
+            "08c8696055dd|P1|20|None"
+          ],
+          "paper_count": 4,
+          "row_count": 11
+        },
+        {
+          "part_kind": "multiple_choice",
+          "topic": "Định vị hoạt động và nhiệm vụ trong tiến trình",
+          "grade": 12,
+          "construction": "Cho giai đoạn hoặc giới hạn thời gian, có thể kèm nhiệm vụ hay mục tiêu; yêu cầu chọn nội dung thỏa toàn bộ giới hạn.",
+          "wrong_options": "Chuyển nội dung giữa các chặng, kéo dài nhiệm vụ đã hoàn thành hoặc lấy biểu hiện phát triển làm điểm khởi đầu.",
+          "difficulty_source": "Kiểm tra đồng thời thời điểm, chức năng và mức phát triển. Một số lựa chọn gần nghĩa chưa được giải trình đầy đủ.",
+          "discrimination": "medium",
+          "typical_steps": 3,
+          "evidence_scope": "Các hàng thành phần được mô tả từ low đến medium; mức yêu cầu tăng khi phải phối hợp nhiều giới hạn.",
+          "refs": [
+            "acc23c4ca4f8|P1|2|None",
+            "acc23c4ca4f8|P1|7|None",
+            "acc23c4ca4f8|P1|14|None",
+            "acc23c4ca4f8|P1|20|None",
+            "acc23c4ca4f8|P1|21|None",
+            "686833f78102|P1|4|None",
+            "686833f78102|P1|5|None",
+            "686833f78102|P1|12|None",
+            "686833f78102|P1|21|None",
+            "5a9dffb03ca8|P1|4|None",
+            "5a9dffb03ca8|P1|21|None",
+            "dff65825f390|P1|14|None",
+            "08c8696055dd|P1|5|None",
+            "08c8696055dd|P1|10|None",
+            "08c8696055dd|P1|16|None"
+          ],
+          "paper_count": 5,
+          "row_count": 15
+        },
+        {
+          "part_kind": "multiple_choice",
+          "topic": "Ghép các thành tố lịch sử có quan hệ trực tiếp",
+          "grade": [
+            11,
+            12
+          ],
+          "construction": "Cho dấu hiệu về hoạt động, đối tượng, kết quả hoặc nội dung thỏa thuận; yêu cầu tìm thành tố lịch sử tương ứng.",
+          "wrong_options": "Tráo thành tố giữa những sự kiện có thật hoặc thay chủ thể trực tiếp bằng chủ thể liên quan gián tiếp.",
+          "difficulty_source": "Nhớ đúng cặp quan hệ và kiểm tra bối cảnh thay vì dựa vào liên tưởng tên gọi.",
+          "discrimination": "low",
+          "typical_steps": 2,
+          "refs": [
+            "acc23c4ca4f8|P1|10|None",
+            "686833f78102|P1|1|None",
+            "686833f78102|P1|3|None",
+            "5a9dffb03ca8|P1|1|None",
+            "5a9dffb03ca8|P1|7|None",
+            "5a9dffb03ca8|P1|13|None",
+            "dff65825f390|P1|3|None",
+            "dff65825f390|P1|5|None",
+            "dff65825f390|P1|6|None"
+          ],
+          "paper_count": 4,
+          "row_count": 9
+        },
+        {
+          "part_kind": "multiple_choice",
+          "topic": "Trình tự thay đổi quyền lực",
+          "grade": 11,
+          "construction": "Cho một biến đổi chính trị hoặc chính quyền bị thay thế; yêu cầu xác định thành phần còn lại của quan hệ.",
+          "wrong_options": "Hoán đổi đối tượng giữa các biến đổi kế tiếp hoặc đưa chính quyền mới vào vị trí chế độ cũ.",
+          "difficulty_source": "Phân biệt đối tượng và kết quả của những sự kiện gần nhau.",
+          "discrimination": "low",
+          "typical_steps": 2,
+          "refs": [
+            "acc23c4ca4f8|P1|17|None",
+            "686833f78102|P1|20|None"
+          ],
+          "paper_count": 2,
+          "row_count": 2
+        },
+        {
+          "part_kind": "multiple_choice",
+          "topic": "Ghép tổ chức với cấu trúc, chủ thể và chức năng",
+          "grade": 12,
+          "construction": "Cho tên tổ chức, thành phần, bối cảnh thành lập hoặc chức năng; yêu cầu ghép với thuộc tính tương ứng.",
+          "wrong_options": "Thay tổ chức trực tiếp bằng tổ chức lãnh đạo hay tiền thân; hoán đổi chức năng hoặc nâng hoạt động chuyên biệt thành bộ phận chính thức.",
+          "difficulty_source": "Phân biệt những tổ chức và khái niệm liên hệ gần nhưng khác tư cách, cấu trúc hoặc chức năng.",
+          "discrimination": "low",
+          "typical_steps": 2,
+          "refs": [
+            "acc23c4ca4f8|P1|4|None",
+            "686833f78102|P1|14|None",
+            "686833f78102|P1|18|None",
+            "dff65825f390|P1|10|None",
+            "08c8696055dd|P1|3|None",
+            "08c8696055dd|P1|13|None",
+            "08c8696055dd|P1|21|None"
+          ],
+          "paper_count": 4,
+          "row_count": 7
+        },
+        {
+          "part_kind": "multiple_choice",
+          "topic": "Mục tiêu và phạm vi hoạt động của tổ chức",
+          "grade": 12,
+          "construction": "Cho tổ chức hoặc chức năng cần xét; yêu cầu chọn mục tiêu, biểu hiện hoạt động hay định hướng phát triển đúng loại thuộc tính.",
+          "wrong_options": "Dùng nội dung tích cực nhưng thuộc chức năng khác; thay mục tiêu bằng bối cảnh, thách thức hoặc chức năng vượt phạm vi.",
+          "difficulty_source": "Phân biệt sự liên quan chung với nội dung trực tiếp đáp ứng yêu cầu.",
+          "discrimination": "medium",
+          "typical_steps": 3,
+          "evidence_scope": "Có hàng nhận diện trực tiếp ở mức low; quan sát về triển vọng riêng chưa tự chứng minh tái diễn.",
+          "refs": [
+            "acc23c4ca4f8|P1|19|None",
+            "686833f78102|P1|8|None",
+            "5a9dffb03ca8|P1|5|None",
+            "5a9dffb03ca8|P1|19|None"
+          ],
+          "paper_count": 3,
+          "row_count": 4
+        },
+        {
+          "part_kind": "multiple_choice",
+          "topic": "Bối cảnh và điều kiện hình thành",
+          "grade": 12,
+          "construction": "Cho quyết định hoặc bước phát triển; yêu cầu xác định bối cảnh và điều kiện phù hợp tại thời điểm đó.",
+          "wrong_options": "Chuyển bối cảnh của chặng khác sang, dùng xu hướng quá rộng hoặc giả định điều kiện chưa tồn tại.",
+          "difficulty_source": "Nhận ra đúng giai đoạn và điều kiện liên quan trực tiếp.",
+          "discrimination": "medium",
+          "typical_steps": 3,
+          "refs": [
+            "acc23c4ca4f8|P1|14|None",
+            "acc23c4ca4f8|P1|16|None",
+            "acc23c4ca4f8|P1|18|None",
+            "686833f78102|P1|6|None"
+          ],
+          "paper_count": 2,
+          "row_count": 4
+        },
+        {
+          "part_kind": "multiple_choice",
+          "topic": "Kiểm tra quan hệ nhân quả bằng niên biểu",
+          "grade": 12,
+          "construction": "Cho biến đổi cùng nguyên nhân hoặc hệ quả đề xuất; yêu cầu khôi phục trình tự và xác định quan hệ phù hợp.",
+          "wrong_options": "Dùng hiện tượng xuất hiện sau để giải thích sự kiện trước; thay biến đổi trực tiếp bằng hậu quả muộn hoặc nhầm hình thành với tồn tại.",
+          "difficulty_source": "Kết hợp thứ tự thời gian với cơ chế tác động; có trước chưa tự đủ chứng minh là nguyên nhân.",
+          "discrimination": "medium",
+          "typical_steps": 3,
+          "refs": [
+            "acc23c4ca4f8|P1|3|None",
+            "acc23c4ca4f8|P1|16|None",
+            "686833f78102|P1|6|None",
+            "dff65825f390|P1|21|None",
+            "08c8696055dd|P1|9|None",
+            "08c8696055dd|P1|11|None"
+          ],
+          "paper_count": 4,
+          "row_count": 6
+        },
+        {
+          "part_kind": "multiple_choice",
+          "topic": "Khái quát nguyên tắc từ hành động",
+          "grade": [
+            11,
+            12
+          ],
+          "construction": "Cho hành động hoặc chuỗi quyết định; yêu cầu nhận diện thuộc tính xuyên suốt rồi khái quát thành nguyên tắc.",
+          "wrong_options": "Dùng tư tưởng đúng nhưng thiếu đặc trưng, thay nguyên tắc bằng biện pháp hoặc thêm quan hệ lệ thuộc, biệt lập hay phương thức ngoài dữ kiện.",
+          "difficulty_source": "Chọn mức khái quát bao quát được dữ kiện mà không bổ sung nội dung.",
+          "discrimination": "medium",
+          "typical_steps": 3,
+          "refs": [
+            "acc23c4ca4f8|P1|6|None",
+            "686833f78102|P1|17|None",
+            "dff65825f390|P1|11|None",
+            "08c8696055dd|P1|8|None"
+          ],
+          "paper_count": 4,
+          "row_count": 4
+        },
+        {
+          "part_kind": "multiple_choice",
+          "topic": "So sánh và kiểm tra tính phổ quát",
+          "grade": [
+            11,
+            12
+          ],
+          "construction": "Cho nhiều đối tượng, giai đoạn hoặc tiến trình; yêu cầu tìm điểm chung hay khác biệt bằng cùng một tiêu chí và kiểm tra ở từng trường hợp.",
+          "wrong_options": "Lấy đặc điểm cục bộ làm thuộc tính chung, dùng điểm chung trả lời khác biệt hoặc đồng nhất hình thái chủ đạo với phương thức duy nhất.",
+          "difficulty_source": "Phân biệt kiến thức đúng riêng lẻ với nhận định thực sự bao quát hoặc phân biệt được các đối tượng.",
+          "discrimination": "medium",
+          "typical_steps": 3,
+          "refs": [
+            "acc23c4ca4f8|P1|1|None",
+            "686833f78102|P1|9|None",
+            "5a9dffb03ca8|P1|14|None",
+            "5a9dffb03ca8|P1|15|None",
+            "5a9dffb03ca8|P1|20|None",
+            "dff65825f390|P1|2|None",
+            "dff65825f390|P1|9|None",
+            "dff65825f390|P1|20|None",
+            "08c8696055dd|P1|15|None"
+          ],
+          "paper_count": 5,
+          "row_count": 9
+        },
+        {
+          "part_kind": "multiple_choice",
+          "topic": "Giới hạn ý nghĩa và mức độ hoàn thành",
+          "grade": [
+            11,
+            12
+          ],
+          "construction": "Cho sự kiện, thành tựu hoặc tư liệu; yêu cầu chọn kết luận đúng đối tượng, phạm vi tác động và mức độ hoàn thành.",
+          "wrong_options": "Nâng đóng góp thành hoàn tất, mở rộng ảnh hưởng thành tính đại diện toàn diện hoặc gán kết quả về sau cho bước khởi đầu.",
+          "difficulty_source": "Các lựa chọn có thể đúng về hướng nhưng sai phạm vi hoặc mức độ.",
+          "discrimination": "medium",
+          "typical_steps": 3,
+          "evidence_scope": "Các hàng thành phần có mức low hoặc medium; chưa có đo lường kết quả làm bài.",
+          "refs": [
+            "acc23c4ca4f8|P1|11|None",
+            "acc23c4ca4f8|P1|12|None",
+            "686833f78102|P1|2|None",
+            "5a9dffb03ca8|P1|2|None",
+            "5a9dffb03ca8|P1|9|None",
+            "dff65825f390|P1|4|None",
+            "dff65825f390|P1|22|None",
+            "08c8696055dd|P1|7|None",
+            "08c8696055dd|P1|22|None"
+          ],
+          "paper_count": 5,
+          "row_count": 9
+        },
+        {
+          "part_kind": "multiple_choice",
+          "topic": "Phân biệt thành tựu với mục tiêu và điều kiện",
+          "grade": [
+            11,
+            12
+          ],
+          "construction": "Cho quá trình phát triển và các nhận định về kết quả hoặc triển vọng; yêu cầu chọn kết luận phù hợp với chiều chuyển biến và thành tựu thực tế.",
+          "wrong_options": "Trộn kết quả với đường lối, bài học hoặc điều kiện; phóng đại thành tựu, đảo chiều phát triển hoặc dùng kết luận bao trùm phủ nhận dữ kiện.",
+          "difficulty_source": "Giữ đúng loại kết luận và mức độ được chứng minh; có lựa chọn chưa được giải thích rõ ranh giới sai.",
+          "discrimination": "medium",
+          "typical_steps": 3,
+          "evidence_scope": "Nhận diện chiều hướng trực tiếp có hàng ở mức low.",
+          "refs": [
+            "acc23c4ca4f8|P1|5|None",
+            "686833f78102|P1|15|None",
+            "dff65825f390|P1|17|None",
+            "08c8696055dd|P1|18|None"
+          ],
+          "paper_count": 4,
+          "row_count": 4
+        },
+        {
+          "part_kind": "multiple_choice",
+          "topic": "Bản chất chuyển biến và cấp độ khái niệm",
+          "grade": 12,
+          "construction": "Cho thay đổi trong tổ chức, hoạt động hoặc đường lối; yêu cầu phân biệt nền tảng, mục tiêu, cơ chế, phương thức và biểu hiện trực tiếp.",
+          "wrong_options": "Đồng nhất đổi phương thức với đổi mục tiêu; thay nguyên tắc bằng biện pháp, bản chất bằng biểu hiện hoặc nội dung chuyên biệt bằng phương châm chung.",
+          "difficulty_source": "Những diễn đạt gần nghĩa có thể khác cấp độ khái quát và quan hệ giữa kế thừa với đổi mới.",
+          "discrimination": "medium",
+          "typical_steps": 3,
+          "refs": [
+            "acc23c4ca4f8|P1|5|None",
+            "686833f78102|P1|4|None",
+            "686833f78102|P1|5|None",
+            "5a9dffb03ca8|P1|6|None",
+            "5a9dffb03ca8|P1|10|None",
+            "5a9dffb03ca8|P1|23|None",
+            "dff65825f390|P1|18|None",
+            "08c8696055dd|P1|2|None",
+            "08c8696055dd|P1|17|None"
+          ],
+          "paper_count": 5,
+          "row_count": 9
+        },
+        {
+          "part_kind": "multiple_choice",
+          "topic": "Phân loại theo phạm vi và lĩnh vực",
+          "grade": [
+            11,
+            12
+          ],
+          "construction": "Giới hạn loại ý nghĩa, nguyên nhân, hoạt động hoặc lĩnh vực; yêu cầu phân loại phương án rồi kiểm tra nội dung và điều kiện thời gian.",
+          "wrong_options": "Dùng thông tin đúng nhưng khác lĩnh vực, phạm vi tác động hoặc loại nguyên nhân.",
+          "difficulty_source": "Từ khóa giới hạn quyết định tính phù hợp; mức yêu cầu phụ thuộc độ gần giữa các loại nội dung.",
+          "discrimination": "medium",
+          "typical_steps": 3,
+          "evidence_scope": "Các hàng phân loại trực tiếp có thể ở mức low.",
+          "refs": [
+            "acc23c4ca4f8|P1|11|None",
+            "acc23c4ca4f8|P1|21|None",
+            "686833f78102|P1|8|None",
+            "686833f78102|P1|10|None",
+            "dff65825f390|P1|13|None",
+            "08c8696055dd|P1|2|None",
+            "08c8696055dd|P1|17|None"
+          ],
+          "paper_count": 4,
+          "row_count": 7
+        },
+        {
+          "part_kind": "multiple_choice",
+          "topic": "Vị trí của nhân tố và đóng góp",
+          "grade": 12,
+          "construction": "Cho chủ thể hoặc hệ thống nguyên nhân; yêu cầu xác định đóng góp trực tiếp hay phân biệt yếu tố hỗ trợ với điều kiện bắt buộc và nhân tố quyết định.",
+          "wrong_options": "Nâng yếu tố có tác dụng thành điều kiện không thể thiếu hoặc vai trò quyết định; dùng đóng góp ở nhiệm vụ khác thay vai trò được hỏi.",
+          "difficulty_source": "Phân biệt sự liên quan, mức quan trọng và vị trí thực tế trong quan hệ giải thích.",
+          "discrimination": "medium",
+          "typical_steps": 3,
+          "evidence_scope": "Một số hàng chọn đóng góp trực tiếp được mô tả ở mức low.",
+          "refs": [
+            "acc23c4ca4f8|P1|5|None",
+            "686833f78102|P1|4|None",
+            "dff65825f390|P1|16|None",
+            "08c8696055dd|P1|5|None"
+          ],
+          "paper_count": 4,
+          "row_count": 4
+        },
+        {
+          "part_kind": "multiple_choice",
+          "topic": "Cơ chế tác động giữa hoạt động và kết quả",
+          "grade": 12,
+          "construction": "Cho hoạt động, đóng góp hoặc thắng lợi; yêu cầu nối với đúng loại tác động và giới hạn kết luận theo kết quả thực tế.",
+          "wrong_options": "Gán tác động cho sai lĩnh vực, chuyển ảnh hưởng thành áp đặt hoặc mở rộng bước chuyển thành kết thúc toàn bộ tiến trình.",
+          "difficulty_source": "Phải giải thích được cầu nối từ hoạt động đến tác động, đồng thời kiểm tra quy mô và giai đoạn.",
+          "discrimination": "medium",
+          "typical_steps": 3,
+          "refs": [
+            "acc23c4ca4f8|P1|2|None",
+            "acc23c4ca4f8|P1|22|None",
+            "acc23c4ca4f8|P1|23|None",
+            "686833f78102|P1|19|None",
+            "dff65825f390|P1|23|None",
+            "08c8696055dd|P1|23|None"
+          ],
+          "paper_count": 4,
+          "row_count": 6
+        },
+        {
+          "part_kind": "multiple_choice",
+          "topic": "Chọn căn cứ giải thích trực tiếp",
+          "grade": 12,
+          "construction": "Cho thuộc tính, đánh giá hoặc quyết định cần giải thích; yêu cầu chọn căn cứ có quan hệ trực tiếp với điều đó.",
+          "wrong_options": "Dùng thông tin đúng nhưng quá rộng, thành tựu không liên quan hoặc lợi thế suy đoán thiếu cầu nối.",
+          "difficulty_source": "Phân biệt lời giải thích có tính đặc trưng với thông tin chỉ liên quan chung.",
+          "discrimination": "medium",
+          "typical_steps": 3,
+          "evidence_scope": "Các hàng có căn cứ trực tiếp rõ được mô tả ở mức low.",
+          "refs": [
+            "acc23c4ca4f8|P1|6|None",
+            "acc23c4ca4f8|P1|14|None",
+            "686833f78102|P1|8|None",
+            "686833f78102|P1|19|None",
+            "dff65825f390|P1|24|None",
+            "08c8696055dd|P1|24|None"
+          ],
+          "paper_count": 4,
+          "row_count": 6
+        },
+        {
+          "part_kind": "multiple_choice",
+          "topic": "Khái quát bài học và kiểm tra giới hạn vận dụng",
+          "grade": [
+            11,
+            12
+          ],
+          "construction": "Cho kinh nghiệm lịch sử hoặc yêu cầu của hoàn cảnh; yêu cầu rút nguyên tắc và chọn định hướng vận dụng phù hợp.",
+          "wrong_options": "Dùng sách lược riêng làm nguyên tắc lâu dài, tuyệt đối hóa nguồn lực, đề xuất cực đoan hoặc chiếu điều kiện xuất hiện muộn về quá khứ.",
+          "difficulty_source": "Chọn mức khái quát có căn cứ và kiểm tra điều kiện áp dụng; một số ranh giới phương án chưa thật sắc.",
+          "discrimination": "medium",
+          "typical_steps": 3,
+          "refs": [
+            "686833f78102|P1|24|None",
+            "5a9dffb03ca8|P1|8|None",
+            "5a9dffb03ca8|P1|12|None",
+            "dff65825f390|P1|12|None",
+            "08c8696055dd|P1|6|None"
+          ],
+          "paper_count": 4,
+          "row_count": 5
+        },
+        {
+          "part_kind": "multiple_choice",
+          "topic": "Tìm ngoại lệ theo tiêu chí ổn định",
+          "grade": [
+            11,
+            12
+          ],
+          "construction": "Cho nhóm trường hợp hoặc nhận định; yêu cầu tìm nội dung không phù hợp bằng cách giữ đúng yêu cầu phủ định và tiêu chí kiểm tra.",
+          "wrong_options": "Những trường hợp phù hợp trở thành nhiễu; phương án cần chọn sai về thời gian, phạm vi, kết quả hoặc mức độ đánh giá.",
+          "difficulty_source": "Kiểm soát phủ định đồng thời kiểm tra từng phương án, tránh thay đổi tiêu chí giữa chừng.",
+          "discrimination": "medium",
+          "typical_steps": 3,
+          "evidence_scope": "Các hàng thành phần được mô tả ở mức low hoặc medium.",
+          "refs": [
+            "5a9dffb03ca8|P1|14|None",
+            "5a9dffb03ca8|P1|22|None",
+            "dff65825f390|P1|1|None",
+            "dff65825f390|P1|8|None",
+            "dff65825f390|P1|15|None",
+            "08c8696055dd|P1|1|None",
+            "08c8696055dd|P1|12|None"
+          ],
+          "paper_count": 3,
+          "row_count": 7
+        },
+        {
+          "part_kind": "multiple_choice",
+          "topic": "Trích xuất thông tin trực tiếp",
+          "grade": 12,
+          "construction": "Cho tư liệu chứa thông tin cần tìm; yêu cầu định vị thông tin rồi ghép với phương án.",
+          "wrong_options": "Thay thông tin trong nguồn bằng thông tin có liên tưởng gần hoặc thuộc hoạt động khác.",
+          "difficulty_source": "Đọc đúng nội dung thay vì trả lời bằng liên tưởng ngoài nguồn.",
+          "discrimination": "low",
+          "typical_steps": 2,
+          "refs": [
+            "686833f78102|P1|22|None",
+            "5a9dffb03ca8|P1|16|None"
+          ],
+          "paper_count": 2,
+          "row_count": 2
+        },
+        {
+          "part_kind": "multiple_choice",
+          "topic": "Nhận diện thực thể qua điều kiện giới hạn",
+          "grade": [
+            11,
+            12
+          ],
+          "construction": "Cho các điều kiện về thời gian, mục đích hoặc phạm vi; yêu cầu lọc phương án và nhận diện thực thể thỏa điều kiện.",
+          "wrong_options": "Dùng thực thể chỉ thỏa một điều kiện, thuộc chặng khác hoặc có thể loại ngay.",
+          "difficulty_source": "Nhớ liên hệ giữa thực thể và bối cảnh; nhiễu xa có thể làm giảm yêu cầu suy luận.",
+          "discrimination": "low",
+          "typical_steps": 2,
+          "evidence_scope": "Quan sát riêng trong một đề; chưa xác nhận tái diễn của cấu trúc lọc thực thể này.",
+          "refs": [
+            "5a9dffb03ca8|P1|11|None",
+            "5a9dffb03ca8|P1|24|None"
+          ],
+          "paper_count": 1,
+          "row_count": 2
+        },
+        {
+          "part_kind": "multiple_choice",
+          "topic": "Quan hệ phối hợp và tính tự chủ",
+          "grade": 12,
+          "construction": "Cho tư liệu hoặc định hướng có nhiều thành phần; yêu cầu kiểm tra quan hệ phối hợp, tự chủ và hợp tác trong toàn bộ phương án.",
+          "wrong_options": "Biến phối hợp thành lệ thuộc, thứ bậc, biệt lập hoặc thay thế; suy từ hợp tác đến xóa bỏ mọi khác biệt và mâu thuẫn.",
+          "difficulty_source": "Các thành tố có thể quen thuộc nhưng quan hệ nối chúng bị thay đổi.",
+          "discrimination": "medium",
+          "typical_steps": 3,
+          "refs": [
+            "5a9dffb03ca8|P1|17|None",
+            "5a9dffb03ca8|P1|18|None",
+            "dff65825f390|P1|19|None",
+            "08c8696055dd|P1|19|None"
+          ],
+          "paper_count": 3,
+          "row_count": 4
+        },
+        {
+          "part_kind": "true_false",
+          "topic": "Đối chiếu nhận định trực tiếp với tư liệu",
+          "grade": 12,
+          "construction": "Cho tư liệu và nhận định diễn đạt lại thông tin, chủ trương hoặc mục đích; yêu cầu đối chiếu đối tượng, điều kiện, phạm vi và quan hệ.",
+          "wrong_options": "Đảo hướng hành động, thêm lí do, thu hẹp khái niệm hoặc phủ nhận nội dung nguồn đã xác nhận.",
+          "difficulty_source": "Nhận ra diễn đạt tương đương mà không tự thêm ý; có bản tóm tắt làm mờ điều kiện thực hiện.",
+          "discrimination": "low",
+          "typical_steps": 2,
+          "refs": [
+            "686833f78102|P2|2|b",
+            "686833f78102|P2|2|c",
+            "686833f78102|P2|4|b",
+            "686833f78102|P2|4|d",
+            "5a9dffb03ca8|P2|2|c",
+            "5a9dffb03ca8|P2|3|b",
+            "5a9dffb03ca8|P2|4|b",
+            "dff65825f390|P2|1|a",
+            "dff65825f390|P2|1|d",
+            "dff65825f390|P2|2|b",
+            "dff65825f390|P2|2|d",
+            "dff65825f390|P2|3|d",
+            "dff65825f390|P2|4|c",
+            "08c8696055dd|P2|2|a"
+          ],
+          "paper_count": 4,
+          "row_count": 14
+        },
+        {
+          "part_kind": "true_false",
+          "topic": "Khái quát chủ đề và chiều hướng của tập dữ kiện",
+          "grade": 12,
+          "construction": "Cho bảng hoặc chuỗi dữ kiện; yêu cầu xác định khung thời gian, chủ đề và chiều chuyển biến rồi đánh giá nhận xét tổng hợp.",
+          "wrong_options": null,
+          "difficulty_source": "Đọc dữ kiện như một chỉnh thể và giữ đúng phạm vi khái quát; có kết luận được khóa chấp nhận nhưng bằng chứng trực tiếp chưa đầy đủ.",
+          "discrimination": "medium",
+          "typical_steps": 3,
+          "evidence_scope": "Nhận diện chủ đề trực tiếp có hàng ở mức low; phần mở rộng có thể cần kiến thức nền.",
+          "refs": [
+            "686833f78102|P2|3|b",
+            "5a9dffb03ca8|P2|1|a",
+            "dff65825f390|P2|3|d",
+            "08c8696055dd|P2|1|a",
+            "08c8696055dd|P2|1|d"
+          ],
+          "paper_count": 4,
+          "row_count": 5
+        },
+        {
+          "part_kind": "true_false",
+          "topic": "Niên biểu, khởi đầu và ranh giới hoàn thành",
+          "grade": 12,
+          "construction": "Cho tư liệu hoặc bảng sự kiện; yêu cầu kiểm tra thời điểm, thời lượng, trình tự nhân quả và mức hoàn thành của nhận định.",
+          "wrong_options": "Chiếu biểu hiện muộn về giai đoạn đầu, đưa kết quả về lúc chuẩn bị, nén quá trình thành kết quả tức thời hoặc dùng sự kiện sau giải thích sự kiện trước.",
+          "difficulty_source": "Phân biệt sự kiện với quá trình và tiền đề với kết quả; xuất xứ muộn tự nó chưa chứng minh thời điểm khởi đầu.",
+          "discrimination": "medium",
+          "typical_steps": 3,
+          "refs": [
+            "686833f78102|P2|3|d",
+            "5a9dffb03ca8|P2|3|c",
+            "5a9dffb03ca8|P2|1|c",
+            "5a9dffb03ca8|P2|2|a",
+            "dff65825f390|P2|1|b",
+            "dff65825f390|P2|1|c",
+            "dff65825f390|P2|4|a",
+            "dff65825f390|P2|4|b",
+            "08c8696055dd|P2|1|b",
+            "08c8696055dd|P2|2|a"
+          ],
+          "paper_count": 4,
+          "row_count": 10
+        },
+        {
+          "part_kind": "true_false",
+          "topic": "Quan hệ bổ sung giữa các yêu cầu và nguồn lực",
+          "grade": 12,
+          "construction": "Cho tư liệu nêu các thành phần bổ sung nhau; yêu cầu đánh giá nhận định có giữ đúng quan hệ kết hợp hay không.",
+          "wrong_options": "Biến kết hợp thành loại trừ, thay thế, khép kín hoặc tuyệt đối hóa một thành phần.",
+          "difficulty_source": "Đọc quan hệ giữa các ý thay vì chỉ nhận ra từ khóa đúng.",
+          "discrimination": "medium",
+          "typical_steps": 2,
+          "refs": [
+            "686833f78102|P2|2|d",
+            "5a9dffb03ca8|P2|2|d",
+            "5a9dffb03ca8|P2|3|d",
+            "5a9dffb03ca8|P2|4|d"
+          ],
+          "paper_count": 2,
+          "row_count": 4
+        },
+        {
+          "part_kind": "true_false",
+          "topic": "Cơ chế nhân quả và mức độ tác động",
+          "grade": 12,
+          "construction": "Cho hoạt động hoặc biến đổi cùng nhận định về động lực, hệ quả hay xu hướng; yêu cầu kiểm tra cơ chế, trình tự, phạm vi và mức độ tác động.",
+          "wrong_options": "Nâng điều kiện thuận lợi thành nguyên nhân quyết định, đảo chiều nhân quả hoặc biến khả năng và xu hướng thành kết quả tất yếu.",
+          "difficulty_source": "Nối dữ kiện với hệ quả có căn cứ; một số kết luận cần kiến thức ngoài tư liệu và chưa có dữ liệu đo tác động.",
+          "discrimination": "medium",
+          "typical_steps": 3,
+          "refs": [
+            "686833f78102|P2|3|a",
+            "5a9dffb03ca8|P2|1|b",
+            "686833f78102|P2|1|a",
+            "686833f78102|P2|1|c",
+            "686833f78102|P2|3|c",
+            "5a9dffb03ca8|P2|1|d",
+            "dff65825f390|P2|2|c",
+            "dff65825f390|P2|4|c",
+            "dff65825f390|P2|4|d",
+            "08c8696055dd|P2|1|b",
+            "08c8696055dd|P2|1|d"
+          ],
+          "paper_count": 4,
+          "row_count": 11
+        },
+        {
+          "part_kind": "true_false",
+          "topic": "Kiểm tra toàn bộ nhận định ghép",
+          "grade": 12,
+          "construction": "Cho nhận định ghép nhiều chi tiết hoặc nối tiền đề với kết luận; yêu cầu tách từng phần và kiểm tra cả bước suy luận.",
+          "wrong_options": "Giữ phần đầu đúng nhưng thêm kết luận vượt điều kiện, vai trò bị nâng quá mức, thuật ngữ sai, thời lượng sai hoặc nhân quả đảo ngược.",
+          "difficulty_source": "Không để một thành phần đúng che khuất lỗi ở thành phần khác hoặc ở quan hệ nối.",
+          "discrimination": "medium",
+          "typical_steps": 3,
+          "refs": [
+            "acc23c4ca4f8|P2|2|b",
+            "acc23c4ca4f8|P2|3|a",
+            "686833f78102|P2|2|a",
+            "5a9dffb03ca8|P2|4|a",
+            "5a9dffb03ca8|P2|4|c",
+            "dff65825f390|P2|2|c",
+            "dff65825f390|P2|4|b",
+            "08c8696055dd|P2|1|b",
+            "08c8696055dd|P2|2|b"
+          ],
+          "paper_count": 5,
+          "row_count": 9
+        },
+        {
+          "part_kind": "true_false",
+          "topic": "Bổ sung kiến thức nền để kiểm tra nhận định mở rộng",
+          "grade": 12,
+          "construction": "Cho tư liệu chỉ bao phủ một phần vấn đề; yêu cầu xác định giới hạn nguồn rồi huy động kiến thức nền để kiểm tra nhận định rộng hơn.",
+          "wrong_options": "Coi kết quả bộ phận là hoàn tất hoặc bác bỏ nhận định chỉ vì nguồn không nêu trực tiếp.",
+          "difficulty_source": "Phân biệt bằng chứng trong nguồn với kiến thức bổ sung; có kết luận chưa được đoạn trích chứng minh đầy đủ.",
+          "discrimination": "medium",
+          "typical_steps": 3,
+          "refs": [
+            "dff65825f390|P2|1|b",
+            "dff65825f390|P2|1|c",
+            "dff65825f390|P2|3|a",
+            "dff65825f390|P2|3|c",
+            "dff65825f390|P2|4|d",
+            "08c8696055dd|P2|1|a",
+            "08c8696055dd|P2|1|d"
+          ],
+          "paper_count": 2,
+          "row_count": 7
+        },
+        {
+          "part_kind": "true_false",
+          "topic": "Chuyển mô tả thành khái niệm, nguyên tắc hoặc bài học",
+          "grade": 12,
+          "construction": "Cho mô tả hoạt động hoặc thay đổi phương thức; yêu cầu nhận diện bản chất rồi đánh giá khái niệm, cơ chế hoặc định hướng được rút ra.",
+          "wrong_options": "Đồng nhất thay đổi phương thức với thay đổi mục tiêu hoặc khái quát vượt dấu hiệu và kiến thức nền cho phép.",
+          "difficulty_source": "Đi từ biểu hiện đến khái niệm giải thích mà không chỉ ghép từ ngữ.",
+          "discrimination": "medium",
+          "typical_steps": 3,
+          "refs": [
+            "5a9dffb03ca8|P2|2|b",
+            "5a9dffb03ca8|P2|3|a",
+            "dff65825f390|P2|2|a",
+            "dff65825f390|P2|3|b",
+            "08c8696055dd|P2|1|c"
+          ],
+          "paper_count": 3,
+          "row_count": 5
+        },
+        {
+          "part_kind": "true_false",
+          "topic": "Phân biệt phương diện của một kết quả",
+          "grade": 12,
+          "construction": "Cho tư liệu đánh giá kết quả; yêu cầu tách tính chất, nội dung cam kết, biện pháp thực hiện và vai trò của kết quả trong tiến trình.",
+          "wrong_options": "Đánh tráo các phương diện cùng liên quan hoặc đồng nhất kết quả ở một lĩnh vực với việc kết thúc toàn bộ tiến trình.",
+          "difficulty_source": "Những thuộc tính gần nhau không thể thay thế nhau.",
+          "discrimination": "medium",
+          "typical_steps": 3,
+          "evidence_scope": "Quan sát riêng trong một đề; chưa xác nhận tái diễn của cấu trúc phân biệt các phương diện này.",
+          "refs": [
+            "686833f78102|P2|1|b",
+            "686833f78102|P2|1|d"
+          ],
+          "paper_count": 1,
+          "row_count": 2
+        },
+        {
+          "part_kind": "true_false",
+          "topic": "So sánh cơ chế kế thừa và phát triển",
+          "grade": 12,
+          "construction": "Cho tư liệu chỉ đạo và nhận định liên hệ kinh nghiệm trước; yêu cầu khôi phục hoàn cảnh, nhận diện cơ chế chung rồi xét cách vận dụng.",
+          "wrong_options": null,
+          "difficulty_source": "So sánh cơ chế thay vì chỉ nhận ra từ ngữ tương tự.",
+          "discrimination": "medium",
+          "typical_steps": 3,
+          "evidence_scope": "Quan sát riêng trong một đề; chưa xác nhận tái diễn của cấu trúc liên hệ này.",
+          "refs": [
+            "686833f78102|P2|4|a",
+            "686833f78102|P2|4|c"
+          ],
+          "paper_count": 1,
+          "row_count": 2
+        }
+      ],
+      "discrimination_moves": [
+        {
+          "move": "Dùng niên biểu kiểm tra quan hệ giải thích",
+          "how_to_apply": "Nối những hiện tượng có liên hệ nhưng thay đổi trình tự hoặc vị trí điều kiện và kết quả; yêu cầu kiểm tra cả thời gian lẫn cơ chế.",
+          "refs": [
+            "acc23c4ca4f8|P1|3|None",
+            "acc23c4ca4f8|P2|1|b",
+            "acc23c4ca4f8|P2|4|c",
+            "686833f78102|P1|6|None",
+            "686833f78102|P2|3|d",
+            "5a9dffb03ca8|P2|3|c",
+            "dff65825f390|P1|21|None",
+            "08c8696055dd|P1|11|None",
+            "08c8696055dd|P1|23|None",
+            "08c8696055dd|P2|1|b"
+          ],
+          "paper_count": 5,
+          "row_count": 10
+        },
+        {
+          "move": "Đặt ranh giới ở phạm vi và mức độ kết luận",
+          "how_to_apply": "Phân biệt đóng góp với quyết định, tiền đề với hoàn thành, xu hướng với tất yếu và kết quả từng phần với toàn bộ.",
+          "refs": [
+            "acc23c4ca4f8|P1|11|None",
+            "acc23c4ca4f8|P1|12|None",
+            "acc23c4ca4f8|P2|3|d",
+            "686833f78102|P1|19|None",
+            "686833f78102|P2|3|c",
+            "5a9dffb03ca8|P2|1|b",
+            "5a9dffb03ca8|P2|1|d",
+            "5a9dffb03ca8|P2|4|c",
+            "dff65825f390|P2|1|b",
+            "dff65825f390|P2|1|c",
+            "dff65825f390|P2|4|a",
+            "08c8696055dd|P1|7|None"
+          ],
+          "paper_count": 5,
+          "row_count": 12
+        },
+        {
+          "move": "Đặt thông tin đúng nhưng sai yêu cầu cạnh đáp án",
+          "how_to_apply": "Dùng phương án có cơ sở nhưng khác lĩnh vực, chức năng, cấp độ khái niệm hoặc quan hệ giải thích; chỉ đáp án đáp ứng trực tiếp yêu cầu.",
+          "refs": [
+            "acc23c4ca4f8|P1|6|None",
+            "acc23c4ca4f8|P1|14|None",
+            "686833f78102|P1|8|None",
+            "686833f78102|P1|19|None",
+            "dff65825f390|P1|18|None",
+            "08c8696055dd|P1|2|None",
+            "08c8696055dd|P1|15|None"
+          ],
+          "paper_count": 4,
+          "row_count": 7
+        },
+        {
+          "move": "Chuyển biểu hiện sang nguyên tắc hoặc cơ chế",
+          "how_to_apply": "Yêu cầu khái quát thuộc tính chung hoặc giải thích cơ chế từ mô tả; giữ mức khái quát đủ bao quát nhưng không thêm nội dung.",
+          "refs": [
+            "acc23c4ca4f8|P1|6|None",
+            "acc23c4ca4f8|P2|4|b",
+            "686833f78102|P1|17|None",
+            "686833f78102|P1|24|None",
+            "5a9dffb03ca8|P2|2|b",
+            "5a9dffb03ca8|P2|3|a"
+          ],
+          "paper_count": 3,
+          "row_count": 6
+        },
+        {
+          "move": "Kiểm tra vai trò của nhân tố và quan hệ giữa các thành phần",
+          "how_to_apply": "Giữ các thành tố quen thuộc nhưng thay quan hệ bổ sung bằng loại trừ, lệ thuộc hoặc vai trò quyết định; yêu cầu xét quan hệ thực tế.",
+          "refs": [
+            "acc23c4ca4f8|P1|5|None",
+            "acc23c4ca4f8|P1|23|None",
+            "acc23c4ca4f8|P2|1|c",
+            "686833f78102|P1|4|None",
+            "686833f78102|P2|2|d",
+            "5a9dffb03ca8|P1|17|None",
+            "5a9dffb03ca8|P2|2|d"
+          ],
+          "paper_count": 3,
+          "row_count": 7
+        },
+        {
+          "move": "Đặt lỗi sau tiền đề hoặc chi tiết đúng",
+          "how_to_apply": "Tách và kiểm tra toàn bộ phương án; lỗi nằm ở kết luận, thuật ngữ, vai trò, phạm vi hoặc bước nối nhân quả.",
+          "refs": [
+            "acc23c4ca4f8|P2|2|b",
+            "acc23c4ca4f8|P2|3|a",
+            "686833f78102|P2|2|a",
+            "5a9dffb03ca8|P2|4|a",
+            "5a9dffb03ca8|P2|4|c",
+            "dff65825f390|P1|19|None",
+            "dff65825f390|P2|2|c",
+            "08c8696055dd|P2|1|b"
+          ],
+          "paper_count": 5,
+          "row_count": 8
+        },
+        {
+          "move": "Kiểm tra khái quát qua từng đối tượng",
+          "how_to_apply": "Đối chiếu cùng tiêu chí ở từng trường hợp; phân biệt điểm chung, điểm khác và sách lược riêng trước khi chấp nhận kết luận.",
+          "refs": [
+            "5a9dffb03ca8|P1|14|None",
+            "dff65825f390|P1|2|None",
+            "dff65825f390|P1|9|None",
+            "dff65825f390|P1|12|None",
+            "dff65825f390|P1|20|None",
+            "08c8696055dd|P1|15|None"
+          ],
+          "paper_count": 3,
+          "row_count": 6
+        },
+        {
+          "move": "Phân biệt bằng chứng trực tiếp với kiến thức bổ sung",
+          "how_to_apply": "Xác định phần nguồn hỗ trợ và kiến thức nền cần thêm; không dùng sự vắng mặt trong nguồn làm phản chứng hoặc dùng khóa thay bằng chứng.",
+          "refs": [
+            "686833f78102|P2|1|b",
+            "5a9dffb03ca8|P2|1|c",
+            "5a9dffb03ca8|P2|2|a",
+            "dff65825f390|P2|3|a",
+            "dff65825f390|P2|3|c",
+            "dff65825f390|P2|4|d",
+            "08c8696055dd|P2|1|a"
+          ],
+          "paper_count": 4,
+          "row_count": 7
+        }
+      ],
+      "easy_vs_hard": [
+        {
+          "topic": "Niên biểu và bước phát triển",
+          "easy": "Ghép mốc với sự kiện hoặc văn kiện.",
+          "hard": "Phân biệt khởi đầu, bước phát triển và điều kiện tạo ra biến đổi tiếp theo.",
+          "easy_refs": [
+            "acc23c4ca4f8|P1|13|None",
+            "686833f78102|P1|7|None",
+            "686833f78102|P1|12|None",
+            "dff65825f390|P1|7|None",
+            "08c8696055dd|P1|4|None"
+          ],
+          "hard_refs": [
+            "acc23c4ca4f8|P1|14|None",
+            "acc23c4ca4f8|P2|1|a",
+            "acc23c4ca4f8|P2|1|b",
+            "08c8696055dd|P1|23|None"
+          ]
+        },
+        {
+          "topic": "Đường lối và mô hình phát triển",
+          "easy": "Nhận diện nội dung cốt lõi, thông tin ghi rõ hoặc lựa chọn lệch lĩnh vực.",
+          "hard": "Phân biệt mô hình với biểu hiện, nguyên tắc với biện pháp và tiền đề đúng với kết luận vượt giới hạn.",
+          "easy_refs": [
+            "686833f78102|P1|5|None",
+            "686833f78102|P1|15|None",
+            "acc23c4ca4f8|P2|2|a",
+            "686833f78102|P2|2|b",
+            "5a9dffb03ca8|P2|2|c",
+            "dff65825f390|P1|13|None",
+            "08c8696055dd|P1|17|None"
+          ],
+          "hard_refs": [
+            "686833f78102|P1|4|None",
+            "acc23c4ca4f8|P2|2|b",
+            "686833f78102|P2|2|a",
+            "5a9dffb03ca8|P2|2|b",
+            "dff65825f390|P1|18|None",
+            "08c8696055dd|P1|2|None"
+          ]
+        },
+        {
+          "topic": "Tổ chức và chức năng",
+          "easy": "Ghép mốc, mục tiêu chính thức hoặc chức năng trực tiếp với tổ chức.",
+          "hard": "Khái quát nguyên tắc và phân biệt hoạt động có liên quan với biểu hiện đúng chức năng được giới hạn.",
+          "easy_refs": [
+            "acc23c4ca4f8|P1|4|None",
+            "686833f78102|P1|14|None",
+            "acc23c4ca4f8|P1|19|None",
+            "08c8696055dd|P1|13|None"
+          ],
+          "hard_refs": [
+            "acc23c4ca4f8|P1|6|None",
+            "acc23c4ca4f8|P2|3|a",
+            "acc23c4ca4f8|P2|3|c",
+            "686833f78102|P1|8|None"
+          ]
+        },
+        {
+          "topic": "Đọc tư liệu và khái quát quan hệ",
+          "easy": "Tìm thông tin hoặc đối chiếu quan hệ được trình bày trực tiếp.",
+          "hard": "Kết hợp kiến thức nền để khái quát quan hệ, giữ tính tự chủ và kiểm tra vai trò của các thành phần.",
+          "easy_refs": [
+            "686833f78102|P1|22|None",
+            "5a9dffb03ca8|P1|16|None",
+            "dff65825f390|P2|2|b",
+            "dff65825f390|P2|2|d",
+            "08c8696055dd|P2|4|b"
+          ],
+          "hard_refs": [
+            "5a9dffb03ca8|P1|17|None",
+            "dff65825f390|P2|2|c",
+            "08c8696055dd|P2|1|b",
+            "08c8696055dd|P2|4|c"
+          ]
+        },
+        {
+          "topic": "Bối cảnh và nhân quả",
+          "easy": "Nhận diện khung thời gian và chủ đề chung của tập dữ kiện.",
+          "hard": "Kiểm tra chiều nhân quả và phân biệt điều kiện thuận lợi với nhân tố quyết định.",
+          "easy_refs": [
+            "686833f78102|P2|3|b",
+            "5a9dffb03ca8|P2|1|a"
+          ],
+          "hard_refs": [
+            "686833f78102|P2|3|d",
+            "5a9dffb03ca8|P2|1|b"
+          ]
+        },
+        {
+          "topic": "Chuẩn bị và chỉ đạo hành động",
+          "easy": "Đọc yêu cầu hành động hoặc nhận diện tác nhân trực tiếp.",
+          "hard": "So sánh cơ chế hình thành điều kiện hành động và phân biệt chuẩn bị với thực hiện.",
+          "easy_refs": [
+            "5a9dffb03ca8|P1|7|None",
+            "686833f78102|P2|4|b",
+            "686833f78102|P2|4|d"
+          ],
+          "hard_refs": [
+            "686833f78102|P2|4|a"
+          ]
+        },
+        {
+          "topic": "So sánh các cuộc đấu tranh",
+          "easy": "Ghép dấu hiệu, đối tượng hoặc kết quả với tiến trình tương ứng.",
+          "hard": "Kiểm tra nhân tố chung và phân biệt quan hệ phối hợp riêng của từng tiến trình.",
+          "easy_refs": [
+            "5a9dffb03ca8|P1|13|None",
+            "dff65825f390|P1|3|None"
+          ],
+          "hard_refs": [
+            "dff65825f390|P1|2|None",
+            "08c8696055dd|P1|15|None"
+          ]
+        },
+        {
+          "topic": "Quan hệ giữa các lĩnh vực hoạt động",
+          "easy": "Nhận diện tác động được nêu trực tiếp hoặc ghép hoạt động với mục đích và thời điểm.",
+          "hard": "Kiểm tra cơ chế tác động sang lĩnh vực khác và chiều quan hệ giữa các hoạt động.",
+          "easy_refs": [
+            "acc23c4ca4f8|P1|22|None",
+            "acc23c4ca4f8|P2|4|d",
+            "686833f78102|P1|13|None"
+          ],
+          "hard_refs": [
+            "acc23c4ca4f8|P1|2|None",
+            "acc23c4ca4f8|P1|23|None",
+            "acc23c4ca4f8|P2|4|c"
+          ]
+        },
+        {
+          "topic": "Kết quả từng phần và hoàn thành tiến trình",
+          "easy": "Nhận ra mục tiêu, căn cứ trực tiếp hoặc sự phóng đại rõ mức hoàn thành.",
+          "hard": "Kiểm tra đồng thời nhiệm vụ còn lại, phạm vi tác động, thuật ngữ và phương thức tạo kết quả.",
+          "difficulty_note": "Dễ và khó là tương đối trong tập; không có căn cứ xác nhận phân hóa cao.",
+          "easy_refs": [
+            "dff65825f390|P2|4|b",
+            "dff65825f390|P2|4|c",
+            "08c8696055dd|P1|9|None",
+            "08c8696055dd|P1|22|None",
+            "08c8696055dd|P1|24|None",
+            "08c8696055dd|P2|2|d"
+          ],
+          "hard_refs": [
+            "dff65825f390|P2|4|a",
+            "dff65825f390|P2|4|d",
+            "08c8696055dd|P1|11|None",
+            "dff65825f390|P2|1|b",
+            "dff65825f390|P2|1|c",
+            "08c8696055dd|P1|15|None",
+            "08c8696055dd|P2|2|c",
+            "08c8696055dd|P2|2|b"
+          ]
+        }
+      ],
+      "fact_use": {
+        "common": [
+          {
+            "use": "Mốc thời gian làm khóa nhận diện và giới hạn hoạt động, nhiệm vụ hoặc văn kiện trong đúng giai đoạn.",
+            "refs": [
+              "acc23c4ca4f8|P1|4|None",
+              "acc23c4ca4f8|P1|9|None",
+              "acc23c4ca4f8|P1|13|None",
+              "686833f78102|P1|7|None",
+              "686833f78102|P1|11|None",
+              "686833f78102|P1|12|None",
+              "686833f78102|P1|16|None",
+              "686833f78102|P1|21|None",
+              "5a9dffb03ca8|P1|4|None",
+              "5a9dffb03ca8|P1|21|None",
+              "dff65825f390|P1|7|None",
+              "08c8696055dd|P1|14|None",
+              "08c8696055dd|P1|20|None",
+              "08c8696055dd|P2|2|a",
+              "08c8696055dd|P2|4|a"
+            ],
+            "paper_count": 5,
+            "row_count": 15
+          },
+          {
+            "use": "Niên biểu hỗ trợ phát hiện hồi chiếu, nhân quả đảo ngược và nhầm dấu mốc phát triển với khởi đầu.",
+            "refs": [
+              "acc23c4ca4f8|P1|3|None",
+              "acc23c4ca4f8|P1|16|None",
+              "acc23c4ca4f8|P2|1|a",
+              "acc23c4ca4f8|P2|1|b",
+              "acc23c4ca4f8|P2|4|c",
+              "dff65825f390|P1|14|None",
+              "dff65825f390|P1|15|None",
+              "08c8696055dd|P1|10|None",
+              "08c8696055dd|P1|16|None",
+              "08c8696055dd|P2|1|b"
+            ],
+            "paper_count": 3,
+            "row_count": 10
+          },
+          {
+            "use": "Tên gọi được nhớ theo quan hệ với nội dung, chức năng, chủ thể, nhiệm vụ và đóng góp; nhận ra tên quen thuộc chưa đủ.",
+            "refs": [
+              "acc23c4ca4f8|P1|10|None",
+              "acc23c4ca4f8|P1|13|None",
+              "686833f78102|P1|1|None",
+              "686833f78102|P1|3|None",
+              "686833f78102|P1|14|None",
+              "686833f78102|P1|18|None",
+              "5a9dffb03ca8|P1|1|None",
+              "5a9dffb03ca8|P1|11|None",
+              "dff65825f390|P1|3|None",
+              "dff65825f390|P1|5|None",
+              "dff65825f390|P1|6|None",
+              "dff65825f390|P1|15|None",
+              "dff65825f390|P1|24|None",
+              "08c8696055dd|P1|5|None",
+              "08c8696055dd|P1|16|None"
+            ],
+            "paper_count": 5,
+            "row_count": 15
+          },
+          {
+            "use": "Khái niệm dùng để phân loại lĩnh vực, phạm vi, nguyên tắc, phương thức, chức năng và cấp độ vai trò; thuật ngữ chính xác có thể quyết định tính đúng của nhận định.",
+            "refs": [
+              "acc23c4ca4f8|P1|11|None",
+              "acc23c4ca4f8|P1|21|None",
+              "acc23c4ca4f8|P2|2|c",
+              "686833f78102|P1|8|None",
+              "686833f78102|P1|10|None",
+              "686833f78102|P2|1|b",
+              "5a9dffb03ca8|P1|23|None",
+              "5a9dffb03ca8|P2|1|b",
+              "5a9dffb03ca8|P2|2|d",
+              "dff65825f390|P1|10|None",
+              "dff65825f390|P1|18|None",
+              "dff65825f390|P2|3|b",
+              "08c8696055dd|P1|2|None",
+              "08c8696055dd|P1|3|None",
+              "08c8696055dd|P2|2|b"
+            ],
+            "paper_count": 5,
+            "row_count": 15
+          },
+          {
+            "use": "Tư liệu có thể cung cấp trực tiếp thông tin, từ khóa hoặc quan hệ để đối chiếu và khái quát.",
+            "refs": [
+              "acc23c4ca4f8|P1|24|None",
+              "acc23c4ca4f8|P2|4|d",
+              "686833f78102|P1|22|None",
+              "5a9dffb03ca8|P1|16|None",
+              "686833f78102|P2|4|d",
+              "08c8696055dd|P2|3|a",
+              "08c8696055dd|P2|3|d",
+              "08c8696055dd|P2|4|b",
+              "08c8696055dd|P2|4|d"
+            ],
+            "paper_count": 4,
+            "row_count": 9
+          },
+          {
+            "use": "Kiến thức nền bổ sung cho nguồn khi cần kiểm tra tiền lệ, chính sách, mục tiêu, nguyên tắc hoặc hệ quả; phần bổ sung không phải bằng chứng có sẵn trong đoạn trích.",
+            "refs": [
+              "acc23c4ca4f8|P2|1|a",
+              "acc23c4ca4f8|P2|3|c",
+              "5a9dffb03ca8|P2|2|a",
+              "dff65825f390|P2|3|a",
+              "dff65825f390|P2|3|c",
+              "dff65825f390|P2|4|d",
+              "08c8696055dd|P2|1|a",
+              "08c8696055dd|P2|1|d",
+              "08c8696055dd|P2|3|b",
+              "08c8696055dd|P2|3|c",
+              "08c8696055dd|P2|4|c"
+            ],
+            "paper_count": 4,
+            "row_count": 11
+          },
+          {
+            "use": "Kiến thức về kết quả và ý nghĩa dùng để kiểm tra phạm vi tác động và mức độ khái quát.",
+            "refs": [
+              "08c8696055dd|P2|2|c",
+              "08c8696055dd|P2|2|d"
+            ],
+            "paper_count": 1,
+            "row_count": 2
+          }
+        ],
+        "not_observed": [
+          {
+            "use": "Trong các hàng được cung cấp, không thấy yêu cầu tính toán định lượng; mốc và bảng phục vụ nhận diện, phân kì, khái quát và kiểm tra suy luận.",
+            "refs": [
+              "acc23c4ca4f8|P1|3|None",
+              "acc23c4ca4f8|P1|21|None",
+              "686833f78102|P1|7|None",
+              "686833f78102|P1|12|None",
+              "5a9dffb03ca8|P1|3|None",
+              "686833f78102|P2|3|b",
+              "686833f78102|P2|3|d",
+              "5a9dffb03ca8|P2|1|a",
+              "dff65825f390|P2|3|a",
+              "dff65825f390|P2|3|b",
+              "dff65825f390|P2|3|c",
+              "dff65825f390|P2|3|d"
+            ],
+            "paper_count": 4,
+            "row_count": 12
+          },
+          {
+            "use": "Không thấy yêu cầu tái hiện tự do định nghĩa, chuỗi dữ kiện hoặc nguyên văn tư liệu; dữ kiện được xử lí qua lựa chọn và đánh giá nhận định.",
+            "refs": [
+              "acc23c4ca4f8|P1|19|None",
+              "acc23c4ca4f8|P2|2|d",
+              "686833f78102|P1|8|None",
+              "686833f78102|P1|10|None",
+              "5a9dffb03ca8|P1|10|None",
+              "5a9dffb03ca8|P1|23|None",
+              "5a9dffb03ca8|P2|2|b",
+              "5a9dffb03ca8|P2|4|a",
+              "dff65825f390|P1|7|None",
+              "dff65825f390|P2|4|b",
+              "08c8696055dd|P1|3|None",
+              "08c8696055dd|P1|16|None",
+              "08c8696055dd|P2|2|b",
+              "08c8696055dd|P2|2|c",
+              "08c8696055dd|P2|2|d",
+              "08c8696055dd|P2|3|a",
+              "08c8696055dd|P2|3|b",
+              "08c8696055dd|P2|3|c",
+              "08c8696055dd|P2|3|d",
+              "08c8696055dd|P2|4|a",
+              "08c8696055dd|P2|4|b",
+              "08c8696055dd|P2|4|c",
+              "08c8696055dd|P2|4|d"
+            ],
+            "paper_count": 5,
+            "row_count": 23
+          },
+          {
+            "use": "Không thấy yêu cầu tra cứu độc lập ngoài kiến thức nền hoặc tự thẩm định xuất xứ tư liệu.",
+            "refs": [
+              "dff65825f390|P2|3|a",
+              "dff65825f390|P2|4|d",
+              "08c8696055dd|P2|1|d"
+            ],
+            "paper_count": 2,
+            "row_count": 3
+          }
+        ],
+        "scope": "Chỉ áp dụng cho lớp bằng chứng địa phương, bên thứ ba đã cung cấp. Đây là hợp nhất mô tả, không bổ sung bằng chứng hoặc suy ra tần suất. Chỉ cấu trúc có dẫn chứng từ các đề khác nhau mới thể hiện tái diễn giữa đề; quan sát riêng được giữ giới hạn. Không có hàng gắn mức high và chưa có kết quả làm bài để xác nhận phân hóa. Chất lượng nhiễu, độ rõ của khóa và mức hỗ trợ trực tiếp từ tư liệu không đồng đều. Những điều chưa quan sát không phải kết luận về mọi đề."
+      },
+      "anti_patterns": [
+        {
+          "avoid": "Tạo độ khó bằng phép tính từ mốc hoặc bảng khi không có bằng chứng về thao tác đó.",
+          "basis": "Mốc và bảng được dùng cho nhận diện, phân kì, khái quát và quan hệ lịch sử.",
+          "refs": [
+            "acc23c4ca4f8|P1|3|None",
+            "686833f78102|P1|12|None",
+            "686833f78102|P2|3|b",
+            "686833f78102|P2|3|d",
+            "5a9dffb03ca8|P2|1|a",
+            "5a9dffb03ca8|P2|1|d",
+            "dff65825f390|P2|3|a",
+            "dff65825f390|P2|3|b",
+            "dff65825f390|P2|3|c",
+            "dff65825f390|P2|3|d"
+          ],
+          "paper_count": 4,
+          "row_count": 10
+        },
+        {
+          "avoid": "Chuyển đầu ra thành bài luận, đáp án tự do, lập luận viết dài hoặc kế hoạch tự sáng tác.",
+          "basis": "Các hàng yêu cầu lựa chọn hoặc đánh giá, kể cả khi cần khái quát và vận dụng.",
+          "refs": [
+            "acc23c4ca4f8|P1|6|None",
+            "acc23c4ca4f8|P2|4|b",
+            "686833f78102|P1|17|None",
+            "686833f78102|P1|24|None",
+            "5a9dffb03ca8|P1|17|None",
+            "5a9dffb03ca8|P2|2|b",
+            "5a9dffb03ca8|P2|4|a",
+            "dff65825f390|P1|9|None",
+            "dff65825f390|P1|12|None",
+            "dff65825f390|P1|20|None",
+            "dff65825f390|P2|2|a",
+            "dff65825f390|P2|2|c",
+            "dff65825f390|P2|4|d",
+            "08c8696055dd|P1|6|None",
+            "08c8696055dd|P1|15|None",
+            "08c8696055dd|P2|1|b"
+          ],
+          "paper_count": 5,
+          "row_count": 16
+        },
+        {
+          "avoid": "Thay bối cảnh lịch sử bằng nhiệm vụ nhập vai giả định.",
+          "basis": "Các yêu cầu vận dụng vẫn bám quan hệ và tiến trình được cung cấp.",
+          "refs": [
+            "acc23c4ca4f8|P1|23|None",
+            "686833f78102|P1|17|None",
+            "686833f78102|P1|19|None"
+          ],
+          "paper_count": 2,
+          "row_count": 3
+        },
+        {
+          "avoid": "Chỉ dùng nhận diện từ khóa hoặc thay dữ kiện rời rạc để mô phỏng yêu cầu suy luận.",
+          "basis": "Lỗi quan sát còn nằm ở quan hệ, khái niệm, phạm vi, mức độ và giai đoạn; điều này không phủ nhận sự tồn tại của lỗi dữ kiện.",
+          "refs": [
+            "acc23c4ca4f8|P1|6|None",
+            "acc23c4ca4f8|P1|11|None",
+            "686833f78102|P1|4|None",
+            "686833f78102|P1|8|None",
+            "08c8696055dd|P2|2|b",
+            "08c8696055dd|P2|2|d",
+            "08c8696055dd|P2|3|b",
+            "08c8696055dd|P2|4|a"
+          ],
+          "paper_count": 3,
+          "row_count": 8
+        },
+        {
+          "avoid": "Mặc định mọi thông tin phải nhớ độc lập hoặc mọi nhận định đều giải được chỉ bằng đọc nguồn.",
+          "basis": "Có hàng đọc trực tiếp và có hàng cần kiến thức nền; phải phân biệt hai yêu cầu.",
+          "refs": [
+            "686833f78102|P1|22|None",
+            "5a9dffb03ca8|P1|16|None",
+            "686833f78102|P2|2|b",
+            "5a9dffb03ca8|P2|2|c",
+            "08c8696055dd|P2|3|b",
+            "08c8696055dd|P2|3|c",
+            "08c8696055dd|P2|4|c"
+          ],
+          "paper_count": 3,
+          "row_count": 7
+        },
+        {
+          "avoid": "Xóa giới hạn thời gian, phạm vi hoặc điều kiện khi khái quát đáp án.",
+          "basis": "Những giới hạn này quyết định sự khác nhau giữa kết luận phù hợp và kết luận phóng đại hoặc hồi chiếu.",
+          "refs": [
+            "5a9dffb03ca8|P1|2|None",
+            "dff65825f390|P1|2|None",
+            "5a9dffb03ca8|P2|1|c",
+            "5a9dffb03ca8|P2|4|c"
+          ],
+          "paper_count": 2,
+          "row_count": 4
+        },
+        {
+          "avoid": "Thêm yêu cầu phê bình thiên kiến, độ tin cậy hoặc đối chiếu xuất xứ nguồn.",
+          "basis": "Các thao tác được mô tả là tìm ý, kiểm tra phạm vi và liên hệ kiến thức; chưa có bằng chứng về nhiệm vụ thẩm định nguồn.",
+          "refs": [
+            "dff65825f390|P1|22|None",
+            "dff65825f390|P2|4|d",
+            "08c8696055dd|P1|24|None",
+            "08c8696055dd|P2|1|d"
+          ],
+          "paper_count": 2,
+          "row_count": 4
+        },
+        {
+          "avoid": "Coi một vế đúng là đủ xác nhận toàn bộ nhận định.",
+          "basis": "Có nhận định giữ kết quả phù hợp nhưng dùng sai thuật ngữ; riêng biến thể này chưa tự chứng minh tái diễn giữa đề.",
+          "refs": [
+            "08c8696055dd|P2|2|b"
+          ],
+          "paper_count": 1,
+          "row_count": 1
+        }
+      ]
+    }
+  },
+  "code_derived": {
+    "grade_uncertainty_note": "Zero means no such grade label among analysed rows, not proof of absence when unknown-grade rows exist.",
+    "optional_path_rows": [],
+    "topic_distribution": [
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "11",
+        "topic": "Chiến tranh bảo vệ Tổ quốc trong lịch sử Việt Nam: kháng chiến thời Tây Sơn",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "11",
+        "topic": "Các phong trào khởi nghĩa và đấu tranh giải phóng của Việt Nam: khởi nghĩa thời Bắc thuộc",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "11",
+        "topic": "Sự ra đời của Liên Xô",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Cách mạng tháng Tám: ý nghĩa lịch sử",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Cộng đồng ASEAN: các văn kiện đặt nền tảng hình thành",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Cộng đồng ASEAN: từ ý tưởng đến hiện thực",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Dấu ấn Hồ Chí Minh trong lòng nhân dân Việt Nam và thế giới",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại trong kháng chiến chống Mỹ: bài học từ đấu tranh ngoại giao",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại trong đấu tranh giành độc lập: xu hướng vận động ngoại viện",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Hồ Chí Minh – Anh hùng giải phóng dân tộc: hoạt động chuẩn bị thành lập Đảng",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Hồ Chí Minh – Anh hùng giải phóng dân tộc: thành lập Đảng và hoàn chỉnh đường lối giải phóng dân tộc",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Khái quát về công cuộc Đổi mới: bản chất và nguyên tắc",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Khái quát về công cuộc Đổi mới: đường lối đổi mới kinh tế trong giai đoạn hội nhập sâu rộng",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Kháng chiến chống Mỹ, cứu nước: bài học lịch sử",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Kháng chiến chống Mỹ, cứu nước: so sánh các chiến lược chiến tranh",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Kháng chiến chống Mỹ, cứu nước: ý nghĩa của một cuộc tiến công chiến lược",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Kháng chiến chống thực dân Pháp: củng cố khối đại đoàn kết dân tộc",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Liên hợp quốc: vai trò bảo đảm quyền con người",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Quá trình hội nhập quốc tế của Việt Nam: các dấu mốc hội nhập",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Quá trình hội nhập quốc tế của Việt Nam: hội nhập sâu rộng",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Sự ra đời và phát triển của ASEAN: đặc điểm quá trình phát triển",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Trật tự thế giới sau Chiến tranh lạnh: các xu thế phát triển",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Trật tự thế giới trong Chiến tranh lạnh: nguyên nhân tan rã",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Trật tự thế giới trong Chiến tranh lạnh: sự chấm dứt đối đầu",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P2",
+        "grade": "10",
+        "topic": "Khối đại đoàn kết dân tộc: nền tảng liên minh",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P2",
+        "grade": "10",
+        "topic": "Khối đại đoàn kết dân tộc: truyền thống và sự phát huy trong công cuộc Đổi mới",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P2",
+        "grade": "10",
+        "topic": "Khối đại đoàn kết dân tộc: tính kế thừa của đường lối đoàn kết",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P2",
+        "grade": "10",
+        "topic": "Khối đại đoàn kết dân tộc: vai trò lãnh đạo",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P2",
+        "grade": "11",
+        "topic": "Sự xác lập và phát triển của chủ nghĩa tư bản: các vấn đề xã hội chưa được giải quyết",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P2",
+        "grade": "11",
+        "topic": "Sự xác lập và phát triển của chủ nghĩa tư bản: hạn chế hiện đại và liên hệ con đường phát triển",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P2",
+        "grade": "11",
+        "topic": "Sự xác lập và phát triển của chủ nghĩa tư bản: những thách thức chính trị, xã hội hiện đại",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P2",
+        "grade": "11",
+        "topic": "Sự xác lập và phát triển của chủ nghĩa tư bản: thực trạng xã hội hiện đại",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Kháng chiến chống thực dân Pháp: chuyển từ hòa hoãn sang kháng chiến",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Kháng chiến chống thực dân Pháp: hoàn cảnh bùng nổ toàn quốc kháng chiến",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Kháng chiến chống thực dân Pháp: tinh thần tự lực, tự cường",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Kháng chiến chống thực dân Pháp: tính chính nghĩa và đường lối kháng chiến toàn dân, lâu dài",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Thành tựu và bài học của công cuộc Đổi mới: phát triển kinh tế gắn với tiến bộ xã hội",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Thành tựu và bài học của công cuộc Đổi mới: thành tựu toàn diện",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Thành tựu và bài học của công cuộc Đổi mới: trình độ phát triển",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "official",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Thành tựu và bài học của công cuộc Đổi mới: ý nghĩa đối với phát triển tiếp theo",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "26827f57f9f0"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "11",
+        "topic": "Chiến tranh bảo vệ Tổ quốc trong lịch sử Việt Nam: kháng chiến thời trung đại",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "11",
+        "topic": "Chiến tranh bảo vệ Tổ quốc trong lịch sử Việt Nam: kết quả các cuộc kháng chiến thời phong kiến",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "11",
+        "topic": "Chiến tranh bảo vệ Tổ quốc trong lịch sử Việt Nam: nghệ thuật quân sự thời trung đại",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "11",
+        "topic": "Chiến tranh bảo vệ Tổ quốc trong lịch sử Việt Nam: nguyên nhân thắng lợi",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "11",
+        "topic": "Chiến tranh bảo vệ Tổ quốc trong lịch sử Việt Nam: thắng lợi quân sự quyết định",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "11",
+        "topic": "Chiến tranh bảo vệ Tổ quốc trong lịch sử Việt Nam: đóng góp của phong trào Tây Sơn",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "11",
+        "topic": "Các phong trào khởi nghĩa và đấu tranh giải phóng của Việt Nam: bài học đoàn kết",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "11",
+        "topic": "Các phong trào khởi nghĩa và đấu tranh giải phóng của Việt Nam: chiến thắng tiêu biểu",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "11",
+        "topic": "Các phong trào khởi nghĩa và đấu tranh giải phóng của Việt Nam: đóng góp của phong trào thống nhất đất nước",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "11",
+        "topic": "Các phong trào khởi nghĩa và đấu tranh giải phóng của Việt Nam: đối tượng đấu tranh",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "11",
+        "topic": "Sự phát triển của chủ nghĩa xã hội trong bối cảnh biến động quốc tế",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "11",
+        "topic": "Sự phát triển của chủ nghĩa xã hội từ sau Chiến tranh thế giới thứ hai đến nay",
+        "distinct_papers": 2,
+        "paper_ids": [
+          "5a9dffb03ca8",
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "11",
+        "topic": "Sự phát triển của chủ nghĩa xã hội: ý nghĩa của thành tựu cải cách và đổi mới",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "11",
+        "topic": "Sự ra đời của Liên Xô",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "11",
+        "topic": "Sự ra đời của Liên Xô: các cuộc cách mạng mở đường",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "11",
+        "topic": "Sự ra đời của Liên Xô: các cuộc cách mạng tiền đề",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "11",
+        "topic": "Sự ra đời của Liên Xô: nguyên tắc thành lập",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "11",
+        "topic": "Sự ra đời của Liên Xô: ý nghĩa quốc tế",
+        "distinct_papers": 2,
+        "paper_ids": [
+          "5a9dffb03ca8",
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "11",
+        "topic": "Việt Nam và Biển Đông: bảo vệ chủ quyền bằng biện pháp hòa bình",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "11",
+        "topic": "Việt Nam và Biển Đông: bảo vệ chủ quyền bằng cơ sở pháp lí",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Bài học lịch sử của cách mạng Việt Nam: vai trò lãnh đạo",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Bảo vệ Tổ quốc sau thống nhất: nhiệm vụ bảo vệ biên giới",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Bảo vệ Tổ quốc sau thống nhất: ý nghĩa lịch sử",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Bảo vệ Tổ quốc sau thống nhất: đấu tranh bảo vệ biên giới",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Bảo vệ Tổ quốc từ sau thống nhất: nhiệm vụ lịch sử",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Cách mạng tháng Tám và các cuộc kháng chiến: sự phát triển hình thái đấu tranh",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Cách mạng tháng Tám và các cuộc kháng chiến: xây dựng căn cứ địa, hậu phương",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Cách mạng tháng Tám và các cuộc kháng chiến: điểm chung về tính chất, nhiệm vụ và phương thức",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Cách mạng tháng Tám: chuẩn bị lực lượng chính trị",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Cách mạng tháng Tám: diễn biến tổng khởi nghĩa",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Cách mạng tháng Tám: thời cơ tổng khởi nghĩa",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Cách mạng tháng Tám: tổ chức chỉ đạo tổng khởi nghĩa",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Cách mạng tháng Tám: vai trò của mặt trận dân tộc thống nhất",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Cách mạng tháng Tám: ý nghĩa lịch sử và đối tượng giành chính quyền",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Cách mạng tháng Tám: điều kiện và giới hạn thời cơ",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Cách mạng và kháng chiến ở Việt Nam: tác động của bối cảnh lịch sử",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Cộng đồng ASEAN: bối cảnh chính thức khẳng định ý tưởng xây dựng cộng đồng",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Cộng đồng ASEAN: cơ hội và yêu cầu đối với nguồn nhân lực",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Cộng đồng ASEAN: mục tiêu các trụ cột",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Cộng đồng ASEAN: triển vọng phát triển",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Cộng đồng ASEAN: từ ý tưởng đến hiện thực",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Cộng đồng ASEAN: từ ý tưởng đến hiện thực — các trụ cột",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Cộng đồng ASEAN: văn kiện định hướng xây dựng cộng đồng",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Dấu ấn Hồ Chí Minh trong lòng nhân dân Việt Nam và thế giới: giá trị văn hóa",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại của Việt Nam từ sau thống nhất: thành tựu thời kì Đổi mới",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại trong kháng chiến chống Pháp: sách lược hòa hoãn",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại trong kháng chiến chống thực dân Pháp: phá thế bao vây và tăng cường tiềm lực",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại trong kháng chiến: nguyên tắc độc lập, tự chủ",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại trong đấu tranh giành độc lập: các nhà yêu nước đầu thời cận đại chuyển sang hiện đại",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại trong đấu tranh giành độc lập: vận động lực lượng đồng minh",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Hồ Chí Minh – Anh hùng giải phóng dân tộc: bài học từ việc thống nhất tổ chức cách mạng",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Hồ Chí Minh – Anh hùng giải phóng dân tộc: bước chuyển trong hoạt động cách mạng",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Hồ Chí Minh – Anh hùng giải phóng dân tộc: bối cảnh thành lập chính đảng cách mạng",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Hồ Chí Minh – Anh hùng giải phóng dân tộc: chuẩn bị thành lập Đảng",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Hồ Chí Minh – Anh hùng giải phóng dân tộc: cơ sở của sự tôn vinh",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Hồ Chí Minh – Anh hùng giải phóng dân tộc: nhận thức về đối tượng đấu tranh",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Hồ Chí Minh – Anh hùng giải phóng dân tộc: quan hệ giữa cách mạng chính quốc và thuộc địa",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Hồ Chí Minh – Anh hùng giải phóng dân tộc: quan hệ giữa giải phóng dân tộc và đoàn kết quốc tế",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Hồ Chí Minh – Anh hùng giải phóng dân tộc: quyền dân tộc tự quyết trong tổ chức lực lượng cách mạng",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Hồ Chí Minh – Anh hùng giải phóng dân tộc: thành lập chính đảng cách mạng",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Hồ Chí Minh – Anh hùng giải phóng dân tộc: ảnh hưởng quốc tế",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Khái quát cuộc đời và sự nghiệp của Hồ Chí Minh: bước chuyển trong con đường cứu nước",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Khái quát cuộc đời và sự nghiệp của Hồ Chí Minh: hoạt động ở nước ngoài trước khi thành lập Đảng",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Khái quát về công cuộc Đổi mới: bản chất và mục tiêu",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Khái quát về công cuộc Đổi mới: bối cảnh đề ra đường lối",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Khái quát về công cuộc Đổi mới: nguyên tắc tổ chức hệ thống chính trị",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Khái quát về công cuộc Đổi mới: nội dung đổi mới chính trị",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Khái quát về công cuộc Đổi mới: phù hợp với xu thế phát triển thế giới",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Khái quát về công cuộc Đổi mới: trọng tâm và mục tiêu phát triển",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Khái quát về công cuộc Đổi mới: đường lối hội nhập quốc tế",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Khái quát về công cuộc Đổi mới: đường lối kinh tế giai đoạn đầu",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Khái quát về công cuộc Đổi mới: đường lối đổi mới kinh tế",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Kháng chiến chống Mỹ, cứu nước: bước phát triển của cuộc tổng tiến công",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Kháng chiến chống Mỹ, cứu nước: các chiến lược chiến tranh của đối phương",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Kháng chiến chống Mỹ, cứu nước: cơ sở lựa chọn hướng tiến công chiến lược",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Kháng chiến chống Mỹ, cứu nước: mục tiêu chiến dịch trong cuộc tổng tiến công",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Kháng chiến chống Mỹ, cứu nước: so sánh các chiến dịch trong tổng tiến công",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Kháng chiến chống Mỹ, cứu nước: tác động chiến lược của tổng tiến công và nổi dậy",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Kháng chiến chống Mỹ, cứu nước: tác động của thắng lợi quân sự đối với phong trào thi đua",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Kháng chiến chống Mỹ, cứu nước: ý nghĩa của phối hợp chiến trường và hậu phương",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Kháng chiến chống Mỹ, cứu nước: đường lối giải phóng miền Nam",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Kháng chiến chống Mỹ, cứu nước: đặc điểm phong trào đấu tranh ở miền Nam thời kì đầu",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Kháng chiến chống thực dân Pháp và chống Mỹ: so sánh quá trình kết thúc chiến tranh",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Kháng chiến chống thực dân Pháp: bước phát triển của cuộc kháng chiến",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Kháng chiến chống thực dân Pháp: các chiến dịch tiêu biểu",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Kháng chiến chống thực dân Pháp: củng cố khối đại đoàn kết dân tộc",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Kháng chiến chống thực dân Pháp: nguyên nhân thắng lợi",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Kháng chiến chống thực dân Pháp: thắng lợi làm thay đổi chiến lược của đối phương",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Kháng chiến chống thực dân Pháp: xây dựng hậu phương",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Kháng chiến chống thực dân Pháp: ý nghĩa lịch sử",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Kháng chiến chống thực dân Pháp: đại hội Đảng và củng cố lãnh đạo kháng chiến",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Liên hợp quốc: mục tiêu hoạt động",
+        "distinct_papers": 2,
+        "paper_ids": [
+          "08c8696055dd",
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Liên hợp quốc: sự thành lập và hiệu lực của Hiến chương",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Liên hợp quốc: vai trò duy trì hòa bình và an ninh quốc tế",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Liên hợp quốc: vai trò và giới hạn hoạt động",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Quan hệ quốc tế ở thời kỳ Chiến tranh lạnh và giai đoạn kế tiếp: đặc điểm quan hệ quốc tế",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Sự ra đời và phát triển của ASEAN: bước phát triển về cơ chế hợp tác",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Sự ra đời và phát triển của ASEAN: bối cảnh thành lập",
+        "distinct_papers": 2,
+        "paper_ids": [
+          "08c8696055dd",
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Sự ra đời và phát triển của ASEAN: các chặng đường mở rộng và hợp tác",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Sự ra đời và phát triển của ASEAN: các văn kiện nền tảng",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Sự ra đời và phát triển của ASEAN: mục đích thành lập",
+        "distinct_papers": 2,
+        "paper_ids": [
+          "08c8696055dd",
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Sự ra đời và phát triển của ASEAN: tiến trình kết nạp thành viên",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Sự ra đời và phát triển của ASEAN: trở ngại mở rộng thành viên",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Sự ra đời và phát triển của ASEAN: ý nghĩa mở rộng thành viên",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Thành tựu và bài học của công cuộc Đổi mới",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Thành tựu và bài học của công cuộc Đổi mới: hội nhập kinh tế quốc tế",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Thành tựu và bài học của công cuộc Đổi mới: kinh tế đối ngoại",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Trật tự thế giới sau Chiến tranh lạnh: tác động của sự tan rã trật tự cũ",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Trật tự thế giới sau Chiến tranh lạnh: xu thế phát triển sức mạnh quốc gia",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Trật tự thế giới sau Chiến tranh lạnh: xu thế đa cực",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Trật tự thế giới trong Chiến tranh lạnh: bài học đối với quan hệ quốc tế",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Trật tự thế giới trong Chiến tranh lạnh: các khối liên minh",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Trật tự thế giới trong Chiến tranh lạnh: nguyên nhân tan rã",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Trật tự thế giới trong Chiến tranh lạnh: thiết lập phạm vi ảnh hưởng",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "topic": "Trật tự thế giới trong Chiến tranh lạnh: thỏa thuận giữa các cường quốc",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Cách mạng tháng Tám và kháng chiến chống Mỹ: sự hình thành và chớp thời cơ",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Cách mạng tháng Tám và xây dựng chính quyền cách mạng: tác động của thỏa thuận quốc tế sau chiến tranh",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Cách mạng và kháng chiến ở Việt Nam: nghệ thuật tạo và chớp thời cơ",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Cộng đồng ASEAN: mục tiêu nâng cao vị thế và vai trò quốc tế",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Cộng đồng ASEAN: thách thức kinh tế và yêu cầu tăng cường tự cường",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại của Việt Nam sau thống nhất: bình thường hóa quan hệ và hội nhập khu vực",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại của Việt Nam thời kì Đổi mới: mở rộng hội nhập",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại của Việt Nam thời kì Đổi mới: trình tự và quan hệ giữa các thành tựu",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại của Việt Nam thời kì Đổi mới: ý nghĩa của mở rộng quan hệ quốc tế",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại của Việt Nam thời kì Đổi mới: đường lối hòa giải và hợp tác",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại của Việt Nam: bài học chủ động thích ứng tình hình quốc tế",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại trong kháng chiến chống Mỹ: vai trò của mặt trận ngoại giao",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại trong kháng chiến chống Mỹ: ý nghĩa của thắng lợi ngoại giao",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại trong kháng chiến chống Pháp và chống Mỹ: so sánh nội dung pháp lí của các thỏa thuận",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại trong kháng chiến chống thực dân Pháp: quan hệ giữa thắng lợi quân sự và đàm phán",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại trong kháng chiến chống thực dân Pháp: thiết lập quan hệ ngoại giao và phá thế bao vây",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại trong kháng chiến và xây dựng đất nước: vai trò của ngoại giao",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại trong kháng chiến: nguyên tắc bảo đảm độc lập dân tộc",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại trong đấu tranh giành độc lập: bài học về nguyên tắc và sách lược",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại trong đấu tranh giành độc lập: hợp tác có nguyên tắc",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại trong đấu tranh giành độc lập: mục tiêu dân tộc",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại trong đấu tranh giành độc lập: đoàn kết quốc tế gắn với bảo vệ chủ quyền",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại: chủ thể và phạm vi quan hệ quốc tế",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Hoạt động đối ngoại: cơ hội của các quốc gia vừa và nhỏ trong hợp tác đa phương",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Hồ Chí Minh – Anh hùng giải phóng dân tộc: chuẩn bị, lãnh đạo giành chính quyền và thành lập nhà nước",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Hồ Chí Minh – Anh hùng giải phóng dân tộc: hoàn chỉnh chủ trương giải phóng dân tộc và chuẩn bị khởi nghĩa",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Hồ Chí Minh – Anh hùng giải phóng dân tộc: hoạt động đối ngoại và nguồn lực của thắng lợi cách mạng",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Hồ Chí Minh – Anh hùng giải phóng dân tộc: xây dựng mặt trận và xác định nhiệm vụ chiến lược",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Khái quát về công cuộc Đổi mới: cơ cấu sở hữu và thành phần kinh tế",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Khái quát về công cuộc Đổi mới: hoàn thiện thể chế kinh tế thị trường",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Khái quát về công cuộc Đổi mới: kiên định mục tiêu và phát triển nhận thức",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Khái quát về công cuộc Đổi mới: mục tiêu và phương thức thực hiện",
+        "distinct_papers": 2,
+        "paper_ids": [
+          "acc23c4ca4f8",
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Khái quát về công cuộc Đổi mới: nội dung đổi mới kinh tế",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Khái quát về công cuộc Đổi mới: quan hệ giữa Nhà nước và thị trường",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Khái quát về công cuộc Đổi mới: quan hệ giữa đổi mới kinh tế và đổi mới chính trị",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Khái quát về công cuộc Đổi mới: sự phát triển của đường lối qua các giai đoạn",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Kháng chiến chống Mỹ, cứu nước: kết quả đấu tranh ngoại giao và nhiệm vụ giải phóng miền Nam",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Kháng chiến chống Mỹ, cứu nước: mục tiêu của cuộc tiến công kết thúc chiến tranh",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Kháng chiến chống Mỹ, cứu nước: nguyên nhân thắng lợi",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Kháng chiến chống Mỹ: chớp thời cơ chiến lược trong giai đoạn kết thúc",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Kháng chiến chống Mỹ: kế thừa và phát triển nghệ thuật quân sự",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Kháng chiến chống Mỹ: quan hệ giữa thắng lợi quân sự và ngoại giao",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Kháng chiến chống Mỹ: quyết tâm kết thúc chiến tranh khi thời cơ xuất hiện",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Kháng chiến chống Mỹ: tác động khu vực của thắng lợi ngoại giao",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Kháng chiến chống thực dân Pháp: bước chuyển về quyền chủ động chiến lược",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Kháng chiến chống thực dân Pháp: chuyển biến thế chủ động trên chiến trường",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Kháng chiến chống thực dân Pháp: chủ trương chuẩn bị chiến dịch lớn",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Kháng chiến chống thực dân Pháp: kết hợp nội lực với sự giúp đỡ quốc tế",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Kháng chiến chống thực dân Pháp: mục tiêu chiến lược của chiến dịch biên giới",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Kháng chiến chống thực dân Pháp: nhận diện chiến dịch qua bối cảnh và mục tiêu",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Kháng chiến chống thực dân Pháp: phân biệt bước ngoặt với thắng lợi kết thúc chiến tranh",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Kháng chiến chống thực dân Pháp: phân biệt tiến công và phản công",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Sự ra đời và phát triển của ASEAN: các nhân tố thúc đẩy Việt Nam hội nhập",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Sự ra đời và phát triển của ASEAN: nguồn gốc xu hướng liên kết khu vực",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Sự ra đời và phát triển của ASEAN: quá trình hòa giải và mở rộng thành viên",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Sự ra đời và phát triển của ASEAN: ý nghĩa của việc Việt Nam gia nhập",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "acc23c4ca4f8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Thành tựu và bài học của công cuộc Đổi mới: chuyển biến kinh tế tổng hợp",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Thành tựu và bài học của công cuộc Đổi mới: chính sách đối với kinh tế tư nhân",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Thành tựu và bài học của công cuộc Đổi mới: hội nhập và bản sắc văn hóa",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Thành tựu và bài học của công cuộc Đổi mới: khắc phục khủng hoảng kinh tế và xã hội",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Thành tựu và bài học của công cuộc Đổi mới: kết hợp các nguồn lực phát triển",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Thành tựu và bài học của công cuộc Đổi mới: kết hợp nội lực và điều kiện quốc tế",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Thành tựu và bài học của công cuộc Đổi mới: nhận diện nội dung tư liệu",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Thành tựu và bài học của công cuộc Đổi mới: phát triển nông nghiệp và nông thôn",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Thành tựu và bài học của công cuộc Đổi mới: vai trò kinh tế tri thức",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Thành tựu và bài học của công cuộc Đổi mới: đổi mới mô hình tăng trưởng",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Thành tựu và bài học của công cuộc Đổi mới: độc lập tự chủ và hội nhập kinh tế",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Trật tự thế giới sau Chiến tranh lạnh: chuyển biến quốc tế và khu vực",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Trật tự thế giới sau Chiến tranh lạnh: nhân tố hình thành",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Trật tự thế giới sau Chiến tranh lạnh: những chuyển biến trong quan hệ quốc tế",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Trật tự thế giới sau Chiến tranh lạnh: phân biệt nguyên nhân và biểu hiện chuyển biến",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "686833f78102"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Trật tự thế giới sau Chiến tranh lạnh: phân biệt thời điểm hình thành các trật tự",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Trật tự thế giới sau Chiến tranh lạnh: sức mạnh tổng hợp và trọng tâm kinh tế",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Trật tự thế giới sau Chiến tranh lạnh: tác động đến liên kết khu vực",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Trật tự thế giới sau Chiến tranh lạnh: vai trò các nước lớn và các trung tâm",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "08c8696055dd"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Trật tự thế giới sau Chiến tranh lạnh: xu hướng hòa bình và đối thoại",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "5a9dffb03ca8"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Trật tự thế giới trong Chiến tranh lạnh: cơ sở phân chia phạm vi ảnh hưởng",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Trật tự thế giới trong Chiến tranh lạnh: hội nghị định hình trật tự sau chiến tranh",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "topic": "Trật tự thế giới trong Chiến tranh lạnh: quá trình hình thành",
+        "distinct_papers": 1,
+        "paper_ids": [
+          "dff65825f390"
+        ]
+      }
+    ],
+    "grade_presence": [
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "10",
+        "distinct_papers": 0
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "11",
+        "distinct_papers": 1
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "12",
+        "distinct_papers": 1
+      },
+      {
+        "class": "official",
+        "part": "P1",
+        "grade": "None",
+        "distinct_papers": 0
+      },
+      {
+        "class": "official",
+        "part": "P2",
+        "grade": "10",
+        "distinct_papers": 1
+      },
+      {
+        "class": "official",
+        "part": "P2",
+        "grade": "11",
+        "distinct_papers": 1
+      },
+      {
+        "class": "official",
+        "part": "P2",
+        "grade": "12",
+        "distinct_papers": 1
+      },
+      {
+        "class": "official",
+        "part": "P2",
+        "grade": "None",
+        "distinct_papers": 0
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "10",
+        "distinct_papers": 0
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "11",
+        "distinct_papers": 5
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "12",
+        "distinct_papers": 5
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "grade": "None",
+        "distinct_papers": 0
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "10",
+        "distinct_papers": 0
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "11",
+        "distinct_papers": 0
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "12",
+        "distinct_papers": 5
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "grade": "None",
+        "distinct_papers": 0
+      }
+    ],
+    "high_discrimination_rows": [],
+    "distractors": {
+      "official": {
+        "identifiable": 71,
+        "kind:Đồng nhất phối hợp với thống nhất tổ chức": 1,
+        "kind:Đồng nhất đoàn kết với liên minh quân sự": 1,
+        "kind:Vận dụng thiếu điều kiện lịch sử": 1,
+        "kind:Mở rộng sai phạm vi": 1,
+        "not_identifiable": 10,
+        "kind:Đồng nhất tác động cổ vũ với hoàn thành toàn cầu": 1,
+        "kind:Lấy điểm chung làm điểm mới": 1,
+        "kind:Nhầm tác động chung với khác biệt": 1,
+        "kind:Nhầm nhân tố chung với đặc điểm mới": 1,
+        "kind:Đồng nhất cùng định hướng chính trị với cùng liên bang": 1,
+        "kind:Đồng nhất châu lục với tổ chức tiểu vùng": 1,
+        "kind:Sai ranh giới thời gian": 1,
+        "kind:Nhầm niên biểu hoạt động quốc tế": 1,
+        "kind:Bỏ sót điểm đầu của khoảng thời gian": 1,
+        "kind:Nhầm tổ chức yêu nước với mặt trận đoàn kết": 1,
+        "kind:Nhầm phạm vi tổ chức": 1,
+        "kind:Nhầm liên kết quốc tế với đoàn kết trong nước": 1,
+        "kind:Đảo thứ tự thời gian của nguyên nhân": 1,
+        "kind:Nhầm suy giảm tương đối với mất vị trí": 1,
+        "kind:Nhầm bối cảnh hình thành với nguyên nhân tan rã": 1,
+        "kind:Nhầm các mốc thể chế hóa": 1,
+        "kind:Nhầm chủ thể ban hành văn kiện": 1,
+        "kind:Nhầm văn kiện nền tảng giữa các tổ chức": 1,
+        "kind:Gán kết cục cho thắng lợi bộ phận": 1,
+        "kind:Hoán đổi ý nghĩa giữa các chiến dịch": 1,
+        "kind:Rút ngắn chuỗi nhân quả": 1,
+        "kind:Đồng nhất vai trò chủ đạo với hạn chế thành phần khác": 1,
+        "kind:Nhầm đồng bộ với độc lập": 1,
+        "kind:Nhầm quản lí vĩ mô với điều hành sản xuất": 1,
+        "kind:Đảo ngược xu thế": 1,
+        "kind:Kéo dài đặc điểm của thời kì trước": 1,
+        "kind:Tuyệt đối hóa xu thế hòa bình": 1,
+        "kind:Bỏ qua điều kiện địa lí": 3,
+        "kind:Nhầm bản chất tổ chức": 1,
+        "kind:Nhầm mở rộng quan hệ với thay đổi trọng tâm": 1,
+        "kind:Khái quát vượt giới hạn thời gian": 1,
+        "kind:Hoán đổi các cuộc khởi nghĩa gần chủ đề": 1,
+        "kind:Nhầm giai đoạn đô hộ": 1,
+        "kind:Nhầm niên biểu khởi nghĩa": 1,
+        "kind:Nhầm xu hướng cứu nước": 1,
+        "kind:Gán nhầm hoạt động cho nhân vật": 1,
+        "kind:Nhầm nhân vật và bối cảnh quốc tế": 1,
+        "kind:Hoán đổi danh tướng giữa các cuộc kháng chiến": 1,
+        "kind:Nhầm các chiến thắng chống xâm lược": 1,
+        "kind:Nhầm nhân vật theo thời kì": 1,
+        "kind:Nhầm lĩnh vực và điểm khởi đầu": 1,
+        "kind:Đảo ngược hướng cải cách": 1,
+        "kind:Nhầm quá trình với trạng thái hoàn tất": 1,
+        "kind:Giữ nguyên nhiệm vụ của giai đoạn cũ": 1,
+        "kind:Tuyệt đối hóa khả năng điều hòa lợi ích": 1,
+        "kind:Đồng nhất cân bằng với phát triển đồng đều": 1,
+        "kind:Hoán đổi dấu mốc hội nhập khu vực và toàn cầu": 1,
+        "kind:Nhầm giai đoạn hội nhập": 1,
+        "kind:Nhầm niên biểu cam kết quốc tế": 1,
+        "kind:Lấy điểm chung làm khác biệt": 1,
+        "kind:Nhầm bối cảnh chung với tiêu chí phân biệt": 1,
+        "kind:Đảo chiều so sánh": 1,
+        "kind:Nhầm tăng cường với khởi đầu": 1,
+        "kind:Kéo dài một hệ thống quốc tế đã thay đổi": 1,
+        "kind:Nhầm nhiệm vụ giữa các giai đoạn": 1,
+        "kind:Nhầm tổ chức toàn cầu với liên minh quân sự": 1,
+        "kind:Đồng nhất bảo vệ quyền với quyền can thiệp tuyệt đối": 1,
+        "kind:Nhầm lực lượng tham gia với thành phần nền tảng": 1,
+        "kind:Nhầm phát huy với hình thành": 1,
+        "kind:Đồng nhất thời điểm nguồn với nguồn gốc chính sách": 1,
+        "kind:Đánh đồng tiến bộ với đạt trình độ phát triển cao": 1,
+        "kind:Nhầm vận dụng đặc thù với phát minh độc quyền": 1,
+        "kind:Tách rời thách thức xã hội khỏi nền tảng chính trị": 1,
+        "kind:Nén sai tiến trình lịch sử": 1,
+        "kind:Nhầm bối cảnh văn kiện với mục đích văn kiện": 1,
+        "share_identifiable_among_judged": 0.8765432098765432
+      },
+      "provincial_third_party": {
+        "identifiable": 358,
+        "kind:Nhầm quan hệ nhân quả": 1,
+        "kind:Nhầm cấu trúc với phạm vi quan hệ": 1,
+        "not_identifiable": 32,
+        "kind:Nhầm lĩnh vực tạo ra kết quả": 1,
+        "kind:Nhầm tác động quân sự với ngoại giao": 1,
+        "kind:Chuyển đặc điểm giữa các giai đoạn": 1,
+        "kind:Thu hẹp chủ thể tác động": 1,
+        "kind:Tách rời biến đổi cơ cấu khỏi chính trị quốc tế": 1,
+        "kind:Đồng nhất tăng vũ trang với tăng sức mạnh bền vững": 1,
+        "kind:Nhầm cơ quan chỉ đạo với bộ máy chính quyền": 1,
+        "kind:Nhầm mốc thành lập tổ chức": 1,
+        "kind:Lẫn các quyết định gần nhau": 1,
+        "unverified": 2,
+        "kind:Đồng nhất đổi mới với thay đổi nền tảng chính trị": 1,
+        "kind:Tuyệt đối hóa ngoại lực": 1,
+        "kind:Chọn nguyên tắc liên quan nhưng thiếu tính đặc trưng": 1,
+        "kind:Đồng nhất tự quyết với biệt lập": 1,
+        "kind:Nhầm mục tiêu ưu tiên với nguyên tắc tổ chức": 1,
+        "kind:Đưa chủ trương muộn về sớm": 1,
+        "kind:Kéo dài nhiệm vụ của giai đoạn trước": 2,
+        "kind:Nhầm mức độ hội nhập giữa các thời kì": 1,
+        "kind:Bỏ qua chức năng tập hợp lực lượng": 1,
+        "kind:Tách rời lãnh đạo và tổ chức thực hiện": 1,
+        "kind:Thu hẹp hoạt động của mặt trận": 1,
+        "kind:Đảo thứ tự các bước phát triển": 1,
+        "kind:Nhầm mốc hoạt động quốc tế": 1,
+        "kind:Lẫn các sự kiện gần nhau trong niên biểu": 1,
+        "kind:Lẫn chiến công giữa các cuộc khởi nghĩa": 1,
+        "kind:Nhầm niên đại khởi nghĩa": 1,
+        "kind:Ghi nhớ rời rạc tên sự kiện": 1,
+        "kind:Đồng nhất tiền đề với sự hoàn thành": 1,
+        "kind:Nhầm phạm vi ý nghĩa": 1,
+        "kind:Phóng đại mức độ hoàn thành": 1,
+        "kind:Chuyển chiến công giữa các phong trào": 1,
+        "kind:Lẫn bối cảnh ngoại xâm": 1,
+        "kind:Nhầm văn kiện thành lập với văn kiện phát triển": 1,
+        "kind:Suy đoán theo địa danh": 1,
+        "kind:Nhầm định hướng với cơ sở pháp lí": 1,
+        "kind:Nhầm giai đoạn phát triển": 1,
+        "kind:Chọn bối cảnh chung thay cho dấu hiệu đặc trưng": 1,
+        "kind:Đồng nhất liên kết với đồng đều phát triển": 1,
+        "kind:Nhầm quyết định mở đầu chiến tranh với quyết định giữa kháng chiến": 1,
+        "kind:Nhầm chủ trương tác chiến với nội dung đại hội": 1,
+        "kind:Đưa sự kiện ngoại giao muộn về trước": 1,
+        "kind:Nhầm giai đoạn xây dựng chính quyền": 1,
+        "kind:Nhầm tình trạng lãnh thổ theo thời kì": 1,
+        "kind:Đảo trật tự thời gian": 1,
+        "kind:Nhầm lực lượng ra đời với đối tượng bị lật đổ": 1,
+        "kind:Lẫn kết quả của các cuộc cách mạng kế tiếp": 1,
+        "kind:Lấy kết quả muộn làm bối cảnh sớm": 1,
+        "kind:Nhầm thời điểm chuyển biến quan hệ quốc tế": 1,
+        "kind:Lẫn khu vực hóa với giai đoạn toàn cầu hóa mạnh": 1,
+        "kind:Nhầm tổ chức quốc tế với thỏa thuận giữa cường quốc": 1,
+        "kind:Nhầm nhu cầu bối cảnh với mục tiêu chính thức": 1,
+        "kind:Nhầm tổ chức hậu chiến với liên minh thời chiến": 1,
+        "kind:Chuyển phương thức đấu tranh giữa các giai đoạn": 1,
+        "kind:Nhầm địa bàn và phóng đại kết quả": 1,
+        "kind:Bỏ sót điều kiện lĩnh vực": 1,
+        "kind:Lẫn lĩnh vực kinh tế xã hội với tổ chức chính trị": 1,
+        "kind:Không kiểm tra đồng thời các điều kiện": 1,
+        "kind:Phóng đại phạm vi tác động": 1,
+        "kind:Đảo trình tự leo thang chiến tranh": 1,
+        "kind:Đồng nhất bước ngoặt với kết thúc can thiệp": 1,
+        "kind:Chuyển sự kiện giữa các giai đoạn": 1,
+        "kind:Đồng nhất tác động chính trị với ưu thế lực lượng": 1,
+        "kind:Tuyệt đối hóa vai trò ngoại giao": 1,
+        "kind:Lẫn chiến lược kế tiếp nhau": 1,
+        "kind:Đảo thứ tự các chiến lược": 1,
+        "kind:Ghi nhớ không gắn giai đoạn": 1,
+        "kind:Nhầm dấu mốc với khởi điểm": 1,
+        "kind:Đảo quan hệ nhân quả": 1,
+        "kind:Ghép kết luận đúng với lí do không phù hợp": 1,
+        "kind:Đánh tráo phạm vi thay đổi": 1,
+        "kind:Xóa thứ tự ưu tiên chiến lược": 1,
+        "kind:Khái quát thiếu phạm vi": 1,
+        "kind:Đồng nhất mục đích với kết quả": 1,
+        "kind:Đảo chiều quan hệ nhân quả": 1,
+        "kind:Nhầm bối cảnh vận dụng": 1,
+        "kind:Nhầm cuộc kháng chiến": 2,
+        "kind:Nhầm nghệ thuật quân sự": 1,
+        "kind:Suy rộng không đủ căn cứ": 1,
+        "kind:Lẫn quá trình lịch sử": 1,
+        "kind:Nhầm triều đại xâm lược": 1,
+        "kind:Nhầm niên đại lịch sử": 1,
+        "kind:Nhầm cuộc chiến giải phóng": 1,
+        "kind:Đảo quan hệ ưu tiên": 1,
+        "kind:Nhầm điều kiện cần": 1,
+        "kind:Nhầm chuyển tiếp với bản chất": 1,
+        "kind:Nhầm trước và sau cải cách": 1,
+        "kind:Nhầm quan điểm về thành phần kinh tế": 1,
+        "kind:Chuyển chủ trương giữa các giai đoạn": 1,
+        "kind:Khái quát sai phạm vi": 1,
+        "kind:Sai bối cảnh thời gian": 1,
+        "kind:Đảo chiều tác động": 1,
+        "kind:Nhầm thứ tự gia nhập": 1,
+        "kind:Nhầm mốc kết nạp": 1,
+        "kind:Nhầm đợt mở rộng": 1,
+        "kind:Lẫn nhóm chức năng": 1,
+        "kind:Chọn mục tiêu quá rộng": 1,
+        "kind:Lẫn kết quả kinh tế với chức năng an ninh": 1,
+        "kind:Nhầm chức năng địa bàn": 1,
+        "kind:Đồng nhất mô hình tổ chức": 1,
+        "kind:Lẫn loại nguyên nhân và thời điểm": 1,
+        "kind:Nhầm lực lượng hỗ trợ": 1,
+        "kind:Nhầm quan hệ quốc tế": 1,
+        "kind:Nhầm niên biểu chiến dịch": 1,
+        "kind:Nhầm bối cảnh chiến lược": 1,
+        "kind:Nhầm tên mục tiêu với thời điểm ban hành": 1,
+        "kind:Nhầm giai đoạn thành lập và phát triển": 1,
+        "kind:Nhầm niên biểu văn kiện": 2,
+        "kind:Nhầm thỏa thuận ngoại giao": 1,
+        "kind:Nhầm chủ thể và thời đại": 1,
+        "kind:Lẫn lãnh đạo với tập hợp lực lượng": 1,
+        "kind:Lẫn cấp độ tổ chức": 1,
+        "kind:Nhầm tổ chức tiền thân": 1,
+        "kind:Nhầm mục tiêu với thành tựu": 1,
+        "kind:Nhầm mốc hoạt động": 1,
+        "kind:Lẫn sự kiện gần nhau": 1,
+        "kind:Nhầm tư cách tham gia": 1,
+        "kind:Nhầm cơ sở pháp lí với sự lệ thuộc": 1,
+        "kind:Suy diễn vượt dữ kiện": 1,
+        "kind:Lẫn mục tiêu với phương thức": 1,
+        "kind:Nhầm chủ thể sáng lập": 1,
+        "kind:Nhầm thời kì và tính chất": 1,
+        "kind:Lẫn cơ chế hợp tác với liên minh": 1,
+        "kind:Chọn hệ quả quá chung": 1,
+        "kind:Gộp tiến trình và phóng đại phạm vi": 1,
+        "kind:Nhầm kết quả giữa các cuộc cách mạng": 1,
+        "kind:Nhầm loại hình cách mạng": 1,
+        "kind:Nhầm nhiệm vụ giữa các giai đoạn": 1,
+        "kind:Nhầm mốc ngoại giao": 1,
+        "kind:Sai trật tự thời gian": 1,
+        "kind:Nhầm địa điểm hoạt động": 1,
+        "kind:Suy địa điểm từ quan hệ tổ chức": 1,
+        "kind:Lẫn địa điểm các hội nghị": 1,
+        "kind:Nhầm niên biểu biến động quốc tế": 1,
+        "kind:Lẫn suy yếu với chấm dứt": 1,
+        "kind:Nhầm giai đoạn cách mạng": 1,
+        "kind:Đảo ngược bài học lịch sử": 1,
+        "kind:Lẫn đoàn kết với đồng nhất lợi ích": 1,
+        "kind:Lẫn tính chất và vai trò thắng lợi": 1,
+        "kind:Lẫn cơ chế thị trường với buông quản lí": 1,
+        "kind:Lẫn tự chủ với khép kín": 1,
+        "kind:Đảo quan hệ thời gian và nhân quả": 1,
+        "kind:Nhầm hội nghị gần nhau về thời gian": 1,
+        "kind:Nhầm các cuộc họp của phe đồng minh": 1,
+        "kind:Lẫn trật tự quốc tế giữa các thời kì": 1,
+        "kind:Phóng đại phạm vi thắng lợi": 1,
+        "kind:Sai phạm vi đánh giá": 1,
+        "kind:Đảo lộn trình tự lịch sử": 1,
+        "kind:Đảo quan hệ trước sau": 2,
+        "kind:Nhầm bối cảnh ra đời": 1,
+        "kind:Lẫn thông qua với có hiệu lực": 1,
+        "kind:Gán sai giai đoạn đối ngoại": 1,
+        "kind:Nhầm mốc gia nhập tổ chức": 1,
+        "kind:Nhầm khởi đầu với tiếp tục phát triển": 1,
+        "kind:Lẫn phạm vi khu vực với toàn cầu": 3,
+        "kind:Lẫn tổ chức hợp tác với cơ chế sắp đặt hậu chiến": 1,
+        "kind:Lẫn hợp tác khu vực với phân chia quyền lợi hậu chiến": 1,
+        "kind:Lẫn hợp tác khu vực với liên minh quân sự": 1,
+        "kind:Phóng đại phạm vi hợp tác": 1,
+        "kind:Lẫn biểu hiện với thay đổi nền tảng": 1,
+        "kind:Lẫn thất bại chung với thời cơ trực tiếp": 1,
+        "kind:Lẫn đối tượng thống trị qua các giai đoạn": 1,
+        "kind:Đồng nhất sức mạnh quốc gia với quân sự": 1,
+        "kind:Tuyệt đối hóa quan hệ với nước lớn": 1,
+        "kind:Đồng nhất hội nhập với lệ thuộc": 1,
+        "kind:Lẫn phạm vi ý nghĩa": 1,
+        "kind:Lẫn một nhà nước với một hệ thống": 1,
+        "kind:Gán thành quả phát triển về thời điểm khởi đầu": 1,
+        "kind:Khái quát thiếu phạm vi thời gian": 1,
+        "kind:Sai trình tự và tính chất đấu tranh": 1,
+        "kind:Lẫn cấp độ khái niệm": 1,
+        "kind:Lẫn địa bàn giữa các chặng hoạt động": 1,
+        "kind:Lẫn biện pháp xây dựng lực lượng với bài học khái quát": 1,
+        "kind:Chiếu ngược thiết chế hiện đại": 1,
+        "kind:Chuyển công thức giữa các bối cảnh": 1,
+        "kind:Lẫn cuộc kháng chiến theo niên đại": 1,
+        "kind:Lẫn chiến tranh bảo vệ với chiến tranh giải phóng": 1,
+        "kind:Lẫn đối tượng giữa các triều đại": 1,
+        "kind:Hiểu hẹp tính chất cách mạng": 1,
+        "kind:Đồng nhất hình thái chủ đạo với phương thức duy nhất": 1,
+        "kind:Tách rời các địa bàn chiến lược": 1,
+        "kind:Lẫn thành tựu với điểm mới": 1,
+        "kind:Lấy tính liên tục làm khác biệt": 1,
+        "kind:Lẫn mở rộng quy mô với thay đổi cấp độ": 1,
+        "kind:Lẫn đối tượng đấu tranh giữa các thời kì": 1,
+        "kind:Lẫn chế độ chính trị với hệ thống kinh tế xã hội": 1,
+        "kind:Lẫn hình thức thống trị với đối tượng khái quát": 1,
+        "kind:Đảo thứ tự ưu tiên nhiệm vụ": 1,
+        "kind:Đối lập độc lập dân tộc với liên kết quốc tế": 1,
+        "kind:Đồng nhất phối hợp với lệ thuộc lãnh đạo": 1,
+        "kind:Thiết lập thứ bậc không có trong tư liệu": 1,
+        "kind:Tách rời các mục tiêu giải phóng": 1,
+        "kind:Lẫn tự chủ với biệt lập": 1,
+        "kind:Đồng nhất hội nhập với đồng nhất hóa": 1,
+        "kind:Lẫn bối cảnh với triển vọng nội tại": 1,
+        "kind:Lẫn đặc điểm hoặc thách thức với triển vọng": 1,
+        "kind:Lẫn đơn vị cụ thể với đối tượng chiến lược": 1,
+        "kind:Lẫn mức độ thắng lợi với loại kết cục": 1,
+        "kind:Lẫn vai trò chiến dịch với quyết tâm chiến đấu": 1,
+        "kind:Lẫn nhiệm vụ giữa các thời kì chiến tranh": 1,
+        "kind:Lẫn nhiệm vụ dân chủ với nhiệm vụ sau thống nhất": 1,
+        "kind:Lẫn thành quả mở đầu với sự bảo đảm vĩnh viễn": 1,
+        "kind:Đánh giá thấp mức độ chuyển biến lịch sử": 1,
+        "kind:Thu hẹp phạm vi tác động": 2,
+        "kind:Đồng nhất tính toàn diện với đồng loạt": 1,
+        "kind:Lẫn đổi mới phương thức với thay đổi mục tiêu": 1,
+        "kind:Lẫn kế thừa với giữ nguyên cơ chế": 1,
+        "kind:Lẫn các mô hình phát triển xã hội": 1,
+        "kind:Tuyệt đối hóa nguyên nhân bên ngoài": 1,
+        "kind:Lẫn mở rộng với khởi nguồn": 1,
+        "kind:Chiếu ngược chủ trương về giai đoạn đầu": 1,
+        "kind:Lẫn bổ sung với thay thế": 1,
+        "kind:Đưa kết quả về trước nguyên nhân": 1,
+        "kind:Lẫn nguyên tắc với sách lược": 1,
+        "kind:Lẫn hợp tác tình thế với đồng minh lâu dài": 1,
+        "kind:Đồng nhất đa cực với suy yếu mọi nước lớn": 1,
+        "kind:Thu hẹp chủ thể quan hệ quốc tế": 1,
+        "kind:Đảo ngược biểu hiện của xu thế": 1,
+        "kind:Khái quát quá mức chiến thuật riêng": 1,
+        "kind:Đồng nhất các giai đoạn chống xâm lược": 1,
+        "kind:Chuyển chiến thuật giữa các cuộc chiến": 1,
+        "kind:Nhầm đối tượng trong cùng phong trào": 1,
+        "kind:Nhầm thắng lợi giữa các thời kì": 1,
+        "kind:Nhầm cụm chiến thắng quyết định": 1,
+        "kind:Nhầm mở rộng thành viên với mở rộng phạm vi toàn cầu": 1,
+        "kind:Gán sai quan hệ nhân quả": 1,
+        "kind:Nhầm chặng phát triển thể chế": 1,
+        "kind:Ghép văn kiện theo địa danh": 1,
+        "kind:Nhầm văn kiện thành lập với văn kiện định hướng": 1,
+        "kind:Nhầm cương lĩnh đảng với văn kiện nhà nước": 1,
+        "kind:Nhầm loại đại hội": 1,
+        "kind:Đảo thứ tự thể chế hóa": 1,
+        "kind:Nhầm hai chiến dịch cùng mùa": 1,
+        "kind:Nhầm bước phát triển với trận kết thúc": 1,
+        "kind:Nhầm giữa các cuộc kháng chiến": 1,
+        "kind:Bỏ sót vai trò hỗ trợ độc lập dân tộc": 1,
+        "kind:Đồng nhất hạn chế với không có đóng góp": 1,
+        "kind:Thu hẹp phương thức hợp tác": 1,
+        "kind:Đồng nhất nhiệm vụ giữa cách mạng và kháng chiến": 1,
+        "kind:Mở rộng sai phạm vi chính sách": 1,
+        "kind:Tuyệt đối hóa lực lượng vũ trang": 1,
+        "kind:Nhầm cộng đồng an ninh với liên minh quân sự": 1,
+        "kind:Hoán đổi trụ cột văn hóa và xã hội": 1,
+        "kind:Hoán đổi trụ cột kinh tế": 1,
+        "kind:Nhầm xác lập quyền với dàn xếp tạm thời": 1,
+        "kind:Nhầm phương thức bảo vệ chủ quyền": 1,
+        "kind:Nhầm tuân thủ luật chung với lệ thuộc": 1,
+        "kind:Đồng nhất quan hệ cụ thể với nguyên tắc xuyên suốt": 1,
+        "kind:Gán sai trọng tâm sách lược": 1,
+        "kind:Đồng nhất tranh thủ hỗ trợ với phụ thuộc": 1,
+        "kind:Nhầm lĩnh vực và chiều hướng chính sách": 1,
+        "kind:Nhầm chính trị với chính sách xã hội": 1,
+        "kind:Nhầm cơ chế cũ với nội dung đổi mới": 1,
+        "kind:Nhầm nhiệm vụ cứu đói với xây dựng hậu phương về sau": 1,
+        "kind:Kéo dài sai niên biểu phong trào": 1,
+        "kind:Đưa nhiệm vụ giai đoạn sau về trước": 1,
+        "kind:Nhầm xu hướng cải cách với thiếu hoạt động đối ngoại": 1,
+        "kind:Thu hẹp hoạt động quốc tế vào giai đoạn sau": 1,
+        "kind:Nhầm thất bại chủ trương với không có hoạt động": 1,
+        "kind:Nhầm nền tảng sức mạnh với nhân tố lãnh đạo": 1,
+        "kind:Nhầm mục tiêu chiến lược với chủ thể quyết định": 1,
+        "kind:Nhầm phương thức huy động sức mạnh với nhân tố cơ bản nhất": 1,
+        "kind:Chuyển đặc trưng đối đầu sang chiến lược phát triển": 1,
+        "kind:Nhầm trọng tâm cải cách": 1,
+        "kind:Đảo chiều cải cách kinh tế": 1,
+        "kind:Nhầm phương thức với nguyên tắc": 1,
+        "kind:Nhầm phân công chức năng với nguyên tắc nền tảng": 1,
+        "kind:Nhầm cơ chế phối hợp với nguyên tắc tổ chức": 1,
+        "kind:Nhầm nền tảng sức mạnh trong bối cảnh phát triển": 1,
+        "kind:Đồng nhất hội nhập với liên minh quân sự": 1,
+        "kind:Đồng nhất đối thoại với thỏa hiệp lệ thuộc": 1,
+        "kind:Hiểu kết hợp thành thay thế": 1,
+        "kind:Tuyệt đối hóa lực lượng chính trị": 1,
+        "kind:Khái quát ngược nội dung của giai đoạn sau": 1,
+        "kind:Nhầm mất thời cơ với bùng nổ chiến tranh về sau": 1,
+        "kind:Nhầm bối cảnh quốc tế giữa các giai đoạn": 1,
+        "kind:Lấy biểu hiện bộ phận thay cho mốc chung": 1,
+        "kind:Mở rộng đối tượng đại diện": 1,
+        "kind:Nhầm lĩnh vực và cơ chế tác động": 1,
+        "kind:Nhầm cổ vũ tự quyết với áp đặt chính trị": 1,
+        "kind:Thu hẹp phạm vi khái niệm": 1,
+        "kind:Tuyệt đối hóa vai trò trong mệnh đề ghép": 1,
+        "kind:Định kiến từ quy mô sang năng lực quốc tế": 1,
+        "kind:Đồng nhất đổi mới phương tiện với đổi mục tiêu": 1,
+        "kind:Đồng nhất tiền đề với kết quả hoàn chỉnh": 1,
+        "kind:Ghép niên biểu của quá trình với sự kiện đơn lẻ": 1,
+        "kind:Đồng nhất thắng lợi từng phần với thắng lợi hoàn toàn": 1,
+        "kind:Nhầm kết quả lịch sử": 3,
+        "kind:Lẫn hội nhập kinh tế với vai trò đối ngoại": 1,
+        "kind:Lẫn chuyển biến nội bộ với hội nhập": 1,
+        "kind:Lẫn thành tựu tổng thể với biểu hiện chuyên biệt": 1,
+        "kind:Đồng nhất an ninh với liên kết quân sự": 1,
+        "kind:Lẫn lĩnh vực hợp tác với trụ cột": 1,
+        "kind:Lẫn hai cuộc kháng chiến": 3,
+        "kind:Lẫn thành lập tổ chức với thành lập nhà nước": 1,
+        "kind:Lẫn nhiệm vụ theo giai đoạn": 1,
+        "kind:Lẫn chuẩn bị tổ chức với chuẩn bị khởi nghĩa": 1,
+        "kind:Hiểu sai mức độ liên kết khu vực": 1,
+        "kind:Đối lập công nghệ với việc làm": 1,
+        "kind:Nhầm tính chất chính trị của phong trào": 1,
+        "kind:Tuyệt đối hóa thành tựu": 1,
+        "kind:Chuyển nhầm chiến công giữa các thời đại": 1,
+        "kind:Lẫn liên kết chính trị với liên kết kinh tế": 1,
+        "kind:Nhầm giai đoạn lịch sử": 1,
+        "kind:Đồng thời hóa các tổ chức quốc tế": 1,
+        "kind:Nhầm hình thành với tồn tại của trật tự": 1,
+        "kind:Dịch chuyển đặc trưng giữa các giai đoạn": 1,
+        "kind:Lệch trọng tâm hợp tác": 1,
+        "kind:Hồi chiếu ưu tiên xuất hiện muộn": 1,
+        "kind:Lẫn xu thế quốc tế với ý muốn chủ thể": 1,
+        "kind:Đảo chiều tiến trình lịch sử": 1,
+        "kind:Bỏ sót yêu cầu phủ định": 1,
+        "kind:Tách bảo vệ khỏi xây dựng": 1,
+        "kind:Lẫn chức năng chuyên ngành với chức năng chung": 1,
+        "kind:Nhầm sự kiện khởi phát phong trào": 1,
+        "kind:Chọn chiến thắng nổi tiếng thay vì đúng quan hệ": 1,
+        "kind:Lẫn các thắng lợi trong cùng cuộc chiến": 1,
+        "kind:Lẫn điểm chung với điểm khác": 2,
+        "kind:Lẫn vai trò chung với cách thức kết thúc": 1,
+        "kind:Dồn hoạt động về cùng một giai đoạn": 1,
+        "kind:Nhầm thời gian và địa bàn": 1,
+        "kind:Lẫn kinh tế với đối ngoại": 1,
+        "kind:Lẫn nguyên tắc chung với nội dung chuyên biệt": 1,
+        "kind:Lẫn kinh tế với quốc phòng": 1,
+        "kind:Khái quát khủng hoảng cho mọi trường hợp": 1,
+        "kind:Đảo chiều xu thế": 1,
+        "kind:Đối lập lợi ích quốc gia với hợp tác": 1,
+        "kind:Tuyệt đối hóa toàn cầu hóa": 1,
+        "kind:Lẫn giành chính quyền với kháng chiến tiếp sau": 1,
+        "kind:Hồi chiếu nhiệm vụ hợp tác hiện nay": 1,
+        "kind:Hiểu tổ chức hợp tác thành liên minh quân sự": 1,
+        "kind:Đồng nhất hợp tác khu vực với liên minh đối đầu": 1,
+        "kind:Lẫn mục tiêu chiến dịch với mục tiêu cuối cùng": 1,
+        "kind:Lẫn mục tiêu hiện tại với hướng phát triển tiếp theo": 1,
+        "kind:Lẫn địa bàn các chiến dịch": 1,
+        "kind:Nhảy cóc các giai đoạn phát triển": 1,
+        "kind:Nhầm bước ngoặt quân sự với mở đầu đàm phán": 1,
+        "kind:Sai quan hệ thời gian giữa quân sự và ngoại giao": 1,
+        "kind:Đơn giản hóa khả năng kiểm soát lãnh thổ": 1,
+        "kind:Không kiểm tra sự phù hợp địa hình và lực lượng": 1,
+        "kind:Thay căn cứ chính bằng lợi thế suy đoán": 1,
+        "kind:Đảo quan hệ thời gian thành nhân quả": 1,
+        "kind:Lẫn tiến công với phản công": 1,
+        "kind:Phóng đại ý nghĩa chiến dịch": 1,
+        "kind:Đồng nhất hội nhập với hòa tan văn hóa": 1,
+        "kind:Lẫn trật tự cũ với trật tự kế tiếp": 1,
+        "share_identifiable_among_judged": 0.9179487179487179
+      }
+    },
+    "fact_use_counts": {
+      "official": {
+        "given as a cue": 21,
+        "needed in reasoning": 9,
+        "none": 10
+      },
+      "provincial_third_party": {
+        "given as a cue": 118,
+        "needed in reasoning": 45,
+        "none": 31,
+        "asked for directly": 6
+      }
+    }
+  },
+  "paper_structure": {
+    "model": "gpt-6.1-sol",
+    "observations": [
+      {
+        "paper_id": "26827f57f9f0",
+        "source": "transcriptions/lich-su/2026-paper/de.md",
+        "source_sha256": "b5b8a436634cc86223ca185b62725b93ea50943d5d30cfc20e882f8d8a303569",
+        "class": "official",
+        "year": "2026",
+        "model": "gpt-6.1-sol",
+        "origin": "structure_only_supplement_no_reOCR",
+        "structure": {
+          "parts_in_order": [
+            "P1",
+            "P2"
+          ],
+          "blocks_in_order": [
+            {
+              "part": "P1",
+              "kind": "trắc nghiệm chọn một phương án",
+              "question_indices": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23,
+                24
+              ],
+              "shares_content": false,
+              "stimulus_id": null
+            },
+            {
+              "part": "P2",
+              "kind": "đúng sai theo các nhận định dựa trên tư liệu",
+              "question_indices": [
+                1
+              ],
+              "shares_content": true,
+              "stimulus_id": "sA"
+            },
+            {
+              "part": "P2",
+              "kind": "đúng sai theo các nhận định dựa trên tư liệu",
+              "question_indices": [
+                2
+              ],
+              "shares_content": true,
+              "stimulus_id": "sB"
+            },
+            {
+              "part": "P2",
+              "kind": "đúng sai theo các nhận định dựa trên thông tin và tư liệu",
+              "question_indices": [
+                3
+              ],
+              "shares_content": true,
+              "stimulus_id": "sC"
+            },
+            {
+              "part": "P2",
+              "kind": "đúng sai theo các nhận định dựa trên tư liệu",
+              "question_indices": [
+                4
+              ],
+              "shares_content": true,
+              "stimulus_id": "sD"
+            }
+          ],
+          "shared_stimuli": [
+            {
+              "id": "sA",
+              "kind": "đoạn tư liệu có dẫn nguồn",
+              "members": [
+                {
+                  "part": "P2",
+                  "idx": 1
+                }
+              ],
+              "description": "Tư liệu dùng chung cho các nhận định trong cùng câu.",
+              "scope": "statements_within_question",
+              "support": "explicit_instruction"
+            },
+            {
+              "id": "sB",
+              "kind": "đoạn tư liệu có dẫn nguồn",
+              "members": [
+                {
+                  "part": "P2",
+                  "idx": 2
+                }
+              ],
+              "description": "Tư liệu nối tiếp qua trang, dùng chung cho các nhận định trong cùng câu.",
+              "scope": "statements_within_question",
+              "support": "explicit_instruction"
+            },
+            {
+              "id": "sC",
+              "kind": "thông tin dẫn nhập và đoạn trích có dẫn nguồn",
+              "members": [
+                {
+                  "part": "P2",
+                  "idx": 3
+                }
+              ],
+              "description": "Thông tin và đoạn trích dùng chung cho các nhận định trong cùng câu.",
+              "scope": "statements_within_question",
+              "support": "explicit_instruction"
+            },
+            {
+              "id": "sD",
+              "kind": "đoạn tư liệu có dẫn nguồn",
+              "members": [
+                {
+                  "part": "P2",
+                  "idx": 4
+                }
+              ],
+              "description": "Tư liệu dùng chung cho các nhận định trong cùng câu.",
+              "scope": "statements_within_question",
+              "support": "explicit_instruction"
+            }
+          ],
+          "optional_paths": [],
+          "limits": [
+            "Không quan sát thấy tư liệu dùng chung giữa các câu hoặc giữa các phần.",
+            "Không có nhánh câu hỏi tự chọn được in trong đề.",
+            "Thứ tự chỉ phản ánh đề được cung cấp, không suy rộng thành thứ tự cố định."
+          ]
+        }
+      },
+      {
+        "paper_id": "acc23c4ca4f8",
+        "source": "transcriptions/lich-su/2026-provincial/de-thi-thu-tot-nghiep-2026-lich-su-so-gd-an-giang/de.md",
+        "source_sha256": "03afcbc73a66655fd501150bba56207c4d2cd670d65bfc2d30048a9a6f6d4d32",
+        "class": "provincial_third_party",
+        "year": "2026",
+        "model": "gpt-6.1-sol",
+        "origin": "structure_only_supplement_no_reOCR",
+        "structure": {
+          "parts_in_order": [
+            "P1",
+            "P2"
+          ],
+          "blocks_in_order": [
+            {
+              "part": "P1",
+              "kind": "trắc nghiệm chọn một phương án, các câu độc lập",
+              "question_indices": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21
+              ],
+              "shares_content": false,
+              "stimulus_id": null
+            },
+            {
+              "part": "P1",
+              "kind": "trắc nghiệm chọn một phương án dùng chung đoạn tư liệu",
+              "question_indices": [
+                22,
+                23,
+                24
+              ],
+              "shares_content": true,
+              "stimulus_id": "sA"
+            },
+            {
+              "part": "P2",
+              "kind": "đúng sai với đoạn tư liệu riêng trong câu",
+              "question_indices": [
+                1
+              ],
+              "shares_content": true,
+              "stimulus_id": "sB"
+            },
+            {
+              "part": "P2",
+              "kind": "đúng sai với đoạn tư liệu riêng trong câu",
+              "question_indices": [
+                2
+              ],
+              "shares_content": true,
+              "stimulus_id": "sC"
+            },
+            {
+              "part": "P2",
+              "kind": "đúng sai với bảng thông tin riêng trong câu",
+              "question_indices": [
+                3
+              ],
+              "shares_content": true,
+              "stimulus_id": "sD"
+            },
+            {
+              "part": "P2",
+              "kind": "đúng sai với đoạn tư liệu riêng trong câu",
+              "question_indices": [
+                4
+              ],
+              "shares_content": true,
+              "stimulus_id": "sE"
+            }
+          ],
+          "shared_stimuli": [
+            {
+              "id": "sA",
+              "kind": "đoạn tư liệu",
+              "members": [
+                {
+                  "part": "P1",
+                  "idx": 22
+                },
+                {
+                  "part": "P1",
+                  "idx": 23
+                },
+                {
+                  "part": "P1",
+                  "idx": 24
+                }
+              ],
+              "description": "Đoạn tư liệu lịch sử kèm nguồn trích, làm căn cứ trả lời nhóm câu hỏi.",
+              "scope": "multiple_questions",
+              "support": "explicit_instruction"
+            },
+            {
+              "id": "sB",
+              "kind": "đoạn tư liệu",
+              "members": [
+                {
+                  "part": "P2",
+                  "idx": 1
+                }
+              ],
+              "description": "Đoạn tư liệu kèm nguồn trích dùng chung cho các nhận định trong câu.",
+              "scope": "statements_within_question",
+              "support": "explicit_instruction"
+            },
+            {
+              "id": "sC",
+              "kind": "đoạn tư liệu",
+              "members": [
+                {
+                  "part": "P2",
+                  "idx": 2
+                }
+              ],
+              "description": "Đoạn tư liệu kèm nguồn trích dùng chung cho các nhận định trong câu.",
+              "scope": "statements_within_question",
+              "support": "explicit_instruction"
+            },
+            {
+              "id": "sD",
+              "kind": "bảng thông tin",
+              "members": [
+                {
+                  "part": "P2",
+                  "idx": 3
+                }
+              ],
+              "description": "Bảng thông tin theo thời gian, tiếp nối qua trang, dùng chung cho các nhận định trong câu.",
+              "scope": "statements_within_question",
+              "support": "explicit_instruction"
+            },
+            {
+              "id": "sE",
+              "kind": "đoạn tư liệu",
+              "members": [
+                {
+                  "part": "P2",
+                  "idx": 4
+                }
+              ],
+              "description": "Đoạn tư liệu kèm nguồn trích dùng chung cho các nhận định trong câu.",
+              "scope": "statements_within_question",
+              "support": "explicit_instruction"
+            }
+          ],
+          "optional_paths": [],
+          "limits": [
+            "Không thấy nhánh câu hỏi tự chọn trong đề.",
+            "Các nhận định đúng sai trong cùng câu không được tách thành câu hỏi độc lập.",
+            "Đáp án và lời giải tham khảo không thuộc cấu trúc câu hỏi.",
+            "Thứ tự ghi nhận chỉ áp dụng cho bản đề được cung cấp."
+          ]
+        }
+      },
+      {
+        "paper_id": "686833f78102",
+        "source": "transcriptions/lich-su/2026-provincial/de-thi-thu-tot-nghiep-2026-lich-su-so-gd-bac-ninh-lan-2/de.md",
+        "source_sha256": "954d7ff4a68a9f3ecb1422fb64406fe11707500be011836cbea8b6f3766c28c6",
+        "class": "provincial_third_party",
+        "year": "2026",
+        "model": "gpt-6.1-sol",
+        "origin": "structure_only_supplement_no_reOCR",
+        "structure": {
+          "parts_in_order": [
+            "P1",
+            "P2"
+          ],
+          "blocks_in_order": [
+            {
+              "part": "P1",
+              "kind": "trắc nghiệm chọn một phương án độc lập",
+              "question_indices": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21
+              ],
+              "shares_content": false,
+              "stimulus_id": null
+            },
+            {
+              "part": "P1",
+              "kind": "trắc nghiệm chọn một phương án dùng chung tư liệu",
+              "question_indices": [
+                22,
+                23,
+                24
+              ],
+              "shares_content": true,
+              "stimulus_id": "S1"
+            },
+            {
+              "part": "P2",
+              "kind": "đúng sai theo các nhận định trong cùng câu",
+              "question_indices": [
+                1
+              ],
+              "shares_content": true,
+              "stimulus_id": "S2"
+            },
+            {
+              "part": "P2",
+              "kind": "đúng sai theo các nhận định trong cùng câu",
+              "question_indices": [
+                2
+              ],
+              "shares_content": true,
+              "stimulus_id": "S3"
+            },
+            {
+              "part": "P2",
+              "kind": "đúng sai theo các nhận định trong cùng câu",
+              "question_indices": [
+                3
+              ],
+              "shares_content": true,
+              "stimulus_id": "S4"
+            },
+            {
+              "part": "P2",
+              "kind": "đúng sai theo các nhận định trong cùng câu",
+              "question_indices": [
+                4
+              ],
+              "shares_content": true,
+              "stimulus_id": "S5"
+            }
+          ],
+          "shared_stimuli": [
+            {
+              "id": "S1",
+              "kind": "đoạn tư liệu",
+              "members": [
+                {
+                  "part": "P1",
+                  "idx": 22
+                },
+                {
+                  "part": "P1",
+                  "idx": 23
+                },
+                {
+                  "part": "P1",
+                  "idx": 24
+                }
+              ],
+              "description": "Tư liệu lịch sử làm căn cứ trả lời nhóm câu hỏi liên tiếp.",
+              "scope": "multiple_questions",
+              "support": "explicit_instruction"
+            },
+            {
+              "id": "S2",
+              "kind": "đoạn tư liệu",
+              "members": [
+                {
+                  "part": "P2",
+                  "idx": 1
+                }
+              ],
+              "description": "Đoạn trích làm căn cứ đánh giá các nhận định trong cùng câu.",
+              "scope": "statements_within_question",
+              "support": "explicit_instruction"
+            },
+            {
+              "id": "S3",
+              "kind": "đoạn tư liệu",
+              "members": [
+                {
+                  "part": "P2",
+                  "idx": 2
+                }
+              ],
+              "description": "Đoạn trích làm căn cứ đánh giá các nhận định trong cùng câu.",
+              "scope": "statements_within_question",
+              "support": "explicit_instruction"
+            },
+            {
+              "id": "S4",
+              "kind": "bảng thông tin",
+              "members": [
+                {
+                  "part": "P2",
+                  "idx": 3
+                }
+              ],
+              "description": "Bảng thông tin theo thời gian làm căn cứ đánh giá các nhận định trong cùng câu.",
+              "scope": "statements_within_question",
+              "support": "explicit_instruction"
+            },
+            {
+              "id": "S5",
+              "kind": "đoạn tư liệu",
+              "members": [
+                {
+                  "part": "P2",
+                  "idx": 4
+                }
+              ],
+              "description": "Đoạn trích làm căn cứ đánh giá các nhận định trong cùng câu.",
+              "scope": "statements_within_question",
+              "support": "explicit_instruction"
+            }
+          ],
+          "optional_paths": [],
+          "limits": [
+            "Cấu trúc chỉ phản ánh thứ tự quan sát trong bản đề được cung cấp.",
+            "Không thấy nhánh câu hỏi tự chọn hoặc tư liệu dùng chung xuyên phần.",
+            "Phần đáp án và lời giải tham khảo không được tính là khối câu hỏi."
+          ]
+        }
+      },
+      {
+        "paper_id": "5a9dffb03ca8",
+        "source": "transcriptions/lich-su/2026-provincial/de-thi-thu-tot-nghiep-2026-lich-su-so-gd-can-tho/de.md",
+        "source_sha256": "5e5d8fad05e299bc685023eb76e681c125531703e1e4097e8eeaa04d505d371d",
+        "class": "provincial_third_party",
+        "year": "2026",
+        "model": "gpt-6.1-sol",
+        "origin": "structure_only_supplement_no_reOCR",
+        "structure": {
+          "parts_in_order": [
+            "P1",
+            "P2"
+          ],
+          "blocks_in_order": [
+            {
+              "part": "P1",
+              "kind": "trắc nghiệm chọn một phương án, các câu độc lập",
+              "question_indices": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15
+              ],
+              "shares_content": false,
+              "stimulus_id": null
+            },
+            {
+              "part": "P1",
+              "kind": "trắc nghiệm chọn một phương án dùng chung đoạn tư liệu",
+              "question_indices": [
+                16,
+                17,
+                18
+              ],
+              "shares_content": true,
+              "stimulus_id": "S1"
+            },
+            {
+              "part": "P1",
+              "kind": "trắc nghiệm chọn một phương án, các câu độc lập",
+              "question_indices": [
+                19,
+                20,
+                21,
+                22,
+                23,
+                24
+              ],
+              "shares_content": false,
+              "stimulus_id": null
+            },
+            {
+              "part": "P2",
+              "kind": "đúng sai với bảng thông tin dùng trong câu",
+              "question_indices": [
+                1
+              ],
+              "shares_content": true,
+              "stimulus_id": "S2"
+            },
+            {
+              "part": "P2",
+              "kind": "đúng sai với đoạn tư liệu dùng trong câu",
+              "question_indices": [
+                2
+              ],
+              "shares_content": true,
+              "stimulus_id": "S3"
+            },
+            {
+              "part": "P2",
+              "kind": "đúng sai với đoạn tư liệu dùng trong câu",
+              "question_indices": [
+                3
+              ],
+              "shares_content": true,
+              "stimulus_id": "S4"
+            },
+            {
+              "part": "P2",
+              "kind": "đúng sai với đoạn tư liệu dùng trong câu",
+              "question_indices": [
+                4
+              ],
+              "shares_content": true,
+              "stimulus_id": "S5"
+            }
+          ],
+          "shared_stimuli": [
+            {
+              "id": "S1",
+              "kind": "đoạn tư liệu",
+              "members": [
+                {
+                  "part": "P1",
+                  "idx": 16
+                },
+                {
+                  "part": "P1",
+                  "idx": 17
+                },
+                {
+                  "part": "P1",
+                  "idx": 18
+                }
+              ],
+              "description": "Tư liệu lịch sử làm căn cứ cho nhóm câu hỏi đọc hiểu và nhận định.",
+              "scope": "multiple_questions",
+              "support": "explicit_instruction"
+            },
+            {
+              "id": "S2",
+              "kind": "bảng thông tin",
+              "members": [
+                {
+                  "part": "P2",
+                  "idx": 1
+                }
+              ],
+              "description": "Bảng sự kiện làm căn cứ đánh giá các nhận định trong cùng câu.",
+              "scope": "statements_within_question",
+              "support": "explicit_instruction"
+            },
+            {
+              "id": "S3",
+              "kind": "đoạn tư liệu",
+              "members": [
+                {
+                  "part": "P2",
+                  "idx": 2
+                }
+              ],
+              "description": "Đoạn trích làm căn cứ đánh giá các nhận định trong cùng câu.",
+              "scope": "statements_within_question",
+              "support": "explicit_instruction"
+            },
+            {
+              "id": "S4",
+              "kind": "đoạn tư liệu",
+              "members": [
+                {
+                  "part": "P2",
+                  "idx": 3
+                }
+              ],
+              "description": "Đoạn trích làm căn cứ đánh giá các nhận định trong cùng câu.",
+              "scope": "statements_within_question",
+              "support": "explicit_instruction"
+            },
+            {
+              "id": "S5",
+              "kind": "đoạn tư liệu",
+              "members": [
+                {
+                  "part": "P2",
+                  "idx": 4
+                }
+              ],
+              "description": "Đoạn trích làm căn cứ đánh giá các nhận định trong cùng câu.",
+              "scope": "statements_within_question",
+              "support": "explicit_instruction"
+            }
+          ],
+          "optional_paths": [],
+          "limits": [
+            "Không quan sát thấy nhánh câu hỏi tự chọn.",
+            "Các câu đúng sai có tư liệu riêng; không tạo thành cụm dùng chung giữa các câu.",
+            "Cấu trúc và thứ tự chỉ phản ánh bản đề được cung cấp.",
+            "Phần đáp án và lời giải không thuộc cấu trúc câu hỏi."
+          ]
+        }
+      },
+      {
+        "paper_id": "dff65825f390",
+        "source": "transcriptions/lich-su/2026-provincial/de-thi-thu-tot-nghiep-2026-lich-su-so-gd-dien-bien/de.md",
+        "source_sha256": "4afc5ee886ed39c1c5113c16ebcb937a71438b3449a8f83b7e13d0f3f1561e4f",
+        "class": "provincial_third_party",
+        "year": "2026",
+        "model": "gpt-6.1-sol",
+        "origin": "structure_only_supplement_no_reOCR",
+        "structure": {
+          "parts_in_order": [
+            "P1",
+            "P2"
+          ],
+          "blocks_in_order": [
+            {
+              "part": "P1",
+              "kind": "trắc nghiệm nhiều lựa chọn độc lập",
+              "question_indices": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21
+              ],
+              "shares_content": false,
+              "stimulus_id": null
+            },
+            {
+              "part": "P1",
+              "kind": "trắc nghiệm nhiều lựa chọn dùng chung đoạn tư liệu",
+              "question_indices": [
+                22,
+                23,
+                24
+              ],
+              "shares_content": true,
+              "stimulus_id": "sA"
+            },
+            {
+              "part": "P2",
+              "kind": "trắc nghiệm đúng sai với đoạn tư liệu riêng",
+              "question_indices": [
+                1
+              ],
+              "shares_content": true,
+              "stimulus_id": "sB"
+            },
+            {
+              "part": "P2",
+              "kind": "trắc nghiệm đúng sai với đoạn tư liệu riêng",
+              "question_indices": [
+                2
+              ],
+              "shares_content": true,
+              "stimulus_id": "sC"
+            },
+            {
+              "part": "P2",
+              "kind": "trắc nghiệm đúng sai với bảng dữ kiện riêng",
+              "question_indices": [
+                3
+              ],
+              "shares_content": true,
+              "stimulus_id": "sD"
+            },
+            {
+              "part": "P2",
+              "kind": "trắc nghiệm đúng sai với đoạn tư liệu riêng",
+              "question_indices": [
+                4
+              ],
+              "shares_content": true,
+              "stimulus_id": "sE"
+            }
+          ],
+          "shared_stimuli": [
+            {
+              "id": "sA",
+              "kind": "đoạn tư liệu",
+              "members": [
+                {
+                  "part": "P1",
+                  "idx": 22
+                },
+                {
+                  "part": "P1",
+                  "idx": 23
+                },
+                {
+                  "part": "P1",
+                  "idx": 24
+                }
+              ],
+              "description": "Tư liệu về đóng góp của một nhân vật đối với giải phóng dân tộc và văn hóa.",
+              "scope": "multiple_questions",
+              "support": "explicit_instruction"
+            },
+            {
+              "id": "sB",
+              "kind": "đoạn tư liệu",
+              "members": [
+                {
+                  "part": "P2",
+                  "idx": 1
+                }
+              ],
+              "description": "Tư liệu về chuẩn bị lực lượng, chớp thời cơ và vai trò lãnh đạo trong đấu tranh cách mạng.",
+              "scope": "statements_within_question",
+              "support": "explicit_instruction"
+            },
+            {
+              "id": "sC",
+              "kind": "đoạn tư liệu",
+              "members": [
+                {
+                  "part": "P2",
+                  "idx": 2
+                }
+              ],
+              "description": "Tư liệu về vai trò ngoại giao và sự tham gia của các chủ thể trong quan hệ quốc tế.",
+              "scope": "statements_within_question",
+              "support": "explicit_instruction"
+            },
+            {
+              "id": "sD",
+              "kind": "bảng dữ kiện",
+              "members": [
+                {
+                  "part": "P2",
+                  "idx": 3
+                }
+              ],
+              "description": "Bảng phân loại thành tựu đổi mới kinh tế theo các phương diện.",
+              "scope": "statements_within_question",
+              "support": "explicit_instruction"
+            },
+            {
+              "id": "sE",
+              "kind": "đoạn tư liệu",
+              "members": [
+                {
+                  "part": "P2",
+                  "idx": 4
+                }
+              ],
+              "description": "Tư liệu về thỏa thuận quốc tế và sự hình thành trật tự thế giới sau chiến tranh.",
+              "scope": "statements_within_question",
+              "support": "explicit_instruction"
+            }
+          ],
+          "optional_paths": [],
+          "limits": [
+            "Chỉ phản ánh thứ tự quan sát được trong đề này.",
+            "Mỗi câu đúng sai là một câu hỏi; tư liệu riêng phục vụ các nhận định trong câu.",
+            "Không quan sát thấy nhánh tự chọn hoặc tư liệu dùng chung xuyên phần.",
+            "Trang đáp án và lời giải không được tính là phần câu hỏi."
+          ]
+        }
+      },
+      {
+        "paper_id": "08c8696055dd",
+        "source": "transcriptions/lich-su/2026-provincial/de-thi-thu-tot-nghiep-2026-lich-su-so-gd-gia-lai/de.md",
+        "source_sha256": "e54ef7a2d78d29af32bf961786833437ae7a27c7558ae27d8601333b50207e24",
+        "class": "provincial_third_party",
+        "year": "2026",
+        "model": "gpt-6.1-sol",
+        "origin": "structure_only_supplement_no_reOCR",
+        "structure": {
+          "parts_in_order": [
+            "P1",
+            "P2"
+          ],
+          "blocks_in_order": [
+            {
+              "part": "P1",
+              "kind": "trắc nghiệm chọn một phương án",
+              "question_indices": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21
+              ],
+              "shares_content": false,
+              "stimulus_id": null
+            },
+            {
+              "part": "P1",
+              "kind": "trắc nghiệm chọn một phương án dựa trên tư liệu chung",
+              "question_indices": [
+                22,
+                23,
+                24
+              ],
+              "shares_content": true,
+              "stimulus_id": "sA"
+            },
+            {
+              "part": "P2",
+              "kind": "đúng sai với tư liệu chung cho các ý trong câu",
+              "question_indices": [
+                1
+              ],
+              "shares_content": true,
+              "stimulus_id": "sB"
+            },
+            {
+              "part": "P2",
+              "kind": "đúng sai với tư liệu chung cho các ý trong câu",
+              "question_indices": [
+                2
+              ],
+              "shares_content": true,
+              "stimulus_id": "sC"
+            },
+            {
+              "part": "P2",
+              "kind": "đúng sai với tư liệu chung cho các ý trong câu",
+              "question_indices": [
+                3
+              ],
+              "shares_content": true,
+              "stimulus_id": "sD"
+            },
+            {
+              "part": "P2",
+              "kind": "đúng sai với tư liệu chung cho các ý trong câu",
+              "question_indices": [
+                4
+              ],
+              "shares_content": true,
+              "stimulus_id": "sE"
+            }
+          ],
+          "shared_stimuli": [
+            {
+              "id": "sA",
+              "kind": "đoạn tư liệu",
+              "members": [
+                {
+                  "part": "P1",
+                  "idx": 22
+                },
+                {
+                  "part": "P1",
+                  "idx": 23
+                },
+                {
+                  "part": "P1",
+                  "idx": 24
+                }
+              ],
+              "description": "Tư liệu về lựa chọn hướng tiến công, mục tiêu và phát triển chiến dịch quân sự.",
+              "scope": "multiple_questions",
+              "support": "explicit_instruction"
+            },
+            {
+              "id": "sB",
+              "kind": "đoạn tư liệu kèm danh sách sự kiện",
+              "members": [
+                {
+                  "part": "P2",
+                  "idx": 1
+                }
+              ],
+              "description": "Tư liệu về hoạt động đối ngoại và hội nhập quốc tế.",
+              "scope": "statements_within_question",
+              "support": "explicit_instruction"
+            },
+            {
+              "id": "sC",
+              "kind": "đoạn tư liệu",
+              "members": [
+                {
+                  "part": "P2",
+                  "idx": 2
+                }
+              ],
+              "description": "Tư liệu về bối cảnh và mục tiêu mở chiến dịch quân sự.",
+              "scope": "statements_within_question",
+              "support": "explicit_instruction"
+            },
+            {
+              "id": "sD",
+              "kind": "đoạn tư liệu",
+              "members": [
+                {
+                  "part": "P2",
+                  "idx": 3
+                }
+              ],
+              "description": "Tư liệu nhận định thành tựu đổi mới và tiền đề phát triển đất nước.",
+              "scope": "statements_within_question",
+              "support": "explicit_instruction"
+            },
+            {
+              "id": "sE",
+              "kind": "đoạn tư liệu",
+              "members": [
+                {
+                  "part": "P2",
+                  "idx": 4
+                }
+              ],
+              "description": "Tư liệu về các nhân tố hình thành trật tự thế giới mới.",
+              "scope": "statements_within_question",
+              "support": "explicit_instruction"
+            }
+          ],
+          "optional_paths": [],
+          "limits": [
+            "Không thấy nhánh câu hỏi tự chọn.",
+            "Tư liệu trong mỗi câu đúng sai chỉ dùng chung cho các ý của chính câu đó.",
+            "Đáp án và lời giải tham khảo không được tính là khối câu hỏi.",
+            "Thứ tự ghi nhận chỉ áp dụng cho bản đề được cung cấp."
+          ]
+        }
+      }
+    ],
+    "issues": [],
+    "part_order_observations": [
+      {
+        "class": "official",
+        "order": [
+          "P1",
+          "P2"
+        ],
+        "distinct_papers": 1
+      },
+      {
+        "class": "provincial_third_party",
+        "order": [
+          "P1",
+          "P2"
+        ],
+        "distinct_papers": 5
+      }
+    ],
+    "shared_group_presence": [
+      {
+        "class": "official",
+        "part": "P2",
+        "kind": "thông tin dẫn nhập và đoạn trích có dẫn nguồn",
+        "scope": "statements_within_question",
+        "questions_in_part": 1,
+        "distinct_papers": 1
+      },
+      {
+        "class": "official",
+        "part": "P2",
+        "kind": "đoạn tư liệu có dẫn nguồn",
+        "scope": "statements_within_question",
+        "questions_in_part": 1,
+        "distinct_papers": 1
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P1",
+        "kind": "đoạn tư liệu",
+        "scope": "multiple_questions",
+        "questions_in_part": 3,
+        "distinct_papers": 5
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "kind": "bảng dữ kiện",
+        "scope": "statements_within_question",
+        "questions_in_part": 1,
+        "distinct_papers": 1
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "kind": "bảng thông tin",
+        "scope": "statements_within_question",
+        "questions_in_part": 1,
+        "distinct_papers": 3
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "kind": "đoạn tư liệu",
+        "scope": "statements_within_question",
+        "questions_in_part": 1,
+        "distinct_papers": 5
+      },
+      {
+        "class": "provincial_third_party",
+        "part": "P2",
+        "kind": "đoạn tư liệu kèm danh sách sự kiện",
+        "scope": "statements_within_question",
+        "questions_in_part": 1,
+        "distinct_papers": 1
+      }
+    ],
+    "limits": [
+      "Observed order is not proof of universal fixed order.",
+      "Multiple codes of the same paper are not independent papers.",
+      "Internal TF statements are not multi-question clusters.",
+      "Structure observations and topic-profile completion counts may differ; see per-paper provenance."
+    ]
+  }
+}

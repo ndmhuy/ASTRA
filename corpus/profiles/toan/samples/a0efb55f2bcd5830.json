@@ -1,0 +1,152 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "a0efb55f2bcd5830",
+    "topic": "Phép thử lặp độc lập",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Các lần đoán đáp án ngẫu nhiên, một phần kết quả đã chắc chắn và quy tắc đổi kết quả thành điểm.",
+        "task": "Kiểm tra xác suất đạt một mức điểm được chỉ định.",
+        "reasoning": [
+          "Chuyển mức điểm mục tiêu thành số lần đoán đúng cần có.",
+          "Chọn các vị trí xuất hiện câu đoán đúng bằng tổ hợp.",
+          "Nhân xác suất đúng và sai cho một cấu hình rồi nhân số cấu hình.",
+          "Làm tròn và đối chiếu xác suất được đề xuất."
+        ],
+        "combines": [
+          "Mô hình điểm số",
+          "Tổ hợp",
+          "Quy tắc nhân xác suất độc lập",
+          "Quy tắc cộng xác suất"
+        ],
+        "difficulty_source": "Chuyển yêu cầu về điểm thành biến cố đếm số lần thành công.",
+        "evidence_uncertainty": "Không có khóa đúng sai phù hợp. Xếp lớp theo quy tắc xác suất độc lập; công cụ tổ hợp thuộc lớp trước.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "6aa30214ba7e|P2|3|d"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "a0efb55f2bcd5830",
+    "stem": "Một trò chơi có 7 câu hỏi, mỗi câu có 4 phương án và chỉ một phương án đúng. Người chơi đã trả lời chắc chắn đúng 2 câu. Với mỗi câu trong 5 câu còn lại, người chơi chọn ngẫu nhiên đều một phương án, độc lập giữa các câu. Mỗi câu đúng được 2 điểm, câu sai được 0 điểm. Xét tính đúng sai của các khẳng định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Xác suất người chơi đoán sai cả 5 câu còn lại là 243/1024."
+      },
+      {
+        "sub": "b",
+        "text": "Xác suất người chơi đoán đúng đúng một câu trong 5 câu còn lại là 81/1024."
+      },
+      {
+        "sub": "c",
+        "text": "Xác suất người chơi đạt đúng 8 điểm là 135/512."
+      },
+      {
+        "sub": "d",
+        "text": "Xác suất người chơi đạt ít nhất 10 điểm là 45/512."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Gọi X là số câu đoán đúng trong 5 câu còn lại. Mỗi lần đoán có xác suất đúng 1/4, sai 3/4; các lần độc lập nên P(X=k)=C(5,k)(1/4)^k(3/4)^(5-k). Tổng điểm là 4+2X. a) P(X=0)=(3/4)^5=243/1024 nên đúng. b) P(X=1)=5·(1/4)·(3/4)^4=405/1024, không phải 81/1024, nên sai. c) Đạt đúng 8 điểm tương đương X=2; xác suất là 10·(1/4)^2·(3/4)^3=135/512 nên đúng. d) Đạt ít nhất 10 điểm tương đương X≥3. Xác suất là (90+15+1)/1024=53/512. Giá trị 45/512 chỉ là xác suất X=3 nên khẳng định sai.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Chỉ tính xác suất của một cấu hình có một câu đúng, bỏ hệ số chọn vị trí câu đúng.",
+        "why_plausible": "Tích (1/4)(3/4)^4 bằng 81/1024, nhưng câu đúng có thể nằm ở một trong 5 vị trí."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Đồng nhất đạt ít nhất 10 điểm với đạt đúng 10 điểm.",
+        "why_plausible": "Người học xác định được ngưỡng cần đúng 3 câu nhưng bỏ các trường hợp đúng 4 hoặc 5 câu."
+      }
+    ],
+    "level_reason": "Mức cao nhất là TH: các ý yêu cầu thực hiện quy trình quen thuộc về phép thử lặp độc lập, đếm vị trí thành công và đổi điểm số thành số câu đúng. Việc cộng các trường hợp đạt ngưỡng vẫn là xử lí thường quy.",
+    "prerequisites": [
+      "Tổ hợp",
+      "Quy tắc nhân xác suất cho các biến cố độc lập",
+      "Quy tắc cộng xác suất cho các biến cố xung khắc"
+    ],
+    "variation_guidance": "Có thể đổi số câu đã chắc chắn đúng, số phương án hoặc ngưỡng điểm; cần tính lại các biến cố và phân biệt rõ đúng một mức với ít nhất một mức.",
+    "uncertainties": [
+      "Đây là mẫu tổng hợp nguyên bản. Quan sát định hướng được cung cấp chỉ thuộc nguồn cấp tỉnh qua bên thứ ba, không có mốc chính thức hay khóa đúng sai phù hợp; không dùng mẫu này làm bằng chứng đề thi thật."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "a0efb55f2bcd5830",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Gọi X là số câu đoán đúng trong 5 câu còn lại. Khi đó P(X=k)=C(5,k)(1/4)^k(3/4)^(5−k), tổng điểm là 4+2X. a) P(X=0)=243/1024. b) P(X=1)=405/1024. c) Đúng 8 điểm tương ứng X=2, có xác suất 270/1024=135/512. d) Ít nhất 10 điểm tương ứng X≥3, có xác suất (90+15+1)/1024=53/512.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Cả bốn ý đều dùng quy trình quen thuộc đếm số câu đúng và tính xác suất các phép thử độc lập. Việc đổi điểm thành số câu đúng và cộng các trường hợp vẫn ở mức TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/418017903555eb9bb6dbe05c18e6b690487b190bf6478416bf94c01fee37ff2c.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/418017903555eb9bb6dbe05c18e6b690487b190bf6478416bf94c01fee37ff2c.resolve.json"
+}

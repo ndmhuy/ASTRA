@@ -1,0 +1,215 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "1e4087acd2db5feb",
+    "topic": "Phương pháp tọa độ trong không gian",
+    "part": "P2",
+    "level": "VD",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một mặt cầu tịnh tiến theo phương tọa độ cố định và một đường thẳng nằm trong mặt phẳng ngang.",
+        "task": "Kiểm tra sự tồn tại vị trí tiếp xúc trong quá trình chuyển động.",
+        "reasoning": [
+          "Biểu diễn chuyển động của tâm trong khi giữ nguyên bán kính.",
+          "Tách khoảng cách đến đường thẳng thành thành phần ngang và thành phần theo phương chuyển động.",
+          "Xác định khoảng cách nhỏ nhất trên hướng chuyển động được phép.",
+          "So sánh với bán kính để kiểm tra khả năng tiếp xúc."
+        ],
+        "combines": [
+          "Tịnh tiến",
+          "Khoảng cách điểm đến đường thẳng",
+          "Điều kiện tiếp xúc mặt cầu"
+        ],
+        "difficulty_source": "Nhận ra chuyển động chỉ làm thay đổi một thành phần khoảng cách và kiểm tra miền chuyển động.",
+        "evidence_uncertainty": "Chưa xác nhận được khóa đúng sai khớp mã.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Đoạn chuyển động trong không gian, miền quan sát hình cầu và hình tọa độ nhìn thấy được.",
+        "task": "Kiểm tra độ dài phần hành trình nằm trong miền quan sát.",
+        "reasoning": [
+          "Mô hình hóa miền quan sát bằng bất phương trình mặt cầu.",
+          "Thế biểu diễn tham số của chuyển động vào điều kiện khoảng cách.",
+          "Giải điều kiện và giao miền tham số với đoạn chuyển động.",
+          "Xác định vị trí bắt đầu và kết thúc thực sự nằm trong phạm vi.",
+          "Tính khoảng cách, đổi đơn vị và làm tròn."
+        ],
+        "combines": [
+          "Phương trình đường thẳng",
+          "Phương trình mặt cầu",
+          "Bất phương trình bậc hai",
+          "Giới hạn miền chuyển động"
+        ],
+        "difficulty_source": "Cắt miền giao với mặt cầu theo đúng giới hạn của hành trình.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một mặt cầu, một điểm ngoài và nhận định về tọa độ tâm của quỹ tích tiếp điểm.",
+        "task": "Kiểm tra một tổ hợp tọa độ của tâm đường tròn tiếp điểm.",
+        "reasoning": [
+          "Dùng điều kiện bán kính vuông góc tiếp tuyến để suy ra mặt phẳng chứa các tiếp điểm.",
+          "Nhận ra tâm đường tròn nằm trên đường nối tâm cầu với điểm ngoài.",
+          "Xác định vị trí tâm đường tròn bằng hệ thức hình chiếu.",
+          "Tính tổ hợp tọa độ và đối chiếu."
+        ],
+        "combines": [
+          "Tiếp tuyến mặt cầu",
+          "Tích vô hướng",
+          "Hình chiếu vuông góc",
+          "Tọa độ không gian"
+        ],
+        "difficulty_source": "Nhận ra mặt phẳng tiếp điểm và dùng hình chiếu để tìm tâm quỹ tích.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một mặt cầu, một mặt phẳng, phương cố định của đoạn nối chúng và một quan hệ tọa độ tại vị trí dài nhất.",
+        "task": "Kiểm tra quan hệ tọa độ của đầu mút trên mặt cầu khi đoạn nối đạt độ dài lớn nhất.",
+        "reasoning": [
+          "Tham số hóa đường qua điểm trên mặt cầu theo phương cố định.",
+          "Dùng điều kiện giao mặt phẳng để biểu diễn độ dài đoạn nối qua giá trị một biểu thức tuyến tính.",
+          "Nhận ra cần cực đại hóa khoảng cách đến mặt phẳng trên mặt cầu.",
+          "Xác định điểm xa mặt phẳng nhất theo hướng pháp tuyến và kiểm tra nhánh cực đại.",
+          "Thế tọa độ điểm đó vào quan hệ được đề xuất."
+        ],
+        "combines": [
+          "Đường thẳng tham số",
+          "Mặt cầu và mặt phẳng",
+          "Tối ưu biểu thức tuyến tính",
+          "Khoảng cách"
+        ],
+        "difficulty_source": "Chuyển cực trị độ dài theo phương xiên thành cực trị biểu thức tuyến tính trên mặt cầu.",
+        "evidence_uncertainty": "Thiếu khóa đúng sai được xác nhận; mức phân hóa dựa vào cấu trúc suy luận và đối chiếu các mẫu hiệu chuẩn được cung cấp.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "0ecb85132b84|P2|4|d",
+      "3b4cca11ea82|P2|4|d",
+      "54e9a2a276ca|P2|4|d",
+      "85efdd1a7e54|P2|1|d",
+      "de5833d227dd|P2|2|d",
+      "fc12a8146279|P2|4|d"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "1e4087acd2db5feb",
+    "stem": "Trong không gian Oxyz, cho họ mặt cầu (S_t): (x+1)²+(y−2)²+(z−1+t)²=9, với 0≤t≤4, và đường thẳng d: x=s, y=0, z=0, s∈R. Xét tính đúng, sai của các khẳng định sau. Riêng ở ý d, lấy M thuộc (S_0), gọi N là giao điểm của đường thẳng qua M có vectơ chỉ phương (1;0;−1) với mặt phẳng z=0, và chỉ xét các vị trí thỏa mãn x_N≤0.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Mặt cầu (S_0) có tâm I=(−1;2;1) và bán kính bằng 3."
+      },
+      {
+        "sub": "b",
+        "text": "Đường thẳng d cắt mặt cầu (S_1) tại hai điểm phân biệt."
+      },
+      {
+        "sub": "c",
+        "text": "Có đúng hai giá trị t thuộc [0;4] để đường thẳng d tiếp xúc với mặt cầu (S_t)."
+      },
+      {
+        "sub": "d",
+        "text": "Giá trị lớn nhất của độ dài MN trong các vị trí được phép là 3+√2."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "VD"
+      }
+    ],
+    "solution": "a) Đọc phương trình (S_0) được tâm I=(−1;2;1), bán kính R=3. b) Tâm của (S_1) là (−1;2;0), cách d một khoảng bằng 2<3, nên d cắt mặt cầu tại hai điểm phân biệt. c) Tâm của (S_t) là I_t=(−1;2;1−t). Khoảng cách từ I_t đến d bằng √[4+(1−t)²]. Điều kiện tiếp xúc là (1−t)²=5, cho t=1±√5. Chỉ t=1+√5 thuộc [0;4], nên khẳng định sai. d) Đặt M=(x;y;z). Đường thẳng MN có biểu diễn (x+λ;y;z−λ), nên N=(x+z;y;0), MN=√2|z| và điều kiện được phép là x+z≤0. Trên (S_0), luôn có z≥−2. Nếu z≥1 thì x≤−z, do đó x+1≤−(z−1)≤0 và (x+1)²≥(z−1)². Phương trình mặt cầu suy ra 2(z−1)²≤9, tức z≤1+3/√2. Nếu z<1, bất đẳng thức trên về cận trên của z vẫn đúng. Vì 1+3/√2>2, ta có |z|≤1+3/√2. Dấu bằng đạt tại M=(−1−3/√2;2;1+3/√2), thuộc (S_0) và cho x_N=0. Vậy MN lớn nhất bằng √2(1+3/√2)=3+√2.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "c",
+        "mistake": "Đếm cả hai nghiệm t=1±√5 mà không đối chiếu với khoảng chuyển động.",
+        "why_plausible": "Phương trình tiếp xúc có hai nghiệm thực, nhưng nghiệm 1−√5 nằm ngoài miền tham số của đề."
+      }
+    ],
+    "level_reason": "Toàn câu đạt VD theo ý d. Ý này yêu cầu chuyển điều kiện của đầu mút N thành ràng buộc trên M, kết hợp ràng buộc đó với mặt cầu để tìm cận của tọa độ z, so sánh hai phía của |z| và dựng vị trí đạt cận. Chỉ dùng điểm cao nhất của mặt cầu hoặc công thức khoảng cách đến mặt phẳng sẽ không giải được bài toán có miền vị trí được phép. Các ý a, b, c lần lượt thuộc NB, TH, TH.",
+    "prerequisites": [
+      "Phương trình mặt cầu",
+      "Phương trình tham số của đường thẳng",
+      "Khoảng cách từ điểm đến đường thẳng",
+      "Điều kiện tiếp xúc giữa đường thẳng và mặt cầu",
+      "Bất đẳng thức và điều kiện đạt dấu bằng"
+    ],
+    "variation_guidance": "Có thể thay hướng của MN hoặc nửa mặt phẳng chứa N. Phải xác định lại miền vị trí của M, so sánh cả hai phía của giá trị tuyệt đối và chỉ rõ điểm đạt cực đại.",
+    "uncertainties": [
+      "Đây là mẫu tổng hợp tự soạn. Các quan sát cấu trúc được cung cấp cho mục tiêu này chỉ thuộc nguồn cấp tỉnh qua bên thứ ba, không có neo đề chính thức.",
+      "Một số quan sát đầu vào chưa có khóa được xác nhận; lời giải của mẫu mới không xác nhận khóa của các nguồn đó."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "1e4087acd2db5feb",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "VD"
+      }
+    ],
+    "solution": "a) Đọc phương trình được tâm I=(-1;2;1), bán kính 3. b) Tâm của (S_1) là (-1;2;0), cách d một khoảng 2<3 nên d cắt mặt cầu tại hai điểm phân biệt. c) Điều kiện tiếp xúc là 4+(1-t)²=9, suy ra t=1±√5. Chỉ t=1+√5 thuộc [0;4], nên có đúng một giá trị. d) Viết M=(-1+u;2+v;1+w), với u²+v²+w²=9. Khi đó N=(u+w;2+v;0), điều kiện cho phép là u+w≤0 và MN=√2|1+w|. Nếu w≥0 thì u≤-w, suy ra 2w²≤9, nên w≤3/√2. Nếu w<0 thì w≥-3, nên |1+w|≤2. Do đó MN≤3+√2; dấu bằng đạt tại u=-3/√2, v=0, w=3/√2.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a: NB vì nhận biết tâm và bán kính từ dạng chuẩn. b, c: TH vì thực hiện quy trình quen thuộc về khoảng cách và vị trí tương đối. d: VD vì phải chuyển điều kiện giao điểm thành ràng buộc trên mặt cầu, tìm cực trị có ràng buộc và kiểm tra khả năng đạt được."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/toan/7a92b6651e15140ec965a82e5b996cea14001b987c61f757a5be16708a8cbe4c.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/toan/7a92b6651e15140ec965a82e5b996cea14001b987c61f757a5be16708a8cbe4c.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 0,
+  "source_rows_sha256": "863dd6885185956ed9dabede84bf529993a764e4871f75f25629503cf8f2731a"
+}

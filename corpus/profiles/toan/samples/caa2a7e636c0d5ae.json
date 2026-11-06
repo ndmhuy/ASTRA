@@ -1,0 +1,188 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "caa2a7e636c0d5ae",
+    "topic": "Nguyên hàm và chuyển động",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một quy luật tốc độ và biểu thức quãng đường được đề nghị cho giai đoạn trước khi dừng.",
+        "task": "Kiểm tra biểu thức quãng đường theo thời gian.",
+        "reasoning": [
+          "Tìm nguyên hàm của tốc độ hoặc lấy đạo hàm biểu thức đề nghị.",
+          "Kiểm tra quãng đường ban đầu để xác định hằng số.",
+          "Giới hạn kết luận trong giai đoạn chuyển động được nêu."
+        ],
+        "combines": [
+          "Nguyên hàm",
+          "Điều kiện ban đầu",
+          "Miền thời gian của mô hình"
+        ],
+        "difficulty_source": "Kiểm tra nguyên hàm kèm điều kiện ban đầu.",
+        "evidence_uncertainty": "Thiếu khóa đúng sai được xác nhận khớp mã đề.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Gia tốc biến thiên theo thời gian và vận tốc ban đầu.",
+        "task": "Kiểm tra thời gian cần để dừng.",
+        "reasoning": [
+          "Tích phân gia tốc để tìm vận tốc với điều kiện ban đầu.",
+          "Giải phương trình vận tốc bằng không.",
+          "Chọn nghiệm thời gian không âm và đối chiếu."
+        ],
+        "combines": [
+          "Nguyên hàm",
+          "Phương trình",
+          "Động học"
+        ],
+        "difficulty_source": "Tìm vận tốc từ gia tốc rồi chọn nghiệm thời gian phù hợp.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Quy luật gia tốc, vận tốc ban đầu và một công thức vận tốc đề xuất.",
+        "task": "Kiểm tra biểu thức vận tốc trong giai đoạn hãm.",
+        "reasoning": [
+          "Tính nguyên hàm của gia tốc.",
+          "Dùng vận tốc ban đầu để xác định hằng số.",
+          "Đối chiếu công thức đề xuất."
+        ],
+        "combines": [
+          "Nguyên hàm",
+          "Điều kiện ban đầu",
+          "Động học"
+        ],
+        "difficulty_source": "Thực hiện nguyên hàm cơ bản kèm điều kiện ban đầu.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "525d3542283a|P2|2|c",
+      "c6340827ba59|P2|4|b",
+      "c6340827ba59|P2|4|c"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "caa2a7e636c0d5ae",
+    "stem": "Một xe mô hình chuyển động thẳng. Chọn chiều dương là chiều chuyển động ban đầu. Từ lúc bắt đầu hãm, lấy t = 0, xe có vận tốc v(0) = 15 m/s và gia tốc a(t) = −2t − 2 (m/s²), với t tính bằng giây. Quy luật này chỉ áp dụng từ lúc bắt đầu hãm đến khi xe dừng lần đầu. Gọi s(t) là quãng đường xe đi được kể từ lúc bắt đầu hãm, nên s(0) = 0. Xét tính đúng sai của các khẳng định sau trong giai đoạn đó.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Vận tốc của xe là v(t) = 15 − 2t − t² (m/s)."
+      },
+      {
+        "sub": "b",
+        "text": "Xe dừng lần đầu sau 5 giây kể từ lúc bắt đầu hãm."
+      },
+      {
+        "sub": "c",
+        "text": "Quãng đường xe đi được là s(t) = 15t − t² − t³ (m)."
+      },
+      {
+        "sub": "d",
+        "text": "Tổng quãng đường xe đi được từ lúc bắt đầu hãm đến khi dừng lần đầu là 27 m."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "Từ v′(t) = −2t − 2 suy ra v(t) = −t² − 2t + C. Điều kiện v(0) = 15 cho C = 15, nên a đúng. Phương trình v(t) = 0 tương đương (t + 5)(t − 3) = 0. Nghiệm thời gian không âm là t = 3 giây, nên b sai. Trên đoạn 0 ≤ t ≤ 3, vận tốc không âm, do đó s′(t) = v(t). Kết hợp s(0) = 0, ta được s(t) = 15t − t² − t³/3, nên c sai. Tổng quãng đường là s(3) = 45 − 9 − 9 = 27 m, nên d đúng.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Lấy giá trị tuyệt đối của nghiệm âm −5 làm thời gian dừng.",
+        "why_plausible": "Phương trình vận tốc có hai nghiệm; học sinh có thể nhầm thao tác chọn nghiệm không âm với việc đổi nghiệm âm thành số dương."
+      },
+      {
+        "label": null,
+        "sub": "c",
+        "mistake": "Lấy nguyên hàm của −t² thành −t³, bỏ hệ số 1/3.",
+        "why_plausible": "Học sinh nhớ việc tăng số mũ nhưng quên chia cho số mũ mới khi tìm nguyên hàm."
+      }
+    ],
+    "level_reason": "Mức cao nhất của toàn mẫu là TH. Các nhận định yêu cầu tìm nguyên hàm với điều kiện ban đầu, giải phương trình vận tốc bằng không và tính quãng đường theo quy trình động học quen thuộc.",
+    "prerequisites": [
+      "Quan hệ giữa gia tốc và đạo hàm của vận tốc",
+      "Nguyên hàm của đa thức",
+      "Xác định hằng số từ điều kiện ban đầu",
+      "Giải phương trình bậc hai",
+      "Quan hệ giữa vận tốc không âm và quãng đường"
+    ],
+    "variation_guidance": "Có thể đổi vận tốc ban đầu và gia tốc bậc nhất. Cần kiểm tra thời điểm dừng đầu tiên, dấu của vận tốc trước khi dừng và giới hạn hiệu lực của mô hình.",
+    "uncertainties": [
+      "Đây là mẫu tổng hợp tự tạo, chỉ tham khảo cách xây dựng từ quan sát nguồn cấp tỉnh bên thứ ba; không phải bằng chứng đề thi thật và không có đối sánh chính thức được cung cấp."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "caa2a7e636c0d5ae",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "Tích phân gia tốc và dùng v(0)=15 được v(t)=15−2t−t². Phương trình v(t)=0 có nghiệm t=3 và t=−5, nên xe dừng lần đầu tại t=3 giây. Trên [0,3], vận tốc không âm nên s(t)=∫₀ᵗ(15−2u−u²)du=15t−t²−t³/3. Do đó s(3)=45−9−9=27 m.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a) Tìm vận tốc bằng nguyên hàm và điều kiện đầu. b) Giải phương trình vận tốc bằng không, chọn nghiệm thuộc thời gian chuyển động. c) Tính nguyên hàm vận tốc với điều kiện đầu. d) Tính quãng đường tại thời điểm dừng. Đây đều là các thủ tục chuẩn của bài toán chuyển động, thuộc TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/c2c0667dd18f85a05c492558529d69590aaa3c9d0ec01e92ea871bba5e5afcd6.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/c2c0667dd18f85a05c492558529d69590aaa3c9d0ec01e92ea871bba5e5afcd6.resolve.json"
+}

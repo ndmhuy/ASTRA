@@ -1,0 +1,155 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "0a243ae17834eb40",
+    "topic": "Hình học không gian: góc, khoảng cách và thể tích",
+    "part": "P3",
+    "level": "TH",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Một hình lập phương được mô tả bằng các đỉnh, độ dài cạnh, trung điểm của một cạnh và mặt phẳng qua các điểm được chỉ định; câu này không kèm hình vẽ riêng.",
+        "task": "Tính khoảng cách từ một đỉnh tới mặt phẳng rồi làm tròn.",
+        "reasoning": [
+          "Chọn hệ tọa độ theo các cạnh vuông góc của hình lập phương.",
+          "Xác định tọa độ trung điểm, điểm cần tính khoảng cách và các điểm thuộc mặt phẳng.",
+          "Lập phương trình mặt phẳng từ các điểm đã biết.",
+          "Áp dụng công thức khoảng cách từ điểm tới mặt phẳng.",
+          "Làm tròn kết quả cuối theo yêu cầu."
+        ],
+        "combines": [
+          "Hình lập phương",
+          "Trung điểm",
+          "Phương trình mặt phẳng",
+          "Khoảng cách từ điểm tới mặt phẳng"
+        ],
+        "difficulty_source": "Chọn biểu diễn tọa độ thuận lợi cho một mặt phẳng xiên; phần tính sau đó theo công thức.",
+        "evidence_uncertainty": "Xếp lớp theo bài khoảng cách trong hình học không gian; chuỗi giải bằng tọa độ huy động thêm phương trình mặt phẳng thuộc lớp sau.",
+        "evidence_class": "official"
+      },
+      {
+        "given": "Hình phối cảnh và mặt cắt của một khối lăng trụ đứng; mặt cắt ghép bởi hình chữ nhật với tam giác cân, các kích thước nằm trên hình.",
+        "task": "Tính thể tích không gian bên trong.",
+        "reasoning": [
+          "Tách mặt cắt thành hình chữ nhật và tam giác cân.",
+          "Dùng định lý Pythagore tìm chiều cao phần tam giác.",
+          "Cộng diện tích hai phần.",
+          "Nhân diện tích mặt cắt với chiều dài khối."
+        ],
+        "combines": [
+          "Diện tích hình phẳng",
+          "Định lý Pythagore",
+          "Thể tích lăng trụ"
+        ],
+        "difficulty_source": "Nhận diện mặt cắt ghép và phân biệt cạnh nghiêng với chiều cao.",
+        "evidence_uncertainty": "Kích thước phụ thuộc hình cắt được cung cấp; ranh giới cắt chưa được kiểm chứng độc lập nhưng các nhãn cần thiết đọc được.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Hình chóp có đáy hình thoi, chân đường cao tại tâm đáy, kích thước cạnh, góc đáy và chiều cao; không kèm hình riêng.",
+        "task": "Tính khoảng cách từ một đỉnh đáy đến mặt bên và làm tròn.",
+        "reasoning": [
+          "Dùng cạnh và góc để xác định các độ dài cần thiết trong đáy.",
+          "Chọn mặt cắt vuông góc cạnh chung hoặc hệ tọa độ thuận lợi.",
+          "Biểu diễn chiều cao của mặt bên và độ lệch của đỉnh đáy đối với mặt đó.",
+          "Tính khoảng cách bằng quan hệ diện tích, thể tích hoặc công thức tọa độ.",
+          "Giữ giá trị chính xác đến bước làm tròn cuối."
+        ],
+        "combines": [
+          "Hình thoi",
+          "Hệ thức lượng",
+          "Quan hệ vuông góc trong không gian",
+          "Khoảng cách từ điểm đến mặt phẳng"
+        ],
+        "difficulty_source": "Chọn mặt cắt hoặc hệ tọa độ làm lộ đường vuông góc với mặt bên.",
+        "evidence_uncertainty": "Xếp lớp theo bài khoảng cách trong không gian; cách giải bằng phương trình mặt phẳng có thể huy động kiến thức lớp sau.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một hình chóp có đáy chữ nhật, cạnh bên vuông góc đáy, các độ dài và một trung điểm trên cạnh đáy; có hình minh họa.",
+        "task": "Tính khoảng cách từ một đỉnh đáy đến mặt phẳng qua đỉnh chóp và các điểm đã chỉ định.",
+        "reasoning": [
+          "Chọn hệ trục theo các cạnh vuông góc để biểu diễn các điểm.",
+          "Xác định tọa độ trung điểm và các điểm thuộc mặt phẳng cần xét.",
+          "Tìm pháp tuyến rồi lập phương trình mặt phẳng.",
+          "Áp dụng công thức khoảng cách từ điểm đến mặt phẳng."
+        ],
+        "combines": [
+          "Quan hệ vuông góc trong không gian",
+          "Trung điểm",
+          "Tọa độ không gian",
+          "Khoảng cách đến mặt phẳng"
+        ],
+        "difficulty_source": "Cần chọn biểu diễn thuận lợi cho mặt phẳng cắt chéo, sau đó tính theo công thức chuẩn.",
+        "evidence_uncertainty": "Xếp lớp theo bài khoảng cách trong hình học không gian; chuỗi giải mô tả sử dụng thêm phương pháp tọa độ lớp sau. Không có đáp án chuẩn để đối chiếu.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "023e74626dd8|P3|2|None",
+      "0968e8bc9e2d|P3|1|None",
+      "3b4cca11ea82|P3|2|None",
+      "525d3542283a|P3|4|None",
+      "9ed45d16a975|P3|4|None",
+      "aceb17d936f5|P3|1|None",
+      "adb051fd8253|P3|4|None",
+      "de5833d227dd|P3|5|None"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "0a243ae17834eb40",
+    "stem": "Một kho chứa có không gian bên trong là một khối lăng trụ đứng dài 11 m. Mặt đáy của lăng trụ là một ngũ giác dạng mái nhà, được ghép bởi một hình chữ nhật rộng 8 m, cao 3 m và một tam giác cân nằm phía trên. Đáy của tam giác trùng với cạnh trên dài 8 m của hình chữ nhật; mỗi cạnh bên của tam giác dài 5 m. Bỏ qua độ dày của tường và mái. Thể tích không gian bên trong kho bằng bao nhiêu mét khối?",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "396",
+        "level": "TH"
+      }
+    ],
+    "solution": "Đường cao của tam giác cân chia đáy thành hai đoạn cùng dài 4 m. Theo định lý Pythagore, chiều cao phần tam giác là √(5² − 4²) = 3 m. Diện tích mặt đáy của lăng trụ là 8 × 3 + (8 × 3)/2 = 36 m². Chiều cao của lăng trụ đứng chính là chiều dài kho 11 m. Vì vậy thể tích là V = 36 × 11 = 396 m³.",
+    "distractors": [],
+    "level_reason": "Hình ghép và các kích thước đã được xác định rõ. Học sinh thực hiện quy trình quen thuộc: tính chiều cao tam giác cân, cộng diện tích hai phần và nhân với chiều cao lăng trụ. Các phép tính nối tiếp này thuộc TH.",
+    "prerequisites": [
+      "Đường cao trong tam giác cân",
+      "Định lý Pythagore",
+      "Diện tích hình chữ nhật và tam giác",
+      "Thể tích lăng trụ đứng"
+    ],
+    "variation_guidance": "Có thể thay kích thước mái và chiều dài kho; cần giữ cạnh bên tam giác lớn hơn nửa đáy. Nếu kết quả không nguyên, nêu rõ yêu cầu làm tròn trong câu hỏi.",
+    "uncertainties": [
+      "Đây là mẫu tổng hợp tự soạn. Cấu trúc tính thể tích từ mặt cắt ghép được tham khảo ở mức quan sát bên thứ ba cấp tỉnh, không phải bằng chứng từ đề thi chính thức."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "0a243ae17834eb40",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "396",
+        "level": "TH"
+      }
+    ],
+    "solution": "Đường cao của tam giác cân là √(5²−4²)=3 m. Diện tích đáy lăng trụ bằng 8×3+(8×3)/2=36 m². Thể tích kho là 36×11=396 m³.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Thực hiện quy trình quen thuộc: dùng định lý Pythagore tính chiều cao tam giác, cộng diện tích hai hình và nhân với chiều dài lăng trụ."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/toan/f7ee1ba193a3149f863e5d70019b81f59061c6305e96e3f545aeee761e37705f.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/toan/f7ee1ba193a3149f863e5d70019b81f59061c6305e96e3f545aeee761e37705f.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 0,
+  "source_rows_sha256": "863dd6885185956ed9dabede84bf529993a764e4871f75f25629503cf8f2731a"
+}

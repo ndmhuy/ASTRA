@@ -1,0 +1,170 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "4d026e2501c90107",
+    "topic": "Xác suất có điều kiện",
+    "part": "P2",
+    "level": "VD",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một nhóm được tuyển từ các nguồn khác nhau rồi bầu đại diện; đã biết giới tính của người đại diện.",
+        "task": "Kiểm tra xác suất tất cả thành viên còn lại thuộc giới tính đối lập.",
+        "reasoning": [
+          "Phân nhánh theo nguồn xuất phát của người đại diện với trọng số đã điều kiện hóa.",
+          "Trong mỗi nhánh, loại người đại diện khỏi nguồn tương ứng.",
+          "Tính xác suất thành phần giới tính của những người còn lại bằng chọn không hoàn lại.",
+          "Gộp các nhánh và đối chiếu."
+        ],
+        "combines": [
+          "Công thức Bayes",
+          "Xác suất toàn phần",
+          "Tổ hợp",
+          "Chọn không hoàn lại"
+        ],
+        "difficulty_source": "Cập nhật đồng thời trọng số nguồn và thành phần nguồn sau khi biết người đại diện.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một phép chuyển giữa các nhóm, một phép chọn cặp và điều kiện cặp được chọn khác màu.",
+        "task": "Kiểm tra xác suất cặp được chọn không chứa đối tượng vừa chuyển.",
+        "reasoning": [
+          "Phân biệt danh tính đối tượng được chuyển với màu của nó.",
+          "Đếm các cặp khác màu chỉ gồm đối tượng vốn thuộc nhóm nhận.",
+          "Gộp đủ các trường hợp về màu của đối tượng chuyển để tính xác suất giao.",
+          "Tính xác suất điều kiện cặp khác màu.",
+          "Lấy tỉ số và đối chiếu."
+        ],
+        "combines": [
+          "Xác suất có điều kiện",
+          "Xác suất toàn phần",
+          "Đếm tổ hợp có ràng buộc nguồn gốc"
+        ],
+        "difficulty_source": "Theo dõi đồng thời màu và nguồn gốc của từng đối tượng khi điều kiện hóa.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "9ed45d16a975|P2|2|d",
+      "ccae0b94a82d|P2|1|d"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "4d026e2501c90107",
+    "stem": "Hộp I có 3 thẻ đỏ và 2 thẻ xanh; hộp II có 2 thẻ đỏ và 1 thẻ xanh. Các thẻ có cùng kích thước. Chuyển ngẫu nhiên một thẻ từ hộp I sang hộp II, rồi rút ngẫu nhiên một thẻ từ hộp II để quan sát màu và để riêng, không hoàn lại. Sau đó người chơi chọn một trong hai hộp và rút ngẫu nhiên một thẻ từ hộp đã chọn; người chơi thắng nếu thẻ cuối cùng màu đỏ. Người chơi biết thành phần ban đầu và màu của thẻ được để riêng, nhưng không biết màu hoặc danh tính thẻ đã chuyển. Trong mỗi lần rút, các thẻ đang có trong hộp có khả năng được chọn như nhau. Gọi T là biến cố thẻ chuyển sang màu đỏ, E là biến cố thẻ để riêng màu đỏ. Xét tính đúng, sai của các phát biểu sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "P(T) = 3/5."
+      },
+      {
+        "sub": "b",
+        "text": "P(E) = 13/20."
+      },
+      {
+        "sub": "c",
+        "text": "Nếu thẻ để riêng màu đỏ và người chơi chọn hộp I thì xác suất thắng là 3/5."
+      },
+      {
+        "sub": "d",
+        "text": "Nếu được chọn hộp dựa vào màu thẻ để riêng thì xác suất thắng lớn nhất, tính trước khi thực hiện việc chuyển thẻ, là 79/120."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "VD"
+      }
+    ],
+    "solution": "a) Có 3 thẻ đỏ trong 5 thẻ của hộp I nên P(T) = 3/5. b) Nếu chuyển thẻ đỏ thì xác suất E bằng 3/4; nếu chuyển thẻ xanh thì xác suất E bằng 2/4. Do đó P(E) = (3/5)(3/4) + (2/5)(2/4) = 13/20. c) Khi biết E, xác suất thẻ chuyển màu đỏ là P(T|E) = [(3/5)(3/4)]/(13/20) = 9/13. Nếu chuyển đỏ, hộp I còn 2 thẻ đỏ trong 4 thẻ; nếu chuyển xanh, hộp I còn 3 thẻ đỏ trong 4 thẻ. Xác suất thắng khi chọn hộp I là (9/13)(2/4) + (4/13)(3/4) = 15/26, khác 3/5. d) Cần chọn hộp tối ưu riêng cho mỗi màu quan sát được. Khi E xảy ra, chọn hộp I cho xác suất 15/26; chọn hộp II cho xác suất (9/13)(2/3) + (4/13)(1/3) = 22/39. Vì 15/26 > 22/39 nên chọn hộp I. Khi thẻ để riêng màu xanh, xác suất thẻ chuyển màu đỏ bằng [(3/5)(1/4)]/(7/20) = 3/7. Lúc này chọn hộp I cho xác suất (3/7)(2/4) + (4/7)(3/4) = 9/14; chọn hộp II cho xác suất (3/7)(3/3) + (4/7)(2/3) = 17/21. Vì 17/21 > 9/14 nên chọn hộp II. Xác suất thắng lớn nhất là (13/20)(15/26) + (7/20)(17/21) = 79/120. Việc chọn ngẫu nhiên giữa hai hộp trong cùng một nhánh quan sát không thể cho xác suất cao hơn lựa chọn tốt hơn của nhánh đó.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "c",
+        "mistake": "Giữ nguyên tỉ lệ đỏ ban đầu của hộp I sau khi đã chuyển thẻ và quan sát kết quả ở hộp II.",
+        "why_plausible": "Người chơi không trực tiếp nhìn thấy thẻ chuyển nên học sinh có thể cho rằng thông tin ở hộp II không ảnh hưởng đến đánh giá thành phần còn lại của hộp I."
+      }
+    ],
+    "level_reason": "Mức toàn mẫu là VD do ý d yêu cầu tự xây dựng một quy tắc quyết định theo thông tin quan sát. Học sinh phải cập nhật khả năng của màu thẻ chuyển, theo dõi thành phần còn lại của cả hai hộp, so sánh hai hành động trong từng nhánh rồi gộp kết quả tối ưu. Chỉ tính một xác suất có điều kiện theo quy trình quen thuộc chưa đủ để trả lời ý này.",
+    "prerequisites": [
+      "Xác suất khi rút ngẫu nhiên không hoàn lại",
+      "Công thức xác suất toàn phần",
+      "Công thức xác suất có điều kiện và Bayes",
+      "So sánh xác suất của các lựa chọn trong từng trường hợp"
+    ],
+    "variation_guidance": "Thay thành phần hai hộp sao cho hộp có lợi hơn thay đổi theo màu quan sát. Khi tính xác suất thắng chung, phải dùng lựa chọn tương ứng với từng thông tin mà người chơi thực sự biết.",
+    "uncertainties": [
+      "Đây là mẫu tổng hợp tự soạn, không phải bằng chứng đề thi. Cơ sở quan sát được cung cấp cho mục tiêu này chỉ thuộc cấp tỉnh từ bên thứ ba, chưa có điểm neo chính thức."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "4d026e2501c90107",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "VD"
+      }
+    ],
+    "solution": "a) P(T) = 3/5.\nb) P(E|T) = 3/4 và P(E|Tᶜ) = 1/2, nên P(E) = (3/5)(3/4) + (2/5)(1/2) = 13/20.\nc) P(T|E) = 9/13. Nếu chọn hộp I sau khi thấy thẻ đỏ, xác suất thắng là (9/13)(2/4) + (4/13)(3/4) = 15/26, khác 3/5.\nd) Khi thấy thẻ đỏ, chọn hộp I có xác suất thắng 15/26, còn hộp II là 22/39; nên chọn hộp I. Khi thấy thẻ xanh, P(T|Eᶜ) = 3/7; xác suất thắng từ hộp I là 9/14, từ hộp II là 17/21; nên chọn hộp II. Xác suất thắng tối đa trước khi chuyển thẻ là (13/20)(15/26) + (7/20)(17/21) = 79/120.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a) Tính xác suất bằng tỉ số số thẻ là thủ tục quen thuộc, mức TH. b) Áp dụng công thức xác suất toàn phần là TH. c) Tính xác suất có điều kiện rồi tổng hợp hai khả năng thành phần hộp là quy trình quen thuộc, mức TH. d) Phải xây dựng chiến lược lựa chọn theo thông tin quan sát, so sánh hai hành động trong từng trường hợp rồi tổng hợp xác suất tối ưu, mức VD."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/toan/686b4e05d46640db4c5883c1b5e66ef353a65ed795289f70de7cdbfd9b701ff4.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/toan/686b4e05d46640db4c5883c1b5e66ef353a65ed795289f70de7cdbfd9b701ff4.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 0,
+  "source_rows_sha256": "863dd6885185956ed9dabede84bf529993a764e4871f75f25629503cf8f2731a"
+}

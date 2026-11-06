@@ -1,0 +1,134 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "d325abc46c053dd9",
+    "topic": "Vị trí tương đối không gian",
+    "part": "P1",
+    "level": "TH",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Phương trình tổng quát của một mặt phẳng và các phương trình mặt phẳng để lựa chọn.",
+        "task": "Chọn mặt phẳng song song với mặt phẳng đã cho.",
+        "reasoning": [
+          "Đọc vectơ pháp tuyến từ các hệ số.",
+          "Kiểm tra tính cùng phương của các pháp tuyến.",
+          "Loại trường hợp hai phương trình biểu diễn cùng một mặt phẳng."
+        ],
+        "combines": [
+          "Vectơ pháp tuyến",
+          "Quan hệ song song và trùng nhau của mặt phẳng"
+        ],
+        "difficulty_source": "Cần kiểm tra cả tính cùng phương lẫn điều kiện không trùng nhau.",
+        "evidence_uncertainty": "Thiếu khóa đáp án hợp lệ.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "525d3542283a|P1|3|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "d325abc46c053dd9",
+    "stem": "Trong không gian Oxyz, cho hai mặt phẳng (P): x − 3y + 2z − 5 = 0 và (Q): 2x + (m − 1)y + 4z + 2 = 0, với m là số thực. Giá trị nào của m để (Q) song song với (P)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "m = −6."
+      },
+      {
+        "label": "B",
+        "text": "m = 7."
+      },
+      {
+        "label": "C",
+        "text": "m = −5."
+      },
+      {
+        "label": "D",
+        "text": "m = −2."
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "C",
+        "level": "TH"
+      }
+    ],
+    "solution": "Hai vectơ pháp tuyến là nP = (1; −3; 2) và nQ = (2; m − 1; 4). Từ thành phần thứ nhất và thứ ba, hệ số tỉ lệ phải bằng 2. Vì vậy m − 1 = 2 × (−3) = −6, suy ra m = −5. Khi đó, chia phương trình (Q) cho 2 được x − 3y + 2z + 1 = 0, khác (P), nên hai mặt phẳng song song. A sai vì m = −6 cho hệ số y bằng −7. B sai vì m = 7 cho hệ số y bằng 6, ngược dấu với hệ số cần có. D sai vì m = −2 cho hệ số y bằng −3, chỉ bằng hệ số y của (P), trong khi hai hệ số còn lại đã gấp đôi.",
+    "distractors": [
+      {
+        "label": "A",
+        "sub": null,
+        "mistake": "Tìm được hệ số y cần bằng −6 nhưng đồng nhất hệ số m − 1 với m.",
+        "why_plausible": "Học sinh có thể dừng ở kết quả so sánh hệ số và quên giải phương trình m − 1 = −6."
+      },
+      {
+        "label": "B",
+        "sub": null,
+        "mistake": "Bỏ dấu âm của hệ số y trong vectơ pháp tuyến của (P), dẫn đến m − 1 = 6.",
+        "why_plausible": "Hai hệ số x và z đều dương nên học sinh có thể so sánh độ lớn các hệ số mà bỏ qua dấu của thành phần y."
+      },
+      {
+        "label": "D",
+        "sub": null,
+        "mistake": "Đặt m − 1 = −3, không áp dụng hệ số tỉ lệ 2 cho thành phần y.",
+        "why_plausible": "Học sinh có thể kiểm tra từng hệ số riêng lẻ mà không giữ một hệ số tỉ lệ chung cho cả vectơ."
+      }
+    ],
+    "level_reason": "Học sinh áp dụng điều kiện cùng phương của hai vectơ pháp tuyến để tìm tham số, rồi phân biệt song song với trùng nhau. Đây là bài toán tham số theo quy trình quen thuộc, thuộc TH.",
+    "prerequisites": [
+      "Vectơ pháp tuyến của mặt phẳng",
+      "Điều kiện hai vectơ cùng phương",
+      "Điều kiện hai mặt phẳng song song hoặc trùng nhau",
+      "Giải phương trình bậc nhất một ẩn"
+    ],
+    "variation_guidance": "Thay vị trí hệ số chứa tham số và hệ số tỉ lệ giữa hai pháp tuyến. Luôn kiểm tra hệ số tự do để xác định hai mặt phẳng có trùng nhau tại giá trị tìm được hay không.",
+    "uncertainties": [
+      "Đây là câu hỏi minh họa tổng hợp nguyên gốc, không phải bằng chứng đề thi thật.",
+      "Căn cứ cấu trúc chỉ từ quan sát cấp tỉnh qua nguồn bên thứ ba, chưa có neo chính thức; quan sát nguồn thiếu khóa đáp án hợp lệ."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "d325abc46c053dd9",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "C",
+        "level": "TH"
+      }
+    ],
+    "solution": "Hai vectơ pháp tuyến là (1; −3; 2) và (2; m − 1; 4). Để cùng phương, hệ số tỉ lệ phải bằng 2, suy ra m − 1 = −6, tức m = −5. Khi đó (Q) tương đương x − 3y + 2z + 1 = 0, khác (P), nên hai mặt phẳng song song.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Áp dụng điều kiện hai vectơ pháp tuyến cùng phương và kiểm tra hai mặt phẳng phân biệt là bài toán tham số thường quy."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/toan/c9fa72d951523b701c12b206e139b9d837df7c4a8e676158e4ef8bfc4edd137b.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/toan/c9fa72d951523b701c12b206e139b9d837df7c4a8e676158e4ef8bfc4edd137b.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 0,
+  "source_rows_sha256": "863dd6885185956ed9dabede84bf529993a764e4871f75f25629503cf8f2731a"
+}

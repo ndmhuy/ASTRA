@@ -1,0 +1,3392 @@
+{
+  "samples": [
+    {
+      "id": "HH-N-794e3a30c695",
+      "topic_id": "T02",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Tình huống và số liệu tự biên soạn. Có 10 phần dung dịch giống nhau; mỗi phần chứa 0,010 mol glucose và 0,005 mol sucrose. Mỗi phần phải được xử lí nguyên phần theo một trong hai quy trình, hoặc không sử dụng:\n\n| Quy trình | Xử lí carbohydrate | Lượng AgNO3 cấp cố định cho mỗi phần | Hiệu suất thu hồi silver |\n|---|---|---:|---:|\n| R | Không thủy phân | 0,020 mol | 80,0% |\n| H | Thủy phân hoàn toàn sucrose, sau đó trung hòa | 0,040 mol | 76,0% |\n\nThuốc thử chứa AgNO3 trong môi trường ammonia được chuẩn bị phù hợp. Trong điều kiện này, 1 mol glucose hoặc fructose có thể tạo tối đa 2 mol silver; sucrose chưa thủy phân không tạo silver. Hiệu suất trong bảng tính theo lượng silver tối đa từ carbohydrate của phần dung dịch tương ứng. Toàn bộ AgNO3 đã cấp cho một phần được tính là đã sử dụng, kể cả phần không được thu hồi thành silver; không tái sử dụng thuốc thử.\n\nTổng lượng AgNO3 có thể cấp là 0,260 mol. Silver thu hồi từ các phần được gộp lại để tạo lớp phủ, giả sử công đoạn tạo lớp phủ không hao hụt. Mỗi tấm cần phủ trên tổng diện tích 180 cm² một lớp silver dày đều 1,00 μm. Bỏ qua thể tích ở mép và độ nhám; khối lượng riêng của silver là 10,5 g/cm³. Cho M(Ag) = 108 g/mol và 1 μm = 10⁻⁴ cm.\n\nCó thể hoàn thành nhiều nhất bao nhiêu tấm? Chỉ tính tấm được phủ đủ; ghi một số nguyên, đơn vị tấm.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": "116",
+          "level": "VD",
+          "solution": "Mỗi tấm cần 180 × 10⁻⁴ × 10,5 = 0,189 g silver. Một phần theo R cho 0,010 × 2 × 108 × 0,80 = 1,728 g; theo H cho (0,010 + 2 × 0,005) × 2 × 108 × 0,76 = 3,2832 g. Đặt x, y là số phần theo R, H. Cần tối đa hóa 1,728x + 3,2832y với x, y nguyên không âm, x + y ≤ 10 và x + 2y ≤ 13. Giá trị lớn nhất đạt tại x = 7, y = 3: thu 21,9456 g, đủ 116 tấm vì 116 × 0,189 = 21,924 g còn 117 × 0,189 = 22,113 g."
+        }
+      ],
+      "solution": "Sau thủy phân, mỗi phần có 0,015 mol glucose và 0,005 mol fructose, tức 0,020 mol monosaccharide khử. Vì vậy lượng silver thu được theo R và H lần lượt là 1,728 g và 3,2832 g. Gọi x, y là số phần dùng từng quy trình. Hai nguồn lực độc lập tạo các ràng buộc x + y ≤ 10 và 0,020x + 0,040y ≤ 0,260, hay x + 2y ≤ 13.\n\nVới y cố định, chọn x lớn nhất vì lượng silver tăng theo x. Các phương án tốt nhất tương ứng là:\n\n| y | x lớn nhất | Silver thu được (g) |\n|---:|---:|---:|\n| 0 | 10 | 17,2800 |\n| 1 | 9 | 18,8352 |\n| 2 | 8 | 20,3904 |\n| 3 | 7 | 21,9456 |\n| 4 | 5 | 21,7728 |\n| 5 | 3 | 21,6000 |\n| 6 | 1 | 21,4272 |\n\nKhông thể có y ≥ 7 do giới hạn AgNO3. Lớp phủ trên mỗi tấm có thể tích 0,0180 cm³ và khối lượng 0,189 g. Do đó số tấm tối đa là phần nguyên của 21,9456/0,189, bằng 116. Không làm tròn lên.",
+      "cognitive_rationale": "VD nằm ở việc xây dựng mô hình lựa chọn nguyên phần dưới đồng thời hai giới hạn, rồi chứng minh phương án tối ưu trước khi đổi lượng silver thành sản phẩm hoàn chỉnh. Kiểm tra đường tắt: chọn H nhiều nhất vì mỗi phần cho nhiều silver hơn dẫn tới y = 6, x = 1 và chỉ đủ 113 tấm; chọn toàn R vì tiết kiệm AgNO3 cũng kém tối ưu. Tính lượng chất theo một quy trình cho sẵn hoặc chỉ đếm số phép tính không giải quyết được lựa chọn này.",
+      "distractor_mechanisms": {},
+      "easier": "Ấn định sử dụng 7 phần theo R và 3 phần theo H, giữ nguyên các số liệu còn lại, chỉ yêu cầu tính số tấm hoàn chỉnh. Khi đó nhiệm vụ là tính tỉ lượng, khối lượng lớp phủ và lấy phần nguyên, ở mức TH.",
+      "harder": "Giữ nguyên dữ kiện nhưng cho phép thu hồi 25% lượng silver tương đương với AgNO3 đã cấp mà chưa thu được thành kim loại, rồi dùng lượng thuốc thử thu hồi cho các phần còn lại. Chỉ cho phép một lần thu hồi; yêu cầu tìm số tấm tối đa và phải mô hình hóa cả thứ tự hai lượt xử lí.",
+      "rubric": [
+        {
+          "criterion": "Xác định đúng silver thu hồi mỗi phần: R là 1,728 g, H là 3,2832 g.",
+          "points": 0.25
+        },
+        {
+          "criterion": "Lập đúng hai ràng buộc về số phần và lượng AgNO3, có điều kiện nguyên không âm.",
+          "points": 0.25
+        },
+        {
+          "criterion": "Chứng minh phương án tối ưu x = 7, y = 3 bằng bảng hoặc lập luận tương đương.",
+          "points": 0.25
+        },
+        {
+          "criterion": "Tính đúng 0,189 g silver mỗi tấm và kết luận tối đa 116 tấm bằng cách lấy phần nguyên.",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": "Có thể xét hai miền y ≤ 3 và y ≥ 3: trong miền đầu, x = 10 − y và lượng silver tăng theo y; trong miền sau, x = 13 − 2y và lượng silver giảm theo y. Cũng chấp nhận liệt kê đầy đủ các giá trị nguyên khả thi hoặc quy hoạch nguyên có chứng minh tối ưu. Các cách đổi đơn vị khác được chấp nhận nếu nhất quán.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-794e3a30c695"
+      ],
+      "review_note": "Reused unchanged content and ID; independent unkeyed solve still pending."
+    },
+    {
+      "id": "HH-N-a2cd9d0a688a",
+      "topic_id": "T03",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Tình huống tự biên soạn. Một chất X có công thức phân tử C9H13N, chứa đúng một vòng benzene và không chứa vòng nào khác. Cần xác định tất cả công thức cấu tạo của X phù hợp đồng thời với các dữ kiện sau:\n\n• X là amine bậc một; nguyên tử nitrogen liên kết trực tiếp với một nguyên tử carbon no thuộc mạch nhánh, không liên kết trực tiếp với vòng benzene.\n• Khi oxi hóa hoàn toàn các mạch nhánh bằng potassium permanganate dư, nóng, rồi acid hóa, sản phẩm hữu cơ chứa vòng benzene duy nhất là benzene-1,4-dicarboxylic acid.\n• Để xét phép oxi hóa này, sử dụng mô hình: mỗi mạch nhánh gắn với vòng qua một carbon có ít nhất một hydrogen được chuyển thành một nhóm –COOH tại chính vị trí gắn đó; các carbon xa vòng và nitrogen không nằm trong sản phẩm hữu cơ chứa vòng. Vị trí tương đối của các nhóm thế trên vòng không thay đổi.\n\nCó bao nhiêu công thức cấu tạo của X phù hợp? Chỉ đếm đồng phân cấu tạo, không đếm riêng các đồng phân quang học; ghi một số nguyên.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": "3",
+          "level": "VD",
+          "solution": "C9H13N có độ bất bão hòa bằng 4, đã được dùng hết bởi vòng benzene nên các mạch nhánh còn lại chỉ có liên kết đơn. Sản phẩm oxi hóa buộc vòng có đúng hai mạch nhánh carbon ở vị trí para. Ba carbon ngoài vòng phải phân bố thành 1 + 2. Nhóm –NH2 có thể nằm trên nhánh một carbon, hoặc tại một trong hai carbon của nhánh hai carbon. Thu được ba cấu tạo: p-C6H4(CH2NH2)(CH2CH3), p-C6H4(CH3)(CH(NH2)CH3), p-C6H4(CH3)(CH2CH2NH2)."
+        }
+      ],
+      "solution": "Độ bất bão hòa của X là (2 × 9 + 2 + 1 − 13)/2 = 4. Một vòng benzene đã chiếm toàn bộ độ bất bão hòa này. Do đó không thể thêm liên kết đôi, liên kết ba hoặc vòng ở mạch nhánh.\n\nTheo mô hình oxi hóa đã cho, hai nhóm –COOH ở vị trí 1,4 bắt nguồn từ hai mạch nhánh carbon ở vị trí para. X có ba carbon ngoài vòng nên kích thước hai mạch nhánh bắt buộc là một carbon và hai carbon. Nitrogen thuộc nhóm –NH2 và phải liên kết với carbon no của một trong hai mạch nhánh.\n\nLiệt kê có hệ thống:\n1. –NH2 trên nhánh một carbon: p-C6H4(CH2NH2)(CH2CH3).\n2. –NH2 trên carbon sát vòng của nhánh hai carbon: p-C6H4(CH3)(CH(NH2)CH3).\n3. –NH2 trên carbon xa vòng của nhánh hai carbon: p-C6H4(CH3)(CH2CH2NH2).\n\nCả ba đều có công thức C9H13N; mỗi carbon gắn trực tiếp với vòng đều còn ít nhất một hydrogen nên thỏa mô hình oxi hóa. Hoán đổi cách đánh số hai vị trí para không tạo đồng phân mới. Cấu tạo thứ hai có thể có đồng phân quang học nhưng chỉ được đếm một lần. Kết quả là 3.",
+      "cognitive_rationale": "Nhiệm vụ yêu cầu kết nối giới hạn bất bão hòa, thông tin về sản phẩm oxi hóa, cách phân bố carbon giữa hai nhánh và vị trí khả dĩ của nhóm amine; đồng thời phải chứng minh danh sách không thiếu và không đếm trùng. Kiểm tra đường tắt: chỉ biết công thức phân tử và amine bậc một không xác định được số đồng phân cần đếm; chỉ thấy sản phẩm para cũng chưa xác định được nitrogen nằm ở nhánh nào. Đếm riêng hai dạng quang học của cấu tạo có –CH(NH2)– tạo kết quả sai.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn ba công thức cấu tạo trong lời giải và hỏi bậc amine của từng chất, hoặc cho một cấu tạo rồi hỏi sản phẩm oxi hóa theo mô hình đã nêu. Không yêu cầu tự xây dựng danh sách đồng phân.",
+      "harder": "Thay công thức phân tử bằng C10H15N, giữ các điều kiện khác. Yêu cầu đếm tất cả đồng phân cấu tạo, xét cả phân bố carbon 1 + 3 và 2 + 2, đồng thời loại những nhánh không có hydrogen ở carbon gắn trực tiếp với vòng.",
+      "rubric": [
+        {
+          "criterion": "Dùng độ bất bão hòa để giới hạn các mạch nhánh là no, không vòng.",
+          "points": 0.25
+        },
+        {
+          "criterion": "Suy ra hai mạch nhánh ở vị trí para và phân bố ba carbon ngoài vòng thành 1 + 2.",
+          "points": 0.25
+        },
+        {
+          "criterion": "Liệt kê đúng ba vị trí cấu tạo khác nhau của nhóm –NH2, không thiếu trường hợp.",
+          "points": 0.25
+        },
+        {
+          "criterion": "Kiểm tra điều kiện oxi hóa, tránh đếm trùng hoặc đếm riêng đồng phân quang học và kết luận 3.",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập cây phân nhánh theo vị trí nitrogen trước, hoặc theo kích thước mạch nhánh trước. Có thể biểu diễn bằng công thức thu gọn hay tên cấu tạo chính xác. Không bắt buộc tính độ bất bão hòa bằng công thức nếu chứng minh tương đương rằng các nhánh không thể có thêm vòng hoặc liên kết bội.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-a2cd9d0a688a"
+      ],
+      "review_note": "Reused unchanged content and ID; independent unkeyed solve still pending."
+    },
+    {
+      "id": "HH-N-477d6fee5cec",
+      "topic_id": "T04",
+      "part": "P2",
+      "qtype": "true_false",
+      "stem": "Mô hình và số liệu tự biên soạn, dùng để khảo sát liên kết ngang của polymer; đây là mô hình lí tưởng, không mô tả đầy đủ cơ chế lưu hóa thực tế.\n\nBan đầu có 68,00 g polyisoprene tinh khiết, với mắt xích –CH2–C(CH3)=CH–CH2–. Khi đưa sulfur vào, chỉ hình thành hai loại cầu nối:\n\n| Loại cầu nối | Cấu trúc liên kết | Sulfur được giữ lại trên mỗi cầu nối | Hydrogen bị tách trên mỗi cầu nối |\n|---|---|---:|---:|\n| Monosulfide | C–S–C | 1 nguyên tử S | 2 nguyên tử H |\n| Disulfide | C–S–S–C | 2 nguyên tử S | 2 nguyên tử H |\n\nHai carbon ở hai đầu cầu nối có thể thuộc cùng một mạch hoặc hai mạch khác nhau. Mỗi cầu nối hình thành giải phóng đúng một phân tử H2. Không có phản ứng phụ, không có sulfur tự do còn lại và không mất nguyên tử carbon. Khối lượng H2 thu được là 0,0800 g; khối lượng vật liệu sau phản ứng là 69,84 g. Cho C = 12, H = 1, S = 32.\n\nTrong mô hình cơ học, chỉ các cầu nối nối hai mạch khác nhau mới có tác dụng; gọi chúng là cầu nối liên mạch. Đại lượng cơ học E tỉ lệ thuận với số mol cầu nối liên mạch. Một phép xử lí chọn lọc làm mất hoàn toàn tác dụng của mọi cầu nối disulfide, không làm thay đổi cầu nối monosulfide và không gây thay đổi nào khác. Sau xử lí, E còn 40,0% giá trị ban đầu. Giả sử mọi cầu nối liên mạch có cùng đóng góp vào E.\n\nXác định mỗi phát biểu sau đúng hay sai.",
+      "options": {},
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Mắt xích của polyisoprene đã cho có công thức phân tử C5H8."
+        },
+        {
+          "sub": "b",
+          "text": "Tổng lượng cầu nối monosulfide và disulfide hình thành là 0,0800 mol."
+        },
+        {
+          "sub": "c",
+          "text": "Trước phép xử lí chọn lọc, số mol cầu nối monosulfide bằng số mol cầu nối disulfide."
+        },
+        {
+          "sub": "d",
+          "text": "Trước phép xử lí chọn lọc, tỉ số giữa số mol mắt xích và số mol cầu nối liên mạch không thể nhỏ hơn 30; giá trị 30 phù hợp với tất cả dữ kiện."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "NB",
+          "solution": "Đếm nguyên tử trong mắt xích –CH2–C(CH3)=CH–CH2– được 5 carbon và 8 hydrogen, tức C5H8."
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH",
+          "solution": "n(H2) = 0,0800/2 = 0,0400 mol. Mỗi cầu nối giải phóng một H2 nên tổng số mol cầu nối là 0,0400 mol, không phải 0,0800 mol."
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "TH",
+          "solution": "Khối lượng sulfur giữ lại là 69,84 − 68,00 + 0,0800 = 1,920 g, tương ứng 0,0600 mol nguyên tử S. Gọi x, y lần lượt là số mol cầu nối monosulfide và disulfide: x + y = 0,0400 và x + 2y = 0,0600. Suy ra x = y = 0,0200 mol."
+        },
+        {
+          "sub": "d",
+          "value": "D",
+          "level": "VD",
+          "solution": "Có 68,00/68 = 1,000 mol mắt xích. Gọi B là số mol cầu nối liên mạch ban đầu. E giảm 60% nên cầu nối disulfide liên mạch chiếm 0,60B; lượng này không vượt tổng disulfide 0,0200 mol. Do đó B ≤ 1/30 mol và 1,000/B ≥ 30. Dấu bằng đạt được khi toàn bộ 0,0200 mol disulfide là liên mạch; monosulfide liên mạch bằng 0,40/30 = 0,01333… mol, nhỏ hơn tổng monosulfide 0,0200 mol. Phần monosulfide còn lại nối các vị trí trên cùng một mạch, nên phương án này khả thi trong mô hình."
+        }
+      ],
+      "solution": "Mắt xích C5H8 có khối lượng mol 68 g/mol, nên mẫu ban đầu chứa 1,000 mol mắt xích. Số mol H2 là 0,0400, bằng tổng số mol cầu nối. Bảo toàn khối lượng, có tính phần hydrogen đã thoát ra, cho khối lượng sulfur giữ lại bằng 1,920 g, tức 0,0600 mol nguyên tử S. Từ x + y = 0,0400 và x + 2y = 0,0600 suy ra mỗi loại cầu nối có 0,0200 mol.\n\nKhông được đồng nhất tổng số cầu nối hóa học với số cầu nối liên mạch có tác dụng cơ học. Gọi u, v lần lượt là số mol monosulfide và disulfide liên mạch. Phép xử lí để lại E bằng 40% ban đầu nên u/(u + v) = 0,40, tức v = 1,5u. Đồng thời 0 ≤ u ≤ 0,0200 và 0 ≤ v ≤ 0,0200. Giới hạn v quyết định giá trị lớn nhất của u + v: khi v = 0,0200 thì u = 0,01333… và u + v = 1/30 mol. Vì vậy số mol mắt xích trên một mol cầu nối liên mạch ít nhất bằng 30. Phần monosulfide không liên mạch vẫn phù hợp với dữ kiện hóa học. Kết luận: a đúng, b sai, c đúng, d đúng.",
+      "cognitive_rationale": "a là NB do nhận diện thành phần một mắt xích; b và c là TH do áp dụng trực tiếp mô hình tỉ lượng và bảo toàn khối lượng. d đạt VD vì phải phân biệt hai tập cầu nối, dùng biến đổi cơ học để suy ra thành phần của tập liên mạch, rồi kết hợp giới hạn hóa học để tìm cận và chứng minh cận đạt được. Kiểm tra đường tắt: lấy 1,000/0,0400 = 25 đã ngầm coi mọi cầu nối đều liên mạch. Giả thiết đó dự đoán E còn 50% sau xử lí, trái dữ kiện 40%, nên không thể dùng.",
+      "distractor_mechanisms": {},
+      "easier": "Bỏ dữ kiện cơ học và thay d bằng phát biểu: 'Trung bình có 25 mắt xích ứng với một cầu nối hóa học, tính chung cả hai loại.' Khi đó d chỉ cần dùng tổng số mol cầu nối, ở mức TH.",
+      "harder": "Thay phép xử lí bằng quá trình chỉ làm mất tác dụng của 80% cầu nối disulfide liên mạch và 10% cầu nối monosulfide liên mạch; cho E còn 48% ban đầu. Yêu cầu tìm khoảng khả dĩ của số mol cầu nối liên mạch và chứng minh cận trên đạt được bằng một cách phân bố cụ thể.",
+      "rubric": [
+        {
+          "criterion": "Chọn đúng a: D.",
+          "points": 0.25
+        },
+        {
+          "criterion": "Chọn đúng b: S.",
+          "points": 0.25
+        },
+        {
+          "criterion": "Chọn đúng c: D.",
+          "points": 0.25
+        },
+        {
+          "criterion": "Chọn đúng d: D.",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": "Đối với d, có thể dùng B và các tỉ phần 0,40B, 0,60B hoặc hai biến u, v. Chấp nhận mô hình bất đẳng thức, biểu diễn miền khả thi hoặc lập luận bằng giới hạn số cầu nối disulfide, miễn có kiểm tra khả năng đạt cận. Rubric chấm độc lập từng phát biểu; lời giải dùng để thẩm định cơ sở suy luận.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-477d6fee5cec"
+      ],
+      "review_note": "Reused unchanged content and ID; independent unkeyed solve still pending."
+    },
+    {
+      "id": "HH-F-069fa6a10511",
+      "topic_id": "T04",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Trong các polymer polyethylene, poly(vinyl chloride), nylon-6,6 và poly(ethylene terephthalate) (PET), có bao nhiêu polymer được điều chế bằng trùng ngưng theo cách tổng hợp thông dụng ở phổ thông? Ghi số nguyên.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 2,
+          "level": "NB",
+          "solution": "Nylon-6,6 và PET được điều chế bằng trùng ngưng; hai polymer còn lại bằng trùng hợp. Có 2 polymer."
+        }
+      ],
+      "solution": "Nylon-6,6 và PET được điều chế bằng trùng ngưng; hai polymer còn lại bằng trùng hợp. Có 2 polymer.",
+      "cognitive_rationale": "Nhận ra một thuộc tính đã học.",
+      "distractor_mechanisms": {},
+      "easier": "Hỏi riêng nylon-6,6 thuộc kiểu tổng hợp nào.",
+      "harder": "Cho monomer, yêu cầu giải thích sản phẩm phân tử nhỏ của từng phản ứng.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-069fa6a10511"
+      ],
+      "rubric": [
+        {
+          "criterion": "Nylon-6,6 và PET được điều chế bằng trùng ngưng; hai polymer còn lại bằng trùng hợp. Có 2 polymer.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-bb9a43e05e8a",
+      "topic_id": "T04",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Một mô hình trùng ngưng mạch thẳng chỉ tạo liên kết amide, không tạo vòng và không có phản ứng phụ. Cấp 0,120 mol H2N–R–NH2, 0,100 mol HOOC–R′–COOH và 0,0300 mol CH3COOH (chất chặn đầu mạch một chức). Tất cả nhóm –COOH phản ứng hết, –NH2 được phép dư. Mỗi liên kết amide hình thành giữa hai phân tử đang tách rời và làm mất một H2O. Mỗi phân tử hữu cơ cuối là một mạch thẳng có hai đầu; đầu mạch chỉ có thể là –NH2 tự do hoặc đầu acetyl từ CH3COOH. Monomer còn dư cũng được tính là một phân tử mạch thẳng. Không áp đặt chiều dài tối thiểu; các cách phân bố liên kết phù hợp bảo toàn đều được phép. Số mol phân tử có CẢ HAI đầu là acetyl ít nhất bằng bao nhiêu? Ghi mol, 3 chữ số thập phân.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 0.01,
+          "level": "VD",
+          "solution": "Số mol liên kết amide là 2×0,100+0,030=0,230; số mol phân tử ban đầu 0,120+0,100+0,030=0,250. Không vòng nên còn B=0,020 mol mạch. NH2 còn 2×0,120−0,230=0,010 mol, còn đầu acetyl là 0,030 mol. Đặt d là mol mạch hai đầu acetyl. Các mạch khác mang tối đa một đầu acetyl nên 0,030≤2d+(0,020−d), suy ra d≥0,010. Cận đạt được bằng 0,010 mol mạch hai acetyl và 0,010 mol mạch một acetyl–một NH2; có thể phân bổ đủ 0,100 mol diacid vào các mạch này và không tạo vòng. Đáp số 0,010 mol."
+        }
+      ],
+      "solution": "Số mol liên kết amide là 2×0,100+0,030=0,230; số mol phân tử ban đầu 0,120+0,100+0,030=0,250. Không vòng nên còn B=0,020 mol mạch. NH2 còn 2×0,120−0,230=0,010 mol, còn đầu acetyl là 0,030 mol. Đặt d là mol mạch hai đầu acetyl. Các mạch khác mang tối đa một đầu acetyl nên 0,030≤2d+(0,020−d), suy ra d≥0,010. Cận đạt được bằng 0,010 mol mạch hai acetyl và 0,010 mol mạch một acetyl–một NH2; có thể phân bổ đủ 0,100 mol diacid vào các mạch này và không tạo vòng. Đáp số 0,010 mol.",
+      "cognitive_rationale": "VD: suy số thành phần mạch từ biến đổi liên kết, bảo toàn hai loại đầu mạch, dựng cận đếm đầu cho mạch hai acetyl và chứng minh cận có thể đạt; không chỉ tính số mol nước.",
+      "distractor_mechanisms": {},
+      "easier": "Chỉ hỏi số mol nhóm NH2 còn sau trùng ngưng.",
+      "harder": "Cho giới hạn chiều dài mạch khác nhau và kiểm tra cận còn đạt được không.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-bb9a43e05e8a"
+      ],
+      "rubric": [
+        {
+          "criterion": "Tính đúng 0,020 mol mạch và 0,030 mol đầu acetyl, 0,010 mol NH2.",
+          "points": 0.4
+        },
+        {
+          "criterion": "Lập cận d≥0,010 bằng số đầu mạch, không mặc định phân bố ngẫu nhiên.",
+          "points": 0.3
+        },
+        {
+          "criterion": "Chỉ ra phân bố mạch đạt cận và ghi 0,010 mol.",
+          "points": 0.3
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-b988100ce5d3",
+      "topic_id": "T05",
+      "part": "P1",
+      "qtype": "mcq",
+      "stem": "So với điện cực hydrogen chuẩn, cặp nào có thế khử chuẩn dương?",
+      "options": {
+        "A": "Na+/Na",
+        "B": "Mg2+/Mg",
+        "C": "Ag+/Ag",
+        "D": "Zn2+/Zn"
+      },
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": "C",
+          "level": "NB",
+          "solution": "E°(Ag+/Ag) dương (+0,80 V); ba cặp kia có thế khử chuẩn âm."
+        }
+      ],
+      "solution": "E°(Ag+/Ag) dương (+0,80 V); ba cặp kia có thế khử chuẩn âm.",
+      "cognitive_rationale": "Nhận ra một thuộc tính đã học.",
+      "distractor_mechanisms": {
+        "A": "Nhầm tính khử mạnh với thế khử dương.",
+        "B": "Đồng nhất điện tích ion 2+ với dấu của thế.",
+        "D": "Nhớ sai vị trí zinc so với hydrogen."
+      },
+      "easier": "Cho sẵn bước quyết định trong lời giải: E°(Ag+/Ag) dương (+0,80 V); ba cặp kia có thế khử chuẩn âm.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: E°(Ag+/Ag) dương (+0,80 V); ba cặp kia có thế khử chuẩn âm.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-b988100ce5d3"
+      ],
+      "rubric": [
+        {
+          "criterion": "E°(Ag+/Ag) dương (+0,80 V); ba cặp kia có thế khử chuẩn âm.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-07093546a172",
+      "topic_id": "T05",
+      "part": "P2",
+      "qtype": "true_false",
+      "stem": "Ở điều kiện chuẩn, pin Zn|Zn2+||Cu2+|Cu hoạt động tự phát. E°(Zn2+/Zn)=−0,76 V; E°(Cu2+/Cu)=+0,34 V. Bỏ qua phản ứng phụ. Xác định đúng/sai.",
+      "options": {},
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Zinc bị oxi hóa tại anode."
+        },
+        {
+          "sub": "b",
+          "text": "Electron đi trong dây từ copper đến zinc."
+        },
+        {
+          "sub": "c",
+          "text": "Sức điện động chuẩn bằng 1,10 V."
+        },
+        {
+          "sub": "d",
+          "text": "Khi pin phóng điện, lượng Cu2+ giảm."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH",
+          "solution": "Cặp zinc có thế khử thấp hơn nên phản ứng theo chiều Zn→Zn2++2e−."
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH",
+          "solution": "Electron đi từ anode zinc đến cathode copper."
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "TH",
+          "solution": "E°pin=0,34−(−0,76)=1,10 V."
+        },
+        {
+          "sub": "d",
+          "value": "D",
+          "level": "TH",
+          "solution": "Cathode khử Cu2++2e−→Cu nên tiêu thụ ion copper(II)."
+        }
+      ],
+      "solution": "a: Cặp zinc có thế khử thấp hơn nên phản ứng theo chiều Zn→Zn2++2e−.\nb: Electron đi từ anode zinc đến cathode copper.\nc: E°pin=0,34−(−0,76)=1,10 V.\nd: Cathode khử Cu2++2e−→Cu nên tiêu thụ ion copper(II).",
+      "cognitive_rationale": "Đọc dữ kiện và thực hiện quy trình quen thuộc; số phép tính không làm tăng mức độ.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: Cặp zinc có thế khử thấp hơn nên phản ứng theo chiều Zn→Zn2++2e−.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: a: Cặp zinc có thế khử thấp hơn nên phản ứng theo chiều Zn→Zn2++2e−.\nb: Electron đi từ anode zinc đến cathode copper.\nc: E°pin=0,34−(−0,76)=1,10 V.\nd: Cathode khử Cu2++2e−→Cu nên tiêu thụ ion copper(II).",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-07093546a172"
+      ],
+      "rubric": [
+        {
+          "criterion": "a: Cặp zinc có thế khử thấp hơn nên phản ứng theo chiều Zn→Zn2++2e−.",
+          "points": 0.25
+        },
+        {
+          "criterion": "b: Electron đi từ anode zinc đến cathode copper.",
+          "points": 0.25
+        },
+        {
+          "criterion": "c: E°pin=0,34−(−0,76)=1,10 V.",
+          "points": 0.25
+        },
+        {
+          "criterion": "d: Cathode khử Cu2++2e−→Cu nên tiêu thụ ion copper(II).",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-c2887ccbe3c4",
+      "topic_id": "T05",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Có 6 pin loại U và 4 pin loại V, chưa sử dụng. Mỗi U duy trì 1,50 V, có 0,0300 mol chất oxi hóa nhận 2 electron mỗi phân tử; mỗi V duy trì 1,00 V, có 0,100 mol chất oxi hóa nhận 1 electron mỗi phân tử. Chất khử mỗi pin dư. Chỉ được ghép một chuỗi nối tiếp cố định, không mắc song song, không thay pin giữa chừng. Thiết bị cần hiệu điện thế ít nhất 5,00 V và lấy dòng không đổi 0,965 A. Mọi pin trong chuỗi có cùng dòng; pin cạn đầu tiên làm cả chuỗi dừng. Bỏ qua điện trở, điện áp không đổi đến khi cạn; F=96500 C/mol. Chọn số pin từng loại để thời gian hoạt động dài nhất. Thời gian dài nhất bằng bao nhiêu giây? Ghi số nguyên.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 6000,
+          "level": "VD",
+          "solution": "Mỗi U cho 0,0600 mol electron, mỗi V cho 0,100 mol. Nếu không dùng U, bốn V chỉ có 4,00 V nên không đủ. Do đó mọi chuỗi hợp lệ phải có U và dung lượng chuỗi không vượt 0,0600F C. Có thể ghép 2U+2V đạt 5,00 V, dung lượng 0,0600F. Thời gian tối đa là 0,0600×96500/0,965=6000 s."
+        }
+      ],
+      "solution": "Mỗi U cho 0,0600 mol electron, mỗi V cho 0,100 mol. Nếu không dùng U, bốn V chỉ có 4,00 V nên không đủ. Do đó mọi chuỗi hợp lệ phải có U và dung lượng chuỗi không vượt 0,0600F C. Có thể ghép 2U+2V đạt 5,00 V, dung lượng 0,0600F. Thời gian tối đa là 0,0600×96500/0,965=6000 s.",
+      "cognitive_rationale": "VD: phải mô hình hóa chuỗi nối tiếp bằng pin yếu nhất thay vì cộng dung lượng, dùng điều kiện điện áp chứng minh cần U và chỉ ra cấu hình đạt cận.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn chuỗi 2U+2V, nêu quy tắc pin yếu nhất và hỏi thời gian.",
+      "harder": "Cho phép hai chuỗi song song có điện áp bằng nhau và tối ưu số pin sử dụng.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-c2887ccbe3c4"
+      ],
+      "rubric": [
+        {
+          "criterion": "Mỗi U cho 0,0600 mol electron, mỗi V cho 0,100 mol. Nếu không dùng U, bốn V chỉ có 4,00 V nên không đủ. Do đó mọi chuỗi hợp lệ phải có U và dung lượng chuỗi không vượt 0,0600F C. Có thể ghép 2U+2V đạt 5,00 V, dung lượng 0,0600F. Thời gian tối đa là 0,0600×96500/0,965=6000 s.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-4f6a22b83fb2",
+      "topic_id": "T06",
+      "part": "P1",
+      "qtype": "mcq",
+      "stem": "Điện phân MgCl2 nóng chảy với điện cực trơ. Bán phản ứng nào xảy ra tại cathode?",
+      "options": {
+        "A": "Mg2+ + 2e− → Mg",
+        "B": "Mg → Mg2+ + 2e−",
+        "C": "2Cl− → Cl2 + 2e−",
+        "D": "Cl2 + 2e− → 2Cl−"
+      },
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": "A",
+          "level": "NB",
+          "solution": "Cathode xảy ra khử: Mg2++2e−→Mg; hệ nóng chảy không có nước."
+        }
+      ],
+      "solution": "Cathode xảy ra khử: Mg2++2e−→Mg; hệ nóng chảy không có nước.",
+      "cognitive_rationale": "Nhận ra một thuộc tính đã học.",
+      "distractor_mechanisms": {
+        "B": "Đảo chiều khử magnesium.",
+        "C": "Chọn đúng phản ứng anode nhưng nhầm điện cực.",
+        "D": "Nhầm chất có mặt ban đầu với sản phẩm chlorine."
+      },
+      "easier": "Cho sẵn bước quyết định trong lời giải: Cathode xảy ra khử: Mg2++2e−→Mg; hệ nóng chảy không có nước.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: Cathode xảy ra khử: Mg2++2e−→Mg; hệ nóng chảy không có nước.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-4f6a22b83fb2"
+      ],
+      "rubric": [
+        {
+          "criterion": "Cathode xảy ra khử: Mg2++2e−→Mg; hệ nóng chảy không có nước.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-cf1a644f47b2",
+      "topic_id": "T06",
+      "part": "P2",
+      "qtype": "true_false",
+      "stem": "Điện phân dung dịch NaCl đậm đặc, điện cực trơ, có màng ngăn. Xét giai đoạn tạo H2 ở cathode và Cl2 ở anode; bỏ qua phản ứng phụ và sự khuếch tán qua màng.",
+      "options": {},
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Anode là nơi xảy ra oxi hóa."
+        },
+        {
+          "sub": "b",
+          "text": "Bán phản ứng cathode là Na+ + e− → Na."
+        },
+        {
+          "sub": "c",
+          "text": "Vùng cathode trở nên có tính base do tạo OH−."
+        },
+        {
+          "sub": "d",
+          "text": "Chlorine là sản phẩm khí ở anode trong giai đoạn đã cho."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "NB",
+          "solution": "Định nghĩa: oxi hóa ở anode."
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH",
+          "solution": "Trong dung dịch nước, nước bị khử ưu tiên hơn Na+."
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "TH",
+          "solution": "2H2O+2e−→H2+2OH−."
+        },
+        {
+          "sub": "d",
+          "value": "D",
+          "level": "NB",
+          "solution": "Cl− bị oxi hóa thành chlorine."
+        }
+      ],
+      "solution": "a: Định nghĩa: oxi hóa ở anode.\nb: Trong dung dịch nước, nước bị khử ưu tiên hơn Na+.\nc: 2H2O+2e−→H2+2OH−.\nd: Cl− bị oxi hóa thành chlorine.",
+      "cognitive_rationale": "Nhận ra một thuộc tính đã học.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: Định nghĩa: oxi hóa ở anode.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: a: Định nghĩa: oxi hóa ở anode.\nb: Trong dung dịch nước, nước bị khử ưu tiên hơn Na+.\nc: 2H2O+2e−→H2+2OH−.\nd: Cl− bị oxi hóa thành chlorine.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-cf1a644f47b2",
+        "CELL-39eca6f1c31d"
+      ],
+      "rubric": [
+        {
+          "criterion": "a: Định nghĩa: oxi hóa ở anode.",
+          "points": 0.25
+        },
+        {
+          "criterion": "b: Trong dung dịch nước, nước bị khử ưu tiên hơn Na+.",
+          "points": 0.25
+        },
+        {
+          "criterion": "c: 2H2O+2e−→H2+2OH−.",
+          "points": 0.25
+        },
+        {
+          "criterion": "d: Cl− bị oxi hóa thành chlorine.",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-414d049d82af",
+      "topic_id": "T06",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Điện phân nóng chảy Al2O3 với anode carbon thu 5,40 g aluminium. Khí anode chỉ gồm CO và CO2, có tỉ lệ mol CO:CO2=1:3; không có phản ứng phụ. Cho Al=27, C=12. Khối lượng carbon tiêu hao bao nhiêu gam? Làm tròn 2 chữ số thập phân.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 2.06,
+          "level": "TH",
+          "solution": "n(Al)=0,200 mol, oxygen từ oxide là 0,300 mol nguyên tử. Đặt n(CO)=x, n(CO2)=3x thì 7x=0,300. Carbon tiêu hao 4x×12=2,05714 g, làm tròn 2,06 g."
+        }
+      ],
+      "solution": "n(Al)=0,200 mol, oxygen từ oxide là 0,300 mol nguyên tử. Đặt n(CO)=x, n(CO2)=3x thì 7x=0,300. Carbon tiêu hao 4x×12=2,05714 g, làm tròn 2,06 g.",
+      "cognitive_rationale": "Đọc dữ kiện và thực hiện quy trình quen thuộc; số phép tính không làm tăng mức độ.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: n(Al)=0,200 mol, oxygen từ oxide là 0,300 mol nguyên tử. Đặt n(CO)=x, n(CO2)=3x thì 7x=0,300. Carbon tiêu hao 4x×12=2,05714 g, làm tròn 2,06 g.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: n(Al)=0,200 mol, oxygen từ oxide là 0,300 mol nguyên tử. Đặt n(CO)=x, n(CO2)=3x thì 7x=0,300. Carbon tiêu hao 4x×12=2,05714 g, làm tròn 2,06 g.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-414d049d82af"
+      ],
+      "rubric": [
+        {
+          "criterion": "n(Al)=0,200 mol, oxygen từ oxide là 0,300 mol nguyên tử. Đặt n(CO)=x, n(CO2)=3x thì 7x=0,300. Carbon tiêu hao 4x×12=2,05714 g, làm tròn 2,06 g.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-4becd1210188",
+      "topic_id": "T06",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Một bình điện phân lí tưởng có cathode thu toàn bộ kim loại tạo ra. Dung dịch ban đầu chỉ có AgNO3 và Cu(NO3)2, thể tích không đổi. Đã đo được: sau khi truyền 965 C, cathode tăng 1,080 g; sau tổng cộng 2895 C, cathode tăng 1,720 g. Biết Ag+ bị khử hết trước Cu2+; trong khoảng đến 2895 C chưa tạo H2. Ag=108, Cu=64, F=96500 C/mol. Sau mốc 2895 C, tiếp tục mạ bằng chính dung dịch này. Lớp mạ THÊM phải chứa không quá 2,00% silver theo khối lượng; không được cạo lớp cũ. Tối đa bao nhiêu gam silver có thể nằm trong lớp mạ thêm trước khi Cu2+ cạn? Ghi gam, 3 chữ số thập phân.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 0.0,
+          "level": "VD",
+          "solution": "Ở 965 C có 0,0100 mol electron; khối lượng 1,080 g bằng đúng giá trị nếu chỉ khử Ag+, nên Ag+ còn hoặc vừa cạn. Từ 965 đến 2895 C có 0,0200 mol electron và tăng 0,640 g, đúng khối lượng nếu chỉ khử Cu2+. Bất kì electron nào khử Ag+ trong khoảng này sẽ làm khối lượng lớn hơn, nên Ag+ đã cạn tại 965 C. Sau 2895 C không còn Ag+, lớp thêm chứa 0 g silver, độc lập lượng Cu2+ còn. Đáp số 0,000 g."
+        }
+      ],
+      "solution": "Ở 965 C có 0,0100 mol electron; khối lượng 1,080 g bằng đúng giá trị nếu chỉ khử Ag+, nên Ag+ còn hoặc vừa cạn. Từ 965 đến 2895 C có 0,0200 mol electron và tăng 0,640 g, đúng khối lượng nếu chỉ khử Cu2+. Bất kì electron nào khử Ag+ trong khoảng này sẽ làm khối lượng lớn hơn, nên Ag+ đã cạn tại 965 C. Sau 2895 C không còn Ag+, lớp thêm chứa 0 g silver, độc lập lượng Cu2+ còn. Đáp số 0,000 g.",
+      "cognitive_rationale": "VD: dùng hai cận khối lượng trên mỗi mol electron để chứng minh sự đổi giai đoạn đúng tại mốc đo, rồi nhận ra ngưỡng tạp chất không phải phép trộn thường và dữ kiện dung lượng copper không cần cho đại lượng hỏi.",
+      "distractor_mechanisms": {},
+      "easier": "Nêu sẵn Ag+ đã cạn ở 965 C và hỏi lớp sau có silver không.",
+      "harder": "Đổi số đo thứ hai để chuyển giai đoạn nằm giữa hai mốc; suy dung lượng còn lại từ phép đo thứ ba.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-4becd1210188"
+      ],
+      "rubric": [
+        {
+          "criterion": "Ở 965 C có 0,0100 mol electron; khối lượng 1,080 g bằng đúng giá trị nếu chỉ khử Ag+, nên Ag+ còn hoặc vừa cạn. Từ 965 đến 2895 C có 0,0200 mol electron và tăng 0,640 g, đúng khối lượng nếu chỉ khử Cu2+. Bất kì electron nào khử Ag+ trong khoảng này sẽ làm khối lượng lớn hơn, nên Ag+ đã cạn tại 965 C. Sau 2895 C không còn Ag+, lớp thêm chứa 0 g silver, độc lập lượng Cu2+ còn. Đáp số 0,000 g.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-d997c225eb71",
+      "topic_id": "T07",
+      "part": "P1",
+      "qtype": "mcq",
+      "stem": "Một tấm iron được phủ copper. Lớp phủ bị xước và cả copper lẫn iron tại vết xước cùng tiếp xúc nước muối có oxygen hòa tan. Cho E°(Fe2+/Fe)<E°(Cu2+/Cu). Dự đoán nào phù hợp nhất?",
+      "options": {
+        "A": "Copper bị hòa tan ưu tiên, bảo vệ iron.",
+        "B": "Iron bị hòa tan ưu tiên tại vết xước.",
+        "C": "Iron được bảo vệ do copper là kim loại kém hoạt động.",
+        "D": "Không có ăn mòn điện hóa vì lớp phủ bị xước."
+      },
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": "B",
+          "level": "TH",
+          "solution": "Hai kim loại tiếp xúc qua chất điện li tạo cặp ăn mòn điện hóa; iron là anode và bị hòa tan tại vết xước."
+        }
+      ],
+      "solution": "Hai kim loại tiếp xúc qua chất điện li tạo cặp ăn mòn điện hóa; iron là anode và bị hòa tan tại vết xước.",
+      "cognitive_rationale": "Đọc dữ kiện và thực hiện quy trình quen thuộc; số phép tính không làm tăng mức độ.",
+      "distractor_mechanisms": {
+        "A": "Đảo vai trò anode của kim loại có thế thấp.",
+        "C": "Nhầm phủ kim loại quý với anode hi sinh.",
+        "D": "Không nhận ra nước muối nối mạch ion."
+      },
+      "easier": "Cho sẵn bước quyết định trong lời giải: Hai kim loại tiếp xúc qua chất điện li tạo cặp ăn mòn điện hóa; iron là anode và bị hòa tan tại vết xước.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: Hai kim loại tiếp xúc qua chất điện li tạo cặp ăn mòn điện hóa; iron là anode và bị hòa tan tại vết xước.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-d997c225eb71"
+      ],
+      "rubric": [
+        {
+          "criterion": "Hai kim loại tiếp xúc qua chất điện li tạo cặp ăn mòn điện hóa; iron là anode và bị hòa tan tại vết xước.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-d23672097dd1",
+      "topic_id": "T07",
+      "part": "P2",
+      "qtype": "true_false",
+      "stem": "Một khối zinc được nối điện trực tiếp với vỏ iron trong nước biển có oxygen. Giả sử zinc hoạt động làm anode hi sinh, tiếp xúc điện tốt.",
+      "options": {},
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Ăn mòn điện hóa cần các vùng điện cực và môi trường dẫn ion."
+        },
+        {
+          "sub": "b",
+          "text": "Zinc cung cấp electron cho vỏ iron."
+        },
+        {
+          "sub": "c",
+          "text": "Khối zinc được bảo toàn hoàn toàn vì nó bảo vệ iron."
+        },
+        {
+          "sub": "d",
+          "text": "Nếu dây nối đứt, cơ chế bảo vệ bằng anode hi sinh bị gián đoạn."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "NB",
+          "solution": "Đây là điều kiện của ăn mòn điện hóa."
+        },
+        {
+          "sub": "b",
+          "value": "D",
+          "level": "TH",
+          "solution": "Zinc bị oxi hóa, electron đi sang iron."
+        },
+        {
+          "sub": "c",
+          "value": "S",
+          "level": "TH",
+          "solution": "Zinc tiêu hao trong vai trò anode hi sinh."
+        },
+        {
+          "sub": "d",
+          "value": "D",
+          "level": "TH",
+          "solution": "Không còn đường dẫn electron từ zinc sang vỏ iron."
+        }
+      ],
+      "solution": "a: Đây là điều kiện của ăn mòn điện hóa.\nb: Zinc bị oxi hóa, electron đi sang iron.\nc: Zinc tiêu hao trong vai trò anode hi sinh.\nd: Không còn đường dẫn electron từ zinc sang vỏ iron.",
+      "cognitive_rationale": "Nhận ra một thuộc tính đã học.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: Đây là điều kiện của ăn mòn điện hóa.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: a: Đây là điều kiện của ăn mòn điện hóa.\nb: Zinc bị oxi hóa, electron đi sang iron.\nc: Zinc tiêu hao trong vai trò anode hi sinh.\nd: Không còn đường dẫn electron từ zinc sang vỏ iron.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-d23672097dd1",
+        "CELL-1e728a2a2dff"
+      ],
+      "rubric": [
+        {
+          "criterion": "a: Đây là điều kiện của ăn mòn điện hóa.",
+          "points": 0.25
+        },
+        {
+          "criterion": "b: Zinc bị oxi hóa, electron đi sang iron.",
+          "points": 0.25
+        },
+        {
+          "criterion": "c: Zinc tiêu hao trong vai trò anode hi sinh.",
+          "points": 0.25
+        },
+        {
+          "criterion": "d: Không còn đường dẫn electron từ zinc sang vỏ iron.",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-eadf424fe7c2",
+      "topic_id": "T07",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Trong biện pháp bảo vệ vỏ tàu iron bằng anode hi sinh, thuật ngữ “anode” chỉ điện cực xảy ra quá trình oxi hóa hay khử? Quy ước mã 1 cho oxi hóa, 2 cho khử. Ghi một số nguyên.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 1,
+          "level": "NB",
+          "solution": "Anode là nơi oxi hóa nên mã là 1."
+        }
+      ],
+      "solution": "Anode là nơi oxi hóa nên mã là 1.",
+      "cognitive_rationale": "Nhận ra một thuộc tính đã học.",
+      "distractor_mechanisms": {},
+      "easier": "Hỏi bằng lời anode là nơi oxi hóa hay khử.",
+      "harder": "Dùng thế điện cực để chọn kim loại làm anode hi sinh.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-eadf424fe7c2"
+      ],
+      "rubric": [
+        {
+          "criterion": "Anode là nơi oxi hóa nên mã là 1.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-05f80657e778",
+      "topic_id": "T08",
+      "part": "P2",
+      "qtype": "true_false",
+      "stem": "Xét điều chế kim loại từ hợp chất và tính chất hợp kim ở mức phổ thông.",
+      "options": {},
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Hợp kim là vật liệu kim loại có chứa ít nhất một nguyên tố khác ngoài kim loại nền."
+        },
+        {
+          "sub": "b",
+          "text": "Trong phản ứng Fe2O3+3CO→2Fe+3CO2, CO là chất khử."
+        },
+        {
+          "sub": "c",
+          "text": "Có thể thu sodium bằng điện phân dung dịch NaCl với cathode trơ."
+        },
+        {
+          "sub": "d",
+          "text": "Dùng dung dịch CuSO4 hòa tan vào nước là đã điều chế được copper kim loại."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "NB",
+          "solution": "Định nghĩa hợp kim."
+        },
+        {
+          "sub": "b",
+          "value": "D",
+          "level": "TH",
+          "solution": "Carbon tăng số oxi hóa từ +2 lên +4."
+        },
+        {
+          "sub": "c",
+          "value": "S",
+          "level": "TH",
+          "solution": "Nước bị khử ở cathode; điều chế sodium cần điện phân nóng chảy."
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "TH",
+          "solution": "Hòa tan muối không làm Cu2+ nhận electron thành kim loại."
+        }
+      ],
+      "solution": "a: Định nghĩa hợp kim.\nb: Carbon tăng số oxi hóa từ +2 lên +4.\nc: Nước bị khử ở cathode; điều chế sodium cần điện phân nóng chảy.\nd: Hòa tan muối không làm Cu2+ nhận electron thành kim loại.",
+      "cognitive_rationale": "Nhận ra một thuộc tính đã học.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: Định nghĩa hợp kim.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: a: Định nghĩa hợp kim.\nb: Carbon tăng số oxi hóa từ +2 lên +4.\nc: Nước bị khử ở cathode; điều chế sodium cần điện phân nóng chảy.\nd: Hòa tan muối không làm Cu2+ nhận electron thành kim loại.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-05f80657e778",
+        "CELL-856301fde8f6"
+      ],
+      "rubric": [
+        {
+          "criterion": "a: Định nghĩa hợp kim.",
+          "points": 0.25
+        },
+        {
+          "criterion": "b: Carbon tăng số oxi hóa từ +2 lên +4.",
+          "points": 0.25
+        },
+        {
+          "criterion": "c: Nước bị khử ở cathode; điều chế sodium cần điện phân nóng chảy.",
+          "points": 0.25
+        },
+        {
+          "criterion": "d: Hòa tan muối không làm Cu2+ nhận electron thành kim loại.",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-8754d8054681",
+      "topic_id": "T08",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Trong các kim loại sodium, calcium, iron và silver, có bao nhiêu kim loại thường được điều chế công nghiệp bằng điện phân muối nóng chảy ở mức kiến thức phổ thông? Ghi số nguyên.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 2,
+          "level": "NB",
+          "solution": "Sodium và calcium là các kim loại hoạt động mạnh, dùng điện phân nóng chảy. Iron và silver không bắt buộc phương pháp này. Có 2."
+        }
+      ],
+      "solution": "Sodium và calcium là các kim loại hoạt động mạnh, dùng điện phân nóng chảy. Iron và silver không bắt buộc phương pháp này. Có 2.",
+      "cognitive_rationale": "Nhận ra một thuộc tính đã học.",
+      "distractor_mechanisms": {},
+      "easier": "Hỏi riêng phương pháp điều chế sodium.",
+      "harder": "Giải thích vì sao không dùng dung dịch nước để điều chế hai kim loại đó.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-8754d8054681"
+      ],
+      "rubric": [
+        {
+          "criterion": "Sodium và calcium là các kim loại hoạt động mạnh, dùng điện phân nóng chảy. Iron và silver không bắt buộc phương pháp này. Có 2.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-203578529df0",
+      "topic_id": "T08",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Một lò có 10,0 mol Fe2O3 và nguồn khí CO giới hạn 24,0 mol. Mỗi mol Fe2O3 hoặc được khử hoàn toàn thành Fe (cần 3 mol CO, thu 112 g Fe), hoặc chỉ khử thành 2FeO (cần 1 mol CO, chưa thu Fe). Quy định mọi Fe2O3 phải được xử lí, không có oxide khác. FeO tạo ra có thể được khử tiếp bằng hydrogen; nguồn hydrogen chỉ đủ khử 4,00 mol FeO theo FeO+H2→Fe+H2O. Có thể chia lượng nguyên liệu liên tục, không cần nguyên mẻ. Cho Fe=56. Khối lượng Fe lớn nhất thu được ở cả hai bước là bao nhiêu gam? Ghi số nguyên.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 1008,
+          "level": "VD",
+          "solution": "Gọi x mol Fe2O3 được khử hoàn toàn bằng CO, còn 10−x mol chuyển FeO. CO dùng 3x+(10−x)=10+2x≤24 nên x≤7. FeO còn 20−2x mol. Số mol Fe cuối =2x+min(4,20−2x). Với x≤7, FeO≥6 nên dùng đủ 4 mol H2; Fe tăng theo x, tối đa 18 mol tại x=7. Khối lượng 18×56=1008 g."
+        }
+      ],
+      "solution": "Gọi x mol Fe2O3 được khử hoàn toàn bằng CO, còn 10−x mol chuyển FeO. CO dùng 3x+(10−x)=10+2x≤24 nên x≤7. FeO còn 20−2x mol. Số mol Fe cuối =2x+min(4,20−2x). Với x≤7, FeO≥6 nên dùng đủ 4 mol H2; Fe tăng theo x, tối đa 18 mol tại x=7. Khối lượng 18×56=1008 g.",
+      "cognitive_rationale": "VD: phân bổ cùng nguồn CO giữa hai tuyến phụ thuộc nhau, rồi nối lượng FeO trung gian với nguồn H2 có giới hạn và chứng minh cực đại; không phải cho sẵn hiệu suất để thế công thức.",
+      "distractor_mechanisms": {},
+      "easier": "Cho x=7 mol và hỏi lượng Fe sau bước H2.",
+      "harder": "Cho thu hồi một phần CO2 để tái tạo CO với chi phí năng lượng giới hạn; tối ưu hai nguồn.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-203578529df0"
+      ],
+      "rubric": [
+        {
+          "criterion": "Gọi x mol Fe2O3 được khử hoàn toàn bằng CO, còn 10−x mol chuyển FeO. CO dùng 3x+(10−x)=10+2x≤24 nên x≤7. FeO còn 20−2x mol. Số mol Fe cuối =2x+min(4,20−2x). Với x≤7, FeO≥6 nên dùng đủ 4 mol H2; Fe tăng theo x, tối đa 18 mol tại x=7. Khối lượng 18×56=1008 g.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-7b5836bb05ec",
+      "topic_id": "T09",
+      "part": "P2",
+      "qtype": "true_false",
+      "stem": "Một mẫu nước chứa Ca(HCO3)2 và MgSO4, không chứa chất tan khác. Xét đúng/sai.",
+      "options": {},
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Nước cứng chứa lượng đáng kể ion Ca2+ hoặc Mg2+."
+        },
+        {
+          "sub": "b",
+          "text": "Đun sôi có thể làm giảm phần độ cứng do Ca(HCO3)2."
+        },
+        {
+          "sub": "c",
+          "text": "Đun sôi luôn loại hoàn toàn độ cứng do MgSO4."
+        },
+        {
+          "sub": "d",
+          "text": "Dùng lượng Na2CO3 thích hợp có thể kết tủa ion gây cứng còn lại."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "NB",
+          "solution": "Định nghĩa nước cứng."
+        },
+        {
+          "sub": "b",
+          "value": "D",
+          "level": "TH",
+          "solution": "Bicarbonate bị phân hủy, tạo kết tủa calcium carbonate."
+        },
+        {
+          "sub": "c",
+          "value": "S",
+          "level": "TH",
+          "solution": "Sulfate gây độ cứng vĩnh cửu, không bị loại hoàn toàn chỉ bằng đun."
+        },
+        {
+          "sub": "d",
+          "value": "D",
+          "level": "TH",
+          "solution": "Carbonate tạo muối ít tan với các ion gây cứng trong mô hình xử lí phổ thông."
+        }
+      ],
+      "solution": "a: Định nghĩa nước cứng.\nb: Bicarbonate bị phân hủy, tạo kết tủa calcium carbonate.\nc: Sulfate gây độ cứng vĩnh cửu, không bị loại hoàn toàn chỉ bằng đun.\nd: Carbonate tạo muối ít tan với các ion gây cứng trong mô hình xử lí phổ thông.",
+      "cognitive_rationale": "Nhận ra một thuộc tính đã học.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: Định nghĩa nước cứng.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: a: Định nghĩa nước cứng.\nb: Bicarbonate bị phân hủy, tạo kết tủa calcium carbonate.\nc: Sulfate gây độ cứng vĩnh cửu, không bị loại hoàn toàn chỉ bằng đun.\nd: Carbonate tạo muối ít tan với các ion gây cứng trong mô hình xử lí phổ thông.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-7b5836bb05ec",
+        "CELL-0627ce07c400"
+      ],
+      "rubric": [
+        {
+          "criterion": "a: Định nghĩa nước cứng.",
+          "points": 0.25
+        },
+        {
+          "criterion": "b: Bicarbonate bị phân hủy, tạo kết tủa calcium carbonate.",
+          "points": 0.25
+        },
+        {
+          "criterion": "c: Sulfate gây độ cứng vĩnh cửu, không bị loại hoàn toàn chỉ bằng đun.",
+          "points": 0.25
+        },
+        {
+          "criterion": "d: Carbonate tạo muối ít tan với các ion gây cứng trong mô hình xử lí phổ thông.",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-ff36a6452439",
+      "topic_id": "T09",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Một mẫu 2,00 L nước chỉ chứa ion gây cứng Ca2+ ở nồng độ 0,00150 mol/L. Cho vừa đủ Na2CO3 để kết tủa toàn bộ Ca2+, bỏ qua độ tan CaCO3. Na=23, C=12, O=16. Cần bao nhiêu gam Na2CO3 khan? Làm tròn 3 chữ số thập phân.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 0.318,
+          "level": "TH",
+          "solution": "n(Ca2+)=2,00×0,00150=0,00300 mol. Ca2++CO3(2−)→CaCO3; n(Na2CO3)=0,00300 mol. Khối lượng 0,00300×106=0,318 g."
+        }
+      ],
+      "solution": "n(Ca2+)=2,00×0,00150=0,00300 mol. Ca2++CO3(2−)→CaCO3; n(Na2CO3)=0,00300 mol. Khối lượng 0,00300×106=0,318 g.",
+      "cognitive_rationale": "Đọc dữ kiện và thực hiện quy trình quen thuộc; số phép tính không làm tăng mức độ.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: n(Ca2+)=2,00×0,00150=0,00300 mol. Ca2++CO3(2−)→CaCO3; n(Na2CO3)=0,00300 mol. Khối lượng 0,00300×106=0,318 g.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: n(Ca2+)=2,00×0,00150=0,00300 mol. Ca2++CO3(2−)→CaCO3; n(Na2CO3)=0,00300 mol. Khối lượng 0,00300×106=0,318 g.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-ff36a6452439"
+      ],
+      "rubric": [
+        {
+          "criterion": "n(Ca2+)=2,00×0,00150=0,00300 mol. Ca2++CO3(2−)→CaCO3; n(Na2CO3)=0,00300 mol. Khối lượng 0,00300×106=0,318 g.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-a707cc6de33d",
+      "topic_id": "T09",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Một cơ sở có 12 mẻ nước cứng độc lập. Mỗi mẻ chứa 0,010 mol Ca2+ và 0,010 mol Mg2+, không có bicarbonate. Hai cách xử lí hoàn toàn: C dùng 0,020 mol Na2CO3; L dùng 0,010 mol Ca(OH)2 để loại Mg2+ thành Mg(OH)2, sau đó dùng 0,020 mol Na2CO3 để loại toàn bộ Ca2+ (kể cả calcium mới đưa vào). Chỉ dùng hai cách này, mỗi mẻ phải xử lí nguyên mẻ. Kho có 0,180 mol Na2CO3 và 0,050 mol Ca(OH)2. Nhà cung cấp đề nghị cách M dùng 0,020 mol NaOH để loại Mg2+ rồi 0,010 mol Na2CO3 để loại Ca2+; có sẵn 0,080 mol NaOH. Trong mô hình này mỗi bước kết tủa hoàn toàn và chọn lọc ion được nêu; bỏ qua độ tan và phản ứng phụ; các hóa chất không thay thế công đoạn khác. Tối đa bao nhiêu mẻ được xử lí hoàn toàn? Ghi số nguyên.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 11,
+          "level": "VD",
+          "solution": "C và L đều tốn 0,020 mol carbonate mỗi mẻ; L không tiết kiệm carbonate nên có thể bỏ khỏi tối ưu. M tốn 0,010 mol carbonate và 0,020 mol NaOH, nên tối đa 4 mẻ M. Với m mẻ M và c mẻ C, 0,010m+0,020c≤0,180; m≤4; m+c≤12. Để xử lí 12 mẻ cần carbonate tối thiểu khi m=4: 0,040+0,160=0,200 mol, không đủ. Chọn 4M+7C dùng 0,180 mol carbonate, đạt 11 mẻ."
+        }
+      ],
+      "solution": "C và L đều tốn 0,020 mol carbonate mỗi mẻ; L không tiết kiệm carbonate nên có thể bỏ khỏi tối ưu. M tốn 0,010 mol carbonate và 0,020 mol NaOH, nên tối đa 4 mẻ M. Với m mẻ M và c mẻ C, 0,010m+0,020c≤0,180; m≤4; m+c≤12. Để xử lí 12 mẻ cần carbonate tối thiểu khi m=4: 0,040+0,160=0,200 mol, không đủ. Chọn 4M+7C dùng 0,180 mol carbonate, đạt 11 mẻ.",
+      "cognitive_rationale": "VD: phải theo dõi calcium do thuốc thử đưa thêm, loại tuyến bị trội và dùng hai nguồn lực độc lập chứng minh cận 11; thao tác đơn thuần nồng độ không giải quyết lựa chọn.",
+      "distractor_mechanisms": {},
+      "easier": "Chỉ dùng C, hỏi số mẻ tối đa.",
+      "harder": "Thêm giá mỗi thuốc thử và yêu cầu chi phí tối thiểu để xử lí đủ 12 mẻ khi được mua bù.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-a707cc6de33d"
+      ],
+      "rubric": [
+        {
+          "criterion": "C và L đều tốn 0,020 mol carbonate mỗi mẻ; L không tiết kiệm carbonate nên có thể bỏ khỏi tối ưu. M tốn 0,010 mol carbonate và 0,020 mol NaOH, nên tối đa 4 mẻ M. Với m mẻ M và c mẻ C, 0,010m+0,020c≤0,180; m≤4; m+c≤12. Để xử lí 12 mẻ cần carbonate tối thiểu khi m=4: 0,040+0,160=0,200 mol, không đủ. Chọn 4M+7C dùng 0,180 mol carbonate, đạt 11 mẻ.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-78ab4eeb775a",
+      "topic_id": "T10",
+      "part": "P1",
+      "qtype": "mcq",
+      "stem": "Trong ion phức [Cu(NH3)4]2+, tiểu phân nào là phối tử?",
+      "options": {
+        "A": "Cu2+",
+        "B": "Cu",
+        "C": "H+",
+        "D": "NH3"
+      },
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": "D",
+          "level": "NB",
+          "solution": "NH3 cho cặp electron tự do vào ion trung tâm nên là phối tử."
+        }
+      ],
+      "solution": "NH3 cho cặp electron tự do vào ion trung tâm nên là phối tử.",
+      "cognitive_rationale": "Nhận ra một thuộc tính đã học.",
+      "distractor_mechanisms": {
+        "A": "Nhầm ion trung tâm với phối tử.",
+        "B": "Nhầm nguyên tử kim loại tự do với phối tử.",
+        "C": "Nhầm hydrogen trong ammonia với tiểu phân phối trí."
+      },
+      "easier": "Cho sẵn bước quyết định trong lời giải: NH3 cho cặp electron tự do vào ion trung tâm nên là phối tử.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: NH3 cho cặp electron tự do vào ion trung tâm nên là phối tử.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-78ab4eeb775a"
+      ],
+      "rubric": [
+        {
+          "criterion": "NH3 cho cặp electron tự do vào ion trung tâm nên là phối tử.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-0c6f44e6bfd6",
+      "topic_id": "T10",
+      "part": "P2",
+      "qtype": "true_false",
+      "stem": "Xét ion phức [Co(NH3)6]3+; NH3 là phối tử một càng, trung hòa.",
+      "options": {},
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Ion cobalt là ion trung tâm."
+        },
+        {
+          "sub": "b",
+          "text": "Mỗi phân tử NH3 là một phối tử."
+        },
+        {
+          "sub": "c",
+          "text": "Số phối trí của ion trung tâm bằng 6."
+        },
+        {
+          "sub": "d",
+          "text": "Điện tích toàn ion phức là −3."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "NB",
+          "solution": "Kim loại ở trung tâm cầu phối trí."
+        },
+        {
+          "sub": "b",
+          "value": "D",
+          "level": "NB",
+          "solution": "NH3 là tiểu phân cho cặp electron."
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "NB",
+          "solution": "Có sáu nguyên tử cho electron từ sáu phối tử một càng."
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "NB",
+          "solution": "Kí hiệu 3+ biểu thị điện tích +3."
+        }
+      ],
+      "solution": "a: Kim loại ở trung tâm cầu phối trí.\nb: NH3 là tiểu phân cho cặp electron.\nc: Có sáu nguyên tử cho electron từ sáu phối tử một càng.\nd: Kí hiệu 3+ biểu thị điện tích +3.",
+      "cognitive_rationale": "Nhận ra một thuộc tính đã học.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: Kim loại ở trung tâm cầu phối trí.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: a: Kim loại ở trung tâm cầu phối trí.\nb: NH3 là tiểu phân cho cặp electron.\nc: Có sáu nguyên tử cho electron từ sáu phối tử một càng.\nd: Kí hiệu 3+ biểu thị điện tích +3.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-0c6f44e6bfd6"
+      ],
+      "rubric": [
+        {
+          "criterion": "a: Kim loại ở trung tâm cầu phối trí.",
+          "points": 0.25
+        },
+        {
+          "criterion": "b: NH3 là tiểu phân cho cặp electron.",
+          "points": 0.25
+        },
+        {
+          "criterion": "c: Có sáu nguyên tử cho electron từ sáu phối tử một càng.",
+          "points": 0.25
+        },
+        {
+          "criterion": "d: Kí hiệu 3+ biểu thị điện tích +3.",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-3bd7552a4682",
+      "topic_id": "T10",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Trong ion phức [Fe(CN)6]4−, mỗi phối tử CN− có điện tích −1. Số oxi hóa của iron bằng bao nhiêu? Ghi số nguyên có dấu nếu âm.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 2,
+          "level": "TH",
+          "solution": "Đặt số oxi hóa iron là x: x+6(−1)=−4, suy ra x=+2."
+        }
+      ],
+      "solution": "Đặt số oxi hóa iron là x: x+6(−1)=−4, suy ra x=+2.",
+      "cognitive_rationale": "Đọc dữ kiện và thực hiện quy trình quen thuộc; số phép tính không làm tăng mức độ.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: Đặt số oxi hóa iron là x: x+6(−1)=−4, suy ra x=+2.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: Đặt số oxi hóa iron là x: x+6(−1)=−4, suy ra x=+2.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-3bd7552a4682"
+      ],
+      "rubric": [
+        {
+          "criterion": "Đặt số oxi hóa iron là x: x+6(−1)=−4, suy ra x=+2.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-3c48dd099dec",
+      "topic_id": "T11",
+      "part": "P1",
+      "qtype": "mcq",
+      "stem": "Liên kết nào hình thành chủ yếu do lực hút tĩnh điện giữa cation và anion?",
+      "options": {
+        "A": "Liên kết ion",
+        "B": "Liên kết cộng hóa trị không phân cực",
+        "C": "Liên kết hydrogen",
+        "D": "Liên kết kim loại"
+      },
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": "A",
+          "level": "NB",
+          "solution": "Đó là định nghĩa liên kết ion."
+        }
+      ],
+      "solution": "Đó là định nghĩa liên kết ion.",
+      "cognitive_rationale": "Nhận ra một thuộc tính đã học.",
+      "distractor_mechanisms": {
+        "B": "Nhầm dùng chung electron với chuyển electron.",
+        "C": "Nhầm lực hút có ion với tương tác hydrogen.",
+        "D": "Nhầm electron tự do trong kim loại với anion."
+      },
+      "easier": "Cho sẵn bước quyết định trong lời giải: Đó là định nghĩa liên kết ion.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: Đó là định nghĩa liên kết ion.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-3c48dd099dec"
+      ],
+      "rubric": [
+        {
+          "criterion": "Đó là định nghĩa liên kết ion.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-328c222e2cad",
+      "topic_id": "T11",
+      "part": "P2",
+      "qtype": "true_false",
+      "stem": "Xét kiến thức cấu tạo nguyên tử và bảng tuần hoàn.",
+      "options": {},
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Số proton xác định số hiệu nguyên tử."
+        },
+        {
+          "sub": "b",
+          "text": "Các đồng vị của cùng một nguyên tố có cùng số proton."
+        },
+        {
+          "sub": "c",
+          "text": "Nguyên tử trung hòa có số electron bằng số proton."
+        },
+        {
+          "sub": "d",
+          "text": "Electron hóa trị luôn nằm trong hạt nhân."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "NB",
+          "solution": "Z bằng số proton."
+        },
+        {
+          "sub": "b",
+          "value": "D",
+          "level": "NB",
+          "solution": "Đồng vị khác neutron, không khác proton."
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "NB",
+          "solution": "Điện tích tổng bằng không."
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "NB",
+          "solution": "Electron nằm ngoài hạt nhân."
+        }
+      ],
+      "solution": "a: Z bằng số proton.\nb: Đồng vị khác neutron, không khác proton.\nc: Điện tích tổng bằng không.\nd: Electron nằm ngoài hạt nhân.",
+      "cognitive_rationale": "Nhận ra một thuộc tính đã học.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: Z bằng số proton.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: a: Z bằng số proton.\nb: Đồng vị khác neutron, không khác proton.\nc: Điện tích tổng bằng không.\nd: Electron nằm ngoài hạt nhân.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-328c222e2cad"
+      ],
+      "rubric": [
+        {
+          "criterion": "a: Z bằng số proton.",
+          "points": 0.25
+        },
+        {
+          "criterion": "b: Đồng vị khác neutron, không khác proton.",
+          "points": 0.25
+        },
+        {
+          "criterion": "c: Điện tích tổng bằng không.",
+          "points": 0.25
+        },
+        {
+          "criterion": "d: Electron nằm ngoài hạt nhân.",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-45db0ba7b9b7",
+      "topic_id": "T11",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Nguyên tử sodium có cấu hình electron 1s2 2s2 2p6 3s1. Có bao nhiêu electron ở lớp ngoài cùng? Ghi số nguyên.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 1,
+          "level": "NB",
+          "solution": "Lớp ngoài cùng n=3 chỉ có 3s1 nên có 1 electron."
+        }
+      ],
+      "solution": "Lớp ngoài cùng n=3 chỉ có 3s1 nên có 1 electron.",
+      "cognitive_rationale": "Nhận ra một thuộc tính đã học.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: Lớp ngoài cùng n=3 chỉ có 3s1 nên có 1 electron.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: Lớp ngoài cùng n=3 chỉ có 3s1 nên có 1 electron.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-45db0ba7b9b7"
+      ],
+      "rubric": [
+        {
+          "criterion": "Lớp ngoài cùng n=3 chỉ có 3s1 nên có 1 electron.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-5c8b7da5d316",
+      "topic_id": "T11",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Một nguyên tố giả định X chỉ có hai đồng vị bền với khối lượng danh định 20 và 22 u. Một phổ kế khảo sát phân tử X2 tạo do ghép ngẫu nhiên hai nguyên tử độc lập từ cùng một mẫu. Ba đỉnh có khối lượng danh định 40, 42, 44 u, bỏ qua sai khác đáp ứng. Tổng cường độ đỉnh 40 và 44 gấp 13/6 lần cường độ đỉnh 42. Phép đo độc lập cho biết khối lượng nguyên tử trung bình nhỏ hơn 21 u. Tính phần trăm số nguyên tử đồng vị 22 trong mẫu. Ghi giá trị phần trăm, làm tròn 1 chữ số thập phân.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 19.7,
+          "level": "VD",
+          "solution": "Gọi p là tỉ phần đồng vị 22. Ba đỉnh 40, 42, 44 tỉ lệ (1−p)^2, 2p(1−p), p^2. Đặt r=p(1−p), điều kiện (1−2r)/(2r)=13/6 cho r=3/19. Hai nghiệm p=(1±sqrt(7/19))/2; khối lượng trung bình 20+2p<21 buộc p<0,5. Suy ra p≈0,19651, tương ứng 19,7%."
+        }
+      ],
+      "solution": "Gọi p là tỉ phần đồng vị 22. Ba đỉnh 40, 42, 44 tỉ lệ (1−p)^2, 2p(1−p), p^2. Đặt r=p(1−p), điều kiện (1−2r)/(2r)=13/6 cho r=3/19. Hai nghiệm p=(1±sqrt(7/19))/2; khối lượng trung bình 20+2p<21 buộc p<0,5. Suy ra p≈0,19651, tương ứng 19,7%.",
+      "cognitive_rationale": "VD: phải dựng mô hình ghép ngẫu nhiên tạo đỉnh hỗn hợp và dùng phép đo thứ hai loại một nhánh nghiệm; không thể đọc trực tiếp tỉ phần nguyên tử từ một đỉnh phân tử.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn tỉ phần đồng vị 22 rồi hỏi khối lượng nguyên tử trung bình.",
+      "harder": "Thêm đồng vị thứ ba và sử dụng nhiều đỉnh phân tử để xác định tính khả định của thành phần.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-5c8b7da5d316"
+      ],
+      "rubric": [
+        {
+          "criterion": "Gọi p là tỉ phần đồng vị 22. Ba đỉnh 40, 42, 44 tỉ lệ (1−p)^2, 2p(1−p), p^2. Đặt r=p(1−p), điều kiện (1−2r)/(2r)=13/6 cho r=3/19. Hai nghiệm p=(1±sqrt(7/19))/2; khối lượng trung bình 20+2p<21 buộc p<0,5. Suy ra p≈0,19651, tương ứng 19,7%.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-9c9647b4c2ed",
+      "topic_id": "T12",
+      "part": "P1",
+      "qtype": "mcq",
+      "stem": "Theo Brønsted–Lowry, acid là tiểu phân có khả năng nào?",
+      "options": {
+        "A": "Nhận proton",
+        "B": "Cho proton",
+        "C": "Nhận electron trong mọi phản ứng",
+        "D": "Cho electron trong mọi phản ứng"
+      },
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": "B",
+          "level": "NB",
+          "solution": "Acid là chất cho proton H+."
+        }
+      ],
+      "solution": "Acid là chất cho proton H+.",
+      "cognitive_rationale": "Nhận ra một thuộc tính đã học.",
+      "distractor_mechanisms": {
+        "A": "Đảo định nghĩa acid và base.",
+        "C": "Nhầm acid–base với khử.",
+        "D": "Nhầm acid–base với oxi hóa."
+      },
+      "easier": "Cho sẵn bước quyết định trong lời giải: Acid là chất cho proton H+.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: Acid là chất cho proton H+.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-9c9647b4c2ed"
+      ],
+      "rubric": [
+        {
+          "criterion": "Acid là chất cho proton H+.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-7a53f6780f68",
+      "topic_id": "T12",
+      "part": "P2",
+      "qtype": "true_false",
+      "stem": "Xét dung dịch nước ở 25 °C, bỏ qua hoạt độ, dùng pH=−log[H+].",
+      "options": {},
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Dung dịch trung tính có pH bằng 7."
+        },
+        {
+          "sub": "b",
+          "text": "Dung dịch HCl 0,0100 M có pH bằng 2,00."
+        },
+        {
+          "sub": "c",
+          "text": "Pha loãng HCl từ 0,0100 M xuống 0,00100 M làm pH giảm 1."
+        },
+        {
+          "sub": "d",
+          "text": "Trộn số mol HCl và NaOH bằng nhau thu dung dịch trung tính nếu không có chất khác."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "NB",
+          "solution": "Ở 25 °C, Kw=10^−14 nên [H+]=10^−7 M."
+        },
+        {
+          "sub": "b",
+          "value": "D",
+          "level": "TH",
+          "solution": "HCl điện li hoàn toàn, pH=−log(0,0100)=2."
+        },
+        {
+          "sub": "c",
+          "value": "S",
+          "level": "TH",
+          "solution": "Nồng độ H+ giảm 10 lần nên pH tăng 1."
+        },
+        {
+          "sub": "d",
+          "value": "D",
+          "level": "TH",
+          "solution": "Acid mạnh và base mạnh trung hòa hết nhau."
+        }
+      ],
+      "solution": "a: Ở 25 °C, Kw=10^−14 nên [H+]=10^−7 M.\nb: HCl điện li hoàn toàn, pH=−log(0,0100)=2.\nc: Nồng độ H+ giảm 10 lần nên pH tăng 1.\nd: Acid mạnh và base mạnh trung hòa hết nhau.",
+      "cognitive_rationale": "Nhận ra một thuộc tính đã học.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: Ở 25 °C, Kw=10^−14 nên [H+]=10^−7 M.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: a: Ở 25 °C, Kw=10^−14 nên [H+]=10^−7 M.\nb: HCl điện li hoàn toàn, pH=−log(0,0100)=2.\nc: Nồng độ H+ giảm 10 lần nên pH tăng 1.\nd: Acid mạnh và base mạnh trung hòa hết nhau.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-7a53f6780f68",
+        "CELL-e103d79a03b7"
+      ],
+      "rubric": [
+        {
+          "criterion": "a: Ở 25 °C, Kw=10^−14 nên [H+]=10^−7 M.",
+          "points": 0.25
+        },
+        {
+          "criterion": "b: HCl điện li hoàn toàn, pH=−log(0,0100)=2.",
+          "points": 0.25
+        },
+        {
+          "criterion": "c: Nồng độ H+ giảm 10 lần nên pH tăng 1.",
+          "points": 0.25
+        },
+        {
+          "criterion": "d: Acid mạnh và base mạnh trung hòa hết nhau.",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-8eaaafe587b6",
+      "topic_id": "T12",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Trộn 30,0 mL HCl 0,100 M với 20,0 mL NaOH 0,100 M. Coi thể tích cộng được, điện li hoàn toàn, ở 25 °C. pH dung dịch bằng bao nhiêu? Làm tròn 2 chữ số thập phân.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 1.7,
+          "level": "TH",
+          "solution": "H+ dư 0,00300−0,00200=0,00100 mol trong 0,0500 L: [H+]=0,0200 M. pH=−log(0,0200)=1,70."
+        }
+      ],
+      "solution": "H+ dư 0,00300−0,00200=0,00100 mol trong 0,0500 L: [H+]=0,0200 M. pH=−log(0,0200)=1,70.",
+      "cognitive_rationale": "Đọc dữ kiện và thực hiện quy trình quen thuộc; số phép tính không làm tăng mức độ.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: H+ dư 0,00300−0,00200=0,00100 mol trong 0,0500 L: [H+]=0,0200 M. pH=−log(0,0200)=1,70.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: H+ dư 0,00300−0,00200=0,00100 mol trong 0,0500 L: [H+]=0,0200 M. pH=−log(0,0200)=1,70.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-8eaaafe587b6"
+      ],
+      "rubric": [
+        {
+          "criterion": "H+ dư 0,00300−0,00200=0,00100 mol trong 0,0500 L: [H+]=0,0200 M. pH=−log(0,0200)=1,70.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-9822714b860c",
+      "topic_id": "T12",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Một dung dịch đệm lí tưởng 1,00 L chứa 0,0200 mol HA và 0,0800 mol A−; pKa=5,00. Chỉ được chọn từng gói riêng biệt, không chia gói: gói H chứa 0,0100 mol HCl, gói B chứa 0,0100 mol NaOH. Mỗi gói sau khi thêm được trộn hoàn toàn, thể tích thay đổi không đáng kể; H+ chuyển A− thành HA, OH− chuyển HA thành A−. Có tối đa 4 gói H và 4 gói B. Muốn pH cuối trong [4,90;5,10] với số gói thêm ít nhất. Dùng công thức pH=pKa+log(n(A−)/n(HA)) khi cả hai dạng còn. Tổng số gói ít nhất là bao nhiêu? Ghi số nguyên.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 3,
+          "level": "VD",
+          "solution": "Gọi k=h−b là số gói acid ròng. Khi đó A−=0,080−0,010k và HA=0,020+0,010k. Khoảng pH yêu cầu tỉ số trong [10^−0,10;10^0,10]≈[0,794;1,259]. k=2 cho 0,060/0,040=1,50, chưa đạt; k=3 cho 1,00, đạt; k=4 cho 0,040/0,060=0,667, thấp. Hàm tỉ số giảm theo k nên chỉ k=3 khả thi. h+b≥|h−b|=3, đạt bằng 3H và 0B."
+        }
+      ],
+      "solution": "Gọi k=h−b là số gói acid ròng. Khi đó A−=0,080−0,010k và HA=0,020+0,010k. Khoảng pH yêu cầu tỉ số trong [10^−0,10;10^0,10]≈[0,794;1,259]. k=2 cho 0,060/0,040=1,50, chưa đạt; k=3 cho 1,00, đạt; k=4 cho 0,040/0,060=0,667, thấp. Hàm tỉ số giảm theo k nên chỉ k=3 khả thi. h+b≥|h−b|=3, đạt bằng 3H và 0B.",
+      "cognitive_rationale": "VD: chuyển yêu cầu pH thành miền thành phần, mô hình hóa gói nguyên và phân biệt lượng ròng với tổng số gói để chứng minh cực tiểu; không chỉ tính pH một hỗn hợp định sẵn.",
+      "distractor_mechanisms": {},
+      "easier": "Cho thêm sẵn 3 gói H, hỏi pH cuối.",
+      "harder": "Các gói có kích thước khác nhau và thay đổi thể tích; tìm phương án tối thiểu trong miền pH hẹp.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-9822714b860c"
+      ],
+      "rubric": [
+        {
+          "criterion": "Gọi k=h−b là số gói acid ròng. Khi đó A−=0,080−0,010k và HA=0,020+0,010k. Khoảng pH yêu cầu tỉ số trong [10^−0,10;10^0,10]≈[0,794;1,259]. k=2 cho 0,060/0,040=1,50, chưa đạt; k=3 cho 1,00, đạt; k=4 cho 0,040/0,060=0,667, thấp. Hàm tỉ số giảm theo k nên chỉ k=3 khả thi. h+b≥|h−b|=3, đạt bằng 3H và 0B.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-c2d70bcd7bef",
+      "topic_id": "T13",
+      "part": "P1",
+      "qtype": "mcq",
+      "stem": "Chuẩn độ HCl bằng NaOH trong burette. Trước khi chứa NaOH, burette được rửa bằng nước cất rồi còn một ít nước bám thành, không tráng bằng NaOH. Người tính vẫn dùng nồng độ NaOH trên nhãn. Chỉ xét sai số này, không có sai số điểm kết thúc. Nồng độ HCl tính ra thay đổi thế nào?",
+      "options": {
+        "A": "Cao hơn giá trị đúng",
+        "B": "Thấp hơn giá trị đúng",
+        "C": "Không đổi vì có cùng số mol NaOH ở mọi thể tích",
+        "D": "Không đổi vì nước không phản ứng với HCl"
+      },
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": "A",
+          "level": "TH",
+          "solution": "NaOH trong burette bị pha loãng, cần thể tích lớn hơn để trung hòa. Dùng nồng độ nhãn cao hơn thực tế khiến số mol HCl và nồng độ tính ra lớn hơn đúng."
+        }
+      ],
+      "solution": "NaOH trong burette bị pha loãng, cần thể tích lớn hơn để trung hòa. Dùng nồng độ nhãn cao hơn thực tế khiến số mol HCl và nồng độ tính ra lớn hơn đúng.",
+      "cognitive_rationale": "Đọc dữ kiện và thực hiện quy trình quen thuộc; số phép tính không làm tăng mức độ.",
+      "distractor_mechanisms": {
+        "B": "Nhận ra pha loãng nhưng đảo chiều sai số khi nhân nồng độ nhãn.",
+        "C": "Nhầm số mol tổng cả burette với số mol trong thể tích đã cấp.",
+        "D": "Bỏ qua tác động của nước lên nồng độ thuốc chuẩn."
+      },
+      "easier": "Cho sẵn bước quyết định trong lời giải: NaOH trong burette bị pha loãng, cần thể tích lớn hơn để trung hòa. Dùng nồng độ nhãn cao hơn thực tế khiến số mol HCl và nồng độ tính ra lớn hơn đúng.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: NaOH trong burette bị pha loãng, cần thể tích lớn hơn để trung hòa. Dùng nồng độ nhãn cao hơn thực tế khiến số mol HCl và nồng độ tính ra lớn hơn đúng.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-c2d70bcd7bef"
+      ],
+      "rubric": [
+        {
+          "criterion": "NaOH trong burette bị pha loãng, cần thể tích lớn hơn để trung hòa. Dùng nồng độ nhãn cao hơn thực tế khiến số mol HCl và nồng độ tính ra lớn hơn đúng.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-6d8b93ca20a5",
+      "topic_id": "T14",
+      "part": "P1",
+      "qtype": "mcq",
+      "stem": "Trong phản ứng oxi hóa–khử, chất khử là chất nào?",
+      "options": {
+        "A": "Nhận electron, bị khử",
+        "B": "Nhận proton, tạo base liên hợp",
+        "C": "Nhường electron, bị oxi hóa",
+        "D": "Nhường proton, tạo acid liên hợp"
+      },
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": "C",
+          "level": "NB",
+          "solution": "Chất khử nhường electron và bị oxi hóa."
+        }
+      ],
+      "solution": "Chất khử nhường electron và bị oxi hóa.",
+      "cognitive_rationale": "Nhận ra một thuộc tính đã học.",
+      "distractor_mechanisms": {
+        "A": "Đảo chất khử và chất oxi hóa.",
+        "B": "Nhầm electron với proton và quan hệ liên hợp.",
+        "D": "Nhầm khái niệm redox với acid–base."
+      },
+      "easier": "Cho sẵn bước quyết định trong lời giải: Chất khử nhường electron và bị oxi hóa.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: Chất khử nhường electron và bị oxi hóa.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-6d8b93ca20a5"
+      ],
+      "rubric": [
+        {
+          "criterion": "Chất khử nhường electron và bị oxi hóa.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-fd7f3aed495b",
+      "topic_id": "T14",
+      "part": "P2",
+      "qtype": "true_false",
+      "stem": "Cho dung dịch FeCl3 tác dụng với NaOH vừa đủ, rồi lọc và nung kết tủa trong không khí. Dùng mô hình Fe(OH)3 chuyển hoàn toàn thành Fe2O3 khi nung.",
+      "options": {},
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Kết tủa ban đầu là Fe(OH)3."
+        },
+        {
+          "sub": "b",
+          "text": "Mỗi mol Fe3+ cần 2 mol OH− để kết tủa hết."
+        },
+        {
+          "sub": "c",
+          "text": "Nung 2 mol Fe(OH)3 tạo 1 mol Fe2O3."
+        },
+        {
+          "sub": "d",
+          "text": "Số oxi hóa của iron thay đổi từ +3 sang 0 khi nung theo mô hình."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH",
+          "solution": "Fe3++3OH−→Fe(OH)3."
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH",
+          "solution": "Điện tích +3 cần 3OH−."
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "TH",
+          "solution": "2Fe(OH)3→Fe2O3+3H2O."
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "TH",
+          "solution": "Iron vẫn +3 trong Fe2O3; đây không phải quá trình khử thành kim loại."
+        }
+      ],
+      "solution": "a: Fe3++3OH−→Fe(OH)3.\nb: Điện tích +3 cần 3OH−.\nc: 2Fe(OH)3→Fe2O3+3H2O.\nd: Iron vẫn +3 trong Fe2O3; đây không phải quá trình khử thành kim loại.",
+      "cognitive_rationale": "Đọc dữ kiện và thực hiện quy trình quen thuộc; số phép tính không làm tăng mức độ.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: Fe3++3OH−→Fe(OH)3.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: a: Fe3++3OH−→Fe(OH)3.\nb: Điện tích +3 cần 3OH−.\nc: 2Fe(OH)3→Fe2O3+3H2O.\nd: Iron vẫn +3 trong Fe2O3; đây không phải quá trình khử thành kim loại.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-fd7f3aed495b"
+      ],
+      "rubric": [
+        {
+          "criterion": "a: Fe3++3OH−→Fe(OH)3.",
+          "points": 0.25
+        },
+        {
+          "criterion": "b: Điện tích +3 cần 3OH−.",
+          "points": 0.25
+        },
+        {
+          "criterion": "c: 2Fe(OH)3→Fe2O3+3H2O.",
+          "points": 0.25
+        },
+        {
+          "criterion": "d: Iron vẫn +3 trong Fe2O3; đây không phải quá trình khử thành kim loại.",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-a698f8d98465",
+      "topic_id": "T14",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Hòa tan hoàn toàn 0,0200 mol Fe2+ bằng lượng dư acidified permanganate. Trong phản ứng MnO4− chuyển thành Mn2+, Fe2+ thành Fe3+. Cần tối thiểu bao nhiêu mol MnO4−? Ghi mol, 4 chữ số thập phân.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 0.004,
+          "level": "TH",
+          "solution": "Mỗi Fe2+ nhường 1e−, mỗi MnO4− nhận 5e−. n(MnO4−)=0,0200/5=0,0040 mol."
+        }
+      ],
+      "solution": "Mỗi Fe2+ nhường 1e−, mỗi MnO4− nhận 5e−. n(MnO4−)=0,0200/5=0,0040 mol.",
+      "cognitive_rationale": "Đọc dữ kiện và thực hiện quy trình quen thuộc; số phép tính không làm tăng mức độ.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: Mỗi Fe2+ nhường 1e−, mỗi MnO4− nhận 5e−. n(MnO4−)=0,0200/5=0,0040 mol.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: Mỗi Fe2+ nhường 1e−, mỗi MnO4− nhận 5e−. n(MnO4−)=0,0200/5=0,0040 mol.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-a698f8d98465"
+      ],
+      "rubric": [
+        {
+          "criterion": "Mỗi Fe2+ nhường 1e−, mỗi MnO4− nhận 5e−. n(MnO4−)=0,0200/5=0,0040 mol.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-d0302a9ae7b7",
+      "topic_id": "T14",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Có ba bình kín A, B, C, mỗi bình chứa đúng một trong ba dung dịch không màu NaCl, Na2CO3, Na2SO4, cùng nồng độ mol, không trùng nhau. Chỉ được nhỏ HCl loãng vào một mẫu riêng của đúng một bình; phép thử phân biệt duy nhất là có/không sủi CO2. Sau đó được thử BaCl2 trên một mẫu mới của đúng một bình (không có HCl từ phép đầu); hiện tượng duy nhất là có/không kết tủa. Biết carbonate và sulfate đều kết tủa với Ba2+, chloride không; HCl chỉ làm carbonate sủi khí. Được chọn bình thử thứ hai tùy kết quả thứ nhất. Trong trường hợp xấu nhất, cần ít nhất bao nhiêu phép thử bổ sung cùng hai thuốc thử trên để xác định chắc chắn cả ba nhãn, sau khi đã thực hiện hai phép như quy định? Ghi số nguyên.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 1,
+          "level": "VD",
+          "solution": "Một phép thử HCl có nhánh không sủi gồm 4 hoán vị. Ở nhánh đó, phép BaCl2 tốt nhất chỉ tách thành nhóm 1 và 3 hoặc 2 và 2; không thể xác định tất cả trong hai phép (mỗi phép chỉ có hai kết quả, tổng 6 hoán vị >4 lá). Có chiến lược ba phép: thử HCl trên A. Nếu sủi, A=carbonate; thử BaCl2 trên B phân biệt B,C nên không cần thêm. Nếu A không sủi, thử BaCl2 trên A: không kết tủa thì A=chloride; có thì A=sulfate. Khi đó thử HCl trên B phân biệt carbonate với chất còn lại. Do đó xấu nhất cần đúng 1 phép bổ sung."
+        }
+      ],
+      "solution": "Một phép thử HCl có nhánh không sủi gồm 4 hoán vị. Ở nhánh đó, phép BaCl2 tốt nhất chỉ tách thành nhóm 1 và 3 hoặc 2 và 2; không thể xác định tất cả trong hai phép (mỗi phép chỉ có hai kết quả, tổng 6 hoán vị >4 lá). Có chiến lược ba phép: thử HCl trên A. Nếu sủi, A=carbonate; thử BaCl2 trên B phân biệt B,C nên không cần thêm. Nếu A không sủi, thử BaCl2 trên A: không kết tủa thì A=chloride; có thì A=sulfate. Khi đó thử HCl trên B phân biệt carbonate với chất còn lại. Do đó xấu nhất cần đúng 1 phép bổ sung.",
+      "cognitive_rationale": "VD: xây cây quyết định thích nghi, kết hợp tính chọn lọc hóa học với chứng minh giới hạn thông tin; không chỉ nhận ra một kết tủa quen thuộc.",
+      "distractor_mechanisms": {},
+      "easier": "Cho A đã biết là carbonate, hỏi cách phân biệt B và C.",
+      "harder": "Cho phép hỗn hợp hai muối trong mỗi bình và xét liệu cùng thuốc thử có còn xác định duy nhất không.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-d0302a9ae7b7"
+      ],
+      "rubric": [
+        {
+          "criterion": "Một phép thử HCl có nhánh không sủi gồm 4 hoán vị. Ở nhánh đó, phép BaCl2 tốt nhất chỉ tách thành nhóm 1 và 3 hoặc 2 và 2; không thể xác định tất cả trong hai phép (mỗi phép chỉ có hai kết quả, tổng 6 hoán vị >4 lá). Có chiến lược ba phép: thử HCl trên A. Nếu sủi, A=carbonate; thử BaCl2 trên B phân biệt B,C nên không cần thêm. Nếu A không sủi, thử BaCl2 trên A: không kết tủa thì A=chloride; có thì A=sulfate. Khi đó thử HCl trên B phân biệt carbonate với chất còn lại. Do đó xấu nhất cần đúng 1 phép bổ sung.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-1824c8fef62e",
+      "topic_id": "T15",
+      "part": "P2",
+      "qtype": "true_false",
+      "stem": "Một phản ứng có enthalpy chuẩn ΔrH°=−120 kJ theo phương trình đã viết.",
+      "options": {},
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Phản ứng theo chiều đã viết là tỏa nhiệt."
+        },
+        {
+          "sub": "b",
+          "text": "Đơn vị thường dùng của enthalpy phản ứng là kJ theo phương trình phản ứng."
+        },
+        {
+          "sub": "c",
+          "text": "Phản ứng thu nhiệt có ΔH âm."
+        },
+        {
+          "sub": "d",
+          "text": "Đảo chiều một phản ứng làm đổi dấu ΔH."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "NB",
+          "solution": "ΔH âm chỉ quá trình tỏa nhiệt."
+        },
+        {
+          "sub": "b",
+          "value": "D",
+          "level": "NB",
+          "solution": "Đơn vị năng lượng gắn với mức tiến triển của phương trình."
+        },
+        {
+          "sub": "c",
+          "value": "S",
+          "level": "NB",
+          "solution": "Thu nhiệt có ΔH dương."
+        },
+        {
+          "sub": "d",
+          "value": "D",
+          "level": "NB",
+          "solution": "Đây là tính chất của enthalpy phản ứng."
+        }
+      ],
+      "solution": "a: ΔH âm chỉ quá trình tỏa nhiệt.\nb: Đơn vị năng lượng gắn với mức tiến triển của phương trình.\nc: Thu nhiệt có ΔH dương.\nd: Đây là tính chất của enthalpy phản ứng.",
+      "cognitive_rationale": "Nhận ra một thuộc tính đã học.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: ΔH âm chỉ quá trình tỏa nhiệt.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: a: ΔH âm chỉ quá trình tỏa nhiệt.\nb: Đơn vị năng lượng gắn với mức tiến triển của phương trình.\nc: Thu nhiệt có ΔH dương.\nd: Đây là tính chất của enthalpy phản ứng.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-1824c8fef62e"
+      ],
+      "rubric": [
+        {
+          "criterion": "a: ΔH âm chỉ quá trình tỏa nhiệt.",
+          "points": 0.25
+        },
+        {
+          "criterion": "b: Đơn vị năng lượng gắn với mức tiến triển của phương trình.",
+          "points": 0.25
+        },
+        {
+          "criterion": "c: Thu nhiệt có ΔH dương.",
+          "points": 0.25
+        },
+        {
+          "criterion": "d: Đây là tính chất của enthalpy phản ứng.",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-8e14e27c7ee9",
+      "topic_id": "T15",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Ở áp suất không đổi, quy ước ΔH=H(sản phẩm)−H(chất đầu). Phản ứng tỏa nhiệt có ΔH mang dấu nào? Ghi mã 1 nếu âm, 2 nếu dương.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 1,
+          "level": "NB",
+          "solution": "Phản ứng tỏa nhiệt có enthalpy sản phẩm thấp hơn, ΔH âm, mã 1."
+        }
+      ],
+      "solution": "Phản ứng tỏa nhiệt có enthalpy sản phẩm thấp hơn, ΔH âm, mã 1.",
+      "cognitive_rationale": "Nhận ra một thuộc tính đã học.",
+      "distractor_mechanisms": {},
+      "easier": "Hỏi bằng lời dấu của ΔH cho phản ứng tỏa nhiệt.",
+      "harder": "Từ bảng enthalpy tạo thành, tính ΔH và giải thích dấu.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-8e14e27c7ee9"
+      ],
+      "rubric": [
+        {
+          "criterion": "Phản ứng tỏa nhiệt có enthalpy sản phẩm thấp hơn, ΔH âm, mã 1.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-8d54ff4739c7",
+      "topic_id": "T15",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Một thiết bị có hai buồng cách nhiệt với nhau. Có 5,00 mol CaO dùng cho phản ứng CaO+H2O→Ca(OH)2, tỏa 64,0 kJ/mol. Buồng A cần ít nhất 128 kJ nhiệt hữu ích; buồng B cần ít nhất 96,0 kJ. Hiệu suất truyền nhiệt đến A là 80,0%, đến B là 60,0%; phần còn lại mất ra ngoài, không trao đổi giữa buồng. Mỗi buồng phải nhận trọn một phần CaO ban đầu, được phép chia lượng liên tục. Ban đầu tổng nước chỉ 72,0 g, chia tùy ý giữa hai buồng, phản ứng không có nguồn nước khác, H2O=18 g/mol. Được mua thêm nước nhưng không mua CaO. Cần mua thêm ít nhất bao nhiêu gam nước để cả hai buồng đạt yêu cầu? Nếu không thể, quy ước ghi −1. Ghi gam, 1 chữ số thập phân.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 18.0,
+          "level": "VD",
+          "solution": "A cần nA≥128/(64×0,8)=2,50 mol CaO phản ứng; B cần nB≥96/(64×0,6)=2,50 mol. Tổng đúng 5,00 mol, bằng kho CaO nên khả thi nếu toàn bộ phản ứng. Cần 5×18=90 g nước, đang có 72 g nên mua 18,0 g. Không thể dùng dư CaO bù thiếu nước; không thể chuyển nhiệt từ A sang B."
+        }
+      ],
+      "solution": "A cần nA≥128/(64×0,8)=2,50 mol CaO phản ứng; B cần nB≥96/(64×0,6)=2,50 mol. Tổng đúng 5,00 mol, bằng kho CaO nên khả thi nếu toàn bộ phản ứng. Cần 5×18=90 g nước, đang có 72 g nên mua 18,0 g. Không thể dùng dư CaO bù thiếu nước; không thể chuyển nhiệt từ A sang B.",
+      "cognitive_rationale": "VD: mô hình hai ngưỡng nhiệt độc lập cùng hai nguồn hóa chất, kiểm tra tính khả thi CaO trước khi tối thiểu hóa nước; cộng hai nhiệt hữu ích rồi dùng một hiệu suất chung cho đáp số sai.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn mỗi buồng nhận 2,50 mol CaO và hỏi lượng nước hóa học.",
+      "harder": "Thêm một nguồn nhiệt phụ có giá khác nhau theo buồng và tối ưu chi phí tổng.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-8d54ff4739c7"
+      ],
+      "rubric": [
+        {
+          "criterion": "A cần nA≥128/(64×0,8)=2,50 mol CaO phản ứng; B cần nB≥96/(64×0,6)=2,50 mol. Tổng đúng 5,00 mol, bằng kho CaO nên khả thi nếu toàn bộ phản ứng. Cần 5×18=90 g nước, đang có 72 g nên mua 18,0 g. Không thể dùng dư CaO bù thiếu nước; không thể chuyển nhiệt từ A sang B.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-0687167c063a",
+      "topic_id": "T16",
+      "part": "P2",
+      "qtype": "true_false",
+      "stem": "Xét cân bằng N2(g)+3H2(g)⇌2NH3(g), phản ứng thuận tỏa nhiệt. Trong mỗi xét đoán chỉ thay đổi một yếu tố, các điều kiện khác giữ nguyên.",
+      "options": {},
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Tăng áp suất bằng giảm thể tích ở nhiệt độ không đổi làm cân bằng chuyển theo chiều tạo NH3."
+        },
+        {
+          "sub": "b",
+          "text": "Tăng nhiệt độ làm cân bằng chuyển theo chiều thuận."
+        },
+        {
+          "sub": "c",
+          "text": "Chất xúc tác làm hệ đạt cân bằng nhanh hơn nhưng không đổi thành phần cân bằng."
+        },
+        {
+          "sub": "d",
+          "text": "Lấy bớt NH3 ra khỏi hệ có thể làm phản ứng thuận tiếp diễn để tái lập cân bằng."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH",
+          "solution": "Chiều thuận giảm số mol khí từ 4 xuống 2."
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH",
+          "solution": "Tăng nhiệt độ ưu tiên chiều thu nhiệt, tức nghịch."
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "TH",
+          "solution": "Xúc tác tăng tốc cả hai chiều, không đổi K ở nhiệt độ cố định."
+        },
+        {
+          "sub": "d",
+          "value": "D",
+          "level": "TH",
+          "solution": "Giảm sản phẩm khiến Q<K và cân bằng dịch thuận."
+        }
+      ],
+      "solution": "a: Chiều thuận giảm số mol khí từ 4 xuống 2.\nb: Tăng nhiệt độ ưu tiên chiều thu nhiệt, tức nghịch.\nc: Xúc tác tăng tốc cả hai chiều, không đổi K ở nhiệt độ cố định.\nd: Giảm sản phẩm khiến Q<K và cân bằng dịch thuận.",
+      "cognitive_rationale": "Đọc dữ kiện và thực hiện quy trình quen thuộc; số phép tính không làm tăng mức độ.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: Chiều thuận giảm số mol khí từ 4 xuống 2.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: a: Chiều thuận giảm số mol khí từ 4 xuống 2.\nb: Tăng nhiệt độ ưu tiên chiều thu nhiệt, tức nghịch.\nc: Xúc tác tăng tốc cả hai chiều, không đổi K ở nhiệt độ cố định.\nd: Giảm sản phẩm khiến Q<K và cân bằng dịch thuận.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-0687167c063a"
+      ],
+      "rubric": [
+        {
+          "criterion": "a: Chiều thuận giảm số mol khí từ 4 xuống 2.",
+          "points": 0.25
+        },
+        {
+          "criterion": "b: Tăng nhiệt độ ưu tiên chiều thu nhiệt, tức nghịch.",
+          "points": 0.25
+        },
+        {
+          "criterion": "c: Xúc tác tăng tốc cả hai chiều, không đổi K ở nhiệt độ cố định.",
+          "points": 0.25
+        },
+        {
+          "criterion": "d: Giảm sản phẩm khiến Q<K và cân bằng dịch thuận.",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-953281303b31",
+      "topic_id": "T16",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Ở nhiệt độ cố định, trong bình 2,00 L xảy ra A→B. Số mol A giảm từ 0,600 xuống 0,420 mol trong 30,0 s. Thể tích không đổi. Tốc độ tiêu hao trung bình của A bằng bao nhiêu mol L−1 s−1? Ghi 4 chữ số thập phân.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 0.003,
+          "level": "TH",
+          "solution": "Δ[A]=(0,600−0,420)/2,00=0,0900 M. vtb=0,0900/30,0=0,0030 mol L−1 s−1."
+        }
+      ],
+      "solution": "Δ[A]=(0,600−0,420)/2,00=0,0900 M. vtb=0,0900/30,0=0,0030 mol L−1 s−1.",
+      "cognitive_rationale": "Đọc dữ kiện và thực hiện quy trình quen thuộc; số phép tính không làm tăng mức độ.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: Δ[A]=(0,600−0,420)/2,00=0,0900 M. vtb=0,0900/30,0=0,0030 mol L−1 s−1.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: Δ[A]=(0,600−0,420)/2,00=0,0900 M. vtb=0,0900/30,0=0,0030 mol L−1 s−1.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-953281303b31"
+      ],
+      "rubric": [
+        {
+          "criterion": "Δ[A]=(0,600−0,420)/2,00=0,0900 M. vtb=0,0900/30,0=0,0030 mol L−1 s−1.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-642eee4b8c27",
+      "topic_id": "T17",
+      "part": "P1",
+      "qtype": "mcq",
+      "stem": "Alkene mạch hở có đúng một liên kết đôi C=C thuộc công thức tổng quát nào?",
+      "options": {
+        "A": "CnH2n+2 (n≥1)",
+        "B": "CnH2n−2 (n≥2)",
+        "C": "CnH2n−6 (n≥6)",
+        "D": "CnH2n (n≥2)"
+      },
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": "D",
+          "level": "NB",
+          "solution": "Alkene mạch hở một nối đôi có công thức CnH2n (n≥2)."
+        }
+      ],
+      "solution": "Alkene mạch hở một nối đôi có công thức CnH2n (n≥2).",
+      "cognitive_rationale": "Nhận ra một thuộc tính đã học.",
+      "distractor_mechanisms": {
+        "A": "Chọn công thức alkane no.",
+        "B": "Chọn công thức alkyne/diene.",
+        "C": "Chọn công thức hydrocarbon thơm một vòng."
+      },
+      "easier": "Cho sẵn bước quyết định trong lời giải: Alkene mạch hở một nối đôi có công thức CnH2n (n≥2).",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: Alkene mạch hở một nối đôi có công thức CnH2n (n≥2).",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-642eee4b8c27"
+      ],
+      "rubric": [
+        {
+          "criterion": "Alkene mạch hở một nối đôi có công thức CnH2n (n≥2).",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-2dd3f0a7277e",
+      "topic_id": "T17",
+      "part": "P2",
+      "qtype": "true_false",
+      "stem": "Xét ethene CH2=CH2 và ethane CH3–CH3 trong các điều kiện nêu riêng.",
+      "options": {},
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Ethene có một liên kết đôi C=C."
+        },
+        {
+          "sub": "b",
+          "text": "Ethene làm mất màu bromine trong dung môi phù hợp ở điều kiện thường do phản ứng cộng."
+        },
+        {
+          "sub": "c",
+          "text": "Ethane cộng H2 ở điều kiện thường để tạo ethene."
+        },
+        {
+          "sub": "d",
+          "text": "Hydrogen hóa hoàn toàn ethene với xúc tác thích hợp tạo ethane."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "NB",
+          "solution": "Đọc đúng công thức cấu tạo đã học."
+        },
+        {
+          "sub": "b",
+          "value": "D",
+          "level": "TH",
+          "solution": "Br2 cộng vào liên kết đôi."
+        },
+        {
+          "sub": "c",
+          "value": "S",
+          "level": "TH",
+          "solution": "Ethane no; tạo ethene là tách hydrogen, không phải cộng."
+        },
+        {
+          "sub": "d",
+          "value": "D",
+          "level": "TH",
+          "solution": "Một mol ethene cộng một mol H2."
+        }
+      ],
+      "solution": "a: Đọc đúng công thức cấu tạo đã học.\nb: Br2 cộng vào liên kết đôi.\nc: Ethane no; tạo ethene là tách hydrogen, không phải cộng.\nd: Một mol ethene cộng một mol H2.",
+      "cognitive_rationale": "Nhận ra một thuộc tính đã học.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: Đọc đúng công thức cấu tạo đã học.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: a: Đọc đúng công thức cấu tạo đã học.\nb: Br2 cộng vào liên kết đôi.\nc: Ethane no; tạo ethene là tách hydrogen, không phải cộng.\nd: Một mol ethene cộng một mol H2.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-2dd3f0a7277e",
+        "CELL-75b2f8011f37"
+      ],
+      "rubric": [
+        {
+          "criterion": "a: Đọc đúng công thức cấu tạo đã học.",
+          "points": 0.25
+        },
+        {
+          "criterion": "b: Br2 cộng vào liên kết đôi.",
+          "points": 0.25
+        },
+        {
+          "criterion": "c: Ethane no; tạo ethene là tách hydrogen, không phải cộng.",
+          "points": 0.25
+        },
+        {
+          "criterion": "d: Một mol ethene cộng một mol H2.",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-ad1607a7df3f",
+      "topic_id": "T17",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Hydrogen hóa hoàn toàn 0,150 mol propene bằng H2 dư với xúc tác thích hợp, hiệu suất chuyển hóa 80,0%, không phản ứng phụ. Thu bao nhiêu gam propane? C=12, H=1. Ghi gam, 2 chữ số thập phân.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 5.28,
+          "level": "TH",
+          "solution": "n(propane)=0,150×0,800=0,120 mol. M(C3H8)=44 g/mol, m=5,28 g."
+        }
+      ],
+      "solution": "n(propane)=0,150×0,800=0,120 mol. M(C3H8)=44 g/mol, m=5,28 g.",
+      "cognitive_rationale": "Đọc dữ kiện và thực hiện quy trình quen thuộc; số phép tính không làm tăng mức độ.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: n(propane)=0,150×0,800=0,120 mol. M(C3H8)=44 g/mol, m=5,28 g.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: n(propane)=0,150×0,800=0,120 mol. M(C3H8)=44 g/mol, m=5,28 g.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-ad1607a7df3f"
+      ],
+      "rubric": [
+        {
+          "criterion": "n(propane)=0,150×0,800=0,120 mol. M(C3H8)=44 g/mol, m=5,28 g.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-38e1bf09cf31",
+      "topic_id": "T17",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Hydrocarbon X mạch hở có công thức C6H12. Khi cắt liên kết C=C bằng phép oxi hóa lí tưởng, mỗi carbon của nối đôi có hydrogen tạo carboxylic acid, carbon không có hydrogen tạo ketone; không xét carbon CH2= ở đầu mạch vì sản phẩm oxi hóa quan sát không có CO2. Sản phẩm hữu cơ duy nhất là một carboxylic acid, không có ketone; hai phân tử sản phẩm từ mỗi X giống hệt nhau. Có bao nhiêu đồng phân hình học của X phù hợp (đếm E và Z riêng, không tính cấu dạng)? Ghi số nguyên.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 2,
+          "level": "VD",
+          "solution": "Độ bất bão hòa 1 và mạch hở buộc X chỉ có một C=C. Hai acid giống nhau mỗi acid có 3 carbon, nên mỗi carbon nối đôi gắn một H và một ethyl; X=CH3CH2CH=CHCH2CH3 (hex-3-ene). Hai phía mỗi carbon nối đôi có hai nhóm khác nhau, nên tồn tại E và Z, tổng 2. Alkene phân nhánh sẽ cho acid khác nhau hoặc ketone."
+        }
+      ],
+      "solution": "Độ bất bão hòa 1 và mạch hở buộc X chỉ có một C=C. Hai acid giống nhau mỗi acid có 3 carbon, nên mỗi carbon nối đôi gắn một H và một ethyl; X=CH3CH2CH=CHCH2CH3 (hex-3-ene). Hai phía mỗi carbon nối đôi có hai nhóm khác nhau, nên tồn tại E và Z, tổng 2. Alkene phân nhánh sẽ cho acid khác nhau hoặc ketone.",
+      "cognitive_rationale": "VD: suy cấu trúc ngược từ phép cắt và tính duy nhất sản phẩm, loại các dạng phân nhánh bằng điều kiện H trên carbon nối đôi, rồi xét hình học; đếm nối đôi từ công thức đơn thuần chưa trả lời được.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn hex-3-ene, hỏi có đồng phân hình học không.",
+      "harder": "Đổi sang C8H16 và cho hai acid có tổng số carbon khác nhau, liệt kê tất cả cấu trúc phù hợp.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-38e1bf09cf31"
+      ],
+      "rubric": [
+        {
+          "criterion": "Độ bất bão hòa 1 và mạch hở buộc X chỉ có một C=C. Hai acid giống nhau mỗi acid có 3 carbon, nên mỗi carbon nối đôi gắn một H và một ethyl; X=CH3CH2CH=CHCH2CH3 (hex-3-ene). Hai phía mỗi carbon nối đôi có hai nhóm khác nhau, nên tồn tại E và Z, tổng 2. Alkene phân nhánh sẽ cho acid khác nhau hoặc ketone.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-ca20901480f1",
+      "topic_id": "T18",
+      "part": "P1",
+      "qtype": "mcq",
+      "stem": "Nhóm chức đặc trưng của aldehyde là nhóm nào?",
+      "options": {
+        "A": "–CHO",
+        "B": "–COOH",
+        "C": "–COO–",
+        "D": "–O–"
+      },
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": "A",
+          "level": "NB",
+          "solution": "Aldehyde chứa nhóm –CHO."
+        }
+      ],
+      "solution": "Aldehyde chứa nhóm –CHO.",
+      "cognitive_rationale": "Nhận ra một thuộc tính đã học.",
+      "distractor_mechanisms": {
+        "B": "Nhầm carbonyl aldehyde với carboxyl acid.",
+        "C": "Nhầm aldehyde với ester.",
+        "D": "Nhầm aldehyde với ether."
+      },
+      "easier": "Cho sẵn bước quyết định trong lời giải: Aldehyde chứa nhóm –CHO.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: Aldehyde chứa nhóm –CHO.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-ca20901480f1"
+      ],
+      "rubric": [
+        {
+          "criterion": "Aldehyde chứa nhóm –CHO.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-9e5dc70fb49a",
+      "topic_id": "T18",
+      "part": "P2",
+      "qtype": "true_false",
+      "stem": "Có ba lọ A, B, C chứa ethanol, ethanal và propanone, mỗi chất đúng một lọ, nhãn bị mất. Mỗi phép thử dùng mẫu mới và cho một kết quả có/không. Có ba phép thử: S (tráng bạc) chỉ dương tính với ethanal; R (cho tiếp xúc sodium trong điều kiện khan, xét có/không khí H2) chỉ dương tính với ethanol; I (iodoform) dương tính với cả ba. Các kết quả theo đúng bảng chọn lọc đã cho, không có sai số. Được chọn phép thử và lọ tiếp theo tùy kết quả trước. Mục tiêu là xác định cả ba nhãn, tối thiểu hóa số phép thử trong trường hợp xấu nhất. Hai phép S liên tiếp đã được thực hiện trên A rồi B và đều âm tính. Xét đúng/sai.",
+      "options": {},
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Sau hai kết quả đã có, C chắc chắn là ethanal."
+        },
+        {
+          "sub": "b",
+          "text": "Phép I trên A phân biệt được A là ethanol hay propanone."
+        },
+        {
+          "sub": "c",
+          "text": "Với dữ kiện đã có, cần và đủ một phép R trên A để xác định cả ba nhãn."
+        },
+        {
+          "sub": "d",
+          "text": "Nếu được thiết kế lại từ đầu, có chiến lược chỉ cần tối đa hai phép thử trong mọi trường hợp."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH",
+          "solution": "S âm tính ở A,B loại ethanal tại cả hai; mỗi chất đúng một lần nên C=ethanal."
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH",
+          "solution": "I dương tính với cả ethanol và propanone nên không tách hai khả năng."
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "VD",
+          "solution": "Hai hoán vị ethanol/propanone ở A,B đều phù hợp, nên cần ít nhất một phép nữa. R trên A dương chỉ khi A=ethanol, âm khi A=propanone, suy ra cả B và C; cận một phép đạt được."
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "VD",
+          "solution": "Có 3!=6 hoán vị nhãn; mỗi phép chỉ có hai kết quả, cây sâu tối đa hai có nhiều nhất 4 lá, không thể phân biệt 6 trạng thái. Ba phép đủ: S trên A; nếu dương thì R trên B. Nếu âm thì R trên A xác định A, sau đó S trên B xác định hai lọ còn lại. Vậy tối ưu xấu nhất là 3, không phải 2."
+        }
+      ],
+      "solution": "a: S âm tính ở A,B loại ethanal tại cả hai; mỗi chất đúng một lần nên C=ethanal.\nb: I dương tính với cả ethanol và propanone nên không tách hai khả năng.\nc: Hai hoán vị ethanol/propanone ở A,B đều phù hợp, nên cần ít nhất một phép nữa. R trên A dương chỉ khi A=ethanol, âm khi A=propanone, suy ra cả B và C; cận một phép đạt được.\nd: Có 3!=6 hoán vị nhãn; mỗi phép chỉ có hai kết quả, cây sâu tối đa hai có nhiều nhất 4 lá, không thể phân biệt 6 trạng thái. Ba phép đủ: S trên A; nếu dương thì R trên B. Nếu âm thì R trên A xác định A, sau đó S trên B xác định hai lọ còn lại. Vậy tối ưu xấu nhất là 3, không phải 2.",
+      "cognitive_rationale": "VD ở c,d: tích hợp hai độ chọn lọc hóa học với không gian hoán vị, dựng cây thử thích nghi và chứng minh số phép thử tối ưu bằng cận thông tin; không chỉ gán tên nhóm chức.",
+      "distractor_mechanisms": {},
+      "easier": "Cho C=ethanal và cho kết quả R trên A; yêu cầu đọc bảng chọn lọc để xác định A.",
+      "harder": "Thêm một alcohol bậc hai cũng giải phóng H2 với sodium và xét cần thêm phép thử chọn lọc nào.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-9e5dc70fb49a"
+      ],
+      "rubric": [
+        {
+          "criterion": "a: S âm tính ở A,B loại ethanal tại cả hai; mỗi chất đúng một lần nên C=ethanal.",
+          "points": 0.25
+        },
+        {
+          "criterion": "b: I dương tính với cả ethanol và propanone nên không tách hai khả năng.",
+          "points": 0.25
+        },
+        {
+          "criterion": "c: Hai hoán vị ethanol/propanone ở A,B đều phù hợp, nên cần ít nhất một phép nữa. R trên A dương chỉ khi A=ethanol, âm khi A=propanone, suy ra cả B và C; cận một phép đạt được.",
+          "points": 0.25
+        },
+        {
+          "criterion": "d: Có 3!=6 hoán vị nhãn; mỗi phép chỉ có hai kết quả, cây sâu tối đa hai có nhiều nhất 4 lá, không thể phân biệt 6 trạng thái. Ba phép đủ: S trên A; nếu dương thì R trên B. Nếu âm thì R trên A xác định A, sau đó S trên B xác định hai lọ còn lại. Vậy tối ưu xấu nhất là 3, không phải 2.",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-8e91e5f21718",
+      "topic_id": "T18",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Xét phenol ở điều kiện thường với từng thuốc thử: NaOH(aq), NaHCO3(aq), NaCl(aq), nước bromine. Dùng kiến thức phổ thông: phenol không đẩy CO2 khỏi bicarbonate. Có bao nhiêu thuốc thử phản ứng với phenol? Ghi số nguyên.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 2,
+          "level": "TH",
+          "solution": "Phenol phản ứng acid–base với NaOH và thế với nước bromine. Không phản ứng với NaCl hoặc NaHCO3 theo mô hình đã nêu. Có 2."
+        }
+      ],
+      "solution": "Phenol phản ứng acid–base với NaOH và thế với nước bromine. Không phản ứng với NaCl hoặc NaHCO3 theo mô hình đã nêu. Có 2.",
+      "cognitive_rationale": "Đọc dữ kiện và thực hiện quy trình quen thuộc; số phép tính không làm tăng mức độ.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: Phenol phản ứng acid–base với NaOH và thế với nước bromine. Không phản ứng với NaCl hoặc NaHCO3 theo mô hình đã nêu. Có 2.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: Phenol phản ứng acid–base với NaOH và thế với nước bromine. Không phản ứng với NaCl hoặc NaHCO3 theo mô hình đã nêu. Có 2.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-8e91e5f21718"
+      ],
+      "rubric": [
+        {
+          "criterion": "Phenol phản ứng acid–base với NaOH và thế với nước bromine. Không phản ứng với NaCl hoặc NaHCO3 theo mô hình đã nêu. Có 2.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-433bfff40e31",
+      "topic_id": "T18",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Một dung dịch nước 1,00 L chứa 0,0100 mol phenol và không có chất hữu cơ khác. Chỉ phenol không ion hóa phân bố vào dung môi hữu cơ; đặt tỉ số nồng độ phenol trung hòa trong hữu cơ/nước bằng 4,00. Ion phenoxide hoàn toàn ở pha nước. pKa(phenol)=10,00; trong pha nước [phenoxide]/[phenol]=10^(pH−pKa). Dùng đúng 1,00 L dung môi hữu cơ, trộn một lần đến cân bằng; thể tích hai pha không đổi. Có thể điều chỉnh và giữ pH bằng đệm không tiêu hao phenol. Muốn ít nhất 80,0% tổng phenol (kể mọi dạng) còn trong nước, cần pH nhỏ nhất bằng bao nhiêu? Làm tròn 2 chữ số thập phân.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 11.18,
+          "level": "VD",
+          "solution": "Gọi nồng độ phenol trung hòa nước là c, r=10^(pH−10). Lượng phenol tổng trong nước là c(1+r) mol và hữu cơ là 4c mol. Điều kiện (1+r)/(5+r)≥0,800 cho 1+r≥4+0,8r, r≥15. pHmin=10+log15=11,18."
+        }
+      ],
+      "solution": "Gọi nồng độ phenol trung hòa nước là c, r=10^(pH−10). Lượng phenol tổng trong nước là c(1+r) mol và hữu cơ là 4c mol. Điều kiện (1+r)/(5+r)≥0,800 cho 1+r≥4+0,8r, r≥15. pHmin=10+log15=11,18.",
+      "cognitive_rationale": "VD: xây mô hình phân bố chỉ dạng trung hòa rồi ghép cân bằng acid–base và điều kiện lưu giữ tổng chất; thay trực tiếp hệ số phân bố 4 vào tỉ lệ tổng sẽ sai.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn r=15 và hỏi pH.",
+      "harder": "Chia dung môi thành hai lần chiết rồi tìm pH tối thiểu giữ cùng lượng phenol.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-433bfff40e31"
+      ],
+      "rubric": [
+        {
+          "criterion": "Gọi nồng độ phenol trung hòa nước là c, r=10^(pH−10). Lượng phenol tổng trong nước là c(1+r) mol và hữu cơ là 4c mol. Điều kiện (1+r)/(5+r)≥0,800 cho 1+r≥4+0,8r, r≥15. pHmin=10+log15=11,18.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-ee98bc932927",
+      "topic_id": "T19",
+      "part": "P2",
+      "qtype": "true_false",
+      "stem": "Để đọc IR, dùng các vùng cho sẵn: O–H alcohol 3200–3600 cm−1 (rộng); O–H carboxylic acid 2500–3300 cm−1 (rất rộng); C=O 1650–1750 cm−1. Mẫu A có dải rộng quanh 3350 và không có C=O; mẫu B có cả dải rất rộng 2500–3300 và đỉnh 1710. Chỉ xét ethanol và ethanoic acid.",
+      "options": {},
+      "statements": [
+        {
+          "sub": "a",
+          "text": "A phù hợp với ethanol."
+        },
+        {
+          "sub": "b",
+          "text": "B phù hợp với ethanoic acid."
+        },
+        {
+          "sub": "c",
+          "text": "Riêng đỉnh C=O ở 1710 đủ chứng minh mẫu bất kì là alcohol."
+        },
+        {
+          "sub": "d",
+          "text": "Mất dải O–H của ethanol sau phản ứng không tự nó chứng minh đã tạo ethanoic acid."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH",
+          "solution": "A có O–H alcohol và thiếu carbonyl."
+        },
+        {
+          "sub": "b",
+          "value": "D",
+          "level": "TH",
+          "solution": "B có cả O–H acid và C=O."
+        },
+        {
+          "sub": "c",
+          "value": "S",
+          "level": "TH",
+          "solution": "Alcohol không có C=O; đỉnh này chưa xác định duy nhất một loại carbonyl."
+        },
+        {
+          "sub": "d",
+          "value": "D",
+          "level": "TH",
+          "solution": "Acid cũng có O–H và cần xét các dấu hiệu khác; vắng một đỉnh không xác định duy nhất sản phẩm."
+        }
+      ],
+      "solution": "a: A có O–H alcohol và thiếu carbonyl.\nb: B có cả O–H acid và C=O.\nc: Alcohol không có C=O; đỉnh này chưa xác định duy nhất một loại carbonyl.\nd: Acid cũng có O–H và cần xét các dấu hiệu khác; vắng một đỉnh không xác định duy nhất sản phẩm.",
+      "cognitive_rationale": "Đọc dữ kiện và thực hiện quy trình quen thuộc; số phép tính không làm tăng mức độ.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: A có O–H alcohol và thiếu carbonyl.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: a: A có O–H alcohol và thiếu carbonyl.\nb: B có cả O–H acid và C=O.\nc: Alcohol không có C=O; đỉnh này chưa xác định duy nhất một loại carbonyl.\nd: Acid cũng có O–H và cần xét các dấu hiệu khác; vắng một đỉnh không xác định duy nhất sản phẩm.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-ee98bc932927"
+      ],
+      "rubric": [
+        {
+          "criterion": "a: A có O–H alcohol và thiếu carbonyl.",
+          "points": 0.25
+        },
+        {
+          "criterion": "b: B có cả O–H acid và C=O.",
+          "points": 0.25
+        },
+        {
+          "criterion": "c: Alcohol không có C=O; đỉnh này chưa xác định duy nhất một loại carbonyl.",
+          "points": 0.25
+        },
+        {
+          "criterion": "d: Acid cũng có O–H và cần xét các dấu hiệu khác; vắng một đỉnh không xác định duy nhất sản phẩm.",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-ccc714b46b80",
+      "topic_id": "T19",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Ethane-1,2-diol có công thức HOCH2CH2OH. Cho C=12, H=1, O=16. Phần trăm khối lượng carbon bằng bao nhiêu? Ghi giá trị phần trăm, làm tròn 1 chữ số thập phân.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 38.7,
+          "level": "TH",
+          "solution": "Công thức C2H6O2, M=62. %C=24/62×100=38,7%."
+        }
+      ],
+      "solution": "Công thức C2H6O2, M=62. %C=24/62×100=38,7%.",
+      "cognitive_rationale": "Đọc dữ kiện và thực hiện quy trình quen thuộc; số phép tính không làm tăng mức độ.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: Công thức C2H6O2, M=62. %C=24/62×100=38,7%.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: Công thức C2H6O2, M=62. %C=24/62×100=38,7%.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-ccc714b46b80"
+      ],
+      "rubric": [
+        {
+          "criterion": "Công thức C2H6O2, M=62. %C=24/62×100=38,7%.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-e191a73946cb",
+      "topic_id": "T19",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Chất X chỉ chứa C,H,O; phổ khối lượng cho ion phân tử 102 u. Phân tích nguyên tố cho công thức đơn giản nhất C5H10O2; IR có C=O nhưng không có O–H. Thủy phân hoàn toàn X trong NaOH cho một muối carboxylate và một alcohol đơn chức. Alcohol thu được oxi hóa nhẹ thành ketone; ketone đó cho phản ứng iodoform. Chỉ xét ester mạch hở no đơn chức và bỏ qua đồng phân quang học. Có bao nhiêu công thức cấu tạo của X thỏa tất cả dữ kiện? Ghi số nguyên.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 2,
+          "level": "VD",
+          "solution": "M(C5H10O2)=102 nên công thức phân tử đúng C5H10O2. IR và thủy phân xác định ester. Alcohol tạo ketone nên phải bậc hai; ketone iodoform đòi dạng CH3CO–R. Với tổng 5 carbon, alcohol bậc hai có thể có 3 hoặc 4 carbon: propan-2-ol (3 C) hoặc butan-2-ol (4 C). Trường hợp 3 C để acid 2 C: propan-2-yl ethanoate, ketone propanone dương tính. Trường hợp 4 C để acid 1 C: butan-2-yl methanoate, ketone butan-2-one dương tính. Có 2 công thức."
+        }
+      ],
+      "solution": "M(C5H10O2)=102 nên công thức phân tử đúng C5H10O2. IR và thủy phân xác định ester. Alcohol tạo ketone nên phải bậc hai; ketone iodoform đòi dạng CH3CO–R. Với tổng 5 carbon, alcohol bậc hai có thể có 3 hoặc 4 carbon: propan-2-ol (3 C) hoặc butan-2-ol (4 C). Trường hợp 3 C để acid 2 C: propan-2-yl ethanoate, ketone propanone dương tính. Trường hợp 4 C để acid 1 C: butan-2-yl methanoate, ketone butan-2-one dương tính. Có 2 công thức.",
+      "cognitive_rationale": "VD: nối MS với công thức, IR với phản ứng thủy phân và phép thử trên sản phẩm oxi hóa để dựng rồi chứng minh đầy đủ các cấu tạo; một đỉnh IR không đủ.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn propan-2-yl ethanoate, yêu cầu viết sản phẩm thủy phân.",
+      "harder": "Tăng lên C6H12O2 và đếm các nhánh carbon phù hợp cùng chuỗi thử.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-e191a73946cb"
+      ],
+      "rubric": [
+        {
+          "criterion": "M(C5H10O2)=102 nên công thức phân tử đúng C5H10O2. IR và thủy phân xác định ester. Alcohol tạo ketone nên phải bậc hai; ketone iodoform đòi dạng CH3CO–R. Với tổng 5 carbon, alcohol bậc hai có thể có 3 hoặc 4 carbon: propan-2-ol (3 C) hoặc butan-2-ol (4 C). Trường hợp 3 C để acid 2 C: propan-2-yl ethanoate, ketone propanone dương tính. Trường hợp 4 C để acid 1 C: butan-2-yl methanoate, ketone butan-2-one dương tính. Có 2 công thức.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-e7fc4454c644",
+      "topic_id": "T20",
+      "part": "P2",
+      "qtype": "true_false",
+      "stem": "Xét ammonia và ion ammonium trong các điều kiện nêu riêng.",
+      "options": {},
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Công thức của ion ammonium là NH4+."
+        },
+        {
+          "sub": "b",
+          "text": "Đun nhẹ NH4Cl với NaOH có thể giải phóng NH3."
+        },
+        {
+          "sub": "c",
+          "text": "NH3 làm quỳ tím ẩm hóa đỏ."
+        },
+        {
+          "sub": "d",
+          "text": "Thu NH3 bằng đẩy nước là lựa chọn tốt vì NH3 rất ít tan trong nước."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "NB",
+          "solution": "Công thức ion đã học."
+        },
+        {
+          "sub": "b",
+          "value": "D",
+          "level": "TH",
+          "solution": "NH4++OH−→NH3+H2O."
+        },
+        {
+          "sub": "c",
+          "value": "S",
+          "level": "TH",
+          "solution": "Ammonia là base yếu, làm quỳ tím ẩm hóa xanh."
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "TH",
+          "solution": "Ammonia tan mạnh trong nước nên cách này làm thất thoát khí."
+        }
+      ],
+      "solution": "a: Công thức ion đã học.\nb: NH4++OH−→NH3+H2O.\nc: Ammonia là base yếu, làm quỳ tím ẩm hóa xanh.\nd: Ammonia tan mạnh trong nước nên cách này làm thất thoát khí.",
+      "cognitive_rationale": "Nhận ra một thuộc tính đã học.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: Công thức ion đã học.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: a: Công thức ion đã học.\nb: NH4++OH−→NH3+H2O.\nc: Ammonia là base yếu, làm quỳ tím ẩm hóa xanh.\nd: Ammonia tan mạnh trong nước nên cách này làm thất thoát khí.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-e7fc4454c644",
+        "CELL-578d2060472d"
+      ],
+      "rubric": [
+        {
+          "criterion": "a: Công thức ion đã học.",
+          "points": 0.25
+        },
+        {
+          "criterion": "b: NH4++OH−→NH3+H2O.",
+          "points": 0.25
+        },
+        {
+          "criterion": "c: Ammonia là base yếu, làm quỳ tím ẩm hóa xanh.",
+          "points": 0.25
+        },
+        {
+          "criterion": "d: Ammonia tan mạnh trong nước nên cách này làm thất thoát khí.",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-ea8bb6532c13",
+      "topic_id": "T20",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Hấp thụ hoàn toàn 0,0600 mol SO2 vào NaOH dư, chỉ tạo Na2SO3 theo SO2+2NaOH→Na2SO3+H2O. NaOH tối thiểu cần bao nhiêu gam? Na=23,O=16,H=1. Ghi gam, 2 chữ số thập phân.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 4.8,
+          "level": "TH",
+          "solution": "n(NaOH)=2×0,0600=0,120 mol; M=40 nên m=4,80 g."
+        }
+      ],
+      "solution": "n(NaOH)=2×0,0600=0,120 mol; M=40 nên m=4,80 g.",
+      "cognitive_rationale": "Đọc dữ kiện và thực hiện quy trình quen thuộc; số phép tính không làm tăng mức độ.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: n(NaOH)=2×0,0600=0,120 mol; M=40 nên m=4,80 g.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: n(NaOH)=2×0,0600=0,120 mol; M=40 nên m=4,80 g.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-ea8bb6532c13"
+      ],
+      "rubric": [
+        {
+          "criterion": "n(NaOH)=2×0,0600=0,120 mol; M=40 nên m=4,80 g.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-64acc05b78e7",
+      "topic_id": "T21",
+      "part": "P1",
+      "qtype": "mcq",
+      "stem": "Một dòng thải chứa HCl được cho qua tháp hấp thụ dung dịch NaOH. Vai trò hóa học chính của NaOH là gì?",
+      "options": {
+        "A": "Oxi hóa chloride thành chlorine",
+        "B": "Trung hòa HCl thành muối và nước",
+        "C": "Khử H+ thành hydrogen không cần điện cực",
+        "D": "Làm HCl kém tan bằng cách tăng pH"
+      },
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": "B",
+          "level": "TH",
+          "solution": "NaOH trung hòa HCl tạo muối và nước, chuyển acid khí sang dạng không bay hơi trong dung dịch."
+        }
+      ],
+      "solution": "NaOH trung hòa HCl tạo muối và nước, chuyển acid khí sang dạng không bay hơi trong dung dịch.",
+      "cognitive_rationale": "Đọc dữ kiện và thực hiện quy trình quen thuộc; số phép tính không làm tăng mức độ.",
+      "distractor_mechanisms": {
+        "A": "Gán base vai trò chất oxi hóa.",
+        "C": "Nhầm trung hòa với redox tạo H2.",
+        "D": "Đảo tác dụng bắt giữ acid nhờ chuyển hóa hóa học."
+      },
+      "easier": "Cho sẵn bước quyết định trong lời giải: NaOH trung hòa HCl tạo muối và nước, chuyển acid khí sang dạng không bay hơi trong dung dịch.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: NaOH trung hòa HCl tạo muối và nước, chuyển acid khí sang dạng không bay hơi trong dung dịch.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-64acc05b78e7"
+      ],
+      "rubric": [
+        {
+          "criterion": "NaOH trung hòa HCl tạo muối và nước, chuyển acid khí sang dạng không bay hơi trong dung dịch.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-362b29bf2089",
+      "topic_id": "T21",
+      "part": "P2",
+      "qtype": "true_false",
+      "stem": "Một quy trình lí tưởng dùng NH3 để tạo kết tủa NaHCO3 từ nước muối có CO2. Dòng chứa NH4Cl sau đó phản ứng với Ca(OH)2 để thu hồi NH3: 2NH4Cl+Ca(OH)2→2NH3+CaCl2+2H2O.",
+      "options": {},
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Ca(OH)2 cung cấp OH− để chuyển NH4+ thành NH3."
+        },
+        {
+          "sub": "b",
+          "text": "CaCl2 là nguồn tạo trực tiếp mọi ion carbonate trong NaHCO3."
+        },
+        {
+          "sub": "c",
+          "text": "Thu hồi NH3 làm giảm lượng NH3 mới phải bổ sung nếu các điều kiện khác giữ nguyên."
+        },
+        {
+          "sub": "d",
+          "text": "Theo phương trình, 1 mol Ca(OH)2 tái sinh tối đa 1 mol NH3."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH",
+          "solution": "Đây là phản ứng acid–base tái sinh ammonia."
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH",
+          "solution": "CaCl2 không chứa carbon; carbon đến từ CO2."
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "TH",
+          "solution": "Một phần tác nhân được tuần hoàn thay vì cấp mới."
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "TH",
+          "solution": "Tỉ lệ là 1:2, tối đa 2 mol NH3."
+        }
+      ],
+      "solution": "a: Đây là phản ứng acid–base tái sinh ammonia.\nb: CaCl2 không chứa carbon; carbon đến từ CO2.\nc: Một phần tác nhân được tuần hoàn thay vì cấp mới.\nd: Tỉ lệ là 1:2, tối đa 2 mol NH3.",
+      "cognitive_rationale": "Đọc dữ kiện và thực hiện quy trình quen thuộc; số phép tính không làm tăng mức độ.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: Đây là phản ứng acid–base tái sinh ammonia.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: a: Đây là phản ứng acid–base tái sinh ammonia.\nb: CaCl2 không chứa carbon; carbon đến từ CO2.\nc: Một phần tác nhân được tuần hoàn thay vì cấp mới.\nd: Tỉ lệ là 1:2, tối đa 2 mol NH3.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-362b29bf2089"
+      ],
+      "rubric": [
+        {
+          "criterion": "a: Đây là phản ứng acid–base tái sinh ammonia.",
+          "points": 0.25
+        },
+        {
+          "criterion": "b: CaCl2 không chứa carbon; carbon đến từ CO2.",
+          "points": 0.25
+        },
+        {
+          "criterion": "c: Một phần tác nhân được tuần hoàn thay vì cấp mới.",
+          "points": 0.25
+        },
+        {
+          "criterion": "d: Tỉ lệ là 1:2, tối đa 2 mol NH3.",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-05f529199e59",
+      "topic_id": "T21",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Một dòng cấp gồm 10,0 mol CO và 10,0 mol H2 đi qua thiết bị chuyển hóa hơi nước CO+H2O→CO2+H2. Đặt x mol CO chuyển hóa, 0≤x≤10; hơi nước dư được tách hoàn toàn sau đó. Hệ loại toàn bộ CO2 nhưng chỉ loại được tối đa 4,00 mol CO chưa phản ứng; nếu CO còn nhiều hơn thì lượng vượt đi theo sản phẩm. Dòng sản phẩm khô phải có tỉ phần mol H2 ít nhất 90,0%. Hỏi giá trị chuyển hóa CO tối thiểu, tính theo phần trăm số mol CO đầu vào? Ghi giá trị phần trăm, 1 chữ số thập phân.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 44.0,
+          "level": "VD",
+          "solution": "Sau chuyển hóa có 10+x mol H2, 10−x mol CO. Để yêu cầu dễ đạt nhất phải loại CO tối đa: CO còn max(6−x,0). Với x≤6, tỉ phần H2=(10+x)/[(10+x)+(6−x)]=(10+x)/16≥0,90, suy ra x≥4,40. x=4,40 thuộc miền đang xét và khả thi. Với x≥6 cũng đạt nhưng không tối thiểu. Chuyển hóa tối thiểu 4,40/10×100=44,0%."
+        }
+      ],
+      "solution": "Sau chuyển hóa có 10+x mol H2, 10−x mol CO. Để yêu cầu dễ đạt nhất phải loại CO tối đa: CO còn max(6−x,0). Với x≤6, tỉ phần H2=(10+x)/[(10+x)+(6−x)]=(10+x)/16≥0,90, suy ra x≥4,40. x=4,40 thuộc miền đang xét và khả thi. Với x≥6 cũng đạt nhưng không tối thiểu. Chuyển hóa tối thiểu 4,40/10×100=44,0%.",
+      "cognitive_rationale": "VD: phải mô hình hóa tuyến loại tạp chất có dung lượng hữu hạn, dựng biểu thức từng miền và kiểm tra nghiệm nằm trong miền; không dùng trực tiếp tỉ số H2/CO ban đầu.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn x=4,40 mol và hỏi thành phần dòng cuối.",
+      "harder": "Cho một dòng bypass quanh bộ chuyển hóa và tìm tỉ lệ bypass tiết kiệm hơi nước nhất.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-05f529199e59"
+      ],
+      "rubric": [
+        {
+          "criterion": "Sau chuyển hóa có 10+x mol H2, 10−x mol CO. Để yêu cầu dễ đạt nhất phải loại CO tối đa: CO còn max(6−x,0). Với x≤6, tỉ phần H2=(10+x)/[(10+x)+(6−x)]=(10+x)/16≥0,90, suy ra x≥4,40. x=4,40 thuộc miền đang xét và khả thi. Với x≥6 cũng đạt nhưng không tối thiểu. Chuyển hóa tối thiểu 4,40/10×100=44,0%.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-9b546b2bd64c",
+      "topic_id": "T22",
+      "part": "P1",
+      "qtype": "mcq",
+      "stem": "Một dung dịch cung cấp calcium ở mức 120 mg trong mỗi 100 mL. Cần tối thiểu 360 mg calcium từ dung dịch này, không có nguồn khác. Thể tích nhỏ nhất là bao nhiêu?",
+      "options": {
+        "A": "100 mL",
+        "B": "200 mL",
+        "C": "300 mL",
+        "D": "400 mL"
+      },
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": "C",
+          "level": "TH",
+          "solution": "V=360×100/120=300 mL."
+        }
+      ],
+      "solution": "V=360×100/120=300 mL.",
+      "cognitive_rationale": "Đọc dữ kiện và thực hiện quy trình quen thuộc; số phép tính không làm tăng mức độ.",
+      "distractor_mechanisms": {
+        "A": "Dùng thể tích cho một phần ba nhu cầu.",
+        "B": "Dừng ở 240 mg, chưa đạt ngưỡng.",
+        "D": "Chọn lượng đủ nhưng không nhỏ nhất."
+      },
+      "easier": "Cho sẵn bước quyết định trong lời giải: V=360×100/120=300 mL.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: V=360×100/120=300 mL.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-9b546b2bd64c"
+      ],
+      "rubric": [
+        {
+          "criterion": "V=360×100/120=300 mL.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-341f5cc28e73",
+      "topic_id": "T22",
+      "part": "P2",
+      "qtype": "true_false",
+      "stem": "Trong thiết bị kín về chất lỏng nhưng nhận O2 tinh khiết, ethanol chuyển thành ethanoic acid theo C2H5OH+O2→CH3COOH+H2O. Ban đầu có 100,0 g dung dịch chứa 9,20 g ethanol. Không bay hơi, không có phản ứng phụ; toàn bộ O2 đã phản ứng được giữ trong dung dịch qua sản phẩm. Khi dừng, dung dịch có 10,00% khối lượng ethanoic acid. C=12,H=1,O=16. Xét đúng/sai.",
+      "options": {},
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Mỗi mol ethanol chuyển hóa tạo 1 mol ethanoic acid."
+        },
+        {
+          "sub": "b",
+          "text": "Khối lượng dung dịch cuối vẫn là 100,0 g."
+        },
+        {
+          "sub": "c",
+          "text": "Hiệu suất chuyển hóa ethanol bằng 88,03% khi làm tròn 2 chữ số thập phân."
+        },
+        {
+          "sub": "d",
+          "text": "Nếu dùng mô hình khối lượng dung dịch không đổi, hiệu suất suy ra sẽ thấp hơn giá trị đúng."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH",
+          "solution": "Hệ số phương trình là 1:1."
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH",
+          "solution": "Dung dịch nhận thêm khối lượng O2 đã phản ứng."
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "VD",
+          "solution": "Gọi x mol chuyển hóa: m acid=60x, m dung dịch=100+32x. 60x/(100+32x)=0,1000→x=10/56,8. Ban đầu 0,200 mol; hiệu suất=x/0,200×100=88,03%."
+        },
+        {
+          "sub": "d",
+          "value": "D",
+          "level": "VD",
+          "solution": "Mô hình sai cho x=10/60=0,1667, hiệu suất 83,33%; nhận O2 làm tăng mẫu số nên cùng 10% đòi chuyển hóa nhiều hơn."
+        }
+      ],
+      "solution": "a: Hệ số phương trình là 1:1.\nb: Dung dịch nhận thêm khối lượng O2 đã phản ứng.\nc: Gọi x mol chuyển hóa: m acid=60x, m dung dịch=100+32x. 60x/(100+32x)=0,1000→x=10/56,8. Ban đầu 0,200 mol; hiệu suất=x/0,200×100=88,03%.\nd: Mô hình sai cho x=10/60=0,1667, hiệu suất 83,33%; nhận O2 làm tăng mẫu số nên cùng 10% đòi chuyển hóa nhiều hơn.",
+      "cognitive_rationale": "VD ở c,d: học sinh phải xác định biên hệ mở nhận oxygen, nối khối lượng toàn dung dịch và lượng sản phẩm qua cùng biến chuyển hóa; không được lấy tỉ số nồng độ.",
+      "distractor_mechanisms": {},
+      "easier": "Cho trước số mol ethanol đã chuyển hóa và hỏi lượng acid.",
+      "harder": "Cho phép nước bay hơi với lượng phụ thuộc mức chuyển hóa; suy miền hiệu suất phù hợp.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-341f5cc28e73",
+        "CELL-52e24621a574"
+      ],
+      "rubric": [
+        {
+          "criterion": "a: Hệ số phương trình là 1:1.",
+          "points": 0.25
+        },
+        {
+          "criterion": "b: Dung dịch nhận thêm khối lượng O2 đã phản ứng.",
+          "points": 0.25
+        },
+        {
+          "criterion": "c: Gọi x mol chuyển hóa: m acid=60x, m dung dịch=100+32x. 60x/(100+32x)=0,1000→x=10/56,8. Ban đầu 0,200 mol; hiệu suất=x/0,200×100=88,03%.",
+          "points": 0.25
+        },
+        {
+          "criterion": "d: Mô hình sai cho x=10/60=0,1667, hiệu suất 83,33%; nhận O2 làm tăng mẫu số nên cùng 10% đòi chuyển hóa nhiều hơn.",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-a063db7b9599",
+      "topic_id": "T22",
+      "part": "P3",
+      "qtype": "short_answer",
+      "stem": "Một mẻ vật liệu 80,0 kg chứa 25,0% nước theo khối lượng toàn vật liệu. Khí vào máy sấy có tổng khối lượng 200,0 kg, chứa 2,00% hơi nước theo khối lượng toàn dòng; khí ra chứa 6,00% hơi nước theo khối lượng toàn dòng. Toàn bộ khí khô đi xuyên máy, không rò, không ngưng tụ trong máy; nước khí nhận thêm chỉ từ vật liệu. Chất khô của vật liệu không mất đi. Độ ẩm sản phẩm sau sấy (phần trăm nước theo khối lượng toàn sản phẩm) bằng bao nhiêu? Làm tròn 2 chữ số thập phân.",
+      "options": {},
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": 16.07,
+          "level": "VD",
+          "solution": "Khí khô 200×0,98=196 kg, bảo toàn nên tổng khí ra 196/0,94=208,5106 kg. Nước khí ra 12,5106 kg, nước khí vào 4 kg, lấy từ vật liệu 8,5106 kg. Vật liệu còn nước 20−8,5106=11,4894 kg, chất khô 60 kg, tổng 71,4894 kg. Độ ẩm 11,4894/71,4894×100=16,07%."
+        }
+      ],
+      "solution": "Khí khô 200×0,98=196 kg, bảo toàn nên tổng khí ra 196/0,94=208,5106 kg. Nước khí ra 12,5106 kg, nước khí vào 4 kg, lấy từ vật liệu 8,5106 kg. Vật liệu còn nước 20−8,5106=11,4894 kg, chất khô 60 kg, tổng 71,4894 kg. Độ ẩm 11,4894/71,4894×100=16,07%.",
+      "cognitive_rationale": "VD: phải chọn đại lượng khí khô được bảo toàn thay vì khối lượng khí ướt, liên kết hai cân bằng rồi thay đúng mẫu số vật liệu cuối; dữ liệu phần khối lượng của hai dòng khác nhau cần mô hình đồng thời.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn lượng nước thoát 8,5106 kg và hỏi độ ẩm cuối.",
+      "harder": "Thêm khí tuần hoàn và xác định tỉ lệ tuần hoàn tối đa để độ ẩm cuối đạt một ngưỡng.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-a063db7b9599"
+      ],
+      "rubric": [
+        {
+          "criterion": "Khí khô 200×0,98=196 kg, bảo toàn nên tổng khí ra 196/0,94=208,5106 kg. Nước khí ra 12,5106 kg, nước khí vào 4 kg, lấy từ vật liệu 8,5106 kg. Vật liệu còn nước 20−8,5106=11,4894 kg, chất khô 60 kg, tổng 71,4894 kg. Độ ẩm 11,4894/71,4894×100=16,07%.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-efc938fb792d",
+      "topic_id": "T23",
+      "part": "P1",
+      "qtype": "mcq",
+      "stem": "Chất màu X tan tốt trong ethyl acetate nhưng ít tan trong nước. Ethyl acetate không trộn lẫn với nước và có khối lượng riêng nhỏ hơn nước. Lắc dung dịch nước chứa X với ethyl acetate rồi để yên trong phễu chiết. Mô tả nào đúng?",
+      "options": {
+        "A": "Pha hữu cơ ở trên, nhận phần lớn X.",
+        "B": "Pha hữu cơ ở dưới, nhận phần lớn X.",
+        "C": "Pha nước ở trên, nhận phần lớn X.",
+        "D": "Hai pha hợp thành một pha do X tan trong dung môi."
+      },
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": "A",
+          "level": "TH",
+          "solution": "Đây là chiết lỏng–lỏng; pha ethyl acetate nhẹ hơn nằm trên và nhận phần lớn X."
+        }
+      ],
+      "solution": "Đây là chiết lỏng–lỏng; pha ethyl acetate nhẹ hơn nằm trên và nhận phần lớn X.",
+      "cognitive_rationale": "Đọc dữ kiện và thực hiện quy trình quen thuộc; số phép tính không làm tăng mức độ.",
+      "distractor_mechanisms": {
+        "B": "Đảo vị trí pha dù biết khối lượng riêng.",
+        "C": "Đảo cả vị trí pha nước lẫn phân bố chất tan.",
+        "D": "Nhầm sự hòa tan chất tan với sự trộn lẫn hai dung môi."
+      },
+      "easier": "Cho sẵn bước quyết định trong lời giải: Đây là chiết lỏng–lỏng; pha ethyl acetate nhẹ hơn nằm trên và nhận phần lớn X.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: Đây là chiết lỏng–lỏng; pha ethyl acetate nhẹ hơn nằm trên và nhận phần lớn X.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-efc938fb792d"
+      ],
+      "rubric": [
+        {
+          "criterion": "Đây là chiết lỏng–lỏng; pha ethyl acetate nhẹ hơn nằm trên và nhận phần lớn X.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-97ecdbeb00b4",
+      "topic_id": "T23",
+      "part": "P2",
+      "qtype": "true_false",
+      "stem": "Một chất rắn S tan nhiều hơn trong nước nóng so với nước lạnh; tạp chất T không tan ở cả hai nhiệt độ. Hòa tan hỗn hợp vào nước nóng, lọc nóng để bỏ T, làm lạnh dịch lọc rồi lọc lấy S kết tinh. Bỏ qua phản ứng hóa học.",
+      "options": {},
+      "statements": [
+        {
+          "sub": "a",
+          "text": "Lọc nóng đầu tiên loại T khỏi dung dịch."
+        },
+        {
+          "sub": "b",
+          "text": "Làm lạnh dịch lọc có thể tạo tinh thể S do độ tan giảm."
+        },
+        {
+          "sub": "c",
+          "text": "S kết tinh là bằng chứng bắt buộc đã xảy ra phản ứng hóa học tạo chất mới."
+        },
+        {
+          "sub": "d",
+          "text": "Rửa nhanh tinh thể bằng ít nước lạnh thường làm hao hụt S ít hơn cùng lượng nước nóng."
+        }
+      ],
+      "answers": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH",
+          "solution": "T không tan và được giữ trên giấy lọc."
+        },
+        {
+          "sub": "b",
+          "value": "D",
+          "level": "TH",
+          "solution": "Dung dịch nóng có thể trở nên quá bão hòa khi nguội."
+        },
+        {
+          "sub": "c",
+          "value": "S",
+          "level": "TH",
+          "solution": "Kết tinh ở đây là chuyển pha, đề đã loại phản ứng hóa học."
+        },
+        {
+          "sub": "d",
+          "value": "D",
+          "level": "TH",
+          "solution": "Độ tan S trong nước lạnh thấp hơn theo dữ kiện."
+        }
+      ],
+      "solution": "a: T không tan và được giữ trên giấy lọc.\nb: Dung dịch nóng có thể trở nên quá bão hòa khi nguội.\nc: Kết tinh ở đây là chuyển pha, đề đã loại phản ứng hóa học.\nd: Độ tan S trong nước lạnh thấp hơn theo dữ kiện.",
+      "cognitive_rationale": "Đọc dữ kiện và thực hiện quy trình quen thuộc; số phép tính không làm tăng mức độ.",
+      "distractor_mechanisms": {},
+      "easier": "Cho sẵn bước quyết định trong lời giải: T không tan và được giữ trên giấy lọc.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: a: T không tan và được giữ trên giấy lọc.\nb: Dung dịch nóng có thể trở nên quá bão hòa khi nguội.\nc: Kết tinh ở đây là chuyển pha, đề đã loại phản ứng hóa học.\nd: Độ tan S trong nước lạnh thấp hơn theo dữ kiện.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-97ecdbeb00b4"
+      ],
+      "rubric": [
+        {
+          "criterion": "a: T không tan và được giữ trên giấy lọc.",
+          "points": 0.25
+        },
+        {
+          "criterion": "b: Dung dịch nóng có thể trở nên quá bão hòa khi nguội.",
+          "points": 0.25
+        },
+        {
+          "criterion": "c: Kết tinh ở đây là chuyển pha, đề đã loại phản ứng hóa học.",
+          "points": 0.25
+        },
+        {
+          "criterion": "d: Độ tan S trong nước lạnh thấp hơn theo dữ kiện.",
+          "points": 0.25
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-27a9cdf6c593",
+      "topic_id": "T24",
+      "part": "P1",
+      "qtype": "mcq",
+      "stem": "Đun CH3CH2Br với NaOH trong dung dịch nước thu CH3CH2OH và NaBr. Biến đổi hữu cơ chính thuộc loại nào?",
+      "options": {
+        "A": "Cộng",
+        "B": "Tách",
+        "C": "Trùng hợp",
+        "D": "Thế"
+      },
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": "D",
+          "level": "TH",
+          "solution": "Nhóm OH thay nguyên tử Br trên cùng khung carbon nên là phản ứng thế."
+        }
+      ],
+      "solution": "Nhóm OH thay nguyên tử Br trên cùng khung carbon nên là phản ứng thế.",
+      "cognitive_rationale": "Đọc dữ kiện và thực hiện quy trình quen thuộc; số phép tính không làm tăng mức độ.",
+      "distractor_mechanisms": {
+        "A": "Nhầm thêm nhóm OH với cộng vào liên kết bội.",
+        "B": "Nhầm loại Br với tách HBr tạo nối đôi.",
+        "C": "Nhầm một biến đổi phân tử nhỏ với nối nhiều monomer."
+      },
+      "easier": "Cho sẵn bước quyết định trong lời giải: Nhóm OH thay nguyên tử Br trên cùng khung carbon nên là phản ứng thế.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: Nhóm OH thay nguyên tử Br trên cùng khung carbon nên là phản ứng thế.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-27a9cdf6c593"
+      ],
+      "rubric": [
+        {
+          "criterion": "Nhóm OH thay nguyên tử Br trên cùng khung carbon nên là phản ứng thế.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-F-dee03862e821",
+      "topic_id": "T25",
+      "part": "P1",
+      "qtype": "mcq",
+      "stem": "Công thức của aluminium sulfate là gì? Biết ion aluminium là Al3+ và sulfate là SO4(2−).",
+      "options": {
+        "A": "AlSO4",
+        "B": "Al2(SO4)3",
+        "C": "Al3(SO4)2",
+        "D": "Al2(SO3)3"
+      },
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": "B",
+          "level": "TH",
+          "solution": "Bội chung điện tích là 6: cần 2Al3+ và 3SO4(2−), công thức Al2(SO4)3."
+        }
+      ],
+      "solution": "Bội chung điện tích là 6: cần 2Al3+ và 3SO4(2−), công thức Al2(SO4)3.",
+      "cognitive_rationale": "Đọc dữ kiện và thực hiện quy trình quen thuộc; số phép tính không làm tăng mức độ.",
+      "distractor_mechanisms": {
+        "A": "Ghép ion theo tỉ lệ 1:1, không trung hòa điện tích.",
+        "C": "Đặt trực tiếp điện tích làm chỉ số cùng ion thay vì cân bằng.",
+        "D": "Nhầm sulfate với sulfite."
+      },
+      "easier": "Cho sẵn bước quyết định trong lời giải: Bội chung điện tích là 6: cần 2Al3+ và 3SO4(2−), công thức Al2(SO4)3.",
+      "harder": "Yêu cầu giải thích thêm vì sao một cách làm trái với lời giải sau không đúng: Bội chung điện tích là 6: cần 2Al3+ và 3SO4(2−), công thức Al2(SO4)3.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [
+        "CELL-dee03862e821"
+      ],
+      "rubric": [
+        {
+          "criterion": "Bội chung điện tích là 6: cần 2Al3+ và 3SO4(2−), công thức Al2(SO4)3.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận lập luận hóa học tương đương, bảo toàn và đổi đơn vị nhất quán; kết quả phải thỏa toàn bộ điều kiện đề."
+    },
+    {
+      "id": "HH-M13",
+      "topic_id": "T05",
+      "part": "P1",
+      "qtype": "mcq",
+      "stem": "Ở điều kiện chuẩn (25 °C, hoạt độ Fe2+ và Ag+ đều bằng 1; kim loại tinh khiết), pin Galvani iron–silver hoạt động tự phát. Cho E°(Fe2+/Fe)=−0,44 V và E°(Ag+/Ag)=+0,80 V. Tại anode xảy ra quá trình nào?",
+      "options": {
+        "A": "Ag⁺ + e⁻ → Ag",
+        "B": "Fe → Fe²⁺ + 2e⁻",
+        "C": "Fe²⁺ + 2e⁻ → Fe",
+        "D": "Ag → Ag⁺ + e⁻"
+      },
+      "statements": [],
+      "answers": [
+        {
+          "sub": null,
+          "value": "B",
+          "level": "TH",
+          "solution": "So sánh thế khử chuẩn: Fe thấp hơn Ag, nên Fe bị oxi hóa tại anode: Fe→Fe2++2e−."
+        }
+      ],
+      "solution": "So sánh thế khử chuẩn: Fe thấp hơn Ag, nên Fe bị oxi hóa tại anode: Fe→Fe2++2e−.",
+      "cognitive_rationale": "TH: so sánh hai thế điện cực chuẩn và suy chiều bán phản ứng bằng quy trình quen thuộc.",
+      "distractor_mechanisms": {
+        "A": "Nhầm khử ở cathode với oxi hóa ở anode.",
+        "C": "Đảo chiều bán phản ứng của iron.",
+        "D": "Chọn silver làm anode dù thế khử lớn hơn."
+      },
+      "easier": "Cho rõ anode là iron; hỏi dấu electron.",
+      "harder": "Bỏ nhãn kim loại, yêu cầu lập chiều dòng electron từ hai thế điện cực.",
+      "assets": [],
+      "origin": "synthetic_not_corpus",
+      "status": "author_draft_pending_unkeyed_review",
+      "target_cell_ids": [],
+      "rubric": [
+        {
+          "criterion": "Chọn B, xác định Fe bị oxi hóa từ phép so sánh thế chuẩn.",
+          "points": 1
+        }
+      ],
+      "equivalent_methods": "Chấp nhận tính E°pin=1,24 V và xác định chiều tự phát."
+    }
+  ]
+}

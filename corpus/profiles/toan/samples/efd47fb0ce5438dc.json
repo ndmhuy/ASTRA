@@ -1,0 +1,151 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "efd47fb0ce5438dc",
+    "topic": "Tốc độ biến thiên trung bình",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một mô hình lượng còn lại theo thời gian và một khoảng thời gian đầu kì.",
+        "task": "Kiểm tra tốc độ sử dụng trung bình trên khoảng đó.",
+        "reasoning": [
+          "Tính lượng còn lại ở đầu và cuối khoảng bằng mô hình nguyên hàm.",
+          "Lấy lượng đã sử dụng chia cho độ dài khoảng thời gian.",
+          "Đối chiếu tốc độ trung bình với nhận định."
+        ],
+        "combines": [
+          "Nguyên hàm lớp trên",
+          "Tốc độ biến thiên trung bình"
+        ],
+        "difficulty_source": "Phân biệt tốc độ trung bình với tốc độ tức thời.",
+        "evidence_uncertainty": "Xếp lớp theo khái niệm tốc độ biến thiên trung bình; việc xác định lượng tại các thời điểm huy động nguyên hàm ở lớp sau.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "9ed45d16a975|P2|1|d"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "efd47fb0ce5438dc",
+    "stem": "Một bồn chứa ban đầu có 100 lít nước và không được cấp thêm nước. Gọi Q(t) là lượng nước còn lại, tính bằng lít, sau t phút. Trong khoảng 0 ≤ t ≤ 5, mô hình cho Q′(t) = −(2t + 4). Tốc độ sử dụng nước trung bình trên một khoảng thời gian được hiểu là lượng nước đã sử dụng chia cho độ dài khoảng đó. Xét tính đúng sai của các phát biểu sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Lượng nước còn lại được biểu diễn bởi Q(t) = 100 − t² − 4t."
+      },
+      {
+        "sub": "b",
+        "text": "Sau 2 phút, bồn còn 92 lít nước."
+      },
+      {
+        "sub": "c",
+        "text": "Tốc độ sử dụng nước trung bình trong 2 phút đầu là 6 lít/phút."
+      },
+      {
+        "sub": "d",
+        "text": "Tốc độ sử dụng nước trung bình từ phút thứ 1 đến phút thứ 3 là −8 lít/phút."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Lấy nguyên hàm, Q(t) = −t² − 4t + C. Điều kiện Q(0) = 100 cho C = 100, nên a đúng. Q(2) = 100 − 4 − 8 = 88 lít, nên b sai. Trong 2 phút đầu, lượng nước đã sử dụng là 100 − 88 = 12 lít; tốc độ sử dụng trung bình là 12/2 = 6 lít/phút, nên c đúng. Q(1) = 95 và Q(3) = 79, do đó tốc độ sử dụng trung bình trên [1; 3] là (95 − 79)/(3 − 1) = 8 lít/phút. Giá trị −8 là tốc độ biến thiên trung bình của lượng nước còn lại, nên d sai.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Chỉ tính lượng giảm theo hạng tử 4t, bỏ qua phần t².",
+        "why_plausible": "Học sinh có thể coi mức sử dụng ban đầu 4 lít/phút là không đổi và tính 100 − 4 × 2 = 92."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Đồng nhất tốc độ sử dụng nước với tốc độ biến thiên của lượng nước còn lại.",
+        "why_plausible": "Thương (Q(3) − Q(1))/2 đúng bằng −8 nhưng mang ý nghĩa lượng còn lại đang giảm."
+      }
+    ],
+    "level_reason": "Mức cao nhất là TH: xác định hằng số nguyên hàm từ điều kiện ban đầu, tính giá trị hàm và áp dụng định nghĩa tốc độ trung bình là các quy trình quen thuộc. Việc phân biệt lượng sử dụng với lượng còn lại đòi hỏi hiểu dấu của kết quả.",
+    "prerequisites": [
+      "Nguyên hàm của đa thức",
+      "Xác định hằng số từ giá trị ban đầu",
+      "Tốc độ biến thiên trung bình",
+      "Phân biệt lượng còn lại và lượng đã sử dụng"
+    ],
+    "variation_guidance": "Thay lượng ban đầu, hàm tốc độ và khoảng thời gian; bảo đảm lượng còn lại không âm trên miền xét và diễn đạt rõ tốc độ sử dụng hay tốc độ biến thiên của lượng còn lại.",
+    "uncertainties": [
+      "Đây là mẫu tổng hợp nguyên gốc, chỉ tham khảo cấu trúc quan sát cấp tỉnh từ bên thứ ba, chưa có neo chính thức.",
+      "Bài huy động nguyên hàm ở giai đoạn học sau khái niệm tốc độ biến thiên trung bình; cần kiểm tra tiến độ dạy học trước khi sử dụng."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "efd47fb0ce5438dc",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Từ Q′(t) = −2t − 4 và Q(0) = 100, suy ra Q(t) = 100 − t² − 4t. Do đó Q(2) = 88 lít. Tốc độ sử dụng trung bình trong hai phút đầu là (100 − 88)/2 = 6 lít/phút. Q(1) = 95 và Q(3) = 79, nên tốc độ sử dụng trung bình từ phút 1 đến phút 3 là (95 − 79)/2 = 8 lít/phút, không phải −8.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Ý a là tìm nguyên hàm với điều kiện ban đầu; ý b là thay số; ý c và d áp dụng trực tiếp định nghĩa tốc độ sử dụng trung bình đã cho. Các thao tác đều ở mức TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/3d86afb9caa270983214fd2849941402348ce08d2cd5c1053a8d381bde053e7e.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/3d86afb9caa270983214fd2849941402348ce08d2cd5c1053a8d381bde053e7e.resolve.json"
+}

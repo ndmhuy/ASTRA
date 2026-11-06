@@ -1,0 +1,186 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "4cb1a21ca5b1c144",
+    "topic": "Tọa độ vectơ",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Hai đầu một đoạn chuyển động, quan hệ vectơ xác định điểm trung gian và hình tọa độ nhìn thấy được.",
+        "task": "Kiểm tra độ cao tại điểm chia đoạn.",
+        "reasoning": [
+          "Biểu diễn tọa độ điểm trung gian bằng phép nội suy vectơ.",
+          "Lấy thành phần vuông góc với mặt đất làm độ cao.",
+          "Đổi đơn vị và đối chiếu."
+        ],
+        "combines": [
+          "Phép toán vectơ theo tọa độ",
+          "Điểm chia đoạn",
+          "Độ cao"
+        ],
+        "difficulty_source": "Nhận ra chỉ cần nội suy thành phần độ cao.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một hình hộp chữ nhật đặt trong hệ tọa độ và trung điểm của một cạnh.",
+        "task": "Kiểm tra tọa độ vectơ có thứ tự điểm đầu, điểm cuối xác định.",
+        "reasoning": [
+          "Tìm tọa độ trung điểm và đỉnh cần dùng.",
+          "Lấy tọa độ điểm cuối trừ tọa độ điểm đầu.",
+          "Đối chiếu với bộ tọa độ được nêu."
+        ],
+        "combines": [
+          "Tọa độ trung điểm",
+          "Tọa độ vectơ",
+          "Hình hộp chữ nhật"
+        ],
+        "difficulty_source": "Giữ đúng hướng vectơ sau khi tính trung điểm.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "3b4cca11ea82|P2|4|b",
+      "adb051fd8253|P2|3|b"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "4cb1a21ca5b1c144",
+    "stem": "Trong hệ tọa độ Oxyz, mặt phẳng Oxy biểu diễn mặt đất nằm ngang và chiều dương của Oz hướng lên trên. Mỗi đơn vị tọa độ ứng với 100 m. Một thiết bị bay di chuyển theo đoạn thẳng từ A(2; −1; 3) đến B(8; 5; 9). Điểm M trên đoạn AB thỏa mãn vectơ AM = (1/3) vectơ AB. Xét tính đúng, sai của các khẳng định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Vectơ AB có tọa độ (6; 6; 6)."
+      },
+      {
+        "sub": "b",
+        "text": "Điểm M có tọa độ (4; 1; 2)."
+      },
+      {
+        "sub": "c",
+        "text": "Khi ở M, thiết bị bay có độ cao 500 m so với mặt đất."
+      },
+      {
+        "sub": "d",
+        "text": "Vectơ MB có tọa độ (2; 2; 2)."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Vectơ AB = (8 − 2; 5 − (−1); 9 − 3) = (6; 6; 6), nên a đúng. Từ giả thiết, vectơ AM = (2; 2; 2), do đó M = (2 + 2; −1 + 2; 3 + 2) = (4; 1; 5). Ý b sai vì tọa độ z của M phải bằng tọa độ z của A cộng độ dịch chuyển theo Oz, không phải chỉ bằng độ dịch chuyển. Độ cao tại M là 5 × 100 = 500 m, nên c đúng. Vectơ MB = (8 − 4; 5 − 1; 9 − 5) = (4; 4; 4), nên d sai; bộ (2; 2; 2) là tọa độ vectơ AM.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Dùng thành phần theo Oz của vectơ AM làm tọa độ z của điểm M.",
+        "why_plausible": "Học sinh có thể quên cộng độ cao ban đầu khi chuyển từ vectơ dịch chuyển sang tọa độ điểm."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Cho rằng MB cũng bằng một phần ba AB như AM.",
+        "why_plausible": "Học sinh có thể dùng lại tỉ lệ đã cho mà không xác định phần đoạn đường còn lại từ M đến B."
+      }
+    ],
+    "level_reason": "Các ý yêu cầu trừ tọa độ, áp dụng trực tiếp quan hệ chia đoạn bằng vectơ và diễn giải tọa độ độ cao theo đơn vị đã cho. Mức cao nhất của toàn mẫu là TH.",
+    "prerequisites": [
+      "Phép trừ tọa độ vectơ",
+      "Phép nhân vectơ với một số",
+      "Tìm tọa độ điểm từ điểm đầu và vectơ dịch chuyển",
+      "Ý nghĩa tọa độ z khi Oxy là mặt đất",
+      "Đổi đơn vị độ dài"
+    ],
+    "variation_guidance": "Thay điểm đầu, điểm cuối hoặc tỉ lệ chia đoạn; có thể cho thiết bị hạ thấp dần nhưng phải giữ tọa độ và mô tả mặt đất đầy đủ. Phân biệt rõ độ cao với độ thay đổi độ cao.",
+    "uncertainties": [
+      "Đây là mẫu minh họa tổng hợp nguyên gốc, không phải bằng chứng đề thi thật.",
+      "Cấu trúc tham khảo chỉ được quan sát ở nguồn cấp tỉnh qua bên thứ ba, chưa có neo chính thức. Những lỗi dùng để tạo khẳng định sai là giả định sư phạm."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "4cb1a21ca5b1c144",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Vectơ AB = B − A = (6; 6; 6), nên a đúng. Vectơ AM = (2; 2; 2), do đó M = A + vectơ AM = (4; 1; 5), nên b sai. Độ cao tại M là 5 × 100 = 500 m, nên c đúng. Vectơ MB = B − M = (4; 4; 4), nên d sai.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a: tính tọa độ vectơ bằng hiệu tọa độ. b: xác định điểm theo quan hệ vectơ đã cho. c: diễn giải tung độ cao z và đổi theo tỉ lệ đơn vị. d: tính hiệu tọa độ sau khi xác định M. Từng ý đều dùng quy trình quen thuộc, thuộc TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/toan/c9fa72d951523b701c12b206e139b9d837df7c4a8e676158e4ef8bfc4edd137b.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/toan/c9fa72d951523b701c12b206e139b9d837df7c4a8e676158e4ef8bfc4edd137b.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 1,
+  "source_rows_sha256": "863dd6885185956ed9dabede84bf529993a764e4871f75f25629503cf8f2731a",
+  "source_overlap_review": {
+    "disposition": "generic_mathematical_shape_false_positive",
+    "reviewer": "parent_sol",
+    "at_utc": "2026-11-03T22:54:28.899410+00:00",
+    "sample_sha256": "aa4351f156e73044aab62d916da499f479aee51cd8c0738dec1ba6ff95fe7657",
+    "overlap_sha256": [
+      "9a7480101ce58be49130c3fadb24f97ce0d97fe291d0452eb58db1a08c4e2d88"
+    ],
+    "reason": "Only the conventional interpretation of the Oxy plane as ground matches; no new point coordinates, scale, segment ratio, statements or answer data are included in the overlap.",
+    "mathematical_check": "The displacement is (6,6,6), its one-third is (2,2,2), M=(4,1,5), and the remaining displacement is (4,4,4). Thus D/S/D/S and the stated height conversion are consistent. All false statements have specific mistake explanations.",
+    "semantic_noncopying_proved": false
+  }
+}

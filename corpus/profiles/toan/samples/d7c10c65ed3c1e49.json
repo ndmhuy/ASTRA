@@ -1,0 +1,146 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "d7c10c65ed3c1e49",
+    "topic": "Nguyên hàm và tăng trưởng mũ",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một đại lượng dương có tốc độ biến thiên tỉ lệ với chính nó và dữ kiện tại các thời điểm.",
+        "task": "Kiểm tra công thức biểu diễn đại lượng theo thời gian.",
+        "reasoning": [
+          "Nhận dạng họ hàm mũ từ quan hệ giữa hàm và đạo hàm.",
+          "Dùng điều kiện ban đầu xác định hệ số.",
+          "Đối chiếu công thức đề xuất."
+        ],
+        "combines": [
+          "Nguyên hàm",
+          "Hàm số mũ",
+          "Điều kiện ban đầu"
+        ],
+        "difficulty_source": "Phân biệt điều kiện ban đầu với dữ kiện ở thời điểm sau.",
+        "evidence_uncertainty": "Thiếu khóa đúng sai khớp mã; mức lớp dựa trên cách giải bằng nguyên hàm, không coi phương trình vi phân là một bài độc lập trong danh mục.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "0ecb85132b84|P2|1|a"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "d7c10c65ed3c1e49",
+    "stem": "Trong một mô hình nuôi cấy, lượng sinh khối Q(t)>0, tính bằng gam, phụ thuộc vào thời gian t≥0, tính bằng giờ. Giả sử Q có đạo hàm và Q'(t)=kQ(t), với k là hằng số. Biết Q(0)=120 và Q(3)=180. Xét tính đúng, sai của các khẳng định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Hàm ln Q(t) có đạo hàm bằng k."
+      },
+      {
+        "sub": "b",
+        "text": "Hằng số k bằng ln(3/2)/3."
+      },
+      {
+        "sub": "c",
+        "text": "Theo mô hình, Q(6)=240 gam."
+      },
+      {
+        "sub": "d",
+        "text": "Tích phân từ 0 đến 3 của Q'(t) theo t bằng 60 gam."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) Vì Q(t)>0 nên (ln Q(t))'=Q'(t)/Q(t)=k. b) Lấy nguyên hàm được ln Q(t)=kt+C. Từ Q(0)=120 suy ra Q(t)=120e^(kt). Do Q(3)=180 nên e^(3k)=3/2, suy ra k=ln(3/2)/3. c) Q(6)=120(e^(3k))²=120·(3/2)²=270 gam, nên khẳng định sai. d) Theo công thức Newton–Leibniz, tích phân từ 0 đến 3 của Q'(t) bằng Q(3)−Q(0)=180−120=60 gam.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "c",
+        "mistake": "Coi mức tăng 60 gam trong ba giờ đầu là mức tăng cố định cho mỗi khoảng ba giờ.",
+        "why_plausible": "Hai giá trị quan sát dễ khiến học sinh ngoại suy tuyến tính, trong khi giả thiết quy định tốc độ tăng tỉ lệ với lượng hiện có."
+      }
+    ],
+    "level_reason": "Mức cao nhất của các ý là TH. Học sinh thực hiện các thao tác quen thuộc: đạo hàm lôgarit, lấy nguyên hàm, xác định hằng số và diễn giải tích phân của tốc độ biến thiên. Quy luật đã được cho, không yêu cầu tự xây dựng mô hình.",
+    "prerequisites": [
+      "Đạo hàm của ln Q(t) khi Q(t)>0",
+      "Nguyên hàm của hằng số",
+      "Hàm số mũ và lôgarit",
+      "Công thức Newton–Leibniz"
+    ],
+    "variation_guidance": "Có thể thay lượng ban đầu và hệ số tăng sau một khoảng thời gian; giữ giả thiết tốc độ tỉ lệ và chọn dữ kiện để phân biệt tăng theo hệ số với tăng theo lượng cố định.",
+    "uncertainties": [
+      "Đây là mẫu minh họa tổng hợp; cấu trúc tham khảo chỉ từ quan sát cấp tỉnh qua nguồn bên thứ ba, không có neo đề chính thức hoặc khóa đúng sai tương ứng.",
+      "Cần giáo viên rà soát vị trí của mô hình tăng trưởng trong tiến độ dạy học; lời giải sử dụng đạo hàm và nguyên hàm phổ thông, không yêu cầu lý thuyết phương trình vi phân."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "d7c10c65ed3c1e49",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) (ln Q(t))'=Q'(t)/Q(t)=k. b) Suy ra ln(Q(t)/120)=kt. Tại t=3, k=ln(3/2)/3. c) Q(6)=120(3/2)²=270 gam, không phải 240 gam. d) Theo công thức Newton–Leibniz, tích phân đã cho bằng Q(3)−Q(0)=180−120=60 gam.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a) Áp dụng quy tắc đạo hàm hàm hợp. b) Lấy nguyên hàm và thay điều kiện theo quy trình quen thuộc; mô hình suy ra được từ đạo hàm logarit, không cần giả định công thức phương trình vi phân ngoài đề. c) Tính giá trị theo mô hình đã suy ra. d) Áp dụng trực tiếp công thức Newton–Leibniz. Các ý đều ở mức TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/6e56a3c325b185cbeee3fecc43660d5c401ace967d81f8ef1c9d4e79a5c538fb.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/6e56a3c325b185cbeee3fecc43660d5c401ace967d81f8ef1c9d4e79a5c538fb.resolve.json"
+}

@@ -1,0 +1,127 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "392b7e57e5f4b71b",
+    "topic": "Xác suất có điều kiện",
+    "part": "P3",
+    "level": "VD",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Các hộp có thành phần màu khác nhau; một phép thử ngẫu nhiên chọn hộp nhận vật chuyển đến, sau đó rút đồng thời và quan sát màu; có hình minh họa.",
+        "task": "Tính xác suất nhánh ban đầu khi đã biết kết quả rút cuối, rồi làm tròn.",
+        "reasoning": [
+          "Phân nhánh theo kết quả phép thử chọn hộp nhận.",
+          "Trong mỗi nhánh, phân loại thành phần màu của các vật được chuyển.",
+          "Tính xác suất quan sát cuối theo từng thành phần bằng tổ hợp.",
+          "Gộp các thành phần để có xác suất quan sát theo mỗi nhánh.",
+          "Áp dụng Bayes cho nhánh cần tìm và làm tròn."
+        ],
+        "combines": [
+          "Tổ hợp",
+          "Chọn không hoàn lại",
+          "Xác suất toàn phần",
+          "Công thức Bayes"
+        ],
+        "difficulty_source": "Theo dõi thành phần ngẫu nhiên của hộp sau phép chuyển trước khi đảo điều kiện.",
+        "evidence_uncertainty": "Ảnh minh họa là bản cắt chưa kiểm chứng độc lập; thành phần các hộp được mô tả đầy đủ bằng chữ.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Các nguồn chứa vật thuộc những loại khác nhau, quy trình chọn mẫu trung gian rồi chọn tiếp từ mẫu đó.",
+        "task": "Tính xác suất mẫu cuối có ít nhất một vật thuộc loại chỉ định.",
+        "reasoning": [
+          "Chuyển sang biến cố đối là mẫu cuối chỉ chứa loại còn lại.",
+          "Phân loại mẫu cuối theo số vật có nguồn gốc từ từng nguồn ban đầu.",
+          "Tính trọng số của mỗi kiểu nguồn trong mẫu trung gian.",
+          "Tính xác suất các vật được chọn đều thuộc loại còn lại bằng chọn không hoàn lại.",
+          "Cộng các nhánh, lấy xác suất đối và làm tròn."
+        ],
+        "combines": [
+          "Xác suất cổ điển",
+          "Tổ hợp",
+          "Xác suất toàn phần",
+          "Biến cố đối"
+        ],
+        "difficulty_source": "Theo dõi tính phụ thuộc qua nhiều tầng chọn mẫu thay vì thay bằng các lần chọn độc lập.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "9ed45d16a975|P3|3|None",
+      "c6340827ba59|P3|1|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "392b7e57e5f4b71b",
+    "stem": "Hộp A chứa 1 thẻ đỏ và 2 thẻ xanh. Hộp B chứa n thẻ đỏ và 2 thẻ xanh, trong đó n là số nguyên dương cần lựa chọn. Hộp C chứa 1 thẻ đỏ và 1 thẻ xanh. Gieo một con xúc xắc cân đối có các mặt ghi từ 1 đến 6: nếu kết quả không vượt quá 4 thì chọn hộp A, nếu kết quả là 5 hoặc 6 thì chọn hộp B. Chọn ngẫu nhiên một thẻ từ C chuyển vào hộp đã chọn, sau đó rút ngẫu nhiên đồng thời hai thẻ từ hộp nhận. Mỗi thẻ hoặc mỗi cặp thẻ trong từng lần chọn đều có khả năng được chọn như nhau; việc gieo xúc xắc độc lập với việc chọn thẻ. Cần chọn n sao cho đồng thời thỏa mãn hai yêu cầu: nếu hai thẻ rút cuối đều đỏ thì xác suất hộp nhận là A không vượt quá 1/3; nếu hai thẻ rút cuối khác màu thì xác suất hộp nhận là A ít nhất bằng 3/4. Giá trị nhỏ nhất của n là bao nhiêu?",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "8",
+        "level": "VD"
+      }
+    ],
+    "solution": "Gọi E là biến cố hai thẻ cuối đều đỏ, F là biến cố hai thẻ cuối khác màu. Xác suất chọn A là 2/3, chọn B là 1/3. Thẻ chuyển từ C có mỗi màu với xác suất 1/2. Với A, nếu chuyển thẻ xanh thì hộp có 1 đỏ, 3 xanh; nếu chuyển thẻ đỏ thì có 2 đỏ, 2 xanh. Vì thế P(E|A)=(1/2)·0+(1/2)·1/6=1/12 và P(F|A)=(1/2)·3/6+(1/2)·4/6=7/12. Với B, hai thành phần sau chuyển lần lượt là n đỏ, 3 xanh và n+1 đỏ, 2 xanh, cùng có n+3 thẻ. Do đó P(E|B)=[C(n,2)+C(n+1,2)]/[2C(n+3,2)]=n²/[(n+3)(n+2)]. Đồng thời P(F|B)=[3n+2(n+1)]/[2C(n+3,2)]=(5n+2)/[(n+3)(n+2)]. Theo Bayes, P(A|E)=(1/6)/[1/6+P(E|B)]. Yêu cầu thứ nhất tương đương P(E|B)≥1/3, tức 2n²−5n−6≥0. Với n nguyên dương, điều này tương đương n≥4. Mặt khác, P(A|F)=(7/6)/[7/6+P(F|B)]. Yêu cầu thứ hai tương đương P(F|B)≤7/18, tức 7n²−55n+6≥0. Với 4≤n≤7, biểu thức này lần lượt bằng −102, −94, −72, −36, đều âm; tại n=8, biểu thức bằng 14, dương. Vì vậy giá trị nhỏ nhất thỏa mãn cả hai yêu cầu là 8.",
+    "distractors": [],
+    "level_reason": "Bài toán yêu cầu thiết kế thành phần hộp thay vì chỉ tính một xác suất khi mọi thành phần đã biết. Học sinh phải mô hình hóa thành phần ngẫu nhiên sau chuyển, xây dựng hai xác suất hậu nghiệm ứng với hai quan sát khác nhau, chuyển các yêu cầu thành những ràng buộc chung trên một số nguyên và tìm giá trị nhỏ nhất đồng thời thỏa mãn. Chuỗi lập luận này kết nối mô hình chọn không hoàn lại, đảo điều kiện và bài toán lựa chọn tham số.",
+    "prerequisites": [
+      "Tổ hợp và chọn không hoàn lại",
+      "Công thức xác suất toàn phần",
+      "Công thức Bayes",
+      "Bất phương trình bậc hai",
+      "Tìm số nguyên nhỏ nhất thỏa mãn đồng thời các điều kiện"
+    ],
+    "variation_guidance": "Có thể thay xác suất chọn hộp hoặc các ngưỡng hậu nghiệm. Cần tính riêng hai thành phần sau chuyển ở từng hộp, rồi kiểm tra tập số nguyên thỏa mãn đồng thời cả hai ngưỡng.",
+    "uncertainties": [
+      "Đây là mẫu tự soạn dựa trên quan sát cấu trúc cấp tỉnh qua bên thứ ba; chưa có neo đề chính thức cho mục tiêu này."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "392b7e57e5f4b71b",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "8",
+        "level": "VD"
+      }
+    ],
+    "solution": "Gọi R là biến cố rút hai thẻ đỏ, X là biến cố rút hai thẻ khác màu và D=(n+2)(n+3). Xác suất chọn A và B lần lượt là 2/3 và 1/3. Xét hai màu thẻ chuyển từ C, mỗi màu có xác suất 1/2, được P(R|A)=1/12, P(X|A)=7/12, P(R|B)=n²/D và P(X|B)=(5n+2)/D. Theo công thức Bayes, P(A|R)≤1/3 tương đương n²/D≥1/3, tức 2n²-5n-6≥0; với n nguyên dương, điều này tương đương n≥4. Tương tự, P(A|X)≥3/4 tương đương (5n+2)/D≤7/18, tức 7n²-55n+6≥0; với n nguyên dương, điều này tương đương n≥8. Vậy giá trị nhỏ nhất thỏa đồng thời là 8.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "VD vì phải xây dựng mô hình xác suất qua các nhánh chọn hộp và chuyển thẻ, tính hai xác suất hậu nghiệm rồi phối hợp hai điều kiện để chọn số nguyên nhỏ nhất."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/toan/7a92b6651e15140ec965a82e5b996cea14001b987c61f757a5be16708a8cbe4c.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/toan/7a92b6651e15140ec965a82e5b996cea14001b987c61f757a5be16708a8cbe4c.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 0,
+  "source_rows_sha256": "863dd6885185956ed9dabede84bf529993a764e4871f75f25629503cf8f2731a",
+  "parent_key_correction": {
+    "reviewer": "parent_sol",
+    "at_utc": "2026-11-03T22:32:15.070428+00:00",
+    "before_sample_sha256": "1a544e64ab7e5bc460144c9a0c03ca88787487c3cd6bc07381fe7c73b5a773e1",
+    "path": [
+      "answers",
+      0,
+      "answer"
+    ],
+    "before": "7",
+    "after": "8",
+    "reason": "The draft solution and independent blind solver both conclude 8; only the answer field was inconsistent. Parent checked both inequalities: first needs n>=4 and second needs n>=8 for positive integers.",
+    "question_and_solution_unchanged": true
+  }
+}

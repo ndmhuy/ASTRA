@@ -9,7 +9,7 @@ Nguồn: /Users/huynguyen/Lecturing_Lab/wt-corpus-merged/prototypes/toan/PROTO_t
 - Khóa dài nhất (kể hòa): 9/12; dài nhất duy nhất: 0.
 - Nhiễu có lỗi xác định: 32/32 phương án đã phán đoán; chưa kiểm: 4.
 - Phân hoá cao: 0; thường quy: 22; gắn VD nhưng thường quy: 0.
-- Bất đồng khóa tự giải cần giáo viên: 0; cờ khoa học/lịch sử/mơ hồ: 0.
+- Bất đồng khóa tự giải cần giáo viên: 0; cờ thô về nội dung/bố cục/đầu vào: 0.
 
 | Phần/câu | Chủ đề/lớp | Phân hoá | Nhiễu và nghi vấn |
 |---|---|---|---|
@@ -47,7 +47,7 @@ Nguồn: /Users/huynguyen/Lecturing_Source/outputs/test-papers/Toan_Haiku_2026-1
 - Khóa dài nhất (kể hòa): 6/12; dài nhất duy nhất: 2.
 - Nhiễu có lỗi xác định: 33/33 phương án đã phán đoán; chưa kiểm: 3.
 - Phân hoá cao: 0; thường quy: 22; gắn VD nhưng thường quy: 0.
-- Bất đồng khóa tự giải cần giáo viên: 0; cờ khoa học/lịch sử/mơ hồ: 6.
+- Bất đồng khóa tự giải cần giáo viên: 0; cờ thô về nội dung/bố cục/đầu vào: 6.
 
 | Phần/câu | Chủ đề/lớp | Phân hoá | Nhiễu và nghi vấn |
 |---|---|---|---|
@@ -246,3 +246,7 @@ Hiện diện đếm theo đề phân biệt; không cộng chính thức với 
 - Pf7af7cb87c/P1/câu 6 và câu 11: yêu cầu giải trình cơ chế sai của nhiễu chưa xác định trước khi quyết định giữ hoặc thay; Pf7af7cb87c/P3/câu 2 và P00e9e583a3/P3/câu 6: bổ sung bước tự lựa chọn mô hình hoặc suy luận có ràng buộc nếu dùng cho mục tiêu phân hóa cao; Pf7af7cb87c/P3/câu 6: bỏ chỉ dẫn làm tròn thừa.
 
 Giới hạn: Chỉ tổng hợp dữ liệu audit được cung cấp; không kiểm tra lại đề gốc, ảnh bản in hoặc lời giải.; Ánh xạ chủ đề là căn chỉnh ngữ nghĩa theo hồ sơ chuẩn, không tạo bằng chứng bao phủ mới và không làm thay đổi số đếm.; Độ khó lấy đề chính thức làm mốc; đề cấp tỉnh có thể khó hơn và không tự trở thành chuẩn bắt buộc.; Nhãn phân hóa và cơ chế sai của nhiễu là nhận định mô hình, chưa phải kết quả thực nghiệm trên học sinh.; Các đối chiếu bị đánh dấu không so sánh được do định dạng, đơn vị hoặc giả thiết không đủ để kết luận sai đáp án; bất đồng lời giải phải được giáo viên thẩm định.; Chỉ số độ dài bị ảnh hưởng bởi khả năng trích xuất ký hiệu; không suy ra dấu hiệu lộ đáp án chỉ từ độ dài hoặc dữ liệu trống.; Việc thiếu mẫu tương ứng trong hồ sơ được cấp không chứng minh chủ đề vắng mặt trong chương trình hoặc toàn bộ đề chính thức.; Không tự tính thêm số lượng, tỷ lệ hoặc suy rộng kết quả sang các đề ngoài dữ liệu.
+
+## Rà bổ sung bằng số học và bản in
+
+[Đọc kiểm tra bổ sung và giới hạn của nhãn mức gốc](/Users/huynguyen/Lecturing_Lab/wt-corpus-merged/audit/prototypes/toan-parent-review.md).

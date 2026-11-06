@@ -1,0 +1,1683 @@
+{
+  "schema": "gdktpl-usability-review-v1",
+  "date": "2026-11-06",
+  "branch": "data/usable-gdktpl-20261106",
+  "base_commit": "5f8de285ae603e872c12ee22705e961467d10138",
+  "review_model": "gpt-6.1-sol",
+  "teacher_approved": false,
+  "teacher_review_required": false,
+  "decision_model": {
+    "validity": [
+      "usable",
+      "usable_with_stated_scope",
+      "undetermined",
+      "incorrect_as_written"
+    ],
+    "evidence": [
+      "direct_reasoning",
+      "primary_source_checked_scoped",
+      "insufficient",
+      "not_applicable"
+    ],
+    "rule": "Validity and evidence are independent. Insufficient evidence, optional scope, absent teacher review and absent empirical calibration are not incorrect content. Exclude only a claim proven wrong; preserve raw source."
+  },
+  "scope": {
+    "current_samples_read": 73,
+    "sample_atomic_answers": 157,
+    "topic_guides_unique_scopes_read": 21,
+    "source_rows_newly_solved": 0,
+    "review_type": "key-visible semantic recheck, not independent blind solver; reuses earlier separate unkeyed solves without claiming new model independence",
+    "source_rows_re_solved_this_pass": 0
+  },
+  "input_hashes": {
+    "profiles/gdktpl/data/samples-current.json": "2be0861652b3b33d0eef52498bdd8dff66e217ff40ea7ff890227aa4dcb27d78",
+    "profiles/gdktpl/data/scoped-final-bank.json": "c29b317bbcfbbc1bd5340bb80b406dec408480805052b55809908f4e5471ccea",
+    "profiles/gdktpl/completion.json": "607992c3a03b1f669fde7e5688bd17180404eeb470ff557928f3c8a31961697a",
+    "profiles/gdktpl/data/coverage-current.json": "2b022155a574ca2dc92507c8e5e96cbad9e4224c4bafe9e7777ed150090a0ae4",
+    "profiles/gdktpl/data/source-observations-current.json": "9d985c8256904a6ee928841ee41febeca8393b72723e09fcfe10de41786a5124",
+    "profiles/gdktpl/prototype-revised/verification.json": "901117d58fa71c2567c407edc1b01d0a244d19753a9dce93cc748df47c187a6d",
+    "profiles/gdktpl/topics/T01.md": "857be79659510ed519cd3ee7e25f9f7410d1ea96b5a4df8145c828aec0d2c5ba",
+    "profiles/gdktpl/topics/T02.md": "f4fe816610bbcad2ee71599b4aeb63a1070fc5c3d9f253b31b48a70aefc25b6e",
+    "profiles/gdktpl/topics/T03.md": "f3e3689ba6ac965174c322feb3b6749b6a4e7a3cd4271adcd8eaecb544080c32",
+    "profiles/gdktpl/topics/T04.md": "df06b9a095be1ac83a98fcddd460ad4d467677033e93044d5c887800b94ecdad",
+    "profiles/gdktpl/topics/T05.md": "48ea12e3b635bfbe3787fba8a4014bb05473c020dcd31325f5857af9aa3aa84b",
+    "profiles/gdktpl/topics/T06.md": "51db43fe5a1ccdab5ba76f718aad13123c3aa8a1e4bd84a6a202476c1480f807",
+    "profiles/gdktpl/topics/T07.md": "ea56a0084deb2635da8cde125a04e59d6afef9805d8789b1d6d40ec434b83902",
+    "profiles/gdktpl/topics/T08.md": "d6d70d344e52016d4f8cb3124753a3bd7a0c50b35b57e952a97ebef00a0f89f9",
+    "profiles/gdktpl/topics/T09.md": "2f84cd5bcf37ab5d2e93ee7178c37b0278449496e6e0a43cb1000fd50cd03305",
+    "profiles/gdktpl/topics/T10.md": "9ec948072bac1849a690fa6ab11a4675e50baa70ca4ee36772098781d8068f94",
+    "profiles/gdktpl/topics/T11.md": "3d47c85c83944fcd63e0dcee254d87662e733a9d682a013144526ba05b91278d",
+    "profiles/gdktpl/topics/T12.md": "3caa24d28a2e416a9a048ab5315c5db8f822e43371af57c14883ebed23c28a8a",
+    "profiles/gdktpl/topics/T13.md": "d3a0fee10391f5156dfa62ce52ff9fdc27d32879f8c3a35456069db4da137fca",
+    "profiles/gdktpl/topics/T14.md": "4117c311f0c60274db60aa35ff85fb8fa4b16564ea63e97ab5e850bcd2b91b1a",
+    "profiles/gdktpl/topics/T15.md": "bb2fe00dc78e63a2700799946af35d89a2d0e3aeb934fe6178bd600f0f36ecba",
+    "profiles/gdktpl/topics/T16.md": "6ac8b37f8a20aa4b96d50afb13516824a1f51327baca411827a04c9471b202d0",
+    "profiles/gdktpl/topics/T17.md": "d94d4003694b97ecf604f1ac7a8a6a0b0ae08cce739b3e8e0e5f32df733d46f0",
+    "profiles/gdktpl/topics/T18.md": "361524e289bab514ee14039db172960f5b30b68a7ef8a986a07f8a47ff0c78b4",
+    "profiles/gdktpl/topics/T19.md": "8a742e977f9f8f9d336118d51c028dc34c5c8634aa4a2bd40a5fbaab60a6f880",
+    "profiles/gdktpl/topics/T20.md": "21dffcd6af06d6ef7a196c46c9d77c906f5bdf487867a71e75fe5b30690c2843",
+    "profiles/gdktpl/topics/T21.md": "9218f0dc145d211fb70351becf2b45ccd833c5b35c5b1f16b3b1aeb98b4fa858"
+  },
+  "substantive_changes": [
+    {
+      "id": "KT-F-030",
+      "kind": "clarify_conditions_not_false_content",
+      "field": "stem",
+      "before": "Quy tắc hàng hải giả định: lấy mẫu tài nguyên ở vùng R cần A đồng ý; vùng S không cần sự đồng ý đó. Không suy luật hiện hành ngoài bài. Chuyến tàu có hai đợt lấy mẫu, một ở R và một ở S; thùng của hai đợt niêm phong riêng, có đúng hai mã M và N, không biết mã nào thuộc đợt nào. Mã M được chuyển sang tàu tiếp nhận trước khi tàu lấy mẫu rời R; mọi mẫu vùng S chỉ được lấy sau khi rời R, không chuyển ngược về quá khứ. Hồ sơ A chỉ đồng ý lấy mẫu cho thùng N, không cho M. Bản khai chung ghi cả chuyến được phép. Kết luận nào được toàn bộ chuỗi chứng cứ hỗ trợ?",
+      "after": "Quy tắc hàng hải giả định: lấy mẫu tài nguyên ở vùng R cần A đồng ý; vùng S không cần sự đồng ý đó. Không suy luật hiện hành ngoài bài. Chuyến tàu có đúng hai đợt lấy mẫu, một ở R và một ở S; mỗi đợt chứa toàn bộ mẫu trong đúng một thùng riêng. Hai thùng mang mã M và N, không biết mã nào thuộc đợt nào. Chỉ chuyển thùng sau khi đã lấy đủ mẫu của đợt, cho vào thùng và niêm phong. Thùng M được chuyển sang tàu tiếp nhận trước khi tàu lấy mẫu rời R; mọi mẫu vùng S chỉ được lấy sau khi rời R. Không mở niêm phong, đổi mẫu hay chuyển thùng trở lại. Hồ sơ A chỉ đồng ý lấy mẫu cho thùng N, không cho M. Bản khai chung ghi cả chuyến được phép. Kết luận nào được toàn bộ chuỗi chứng cứ hỗ trợ?",
+      "answer_unchanged": true
+    },
+    {
+      "id": "KT-F-031",
+      "kind": "clarify_conditions_not_false_content",
+      "field": "stem",
+      "before": "Gia đình có 21 triệu tiền sẵn có, tháng tới thu chắc chắn 12 triệu. Chi thiết yếu tháng tới 10 triệu; phải giữ quỹ dự phòng ít nhất 15 triệu sau mọi khoản chi. Cần máy học tập 8 triệu trong tháng; khoản thưởng 6 triệu chưa chắc nhận. Hai cách mua: trả ngay 8 triệu hoặc trả trước 3 triệu và trả 6 triệu vào tháng sau. Tháng sau thu chắc chắn 10 triệu, thiết yếu 10 triệu, không có nguồn khác. Phương án nào đáp ứng cả hai tháng mà không dựa vào thưởng?",
+      "after": "Xét hai tháng liên tiếp M1 và M2. Đầu M1 gia đình có 21 triệu tiền sẵn có; thu nhập chắc chắn 12 triệu được nhận ngay đầu M1, trước mọi khoản chi. Chi thiết yếu M1 là 10 triệu. Gia đình phải giữ số dư tiền dự phòng ít nhất 15 triệu sau mỗi khoản chi. Cần mua máy học tập trong M1; có hai cách: trả ngay 8 triệu trong M1, hoặc trả trước 3 triệu trong M1 và trả 6 triệu trong M2. Khoản thưởng 6 triệu chưa chắc nhận nên không tính vào nguồn chắc chắn. Đầu M2, trước mọi khoản chi M2, gia đình nhận thu nhập chắc chắn 10 triệu; chi thiết yếu M2 là 10 triệu, không có nguồn hay khoản chi khác. Phương án nào đáp ứng cả hai tháng mà không dựa vào thưởng?",
+      "answer_unchanged": true
+    },
+    {
+      "id": "KT-F-032",
+      "kind": "limit_inference_to_stated_time",
+      "field": "solution",
+      "before": "Cần nối trợ giúp khẩn cấp với chi phí cơ hội đào tạo và dòng sống tối thiểu theo tuần. Học nghề tuần 1 làm mất 4 thu nhập ngay nên phải cấp đủ 6 lúc đó; tuần 2 việc mới trả 8 đủ ăn 6 và có 2 dư, tạo tự chủ. A chỉ có 3 tuần 1, B chưa có ăn tuần 1. D đủ ăn 4+2 mỗi tuần nhưng vẫn cần trợ giúp 2 mỗi tuần về sau, nên không đạt cải thiện tự trang trải bằng học nghề.",
+      "after": "Tuần 1 học nghề không có thu nhập nên cần nhận đủ 6 để ăn. Tuần 2 nhận 8, đủ chi ăn 6 và còn 2. A và B làm thiếu ăn tuần 1. D chỉ dùng 4 trong tổng nguồn trợ giúp 6, đủ ăn trong hai tuần nếu làm công nhưng thu nhập lao động vẫn là 4 mỗi tuần, chưa đạt khả năng tự trang trải 6 như phương án học nghề tại tuần 2. Không suy mức lương hay nhu cầu ăn sau tuần 2 vì đề chưa cho.",
+      "answer_unchanged": true
+    },
+    {
+      "id": "KT-X-010",
+      "kind": "clarify_conditions_not_false_content",
+      "field": "stem",
+      "before": "Quy tắc hàng hải hoàn toàn giả định: lấy mẫu tài nguyên vùng R cần A đồng ý; vùng S không cần đồng ý đó. Có hai đợt lấy mẫu, một ở R và một ở S, chứa trong hai thùng niêm phong riêng mang mã M, N. M được chuyển sang tàu tiếp nhận trước khi tàu lấy mẫu rời R. Mọi mẫu S chỉ được lấy sau khi rời R; không có chuyển thùng ngược, mở niêm phong hay lấy mẫu trước. Hồ sơ A chỉ đồng ý lấy mẫu cho thùng N. Bản khai chung ghi cả chuyến được phép.",
+      "after": "Quy tắc hàng hải hoàn toàn giả định: lấy mẫu tài nguyên vùng R cần A đồng ý; vùng S không cần đồng ý đó. Chuyến tàu có đúng hai đợt lấy mẫu, một ở R và một ở S; mỗi đợt chứa toàn bộ mẫu trong đúng một thùng riêng, hai thùng mang mã M, N. Chỉ chuyển thùng sau khi đã lấy đủ mẫu của đợt, cho vào thùng và niêm phong. Thùng M được chuyển sang tàu tiếp nhận trước khi tàu lấy mẫu rời R. Mọi mẫu S chỉ được lấy sau khi rời R; không mở niêm phong, đổi mẫu hay chuyển thùng trở lại. Hồ sơ A chỉ đồng ý lấy mẫu cho thùng N. Bản khai chung ghi cả chuyến được phép.",
+      "answer_unchanged": true
+    },
+    {
+      "id": "KT-F-031",
+      "kind": "minimum_demand_label_correction",
+      "field": "answers/0/level",
+      "before": "VD",
+      "after": "TH",
+      "answer_unchanged": true,
+      "reason": "Familiar two-period cash-balance comparisons remain TH; multiple dates alone do not establish VD.",
+      "content_remains_usable": true
+    },
+    {
+      "id": "KT-F-027",
+      "kind": "clarify_financing_scope",
+      "field": "stem",
+      "answer_unchanged": true,
+      "reason": "Three explicitly described arrangements are not forbidden by the ban on outside borrowing."
+    }
+  ],
+  "counts": {
+    "samples_usable_with_stated_scope": 73,
+    "samples_undetermined": 0,
+    "samples_incorrect_as_written_after_fixes": 0,
+    "samples_deleted": 0,
+    "source_rows_retained": 560,
+    "source_unknown_levels_retained": 4,
+    "covered_target_cells": 76,
+    "target_cells": 77,
+    "proposed_only_level_gaps": 1
+  },
+  "samples": [
+    {
+      "id": "S-MCQ-01",
+      "topic": "T01",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "B",
+          "level": "NB"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "86c9f59c00c5dabb1211df269eeefbb646fabd74b8a8e5ad02836f064be3888c",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-MCQ-02",
+      "topic": "T03",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "A",
+          "level": "NB"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "3a04431523c745935360032af3b89af4c6bc7fdf73730a355dee4084e5a55c62",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-MCQ-03",
+      "topic": "T02",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "C",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "2b100fb76c95ae39fcd9f3b7b741381601e9dc2f4319a06b3f8660ce11d9f253",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-MCQ-04",
+      "topic": "T04",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "D",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "c57fc1e6cfc4c8faf91e976cc48d0767f1b1fa39edd365c6dec64d93b39e0a37",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-MCQ-05",
+      "topic": "T06",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "A",
+          "level": "NB"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "4ca1d511f4752de38e0b5400b552ea54536ea1c46793b7457d2af369efe872ee",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-MCQ-06",
+      "topic": "T07",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "B",
+          "level": "NB"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "649236ace54b4a5e0d51384dce3cb201686160f5d3130d7ee3f6615d4887c3a2",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-MCQ-07",
+      "topic": "T08",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "C",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "fb29a74c72782db74358011d67d3f9a27897c7e36e9d761386437b4932c3392e",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-MCQ-08",
+      "topic": "T09",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "D",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "88877e9d8e901aff39bd33a742a2412b099bbc002ddb7b3b9092e3425e2b4de3",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-MCQ-09",
+      "topic": "T12",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "B",
+          "level": "NB"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "3d9ed8273065dd8951d963a25fddad8b4e270d01a863409ad77dda8f9bc15747",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-MCQ-10",
+      "topic": "T13",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "A",
+          "level": "NB"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "ad7004fa67e944761bf1acd954a5d9d6f0c702dcec667a384136eadab4b2b197",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-MCQ-11",
+      "topic": "T12",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "C",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "bdd3a5a3109960ed6f869671e3a0acede1975d0919da48cf8d8d9b2e87993b81",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-MCQ-12",
+      "topic": "T13",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "D",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "4a0b509faff48bacffc03532482bd353c923ebcf0320d8d0b5bc5a84c7fcb301",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-MCQ-13",
+      "topic": "T10",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "B",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "203e0228e4c1891ae85fc220c45bf2dd25c03089f9b686c94bc5c50f68aadbf7",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-MCQ-14",
+      "topic": "T11",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "C",
+          "level": "NB"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "f3a865e9b01086ec595285b1a8ef7e98c0fa5016ebdcc915506d055ef684df74",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-MCQ-15",
+      "topic": "T10",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "D",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "02d24ffec5c75ee5a6913ceefe67e85313cf2fe75ba96fde308d3fc40a55db78",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-MCQ-16",
+      "topic": "T11",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "A",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "74696b22356890fcea226ee9ac9cdf79866347e45137e32deb916d28bd3ec086",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-MCQ-17",
+      "topic": "T14",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "B",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "b2016942a816d141d31a71318c01da6d6cab511543df7ff2ff0bf78c737d24a9",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-MCQ-18",
+      "topic": "T15",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "C",
+          "level": "NB"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "85832c308e0a1b6e0ad224a73f7ca68ba8dc7fe65fdeafc45baf57f1bcf36c36",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-MCQ-19",
+      "topic": "T16",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "D",
+          "level": "NB"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "193b412d9eaa2898af789c62575165fcf3f438dc68cfa5fa83fd4627d8ccd5e3",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-MCQ-20",
+      "topic": "T16",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "C",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "1101bdd3b302c4e9bb470866b84c0d08c4dbe6e82e38cd54a1288462c0806d36",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-MCQ-21",
+      "topic": "T17",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "A",
+          "level": "NB"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "fc85e259e8a79eaf4dc11931e5e9209201e9fa842903c982516d5114dae91f4a",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-MCQ-22",
+      "topic": "T18",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "B",
+          "level": "NB"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "6577cce83081bd6145eef8bd3996c90e6054aefeb060bafe3c6d886c437005c0",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-MCQ-23",
+      "topic": "T17",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "C",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "c5ea4d70c53eeeefbcb98c0ca3a9021e58dd6fd741c3724c05ca2cdc5ba78a20",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-MCQ-24",
+      "topic": "T18",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "D",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "236ceb10fdf7e0e67324fb4611fa1e21c6f290dd987abb7c4950fe659a03583e",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-TF-01",
+      "topic": "T05",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "Đ",
+          "level": "NB"
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "value": "Đ",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "c18cef41ceb8cf0037ee75956cef7a703e74c7e29ca6bc4fc0931122e598ed3c",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-TF-02",
+      "topic": "T06",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "Đ",
+          "level": "NB"
+        },
+        {
+          "sub": "b",
+          "value": "Đ",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "206485a823dc10f18ff89ac08199eb88176bf4902543859222e3f9787ee7aa27",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-TF-03",
+      "topic": "T12",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "Đ",
+          "level": "NB"
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "value": "Đ",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "3965d2b4cc9e69954713f87a6451436b42a8191195f2e66ec5aa43a501e6be77",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "S-TF-04",
+      "topic": "T11",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "S",
+          "level": "NB"
+        },
+        {
+          "sub": "b",
+          "value": "Đ",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "value": "Đ",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "6d57c2613533b9c3cc8f80da3a8e43506f3cc889626e5d9669a12902566222fc",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-001",
+      "topic": "T01",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "A",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "d729c6af20a1630a776dfd270e53b55817414bb3a7d74823af30757c45dc5d0c",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-002",
+      "topic": "T05",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "B",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "ab46b7308d2e069a1d6350b01902117958be48b0588dac01d06fa4b8ef753d80",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-003",
+      "topic": "T04",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "C",
+          "level": "NB"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "b7970d6b4feb7c58147a5165604cd7e8b388d22fa83dde3413855db220087bc8",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-004",
+      "topic": "T07",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "D",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "b620086aac623d127fd53be60f73a643145f9889adc030990f867521f5302910",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-005",
+      "topic": "T15",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "A",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "8e9f05c354e77a5818f08c4709d10bb2a44f321bced4a33c1da8b7d4b240ee3c",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-006",
+      "topic": "T08",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "B",
+          "level": "NB"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "a7bf7d6f01f12f091e82e828e2447794c4ca59a51ecd8ff9346f313934fc8002",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-007",
+      "topic": "T05",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "C",
+          "level": "NB"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "39c98bb45d2b38dd58d45addefed9b70387bba211204fc3d467f0df7fad58114",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-008",
+      "topic": "T03",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "value": "D",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "24f63e48cd5066a529fb2652deebd35e20901e1af9b736d23d27ed4af3f944fb",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-009",
+      "topic": "T14",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "bd1dab7b86e1bd99f25f4b0dfe0cf3a82cbdfdb64e86d946006e658e2d76129f",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-010",
+      "topic": "T07",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "55c28abeb3b4b6e538f7a6423606c2b284ce9a17318501ba2262763bd8ec331b",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-011",
+      "topic": "T13",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "NB"
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "NB"
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "0088fe0488118f87ad40a35c8a961e64082239de71a9c980a7e205f1c3478089",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-012",
+      "topic": "T15",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "value": "D",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "4b496d28fdf11083d2079ab72903c9f107b5977bab80293b58d282fed7b76bae",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-013",
+      "topic": "T02",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "A",
+          "level": "NB"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "89c86ca03de31505e6eb8cf74257fbf5030c5f9f3d01384334f79819bc1955db",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-014",
+      "topic": "T06",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "B",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "bcf61bcfc59837ac4db6cb7478521ff9828269e7a218eb4fc88af4897516d2f0",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-015",
+      "topic": "T03",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "C",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "260a5634d72c79f2bb21c6914a7f2d62695b366703664ac948c28e4cc1cc2cd4",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-016",
+      "topic": "T10",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "value": "D",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "d9362b9fb13ac3d164ebe17c4dfb7ac808069896d55fedd9904332fdc6ae1fa8",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-017",
+      "topic": "T18",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "f22ace2252f22ff8263b5e2af50d3a431f637383a653fa07185bff0535e02a02",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-018",
+      "topic": "T17",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "4205ece5cb46489efa81541bf9e572c7d006c569de9862f57bb083d62869cc92",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-019",
+      "topic": "T08",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "73df81775b33947f04bf106265737b28619f318c907474b287530f0545f0e626",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-020",
+      "topic": "T04",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "NB"
+        },
+        {
+          "sub": "b",
+          "value": "D",
+          "level": "NB"
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "NB"
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "6318f2e04d9f3bed2e5c9a3411dbd1a8cb6964a644097a7ac0c8b401362bd87b",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-021",
+      "topic": "T09",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "C",
+          "level": "NB"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "16c608f8272145518cba709dc68059dab1761f944f105c6a952d181121a828af",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-022",
+      "topic": "T14",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "D",
+          "level": "NB"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "b4a7914735ff1b4d5266864734bb06bbab9e6b4e405c79c1a6cb49664d199be8",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-023",
+      "topic": "T09",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "value": "D",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "1ff9bb666993fd83f8f5adf7aac792b403a05b2cf3e7ec58629871ce3dd2d879",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-024",
+      "topic": "T05",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "value": "D",
+          "level": "VD"
+        },
+        {
+          "sub": "c",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "value": "D",
+          "level": "VD"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "955bc891b4650efcf44f22f521378bd7c7b534bc0ecd1456cfdaf05ce2ee4d40",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-025",
+      "topic": "T06",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "NB"
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "VD"
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "532cad2033dec0390bb13504be154c6026183fbe8d8d5de93661734eaf160997",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-026",
+      "topic": "T10",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "A",
+          "level": "NB"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "a6c053a077fca1f3cf9758158b22c598a5ae16e385d6132cef964bbbea981535",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-027",
+      "topic": "T11",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "C",
+          "level": "VD"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "b6194e7ab32957ca64207b994d165f68b6ebd76fa4df0c9fe61d7da1eda82bd7",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-028",
+      "topic": "T11",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "VD"
+        },
+        {
+          "sub": "d",
+          "value": "D",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "658dbbda69cfb521e4cee820b379c25261be503f905908d1a891265411f29131",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-029",
+      "topic": "T12",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "value": "D",
+          "level": "VD"
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "046aedb351d33b255cb3ac1f11cd3bf6180fe3a62e9163ff424988bff9817be1",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-030",
+      "topic": "T13",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "A",
+          "level": "VD"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "81afcd14bbd30a4fa2eb8625dc612f150630ade938566d2363c770b7451cb784",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-031",
+      "topic": "T16",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "B",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "ef5dcb8d2a06f7e1970552ac78c66a2a5610f9f0dd9d65340e82cdd3fb0fe2e4",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-F-032",
+      "topic": "T18",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "C",
+          "level": "VD"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "b485c2da56fd835ee92b755d76514b15171eb13848697ce840d3bdfa5ab0d102",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-X-001",
+      "topic": "T19",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "A",
+          "level": "NB"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "77b4b14cbdb53071c8351377b9ef78ce9bddc92e9ed453d27ab9f9060abafe10",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-X-002",
+      "topic": "T19",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "C",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "ccf602a47f843291eb039959a0a8f9d5e60aae54af28820c31317d8cae97f69b",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-X-003",
+      "topic": "T21",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "B",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "a1fca91e736b787f8ccd406e64c48761b3f6f0b6cdaa5749e95fc74751520045",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-X-004",
+      "topic": "T21",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "8bf17840507dd4297cb03436c76618302a1aaa304ebba23d682c61bf8aea3ed8",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-X-005",
+      "topic": "T09",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "NB"
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "NB"
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "f0e9e35430aa72a538673a6312964a74d92919146d008bab2d0139ce155ecb58",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-X-006",
+      "topic": "T02",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "111476a8098772f97ef653149ffe9492e95a535e3cd889e327345be51b1b08e7",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-X-007",
+      "topic": "T18",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "NB"
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "NB"
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "NB"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "7e165e0959b7e345b199140e0b53a8bb5033551647e4e8d934615045e7d5c402",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-X-008",
+      "topic": "T16",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "0179bb9555a686e9e883b56ff85e621f017cfb2b2fa2bbc4de7b9e8f2798bc9e",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-X-009",
+      "topic": "T20",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": null,
+          "value": "B",
+          "level": "NB"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "18e5934e7bf708df5ca9fbe38b05424cece9f1f7da6be51d971de081b3c2425a",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-X-010",
+      "topic": "T13",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "NB"
+        },
+        {
+          "sub": "b",
+          "value": "D",
+          "level": "VD"
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "VD"
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "6cad9099fd9e12925e7dc32155cb2e227880bc53e760f351136f9bfc4c355499",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-X-011",
+      "topic": "T17",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "NB"
+        },
+        {
+          "sub": "b",
+          "value": "S",
+          "level": "NB"
+        },
+        {
+          "sub": "c",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "value": "D",
+          "level": "NB"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "c89ae62f7fe130b81c1e1b5e3ba8e19d2571002cbe5fb9fa2a877e555be2c3d9",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-X-012",
+      "topic": "T01",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "b",
+          "value": "D",
+          "level": "TH"
+        },
+        {
+          "sub": "c",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "dc59240b0bc319ba5e333377157731787d6392585a46c6675f931f79c83e8d7b",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    },
+    {
+      "id": "KT-X-013",
+      "topic": "T10",
+      "validity": "usable_with_stated_scope",
+      "answer": [
+        {
+          "sub": "a",
+          "value": "D",
+          "level": "NB"
+        },
+        {
+          "sub": "b",
+          "value": "D",
+          "level": "NB"
+        },
+        {
+          "sub": "c",
+          "value": "S",
+          "level": "TH"
+        },
+        {
+          "sub": "d",
+          "value": "S",
+          "level": "TH"
+        }
+      ],
+      "evidence": "direct_reasoning; scoped_primary_law_receipt_applies_only_to_listed_propositions",
+      "content_sha256": "23f6338e99bc8ab075cae88561fb723544525113de89ac8bae45c3a79fc73c55",
+      "conditions_ref": "data/samples-current.json#/usability_conditions"
+    }
+  ],
+  "integration": {
+    "registered_CLI_previous_receipt": "S-C2-CLI-20261106.json",
+    "tool_tier": "C",
+    "exports_sources": 560,
+    "exports_samples": 0,
+    "dossier_sample_path": "data/samples-current.json",
+    "runtime_tested": false,
+    "note": "73 approved dossier samples are available to copy directly; current product adapter does not consume this schema. Structural CLI pass cannot establish sample ingestion."
+  },
+  "evidence_gaps": [
+    {
+      "scope": "560 source rows",
+      "status": "insufficient_for_all_keys_current_law",
+      "content_verdict": "not_rejected",
+      "action": "Preserve source and working labels. Do not promote a supplied source key to a proven answer."
+    },
+    {
+      "scope": "14 provincial papers, zero official",
+      "status": "insufficient_for_official_frequency",
+      "content_verdict": "not_rejected",
+      "action": "Patterns may guide construction within concepts; counts are descriptive only."
+    },
+    {
+      "scope": "measured_difficulty",
+      "status": "not_available",
+      "content_verdict": "not_rejected",
+      "action": "Use cognitive demand labels, do not claim measured facility or discrimination."
+    }
+  ],
+  "coverage_level_correction": {
+    "cell": "CELL-266deb41151a",
+    "topic": "T16",
+    "part": "P1",
+    "level": "VD",
+    "source_basis": "proposed_only",
+    "status": "gap_after_correcting_level",
+    "not_a_content_rejection": true
+  },
+  "substantive_changes_count": 6,
+  "parent_adjudication": {
+    "method": "Parent re-read all changed stems, recomputed F027 and F031, checked maritime sealed-container inference and scoped-law originals. No claim of a second full73sample reread.",
+    "law_evidence_scope": "LEGAL-CONTEXT-20261106.json lists exact supported propositions; arithmetic or hypothetical rules are not established by statute."
+  }
+}

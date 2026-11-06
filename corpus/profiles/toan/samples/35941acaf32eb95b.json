@@ -1,0 +1,151 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "35941acaf32eb95b",
+    "topic": "Tọa độ và giải tích chuyển động",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Vị trí ban đầu, hướng chuyển động đơn vị, quy luật tốc độ và thời điểm đến vị trí mới.",
+        "task": "Kiểm tra một bất đẳng thức về tọa độ vị trí mới.",
+        "reasoning": [
+          "Xác định tham số tốc độ từ dữ liệu quãng đường.",
+          "Tích phân tốc độ đến thời điểm cần xét.",
+          "Nhân quãng đường với thành phần hướng tương ứng.",
+          "Cộng tọa độ ban đầu và so sánh chính xác với ngưỡng."
+        ],
+        "combines": [
+          "Tích phân",
+          "Vectơ đơn vị",
+          "Tọa độ điểm",
+          "Mô hình chuyển động"
+        ],
+        "difficulty_source": "Chuyển quãng đường vô hướng thành độ dời theo trục và giữ độ chính xác khi so sánh.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      }
+    ],
+    "support_refs": [
+      "163f20908cf7|P2|3|d"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "35941acaf32eb95b",
+    "stem": "Trong hệ tọa độ Oxyz có đơn vị độ dài là mét, một thiết bị bắt đầu tại P(1; 4; −2) và chuyển động thẳng theo hướng của vectơ e = (2/3; −1/3; 2/3). Trong khoảng 0 ≤ t ≤ 3, tốc độ của thiết bị là v(t) = bt + 2 (m/s), với t tính bằng giây và b > 0. Quãng đường thiết bị đi được trong 3 giây đầu là 15 m. Vị trí tại thời điểm t được xác định bằng cách cộng vào tọa độ P tích của quãng đường đã đi với từng thành phần tương ứng của vectơ hướng đơn vị. Xét tính đúng, sai của các khẳng định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Vectơ e có độ dài bằng 1."
+      },
+      {
+        "sub": "b",
+        "text": "Giá trị của b là 3."
+      },
+      {
+        "sub": "c",
+        "text": "Tại thời điểm t = 1, thiết bị có tọa độ (3; 3; 0)."
+      },
+      {
+        "sub": "d",
+        "text": "Tại thời điểm t = 2, tung độ của thiết bị lớn hơn 2."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) Độ dài của e là √[(2/3)² + (−1/3)² + (2/3)²] = 1. Khẳng định đúng. b) ∫₀³(bt + 2)dt = 9b/2 + 6 = 15, suy ra b = 2, không phải 3. Khi đó quãng đường đến thời điểm t là s(t) = ∫₀ᵗ(2τ + 2)dτ = t² + 2t. c) s(1) = 3 m, nên vị trí là (1 + 3·2/3; 4 − 3·1/3; −2 + 3·2/3) = (3; 3; 0). Khẳng định đúng. d) s(2) = 8 m, nên tung độ là 4 − 8/3 = 4/3 < 2. Khẳng định sai.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Dùng v(1) làm tốc độ trung bình trong 3 giây đầu, rồi đặt 3(b + 2) = 15 để được b = 3.",
+        "why_plausible": "Học sinh biết dùng tốc độ trung bình nhưng chọn sai thời điểm đại diện cho hàm tốc độ bậc nhất."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Bỏ dấu âm của thành phần hướng theo trục Oy và tính tung độ thành 4 + 8/3.",
+        "why_plausible": "Quãng đường là số dương nên học sinh dễ cộng độ lớn độ dời vào mọi tọa độ, dù hướng chuyển động theo Oy là âm."
+      }
+    ],
+    "level_reason": "Mức cao nhất của mẫu là TH. Quy tắc chuyển quãng đường thành độ dời tọa độ đã được cung cấp. Học sinh tính độ dài vectơ, hiệu chỉnh tham số bằng tích phân rồi áp dụng trực tiếp quy tắc tọa độ và so sánh một phân số với ngưỡng; đây là chuỗi thao tác quen thuộc.",
+    "prerequisites": [
+      "Công thức độ dài vectơ trong không gian.",
+      "Quãng đường bằng tích phân tốc độ.",
+      "Nhân vectơ với một số và cộng tọa độ.",
+      "So sánh phân số."
+    ],
+    "variation_guidance": "Đây là mẫu minh họa tự tạo, không phải bằng chứng đề thi thật. Có thể thay điểm xuất phát và vectơ hướng đơn vị; nên giữ phép so sánh tọa độ ở dạng chính xác để tránh sai lệch do làm tròn.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "35941acaf32eb95b",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "‖e‖=√(4/9+1/9+4/9)=1. Quãng đường trong 3 giây là (9/2)b+6=15 nên b=2. Khi đó s(t)=∫₀ᵗ(2τ+2)dτ=t²+2t. Tại t=1, s=3 nên vị trí là P+3e=(3;3;0). Tại t=2, s=8 nên tung độ là 4−8/3=4/3<2.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Ý a tính độ dài vectơ theo công thức quen thuộc. Các ý còn lại tính tích phân, xác định tham số và thay vào công thức vị trí đã được cung cấp. Tất cả thuộc TH; việc kết hợp các phép tính thường quy ở đây không đòi hỏi xây dựng mô hình."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/9fca1293de6148d007a3727b736b714a49999da3f79542ac3c2cd1e37aead87d.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/9fca1293de6148d007a3727b736b714a49999da3f79542ac3c2cd1e37aead87d.resolve.json"
+}

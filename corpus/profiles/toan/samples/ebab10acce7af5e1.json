@@ -1,0 +1,172 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "ebab10acce7af5e1",
+    "topic": "Tích phân và giá trị trung bình",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Hàm tốc độ và dữ kiện tổng lượng, cùng một nhận định về tốc độ trung bình trong giai đoạn cuối.",
+        "task": "Kiểm tra giá trị làm tròn của tốc độ trung bình.",
+        "reasoning": [
+          "Xác định tham số của mô hình.",
+          "Tính lượng tích lũy trong giai đoạn cuối bằng tích phân hoặc hiệu lượng tích lũy.",
+          "Chia cho độ dài giai đoạn và làm tròn."
+        ],
+        "combines": [
+          "Tích phân xác định",
+          "Giá trị trung bình của hàm số",
+          "Làm tròn"
+        ],
+        "difficulty_source": "Dùng lượng biến thiên chia thời gian thay vì lấy tốc độ tại một thời điểm.",
+        "evidence_uncertainty": "Nhận định yêu cầu độ chính xác cao hơn giá trị tham số làm tròn ở ý trước; cần giữ tham số chưa làm tròn khi tính.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Mô hình tốc độ, dữ kiện tổng lượng, công thức tốc độ trung bình và một kết quả làm tròn cho khoảng cuối.",
+        "task": "Kiểm tra tốc độ trung bình trên khoảng được chỉ định.",
+        "reasoning": [
+          "Xác định tham số của mô hình từ dữ kiện tổng lượng.",
+          "Tính lượng tích lũy trong khoảng cuối.",
+          "Chia lượng đó cho độ dài khoảng thời gian.",
+          "Làm tròn và đối chiếu nhận định."
+        ],
+        "combines": [
+          "Tích phân xác định",
+          "Giá trị trung bình",
+          "Làm tròn số"
+        ],
+        "difficulty_source": "Chọn đúng khoảng lấy trung bình khi công thức đã được cung cấp.",
+        "evidence_uncertainty": "Không có khóa đáp án đối chiếu.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "54e9a2a276ca|P2|2|d",
+      "fc12a8146279|P2|2|d"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "ebab10acce7af5e1",
+    "stem": "Một vòi cấp nước vào bồn trong 4 phút. Tại thời điểm t phút kể từ khi mở vòi, lưu lượng nước là v(t) = k(t + 1) lít/phút, với 0 ≤ t ≤ 4 và k là hằng số dương. Tổng lượng nước vòi cấp trong 4 phút là 30 lít. Gọi A(t) là lượng nước đã được cấp từ lúc mở vòi đến thời điểm t, nên A(0) = 0. Lưu lượng trung bình trên khoảng thời gian [a; b] được tính bằng [1/(b − a)] nhân với tích phân từ a đến b của v(t). Xét tính đúng, sai của các nhận định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "A(t) = k(t²/2 + t) với mọi t thuộc [0; 4]."
+      },
+      {
+        "sub": "b",
+        "text": "Giá trị của k là 3."
+      },
+      {
+        "sub": "c",
+        "text": "Lượng nước được cấp từ thời điểm t = 2 đến thời điểm t = 4 là 20 lít."
+      },
+      {
+        "sub": "d",
+        "text": "Lưu lượng trung bình trong hai phút cuối, làm tròn đến hàng phần mười, là 12,5 lít/phút."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) A(t) = ∫₀ᵗ k(u + 1) du = k(t²/2 + t). b) Từ A(4) = 30 suy ra 12k = 30, nên k = 2,5. Giá trị 3 không thỏa dữ kiện tổng lượng nước. c) A(4) − A(2) = 2,5·[(8 + 4) − (2 + 2)] = 20 lít. d) Lưu lượng trung bình trong hai phút cuối là 20/(4 − 2) = 10 lít/phút, làm tròn đến hàng phần mười là 10,0 lít/phút. Giá trị 12,5 là lưu lượng tại thời điểm t = 4, không phải lưu lượng trung bình trên [2; 4].",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Tính sai tích phân của t + 1 trên [0; 4] thành 10 rồi suy ra k = 30/10 = 3.",
+        "why_plausible": "Học sinh có thể viết nhầm nguyên hàm thành t²/2 + t/2, khiến hệ số của k tại t = 4 bị tính thiếu."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Lấy lưu lượng tại cuối khoảng làm lưu lượng trung bình của cả khoảng.",
+        "why_plausible": "Thay t = 4 vào v(t) cho đúng giá trị 12,5, nhưng phép thay này bỏ qua yêu cầu lấy trung bình theo thời gian."
+      }
+    ],
+    "level_reason": "Mức cao nhất của cả cụm là TH: mô hình và công thức trung bình đã được cung cấp; học sinh tính tích phân cơ bản, xác định tham số rồi tính lượng nước và giá trị trung bình theo quy trình quen thuộc.",
+    "prerequisites": [
+      "Nguyên hàm của hàm đa thức",
+      "Tích phân xác định và lượng tích lũy",
+      "Giải phương trình bậc nhất một ẩn",
+      "Giá trị trung bình của hàm số theo công thức được cung cấp"
+    ],
+    "variation_guidance": "Có thể thay thời gian vận hành, tổng lượng nước và hệ số trong hàm lưu lượng tuyến tính. Dùng tham số chính xác trong các phép tính và chỉ làm tròn kết quả được yêu cầu.",
+    "uncertainties": [
+      "Đây là mẫu minh họa tổng hợp nguyên bản, không phải câu hỏi hay bằng chứng từ đề thi thật.",
+      "Quan sát nền chỉ thuộc nguồn cấp tỉnh do bên thứ ba cung cấp, không có neo chính thức và chưa có khóa đáp án đối chiếu.",
+      "Phạm vi dạy công thức giá trị trung bình có thể khác nhau giữa các tài liệu; câu hỏi đã cung cấp công thức để học sinh vận dụng kiến thức tích phân phổ thông."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "ebab10acce7af5e1",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) A(t) = ∫₀ᵗ k(u+1)du = k(t²/2+t), phù hợp A(0) = 0. b) A(4) = 12k = 30 nên k = 2,5. c) Lượng nước trong khoảng từ phút 2 đến phút 4 là A(4)−A(2) = 2,5×(12−4) = 20 lít. d) Lưu lượng trung bình trong hai phút cuối là 20/(4−2) = 10 lít/phút, làm tròn đến hàng phần mười là 10,0 lít/phút.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Cả bốn nhận định đều ở mức TH: tính tích phân đa thức, dùng tổng lượng nước để tìm hằng số, tính lượng nước trên một khoảng và áp dụng công thức trung bình đã cho. Chuỗi phép tính này là quy trình quen thuộc, không đòi hỏi xây dựng mô hình mới."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/d5959d7b6d20cb33d11b63bd48b6c1a44deb20e9f5079f340f837bcb47ca9d78.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/d5959d7b6d20cb33d11b63bd48b6c1a44deb20e9f5079f340f837bcb47ca9d78.resolve.json"
+}

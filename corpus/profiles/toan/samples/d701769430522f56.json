@@ -1,0 +1,127 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "d701769430522f56",
+    "topic": "Tích phân xác định",
+    "part": "P1",
+    "level": "NB",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một hàm liên tục trên đoạn và một nguyên hàm của hàm đó.",
+        "task": "Chọn biểu thức tính tích phân xác định.",
+        "reasoning": [
+          "Nhận diện công thức liên hệ tích phân với nguyên hàm.",
+          "Lấy giá trị nguyên hàm tại cận trên trừ giá trị tại cận dưới."
+        ],
+        "combines": [
+          "Nguyên hàm",
+          "Tích phân xác định"
+        ],
+        "difficulty_source": "Nhớ đúng công thức cơ bản và chiều lấy hiệu.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "ccae0b94a82d|P1|3|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "d701769430522f56",
+    "stem": "Cho hàm số g liên tục trên đoạn [−2; 5] và G là một nguyên hàm của g trên đoạn này. Tích phân ∫ từ −2 đến 5 của g(x) dx bằng biểu thức nào sau đây?",
+    "options": [
+      {
+        "label": "A",
+        "text": "G(−2) − G(5)."
+      },
+      {
+        "label": "B",
+        "text": "g(5) − g(−2)."
+      },
+      {
+        "label": "C",
+        "text": "G(5) − G(−2)."
+      },
+      {
+        "label": "D",
+        "text": "G(5) + G(−2)."
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "C",
+        "level": "NB"
+      }
+    ],
+    "solution": "Theo công thức Newton–Leibniz, tích phân từ a đến b của g(x) dx bằng G(b) − G(a). Với hai cận đã cho, kết quả là G(5) − G(−2). A đảo thứ tự lấy hiệu. B lấy hiệu các giá trị của hàm dưới dấu tích phân thay vì nguyên hàm. D cộng hai giá trị nguyên hàm; dấu âm của cận dưới không làm phép trừ G(−2) trở thành phép cộng G(−2).",
+    "distractors": [
+      {
+        "label": "A",
+        "sub": null,
+        "mistake": "Lấy giá trị nguyên hàm tại cận dưới trừ giá trị tại cận trên.",
+        "why_plausible": "Học sinh nhớ phải lấy hiệu nhưng đảo thứ tự hai cận."
+      },
+      {
+        "label": "B",
+        "sub": null,
+        "mistake": "Thay trực tiếp hai cận vào g thay vì G.",
+        "why_plausible": "Học sinh nhầm hàm dưới dấu tích phân với nguyên hàm trong công thức."
+      },
+      {
+        "label": "D",
+        "sub": null,
+        "mistake": "Đổi phép trừ thành phép cộng vì cận dưới là số âm.",
+        "why_plausible": "Học sinh áp dụng nhầm quy tắc trừ số âm cho cả giá trị G(−2), dù chưa biết dấu của giá trị đó."
+      }
+    ],
+    "level_reason": "Học sinh chỉ cần nhận diện công thức liên hệ tích phân xác định với nguyên hàm và đúng thứ tự hai cận; không phải tìm nguyên hàm hay thực hiện phép tính.",
+    "prerequisites": [
+      "Khái niệm nguyên hàm.",
+      "Công thức Newton–Leibniz."
+    ],
+    "variation_guidance": "Đổi tên hàm và hai cận; giữ nguyên hàm dưới dạng kí hiệu nếu muốn duy trì yêu cầu nhớ công thức.",
+    "uncertainties": [
+      "Quan sát cấu trúc được cung cấp chỉ thuộc nguồn cấp tỉnh qua bên thứ ba và không có điểm neo chính thức. Câu này là minh họa tổng hợp mới."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "d701769430522f56",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "C",
+        "level": "NB"
+      }
+    ],
+    "solution": "Theo công thức Newton–Leibniz, ∫ từ −2 đến 5 của g(x) dx = G(5) − G(−2).",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Nhận biết trực tiếp công thức Newton–Leibniz với hai cận đã cho, không cần tính nguyên hàm hay thực hiện phép tính."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/f545107910d5cb96f8bd79c9b19a7980ff2bca8c220d075a1ca49c88887f7702.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/f545107910d5cb96f8bd79c9b19a7980ff2bca8c220d075a1ca49c88887f7702.resolve.json"
+}

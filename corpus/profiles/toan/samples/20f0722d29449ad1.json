@@ -1,0 +1,191 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "20f0722d29449ad1",
+    "topic": "Xác suất cơ bản",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Tỉ lệ một hệ thống gán nhãn cho các đối tượng.",
+        "task": "Kiểm tra xác suất một đối tượng không được gán nhãn.",
+        "reasoning": [
+          "Nhận diện hai trạng thái gán nhãn là hai biến cố đối nhau.",
+          "Lấy phần bù của xác suất đã biết và đối chiếu."
+        ],
+        "combines": [
+          "Biến cố đối",
+          "Tỉ lệ và xác suất"
+        ],
+        "difficulty_source": "Nhận diện đúng cặp biến cố đối.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Tỉ lệ xuất hiện của một loại đối tượng trong một quần thể có hai loại bổ sung nhau.",
+        "task": "Kiểm tra xác suất đối tượng thuộc loại còn lại.",
+        "reasoning": [
+          "Nhận diện hai loại là các biến cố đối.",
+          "Lấy xác suất toàn phần trừ xác suất đã biết."
+        ],
+        "combines": [
+          "Biến cố đối"
+        ],
+        "difficulty_source": "Dùng trực tiếp quan hệ xác suất của hai biến cố đối.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Xác suất một bộ phận hoạt động ổn định và xác suất không ổn định được đề xuất.",
+        "task": "Kiểm tra xác suất biến cố đối.",
+        "reasoning": [
+          "Nhận hai trạng thái là các biến cố đối nhau.",
+          "Lấy xác suất toàn phần trừ xác suất đã biết rồi đối chiếu."
+        ],
+        "combines": [
+          "Biến cố đối"
+        ],
+        "difficulty_source": "Dùng trực tiếp công thức xác suất biến cố đối.",
+        "evidence_uncertainty": "Thiếu khóa đúng sai được xác nhận.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Hệ thống hoạt động khi có bộ phận hoạt động, các xác suất độc lập và xác suất hoạt động chung được đề xuất.",
+        "task": "Kiểm tra xác suất hệ thống hoạt động.",
+        "reasoning": [
+          "Nhận biến cố hệ thống ngừng hoạt động là tất cả bộ phận cùng ngừng.",
+          "Tính xác suất biến cố này bằng tích các xác suất đối.",
+          "Lấy xác suất bù rồi đối chiếu."
+        ],
+        "combines": [
+          "Mô hình độ tin cậy",
+          "Biến cố đối",
+          "Biến cố độc lập"
+        ],
+        "difficulty_source": "Nhận ra biến cố đối để tránh cộng xác suất trùng lặp.",
+        "evidence_uncertainty": "Thiếu khóa đúng sai được xác nhận.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "163f20908cf7|P2|4|a",
+      "7ab78715480e|P2|4|a",
+      "85efdd1a7e54|P2|4|a",
+      "85efdd1a7e54|P2|4|d",
+      "adb051fd8253|P2|4|a",
+      "fc12a8146279|P2|3|a"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "20f0722d29449ad1",
+    "stem": "Trong một lần kiểm tra, hai đèn báo A và B sáng độc lập với nhau. Xác suất đèn A sáng là 0,8; xác suất đèn B sáng là 0,6. Mỗi đèn chỉ có hai trạng thái: sáng hoặc không sáng. Xét tính đúng sai của các khẳng định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Xác suất đèn A không sáng bằng 0,2."
+      },
+      {
+        "sub": "b",
+        "text": "Xác suất cả hai đèn đều sáng bằng 0,48."
+      },
+      {
+        "sub": "c",
+        "text": "Xác suất có ít nhất một đèn sáng bằng 0,52."
+      },
+      {
+        "sub": "d",
+        "text": "Xác suất có đúng một đèn sáng bằng 0,44."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) Xác suất A không sáng là 1 - 0,8 = 0,2, nên đúng. b) Do độc lập, xác suất cả hai sáng là 0,8 × 0,6 = 0,48, nên đúng. c) Xác suất cả hai không sáng là 0,2 × 0,4 = 0,08. Vì vậy xác suất ít nhất một đèn sáng bằng 1 - 0,08 = 0,92, nên sai. d) Hai trường hợp chỉ A sáng và chỉ B sáng xung khắc nhau, nên xác suất đúng một đèn sáng là 0,8 × 0,4 + 0,2 × 0,6 = 0,44; khẳng định đúng.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "c",
+        "mistake": "Tính 1 - 0,48 = 0,52 bằng cách lấy biến cố đối của việc cả hai đèn đều sáng.",
+        "why_plausible": "Học sinh nhầm “ít nhất một đèn sáng” với “không phải cả hai đèn đều sáng”; biến cố đối cần dùng là cả hai đèn không sáng."
+      }
+    ],
+    "level_reason": "Mức cao nhất là TH. Với hai biến cố độc lập được nêu trực tiếp, học sinh áp dụng quy tắc biến cố đối, quy tắc nhân và cộng các trường hợp xung khắc trong một bài tập quen thuộc.",
+    "prerequisites": [
+      "Biến cố đối",
+      "Biến cố độc lập",
+      "Quy tắc nhân xác suất",
+      "Quy tắc cộng xác suất của các biến cố xung khắc"
+    ],
+    "variation_guidance": "Thay xác suất sáng của từng đèn nhưng giữ giả thiết độc lập. Có thể thay đèn bằng hai thiết bị có hai trạng thái và diễn đạt rõ các biến cố “ít nhất một”, “cả hai”, “đúng một”.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "20f0722d29449ad1",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) P(A không sáng) = 1−0,8 = 0,2. b) Do độc lập, xác suất cả hai sáng bằng 0,8×0,6 = 0,48. c) Xác suất ít nhất một đèn sáng bằng 1−0,2×0,4 = 0,92. d) Xác suất đúng một đèn sáng bằng 0,8×0,4+0,2×0,6 = 0,44.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Cả bốn ý áp dụng trực tiếp các quy tắc quen thuộc về biến cố đối, độc lập và các trường hợp loại trừ nhau. Các phép tính ở c và d vẫn là quy trình chuẩn, thuộc TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/3dff3352432a7af02080668e259a61f1d0dcaaa7c094bb12df06bf5843b3b52c.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/3dff3352432a7af02080668e259a61f1d0dcaaa7c094bb12df06bf5843b3b52c.resolve.json"
+}

@@ -1,0 +1,198 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "3e8154fb367cf783",
+    "topic": "Phương pháp tọa độ trong không gian",
+    "part": "P1",
+    "level": "NB",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Phương trình chính tắc của một đường thẳng và các bộ tọa độ vectơ.",
+        "task": "Nhận diện một vectơ chỉ phương của đường thẳng.",
+        "reasoning": [
+          "Đọc các mẫu số có dấu trong phương trình chính tắc.",
+          "Đối chiếu bộ hệ số đó với các vectơ được nêu."
+        ],
+        "combines": [
+          "Phương trình chính tắc",
+          "Tọa độ vectơ"
+        ],
+        "difficulty_source": "Đọc đúng vai trò của tử và mẫu trong biểu diễn chính tắc.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Phương trình đường thẳng ở dạng chính tắc.",
+        "task": "Chọn một vectơ chỉ phương.",
+        "reasoning": [
+          "Đọc các mẫu số theo thứ tự tọa độ.",
+          "Đối chiếu bộ thành phần hoặc bội khác không của nó."
+        ],
+        "combines": [
+          "Phương trình chính tắc",
+          "Vectơ chỉ phương"
+        ],
+        "difficulty_source": "Đọc trực tiếp đúng vị trí và dấu của các hệ số.",
+        "evidence_uncertainty": "Chưa xác nhận được khóa đáp án khớp mã.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Phương trình tổng quát của một mặt phẳng trong không gian tọa độ.",
+        "task": "Chọn một vectơ pháp tuyến của mặt phẳng.",
+        "reasoning": [
+          "Lấy các hệ số của biến tọa độ làm thành phần vectơ pháp tuyến.",
+          "Kiểm tra dấu và tính tỉ lệ của các phương án."
+        ],
+        "combines": [
+          "Phương trình mặt phẳng",
+          "Tọa độ vectơ"
+        ],
+        "difficulty_source": "Nhận dạng trực tiếp hệ số trong phương trình.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Phương trình tổng quát của một mặt phẳng.",
+        "task": "Chọn một vectơ pháp tuyến.",
+        "reasoning": [
+          "Đọc các hệ số của các biến tọa độ.",
+          "Lập vectơ hệ số và đối chiếu tính cùng phương với lựa chọn."
+        ],
+        "combines": [
+          "Phương trình tổng quát của mặt phẳng",
+          "Vectơ pháp tuyến"
+        ],
+        "difficulty_source": "Tách hệ số của biến khỏi hằng số tự do.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "163f20908cf7|P1|4|None",
+      "0ecb85132b84|P1|10|None",
+      "11d88d9a96ad|P1|4|None",
+      "3b4cca11ea82|P1|8|None",
+      "9ed45d16a975|P1|12|None",
+      "acc00d945397|P1|6|None",
+      "aceb17d936f5|P1|9|None",
+      "adb051fd8253|P1|5|None",
+      "ccae0b94a82d|P1|5|None",
+      "de5833d227dd|P1|10|None",
+      "fc12a8146279|P1|10|None"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "3e8154fb367cf783",
+    "stem": "Trong không gian Oxyz, cho mặt phẳng (P): 5x − 2y + 3z + 7 = 0. Vectơ nào sau đây là một vectơ pháp tuyến của (P)?",
+    "options": [
+      {
+        "label": "A",
+        "text": "(5; 2; 3)"
+      },
+      {
+        "label": "B",
+        "text": "(5; −2; 3)"
+      },
+      {
+        "label": "C",
+        "text": "(5; −2; 7)"
+      },
+      {
+        "label": "D",
+        "text": "(5; 3; −2)"
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "NB"
+      }
+    ],
+    "solution": "Mặt phẳng có phương trình ax + by + cz + d = 0 nhận (a; b; c) làm vectơ pháp tuyến. Do đó chọn B, với vectơ (5; −2; 3). A bỏ dấu âm của hệ số y; C lấy hằng số tự do thay cho hệ số z; D đổi chỗ hệ số y và z. Các vectơ ở A, C, D đều không cùng phương với (5; −2; 3).",
+    "distractors": [
+      {
+        "label": "A",
+        "sub": null,
+        "mistake": "Bỏ dấu âm của hệ số y.",
+        "why_plausible": "Học sinh nhớ lấy các hệ số của biến nhưng chỉ ghi độ lớn của chúng."
+      },
+      {
+        "label": "C",
+        "sub": null,
+        "mistake": "Dùng hằng số tự do 7 làm thành phần thứ ba.",
+        "why_plausible": "Phương trình chứa bốn hệ số nên học sinh có thể chọn nhầm ba hệ số để lập vectơ."
+      },
+      {
+        "label": "D",
+        "sub": null,
+        "mistake": "Đổi thứ tự các thành phần ứng với y và z.",
+        "why_plausible": "Học sinh nhận ra các hệ số cần lấy nhưng không giữ thứ tự tọa độ."
+      }
+    ],
+    "level_reason": "Chỉ cần nhận biết tính chất đã học về vectơ pháp tuyến của mặt phẳng từ các hệ số trong phương trình tổng quát. Không cần tính toán hay kết nối nhiều đơn vị kiến thức.",
+    "prerequisites": [
+      "Phương trình tổng quát của mặt phẳng",
+      "Vectơ pháp tuyến của mặt phẳng"
+    ],
+    "variation_guidance": "Có thể thay các hệ số và vị trí hằng số tự do; bảo đảm chỉ một lựa chọn là vectơ khác không cùng phương với vectơ hệ số.",
+    "uncertainties": [
+      "Đây là câu minh họa tự soạn. Riêng cấu trúc nhận diện pháp tuyến mặt phẳng trong dữ liệu cung cấp chỉ được mô tả qua quan sát cấp tỉnh từ bên thứ ba."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "3e8154fb367cf783",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "NB"
+      }
+    ],
+    "solution": "Mặt phẳng ax + by + cz + d = 0 có vectơ pháp tuyến (a; b; c). Vì vậy, (5; −2; 3) là một vectơ pháp tuyến của (P).",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Chỉ cần nhận biết vectơ pháp tuyến từ các hệ số của phương trình mặt phẳng."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/toan/686b4e05d46640db4c5883c1b5e66ef353a65ed795289f70de7cdbfd9b701ff4.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/toan/686b4e05d46640db4c5883c1b5e66ef353a65ed795289f70de7cdbfd9b701ff4.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 2,
+  "source_rows_sha256": "863dd6885185956ed9dabede84bf529993a764e4871f75f25629503cf8f2731a",
+  "source_overlap_review": {
+    "disposition": "generic_mathematical_shape_false_positive",
+    "reviewer": "parent_sol",
+    "at_utc": "2026-11-03T22:35:03.815767+00:00",
+    "sample_sha256": "9b2a4d867911c0060e973f2d785e0886af72346867565063da2b79088ffa47aa",
+    "overlap_sha256": [
+      "852ddc98c1be1b63f876291826e6e18ed3e3e3efcb5dbd546b175052e14e4fea",
+      "884f715ebea1b2b498d3783656442fe1aeb7130a1d9b1ed336f61a3d9e8d8028"
+    ],
+    "reason": "Only the standard instruction asking which vector is a plane normal matches, including the structural zero ending the plane equation. No coefficient, answer alternatives or source scenario is waived. Exact matching substrings retained by their hashes.",
+    "mathematical_check": "The normal is the coefficient vector. Each of the other three options is nonproportional; direct recognition is NB under the canonical definition.",
+    "semantic_noncopying_proved": false
+  }
+}

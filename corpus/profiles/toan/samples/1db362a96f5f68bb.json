@@ -1,0 +1,171 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "1db362a96f5f68bb",
+    "topic": "Phương trình lượng giác",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Quy luật tọa độ theo thời gian dạng lượng giác và nhận định về thời điểm đầu tiên đạt một vị trí cho trước.",
+        "task": "Kiểm tra thời điểm đầu tiên thỏa mãn điều kiện vị trí.",
+        "reasoning": [
+          "Đặt tọa độ bằng mức cần đạt để lập phương trình lượng giác.",
+          "Viết đầy đủ các họ nghiệm theo pha.",
+          "Chuyển các nghiệm pha thành thời gian không âm.",
+          "Chọn thời điểm nhỏ nhất và đối chiếu nhận định."
+        ],
+        "combines": [
+          "Phương trình lượng giác",
+          "Pha ban đầu",
+          "Điều kiện thời gian"
+        ],
+        "difficulty_source": "So sánh các họ nghiệm dưới điều kiện thời gian để chọn lần xuất hiện đầu tiên.",
+        "evidence_uncertainty": "Thiếu khóa đáp án khớp mã đề; chưa phân loại đúng sai.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Quy luật tọa độ dạng lượng giác, vị trí cân bằng và một khoảng theo dõi hữu hạn.",
+        "task": "Kiểm tra số lần chuyển động đi qua vị trí cân bằng.",
+        "reasoning": [
+          "Chuyển điều kiện qua vị trí cân bằng thành phương trình tọa độ bằng không.",
+          "Viết họ thời điểm nghiệm.",
+          "Dùng giới hạn thời gian để tìm phạm vi chỉ số nguyên.",
+          "Đếm các chỉ số hợp lệ và đối chiếu nhận định."
+        ],
+        "combines": [
+          "Phương trình lượng giác",
+          "Tính tuần hoàn",
+          "Đếm số nguyên trong khoảng"
+        ],
+        "difficulty_source": "Đếm nghiệm có xét pha ban đầu và các đầu mút thay vì chỉ ước lượng số chu kỳ.",
+        "evidence_uncertainty": "Thiếu khóa đáp án khớp mã đề; chưa phân loại đúng sai.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "beee25b53250|P2|2|b",
+      "beee25b53250|P2|2|d"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "1db362a96f5f68bb",
+    "stem": "Một điểm chuyển động trên trục Ox có tọa độ x(t)=6sin(πt/4−π/6), trong đó x tính bằng centimét, t tính bằng giây và t≥0. Vị trí cân bằng là x=0. Xét tính đúng sai của các khẳng định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Tại thời điểm t=0, điểm có tọa độ 3 cm."
+      },
+      {
+        "sub": "b",
+        "text": "Thời điểm đầu tiên điểm đi qua vị trí cân bằng là t=2/3 giây."
+      },
+      {
+        "sub": "c",
+        "text": "Thời điểm đầu tiên điểm có tọa độ 6 cm là t=2 giây."
+      },
+      {
+        "sub": "d",
+        "text": "Trong khoảng thời gian 0≤t≤13 giây, điểm đi qua vị trí cân bằng 4 lần."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) x(0)=6sin(−π/6)=−3 cm nên khẳng định sai. b) x(t)=0 tương đương πt/4−π/6=kπ, tức t=2/3+4k với k nguyên. Điều kiện t≥0 cho k≥0, nên thời điểm đầu tiên là 2/3 giây; khẳng định đúng. c) x(t)=6 tương đương πt/4−π/6=π/2+2kπ, tức t=8/3+8k với k nguyên. Thời điểm không âm nhỏ nhất là 8/3 giây, không phải 2 giây; khẳng định sai. d) Các lần qua vị trí cân bằng thỏa 0≤2/3+4k≤13, suy ra −1/6≤k≤37/12. Có các giá trị nguyên k=0,1,2,3 nên có 4 lần; khẳng định đúng.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "a",
+        "mistake": "Bỏ dấu âm khi tính sin(−π/6).",
+        "why_plausible": "Người học nhớ sin(π/6)=1/2 nhưng chưa vận dụng tính chất sin(−α)=−sin α."
+      },
+      {
+        "label": null,
+        "sub": "c",
+        "mistake": "Bỏ pha ban đầu −π/6 khi tìm thời điểm đạt tọa độ lớn nhất.",
+        "why_plausible": "Giải riêng πt/4=π/2 cho t=2, nhưng tại đó pha thực tế là π/3 nên tọa độ chưa bằng 6 cm."
+      }
+    ],
+    "level_reason": "Mức cao nhất là TH: thay giá trị vào biểu thức, giải các phương trình lượng giác cơ bản và lọc hoặc đếm nghiệm theo miền thời gian đã cho. Không cần xây dựng quy luật chuyển động mới.",
+    "prerequisites": [
+      "Giá trị lượng giác của góc đặc biệt",
+      "Nghiệm phương trình sin u=0 và sin u=1",
+      "Điều kiện thời gian không âm",
+      "Đếm số nguyên trong một khoảng"
+    ],
+    "variation_guidance": "Đổi hệ số của t, pha ban đầu và khoảng theo dõi; tính lại đầy đủ các họ nghiệm và kiểm tra cả hai đầu mút trước khi đếm.",
+    "uncertainties": [
+      "Quan sát định hướng được cung cấp chỉ thuộc nguồn cấp tỉnh qua bên thứ ba, thiếu khóa đáp án khớp mã đề và không có mốc chính thức. Các đáp án ở đây dành riêng cho mẫu tổng hợp mới."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "1db362a96f5f68bb",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) x(0)=6sin(−π/6)=−3 cm. b) x(t)=0 khi t=2/3+4k với k nguyên; thời điểm không âm đầu tiên là 2/3 giây. c) x(t)=6 khi t=8/3+8k với k nguyên; thời điểm không âm đầu tiên là 8/3 giây. d) Các lần qua vị trí cân bằng trong đoạn thời gian đã cho là t=2/3;14/3;26/3;38/3 giây, tổng cộng 4 lần.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Ý a thay giá trị vào hàm lượng giác; các ý b, c giải phương trình lượng giác cơ bản và chọn nghiệm đầu tiên; ý d đếm nghiệm trong một đoạn. Tất cả đều là quy trình quen thuộc ở mức TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/418017903555eb9bb6dbe05c18e6b690487b190bf6478416bf94c01fee37ff2c.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/418017903555eb9bb6dbe05c18e6b690487b190bf6478416bf94c01fee37ff2c.resolve.json"
+}

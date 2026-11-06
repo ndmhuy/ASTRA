@@ -1,0 +1,281 @@
+{
+  "schema_version": "research-topic-pack-v1",
+  "origin": "mixed_abstract_evidence_and_explicit_synthetic_examples",
+  "subject": "toan",
+  "topic": {
+    "topic": "Đồ thị và tối ưu rời rạc",
+    "display_topic": "Đồ thị và tối ưu rời rạc",
+    "parent_topic_annotation": {},
+    "raw_topics": [
+      "Mô hình đồ thị có trọng số: hành trình khép kín với chi phí nhỏ nhất"
+    ],
+    "grades": [
+      "None"
+    ],
+    "classes": {
+      "official": {
+        "distinct_papers": 0,
+        "rows": 0,
+        "parts": {
+          "P3": {
+            "papers": 0,
+            "questions": 0,
+            "rows": 0,
+            "discrimination": {}
+          }
+        }
+      },
+      "provincial_third_party": {
+        "distinct_papers": 1,
+        "rows": 1,
+        "parts": {
+          "P3": {
+            "papers": 1,
+            "questions": 1,
+            "rows": 1,
+            "discrimination": {
+              "high": 1
+            }
+          }
+        }
+      }
+    },
+    "patterns_by_class": {
+      "official": [],
+      "provincial_third_party": [
+        {
+          "part_kind": "short_answer",
+          "topic": "Tối ưu hành trình trên đồ thị có trọng số",
+          "grade": null,
+          "construction": "Chuyển sơ đồ thành đồ thị, xét hành trình khép kín đáp ứng yêu cầu thăm, kể cả lặp cạnh khi được phép, rồi so chi phí và đổi đơn vị.",
+          "wrong_options": null,
+          "difficulty_source": "Phân biệt đối tượng phải thăm với cạnh phải đi qua.",
+          "discrimination": "high",
+          "typical_steps": 5,
+          "evidence_status": "Quan sát riêng; ảnh và mô tả còn bất định, không chuẩn hóa sơ đồ cụ thể.",
+          "refs": [
+            "de5833d227dd|P3|1|None"
+          ],
+          "paper_count": 1,
+          "row_count": 1,
+          "topic_support_refs": [
+            "de5833d227dd|P3|1|None"
+          ]
+        }
+      ]
+    },
+    "support_refs": [
+      "de5833d227dd|P3|1|None"
+    ],
+    "cognitive_level_status": "abstract_classification_complete_pending_original_item_review",
+    "sample_status": "examples_published_pending_teacher",
+    "prototype_status": "no_mapped_case_not_evidence_of_absence",
+    "component_details": {
+      "reasoning_moves": [
+        {
+          "class": "provincial_third_party",
+          "move": {
+            "move": "Giải đầy đủ rồi lọc theo yêu cầu",
+            "how_to_apply": "Dùng đồng nhất thức trực tiếp khi đủ dữ kiện; khi cần họ nghiệm, viết đủ nhánh, chuyển về biến cần xét rồi lọc miền và đầu mút. Với hành trình, đọc đúng đối tượng phải thăm, việc lặp và điều kiện quay về trước khi chọn mô hình.",
+            "evidence_scope": "Các cấu trúc lượng giác và hành trình là quan sát riêng; chưa xác nhận mọi cơ chế nhiễu.",
+            "refs": [
+              "beee25b53250|P2|2|b",
+              "beee25b53250|P2|2|d",
+              "54e9a2a276ca|P1|5|None",
+              "de5833d227dd|P3|1|None"
+            ],
+            "paper_count": 3,
+            "row_count": 4
+          },
+          "topic_support_refs": [
+            "de5833d227dd|P3|1|None"
+          ],
+          "distinct_papers_in_topic": 1
+        }
+      ],
+      "cognitive_counts": [
+        {
+          "class": "provincial_third_party",
+          "part": "P3",
+          "topic": "Đồ thị và tối ưu rời rạc",
+          "counts": {
+            "VD": 1
+          }
+        }
+      ],
+      "containing_question_cognitive_counts": [
+        {
+          "class": "provincial_third_party",
+          "part": "P3",
+          "counts": {
+            "VD": 1
+          }
+        }
+      ],
+      "matrix_comparison": [
+        {
+          "part": "P3",
+          "topic": "Đồ thị và tối ưu rời rạc",
+          "grades": [
+            null
+          ],
+          "default_count": 0,
+          "default_topics": [],
+          "official_papers": 0,
+          "provincial_papers": 1,
+          "official_ids": [],
+          "provincial_ids": [
+            "de5833d227dd"
+          ],
+          "official_mean_questions": 0.0,
+          "provincial_mean_questions": 0.05
+        }
+      ],
+      "prototype_cases": [],
+      "sample_ids": [
+        "503390c5d176fc4a"
+      ],
+      "sample_cells_planned": 1
+    }
+  },
+  "construction_observations": [
+    {
+      "part": "P3",
+      "idx": 1,
+      "sub": null,
+      "topic": "Mô hình đồ thị có trọng số: hành trình khép kín với chi phí nhỏ nhất",
+      "grade": null,
+      "given": "Ảnh sơ đồ các vùng nối nhau qua cửa có chi phí; hành trình phải thăm mọi vùng và quay lại vùng xuất phát.",
+      "task": "Tìm tổng chi phí nhỏ nhất và đổi sang đơn vị yêu cầu.",
+      "reasoning": [
+        "Chuyển các vùng thành đỉnh và các cửa thành cạnh có trọng số.",
+        "Biểu diễn điều kiện thăm đủ vùng và quay về bằng hành trình khép kín.",
+        "Xét các hành trình cạnh tranh, cho phép lặp cạnh khi có lợi.",
+        "So sánh chi phí và xác nhận phương án nhỏ nhất.",
+        "Đổi đơn vị kết quả."
+      ],
+      "steps": 5,
+      "combines": [
+        "Đọc sơ đồ",
+        "Đồ thị có trọng số",
+        "Tối ưu rời rạc",
+        "Đổi đơn vị"
+      ],
+      "wrong_options": null,
+      "wrong_option_details": [],
+      "cue_use": "needed in reasoning",
+      "difficulty_source": "Phân biệt thăm đủ vùng với đi qua đủ cửa và không tự áp đặt điều kiện mỗi vùng chỉ được đến một lần.",
+      "discrimination": "high",
+      "optional_path": null,
+      "evidence_uncertainty": "Danh mục chương trình cung cấp không định vị rõ nội dung đồ thị nên để lớp là null. Mô tả văn bản về số vùng không khớp rõ với ảnh; việc mô hình hóa dựa vào các vùng và cửa nhìn thấy. Phạm vi ảnh cắt chưa được kiểm chứng độc lập.",
+      "paper_id": "de5833d227dd",
+      "year": "2026",
+      "evidence_class": "provincial_third_party",
+      "ref": "de5833d227dd|P3|1|None",
+      "printed_idx": 1
+    }
+  ],
+  "level_assignments": [
+    {
+      "ref": "de5833d227dd|P3|1|None",
+      "level": "VD",
+      "confidence": "medium",
+      "justification": "Mô tả yêu cầu xây dựng mô hình quan hệ và lựa chọn phương án tối ưu dưới các ràng buộc, vượt quá tính toán theo công thức quen thuộc.",
+      "decisive_demand": "Mô hình hóa các quan hệ và lập luận để xác nhận tính tối ưu.",
+      "uncertainty": "Sự không khớp trong mô tả và phạm vi hình chưa được kiểm chứng có thể ảnh hưởng các ràng buộc; phân loại dựa trên yêu cầu được trích xuất."
+    }
+  ],
+  "examples": [
+    {
+      "origin": "synthetic_not_corpus_evidence",
+      "model": "gpt-6.1-sol",
+      "target": {
+        "id": "503390c5d176fc4a",
+        "topic": "Đồ thị và tối ưu rời rạc",
+        "part": "P3",
+        "level": "VD",
+        "qtype": "short_answer",
+        "option_labels": [],
+        "slot_keys": [
+          null
+        ],
+        "canonical_answer_alphabet": [],
+        "abstract_observations": [
+          {
+            "given": "Ảnh sơ đồ các vùng nối nhau qua cửa có chi phí; hành trình phải thăm mọi vùng và quay lại vùng xuất phát.",
+            "task": "Tìm tổng chi phí nhỏ nhất và đổi sang đơn vị yêu cầu.",
+            "reasoning": [
+              "Chuyển các vùng thành đỉnh và các cửa thành cạnh có trọng số.",
+              "Biểu diễn điều kiện thăm đủ vùng và quay về bằng hành trình khép kín.",
+              "Xét các hành trình cạnh tranh, cho phép lặp cạnh khi có lợi.",
+              "So sánh chi phí và xác nhận phương án nhỏ nhất.",
+              "Đổi đơn vị kết quả."
+            ],
+            "combines": [
+              "Đọc sơ đồ",
+              "Đồ thị có trọng số",
+              "Tối ưu rời rạc",
+              "Đổi đơn vị"
+            ],
+            "difficulty_source": "Phân biệt thăm đủ vùng với đi qua đủ cửa và không tự áp đặt điều kiện mỗi vùng chỉ được đến một lần.",
+            "evidence_uncertainty": "Danh mục chương trình cung cấp không định vị rõ nội dung đồ thị nên để lớp là null. Mô tả văn bản về số vùng không khớp rõ với ảnh; việc mô hình hóa dựa vào các vùng và cửa nhìn thấy. Phạm vi ảnh cắt chưa được kiểm chứng độc lập.",
+            "evidence_class": "provincial_third_party"
+          }
+        ],
+        "support_refs": [
+          "de5833d227dd|P3|1|None"
+        ],
+        "official_anchor_available": false
+      },
+      "sample": {
+        "id": "503390c5d176fc4a",
+        "stem": "Một khu trải nghiệm có năm phòng A, B, C, D, E. Các lối đi hai chiều và thời gian đi qua được cho đầy đủ như sau: A–B mất 2 phút, B–C mất 2 phút, C–A mất 3 phút, A–D mất 1 phút, D–E mất 1 phút, E–A mất 5 phút. Không có lối đi trực tiếp nào khác. Một nhân viên xuất phát từ B, cần ghé tất cả các phòng rồi trở lại B. Nhân viên được đi qua một phòng hoặc một lối đi nhiều lần; thời gian dừng tại các phòng bằng 0. Thời gian di chuyển nhỏ nhất là bao nhiêu giây?",
+        "options": [],
+        "statements": [],
+        "answers": [
+          {
+            "sub": null,
+            "answer": "660",
+            "level": "VD"
+          }
+        ],
+        "solution": "Hai nhóm phòng B,C và D,E chỉ liên hệ với nhau qua A. Với một hành trình khép kín, xét các phần hành trình trên tam giác A,B,C. Nếu dùng cả ba lối đi thì tổng thời gian trên nhóm này ít nhất là 2+2+3=7 phút. Nếu chỉ dùng hai lối đi để nối đủ ba phòng, mỗi lối đó phải được đi qua ít nhất hai lần để hành trình khép kín; cặp có tổng thời gian nhỏ nhất là A–B và B–C, nên trường hợp này mất ít nhất 2(2+2)=8 phút. Vì vậy nhóm này cần ít nhất 7 phút. Tương tự, trên tam giác A,D,E, dùng cả ba lối mất ít nhất 1+1+5=7 phút; dùng hai lối rồi quay lại cần ít nhất 2(1+1)=4 phút. Tổng thời gian do đó không dưới 7+4=11 phút. Hành trình B→C→A→D→E→D→A→B đạt đúng 11 phút và ghé đủ phòng. Đổi ra giây: 11×60=660.",
+        "distractors": [],
+        "level_reason": "Học sinh phải mô hình hóa mạng lối đi, khai thác phòng A làm điểm nối hai nhóm và chứng minh một cận dưới đạt được. Việc cho phép lặp lối đi tạo ra lựa chọn tối ưu khác với việc chỉ xét chu trình ghé mỗi phòng một lần.",
+        "prerequisites": [
+          "Cộng và so sánh thời gian",
+          "Lập luận về đường đi khép kín trên một mạng hữu hạn",
+          "Đổi phút sang giây"
+        ],
+        "variation_guidance": "Có thể thay thời gian để một nhóm nên đi vòng còn nhóm kia nên quay lại trên cùng lối. Cần nêu đầy đủ các lối đi, quyền lặp và điều kiện quay về điểm xuất phát.",
+        "uncertainties": [
+          "Mô tả xây dựng chỉ dựa trên quan sát cấp tỉnh qua nguồn bên thứ ba, không phải bằng chứng từ đề chính thức.",
+          "Vị trí của nội dung đồ thị và tối ưu rời rạc trong chương trình được cung cấp chưa rõ; bài được thiết kế để giải bằng xét trường hợp và lập luận sơ cấp, không cần thuật toán đồ thị chuyên biệt."
+        ],
+        "missing_assets": []
+      },
+      "independent_review": {
+        "id": "503390c5d176fc4a",
+        "answers": [
+          {
+            "sub": null,
+            "answer": "660",
+            "level": "VD"
+          }
+        ],
+        "solution": "A là điểm nối duy nhất giữa hai nhóm phòng. Phần hành trình trong tam giác ABC phải là một hành trình khép kín ghé cả ba đỉnh: nếu dùng cả ba cạnh thì tốn ít nhất 2+2+3=7 phút; nếu bỏ một cạnh thì phải đi lại trên hai cạnh còn lại, tốn ít nhất 2(2+2)=8 phút. Vì vậy phần này tối thiểu 7 phút. Tương tự, phần ghé D và E từ A rồi về A tối thiểu min(1+1+5, 2(1+1))=4 phút. Tổng tối thiểu là 11 phút, đạt được theo hành trình B–C–A–D–E–D–A–B. Đổi ra giây: 11×60=660.",
+        "confidence": "high",
+        "error_flags": [],
+        "level_reason": "Cần nhận ra cấu trúc nối qua A, lập cận dưới cho từng phần và xây dựng hành trình đạt cận; phép đổi đơn vị chỉ là bước tính thường quy."
+      },
+      "key_agreement": true,
+      "level_agreement": true,
+      "status": "model_checks_passed_pending_teacher_review",
+      "generation_receipt": "audit/outputs/topic-samples/toan/311d97575e803f54fd1c966c1d7cd2e0177fbf8a7b90e7e533519c834ffe1abd.draft.json",
+      "resolve_receipt": "audit/outputs/topic-samples/toan/311d97575e803f54fd1c966c1d7cd2e0177fbf8a7b90e7e533519c834ffe1abd.resolve.json"
+    }
+  ],
+  "unready_example_ids": [],
+  "missing_example_ids": [],
+  "teacher_approved": false
+}

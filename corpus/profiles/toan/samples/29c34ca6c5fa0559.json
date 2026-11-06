@@ -1,0 +1,146 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "29c34ca6c5fa0559",
+    "topic": "Mũ và lôgarit",
+    "part": "P3",
+    "level": "TH",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Vốn tự có, khoản vay có lãi kép theo kỳ, đơn giá mua và bán của tài sản cùng thời gian nắm giữ.",
+        "task": "Tính lợi nhuận ròng so với vốn tự có ban đầu và làm tròn theo đơn vị yêu cầu.",
+        "reasoning": [
+          "Dùng tổng vốn mua và đơn giá để xác định quy mô tài sản.",
+          "Tính tiền bán theo đơn giá mới.",
+          "Tính dư nợ cả gốc và lãi bằng công thức lãi kép.",
+          "Trừ dư nợ khỏi tiền bán rồi trừ vốn tự có ban đầu.",
+          "Thống nhất đơn vị và làm tròn."
+        ],
+        "combines": [
+          "Lãi kép",
+          "Tỉ lệ và đơn giá",
+          "Hạch toán lợi nhuận"
+        ],
+        "difficulty_source": "Phân biệt tiền còn lại sau trả nợ với lợi nhuận so với vốn tự có.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Công thức tăng trưởng đã nêu sẵn, giá trị ban đầu, tỉ lệ tăng theo năm và hai mốc thời gian.",
+        "task": "Tính giá trị dự báo tại mốc sau và làm tròn.",
+        "reasoning": [
+          "Lấy chênh lệch giữa hai mốc thời gian làm số kỳ tăng trưởng.",
+          "Đổi tỉ lệ phần trăm sang dạng dùng trong công thức.",
+          "Thay dữ kiện vào công thức tăng trưởng và làm tròn kết quả cuối."
+        ],
+        "combines": [
+          "Lũy thừa",
+          "Tăng trưởng theo tỉ lệ",
+          "Đọc mốc thời gian",
+          "Làm tròn"
+        ],
+        "difficulty_source": "Xác định đúng số kỳ và đổi tỉ lệ khi công thức đã được cung cấp.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Mô hình suy giảm mũ có nồng độ ban đầu, một phép đo sau thời gian xác định và ngưỡng duy trì.",
+        "task": "Tìm khoảng thời gian tối đa trước khi đại lượng giảm dưới ngưỡng, rồi làm tròn.",
+        "reasoning": [
+          "Thay phép đo vào mô hình để xác định hệ số suy giảm bằng lôgarit.",
+          "Dùng tính giảm để xác định thời gian tối đa ứng với thời điểm chạm ngưỡng.",
+          "Giải phương trình mũ tại ngưỡng.",
+          "Tính thời gian và làm tròn theo yêu cầu."
+        ],
+        "combines": [
+          "Hàm số mũ",
+          "Lôgarit",
+          "Mô hình suy giảm",
+          "Tính đơn điệu",
+          "Làm tròn"
+        ],
+        "difficulty_source": "Hiệu chỉnh tham số rồi chuyển điều kiện duy trì ngưỡng thành thời điểm biên.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Công thức liên hệ một đại lượng với lôgarit của tỉ số đo và hệ số thay đổi giữa các trạng thái.",
+        "task": "Tính độ thay đổi của đại lượng theo phương được yêu cầu.",
+        "reasoning": [
+          "Viết công thức cho trạng thái đầu và trạng thái sau.",
+          "Lấy hiệu để loại đại lượng chuẩn chung.",
+          "Dùng tính chất lôgarit của thương để thay bằng hệ số thay đổi.",
+          "Tính giá trị và làm tròn."
+        ],
+        "combines": [
+          "Tính chất lôgarit",
+          "Biến đổi công thức",
+          "Làm tròn"
+        ],
+        "difficulty_source": "Nhận ra lấy hiệu giúp khử đại lượng chuẩn chưa biết.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "85efdd1a7e54|P3|2|None",
+      "acc00d945397|P3|4|None",
+      "adb051fd8253|P3|6|None",
+      "c6340827ba59|P3|2|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "29c34ca6c5fa0559",
+    "stem": "Ngay sau lần cập nhật đầu năm 2027, một thư viện có 240 tài liệu số. Theo kế hoạch, vào đầu mỗi năm tiếp theo, số tài liệu tăng 5% so với số lượng ngay sau lần cập nhật đầu năm trước. Dùng mô hình N = 240(1,05)^n, trong đó n là số lần cập nhật sau đầu năm 2027. Theo mô hình này, ngay sau lần cập nhật đầu năm 2031, thư viện có bao nhiêu tài liệu số? Làm tròn kết quả đến hàng đơn vị.",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "292",
+        "level": "TH"
+      }
+    ],
+    "solution": "Từ ngay sau lần cập nhật đầu năm 2027 đến ngay sau lần cập nhật đầu năm 2031 có 4 lần cập nhật. Thay n = 4 vào mô hình: N = 240(1,05)^4 = 291,7215. Làm tròn đến hàng đơn vị được 292 tài liệu. Chỉ làm tròn kết quả cuối theo yêu cầu của mô hình.",
+    "distractors": [],
+    "level_reason": "Học sinh xác định số kỳ từ hai mốc thời gian, thay vào công thức mũ đã cho và làm tròn. Đây là thực hiện quy trình quen thuộc ở mức TH.",
+    "prerequisites": [
+      "Lũy thừa với số mũ nguyên dương",
+      "Tăng trưởng theo tỉ lệ phần trăm",
+      "Xác định số kỳ giữa hai mốc thời gian",
+      "Làm tròn số"
+    ],
+    "variation_guidance": "Có thể đổi lượng ban đầu, tỉ lệ tăng và hai mốc cập nhật. Cần nói rõ thời điểm ghi nhận và quy tắc làm tròn để tránh hiểu khác nhau về số kỳ.",
+    "uncertainties": [
+      "Đây là mẫu tổng hợp tự tạo, chỉ tham khảo cách xây dựng từ quan sát nguồn cấp tỉnh bên thứ ba; không phải bằng chứng đề thi thật và không có đối sánh chính thức được cung cấp."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "29c34ca6c5fa0559",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "292",
+        "level": "TH"
+      }
+    ],
+    "solution": "Từ đầu năm 2027 đến đầu năm 2031 có 4 lần cập nhật tiếp theo. N=240(1,05)^4=291,7215; làm tròn đến hàng đơn vị được 292 tài liệu số.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Xác định n=4, thay vào mô hình đã cung cấp và làm tròn là quy trình tính toán quen thuộc, thuộc TH."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/c2c0667dd18f85a05c492558529d69590aaa3c9d0ec01e92ea871bba5e5afcd6.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/c2c0667dd18f85a05c492558529d69590aaa3c9d0ec01e92ea871bba5e5afcd6.resolve.json"
+}

@@ -1,0 +1,104 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "3372cb27ba9cda41",
+    "topic": "Số đặc trưng của mẫu số liệu ghép nhóm",
+    "part": "P3",
+    "level": "TH",
+    "qtype": "short_answer",
+    "option_labels": [],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [],
+    "abstract_observations": [
+      {
+        "given": "Bảng phân bố một đại lượng định lượng theo các khoảng lớp và tần số.",
+        "task": "Tính khoảng tứ phân vị và làm tròn theo yêu cầu.",
+        "reasoning": [
+          "Tính cỡ mẫu và lập tần số tích lũy.",
+          "Xác định các lớp chứa tứ phân vị dưới và trên.",
+          "Nội suy từng tứ phân vị theo công thức cho mẫu ghép nhóm.",
+          "Lấy hiệu các tứ phân vị rồi làm tròn."
+        ],
+        "combines": [
+          "Tần số tích lũy",
+          "Tứ phân vị của mẫu ghép nhóm",
+          "Khoảng tứ phân vị"
+        ],
+        "difficulty_source": "Xác định đúng lớp chứa mỗi tứ phân vị trước khi nội suy.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "ecd76ac672e5|P3|1|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "3372cb27ba9cda41",
+    "stem": "Quãng đường đi bộ trong một ngày của một nhóm người được ghép thành các lớp, đơn vị là kilômét: [0; 2), [2; 4), [4; 6), [6; 8), [8; 10). Tần số tích lũy đến hết từng lớp lần lượt là 4, 12, 24, 36, 40; nghĩa là mỗi số cho biết tổng số người thuộc lớp đó và các lớp đứng trước. Tính khoảng tứ phân vị bằng nội suy tuyến tính trong các lớp, sử dụng vị trí n/4 và 3n/4. Làm tròn kết quả đến hàng phần mười và viết bằng dấu phẩy thập phân.",
+    "options": [],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "3,5",
+        "level": "TH"
+      }
+    ],
+    "solution": "Cỡ mẫu n = 40. Tần số của các lớp lần lượt là 4, 8, 12, 12, 4, được tính bằng hiệu hai tần số tích lũy liên tiếp. Vị trí n/4 = 10 thuộc lớp [2; 4), nên Q₁ = 2 + [(10 − 4)/8] × 2 = 3,5 km. Vị trí 3n/4 = 30 thuộc lớp [6; 8), nên Q₃ = 6 + [(30 − 24)/12] × 2 = 7 km. Khoảng tứ phân vị là Q₃ − Q₁ = 3,5 km. Kết quả cần điền là 3,5.",
+    "distractors": [],
+    "level_reason": "Học sinh diễn giải tần số tích lũy, xác định tần số và lớp chứa từng tứ phân vị, sau đó thực hiện công thức nội suy quen thuộc. Các thao tác này thuộc TH.",
+    "prerequisites": [
+      "Phân biệt tần số và tần số tích lũy",
+      "Công thức nội suy tứ phân vị của mẫu số liệu ghép nhóm",
+      "Khoảng tứ phân vị",
+      "Làm tròn số thập phân"
+    ],
+    "variation_guidance": "Có thể thay bảng tần số tích lũy và độ rộng lớp; phải bảo đảm dãy tích lũy tăng và xác định rõ quy ước vị trí tứ phân vị. Chỉ làm tròn kết quả cuối.",
+    "uncertainties": [
+      "Đây là câu hỏi minh họa tổng hợp nguyên gốc, không phải bằng chứng đề thi thật.",
+      "Quan sát nền chỉ thuộc nguồn cấp tỉnh do bên thứ ba cung cấp, chưa có neo chính thức; không suy rộng thành yêu cầu thống nhất của các đề thi."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "3372cb27ba9cda41",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "3,5",
+        "level": "TH"
+      }
+    ],
+    "solution": "Tổng số người n = 40; tần số các lớp lần lượt là 4, 8, 12, 12, 4. Vị trí Q1 là 10, thuộc lớp [2; 4), nên Q1 = 2 + (10 − 4) × 2/8 = 3,5 km. Vị trí Q3 là 30, thuộc lớp [6; 8), nên Q3 = 6 + (30 − 24) × 2/12 = 7 km. Khoảng tứ phân vị là Q3 − Q1 = 3,5 km.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Đọc tần số tích lũy và thực hiện nội suy tứ phân vị theo quy trình chuẩn đã được đề chỉ rõ; các phép tính thường quy không đòi hỏi mức VD."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/toan/c9fa72d951523b701c12b206e139b9d837df7c4a8e676158e4ef8bfc4edd137b.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/toan/c9fa72d951523b701c12b206e139b9d837df7c4a8e676158e4ef8bfc4edd137b.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 3,
+  "source_rows_sha256": "863dd6885185956ed9dabede84bf529993a764e4871f75f25629503cf8f2731a",
+  "source_overlap_review": {
+    "disposition": "generic_mathematical_shape_false_positive",
+    "reviewer": "parent_sol",
+    "at_utc": "2026-11-03T22:54:28.898865+00:00",
+    "sample_sha256": "dfd2c0ccdce701ce2e0b76d13260e0007ed5d1453074f0595044df8a0e2365fe",
+    "overlap_sha256": [
+      "184d8dda3066ba64150836cc600fa200a01089286e7d4b396981c10a025ca846",
+      "43453735b3670183b08c8bfb8600a12d86e8948dd7722c8890daedcf19107457",
+      "cc32e5a7193444cb2aeb63eee110f9a6b5fb081fce44c4646bbab79e5632bbf1"
+    ],
+    "reason": "Parent reread all four matching sources. Only a conventional equally spaced bin grid and the table label match. The new walking-distance context, cumulative data, all class frequencies and requested statistic differ from the real instances. Standard bin boundaries alone do not establish reuse of a complete source numerical instance.",
+    "mathematical_check": "Cumulative differences give frequencies 4,8,12,12,4. Quartile positions are 10 and 30; interpolation gives Q1=3.5, Q3=7, and IQR=3.5. Both lie inside the correct bins.",
+    "semantic_noncopying_proved": false
+  }
+}

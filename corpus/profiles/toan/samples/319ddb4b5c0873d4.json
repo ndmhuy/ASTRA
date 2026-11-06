@@ -1,0 +1,185 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "319ddb4b5c0873d4",
+    "topic": "Phương trình lượng giác",
+    "part": "P1",
+    "level": "TH",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một phương trình lượng giác cơ bản và các họ nghiệm ứng viên.",
+        "task": "Chọn tập nghiệm đầy đủ.",
+        "reasoning": [
+          "Nhận diện các vị trí trên đường tròn lượng giác thỏa mãn phương trình.",
+          "Viết họ nghiệm bao quát mọi vị trí đó."
+        ],
+        "combines": [
+          "Hàm số lượng giác",
+          "Biểu diễn tập nghiệm"
+        ],
+        "difficulty_source": "Nhận diện họ nghiệm đầy đủ thay vì chỉ một nhánh.",
+        "evidence_uncertainty": null,
+        "evidence_class": "official"
+      },
+      {
+        "given": "Một phương trình sin có đối số dịch chuyển và vế phải là giá trị biên.",
+        "task": "Chọn họ nghiệm đầy đủ.",
+        "reasoning": [
+          "Viết họ góc có sin bằng giá trị biên đã cho.",
+          "Giải phép dịch chuyển trong đối số.",
+          "Giữ đúng chu kỳ của họ nghiệm."
+        ],
+        "combines": [
+          "Phương trình sin cơ bản",
+          "Biến đổi góc"
+        ],
+        "difficulty_source": "Kiểm soát dấu và chu kỳ trong một công thức quen thuộc.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một phương trình lượng giác cơ bản và các họ nghiệm đề xuất.",
+        "task": "Chọn tập nghiệm đầy đủ.",
+        "reasoning": [
+          "Nhận diện các vị trí nghiệm trên đường tròn lượng giác.",
+          "Biểu diễn toàn bộ nghiệm bằng một họ có tham số nguyên."
+        ],
+        "combines": [
+          "Phương trình lượng giác",
+          "Tính tuần hoàn"
+        ],
+        "difficulty_source": "Nhớ đúng họ nghiệm đầy đủ của phương trình cơ bản.",
+        "evidence_uncertainty": "Chưa xác nhận được khóa đáp án khớp mã.",
+        "evidence_class": "provincial_third_party"
+      },
+      {
+        "given": "Một phương trình sin với giá trị lượng giác đặc biệt.",
+        "task": "Chọn tập nghiệm đầy đủ.",
+        "reasoning": [
+          "Xác định góc tham chiếu có giá trị sin đã cho.",
+          "Xác định các họ góc cùng giá trị sin trong một chu kỳ.",
+          "Bổ sung chu kỳ và đối chiếu tập nghiệm."
+        ],
+        "combines": [
+          "Giá trị lượng giác đặc biệt",
+          "Nghiệm phương trình sin",
+          "Tính tuần hoàn"
+        ],
+        "difficulty_source": "Giữ đầy đủ các nhánh nghiệm và đúng chu kỳ.",
+        "evidence_uncertainty": null,
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "163f20908cf7|P1|7|None",
+      "0968e8bc9e2d|P1|4|None",
+      "0ecb85132b84|P1|4|None",
+      "11d88d9a96ad|P1|10|None",
+      "3b4cca11ea82|P1|10|None",
+      "525d3542283a|P1|11|None",
+      "6aa30214ba7e|P1|10|None",
+      "7ab78715480e|P1|12|None",
+      "85efdd1a7e54|P1|8|None",
+      "aceb17d936f5|P1|4|None",
+      "ccae0b94a82d|P1|10|None",
+      "fc12a8146279|P1|2|None"
+    ],
+    "official_anchor_available": true
+  },
+  "sample": {
+    "id": "319ddb4b5c0873d4",
+    "stem": "Tập nghiệm của phương trình cos(2x − π/6) = √3/2 là tập nào sau đây? Trong các phương án, k thuộc Z.",
+    "options": [
+      {
+        "label": "A",
+        "text": "x = 2kπ hoặc x = π/6 + 2kπ."
+      },
+      {
+        "label": "B",
+        "text": "x = kπ hoặc x = π/6 + kπ."
+      },
+      {
+        "label": "C",
+        "text": "x = −π/6 + kπ hoặc x = kπ."
+      },
+      {
+        "label": "D",
+        "text": "x = π/4 + kπ hoặc x = 5π/12 + kπ."
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "TH"
+      }
+    ],
+    "solution": "Đặt u = 2x − π/6. Vì cos u = √3/2 nên u = π/6 + 2kπ hoặc u = −π/6 + 2kπ. Giải theo x được x = π/6 + kπ hoặc x = kπ, nên chọn B. A không chia chu kỳ cho 2 nên thiếu nghiệm; C xử lí sai dấu khi chuyển phần dịch góc; D dùng các góc có sin bằng √3/2 thay cho cos.",
+    "distractors": [
+      {
+        "label": "A",
+        "sub": null,
+        "mistake": "Chia các góc cố định cho 2 nhưng giữ nguyên số hạng chu kỳ 2kπ.",
+        "why_plausible": "Học sinh dễ chỉ xử lí phần góc đặc biệt mà bỏ sót tham số nguyên khi chia hai vế."
+      },
+      {
+        "label": "C",
+        "sub": null,
+        "mistake": "Từ 2x − π/6 = ±π/6 + 2kπ, trừ tiếp π/6 thay vì cộng π/6 vào hai vế.",
+        "why_plausible": "Sai dấu chuyển vế vẫn tạo ra hai họ nghiệm có hình thức và chu kỳ quen thuộc."
+      },
+      {
+        "label": "D",
+        "sub": null,
+        "mistake": "Lấy u = π/3 + 2kπ hoặc u = 2π/3 + 2kπ như khi giải sin u = √3/2.",
+        "why_plausible": "Giá trị đặc biệt √3/2 xuất hiện ở cả bảng sin và cos nên dễ bị nhớ lẫn."
+      }
+    ],
+    "level_reason": "Học sinh giải phương trình cos cơ bản rồi thực hiện phép biến đổi tuyến tính đối số. Đây là quy trình chuẩn ở mức TH.",
+    "prerequisites": [
+      "Giá trị lượng giác của góc đặc biệt.",
+      "Công thức nghiệm phương trình cos u = cos α.",
+      "Biến đổi phương trình với tham số nguyên."
+    ],
+    "variation_guidance": "Có thể đổi hệ số của x và góc dịch; cần biến đổi cả phần góc cố định lẫn chu kỳ, đồng thời kiểm tra các tập nghiệm ứng viên không trùng nhau.",
+    "uncertainties": [],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "319ddb4b5c0873d4",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "B",
+        "level": "TH"
+      }
+    ],
+    "solution": "cos(2x−π/6)=√3/2 tương đương 2x−π/6=±π/6+2kπ. Suy ra x=kπ hoặc x=π/6+kπ, k∈Z. Chọn B.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Giải phương trình lượng giác cơ bản và biến đổi đại số theo quy trình quen thuộc."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/85581bde458d2c2066009036a5f17771dc75ec917394512579a9123c675daa30.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/85581bde458d2c2066009036a5f17771dc75ec917394512579a9123c675daa30.resolve.json"
+}

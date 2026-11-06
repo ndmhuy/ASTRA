@@ -1,0 +1,149 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "879a2ce8f863c0b2",
+    "topic": "Đường conic",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một elip có hình chữ nhật cơ sở và các kích thước, kèm hệ trục trên ảnh.",
+        "task": "Kiểm tra phương trình chính tắc của elip.",
+        "reasoning": [
+          "Suy ra các bán trục từ kích thước hình chữ nhật.",
+          "Bình phương các bán trục để lập mẫu số và đối chiếu."
+        ],
+        "combines": [
+          "Hình chữ nhật cơ sở",
+          "Phương trình elip"
+        ],
+        "difficulty_source": "Phân biệt độ dài bán trục với hệ số trong phương trình.",
+        "evidence_uncertainty": "Ảnh cắt thể hiện được cấu hình; phạm vi cắt chưa được kiểm chứng độc lập.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "de5833d227dd|P2|1|b"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "879a2ce8f863c0b2",
+    "stem": "Trong mặt phẳng tọa độ Oxy, một elip có tâm O và các trục đối xứng trùng với Ox, Oy. Hình chữ nhật cơ sở của elip có các cạnh đi qua các đỉnh của elip và song song với các trục tọa độ; cạnh song song với Ox dài 14, cạnh song song với Oy dài 8. Xác định tính đúng hoặc sai của các phát biểu sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Bán trục lớn của elip bằng 7."
+      },
+      {
+        "sub": "b",
+        "text": "Phương trình chính tắc của elip là x²/14+y²/8=1."
+      },
+      {
+        "sub": "c",
+        "text": "Điểm có tọa độ (0; 4) thuộc elip."
+      },
+      {
+        "sub": "d",
+        "text": "Khoảng cách giữa hai tiêu điểm của elip bằng 2√65."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Các kích thước hình chữ nhật cơ sở là 2a=14 và 2b=8, nên a=7, b=4. a) Đúng vì bán trục lớn bằng 7. b) Sai vì mẫu số phải là bình phương các bán trục; phương trình đúng là x²/49+y²/16=1. c) Đúng vì thay (0; 4) vào phương trình được 0+16/16=1. d) Sai vì c²=a²−b²=49−16=33, nên khoảng cách giữa hai tiêu điểm là 2c=2√33.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Dùng trực tiếp độ dài các cạnh hình chữ nhật cơ sở làm mẫu số của phương trình elip.",
+        "why_plausible": "Các số 14 và 8 được cho trực tiếp, khiến học sinh dễ bỏ qua việc chia đôi để tìm bán trục rồi bình phương."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Dùng c²=a²+b² thay cho c²=a²−b².",
+        "why_plausible": "Học sinh có thể nhớ nhầm vị trí các đại lượng trong hệ thức a²=b²+c² và cộng 49 với 16."
+      }
+    ],
+    "level_reason": "Học sinh diễn giải kích thước hình chữ nhật cơ sở để tìm bán trục, lập phương trình, kiểm tra điểm và tính tiêu cự bằng các quy trình quen thuộc. Mức cao nhất của toàn câu là TH.",
+    "prerequisites": [
+      "Hình chữ nhật cơ sở của elip",
+      "Phương trình chính tắc của elip",
+      "Kiểm tra điểm thuộc đường cong bằng phép thế",
+      "Hệ thức giữa bán trục và khoảng cách từ tâm đến tiêu điểm"
+    ],
+    "variation_guidance": "Thay kích thước hình chữ nhật hoặc đổi cạnh dài sang phương Oy; mô tả đầy đủ vị trí tâm và phương các cạnh để câu hỏi luôn giải được mà không cần hình.",
+    "uncertainties": [
+      "Quan sát cấu trúc ban đầu thuộc nguồn bên thứ ba cấp tỉnh, có giới hạn về phạm vi ảnh cắt chưa được kiểm chứng độc lập. Câu mới cung cấp toàn bộ cấu hình bằng văn bản và không sử dụng ảnh nguồn; không có đối chiếu chính thức."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "879a2ce8f863c0b2",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "Hình chữ nhật cơ sở cho 2a=14, 2b=8 nên a=7, b=4. a) Bán trục lớn bằng 7. b) Phương trình đúng là x²/49+y²/16=1. c) (0;4) là một đỉnh của elip nên thuộc elip. d) c²=49−16=33 nên khoảng cách hai tiêu điểm bằng 2√33, không phải 2√65.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a) Diễn giải độ dài cạnh hình chữ nhật cơ sở thành bán trục. b) Lập phương trình chính tắc theo các bán trục. c) Nhận ra tọa độ đỉnh từ dữ kiện hình học. d) Áp dụng công thức khoảng cách hai tiêu điểm. Các ý đều là thao tác chuẩn, không đòi hỏi xây dựng mô hình mới."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/1218244cf99a19a247ab2d760eeca76bbf572d7ec21223d72eeb900cae190a9a.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/1218244cf99a19a247ab2d760eeca76bbf572d7ec21223d72eeb900cae190a9a.resolve.json"
+}

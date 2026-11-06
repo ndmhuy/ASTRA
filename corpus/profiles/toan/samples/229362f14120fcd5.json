@@ -1,0 +1,153 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "229362f14120fcd5",
+    "topic": "Nguyên hàm và tích lũy",
+    "part": "P2",
+    "level": "NB",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một đại lượng tích lũy, tốc độ biến thiên đã cho và hình minh họa vật chứa.",
+        "task": "Kiểm tra quan hệ nguyên hàm giữa đại lượng và tốc độ.",
+        "reasoning": [
+          "Nhận ra hàm tốc độ là đạo hàm của đại lượng.",
+          "Áp dụng định nghĩa nguyên hàm."
+        ],
+        "combines": [
+          "Đạo hàm và tốc độ biến thiên",
+          "Định nghĩa nguyên hàm"
+        ],
+        "difficulty_source": "Chỉ cần hiểu quan hệ định nghĩa giữa lượng tích lũy và tốc độ.",
+        "evidence_uncertainty": "Hình minh họa không cung cấp dữ kiện tính toán; ranh giới hình cắt chưa được kiểm chứng độc lập.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "0968e8bc9e2d|P2|4|a"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "229362f14120fcd5",
+    "stem": "Trong một mô hình theo dõi điện lượng, Q(t) là điện lượng tích lũy và i(t) là tốc độ biến thiên của điện lượng trên khoảng thời gian I. Mô hình cho Q′(t) = i(t) với mọi t ∈ I. Xét tính đúng, sai của các phát biểu sau; C là hằng số thực tùy ý.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Họ tất cả các nguyên hàm của i trên I là Q(t) + C."
+      },
+      {
+        "sub": "b",
+        "text": "Hai nguyên hàm bất kỳ của i trên I khác nhau một hằng số."
+      },
+      {
+        "sub": "c",
+        "text": "Hai nguyên hàm bất kỳ của i trên I luôn bằng nhau tại mọi thời điểm thuộc I."
+      },
+      {
+        "sub": "d",
+        "text": "Với mọi hằng số C, đạo hàm theo t của phần hằng số cộng thêm C trong Q(t) + C bằng C."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "NB"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "NB"
+      }
+    ],
+    "solution": "a) Đúng. Hệ thức Q′ = i đã được cho trực tiếp; theo tính chất họ nguyên hàm, mọi nguyên hàm của i có dạng Q + C. b) Đúng. Trên một khoảng, hai nguyên hàm của cùng một hàm số khác nhau một hằng số. c) Sai. Hằng số chênh lệch không nhất thiết bằng 0; chẳng hạn Q và Q + 1 đều là nguyên hàm của i nhưng không bằng nhau tại bất kỳ thời điểm nào. d) Sai. Đạo hàm của một hằng số bằng 0. Chẳng hạn với C = 1, đạo hàm của phần cộng thêm này bằng 0, không bằng 1.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "c",
+        "mistake": "Cho rằng một hàm số chỉ có duy nhất một nguyên hàm.",
+        "why_plausible": "Học sinh có thể bỏ quên hằng số tùy ý khi nhớ công thức nguyên hàm."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Giữ nguyên hằng số cộng thêm sau khi lấy đạo hàm.",
+        "why_plausible": "Học sinh có thể nhầm việc giữ hằng số trong biểu thức với quy tắc đạo hàm của hằng số."
+      }
+    ],
+    "level_reason": "Quan hệ Q′ = i được cung cấp trực tiếp nên không cần diễn giải tình huống để thiết lập quan hệ đạo hàm. Các ý chỉ yêu cầu nhận biết dạng họ nguyên hàm, tính chất chênh lệch hằng số và đạo hàm của hằng số. Mức cao nhất trong các ý là NB, vì vậy toàn mẫu có mức NB.",
+    "prerequisites": [
+      "Dạng họ nguyên hàm khi đã biết một nguyên hàm",
+      "Hai nguyên hàm của cùng một hàm số trên một khoảng khác nhau một hằng số",
+      "Đạo hàm của hằng số"
+    ],
+    "variation_guidance": "Có thể thay điện lượng bằng một đại lượng tích lũy khác nhưng vẫn cung cấp trực tiếp hệ thức đạo hàm. Không yêu cầu học sinh tự chuyển mô tả tốc độ thành hệ thức hoặc xác định hằng số từ dữ kiện ban đầu nếu muốn giữ mức NB.",
+    "uncertainties": [
+      "Đây là mẫu đúng/sai tổng hợp mới, không phải bằng chứng đề thi thật hoặc một phần của đề thi hoàn chỉnh.",
+      "Quan sát cấp tỉnh qua bên thứ ba chỉ hỗ trợ một ý về quan hệ nguyên hàm và tốc độ biến thiên, không xác nhận cấu trúc cả bộ bốn ý. Các ý về hằng số được xây dựng từ kiến thức nguyên hàm phổ thông.",
+      "Hình minh họa trong quan sát nguồn chưa được kiểm chứng độc lập; mẫu này cung cấp đầy đủ dữ kiện bằng văn bản."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "229362f14120fcd5",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "b",
+        "answer": "D",
+        "level": "NB"
+      },
+      {
+        "sub": "c",
+        "answer": "S",
+        "level": "NB"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "NB"
+      }
+    ],
+    "solution": "a) Q′ = i nên họ tất cả các nguyên hàm của i trên khoảng I là Q + C. b) Hai nguyên hàm của cùng một hàm số trên một khoảng khác nhau một hằng số. c) Q và Q + 1 đều là nguyên hàm của i nhưng không bằng nhau. d) Đạo hàm của hằng số C bằng 0, không phải luôn bằng C.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "a), b), c) chỉ yêu cầu nhận biết tính chất họ nguyên hàm và hằng số cộng thêm; d) nhận biết đạo hàm của hằng số. Bối cảnh điện lượng không làm phát sinh yêu cầu mô hình hóa hay tính toán."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/sample-revisions/toan/a46b8e759d0411d029e615243da796ac943411d2bda2f05e68f1db5e1f62e2ca.draft.json",
+  "resolve_receipt": "audit/outputs/sample-revisions/toan/a46b8e759d0411d029e615243da796ac943411d2bda2f05e68f1db5e1f62e2ca.resolve.json",
+  "bounded_revision": true,
+  "overlap_count": 0,
+  "source_rows_sha256": "863dd6885185956ed9dabede84bf529993a764e4871f75f25629503cf8f2731a"
+}

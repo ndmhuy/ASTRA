@@ -1,0 +1,149 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "0320a36da0ab8cf3",
+    "topic": "Quy hoạch tuyến tính",
+    "part": "P2",
+    "level": "TH",
+    "qtype": "true_false",
+    "option_labels": [],
+    "slot_keys": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "canonical_answer_alphabet": [
+      "D",
+      "S"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Hai loại sản phẩm có đơn giá khác nhau và các biến biểu thị sản lượng theo thứ tự quy định trong cụm câu.",
+        "task": "Kiểm tra biểu thức doanh thu.",
+        "reasoning": [
+          "Ghép mỗi biến sản lượng với đơn giá của đúng loại sản phẩm.",
+          "Cộng các khoản doanh thu và đối chiếu."
+        ],
+        "combines": [
+          "Biểu thức doanh thu",
+          "Hàm mục tiêu tuyến tính"
+        ],
+        "difficulty_source": "Giữ đúng thứ tự ý nghĩa các biến.",
+        "evidence_uncertainty": "Khóa đáp án chưa được xác nhận; ý nghĩa các biến được giới thiệu ở nhận định kế tiếp nên phải đọc chung cụm câu.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "acc00d945397|P2|4|a"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "0320a36da0ab8cf3",
+    "stem": "Một cơ sở làm hai loại khay cây: khay rau thơm và khay hoa. Gọi x, y lần lượt là số khay rau thơm và số khay hoa được làm trong một ngày, với x, y là các số nguyên không âm. Mỗi khay rau thơm bán được 45 nghìn đồng và cần 2 giờ công; mỗi khay hoa bán được 70 nghìn đồng và cần 3 giờ công. Cơ sở có tối đa 60 giờ công và đủ vật liệu để làm tối đa 24 khay mỗi ngày. Giả sử mọi khay làm ra đều bán hết. Xét tính đúng, sai của các nhận định sau.",
+    "options": [],
+    "statements": [
+      {
+        "sub": "a",
+        "text": "Doanh thu trong ngày, tính bằng nghìn đồng, là R = 45x + 70y."
+      },
+      {
+        "sub": "b",
+        "text": "Điều kiện về giờ công được biểu diễn bởi bất phương trình 3x + 2y ≤ 60."
+      },
+      {
+        "sub": "c",
+        "text": "Điều kiện về số khay được biểu diễn bởi bất phương trình x + y ≤ 24."
+      },
+      {
+        "sub": "d",
+        "text": "Phương án làm 15 khay rau thơm và 10 khay hoa đáp ứng cả hai giới hạn về giờ công và vật liệu."
+      }
+    ],
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) Mỗi khay rau thơm mang lại 45 nghìn đồng, mỗi khay hoa mang lại 70 nghìn đồng nên R = 45x + 70y. b) Tổng giờ công là 2x + 3y, vì vậy điều kiện đúng là 2x + 3y ≤ 60. c) Tổng số khay là x + y nên phải có x + y ≤ 24. d) Phương án đã nêu sử dụng 2·15 + 3·10 = 60 giờ công nhưng cần làm 15 + 10 = 25 khay, vượt giới hạn 24 khay; phương án không đáp ứng cả hai điều kiện.",
+    "distractors": [
+      {
+        "label": null,
+        "sub": "b",
+        "mistake": "Đảo hệ số giờ công của hai loại khay.",
+        "why_plausible": "Học sinh nhớ hai hệ số 2 và 3 nhưng ghép chúng với sai biến."
+      },
+      {
+        "label": null,
+        "sub": "d",
+        "mistake": "Chỉ kiểm tra giới hạn giờ công rồi kết luận phương án khả thi.",
+        "why_plausible": "Phương án sử dụng đúng 60 giờ công nên dễ khiến học sinh bỏ qua giới hạn tổng số khay."
+      }
+    ],
+    "level_reason": "Mức cao nhất của cả cụm là TH: học sinh diễn giải dữ kiện thành các biểu thức tuyến tính quen thuộc và thay số để kiểm tra một phương án đã cho; không phải tự xây dựng chiến lược tối ưu.",
+    "prerequisites": [
+      "Biểu thức tuyến tính hai biến",
+      "Bất phương trình bậc nhất hai ẩn",
+      "Kiểm tra một phương án thỏa đồng thời các điều kiện"
+    ],
+    "variation_guidance": "Có thể đổi loại sản phẩm, đơn giá và nguồn lực; cần giữ rõ thứ tự ý nghĩa của x, y và tạo một phương án chỉ vi phạm một trong các giới hạn.",
+    "uncertainties": [
+      "Đây là mẫu minh họa tổng hợp nguyên bản, không phải câu hỏi hay bằng chứng từ đề thi thật.",
+      "Quan sát nền chỉ thuộc nguồn cấp tỉnh do bên thứ ba cung cấp, không có neo chính thức và khóa đáp án nguồn chưa được xác nhận; mẫu chỉ tiếp thu cấu trúc kiểm tra biểu thức doanh thu."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "0320a36da0ab8cf3",
+    "answers": [
+      {
+        "sub": "a",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "b",
+        "answer": "S",
+        "level": "TH"
+      },
+      {
+        "sub": "c",
+        "answer": "D",
+        "level": "TH"
+      },
+      {
+        "sub": "d",
+        "answer": "S",
+        "level": "TH"
+      }
+    ],
+    "solution": "a) Doanh thu là 45x + 70y nghìn đồng. b) Giới hạn giờ công đúng là 2x + 3y ≤ 60. c) Tổng số khay không vượt quá 24 nên x + y ≤ 24. d) Với x = 15, y = 10, số giờ công là 60 nhưng tổng số khay là 25 > 24, nên phương án không đáp ứng giới hạn vật liệu.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Cả bốn nhận định đều ở mức TH: diễn giải trực tiếp các đại lượng thành biểu thức, bất phương trình quen thuộc hoặc thay số để kiểm tra điều kiện."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/d5959d7b6d20cb33d11b63bd48b6c1a44deb20e9f5079f340f837bcb47ca9d78.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/d5959d7b6d20cb33d11b63bd48b6c1a44deb20e9f5079f340f837bcb47ca9d78.resolve.json"
+}

@@ -1,0 +1,131 @@
+{
+  "origin": "synthetic_not_corpus_evidence",
+  "model": "gpt-6.1-sol",
+  "target": {
+    "id": "6351880fd1d508a3",
+    "topic": "Xác suất cổ điển và tổ hợp",
+    "part": "P1",
+    "level": "TH",
+    "qtype": "mcq",
+    "option_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "slot_keys": [
+      null
+    ],
+    "canonical_answer_alphabet": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "abstract_observations": [
+      {
+        "given": "Một tập thẻ mang các số tự nhiên liên tiếp và phép rút đồng thời không hoàn lại.",
+        "task": "Tính xác suất để toàn bộ thẻ được rút cùng có tính chẵn theo yêu cầu.",
+        "reasoning": [
+          "Đếm số thẻ đáp ứng tính chất và tổng số thẻ.",
+          "Đếm số cách chọn thuận lợi và số cách chọn trong không gian mẫu.",
+          "Lập tỉ số xác suất."
+        ],
+        "combines": [
+          "Tính chẵn lẻ",
+          "Tổ hợp",
+          "Xác suất cổ điển"
+        ],
+        "difficulty_source": "Lập đúng không gian mẫu của phép chọn đồng thời không hoàn lại.",
+        "evidence_uncertainty": "Thiếu khóa khớp mã để xác định và giải thích từng lựa chọn sai.",
+        "evidence_class": "provincial_third_party"
+      }
+    ],
+    "support_refs": [
+      "3f1b2aa3cb72|P1|6|None"
+    ],
+    "official_anchor_available": false
+  },
+  "sample": {
+    "id": "6351880fd1d508a3",
+    "stem": "Một túi chứa 12 thẻ giống nhau về kích thước, được ghi các số từ 1 đến 12, mỗi số xuất hiện đúng một lần. Rút ngẫu nhiên đồng thời 3 thẻ, mọi nhóm 3 thẻ đều có cùng khả năng được chọn. Xác suất để cả 3 thẻ đều mang số chẵn bằng bao nhiêu?",
+    "options": [
+      {
+        "label": "A",
+        "text": "1/8"
+      },
+      {
+        "label": "B",
+        "text": "9/22"
+      },
+      {
+        "label": "C",
+        "text": "1/2"
+      },
+      {
+        "label": "D",
+        "text": "1/11"
+      }
+    ],
+    "statements": [],
+    "answers": [
+      {
+        "sub": null,
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "Có 6 thẻ mang số chẵn. Số nhóm 3 thẻ có thể rút là C(12,3) = 220; số nhóm gồm toàn thẻ chẵn là C(6,3) = 20. Xác suất cần tìm là 20/220 = 1/11.",
+    "distractors": [
+      {
+        "label": "A",
+        "sub": null,
+        "mistake": "Tính (6/12)^3 như thể ba lần chọn độc lập và có hoàn lại.",
+        "why_plausible": "Tỉ lệ thẻ chẵn ban đầu là 1/2 nên học sinh dễ giữ nguyên tỉ lệ này cho cả ba lượt."
+      },
+      {
+        "label": "B",
+        "sub": null,
+        "mistake": "Đếm nhóm có đúng 2 thẻ chẵn và 1 thẻ lẻ: C(6,2)C(6,1)/220 = 9/22.",
+        "why_plausible": "Học sinh có thể thay yêu cầu cả ba thẻ chẵn bằng một thành phần chẵn lẻ quen thuộc khác."
+      },
+      {
+        "label": "C",
+        "sub": null,
+        "mistake": "Dùng tỉ lệ thẻ chẵn trong túi làm xác suất của cả nhóm 3 thẻ.",
+        "why_plausible": "Học sinh nhầm xác suất của một thẻ với xác suất của một nhóm thẻ."
+      }
+    ],
+    "level_reason": "Đây là phép chọn đồng thời không hoàn lại với điều kiện trực tiếp; học sinh áp dụng công thức tổ hợp và lập tỉ số theo quy trình quen thuộc ở mức TH.",
+    "prerequisites": [
+      "Tính chẵn lẻ",
+      "Tổ hợp chập k của n phần tử",
+      "Xác suất cổ điển"
+    ],
+    "variation_guidance": "Có thể thay số thẻ và số thẻ rút; giữ rõ giả thiết chọn đồng thời, không hoàn lại và các nhóm đồng khả năng.",
+    "uncertainties": [
+      "Cấu trúc tham khảo chỉ có quan sát nguồn cấp tỉnh qua bên thứ ba, không có điểm neo chính thức.",
+      "Quan sát đầu vào thiếu khóa khớp mã cho các lựa chọn sai; các phương án và giải thích ở đây được xây dựng mới."
+    ],
+    "missing_assets": []
+  },
+  "independent_review": {
+    "id": "6351880fd1d508a3",
+    "answers": [
+      {
+        "sub": null,
+        "answer": "D",
+        "level": "TH"
+      }
+    ],
+    "solution": "Có 6 thẻ mang số chẵn. Số nhóm thuận lợi là C(6,3) = 20; tổng số nhóm là C(12,3) = 220. Xác suất cần tìm là 20/220 = 1/11.",
+    "confidence": "high",
+    "error_flags": [],
+    "level_reason": "Thực hiện quy trình quen thuộc dùng tổ hợp để đếm nhóm thẻ và tính xác suất."
+  },
+  "key_agreement": true,
+  "level_agreement": true,
+  "status": "model_checks_passed_pending_teacher_review",
+  "generation_receipt": "audit/outputs/topic-samples/toan/4bd5b28e3334083c8835ca84c644639e88ac061f0bd0d08e6f3044381f874145.draft.json",
+  "resolve_receipt": "audit/outputs/topic-samples/toan/4bd5b28e3334083c8835ca84c644639e88ac061f0bd0d08e6f3044381f874145.resolve.json"
+}
