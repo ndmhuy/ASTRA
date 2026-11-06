@@ -1,6 +1,6 @@
 # Lab04 plan: phased build of the ASTRA exam-profile RAG
 
-Status: **draft for Huy's review, 2026-11-06.** Spec: [spec.md](spec.md). Phases P0 and P1 describe work already in the repo; P2 onward is not started. Each phase is one branch and one PR of about 300-400 changed lines (AGENTS.md Tier 2A), cut from the latest `origin/main`, with a short `tasks.md` list written at the start of that phase.
+Status: **draft for Huy's review, 2026-11-06.** Spec: [spec.md](spec.md). Phases P0 and P1 describe work already in the repo; P2 has a runnable baseline; its screenshot gate remains open. P3 onward is not started. Each phase is one branch and one PR of about 300-400 changed lines (AGENTS.md Tier 2A), cut from the latest `origin/main`, with a short `tasks.md` list written at the start of that phase.
 
 ```mermaid
 flowchart LR
@@ -15,7 +15,7 @@ flowchart LR
 |---|---|---|---|
 | P0 Prepare the corpus | Approved, registered source material | Registry, checksums, usable flags present | Done in repo |
 | P1 Preprocess profiles | Retrievable per-subject records | Profiles parse; known gaps listed | Done, agent-reviewed only |
-| P2 Baseline | Runnable lexical RAG with receipts | Command runs and prints ranked cited hits; tests run | Not started |
+| P2 Baseline | Runnable lexical RAG with receipts | Command runs and prints ranked cited hits; tests run; screenshot | Implemented and run; screenshot pending |
 | P3 Augmentation | Hybrid dense plus rerank, switchable | Each option runs; comparison table has real numbers | Not started |
 | P4 Evaluate | Decide what to keep | Gold set, metrics, matched arms recorded | Not started |
 | P5 Integrate | Retriever contract for Writer | Bundle JSON validated; leakage and gap tests pass | Not started |
@@ -36,16 +36,9 @@ Remaining work: a `chunker` spec only, no new data. One chunk = one topic record
 
 ## P2 Baseline: lexical RAG you can run
 
-Pick: reuse the existing accent-folded lexical retriever behind `Retriever.retrieve(query, subject, grades, limit)`; add SQLite FTS5 as the index so the baseline is a standard, inspectable one.
+Implemented: offline SQLite FTS5 indexing of curriculum and profile JSON records with structured filters, deterministic ranking, gaps, and local receipts. The verbatim snapshot remains unchanged; adapters live under `rag/compat`. See [how-to-query.md](how-to-query.md) for observed CLI output and [p2-run-log.md](p2-run-log.md) for test results and integration skips.
 
-Tasks:
-1. Remove the two product imports (`exam_generator.mas_profile`, `exam_generator.assistant.knowledge`) with small local stubs in `rag/src/compat.py`; run the existing tests and **record pass/fail honestly**.
-2. Build `rag/src/index.py`: read curriculum rows and profile topic records into FTS5 with the FR1 metadata and the snapshot id.
-3. CLI `python -m rag.search "<query>" --subject toan --grades 12`: prints ranked hits, locators and gaps; writes a receipt (FR7).
-4. Unit tests: diacritic folding, grade filter, no-answer gives a gap, deterministic order.
-5. Pin Python in `.python-version`, list deps in `requirements.txt`.
-
-Gate: CLI run observed with a screenshot; tests run and reported.
+Gate: CLI output observed and tests run and reported; **screenshot not captured**, so the full written gate remains open. No P3 work has started.
 
 ## P3 Augmentation (switchable, each must earn its place)
 
