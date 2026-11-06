@@ -9,6 +9,44 @@ flowchart LR
   P4 -. loop back if no gain .-> P3
 ```
 
+## RAG architecture (solid = built and run in P2, dashed = planned)
+
+```mermaid
+flowchart TB
+  subgraph Prep["P0-P1 Offline preparation"]
+    C[Corpus: exam registry,<br/>transcriptions, matrices] --> PP[Preprocessing pipeline<br/>stage 1-5 and profiles]
+    PP --> PR[Profile topic records<br/>corpus/profiles/*/topics]
+    CM[Curriculum map<br/>687 draft rows, rag/data]
+  end
+
+  subgraph Idx["P2 Index build (rag/astra_rag/index.py)"]
+    PR --> CH[One chunk per record<br/>+ metadata, snapshot id]
+    CM --> CH
+    CH --> FTS[(SQLite FTS5<br/>accent-folded text)]
+    CH -.-> DEN[(Dense vectors<br/>P3, flag-gated)]
+  end
+
+  subgraph Run["Query time (python -m astra_rag.search)"]
+    Q[Query + subject + grades + kind] --> F[Structured filters<br/>WHERE subject, grade]
+    F --> LEX[BM25 lexical ranking]
+    FTS --> LEX
+    Q -.-> EXP[Query expansion<br/>P3, vocabulary only]
+    EXP -.-> LEX
+    DEN -.-> RRF[Rank fusion + rerank<br/>P3]
+    LEX -.-> RRF
+    LEX --> OUT[Ranked hits: id, locator,<br/>review status, excerpt]
+    RRF -.-> OUT
+    OUT -->|no match| GAP[GAP reason, no fabricated citation]
+    OUT --> REC[Receipt line<br/>query, filters, ids, snapshot id]
+  end
+
+  OUT -.-> BUN[Evidence bundle under token cap<br/>P5, versioned JSON]
+  BUN -.-> W[Writer agent]
+  GAP -.-> W
+```
+
+Reading it: filters run before ranking, so a wrong-grade or wrong-subject chunk can never be ranked. Profile hits carry the warning that their labels are agent-reviewed, not teacher-confirmed.
+
 ## Phase summary
 
 | Phase | Goal | Exit gate (observed, not assumed) | State |
@@ -92,7 +130,7 @@ Gate: a table of recorded numbers. Loop back to P3 if nothing beats the baseline
 
 ## Risks
 
-- Tests and code have never run in this repo; P2 may find the snapshot needs more than two stubs.
+- P2 ran, but the snapshot's own tests only pass through adapters: 57 pass and 6 are skipped because original product paths and the pipeline module are absent (see `p2-run-log.md`). The adapters are not evidence that the product integration works.
 - Profiles change while Sol is still writing; pin a snapshot and re-sync deliberately.
 - Profile labels are agent-reviewed; the demo must say so on screen.
 - A dense model may be too large for a teacher laptop; the baseline must stay useful without it.
