@@ -3,18 +3,22 @@ import argparse
 import datetime
 import json
 import sqlite3
+from contextlib import closing
 from .index import INDEX, SUBJECTS, build, cm, tokens
 
 VERSION = 'fts5-v1'
 
+# Spelling variants from the copied assistant curriculum source, not semantic synonyms.
+VARIANTS = {'om': ('ohm',), 'niuton': ('newton',), 'jun': ('joule',), 'jul': ('joule',)}
 
-def search(query, subject=None, grades=None, kind='both', limit=5, rebuild=False):
+
+def search(query, subject=None, grades=None, kind='both', limit=5, rebuild=False, expand=False):
     if rebuild or not INDEX.exists():
         build()
-    with sqlite3.connect(INDEX) as db:
+    with closing(sqlite3.connect(INDEX)) as db:
         db.row_factory = sqlite3.Row
         snap = db.execute('SELECT snapshot_id FROM metadata').fetchone()[0]
-        filters = {'subject': subject, 'grades': grades, 'kind': kind, 'limit': limit}
+        filters = {'subject': subject, 'grades': grades, 'kind': kind, 'limit': limit, 'expand': expand}
         grade_values = []
         gap = None
         if grades is not None:
@@ -47,7 +51,7 @@ def search(query, subject=None, grades=None, kind='both', limit=5, rebuild=False
             gap = 'no_rows'
         hits = []
         if not gap:
-            match = ' AND '.join('"' + t + '"' for t in words)
+            match = ' AND '.join(('(' + ' OR '.join('"' + v + '"' for v in (t, *VARIANTS[t])) + ')') if expand and t in VARIANTS else '"' + t + '"' for t in words)
             sql = ('SELECT c.*, bm25(search_fts) AS score FROM search_fts JOIN chunks c ON c.chunk_id=search_fts.chunk_id'
                    + (' WHERE ' + ' AND '.join(where) + ' AND ' if where else ' WHERE ')
                    + 'search_fts MATCH ? ORDER BY score ASC, c.chunk_id ASC LIMIT ?')
@@ -76,11 +80,12 @@ def main():
     parser.add_argument('--limit', type=int, default=5)
     parser.add_argument('--json', action='store_true')
     parser.add_argument('--rebuild', action='store_true')
+    parser.add_argument('--expand', action='store_true', help='enable limited spelling variants')
     parser.add_argument('--show-receipt', action='store_true')
     args = parser.parse_args()
     if args.limit < 1:
         parser.error('--limit must be positive')
-    result = search(args.query, args.subject, args.grades, args.kind, args.limit, args.rebuild)
+    result = search(args.query, args.subject, args.grades, args.kind, args.limit, args.rebuild, args.expand)
     if args.json:
         payload = {'hits': result['hits'], 'gap': result['gap']}
         if args.show_receipt:

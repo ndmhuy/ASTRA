@@ -3,6 +3,7 @@ import hashlib
 import json
 import re
 import sqlite3
+from contextlib import closing
 import subprocess
 import sys
 from pathlib import Path
@@ -36,7 +37,7 @@ def build(path=INDEX):
     paths = inputs()
     snap = snapshot_id(paths)
     path.parent.mkdir(parents=True, exist_ok=True)
-    with sqlite3.connect(path) as db:
+    with closing(sqlite3.connect(path)) as db, db:
         db.executescript('''DROP TABLE IF EXISTS chunks; DROP TABLE IF EXISTS chunk_grades;
         DROP TABLE IF EXISTS search_fts; DROP TABLE IF EXISTS metadata;
         CREATE TABLE chunks (chunk_id TEXT PRIMARY KEY, kind TEXT, source_id TEXT, subject TEXT,

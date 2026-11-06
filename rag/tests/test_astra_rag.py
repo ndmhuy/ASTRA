@@ -41,6 +41,14 @@ class SearchTests(unittest.TestCase):
     def test_no_rows(self):
         self.assertEqual(search('hàm số', subject='subject nonexistent')['gap'], 'no_rows')
 
+class ExpansionTests(unittest.TestCase):
+    def test_variant_does_not_widen_scope(self):
+        hits = search('om', subject='Vật lí', grades='11', kind='curriculum', expand=True)['hits']
+        self.assertTrue(any(h['source_id'] == 'vat-li-11-c4-b23' for h in hits))
+        self.assertTrue(all(h['subject'] == 'Vật lí' and h['grade'] == 11 for h in hits))
+        wrong = search('om', subject='Toán', grades='11', kind='curriculum', expand=True)
+        self.assertTrue(all(h['subject'] == 'Toán' and h['grade'] == 11 for h in wrong['hits']))
+
 
 if __name__ == '__main__':
     unittest.main()
