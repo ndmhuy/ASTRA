@@ -2,6 +2,21 @@
 
 Chạy các lệnh trong PowerShell tại thư mục dự án. Dùng CPython chuẩn 3.10 trở lên.
 
+## Đề Toán THPT — template gốc cố định
+
+Sau khi cấu hình `.env`, chạy:
+
+```powershell
+.\.venv-win\Scripts\python.exe -m exam_baseline.thpt.cli --request examples/thpt/request.json --output runs/thpt/de_01
+```
+
+Sửa ma trận từng câu trong `examples/thpt/request.json` (NB/TH/VD/VDC).
+Đây là ma trận luyện tập tham khảo, cần giáo viên duyệt.
+Kết quả: `de_thi.tex`, `loi_giai.md`, đáp án JSON và báo cáo trong `_internal/`.
+Đề mới mặc định dùng font Unicode tiếng Việt; compile bằng XeLaTeX hoặc LuaLaTeX.
+Chọn thư mục output mới mỗi lần. Luồng này dùng template THPT gốc được khóa bằng SHA-256.
+Đọc [quy ước template và ma trận THPT](docs/guides/THPT_TOAN.md).
+
 ## 1. Cài đặt lần đầu
 
 Nếu đã có môi trường `.venv-win` hoạt động thì bỏ qua bước tạo môi trường.

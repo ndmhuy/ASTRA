@@ -23,6 +23,7 @@ dev = ["pytest>=8,<10", "pytest-cov>=5,<8", "ruff>=0.9,<1"]
 [project.scripts]
 exam-baseline = "exam_baseline.baseline.cli:main"
 exam-pipeline = "exam_baseline.pipeline.cli:main"
+exam-thpt = "exam_baseline.thpt.cli:main"
 
 [tool.setuptools.dynamic]
 version = {attr = "exam_baseline.__version__"}
@@ -31,7 +32,7 @@ version = {attr = "exam_baseline.__version__"}
 where = ["src"]
 
 [tool.setuptools.package-data]
-exam_baseline = ["resources/prompts/*.txt", "resources/fixtures/*.json"]
+exam_baseline = ["resources/prompts/*.txt", "resources/fixtures/*.json", "resources/templates/*.tex"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

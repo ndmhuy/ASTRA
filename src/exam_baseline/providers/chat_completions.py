@@ -54,6 +54,11 @@ class ChatCompletionsProvider:
             ],
             **self.parameters,
         }
+        if self.parameters["response_format"]["type"] == "json_schema":
+            payload["response_format"] = {
+                "type": "json_schema",
+                "json_schema": {"name": "exam_response", "schema": request.output_schema},
+            }
         try:
             response = await self.client.post(
                 self.url,

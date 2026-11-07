@@ -55,6 +55,18 @@ def test_adapter_request_and_usage_mapping():
     assert result.response_id == "remote-id"
 
 
+def test_structured_output_sends_request_schema_without_mutating_defaults():
+    def handler(request):
+        data = json.loads(request.content)
+        assert data["response_format"] == {
+            "type": "json_schema",
+            "json_schema": {"name": "exam_response", "schema": {}},
+        }
+        return httpx.Response(200, json=envelope())
+
+    assert invoke(handler, settings(response_format="json_schema")).text == "{}"
+
+
 def test_compatible_provider_options():
     def handler(request):
         assert str(request.url) == "http://localhost:9000/v1/chat/completions"

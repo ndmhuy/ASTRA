@@ -1,0 +1,338 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{setspace}
+\setstretch{1.18}
+\usepackage{graphicx}
+\usepackage{ifthen}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, patterns}
+\IfFileExists{pgf-pie.sty}{\usepackage{pgf-pie}}{}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{chemfig}
+\usepackage{longtable,booktabs}
+\usepackage{adjustbox}
+\providecommand{\errorpart}[2]{$\underset{\textbf{#1}}{\underline{\text{#2}}}$}
+\usepackage[top=0.8in, left=0.75in, right=0.75in, bottom=0.85in, headheight=38pt, headsep=18pt, footskip=1.2cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue]{hyperref}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 2pt minus 1pt}
+
+\setlist[enumerate]{itemsep=4pt, parsep=2pt, topsep=4pt, partopsep=2pt}
+\setlist[itemize]{itemsep=4pt, parsep=2pt, topsep=4pt}
+
+\makeatletter
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{LecturingLastPage}{{}{\thepage}{}{}{}}}}
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{LecturingPageCount}{{}{\two@digits{\value{page}}}{}{}{}}}}
+\makeatother
+\pagestyle{fancy}
+\fancyhf{}
+\cfoot{\small Trang \thepage/\pageref*{LecturingLastPage} - Mã đề thi 1034}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\begin{document}
+
+\sloppy
+
+\noindent
+\begin{minipage}[t]{0.37\textwidth}
+    \small
+    \centering
+    \IfFileExists{logo.png}{\includegraphics[height=0.9cm]{logo.png}\\[0.1cm]}{%
+      \IfFileExists{logo.jpg}{\includegraphics[height=0.9cm]{logo.jpg}\\[0.1cm]}{}%
+    }
+    {\bfseries \mbox{}}\\[-0.2cm]
+    \rule{3cm}{0.5pt}\\[0.1cm]
+    {\bfseries ĐỀ LUYỆN TẬP}\\{\small (Đề thi có \pageref*{LecturingPageCount} trang)}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.62\textwidth}
+    \small
+    \centering
+    {\bfseries KỲ THI TỐT NGHIỆP TRUNG HỌC PHỔ THÔNG NĂM 2026}\\[0.15cm]
+    {\bfseries Môn thi: TOÁN}\\[0.15cm]
+    {\itshape Thời gian làm bài: 90 phút, không kể thời gian phát đề}
+\end{minipage}
+
+\vspace{0.4cm}
+\noindent
+\begin{minipage}[t]{0.68\textwidth}
+    Họ, tên thí sinh: \dotfill\\[0.15cm]
+    Số báo danh: \dotfill
+\end{minipage}%
+\hfill
+\fbox{\begin{minipage}{3.6cm}\centering\textbf{Mã đề: 1034}\end{minipage}}
+
+\vspace{0.5cm}
+
+% LECTURING-PART: P1
+\textbf{Phần I: Trắc nghiệm nhiều lựa chọn} \textit{Thí sinh trả lời từ câu 1 đến câu 12. Mỗi câu hỏi thí sinh chỉ chọn một phương án.}
+
+\noindent \textbf{Câu 1:} Cho hàm số bậc ba $y=f(x)$ có đồ thị là đường cong trong hình bên dưới.\\
+\begin{center}
+\begin{adjustbox}{max width=0.95\linewidth, max totalheight=0.38\textheight}
+\begin{tikzpicture}[scale=1, >=stealth]
+  % trục
+  \draw[->, thick] (-3,0) -- (3,0);
+  \draw[->, thick] (0,-2) -- (0,4);
+  % đường gióng
+  \draw[dashed] (-1,0) -- (-1,3) -- (0,3);
+  \draw[dashed] (1,0) -- (1,-1) -- (0,-1);
+  % đồ thị
+  \draw[thick, smooth, domain=-2.1:2.1, samples=100] plot (\x, {\x*\x*\x - 3*\x + 1});
+  % nhãn
+
+
+
+
+
+
+  \draw (-0.06,1) -- (0.06,1);
+    % captions last so nothing paints over them
+    % captions last so nothing paints over them
+    \node[below right] at (3,0) {$x$};
+\node[above left] at (0,4) {$y$};
+\node[below left, fill=white, inner sep=1pt] at (0,0) {$O$};
+\node[below, fill=white, inner sep=1pt] at (-1,-0.08) {$-1$};
+\node[above, fill=white, inner sep=1pt] at (1,0.08) {$1$};
+\node[right, fill=white, inner sep=1pt] at (0.05,3) {$3$};
+\node[right, fill=white, inner sep=1pt] at (0.05,1.25) {$1$};
+\node[left, fill=white, inner sep=1pt] at (-0.05,-1) {$-1$};
+\end{tikzpicture}
+\end{adjustbox}
+\end{center}
+Hàm số đã cho nghịch biến trên khoảng nào dưới đây?\\
+\noindent\makebox[0.24\textwidth][l]{A. $(1;+\infty)$.}\makebox[0.24\textwidth][l]{B. $(-1;1)$.}\makebox[0.24\textwidth][l]{C. $(-1;3)$.}\makebox[0.24\textwidth][l]{D. $(-\infty;-1)$.}
+
+\noindent \textbf{Câu 2:} Họ tất cả các nguyên hàm của hàm số $f(x)=2x-\sin x$ là\\
+\noindent A. $x^2-\cos x+C$. \hfill B. $x^2+\cos x+C$. \hfill C. $2+\cos x+C$. \hfill D. $x^2+\sin x+C$.\\
+
+\noindent \textbf{Câu 3:} Cho $\displaystyle\int_0^2 f(x)\,dx=3$ và $\displaystyle\int_0^2 g(x)\,dx=-1$. Giá trị của $\displaystyle\int_0^2\left[2f(x)-3g(x)+1\right]dx$ bằng\\
+\noindent\makebox[0.24\textwidth][l]{A. $10$.}\makebox[0.24\textwidth][l]{B. $5$.}\makebox[0.24\textwidth][l]{C. $9$.}\makebox[0.24\textwidth][l]{D. $11$.}
+
+\noindent \textbf{Câu 4:} Trong không gian $Oxyz$, cho mặt cầu $(S)\colon x^2+y^2+z^2-2x+4y-6z-2=0$. Tâm $I$ và bán kính $R$ của mặt cầu $(S)$ là\\
+\noindent\makebox[0.48\textwidth][l]{A. $I(1;-2;3)$, $R=4$.}\makebox[0.48\textwidth][l]{B. $I(1;-2;3)$, $R=2\sqrt{3}$.}\\
+\noindent\makebox[0.48\textwidth][l]{C. $I(1;-2;3)$, $R=16$.}\makebox[0.48\textwidth][l]{D. $I(-1;2;-3)$, $R=4$.}
+
+\noindent \textbf{Câu 5:} Trong không gian $Oxyz$, cho đường thẳng $d\colon \dfrac{x-1}{2}=\dfrac{y+3}{-1}=\dfrac{z}{3}$. Điểm nào dưới đây thuộc đường thẳng $d$?\\
+\noindent\makebox[0.24\textwidth][l]{A. $Q(3;-4;3)$.}\makebox[0.24\textwidth][l]{B. $N(2;-1;3)$.}\makebox[0.24\textwidth][l]{C. $P(3;-2;3)$.}\makebox[0.24\textwidth][l]{D. $M(1;3;0)$.}
+
+\noindent \textbf{Câu 6:} Thời gian (đơn vị: phút) mà 30 học sinh một lớp dùng để đi từ nhà đến trường được thống kê trong bảng sau:\\
+\begin{center}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+Thời gian (phút) & $[0;10)$ & $[10;20)$ & $[20;30)$ & $[30;40)$ & $[40;50)$\\
+\hline
+Số học sinh & $3$ & $8$ & $12$ & $5$ & $2$\\
+\hline
+\end{tabular}
+\end{adjustbox}
+\end{center}
+Mốt của mẫu số liệu ghép nhóm trên (làm tròn đến hàng phần trăm) là\\
+\noindent\makebox[0.24\textwidth][l]{A. $23{,}64$.}\makebox[0.24\textwidth][l]{B. $25{,}00$.}\makebox[0.24\textwidth][l]{C. $24{,}44$.}\makebox[0.24\textwidth][l]{D. $22{,}50$.}
+
+\noindent \textbf{Câu 7:} Cho cấp số nhân $(u_n)$ có $u_2=6$ và $u_5=-48$. Công bội của cấp số nhân đó bằng\\
+\noindent\makebox[0.24\textwidth][l]{A. $-2$.}\makebox[0.24\textwidth][l]{B. $-8$.}\makebox[0.24\textwidth][l]{C. $2$.}\makebox[0.24\textwidth][l]{D. $8$.}
+
+\noindent \textbf{Câu 8:} Cho hình chóp $S.ABCD$ có đáy $ABCD$ là hình vuông và $SA$ vuông góc với mặt phẳng $(ABCD)$ (tham khảo hình bên dưới).\\
+\begin{center}
+\begin{adjustbox}{max width=0.95\linewidth, max totalheight=0.38\textheight}
+\begin{tikzpicture}[scale=1.1]
+  \coordinate (A) at (0,0);
+  \coordinate (D) at (4,0);
+  \coordinate (B) at (-1.5,-1.5);
+  \coordinate (C) at (2.5,-1.5);
+  \coordinate (S) at (0,4);
+  % cạnh khuất
+  \draw[dashed] (S) -- (A);
+  \draw[dashed] (A) -- (B);
+  \draw[dashed] (A) -- (D);
+  \draw[dashed] (A) -- (C);
+  % cạnh thấy
+  \draw[thick] (S) -- (B) -- (C) -- (D) -- cycle;
+  \draw[thick] (S) -- (C);
+  % góc vuông tại A
+  \draw (0,0.3) -- (0.3,0.3) -- (0.3,0);
+  % điểm và nhãn
+  \foreach \p in {A,B,C,D,S} \fill (\p) circle (1.5pt);
+  \node[above] at (S) {$S$};
+  \node[above left] at (A) {$A$};
+  \node[below left] at (B) {$B$};
+  \node[below right] at (C) {$C$};
+  \node[right] at (D) {$D$};
+\end{tikzpicture}
+\end{adjustbox}
+\end{center}
+Góc giữa đường thẳng $SC$ và mặt phẳng $(ABCD)$ là\\
+\noindent\makebox[0.48\textwidth][l]{A. $\widehat{SCB}$.}\makebox[0.48\textwidth][l]{B. $\widehat{SCA}$.}\\
+\noindent\makebox[0.48\textwidth][l]{C. $\widehat{CSA}$.}\makebox[0.48\textwidth][l]{D. $\widehat{SCD}$.}
+
+\noindent \textbf{Câu 9:} Tổng số đường tiệm cận đứng và tiệm cận ngang của đồ thị hàm số $y=\dfrac{x^2-1}{x^2-3x+2}$ là\\
+\noindent\makebox[0.24\textwidth][l]{A. $2$.}\makebox[0.24\textwidth][l]{B. $3$.}\makebox[0.24\textwidth][l]{C. $4$.}\makebox[0.24\textwidth][l]{D. $1$.}
+
+\noindent \textbf{Câu 10:} Tập nghiệm của bất phương trình $\log_{\frac{1}{2}}(x-1)\ge -2$ là\\
+\noindent\makebox[0.24\textwidth][l]{A. $(1;5)$.}\makebox[0.24\textwidth][l]{B. $(-\infty;5]$.}\makebox[0.24\textwidth][l]{C. $(1;5]$.}\makebox[0.24\textwidth][l]{D. $[5;+\infty)$.}
+
+\noindent \textbf{Câu 11:} Diện tích hình phẳng giới hạn bởi đồ thị hàm số $y=x^2-2x$ và đường thẳng $y=x$ bằng\\
+\noindent\makebox[0.48\textwidth][l]{A. $9$.}\makebox[0.48\textwidth][l]{B. $\dfrac{9}{2}$.}\\
+\noindent\makebox[0.48\textwidth][l]{C. $\dfrac{27}{2}$.}\makebox[0.48\textwidth][l]{D. $\dfrac{5}{2}$.}
+
+\noindent \textbf{Câu 12:} Gọi $M$ và $m$ lần lượt là giá trị lớn nhất và giá trị nhỏ nhất của hàm số $y=x^3-3x^2-9x+2$ trên đoạn $[0;4]$. Giá trị của $M+m$ bằng\\
+\noindent\makebox[0.24\textwidth][l]{A. $-18$.}\makebox[0.24\textwidth][l]{B. $-16$.}\makebox[0.24\textwidth][l]{C. $-23$.}\makebox[0.24\textwidth][l]{D. $27$.}
+
+\vspace{0.5cm}
+% LECTURING-PART: P2
+\textbf{Phần II: Trắc nghiệm đúng/sai} \textit{Thí sinh trả lời từ câu 1 đến câu 4. Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn đúng hoặc sai.}
+
+\noindent \textbf{Câu 1:} Cho hàm số $f(x)=\dfrac{x^2+3}{x-1}$.\\
+\noindent a) Đạo hàm của hàm số là $f'(x)=\dfrac{x^2-2x-3}{(x-1)^2}$ với mọi $x\neq 1$.\\
+
+\noindent b) Hàm số đồng biến trên khoảng $(1;3)$.\\
+
+\noindent c) Giá trị cực tiểu của hàm số bằng $6$.\\
+
+\noindent d) Đồ thị hàm số có đường tiệm cận xiên là đường thẳng $y=x-1$.\\
+
+\noindent \textbf{Câu 2:} Cho hình lập phương $ABCD.A'B'C'D'$ có cạnh bằng $2$. Chọn hệ trục tọa độ $Oxyz$ có gốc $O$ trùng với điểm $A$, các tia $Ox$, $Oy$, $Oz$ lần lượt trùng với các tia $AB$, $AD$, $AA'$ (tham khảo hình bên dưới).\\
+\begin{center}
+\begin{adjustbox}{max width=0.95\linewidth, max totalheight=0.38\textheight}
+\begin{tikzpicture}[scale=1.1, >=stealth]
+  \coordinate (A) at (0,0);
+  \coordinate (B) at (-1.2,-1.2);
+  \coordinate (C) at (1.8,-1.2);
+  \coordinate (D) at (3,0);
+  \coordinate (A1) at (0,3);
+  \coordinate (B1) at (-1.2,1.8);
+  \coordinate (C1) at (1.8,1.8);
+  \coordinate (D1) at (3,3);
+  % cạnh khuất
+  \draw[dashed] (A) -- (B);
+  \draw[dashed] (A) -- (D);
+  \draw[dashed] (A) -- (A1);
+  % cạnh thấy
+  \draw[thick] (B) -- (C) -- (D) -- (D1) -- (A1) -- (B1) -- cycle;
+  \draw[thick] (B1) -- (C1) -- (D1);
+  \draw[thick] (C) -- (C1);
+  % trục tọa độ (phần ngoài hình)
+  \draw[->, thick] (B) -- (-2.1,-2.1);
+  \draw[->, thick] (D) -- (4.3,0);
+  \draw[->, thick] (A1) -- (0,4.2);
+  % điểm
+  \foreach \p in {A,B,C,D,A1,B1,C1,D1} \fill (\p) circle (1.5pt);
+  % nhãn
+
+
+
+  \node[below right=1pt, fill=white, inner sep=1pt] at (A) {$A\equiv O$};
+  \node[left=3pt] at (B) {$B$};
+  \node[below right] at (C) {$C$};
+  \node[below right] at (D) {$D$};
+  \node[left=3pt] at (A1) {$A'$};
+  \node[left] at (B1) {$B'$};
+  \node[below right] at (C1) {$C'$};
+  \node[right] at (D1) {$D'$};
+    % captions last so nothing paints over them
+    % captions last so nothing paints over them
+    \node[below left] at (-2.1,-2.1) {$x$};
+\node[right] at (4.3,0) {$y$};
+\node[above] at (0,4.2) {$z$};
+\end{tikzpicture}
+\end{adjustbox}
+\end{center}
+\noindent a) Tọa độ của điểm $C'$ là $(2;2;2)$.\\
+
+\noindent b) Mặt phẳng $(A'BD)$ có phương trình $x+y+z-2=0$.\\
+
+\noindent c) Khoảng cách từ điểm $C'$ đến mặt phẳng $(A'BD)$ bằng $\dfrac{2\sqrt{3}}{3}$.\\
+
+\noindent d) Góc giữa hai đường thẳng $A'B$ và $AC$ bằng $30^\circ$.\\
+
+\noindent \textbf{Câu 3:} Cân nặng (đơn vị: kg) của 40 học sinh lớp 12A được thống kê trong bảng sau:\\
+\begin{center}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+Cân nặng (kg) & $[40;45)$ & $[45;50)$ & $[50;55)$ & $[55;60)$ & $[60;65)$\\
+\hline
+Số học sinh & $4$ & $10$ & $14$ & $8$ & $4$\\
+\hline
+\end{tabular}
+\end{adjustbox}
+\end{center}
+\noindent a) Khoảng biến thiên của mẫu số liệu ghép nhóm trên bằng $25$ kg.\\
+
+\noindent b) Số trung bình của mẫu số liệu ghép nhóm trên bằng $52{,}25$ kg.\\
+
+\noindent c) Tứ phân vị thứ nhất của mẫu số liệu ghép nhóm trên bằng $47{,}5$ kg.\\
+
+\noindent d) Độ lệch chuẩn của mẫu số liệu ghép nhóm trên (làm tròn đến hàng phần trăm) bằng $5{,}58$ kg.\\
+
+\noindent \textbf{Câu 4:} Một nhà máy có hai dây chuyền $A$ và $B$ cùng sản xuất một loại linh kiện. Dây chuyền $A$ sản xuất $60\%$ và dây chuyền $B$ sản xuất $40\%$ tổng số linh kiện của nhà máy. Tỉ lệ linh kiện bị lỗi của dây chuyền $A$ là $3\%$, của dây chuyền $B$ là $5\%$. Kiểm tra ngẫu nhiên một linh kiện của nhà máy.\\
+\noindent a) Xác suất để linh kiện được kiểm tra bị lỗi bằng $0{,}038$.\\
+
+\noindent b) Biết linh kiện được kiểm tra bị lỗi, xác suất để linh kiện đó do dây chuyền $A$ sản xuất lớn hơn $0{,}5$.\\
+
+\noindent c) Xác suất để linh kiện được kiểm tra do dây chuyền $B$ sản xuất và không bị lỗi bằng $0{,}38$.\\
+
+\noindent d) Biết linh kiện được kiểm tra không bị lỗi, xác suất để linh kiện đó do dây chuyền $B$ sản xuất bằng $0{,}38$.\\
+
+\vspace{0.5cm}
+% LECTURING-PART: P3
+\textbf{Phần III: Trắc nghiệm trả lời ngắn} \textit{Thí sinh trả lời từ câu 1 đến câu 6. Thí sinh chỉ điền một con số (có thể có dấu âm, dấu phẩy thập phân) vào ô trống.}
+
+\noindent \textbf{Câu 1:} Một xưởng cần làm những chiếc hộp có nắp bằng bìa cứng dạng hình hộp chữ nhật, có thể tích $288\ \text{cm}^3$, đáy là hình chữ nhật có chiều dài gấp đôi chiều rộng. Biết rằng diện tích bìa dùng để làm một chiếc hộp đúng bằng tổng diện tích các mặt của hộp. Diện tích bìa nhỏ nhất cần dùng để làm một chiếc hộp như vậy là bao nhiêu centimét vuông? \textit{(Làm tròn đến chữ số hàng đơn vị)}\\
+
+\noindent \textbf{Câu 2:} Một cổng chào có dạng hình parabol, chiều rộng chân cổng là $8$ m và chiều cao từ mặt đất đến đỉnh cổng là $6$ m. Người ta làm một cánh cửa hình chữ nhật rộng $4$ m đặt chính giữa cổng, cạnh dưới của cửa nằm trên mặt đất và hai đỉnh phía trên của cửa nằm trên parabol (tham khảo hình bên dưới). Phần mặt cổng còn lại (ngoài cánh cửa) được trang trí với chi phí $250\,000$ đồng cho mỗi mét vuông. Tổng chi phí trang trí phần mặt cổng còn lại là bao nhiêu triệu đồng? \textit{(Làm tròn đến chữ số hàng phần mười)}\\
+\begin{center}
+\begin{adjustbox}{max width=0.95\linewidth, max totalheight=0.38\textheight}
+\begin{tikzpicture}[scale=0.7, >=stealth]
+  % phần trang trí (tô nhạt), trừ cánh cửa
+  \fill[gray!25, even odd rule] plot[domain=-4:4, samples=80] (\x, {6-0.375*\x*\x}) -- cycle
+        (-2,0) rectangle (2,4.5);
+  % mặt đất
+  \draw[thick] (-5,0) -- (5,0);
+  % cung parabol
+  \draw[thick] plot[domain=-4:4, samples=80] (\x, {6-0.375*\x*\x});
+  % cánh cửa
+  \draw[thick] (-2,0) rectangle (2,4.5);
+  % kích thước
+  \draw[<->] (-4,-1.3) -- (4,-1.3);
+  \draw[dashed] (-4,0) -- (-4,-1.5);
+  \draw[dashed] (4,0) -- (4,-1.5);
+  \draw[<->] (-2,-0.5) -- (2,-0.5);
+  \draw[<->] (5.3,0) -- (5.3,6);
+  \draw[dashed] (0,6) -- (5.5,6);
+  % nhãn
+    % captions last so nothing paints over them
+    % captions last so nothing paints over them
+    \node[fill=white, inner sep=2pt] at (0,-1.3) {$8$ m};
+\node[fill=white, inner sep=1pt] at (0,-0.5) {\small $4$ m};
+\node[right] at (5.3,3) {$6$ m};
+\end{tikzpicture}
+\end{adjustbox}
+\end{center}
+
+\noindent \textbf{Câu 3:} Trong không gian với hệ tọa độ $Oxyz$ (đơn vị trên mỗi trục là kilômét), một trạm radar đặt tại gốc tọa độ $O$ có thể phát hiện các vật thể cách trạm không quá $50$ km. Một máy bay bay thẳng đều với vận tốc $800$ km/h từ điểm $A(-60;20;10)$ đến điểm $B(60;20;10)$. Thời gian máy bay nằm trong vùng phát hiện của radar là bao nhiêu phút? \textit{(Làm tròn đến chữ số hàng phần mười)}\\
+
+\noindent \textbf{Câu 4:} Chọn ngẫu nhiên đồng thời ba số khác nhau từ tập hợp $\{1;2;3;\ldots;20\}$. Xác suất để tổng của ba số được chọn chia hết cho $3$ bằng bao nhiêu? \textit{(Làm tròn đến chữ số hàng phần trăm)}\\
+
+\noindent \textbf{Câu 5:} Cho hình lăng trụ đứng $ABC.A'B'C'$ có đáy $ABC$ là tam giác đều cạnh bằng $3$ và cạnh bên $AA'=4$. Khoảng cách giữa hai đường thẳng $AB'$ và $BC'$ bằng bao nhiêu? \textit{(Làm tròn đến chữ số hàng phần mười)}\\
+
+\noindent \textbf{Câu 6:} Anh An vay ngân hàng $500$ triệu đồng với lãi suất $0{,}8\%$ mỗi tháng theo hình thức lãi kép: cuối mỗi tháng, tiền lãi của tháng đó được cộng vào số tiền còn nợ. Đúng một tháng sau ngày vay, anh bắt đầu trả nợ; cứ cuối mỗi tháng anh trả $12$ triệu đồng (lần trả cuối cùng có thể ít hơn). Hỏi sau ít nhất bao nhiêu tháng kể từ ngày vay thì anh An trả hết nợ? \textit{(Làm tròn đến chữ số hàng đơn vị)}\\\vspace{0.6cm}
+\begin{center}
+{\bfseries -{}-{}-{}-{}-{}-}\ \textbf{HẾT}\ {\bfseries -{}-{}-{}-{}-{}-}
+\end{center}
+\vspace{0.15cm}
+{\small\itshape
+Thí sinh không được sử dụng tài liệu. Cán bộ coi thi không giải thích gì thêm.}
+
+\end{document}

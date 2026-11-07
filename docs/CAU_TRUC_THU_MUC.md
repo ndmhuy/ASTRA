@@ -10,6 +10,7 @@ HTTP và benchmark. README ở root chỉ hướng dẫn chạy; tài liệu thi
 ASTRA/
 ├── src/exam_baseline/
 │   ├── core/                 Models, contracts, ma trận, profile, hashing dùng chung
+│   ├── thpt/                 Ma trận Toán THPT, bốn agent, registry template bất biến và CLI
 │   ├── config.py             Cấu hình .env, không chứa key cố định
 │   ├── providers/            Adapter HTTP model và provider mock
 │   ├── baseline/             Luồng một agent để làm đối chứng, CLI và báo cáo Markdown

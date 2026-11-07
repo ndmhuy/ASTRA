@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     timeout_seconds: float = Field(default=90, gt=0, allow_inf_nan=False)
     max_output_tokens: int = Field(default=8192, gt=0)
     token_limit_field: Literal["max_completion_tokens", "max_tokens"] = "max_completion_tokens"
-    response_format: Literal["json_object", "text"] = "json_object"
+    response_format: Literal["json_object", "json_schema", "text"] = "json_object"
     temperature: float | None = Field(default=None, ge=0, le=2, allow_inf_nan=False)
     seed: int | None = None
     max_prompt_chars: int = Field(default=200000, gt=0)
