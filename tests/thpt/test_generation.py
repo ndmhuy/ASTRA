@@ -173,13 +173,14 @@ def test_resume_after_correction_failure_reuses_review_and_prior_sections(tmp_pa
     providers = {r: Scripted(r, True) for r in ("illustrator", "solver", "reviewer")}
     composer = InterruptComposer("composer", True)
     providers["composer"] = composer
+    payload = request().model_copy(update={"composer_concurrency": 1})
     out = tmp_path / "exam"
     with pytest.raises(ProviderError):
-        asyncio.run(Orchestrator(providers).run(request(), out))
+        asyncio.run(Orchestrator(providers).run(payload, out))
     assert len(providers["reviewer"].calls) == 1
     assert len(composer.calls) == 4
     composer.interrupted = False
-    result = asyncio.run(Orchestrator(providers).run(request(), out, resume=True))
+    result = asyncio.run(Orchestrator(providers).run(payload, out, resume=True))
     assert result["execution_status"] == "completed"
     assert len(providers["reviewer"].calls) == 1
     assert len(composer.calls) == 6

@@ -18,6 +18,34 @@ CLI THPT dùng `response_format=json_schema` và gửi schema riêng của từn
 Provider cần hỗ trợ chế độ này. Schema P1/P2/P3 buộc số câu, đáp án A/B/C/D,
 bốn ý đúng/sai và trường đáp án số P3; không chỉ mô tả các yêu cầu này trong prompt.
 
+### Thời gian và chi phí
+
+Composer mặc định tạo ba phần P1/P2/P3 song song, giới hạn ba request. Kết quả ghép
+theo thứ tự cố định. Illustrator → Solver → Reviewer tiếp tục tuần tự vì phụ thuộc dữ liệu.
+Nếu quota thấp hoặc muốn so sánh với luồng cũ, thêm `--composer-concurrency 1`
+(hoặc `2`). Chạy song song không tự giảm số request/token; có thể gặp giới hạn API.
+Vòng sửa chỉ gửi câu cũ thuộc phần hiện tại cho Composer; Reviewer vẫn thấy toàn đề.
+
+`_internal/result.json` có `elapsed_seconds` (tổng các lượt chạy, bao gồm resume nhưng
+không bao gồm thời gian dừng giữa các lượt), `invocation_elapsed_seconds` (lượt hiện tại)
+và `metrics` gồm token, số lời gọi, thời gian API theo stage, chi phí USD ước tính.
+`api_seconds_sum` là tổng thời gian request, có thể lớn hơn elapsed khi chạy đồng thời.
+Phí ước tính theo Standard pricing và token API trả về; không phải hóa đơn. Model chưa có
+giá hoặc usage bị thiếu được đánh dấu `estimate_complete=false`. Tier tài khoản không
+được suy đoán. Free tier không thu phí token cho usage đủ điều kiện trong hạn mức.
+
+Mốc đo trước tối ưu: đề `test_20261107_080102` có 6 calls, 36,009 giây API,
+30.499 input + 11.288 output tokens. Theo giá Gemini 3.1 Flash-Lite xác minh ngày
+2026-11-07 ($0,25/M input; $1,50/M output), tương đương $0,02455675/đề khi trả phí.
+[Bảng giá Google](https://ai.google.dev/gemini-api/docs/pricing).
+Chỉ xét các latency đã đo và bỏ qua retry, song song ba phần Composer có đường đi
+dự kiến khoảng 22,6 giây; đây là ước tính, chưa phải benchmark p50/p95.
+Lần thử `perf_parallel` đã hoàn thành nhưng có lỗi schema và một vòng sửa nội dung:
+14 calls, 65.808 input + 28.251 output tokens, giá quy đổi $0,0588285. Tổng hai lượt
+chạy khoảng 61,616 giây (17,548 giây trước khi ngắt + 44,068 giây resume). Không so
+trực tiếp với ca 36 giây/6 calls để kết luận mức tăng tốc: nội dung, số vòng sửa và
+độ trễ API khác nhau. Muốn benchmark ổn định cần nhiều đề, so p50/p95 cùng cấu hình.
+
 ## Template bất biến
 
 File `src/exam_baseline/resources/templates/PROTO_thptqg_toan_v2.tex` là bản sao

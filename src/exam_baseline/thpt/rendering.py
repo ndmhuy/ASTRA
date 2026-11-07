@@ -30,7 +30,7 @@ def render(
     for q in questions:
         part, number = q.id.split("-")
         # Validate private prose too, before it can be rendered in a solutions document.
-        content_latex(q.solution)
+        content_latex(q.solution, check_equations=False)
         body = [rf"\noindent \textbf{{Câu {number}:}} " + content_latex(q.stem) + r"\\"]
         if q.id in figures:
             body += [
@@ -43,7 +43,7 @@ def render(
         for letter in "ABCD" if q.choices else "":
             body.append(r"\noindent " + letter + ". " + choice_latex(q.choices[letter]) + r"\\")
         for letter, statement in zip("abcd", q.statements, strict=False):
-            content_latex(statement.solution)
+            content_latex(statement.solution, check_equations=False)
             body.append(r"\noindent " + letter + ") " + content_latex(statement.text) + r"\\")
         parts[part].append("\n".join(body))
     source = assemble({p: "\n\n".join(body) + "\n\n" for p, body in parts.items()})

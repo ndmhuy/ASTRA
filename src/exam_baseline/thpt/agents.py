@@ -28,18 +28,27 @@ preamble, packages, macro definitions, font/spacing changes, headings or documen
 Never place Vietnamese words directly inside math mode. Put prose outside $...$
 or use \\text{...} inside a formula; for example write $A$ (60%, 3% lỗi),
 not $A(60%, 3% lỗi)$. Include full scenario context, not only shorthand data.
+Use simple event symbols such as L and N in probability formulas, defining them in
+Vietnamese prose outside math. Never use event names such as P(Lỗi) in math mode.
 NB=nhận biết; TH=thông hiểu; VD=vận dụng; VDC=vận dụng cao. Meet each slot's
 topic, objective and cognitive level; do not merely label an easy question VDC.
 """
 
 
 class Agent:
+    common = COMMON
     role: str
     instruction: str
     response: type[BaseModel]
 
     def contract(self, data: dict):
         return self.response
+
+    def wire_schema(self, schema):
+        return schema
+
+    def prepare_schema(self, schema, data):
+        return self.wire_schema(schema)
 
     async def run(self, provider: LLMProvider, data: dict):
         contract = self.contract(data)
@@ -54,9 +63,9 @@ class Agent:
                 payload["contract_feedback"] = feedback
             completion = await provider.complete(
                 CompletionRequest(
-                    system=COMMON + self.instruction,
+                    system=self.common + self.instruction,
                     user=json.dumps(payload, ensure_ascii=False),
-                    output_schema=schema,
+                    output_schema=self.prepare_schema(schema, data),
                 )
             )
             text, normalized = normalize_json(completion.text)
@@ -103,6 +112,15 @@ When feedback is supplied, correct its issues while preserving all slot IDs and 
 """
 
     def data(self, request: Request, part: str, reference: str, feedback: dict | None):
+        if feedback:
+            feedback = {
+                **feedback,
+                "previous_questions": [
+                    q
+                    for q in feedback.get("previous_questions", [])
+                    if q["id"].startswith(part + "-")
+                ],
+            }
         return dict(
             part=part,
             slots=[s.model_dump() for s in request.slots if s.part == part],

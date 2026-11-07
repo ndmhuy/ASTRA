@@ -11,6 +11,7 @@ ASTRA/
 ├── src/exam_baseline/
 │   ├── core/                 Models, contracts, ma trận, profile, hashing dùng chung
 │   ├── thpt/                 Ma trận Toán THPT, bốn agent, registry template bất biến và CLI
+│   ├── vact/                 Profile V-ACT 120 câu, passage/table, agents và CLI theo template riêng
 │   ├── config.py             Cấu hình .env, không chứa key cố định
 │   ├── providers/            Adapter HTTP model và provider mock
 │   ├── baseline/             Luồng một agent để làm đối chứng, CLI và báo cáo Markdown

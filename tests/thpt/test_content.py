@@ -72,3 +72,45 @@ def test_vietnamese_text_outside_math_or_in_text_groups_is_preserved(value):
 def test_invalid_math_prose_fails_agent_schema_validation():
     with pytest.raises(ValidationError):
         Statement(text=r"$3\% lỗi$", answer=True, solution="Dữ liệu cho trước.")
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        r"Emitted at 90^\circ above nadir.",
+        "r = (Nn/N0)^(1/n) - 1",
+        "p^2 AA + 2pq Aa + q^2 aa = 1",
+        "delta P = R P^2 / (U^2 cos^2 phi)",
+        "pH = pKa + log([A-]/[HA])",
+        r"The value is \cos x.",
+        "Use N_0 as the initial population.",
+        "r=(Nn/N0)-1",
+        "$\x0crac{1}{2}$",
+        "$\text{label}$".replace("\\t", "\t"),
+    ],
+)
+def test_unwrapped_or_corrupted_formulas_do_not_silently_render_as_text(value):
+    with pytest.raises(ValueError):
+        content_latex(value)
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        r"Emitted at $90^{\circ}$ above nadir.",
+        r"$r=\left(\frac{N_n}{N_0}\right)^{1/n}-1$",
+        r"$p^2+2pq+q^2=1$",
+        r"$\Delta P=\frac{RP^2}{U^2\cos^2\varphi}$",
+        r"$H=\frac{P-\Delta P}{P}$",
+    ],
+)
+def test_complete_formulas_keep_their_latex(value):
+    assert content_latex(value) == value
+
+
+def test_fill_in_blanks_and_literal_underscores_are_not_math_errors():
+    blank = r"\underline{\hspace{2cm}}"
+    assert content_latex(r"Điền " + blank + ".") == r"Điền " + blank + "."
+    assert content_latex("Choose ____ now.") == "Choose " + blank + " now."
+    assert content_latex("Fixture g73_74") == r"Fixture g73\_74"
+    assert content_latex(r"Tỉ lệ 3\%, điền ____.") == r"Tỉ lệ 3\%, điền " + blank + "."

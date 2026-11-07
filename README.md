@@ -14,8 +14,21 @@ Sửa ma trận từng câu trong `examples/thpt/request.json` (NB/TH/VD/VDC).
 Đây là ma trận luyện tập tham khảo, cần giáo viên duyệt.
 Kết quả: `de_thi.tex`, `loi_giai.md`, đáp án JSON và báo cáo trong `_internal/`.
 Đề mới mặc định dùng font Unicode tiếng Việt; compile bằng XeLaTeX hoặc LuaLaTeX.
+Composer mặc định tạo ba phần song song. Thêm `--composer-concurrency 1` để chạy
+tuần tự hoặc `2` nếu quota thấp. Thời gian/token/chi phí ước tính ở `_internal/result.json`.
 Chọn thư mục output mới mỗi lần. Luồng này dùng template THPT gốc được khóa bằng SHA-256.
 Đọc [quy ước template và ma trận THPT](docs/guides/THPT_TOAN.md).
+
+## Đề V-ACT — 120 câu theo template riêng
+
+```powershell
+.\.venv-win\Scripts\python.exe -m exam_baseline.vact.cli --request examples/vact/request.json --output runs/vact/de_01
+```
+
+Kết quả là `de_thi.tex`, `loi_giai.md`, đáp án JSON và `_internal/result.json`.
+Nếu lỗi API, thêm `--resume` với cùng request/output. Có thể giới hạn số batch đồng thời
+bằng `--composer-concurrency 1` và `--solver-concurrency 1` ngay từ lần chạy đầu.
+Đọc [quy ước VACT](docs/guides/VACT.md).
 
 ## 1. Cài đặt lần đầu
 

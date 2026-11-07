@@ -1,20 +1,23 @@
 """THPT policy: compose sections, illustrate, solve, review once, optional correction."""
 
+import asyncio
 import json
 from hashlib import sha256
 from pathlib import Path
+from time import perf_counter
 
 from exam_baseline.core.contracts import LLMProvider
+from exam_baseline.thpt import template
 from exam_baseline.thpt.agents import (
     ComposerAgent,
     IllustratorAgent,
     ReviewerAgent,
     SolverAgent,
 )
+from exam_baseline.thpt.metrics import summarize_calls
 from exam_baseline.thpt.models import Request
 from exam_baseline.thpt.rendering import render, student_view
 from exam_baseline.thpt.runtime import ContractError, RecordingProvider
-from exam_baseline.thpt.template import TEMPLATE_SHA256, original, reference_parts
 
 
 def save(path: Path, data):
@@ -22,22 +25,82 @@ def save(path: Path, data):
 
 
 class Orchestrator:
+    request_model = Request
+    template = template
+    composer_type = ComposerAgent
+    illustrator_type = IllustratorAgent
+    solver_type = SolverAgent
+    reviewer_type = ReviewerAgent
+
+    def parts(self, request):
+        return ("P1", "P2", "P3")
+
+    def validate_section(self, section, request, part):
+        expected = [s.id for s in request.slots if s.part == part]
+        if [q.id for q in section.questions] != expected:
+            raise ValueError("Composer question IDs/count/order differ from matrix")
+
+    def render_source(self, questions, drawings, request, sections):
+        return render(questions, drawings, font_profile=request.font_profile)
+
+    def extra_output(self, sections):
+        return {}
+
+    async def illustrate(self, call, questions, revision):
+        return await call(
+            self.illustrator_type(),
+            dict(
+                requests=[
+                    dict(question_id=q.id, stem=q.stem, description=q.illustration_request)
+                    for q in questions
+                    if q.illustration_request
+                ]
+            ),
+            revision,
+        )
+
+    async def solve(self, call, questions, drawings, revision, sections, request):
+        return await call(
+            self.solver_type(),
+            dict(questions=student_view(questions), drawings=drawings.model_dump()),
+            revision,
+        )
+
+    def review_data(self, request, questions, drawings, solutions, source, sections):
+        return dict(
+            matrix=request.model_dump(),
+            questions=[q.model_dump() for q in questions],
+            drawings=drawings.model_dump(),
+            solver=solutions.model_dump(),
+            student_latex=source.decode("utf-8"),
+        )
+
+    def feedback_data(self, review, questions, sections):
+        return dict(
+            review=review.model_dump(), previous_questions=[q.model_dump() for q in questions]
+        )
+
     def __init__(self, providers: dict[str, LLMProvider]):
         self.providers = providers
 
     async def run(self, request: Request, output: Path, *, resume: bool = False) -> dict:
-        original()  # Verify locked resource before spending any provider calls.
-        references = reference_parts()
+        started = perf_counter()
+        self.template.original()  # Verify before spending provider calls.
+        references = self.template.reference_parts()
         internal = output / "_internal"
         calls = []
+        previous_elapsed = 0.0
         if resume:
-            previous = Request.model_validate_json((internal / "request.json").read_bytes())
+            previous = self.request_model.model_validate_json(
+                (internal / "request.json").read_bytes()
+            )
             if previous != request:
                 raise ValueError("Resume requires the same input request")
             previous_report = json.loads((internal / "result.json").read_text("utf-8"))
             if previous_report["execution_status"] == "completed":
                 return previous_report
             calls = previous_report["calls"]
+            previous_elapsed = previous_report.get("elapsed_seconds", 0.0)
         else:
             output.mkdir(parents=True, exist_ok=False)
             internal.mkdir()
@@ -47,8 +110,9 @@ class Orchestrator:
         report = dict(
             execution_status="failed",
             human_review_required=True,
-            template_sha256=TEMPLATE_SHA256,
+            template_sha256=self.template.TEMPLATE_SHA256,
             font_profile=request.font_profile,
+            composer_concurrency=request.composer_concurrency,
             reviewer_feedback_sent=False,
             final_latex=None,
             calls=calls,
@@ -63,9 +127,9 @@ class Orchestrator:
                         "role": agent.role,
                         "revision": revision,
                         "data": data,
-                        "system": agent.instruction,
+                        "system": agent.common + agent.instruction,
                         "schema": agent.contract(data).model_json_schema(),
-                        "template": TEMPLATE_SHA256,
+                        "template": self.template.TEMPLATE_SHA256,
                     },
                     ensure_ascii=False,
                     sort_keys=True,
@@ -87,7 +151,12 @@ class Orchestrator:
                 internal / "responses",
                 retries=0 if agent.role == "reviewer" else 1,
             )
-            response, _ = await agent.run(provider, data)
+            try:
+                response, _ = await agent.run(provider, data)
+            except Exception:
+                report["active_stage"] = agent.role
+                report["active_part"] = data.get("part")
+                raise
             content = json.dumps(response.model_dump(), ensure_ascii=False, sort_keys=True)
             save(
                 checkpoint,
@@ -102,54 +171,61 @@ class Orchestrator:
                 folder = internal / f"revision_{revision}"
                 folder.mkdir(exist_ok=resume)
                 questions = []
-                composer = ComposerAgent()
-                for part in ("P1", "P2", "P3"):
-                    section = await call(
-                        composer, composer.data(request, part, references[part], feedback), revision
-                    )
-                    expected = [s.id for s in request.slots if s.part == part]
-                    if [q.id for q in section.questions] != expected:
-                        raise ValueError("Composer question IDs/count/order differ from matrix")
-                    questions.extend(section.questions)
+                composer = self.composer_type()
+                semaphore = asyncio.Semaphore(request.composer_concurrency)
+
+                async def compose_part(
+                    part,
+                    *,
+                    semaphore=semaphore,
+                    composer=composer,
+                    feedback=feedback,
+                    revision=revision,
+                    folder=folder,
+                ):
+                    async with semaphore:
+                        section = await call(
+                            composer,
+                            composer.data(request, part, references[part], feedback),
+                            revision,
+                        )
+                    self.validate_section(section, request, part)
                     save(folder / f"{part}.json", section.model_dump())
+                    return section
+
+                if request.composer_concurrency == 1:
+                    sections = [await compose_part(part) for part in self.parts(request)]
+                else:
+                    tasks = [
+                        asyncio.create_task(compose_part(part)) for part in self.parts(request)
+                    ]
+                    try:
+                        sections = await asyncio.gather(*tasks)
+                    except BaseException:
+                        for task in tasks:
+                            task.cancel()
+                        await asyncio.gather(*tasks, return_exceptions=True)
+                        raise
+                for section in sections:
+                    questions.extend(section.questions)
                 stems = [q.stem.casefold().strip() for q in questions]
                 if len(set(stems)) != len(stems):
                     raise ValueError("Duplicate question stems")
-                drawings = await call(
-                    IllustratorAgent(),
-                    dict(
-                        requests=[
-                            dict(question_id=q.id, stem=q.stem, description=q.illustration_request)
-                            for q in questions
-                            if q.illustration_request
-                        ]
-                    ),
-                    revision,
-                )
+                drawings = await self.illustrate(call, questions, revision)
                 report["active_stage"] = "rendering"
                 report["active_part"] = None
-                source = render(questions, drawings, font_profile=request.font_profile)
+                source = self.render_source(questions, drawings, request, sections)
                 save(folder / "illustrations.json", drawings.model_dump())
                 (folder / "candidate.tex").write_bytes(source)
-                solutions = await call(
-                    SolverAgent(),
-                    dict(questions=student_view(questions), drawings=drawings.model_dump()),
-                    revision,
-                )
+                solutions = await self.solve(call, questions, drawings, revision, sections, request)
                 ids = [s.id for s in request.slots]
                 if [s.question_id for s in solutions.entries] != ids:
                     raise ValueError("Solver must cover every question in matrix order")
                 save(folder / "solver.json", solutions.model_dump())
                 if revision == 1:
                     review = await call(
-                        ReviewerAgent(),
-                        dict(
-                            matrix=request.model_dump(),
-                            questions=[q.model_dump() for q in questions],
-                            drawings=drawings.model_dump(),
-                            solver=solutions.model_dump(),
-                            student_latex=source.decode("utf-8"),
-                        ),
+                        self.reviewer_type(),
+                        self.review_data(request, questions, drawings, solutions, source, sections),
                         revision,
                     )
                     if review.checked_ids != ids:
@@ -159,10 +235,7 @@ class Orchestrator:
                         review.issues.append("Solver found ambiguous or unsolvable questions")
                     save(folder / "review.json", review.model_dump())
                     if review.decision == "needs_revision":
-                        feedback = dict(
-                            review=review.model_dump(),
-                            previous_questions=[q.model_dump() for q in questions],
-                        )
+                        feedback = self.feedback_data(review, questions, sections)
                         report["reviewer_feedback_sent"] = True
                         continue
                 # No second Reviewer. The final revision always requires human inspection.
@@ -174,6 +247,7 @@ class Orchestrator:
                         "revision": revision,
                         "composer": [q.model_dump() for q in questions],
                         "independent_solver": solutions.model_dump(),
+                        **self.extra_output(sections),
                     },
                 )
                 lines = ["# Đáp án và lời giải — cần giáo viên kiểm tra", ""]
@@ -223,4 +297,7 @@ class Orchestrator:
                 report["error"] = dict(code="invalid_contract", stage=exc.stage, fields=exc.fields)
             raise
         finally:
+            report["invocation_elapsed_seconds"] = round(perf_counter() - started, 3)
+            report["elapsed_seconds"] = round(previous_elapsed + perf_counter() - started, 3)
+            report["metrics"] = summarize_calls(calls)
             save(internal / "result.json", report)

@@ -26,6 +26,7 @@ class Slot(Model):
 class Request(Model):
     template_id: Literal["thpt_math_v2"] = "thpt_math_v2"
     font_profile: FontProfile = DEFAULT_FONT_PROFILE
+    composer_concurrency: int = Field(default=3, ge=1, le=3, strict=True)
     slots: list[Slot] = Field(min_length=22, max_length=22)
     reference_material: list[Text] = Field(default_factory=list, max_length=20)
     requirements: list[Text] = Field(default_factory=list, max_length=30)
@@ -50,8 +51,8 @@ class Statement(Model):
 
     @field_validator("text", "solution")
     @classmethod
-    def validate_math_text(cls, value):
-        content_latex(value)
+    def validate_math_text(cls, value, info):
+        content_latex(value, check_equations=info.field_name != "solution")
         return value
 
 
@@ -66,8 +67,8 @@ class Question(Model):
 
     @field_validator("stem", "solution")
     @classmethod
-    def validate_math_text(cls, value):
-        content_latex(value)
+    def validate_math_text(cls, value, info):
+        content_latex(value, check_equations=info.field_name != "solution")
         return value
 
     @model_validator(mode="after")

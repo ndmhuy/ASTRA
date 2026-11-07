@@ -15,7 +15,7 @@ begin end quad qquad thinspace space hspace vspace le leq ge geq ne neq approx s
 equiv cong propto pm mp times div cdot ast circ bullet to mapsto gets rightarrow leftarrow
 Rightarrow Leftarrow Leftrightarrow leftrightarrow iff implies in notin ni subset subseteq
 nearrow searrow nwarrow swarrow uparrow downarrow
-supset supseteq cup cap emptyset varnothing forall exists neg land lor angle measuredangle
+supset supseteq cup cap setminus emptyset varnothing forall exists neg land lor angle measuredangle
 perp parallel triangle square degree infty partial nabla ell ldots cdots vdots ddots
 dots alpha beta gamma delta epsilon varepsilon zeta eta theta vartheta iota kappa lambda mu nu
 xi pi varpi rho varrho sigma varsigma tau upsilon phi varphi chi psi omega Gamma Delta
