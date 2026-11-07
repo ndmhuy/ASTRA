@@ -1,6 +1,11 @@
 /* Classroom Hub: flat color, fine ink outlines, generous editorial type. */
-@font-face{font-family:Classroom Sans;src:url('/fonts/nunito-sans.ttf') format('truetype');font-weight:200 900;font-display:swap}
-@font-face{font-family:Classroom Serif;src:url('/fonts/lora.ttf') format('truetype');font-weight:400 700;font-display:swap}
+/* Hand-drawn numerals add a small classroom accent to section labels. */
+.section-number {
+  font-family: 'ASTRA Classroom Numerals', 'Classroom Sans', sans-serif;
+  font-synthesis: none;
+}
+@font-face{font-family:Classroom Sans;src:url('../assets/fonts/manrope-variable.ttf') format('truetype');font-weight:200 800;font-display:swap}
+@font-face{font-family:Classroom Serif;src:url('../assets/fonts/lora-variable.ttf') format('truetype');font-weight:400 700;font-display:swap}
 :root{--ink:#181815;--cream:#fffef7;--yellow:#ffdd62;--lilac:#b696fa;--blue:#79aaff;--green:#60c391;--primary-green:#181815;--primary-green-hover:#3c5bc0;--primary-green-light:#fff1b7;--primary-green-border:#181815}
 body{font-family:Classroom Sans,'Segoe UI',sans-serif;background:var(--cream);color:var(--ink)}
 .app-shell{--surface-edge:#181815;--ambient-shadow:none;--hover-shadow:none;--focus-halo:0 0 0 4px #79aaff70;color:var(--ink)}

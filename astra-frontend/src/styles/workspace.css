@@ -1,3 +1,38 @@
+/* Local fonts: readable Vietnamese text with a small hand-drawn brand accent. */
+@font-face {
+  font-family: 'ASTRA Manrope';
+  src: url('../assets/fonts/manrope-variable.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'ASTRA Lora';
+  src: url('../assets/fonts/lora-variable.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'ASTRA Smart Teacher';
+  src: url('../assets/fonts/smart-teacher.otf') format('opentype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'ASTRA Classroom Numerals';
+  src: url('../assets/fonts/kg-corner-of-the-sky.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0030-0039;
+}
+:root {
+  --font-ui: 'ASTRA Manrope', 'Segoe UI', sans-serif;
+  --font-heading: 'ASTRA Lora', Georgia, serif;
+}
+body { font-family: var(--font-ui); }
 /* Shared surfaces and controls */
 :root { --primary-green: #24634b; --primary-green-hover: #194c38; --primary-green-light: #edf4ef; --primary-green-border: #c5d8cb; --gray-900: #202923; --gray-700: #3f4b43; --gray-500: #657168; --gray-200: #dde2dc; --radius-md: 6px; --radius-lg: 8px; --radius-xl: 8px; }
 body { background: #f4f5f2; color: #202923; }
@@ -9,7 +44,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible, select:focus-visib
 .button-primary:hover { background: #194c38; }
 .button-secondary { background: white; border: 1px solid #ccd4cd; color: #3f4b43; }
 .button-secondary:hover { background: #f4f5f2; }
-.eyebrow { font: 600 12px/1.5 'Segoe UI', sans-serif; letter-spacing: .09em; text-transform: uppercase; color: #657168; }
+.eyebrow { font: 600 12px/1.5 var(--font-ui); letter-spacing: .09em; text-transform: uppercase; color: #657168; }
 /* Workspace */
 .astra-workspace-split { display: flex; height: calc(100dvh - 64px); overflow: hidden; }
 .astra-chat-pane { width: var(--chat-width, 360px); flex-shrink: 0; min-width: 300px; display: flex; flex-direction: column; background: white; overflow: hidden; }
@@ -45,15 +80,15 @@ button:focus-visible, a:focus-visible, summary:focus-visible, select:focus-visib
 .question-choice { display: flex; align-items: baseline; gap: 12px; padding: 6px 10px; font-size: 16px; line-height: 1.65; }
 .question-choice > strong { min-width: 20px; }
 .question-choice.correct { background: #edf4ef; color: #20543f; border-radius: 4px; }
-.answer-label { margin-left: auto; white-space: nowrap; font: 11px 'Segoe UI', sans-serif; }
-.question-review { margin-top: 16px; font: 13px/1.7 'Segoe UI', sans-serif; color: #657168; }
+.answer-label { margin-left: auto; white-space: nowrap; font: 11px var(--font-ui); }
+.question-review { margin-top: 16px; font: 13px/1.7 var(--font-ui); color: #657168; }
 .question-review summary { cursor: pointer; padding: 7px 0; }
 .question-review.flagged { border-left: 2px solid #b08032; padding-left: 12px; color: #805514; }
 .review-content { padding: 10px 12px; background: #f6f7f4; color: #3f4b43; }
 .review-content p { margin-bottom: 8px; }
 .paper-empty { padding: 70px 0; text-align: center; color: #657168; }
 .paper-empty h2 { font-weight: 400; color: #3f4b43; font-size: 25px; margin: 22px 0 12px; }
-.paper-empty p { font: 14px/1.8 'Segoe UI', sans-serif; max-width: 320px; margin: auto; }
+.paper-empty p { font: 14px/1.8 var(--font-ui); max-width: 320px; margin: auto; }
 .paper-progress, .paper-end { text-align: center; color: #657168; padding-top: 28px; font-size: 13px; }
 .katex-display { overflow-x: auto; overflow-y: hidden; padding-block: 4px; }
 @media (max-width: 1000px) { .astra-chat-pane { width: 310px !important; } .workspace-divider { display: none; } .paper-scroll { padding: 8px 16px 24px; } .exam-paper { padding: 30px 24px; } }
@@ -268,7 +303,7 @@ body { background: #f7f8f6; color: #24352b; font-size: 16px; }
 .page-heading h1,
 .creation-intro h2,
 .library-heading h2 {
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: var(--font-heading);
   font-weight: 600;
 }
 .home-screen :is(.page-heading p, .creation-option small, .library-empty p) {
@@ -322,3 +357,8 @@ body { background: #f7f8f6; color: #24352b; font-size: 16px; }
 /* ASTRA ink identity in the main navigation. */
 .app-brand { color: #242323; }
 .app-brand-logo { width: 54px; height: 48px; display: block; flex-shrink: 0; }
+.app-brand > span {
+  font-family: 'ASTRA Smart Teacher', var(--font-ui);
+  font-weight: 400;
+  letter-spacing: .025em;
+}

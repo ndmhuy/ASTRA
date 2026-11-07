@@ -11,9 +11,9 @@ export function SchoolArt({ kind, className = '' }: { kind: 'globe' | 'book' | '
     </>}
     {kind === 'book' && <>
       <path d="M31 57h88l13 8 13-8h85v157h-85l-13 7-13-7H31Z" fill="#3c5bc0" />
-      <path d="M40 46h65q15 0 27 9 12-9 28-9h60v156h-62q-15 0-26 9-12-9-28-9H40Z" fill="#ffdd62" />
+      <path d="M40 46h65q15 0 27 9 12-9 28-9h60v156h-62q-15 0-26 9-12-9-28-9H40Z" fill="#ffffff" />
       <path d="M132 55v156M57 77h55m-55 24h55m-55 24h55m-55 24h55m-55 24h55m43-96h45m-45 24h45m-45 24h45m-45 24h45m-45 24h45" />
-      <g transform="rotate(42 180 100)"><path d="M163 27h28v132l-14 25-14-25Z" fill="#ff704f" /><path d="M163 137h28v22l-14 25-14-25Z" fill="#ffdd62" /><path d="m172 175 5 9 5-9" fill="#181815" /><rect x="159" y="14" width="36" height="42" rx="5" fill="#fffef7" /><rect x="170" y="14" width="25" height="36" rx="7" fill="#ff704f" /></g>
+      <g transform="rotate(42 180 100)"><path d="M163 27h28v132l-14 25-14-25Z" fill="#ff704f" /><path d="M163 137h28v22l-14 25-14-25Z" fill="#ffdd62" /><path d="m172 175 5 9 5-9" fill="#181815" /><rect x="159" y="14" width="36" height="42" rx="5" fill="#a3a3a3" /><rect x="170" y="14" width="25" height="36" rx="7" fill="#ff704f" /></g>
     </>}
     {kind === 'bag' && <>
       <path d="M106 55V35c0-30 49-30 49 0v20h-10V34c0-17-29-17-29 0v21Z" fill="#51b982" />
