@@ -70,3 +70,11 @@ the question and key are internally consistent and answerable; `test_fit` means
 the item matches the requested grade, curriculum, scope and difficulty. Labels
 must be created independently of model generation. Replay fixtures test wiring,
 not real-world accuracy or test fit.
+
+For an auditable result, each `HumanLabel` may include `question_labels` with
+`question_id`, four boolean judgments (`accurate`, `format_correct`, `valid`,
+`test_fit`) and a concrete `reason`. The benchmark records returned question IDs
+and rejects duplicate IDs, labels for different artifacts, or totals that
+disagree with the individual judgments. This makes a score traceable to the
+actual question; external reviewers should retain their source references and
+rubric alongside the labels file.

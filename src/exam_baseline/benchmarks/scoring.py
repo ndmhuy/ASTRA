@@ -12,6 +12,14 @@ def summarize(attempts: list[dict], labels: dict[str, HumanLabel]) -> dict:
         group = [a for a in attempts if (a["system"], a["track"]) == key]
         audited = [(a, labels[a["attempt_id"]]) for a in group if a["attempt_id"] in labels]
         for attempt, label in audited:
+            if label.question_labels and (
+                not attempt["artifact_returned"]
+                or len(label.question_labels) > label.requested_questions
+                or attempt.get("question_ids") is None
+                or {item.question_id for item in label.question_labels}
+                != set(attempt["question_ids"])
+            ):
+                raise ValueError("question labels do not match the returned artifact")
             if (
                 label.requested_questions != attempt["requested_questions"]
                 or label.correct_questions > label.requested_questions

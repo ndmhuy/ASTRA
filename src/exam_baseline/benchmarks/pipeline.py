@@ -93,6 +93,9 @@ async def run(manifest_path: Path, output: Path, mode: str, labels_path: Path | 
                             ),
                             accepted=response.status == "success",
                             artifact_returned=response.exam is not None,
+                            question_ids=[q.id for q in response.exam.questions]
+                            if response.exam is not None
+                            else None,
                             calls=int(called),
                             models=evaluation.model,
                             input_tokens=evaluation.usage.input_tokens or 0,
@@ -120,6 +123,9 @@ async def run(manifest_path: Path, output: Path, mode: str, labels_path: Path | 
                             deterministic_passed=result.deterministic_passed,
                             accepted=bool(result.machine_approved and result.final_latex),
                             artifact_returned=result.solutions is not None,
+                            question_ids=[entry.question_id for entry in result.solutions.entries]
+                            if result.solutions is not None
+                            else None,
                             calls=len(result.calls),
                             input_tokens=sum(c.usage.input_tokens or 0 for c in result.calls),
                             output_tokens=sum(c.usage.output_tokens or 0 for c in result.calls),

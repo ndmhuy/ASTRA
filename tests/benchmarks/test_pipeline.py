@@ -3,7 +3,7 @@ import json
 
 import pytest
 
-from exam_baseline.benchmarks.models import HumanLabel
+from exam_baseline.benchmarks.models import HumanLabel, QuestionLabel
 from exam_baseline.benchmarks.pipeline import run
 from exam_baseline.benchmarks.reviewer import evaluate_case, score
 from exam_baseline.benchmarks.scoring import summarize
@@ -108,6 +108,43 @@ def test_accuracy_format_validity_and_test_fit_have_separate_denominators():
     assert metrics["valid_question_yield"] == 3 / 8
     assert metrics["test_fit_question_yield"] == 2 / 8
     assert metrics["test_fit_audit_coverage"] == 1
+
+
+def test_question_level_audit_requires_matching_artifact_ids_and_counts():
+    row = attempt("one", passed=True, artifact=True)
+    row["question_ids"] = ["q1", "q2"]
+    labels = [
+        QuestionLabel(
+            question_id="q1",
+            accurate=True,
+            format_correct=True,
+            valid=True,
+            test_fit=True,
+            reason="Checked against source",
+        ),
+        QuestionLabel(
+            question_id="q2",
+            accurate=False,
+            format_correct=True,
+            valid=False,
+            test_fit=False,
+            reason="Answer is incorrect",
+        ),
+    ]
+    good = HumanLabel(
+        requested_questions=4,
+        correct_questions=1,
+        format_correct_questions=2,
+        valid_questions=1,
+        test_fit_questions=1,
+        question_labels=labels,
+    )
+    assert summarize([row], {"one": good})["pipeline/text"]["correct_question_yield"] == 0.25
+    row["question_ids"] = ["q1", "q3"]
+    with pytest.raises(ValueError, match="returned artifact"):
+        summarize([row], {"one": good})
+    with pytest.raises(ValueError, match="disagree"):
+        HumanLabel(requested_questions=4, correct_questions=2, question_labels=labels)
 
 
 def test_ten_case_two_repeat_replay_pilot_runs_both_systems(tmp_path):
