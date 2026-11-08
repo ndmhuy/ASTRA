@@ -108,7 +108,7 @@ CASES = {
                 "q1",
                 "Theo đồ thị y = 2x + 1, y bằng bao nhiêu khi x = 3?",
                 "7",
-                "Thay x = 3: y = 7.",
+                "Thay x = 3 vào y = 2x + 1: y = 2 × 3 + 1 = 7.",
                 2,
             )
         ],
@@ -136,7 +136,7 @@ CASES = {
                 "q1",
                 "Tam giác ABC vuông tại A, AB = 3 cm và AC = 4 cm. Tính BC.",
                 "5 cm",
-                "Áp dụng Pythagoras: BC = 5 cm.",
+                "Theo định lý Pythagoras: BC² = AB² + AC² = 3² + 4² = 25, nên BC = 5 cm.",
                 3,
                 "medium",
             )
@@ -189,12 +189,12 @@ CASES = {
         "05_mixed",
         "Bài tập hỗn hợp",
         [
-            question("q1", "Giải x + 5 = 9.", "x = 4", "Trừ 5 hai vế.", 2),
+            question("q1", "Giải x + 5 = 9.", "x = 4", "Trừ 5 hai vế: x = 9 − 5 = 4.", 2),
             question(
                 "q2",
                 "Theo đồ thị y = x + 2, y bằng bao nhiêu khi x = 3?",
                 "5",
-                "Thay x = 3: y = 5.",
+                "Thay x = 3 vào y = x + 2: y = 3 + 2 = 5.",
                 3,
                 "medium",
             ),

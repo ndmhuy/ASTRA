@@ -135,3 +135,5 @@ vẫn chạy được qua launcher tương thích. Uvicorn vẫn dùng `exam_bas
 [Khung đề ĐGNL HCM 120 câu theo đề tham chiếu 11](docs/guides/HCM_DE11_FORMAT.md).
 
 [Nhập mẫu LaTeX/kho đề và xuất đề, đáp án, phiếu tô LaTeX](docs/guides/LATEX_PIPELINE.md).
+
+[MAS intake và xuất PDF/DOCX sau khi duyệt](docs/MAS_INTAKE_AND_EXPORT.md).

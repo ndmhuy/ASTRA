@@ -9,7 +9,7 @@
 
 ## Trạng thái và ranh giới
 
-Branch gốc `multiagent` tại `42f3244bc886b443aaca795495fb9dcc744a58cd` là baseline một agent. Repo này không chứa schema RAG, truy hồi, exporter LaTeX, `SolutionBook` hay `ReviewReport`. Những phần đó chưa được xác nhận là đã triển khai. Module `exam_baseline.mini` là đường draft-only độc lập; endpoint V1 giữ nguyên.
+Branch gốc `multiagent` tại `42f3244bc886b443aaca795495fb9dcc744a58cd` là baseline một agent. Repo này không chứa schema RAG gốc, truy hồi, exporter LaTeX, `SolutionBook` hay `ReviewReport`. Module `exam_baseline.mini` là đường draft-only độc lập; endpoint V1 giữ nguyên. Exporter PDF/DOCX được nối qua file review riêng, không biến draft thành kết quả Solver/Reviewer tự động.
 
 RAG do nhóm khác phụ trách. Contract hiện dùng `GenerationRequest` của baseline cho request/ma trận/bank và `MiniRequest.evidence[]` cho kết quả RAG đã được chuẩn hóa: mỗi item có `id`, `text`, `role` (`content_support` hoặc `form_example`) và `locator` tùy chọn. Adapter ở ranh giới RAG → Composer cần ánh xạ các trường này; chưa có spec RAG gốc trong repo nên chưa thể chốt mapping theo field thật. Evidence được đưa vào prompt như dữ liệu, không được coi là chỉ dẫn. `require_evidence=true` làm danh sách evidence trống thành lỗi trước khi gọi model và yêu cầu mỗi câu có ít nhất một `content_support`; `form_example` đơn lẻ không đủ. Composer có thể trả `{"error":{"code":"missing_evidence","message":"..."}}` khi evidence không đủ. Bằng chứng tham khảo dạng bài không chứng minh nội dung.
 
@@ -28,9 +28,9 @@ python scripts/build_mini_fixtures.py
 
 Bỏ `--fixture` để dùng `EXAM_PROVIDER=chat_completions` và cấu hình provider baseline. Fixture là replay, không phải kết quả model thật. Không có retry hoặc model call của Illustrator. CLI từ chối output dir đã tồn tại. Năm bộ synthetic trong `examples/mini/01_text` đến `05_mixed` chứa `input.json`, `composer_fixture.json`, `handoff/`; script tái tạo chúng. `teacher_private.json` chỉ là đáp án đề xuất từ fixture và không được gửi cho học sinh.
 
-## Nối exporter cho người 2
+## Exporter PDF/DOCX đã duyệt
 
-Exporter nhận `student_view.json`, `exam_draft.json` và thư mục `figures/`, sau khi Solver/Reviewer chấp thuận cùng `revision`. Xuất `de_thi.tex` từ StudentView, `dap_an.tex` từ `SolutionBook` riêng khi được yêu cầu. Chỉ nhúng asset bằng đường dẫn tương đối. `stem_format=latex` trong metadata câu quy định stem là đoạn LaTeX đã được kiểm, còn `plain` cần escape ký tự đặc biệt; hiện metadata này chưa gắn vào từng lựa chọn. Cần hoàn thiện contract phân đoạn plain/math và thử XeLaTeX với tiếng Việt, công thức và hình trước khi tuyên bố exporter hoạt động. Chưa có exporter để tái sử dụng hay smoke test compile.
+`exam_baseline.exporter` hiện tạo `de_thi` và `dap_an` ở cả PDF/DOCX từ cùng bản draft đã kiểm hash. Nó yêu cầu một file review với đáp án đã sửa và `approved=true`; file `teacher_private` chỉ là đề xuất để chuẩn bị review. Chưa có Solver/Reviewer tự động, nên người duyệt phải chịu trách nhiệm kiểm nội dung. LaTeX trong stem/đáp án được chặn đến khi có bộ render toán học đáng tin cậy. Hướng dẫn đầy đủ và policy đầu vào MAS ở [MAS_INTAKE_AND_EXPORT.md](MAS_INTAKE_AND_EXPORT.md).
 
 ## Kiểm chứng còn thiếu
 
