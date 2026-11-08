@@ -9,7 +9,7 @@ from pypdf import PdfReader
 from exam_baseline.core.hashing import digest
 from exam_baseline.draft.models import ExamDraft
 from exam_baseline.exporter import ExportReview, export, validate_export
-from exam_baseline.intake import Intake, encode_intake
+from exam_baseline.intake import Intake, encode_intake, encode_pipeline
 
 ROOT = Path(__file__).parents[1]
 
@@ -107,6 +107,13 @@ def test_intake_scope_policy():
     }
     intake = Intake.model_validate(payload)
     assert encode_intake(intake).require_evidence
+    payload["user"] = {
+        "request_text": "Ra đề 20 phút",
+        "additional_constraints": ["Không dùng máy tính"],
+    }
+    intake = Intake.model_validate(payload)
+    assert encode_pipeline(intake).user_prompt == "Ra đề 20 phút"
+    assert "Không dùng máy tính" in encode_intake(intake).request.context.custom_requirements
     payload["rag"][0]["grade"] = 8
     with pytest.raises(ValidationError, match="conflicts with exam scope"):
         Intake.model_validate(payload)

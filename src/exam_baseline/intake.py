@@ -1,6 +1,7 @@
 """Strict boundary between chatbot intent, RAG context and the mini Composer."""
 
 import argparse
+import json
 from pathlib import Path
 from typing import Literal
 
@@ -40,9 +41,15 @@ class RagPassage(Model):
     topic_ids: list[str] = Field(min_length=1)
 
 
+class UserInput(Model):
+    request_text: str = Field(min_length=1, max_length=10000)
+    additional_constraints: list[str] = Field(default_factory=list)
+
+
 class Intake(Model):
     schema_version: Literal["mas-intake-v1"] = "mas-intake-v1"
     chatbot: ChatbotIntent
+    user: UserInput | None = None
     rag: list[RagPassage] = Field(min_length=1)
     required_visual_question_ids: list[str] = Field(default_factory=list)
 
@@ -82,6 +89,7 @@ def encode_intake(intake: Intake) -> MiniRequest:
             f"Exam format: {intent.exam_format}; answer format: {intent.answer_format}; "
             f"audience: {intent.audience}.",
             *intent.accommodations,
+            *(intake.user.additional_constraints if intake.user else []),
         ]
     )
     return MiniRequest(
@@ -97,6 +105,7 @@ def encode_intake(intake: Intake) -> MiniRequest:
         ],
         require_evidence=True,
         required_visual_question_ids=intake.required_visual_question_ids,
+        user_prompt=intake.user.request_text if intake.user else None,
     )
 
 
@@ -109,13 +118,29 @@ def main() -> int:
     parser = argparse.ArgumentParser(
         description="Validate chatbot/RAG intake and write MiniRequest JSON"
     )
-    parser.add_argument("--input", type=Path, required=True)
+    parser.add_argument("--input", type=Path, help="Combined intake JSON")
+    parser.add_argument("--user", type=Path, help="Separate user input JSON")
+    parser.add_argument("--chatbot", type=Path, help="Separate chatbot intent JSON")
+    parser.add_argument("--rag", type=Path, help="Separate RAG passage array JSON")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument(
         "--pipeline", action="store_true", help="Write a four-agent PipelineRequest"
     )
     args = parser.parse_args()
-    intake = Intake.model_validate_json(args.input.read_text(encoding="utf-8"))
+    if args.input:
+        if any((args.user, args.chatbot, args.rag)):
+            parser.error("--input cannot be combined with separate JSON files")
+        intake = Intake.model_validate_json(args.input.read_text(encoding="utf-8"))
+    else:
+        if not all((args.user, args.chatbot, args.rag)):
+            parser.error("supply --input or all of --user, --chatbot and --rag")
+        intake = Intake.model_validate(
+            {
+                "user": json.loads(args.user.read_text(encoding="utf-8")),
+                "chatbot": json.loads(args.chatbot.read_text(encoding="utf-8")),
+                "rag": json.loads(args.rag.read_text(encoding="utf-8")),
+            }
+        )
     encoded = encode_pipeline(intake) if args.pipeline else encode_intake(intake)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("x", encoding="utf-8") as stream:

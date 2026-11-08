@@ -9,6 +9,7 @@ from xml.sax.saxutils import escape
 from docx import Document
 from docx.shared import Cm, Pt
 from pydantic import Field, model_validator
+from pypdf import PdfReader
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.pagesizes import A4
@@ -101,7 +102,15 @@ def _sections(draft: ExamDraft, review: ExportReview, root: Path, answers: bool)
         yield ("body", exam.instructions, None)
     figure_map = {f.visual_id: f for f in draft.figures}
     meta_map = {q.id: q for q in draft.questions}
+    passages = {p.start_question: p for p in exam.shared_passages}
     for index, question in enumerate(exam.questions, 1):
+        if index in passages:
+            passage = passages[index]
+            yield (
+                "body",
+                f"Dùng thông tin sau cho câu {index}–{passage.end_question}: {passage.text}",
+                None,
+            )
         yield ("question", f"Câu {index} ({question.points:g} điểm). {question.stem}", None)
         if not answers:
             for key, choice in question.choices.items():
@@ -196,6 +205,26 @@ def export(draft_root: Path, review_path: Path, output: Path) -> None:
         sections = list(_sections(draft, review, draft_root, answers))
         _docx(sections, output / f"{name}.docx")
         _pdf(sections, output / f"{name}.pdf")
+        _audit_files(sections, output / f"{name}.docx", output / f"{name}.pdf")
+
+
+def _audit_files(sections, docx_path: Path, pdf_path: Path) -> None:
+    """Reject lost text or figures after serialization in either output format."""
+    doc = Document(docx_path)
+    doc_text = "\n".join(p.text for p in doc.paragraphs)
+    pdf = PdfReader(pdf_path)
+    pdf_text = "\n".join(page.extract_text() for page in pdf.pages)
+    expected_images = sum(kind == "image" for kind, _, _ in sections)
+    if len(doc.inline_shapes) != expected_images:
+        raise ValueError("DOCX figure count differs from source")
+    pdf_images = sum(len(page.images) for page in pdf.pages)
+    if pdf_images < expected_images:
+        raise ValueError("PDF figure count differs from source")
+    for kind, content, _ in sections:
+        if kind == "image":
+            continue
+        if content not in doc_text or content not in pdf_text:
+            raise ValueError(f"Exported text missing from PDF or DOCX: {content[:40]}")
 
 
 def prepare_review(draft_root: Path, output: Path) -> None:

@@ -3,7 +3,10 @@
 ## 1. Input policy
 
 `exam_baseline.intake` accepts one JSON object with `schema_version=mas-intake-v1`,
-`chatbot`, and `rag`. The chatbot must supply a resolved `generate_exam` intent:
+`user`, `chatbot`, and `rag`. It also accepts the three as separate JSON files:
+`user.json` is an object with `request_text` and optional
+`additional_constraints`, `chatbot.json` is a resolved intent object, and
+`rag.json` is an array of passage objects. The chatbot must supply a resolved `generate_exam` intent:
 grade (1–12), curriculum, textbook and publication year, language, subject,
 title, topics and learning objectives, question count, exact topic/type/difficulty
 distributions, score budget, duration, exam format, answer format, audience, and
@@ -21,6 +24,7 @@ schema to change.
 
 ```powershell
 python -m exam_baseline.intake --input intake.json --output mini_request.json
+python -m exam_baseline.intake --user user.json --chatbot chatbot.json --rag rag.json --output mini_request.json
 python -m exam_baseline.mini_cli --request mini_request.json --output runs/exam1
 python -m exam_baseline.intake --input intake.json --output pipeline_request.json --pipeline
 python -m exam_baseline.pipeline.cli --request pipeline_request.json --output runs/pipeline1
@@ -47,6 +51,7 @@ python -m exam_baseline.exporter --draft runs/exam1 --review runs/review.json --
 ```
 
 The exporter writes `de_thi.pdf`, `de_thi.docx`, `dap_an.pdf`, and `dap_an.docx`.
+It reopens each file and checks that all expected text and figures survived export.
 It rejects an invalid draft, changed student view, changed or missing figure,
 mismatched draft/revision/hash, missing answer, invalid multiple-choice key,
 unapproved review, and LaTeX stems that cannot be faithfully rendered by this
