@@ -83,6 +83,33 @@ def test_bad_annotation_denominator_is_rejected():
         summarize([attempt("one")], {"one": HumanLabel(requested_questions=3, correct_questions=2)})
 
 
+def test_accuracy_format_validity_and_test_fit_have_separate_denominators():
+    labels = {
+        "good": HumanLabel(
+            requested_questions=4,
+            correct_questions=3,
+            format_correct_questions=4,
+            valid_questions=3,
+            test_fit_questions=2,
+        ),
+        "bad": HumanLabel(
+            requested_questions=4,
+            correct_questions=4,
+            format_correct_questions=4,
+            valid_questions=4,
+            test_fit_questions=4,
+        ),
+    }
+    metrics = summarize([attempt("good", passed=True, artifact=True), attempt("bad")], labels)[
+        "pipeline/text"
+    ]
+    assert metrics["correct_question_yield"] == 3 / 8
+    assert metrics["format_question_yield"] == 4 / 8
+    assert metrics["valid_question_yield"] == 3 / 8
+    assert metrics["test_fit_question_yield"] == 2 / 8
+    assert metrics["test_fit_audit_coverage"] == 1
+
+
 def test_ten_case_two_repeat_replay_pilot_runs_both_systems(tmp_path):
     manifest = ROOT / "examples/pipeline/pilot.json"
     report = asyncio.run(run(manifest, tmp_path / "pilot", "replay", None))

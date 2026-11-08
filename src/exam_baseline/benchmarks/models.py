@@ -25,3 +25,6 @@ class HumanLabel(Model):
     predicted_defects: int = Field(default=0, ge=0)
     clean_case: bool = False
     false_alarm: bool = False
+    format_correct_questions: int | None = Field(default=None, ge=0)
+    valid_questions: int | None = Field(default=None, ge=0)
+    test_fit_questions: int | None = Field(default=None, ge=0)

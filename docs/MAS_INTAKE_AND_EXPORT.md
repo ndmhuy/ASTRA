@@ -22,6 +22,8 @@ schema to change.
 ```powershell
 python -m exam_baseline.intake --input intake.json --output mini_request.json
 python -m exam_baseline.mini_cli --request mini_request.json --output runs/exam1
+python -m exam_baseline.intake --input intake.json --output pipeline_request.json --pipeline
+python -m exam_baseline.pipeline.cli --request pipeline_request.json --output runs/pipeline1
 ```
 
 See `examples/mas_intake.json` for a full input. The draft still needs Solver and
@@ -55,3 +57,16 @@ JSON bytes; any edit to the JSON requires a new review file.
 These checks guarantee structural consistency and file integrity, not independent
 semantic correctness. A human or a later Solver/Reviewer stage must validate
 content before setting `approved=true`.
+
+## 3. Benchmark
+
+The pipeline benchmark reports question accuracy as `correct_question_yield`, and
+now also reports `format_question_yield`, `valid_question_yield`, and
+`test_fit_question_yield`. Each uses reviewed question counts over requested
+question counts; failed or missing artifacts score zero. Labels for each axis are
+optional, and the corresponding audit coverage is reported separately. An
+unlabeled axis remains `null`, never a fabricated perfect score. `valid` means
+the question and key are internally consistent and answerable; `test_fit` means
+the item matches the requested grade, curriculum, scope and difficulty. Labels
+must be created independently of model generation. Replay fixtures test wiring,
+not real-world accuracy or test fit.

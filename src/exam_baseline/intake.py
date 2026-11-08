@@ -8,6 +8,7 @@ from pydantic import Field, model_validator
 
 from .core.models import AdditionalContext, ExamMatrix, GenerationRequest, Model
 from .draft.models import Evidence, MiniRequest
+from .pipeline.contracts import PipelineRequest
 
 
 class ChatbotIntent(Model):
@@ -99,15 +100,23 @@ def encode_intake(intake: Intake) -> MiniRequest:
     )
 
 
+def encode_pipeline(intake: Intake) -> PipelineRequest:
+    """Apply the same policy at the four-agent pipeline boundary."""
+    return PipelineRequest.model_validate(encode_intake(intake).model_dump())
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Validate chatbot/RAG intake and write MiniRequest JSON"
     )
     parser.add_argument("--input", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument(
+        "--pipeline", action="store_true", help="Write a four-agent PipelineRequest"
+    )
     args = parser.parse_args()
     intake = Intake.model_validate_json(args.input.read_text(encoding="utf-8"))
-    encoded = encode_intake(intake)
+    encoded = encode_pipeline(intake) if args.pipeline else encode_intake(intake)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("x", encoding="utf-8") as stream:
         stream.write(encoded.model_dump_json(indent=2, exclude_none=True) + "\n")
