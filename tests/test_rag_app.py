@@ -92,6 +92,22 @@ class AppTests(unittest.TestCase):
             self.request("/api/documents/missing")
         self.assertEqual(error.exception.code, 404)
 
+    def test_compare_modes_and_eval_endpoints(self):
+        comp = self.request(
+            "/api/compare",
+            {"query_text": "Vật lí lớp 11 chương 1 con lắc lò xo", "top_k": 3},
+        )
+        self.assertIn("modes", comp)
+        self.assertEqual(comp["modes"]["bm25"]["status"], "gap")
+        self.assertEqual(comp["modes"]["embedding"]["status"], "success")
+        self.assertEqual(comp["modes"]["hybrid"]["status"], "success")
+
+        eval_report = self.request("/api/eval", {"split": "all", "k": 5})
+        self.assertEqual(eval_report["verification"]["status"], "verified")
+        self.assertIn("hybrid", eval_report["modes"])
+        self.assertIn("bm25", eval_report["modes"])
+        self.assertIn("embedding", eval_report["modes"])
+
 
 if __name__ == "__main__":
     unittest.main()

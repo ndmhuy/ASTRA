@@ -43,6 +43,7 @@ def main():
                     "document.querySelector('#timing').textContent.startsWith('5 results')"
                 )
                 assert "ocr-draft" in page.locator(".card-top").first.inner_text()
+                assert "Câu " in page.locator(".card-top").first.inner_text()
                 page.get_by_role("button", name="Read full document").first.click()
                 page.locator("#document-dialog").wait_for(state="visible")
                 assert "Grade mapping unknown" in page.locator("#doc-meta").inner_text()
@@ -66,6 +67,15 @@ def main():
                 font = page.locator(selector).first.evaluate("e => getComputedStyle(e).fontFamily")
                 assert "Segoe UI" in font and "Georgia" not in font
             assert "Định luật Ohm và điện trở" in page.locator(".result-card h3").first.inner_text()
+            page.locator("#compare-button").click()
+            page.locator(".compare-col").first.wait_for()
+            assert page.locator(".compare-col").count() == 3
+            page.locator("#eval-panel summary").click()
+            page.locator("#run-eval").click()
+            page.locator("#eval-summary .eval-table").wait_for()
+            assert "HYBRID" in page.locator("#eval-summary").inner_text()
+            page.locator("#search-button").click()
+            page.locator(".result-card").first.wait_for()
             if args.screenshots:
                 args.screenshots.mkdir(parents=True, exist_ok=True)
                 page.screenshot(

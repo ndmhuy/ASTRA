@@ -13,6 +13,12 @@ import uuid
 
 from .demo import demo_documents, make_document
 from .document_loader import load_documents
+from .eval import (
+    DEFAULT_DEMO_GOLD,
+    DEFAULT_EXISTING_GOLD,
+    evaluate_all_modes,
+    load_gold_queries,
+)
 from .existing_corpus import load_existing_corpus
 from .models import CONFIG, Gap
 from .results import collection_fingerprint, document_dict
@@ -72,6 +78,9 @@ def create_server(port=8765, documents=None, corpus_info=None):
                         "corpus_info": corpus_info,
                         "subjects": CONFIG["subjects"],
                         "editions": sorted({d.edition for d in snapshot}),
+                        "modes": CONFIG["modes"],
+                        "default_mode": CONFIG["default_mode"],
+                        "ranking_versions": CONFIG["ranking_versions"],
                         "max_top_k": CONFIG["max_top_k"],
                     },
                 )
@@ -111,6 +120,66 @@ def create_server(port=8765, documents=None, corpus_info=None):
                     result["elapsed_ms"] = round((time.perf_counter() - started) * 1000, 1)
                     result["collection_size"] = len(snapshot)
                     return self.send(200, result)
+                if self.path == "/api/compare":
+                    started = time.perf_counter()
+                    with lock:
+                        snapshot = list(collection)
+                    corpus_hash = (
+                        corpus_info["corpus_sha256"]
+                        if corpus_info
+                        else collection_fingerprint(snapshot)
+                    )
+                    modes_out = {}
+                    id_sets = {}
+                    for m in CONFIG["modes"]:
+                        m_started = time.perf_counter()
+                        m_payload = dict(payload, mode=m)
+                        res = run_documents(m_payload, snapshot, corpus_hash, corpus_info).to_dict()
+                        res["elapsed_ms"] = round((time.perf_counter() - m_started) * 1000, 1)
+                        modes_out[m] = res
+                        id_sets[m] = {d["document_id"] for d in res["documents"]}
+                    all_ids = set().union(*id_sets.values()) if id_sets else set()
+                    shared_ids = set.intersection(*id_sets.values()) if id_sets else set()
+                    return self.send(
+                        200,
+                        {
+                            "schema_version": CONFIG["schema_version"],
+                            "query_text": payload.get("query_text", ""),
+                            "collection_size": len(snapshot),
+                            "elapsed_ms": round((time.perf_counter() - started) * 1000, 1),
+                            "shared_top_k_count": len(shared_ids),
+                            "unique_top_k_count": len(all_ids),
+                            "modes": modes_out,
+                        },
+                    )
+                if self.path == "/api/eval":
+                    started = time.perf_counter()
+                    with lock:
+                        snapshot = list(collection)
+                    corpus_hash = (
+                        corpus_info["corpus_sha256"]
+                        if corpus_info
+                        else collection_fingerprint(snapshot)
+                    )
+                    gold_path = DEFAULT_EXISTING_GOLD if corpus_info else DEFAULT_DEMO_GOLD
+                    rows = load_gold_queries(gold_path)
+                    split = payload.get("split", "all")
+                    if split not in ("all", "dev", "heldout"):
+                        raise ValueError("split must be all, dev, or heldout.")
+                    k = int(payload.get("k", 5))
+                    if not 1 <= k <= CONFIG["max_top_k"]:
+                        raise ValueError("k is outside the configured range.")
+                    report = evaluate_all_modes(
+                        rows,
+                        snapshot,
+                        corpus_hash,
+                        corpus_info=corpus_info,
+                        modes=CONFIG["modes"],
+                        k=k,
+                        split=split,
+                    )
+                    report["elapsed_ms"] = round((time.perf_counter() - started) * 1000, 1)
+                    return self.send(200, report)
                 if self.path == "/api/documents":
                     if corpus_info:
                         raise ValueError("Use --demo or --corpus for session note imports.")
@@ -135,7 +204,7 @@ def create_server(port=8765, documents=None, corpus_info=None):
                         collection.append(document)
                     return self.send(201, {"document_id": document.document_id})
                 self.send(404, {"error": "Not found."})
-            except (ValueError, TypeError, KeyError) as exc:
+            except (Gap, ValueError, TypeError, KeyError) as exc:
                 self.send(400, {"error": str(exc)})
 
     return ThreadingHTTPServer(("127.0.0.1", port), Handler)

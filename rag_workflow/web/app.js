@@ -58,31 +58,46 @@ function showNotice(title, message) {
   box.append(node('strong', '', title), node('span', '', message));
   $('notice').replaceChildren(box);
 }
+function formatScoreBadge(d, mode) {
+  const bm25 = (d.bm25_score ?? d.relevance_score ?? 0).toFixed(2);
+  const emb = (d.embedding_score ?? 0).toFixed(2);
+  const rel = (d.relevance_score ?? 0).toFixed(2);
+  if (mode === 'bm25') return `BM25 score ${bm25} · Cosine ${emb}`;
+  if (mode === 'embedding') return `Cosine ${emb} · BM25 ${bm25}`;
+  return `Hybrid ${rel} · BM25 ${bm25} · Cosine ${emb}`;
+}
+function renderScopeTags(scope, mode) {
+  $('scope').replaceChildren();
+  if (!scope) return;
+  const range = scope.range_type === 'topic' ? 'Topic search' : `${scope.range_type} ${scope.start}${scope.end !== scope.start ? '–' + scope.end : ''}`;
+  const modeTag = {hybrid: 'Mode: Hybrid RRF', bm25: 'Mode: BM25-v2', embedding: 'Mode: Embedding Cosine'}[mode] || `Mode: ${mode}`;
+  for (const text of [modeTag, label(scope.subject), scope.grade ? 'Grade ' + scope.grade : 'Grade mapping unknown', range]) {
+    $('scope').append(node('span', 'tag', text));
+  }
+}
 async function search(event) {
   event?.preventDefault();
   const sequence = ++searchSequence;
+  const mode = $('retrieval-mode').value || 'hybrid';
   $('search-button').disabled = true; $('search-button').textContent = 'Retrieving…'; $('results-section').setAttribute('aria-busy', 'true');
-  $('results').replaceChildren(); $('scope').replaceChildren(); $('notice').replaceChildren(); $('timing').textContent = '';
+  $('results').replaceChildren(); $('compare-results').replaceChildren(); $('compare-results').hidden = true;
+  $('scope').replaceChildren(); $('notice').replaceChildren(); $('timing').textContent = '';
   $('json').textContent = 'Retrieving…';
   try {
-    const payload = {query_text: $('query').value, top_k: Number($('top-k').value), edition: $('edition').value || null};
+    const payload = {query_text: $('query').value, top_k: Number($('top-k').value), edition: $('edition').value || null, mode};
     if (existingCorpus) payload.collection = $('collection-kind').value;
     const data = await api('/api/search', payload);
     if (sequence !== searchSequence) return;
     $('json').textContent = JSON.stringify(data, null, 2);
     $('timing').textContent = `${data.documents.length} results · ${data.collection_size} sources · ${data.elapsed_ms} ms`;
-    if (data.resolved_scope) {
-      const s = data.resolved_scope;
-      const range = s.range_type === 'topic' ? 'Topic search' : `${s.range_type} ${s.start}${s.end !== s.start ? '–' + s.end : ''}`;
-      for (const text of [label(s.subject), s.grade ? 'Grade ' + s.grade : 'Grade mapping unknown', range]) $('scope').append(node('span', 'tag', text));
-    }
+    renderScopeTags(data.resolved_scope, data.mode || mode);
     if (data.status !== 'success') {
       const hints = {
         no_documents_in_scope: existingCorpus ? 'Try another scope or inspect the source collection.' : 'Try another scope or add a matching document.',
         missing_grade: 'Include a grade, for example “lớp 11”.',
         missing_subject: 'Include a subject, for example “Vật lí”.',
         ambiguous_range: 'Specify an exact chapter or lesson range, for example “chương 1–4”.',
-        no_relevant_match: 'Try another keyword or inspect the source collection.'
+        no_relevant_match: 'Try another keyword or switch to Hybrid / Embedding mode.'
       };
       showNotice('No documents retrieved', data.gaps.map(g => hints[g.code] || g.message).join(' '));
       return;
@@ -90,7 +105,8 @@ async function search(event) {
     data.documents.forEach((d, i) => {
       const card = node('article', 'result-card'), top = node('div', 'card-top');
       const sourceLabel = d.evidence_class === 'synthetic' ? 'Demo note · illustrative' : `${d.content_kind || 'knowledge'} · ${d.approval_status}`;
-      top.append(node('span', '', `${i + 1}. ${sourceLabel}`), node('span', '', `BM25 score ${d.relevance_score.toFixed(2)}`));
+      const qBadge = d.passage_label ? ` · ${d.passage_label}` : '';
+      top.append(node('span', '', `${i + 1}. ${sourceLabel}${qBadge}`), node('span', 'score-pill', formatScoreBadge(d, data.mode || mode)));
       const bottom = node('div', 'card-bottom');
       bottom.append(node('span', '', `${d.source_id} · characters ${d.excerpt_start}–${d.excerpt_end}`));
       const button = node('button', 'text-button', 'Read full document ↗');
@@ -102,7 +118,129 @@ async function search(event) {
   } catch (error) { if (sequence === searchSequence) { showNotice('Retrieval failed', error.message); $('json').textContent = error.message; } }
   finally { if (sequence === searchSequence) { $('search-button').disabled = false; $('search-button').textContent = 'Retrieve documents'; $('results-section').setAttribute('aria-busy', 'false'); } }
 }
+async function compareModes() {
+  const sequence = ++searchSequence;
+  $('compare-button').disabled = true; $('compare-button').textContent = 'Comparing…';
+  $('results').replaceChildren(); $('compare-results').replaceChildren(); $('compare-results').hidden = false;
+  $('scope').replaceChildren(); $('notice').replaceChildren(); $('timing').textContent = '';
+  try {
+    const payload = {query_text: $('query').value, top_k: Number($('top-k').value), edition: $('edition').value || null};
+    if (existingCorpus) payload.collection = $('collection-kind').value;
+    const data = await api('/api/compare', payload);
+    if (sequence !== searchSequence) return;
+    $('json').textContent = JSON.stringify(data, null, 2);
+    $('timing').textContent = `3-mode comparison · ${data.shared_top_k_count}/${data.unique_top_k_count} shared top hits · ${data.elapsed_ms} ms`;
+    const firstScope = data.modes.hybrid?.resolved_scope || data.modes.bm25?.resolved_scope;
+    renderScopeTags(firstScope, 'compare');
+    const grid = node('div', 'compare-grid');
+    const titles = {hybrid: 'Hybrid (RRF + Blend)', bm25: 'BM25-v2 (Lexical)', embedding: 'Embedding (Cosine)'};
+    for (const mode of ['hybrid', 'bm25', 'embedding']) {
+      const mRes = data.modes[mode];
+      const col = node('div', 'compare-col');
+      const head = node('div', 'compare-head');
+      head.append(node('strong', '', titles[mode]), node('span', 'muted small', `${mRes.documents.length} hits · ${mRes.elapsed_ms} ms`));
+      col.append(head);
+      if (mRes.status !== 'success') {
+        col.append(node('p', 'muted small', mRes.gaps.map(g => g.code + ': ' + g.message).join(' ')));
+      } else {
+        mRes.documents.forEach((d, idx) => {
+          const item = node('div', 'compare-item');
+          const meta = node('div', 'card-top');
+          meta.append(
+            node('span', '', `#${idx + 1}${d.passage_label ? ' · ' + d.passage_label : ''}`),
+            node('span', 'score-pill', formatScoreBadge(d, mode))
+          );
+          const titleBtn = node('button', 'text-button compare-title', d.title);
+          titleBtn.addEventListener('click', () => openDocument(d.document_id));
+          const snip = node('p', 'small', d.excerpt.slice(0, 160) + (d.excerpt.length > 160 ? '…' : ''));
+          item.append(meta, titleBtn, snip);
+          col.append(item);
+        });
+      }
+      grid.append(col);
+    }
+    $('compare-results').append(grid);
+  } catch (error) {
+    if (sequence === searchSequence) showNotice('Comparison failed', error.message);
+  } finally {
+    if (sequence === searchSequence) { $('compare-button').disabled = false; $('compare-button').textContent = 'Compare 3 modes'; }
+  }
+}
+async function runEvalSuite() {
+  const btn = $('run-eval');
+  btn.disabled = true; btn.textContent = 'Running benchmark…';
+  $('eval-status').textContent = 'Verifying gold targets and evaluating BM25, Embedding, and Hybrid…';
+  $('eval-summary').replaceChildren(); $('eval-queries').replaceChildren();
+  try {
+    const split = $('eval-split').value;
+    const report = await api('/api/eval', {split, k: 5});
+    const v = report.verification;
+    $('eval-status').textContent = `Verified (${v.verified_by}): ${v.total_queries} queries (${v.verified_targets} targets, ${v.verified_passages} exam passages) · ${report.elapsed_ms} ms`;
+    const tableWrap = node('div', 'table-scroll');
+    const table = node('table', 'eval-table');
+    const thead = node('thead'), htr = node('tr');
+    for (const h of ['Mode', 'Method', 'Hit@5', 'Recall@5', 'MRR', 'Passage Hit@5', 'Gap Acc.', 'False Gap', 'Avg ms']) htr.append(node('th', '', h));
+    thead.append(htr); table.append(thead);
+    const tbody = node('tbody');
+    for (const mode of ['hybrid', 'bm25', 'embedding']) {
+      const m = report.modes[mode]; if (!m) continue;
+      const o = m.overall, tr = node('tr', mode === 'hybrid' ? 'highlight-row' : '');
+      const pct = val => val === null || val === undefined ? '—' : (val * 100).toFixed(1) + '%';
+      for (const cell of [
+        mode.toUpperCase(),
+        m.ranking_method,
+        pct(o.hit_at_k),
+        pct(o.recall_at_k),
+        o.mrr.toFixed(3),
+        pct(o.passage_hit_at_k),
+        pct(o.gap_accuracy),
+        pct(o.false_gap_rate),
+        o.avg_elapsed_ms.toFixed(1)
+      ]) tr.append(node('td', '', cell));
+      tbody.append(tr);
+    }
+    table.append(tbody); tableWrap.append(table);
+    $('eval-summary').append(tableWrap);
+
+    const qWrap = node('div', 'table-scroll');
+    const qTable = node('table', 'eval-table query-table');
+    const qHead = node('thead'), qHtr = node('tr');
+    for (const h of ['ID', 'Split', 'Type', 'Query (click to test live)', 'BM25', 'Embedding', 'Hybrid']) qHtr.append(node('th', '', h));
+    qHead.append(qHtr); qTable.append(qHead);
+    const qBody = node('tbody');
+    for (const q of report.queries) {
+      const tr = node('tr');
+      tr.append(node('td', '', q.id), node('td', '', q.split), node('td', '', q.collection));
+      const qTd = node('td');
+      const qBtn = node('button', 'text-button', q.query_text);
+      qBtn.addEventListener('click', () => {
+        if (existingCorpus && (q.collection === 'curriculum' || q.collection === 'exam')) $('collection-kind').value = q.collection;
+        $('query').value = q.query_text;
+        search();
+      });
+      qTd.append(qBtn); tr.append(qTd);
+      for (const mode of ['bm25', 'embedding', 'hybrid']) {
+        const mr = q.modes[mode];
+        const ok = q.expected_status === 'gap' ? mr.gap_correct : mr.hit;
+        const badgeText = q.expected_status === 'gap'
+          ? (mr.gap_correct ? '✓ gap' : '✗')
+          : (mr.hit ? `✓ RR=${mr.rr.toFixed(2)}${mr.top_label ? ' (' + mr.top_label + ')' : ''}` : '✗ miss');
+        tr.append(node('td', ok ? 'pass-cell' : 'fail-cell', badgeText));
+      }
+      qBody.append(tr);
+    }
+    qTable.append(qBody); qWrap.append(qTable);
+    $('eval-queries').append(qWrap);
+  } catch (error) {
+    $('eval-status').textContent = 'Benchmark failed: ' + error.message;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Run benchmark suite';
+  }
+}
 $('search-form').addEventListener('submit', search);
+$('compare-button').addEventListener('click', compareModes);
+$('run-eval').addEventListener('click', runEvalSuite);
+$('retrieval-mode').addEventListener('change', () => search());
 $('collection-kind').addEventListener('change', () => {
   $('query').value = $('collection-kind').value === 'exam' ? 'Vật lí về dao động' : 'Vật lí lớp 11 chương 1 về dao động';
   search();
