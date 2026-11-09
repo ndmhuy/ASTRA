@@ -10,7 +10,9 @@ import time
 from .demo import demo_documents
 from .document_loader import load_documents
 from .existing_corpus import load_existing_corpus
+from .matrix_retriever import default_toan_thpt_matrix, retrieve_exam_context
 from .models import CONFIG, Gap
+from .profile_pack import load_profile_release
 from .results import collection_fingerprint
 from .search_index import split_passages
 from .workflow import run_documents
@@ -18,6 +20,7 @@ from .workflow import run_documents
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_EXISTING_GOLD = ROOT / "eval" / "gold_queries.jsonl"
 DEFAULT_DEMO_GOLD = ROOT / "tests" / "fixtures" / "eval_gold_demo.jsonl"
+DEFAULT_TOAN_ACCEPTANCE = ROOT / "eval" / "toan_thpt_acceptance.json"
 
 
 def load_gold_queries(path: Path) -> list[dict]:
@@ -288,9 +291,153 @@ def evaluate_all_modes(
     }
 
 
+def evaluate_toan_acceptance(
+    acceptance_path: Path = DEFAULT_TOAN_ACCEPTANCE,
+    ref: str = "origin/staging/rag",
+    pack_dir: Path | None = None,
+) -> dict:
+    """Run the Toán THPT MAS-handoff acceptance test suite and 22-question sample matrix check."""
+    if not acceptance_path.is_file():
+        raise Gap("eval_unavailable", f"Acceptance suite file not found: {acceptance_path}")
+    suite = json.loads(acceptance_path.read_text(encoding="utf-8-sig"))
+    release = load_profile_release(subject="toan", ref=ref, pack_dir=pack_dir)
+
+    case_results = []
+    passed_count = 0
+
+    for case in suite.get("cases", []):
+        started = time.perf_counter()
+        payload = {
+            "matrix_id": case["case_id"],
+            "subject": suite.get("subject", "toan"),
+            "vdc_policy": case.get("vdc_policy", CONFIG["default_vdc_policy"]),
+            "questions": [case["question"]],
+        }
+        res = retrieve_exam_context(payload, release=release)
+        elapsed_ms = round((time.perf_counter() - started) * 1000, 2)
+        ctx = res.question_contexts[0] if res.question_contexts else {}
+        exp = case["expected"]
+
+        checks: dict[str, bool] = {}
+        checks["status_match"] = ctx.get("status") == exp["status"]
+
+        if "expected_topic_pack_ids" in exp:
+            got_tp_ids = {p["topic_pack_id"] for p in (ctx.get("matched_topic_packs") or [])}
+            checks["topic_pack_match"] = bool(set(exp["expected_topic_pack_ids"]) & got_tp_ids)
+
+        if "expected_curriculum_ids" in exp:
+            got_curr_ids = {c["unit_id"] for c in (ctx.get("curriculum_knowledge") or [])}
+            checks["curriculum_match"] = bool(set(exp["expected_curriculum_ids"]) & got_curr_ids)
+
+        if "effective_level" in exp:
+            checks["effective_level_match"] = (
+                ctx.get("resolved_level", {}).get("effective") == exp["effective_level"]
+            )
+
+        if exp.get("p2_all_statements_covered"):
+            p2_cov = ctx.get("p2_statement_coverage") or {}
+            checks["p2_statements_covered"] = bool(p2_cov) and all(
+                v.get("covered") is True for v in p2_cov.values()
+            )
+
+        if "min_patterns" in exp:
+            checks["min_patterns"] = (
+                len(ctx.get("construction_patterns") or []) >= exp["min_patterns"]
+            )
+
+        if "min_observations" in exp:
+            checks["min_observations"] = (
+                len(ctx.get("construction_observations") or []) >= exp["min_observations"]
+            )
+
+        if "min_examples" in exp:
+            checks["min_examples"] = len(ctx.get("examples") or []) >= exp["min_examples"]
+
+        if "min_mistakes" in exp:
+            checks["min_mistakes"] = len(ctx.get("common_mistakes") or []) >= exp["min_mistakes"]
+
+        if "min_reference_chars" in exp:
+            checks["min_reference_chars"] = (
+                len(ctx.get("reference_material_text") or "") >= exp["min_reference_chars"]
+            )
+
+        if "expected_warning_code" in exp:
+            w_codes = {w["code"] for w in (ctx.get("warnings") or [])}
+            checks["warning_code_match"] = exp["expected_warning_code"] in w_codes
+
+        if "expected_gap_code" in exp:
+            g_codes = {g["code"] for g in (ctx.get("gaps") or [])}
+            checks["gap_code_match"] = exp["expected_gap_code"] in g_codes
+
+        case_passed = all(checks.values())
+        if case_passed:
+            passed_count += 1
+
+        case_results.append(
+            {
+                "case_id": case["case_id"],
+                "description": case["description"],
+                "passed": case_passed,
+                "checks": checks,
+                "actual_status": ctx.get("status"),
+                "matched_topic_packs": [
+                    f"{p['topic_pack_id']}:{p['display_topic']}"
+                    for p in (ctx.get("matched_topic_packs") or [])
+                ],
+                "observation_count": len(ctx.get("construction_observations") or []),
+                "example_count": len(ctx.get("examples") or []),
+                "mistake_count": len(ctx.get("common_mistakes") or []),
+                "reference_chars": len(ctx.get("reference_material_text") or ""),
+                "gaps": ctx.get("gaps") or [],
+                "warnings": ctx.get("warnings") or [],
+                "elapsed_ms": elapsed_ms,
+            }
+        )
+
+    # Also verify full 22-question sample matrix end-to-end.
+    matrix_started = time.perf_counter()
+    sample_res = retrieve_exam_context(default_toan_thpt_matrix(), release=release)
+    matrix_elapsed_ms = round((time.perf_counter() - matrix_started) * 1000, 2)
+    min_ref_len = min(
+        (len(qc.get("reference_material_text", "")) for qc in sample_res.question_contexts),
+        default=0,
+    )
+    matrix_passed = (
+        sample_res.status == "success"
+        and sample_res.summary.get("total_questions") == 22
+        and sample_res.summary.get("ready_questions") == 22
+        and sample_res.summary.get("gap_questions") == 0
+        and len(sample_res.mas_intake_rag) == 22
+        and min_ref_len > 150
+    )
+
+    overall_passed = passed_count == len(case_results) and matrix_passed
+    return {
+        "schema_version": CONFIG["schema_version"],
+        "suite_id": suite.get("suite_id", "toan-thpt-mas-acceptance-v1"),
+        "status": "passed" if overall_passed else "failed",
+        "release_info": release["release_info"],
+        "summary": {
+            "total_cases": len(case_results),
+            "passed_cases": passed_count,
+            "pass_rate": round(passed_count / len(case_results), 4) if case_results else 0.0,
+            "sample_matrix_22q_passed": matrix_passed,
+            "sample_matrix_min_reference_chars": min_ref_len,
+            "sample_matrix_elapsed_ms": matrix_elapsed_ms,
+        },
+        "cases": case_results,
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--gold", type=Path, help="Gold benchmark JSONL file")
+    parser.add_argument(
+        "--acceptance",
+        action="store_true",
+        help="Run the Toán THPT MAS-handoff acceptance suite",
+    )
+    parser.add_argument("--pack-dir", type=Path, help="Exported release pack directory")
     inputs = parser.add_mutually_exclusive_group()
     inputs.add_argument("--existing", action="store_true", help="Evaluate against existing corpus")
     inputs.add_argument("--corpus", type=Path, help="Evaluate against an approved JSONL pack")
@@ -308,6 +455,21 @@ def main() -> int:
     args = parser.parse_args()
 
     try:
+        if args.acceptance:
+            acc_path = args.gold or DEFAULT_TOAN_ACCEPTANCE
+            report = evaluate_toan_acceptance(
+                acceptance_path=acc_path, ref=args.corpus_ref, pack_dir=args.pack_dir
+            )
+            if args.out:
+                args.out.parent.mkdir(parents=True, exist_ok=True)
+                args.out.write_text(
+                    json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8"
+                )
+            if hasattr(sys.stdout, "reconfigure"):
+                sys.stdout.reconfigure(encoding="utf-8")
+            print(json.dumps(report, ensure_ascii=False, indent=2))
+            return 0 if report["status"] == "passed" else 2
+
         info = None
         if args.corpus:
             documents, corpus_hash = load_documents(args.corpus)
