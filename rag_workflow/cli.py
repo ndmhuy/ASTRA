@@ -19,10 +19,16 @@ def main() -> int:
     )
     parser.add_argument("--corpus-ref", default="origin/staging/rag")
     parser.add_argument("--collection", choices=("curriculum", "exam"), default="curriculum")
+    parser.add_argument("--mode", choices=tuple(CONFIG["modes"]), default=CONFIG["default_mode"])
     parser.add_argument("--top-k", type=int, default=CONFIG["default_top_k"])
     parser.add_argument("--edition", help="Exact edition identifier when multiple editions exist")
     args = parser.parse_args()
-    payload = {"query_text": args.query, "top_k": args.top_k, "edition": args.edition}
+    payload = {
+        "query_text": args.query,
+        "top_k": args.top_k,
+        "edition": args.edition,
+        "mode": args.mode,
+    }
     try:
         if args.existing:
             documents, info = load_existing_corpus(args.corpus_ref)

@@ -20,10 +20,14 @@ def collection_fingerprint(documents):
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
 
-def ranked_results(documents, keywords, top_k):
+def ranked_results(documents, keywords, top_k, mode=None, accented=()):
     """Return one best passage per content hash, with a match-centered excerpt."""
+    active_mode = mode or CONFIG.get("default_mode", "hybrid")
+    method = CONFIG.get("ranking_versions", {}).get(active_mode, CONFIG["ranking_version"])
     results, seen = [], set()
-    for score, document, passage, matched_terms in PassageIndex(documents).ranked(keywords):
+    for score, bm25, emb, document, passage, matched_terms in PassageIndex(
+        documents
+    ).ranked_detailed(keywords, accented=accented, mode=active_mode):
         if document.content_sha256 in seen:
             continue
         seen.add(document.content_sha256)
@@ -47,9 +51,12 @@ def ranked_results(documents, keywords, top_k):
             passage_id=f"{document.document_id}:{passage.start}-{passage.end}",
             passage_start=passage.start,
             passage_end=passage.end,
+            passage_label=passage.label,
             matched_terms=matched_terms,
             relevance_score=round(score, 6),
-            ranking_method=CONFIG["ranking_version"],
+            bm25_score=round(bm25, 6),
+            embedding_score=round(emb, 6),
+            ranking_method=method,
         )
         if hasattr(document, "usage"):
             result["usage"] = document.usage

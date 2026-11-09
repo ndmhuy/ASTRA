@@ -266,6 +266,84 @@ class RetrievalTests(unittest.TestCase):
                 json.loads(result.stdout)["status"], "success" if expected == 0 else "gap"
             )
 
+    def test_topic_numbers_are_keywords_while_range_numbers_stay_strict(self):
+        for query_text, expected_kw in (
+            ("Vật lí lớp 10 định luật 2 Newton", ("dinh", "luat", "2", "newton")),
+            ("Lịch sử lớp 12 năm 1945", ("nam", "1945")),
+            ("Toán lớp 12 chương 1 hàm số bậc 3", ("ham", "so", "bac", "3")),
+        ):
+            scope = parse(RetrievalRequest(query_text))
+            self.assertEqual(scope.keywords, expected_kw)
+        for bad_query in (
+            "Toán lớp 11 bài 6 7",
+            "Toán lớp 11 bài 6 và 7",
+            "Toán lớp 11 chương 2, 4",
+            "Physics grade 11 lessons 2 and 4",
+        ):
+            self.gap(bad_query, "ambiguous_range")
+
+    def test_question_aware_splitting_and_labels(self):
+        exam_text = (
+            "PHẦN I. TRẮC NGHIỆM\n"
+            "Câu 1. Một con lắc lò xo dao động điều hòa với chu kì T và tần số góc ổn định trong suốt quá trình khảo sát thực nghiệm.\n"
+            "**Câu 2.** Đặt hiệu điện thế xoay chiều vào hai đầu đoạn mạch chỉ có điện trở thuần R thì cường độ dòng điện cùng pha với điện áp.\n"
+            "### Câu 3: Tia laze có tính đơn sắc, tính định hướng và tính kết hợp rất cao trong truyền dẫn quang học hiện đại.\n"
+        )
+        passages = list(split_passages(exam_text, structured=True))
+        self.assertEqual([p.label for p in passages], ["Câu 1", "Câu 2", "Câu 3"])
+        for p in passages:
+            self.assertEqual(p.text, exam_text[p.start : p.end])
+
+    def test_vietnamese_bigram_and_diacritic_ranking(self):
+        documents = [
+            SourceDocument(
+                **record(
+                    "scattered",
+                    title="Ghi chú tổng hợp",
+                    content="Dao cắt kim loại dùng cơ cấu tự động và diện tích mặt cắt lớn.",
+                )
+            ),
+            SourceDocument(
+                **record(
+                    "compound-exact",
+                    title="Ghi chú vật lí",
+                    content="Dao động cơ học và dòng điện chạy qua mạch.",
+                )
+            ),
+        ]
+        scope = parse(RetrievalRequest("Vật lí lớp 11 chương 4 dao động điện"))
+        hits = PassageIndex(documents).ranked(
+            scope.keywords, accented=scope.accented_keywords, mode="bm25"
+        )
+        self.assertEqual(hits[0][1].document_id, "compound-exact")
+
+    def test_embedding_and_hybrid_modes_retrieve_synonyms_and_typos(self):
+        self.write(
+            [
+                record(
+                    "circuit",
+                    title="Mạch điện một chiều",
+                    content="Hiệu điện thế U giữa hai đầu vật dẫn tỉ lệ với cường độ dòng điện.",
+                ),
+                record(
+                    "mechanics",
+                    title="Chuyển động cơ",
+                    content="Quãng đường đi được trong chuyển động thẳng đều.",
+                ),
+            ]
+        )
+        # Query uses "voltage current" / "ampe" (concept synonyms of hiệu điện thế / cường độ dòng điện, no shared literal words)
+        bm25_resp = self.query("Vật lí lớp 11 chương 4 voltage current ampe", mode="bm25")
+        self.assertEqual(bm25_resp.status, "gap")
+        emb_resp = self.query("Vật lí lớp 11 chương 4 voltage current ampe", mode="embedding")
+        self.assertEqual(emb_resp.status, "success")
+        self.assertEqual(emb_resp.documents[0]["document_id"], "circuit")
+        self.assertGreater(emb_resp.documents[0]["embedding_score"], 0.0)
+        hyb_resp = self.query("Vật lí lớp 11 chương 4 voltage current ampe", mode="hybrid")
+        self.assertEqual(hyb_resp.status, "success")
+        self.assertEqual(hyb_resp.documents[0]["document_id"], "circuit")
+        self.assertEqual(hyb_resp.ranking_method, "hybrid-rrf-v1")
+
 
 if __name__ == "__main__":
     unittest.main()

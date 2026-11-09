@@ -160,6 +160,28 @@ class ExistingCorpusTests(unittest.TestCase):
         )
         self.assertIn("dao động", response.documents[0]["excerpt"])
 
+    def test_exam_question_boundary_passage_label(self):
+        path = "corpus/transcriptions/vat-li/2025-paper/de.md"
+        self.files[path] = (
+            "PHẦN I. Câu trắc nghiệm nhiều phương án lựa chọn.\n"
+            "Câu 1. Một vật chuyển động thẳng đều với vận tốc không đổi trên mặt phẳng ngang không ma sát.\n"
+            "Câu 2. Một vật nhỏ thực hiện dao động điều hòa dọc theo trục Ox với biên độ A và tần số góc omega.\n"
+        )
+        documents, info = self.load()
+        response = search_existing(
+            dict(query_text="Vật lí dao động điều hòa", collection="exam"),
+            documents,
+            info["snapshot"],
+        )
+        self.assertEqual(response.status, "success")
+        hit = response.documents[0]
+        self.assertEqual(hit["passage_label"], "Câu 2")
+        self.assertIn("Câu 2.", hit["excerpt"])
+        self.assertNotIn("Câu 1.", hit["excerpt"])
+        self.assertEqual(
+            hit["excerpt"], documents[-1].content[hit["excerpt_start"] : hit["excerpt_end"]]
+        )
+
     def test_missing_registry_is_a_source_error(self):
         del self.files["corpus/registry/papers.csv"]
         with self.assertRaisesRegex(ValueError, "registry is missing"):

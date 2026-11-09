@@ -1,10 +1,15 @@
-"""Hard filters precede deterministic lexical ranking."""
+"""Hard filters precede deterministic lexical, embedding and hybrid ranking."""
 
-from .models import Gap, ResolvedScope, SourceDocument
+from .models import CONFIG, Gap, ResolvedScope, SourceDocument
 from .results import ranked_results
 
 
-def retrieve(documents: list[SourceDocument], scope: ResolvedScope, top_k: int):
+def retrieve(
+    documents: list[SourceDocument],
+    scope: ResolvedScope,
+    top_k: int,
+    mode: str = CONFIG["default_mode"],
+):
     eligible = [
         d
         for d in documents
@@ -32,4 +37,10 @@ def retrieve(documents: list[SourceDocument], scope: ResolvedScope, top_k: int):
         raise Gap(
             "no_documents_in_scope", "No approved, permitted documents match the exact scope."
         )
-    return ranked_results(eligible, scope.keywords, top_k)
+    return ranked_results(
+        eligible,
+        scope.keywords,
+        top_k,
+        mode=mode,
+        accented=scope.accented_keywords,
+    )

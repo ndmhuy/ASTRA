@@ -11,11 +11,24 @@
   "title_weight": 3,
   "content_weight": 1,
   "phrase_bonus": 2,
-  "ranking_version": "bm25-passages-v1",
+  "bigram_weight": 1.5,
+  "accent_weight": 1.0,
+  "modes": ["hybrid", "bm25", "embedding"],
+  "default_mode": "hybrid",
+  "ranking_version": "hybrid-rrf-v1",
+  "ranking_versions": {
+    "bm25": "bm25-passages-v2",
+    "embedding": "embedding-char-word-v1",
+    "hybrid": "hybrid-rrf-v1"
+  },
   "bm25_k1": 1.2,
   "bm25_b": 0.75,
+  "rrf_k": 60,
+  "hybrid_alpha": 0.55,
+  "min_embedding_score": 0.12,
   "passage_chars": 900,
   "passage_overlap_chars": 120,
+  "min_passage_chars": 120,
   "subjects": {
     "toan": ["toán", "math", "mathematics"],
     "vat-li": ["vật lí", "vật lý", "physics"],
@@ -32,6 +45,24 @@
     "tieng-nhat": ["tiếng nhật", "japanese"],
     "cong-nghe-cong-nghiep": ["công nghệ công nghiệp"],
     "cong-nghe-nong-nghiep": ["công nghệ nông nghiệp"]
+  },
+  "concept_synonyms": {
+    "ohm_circuit": ["ohm", "om", "dien tro", "hieu dien the", "dien ap", "cuong do dong dien", "dong dien", "ampe", "von", "resistance", "voltage", "current", "mach dien", "mach noi tiep", "mach song song"],
+    "oscillation_wave": ["dao dong", "dao dong dieu hoa", "chu ki", "tan so", "tan so goc", "bien do", "pha ban dau", "li do", "con lac", "lo xo", "oscillation", "harmonic", "frequency", "period", "song co", "buoc song"],
+    "kinematics_dynamics": ["van toc", "gia toc", "chuyen dong", "dong hoc", "do dich chuyen", "quang duong", "dinh luat newton", "newton", "luc", "quan tinh", "velocity", "acceleration"],
+    "trigonometry": ["luong giac", "ham so luong giac", "phuong trinh luong giac", "duong tron luong giac", "sin", "cos", "tan", "cot", "trigonometry", "sine", "cosine"],
+    "sequences": ["day so", "cap so cong", "cap so nhan", "cong sai", "cong boi", "so hang tong quat", "arithmetic sequence", "geometric sequence"],
+    "calculus_derivative": ["dao ham", "don dieu", "dong bien", "nghich bien", "cuc tri", "cuc dai", "cuc tieu", "bang bien thien", "toc do bien thien", "derivative", "monotonicity"],
+    "probability_statistics": ["xac suat", "thong ke", "bien co", "to hop", "chinh hop", "hoan vi", "phuong sai", "do lech chuan", "probability"],
+    "atomic_structure": ["nguyen tu", "hat nhan", "proton", "neutron", "electron", "dong vi", "so hieu nguyen tu", "so khoi", "lop vo", "atom", "isotope"],
+    "chemical_equilibrium": ["can bang hoa hoc", "phan ung thuan nghich", "hang so can bang", "chat xuc tac", "toc do phan ung", "chemical equilibrium", "catalyst", "ph", "axit", "bazo"],
+    "organic_chemistry": ["hop chat huu co", "hydrocarbon", "ankan", "anken", "ankin", "ancol", "este", "polime", "glucozo", "amino axit"],
+    "cell_transport": ["mang sinh chat", "phospholipid", "tham thau", "khuech tan", "van chuyen chu dong", "van chuyen thu dong", "te bao", "osmosis"],
+    "photosynthesis_respiration": ["quang hop", "diep luc", "chlorophyll", "pha sang", "co dinh carbon", "atp", "nadph", "photosynthesis", "ho hap te bao"],
+    "genetics_evolution": ["di truyen", "gen", "adn", "dna", "arn", "rna", "nhiem sac the", "dot bien", "phien ma", "dich ma", "tien hoa"],
+    "english_tenses": ["present perfect", "past simple", "hien tai hoan thanh", "qua khu don", "grammar", "finished time"],
+    "history_modern": ["cach mang thang tam", "1945", "doc lap", "chien tranh the gioi", "lien hop quoc", "chien tranh lanh", "doi moi"],
+    "geography_climate": ["khi hau", "nhiet doi", "gio mua", "dia hinh", "song ngoi", "dan cu", "do thi hoa", "kinh te"]
   },
   "stop_words": ["tim", "tai", "lieu", "ve", "mon", "lop", "khoi", "grade", "chapter", "chuong", "bai", "lesson", "tu", "den", "to", "from", "retrieve", "documents", "about", "hoc", "ki", "ky", "semester", "va", "and", "the", "for", "of", "kntt", "ket", "noi", "tri", "thuc"]
 }

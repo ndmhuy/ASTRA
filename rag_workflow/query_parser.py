@@ -4,6 +4,8 @@ import re
 import unicodedata
 from .models import CONFIG, Gap, ResolvedScope, RetrievalRequest
 
+RANGE_WORDS = r"(?:chuong|chapters?|bai|lessons?|hoc\s*k[yi]|semesters?)"
+
 
 def normalize(text: str) -> str:
     return "".join(
@@ -13,7 +15,14 @@ def normalize(text: str) -> str:
     )
 
 
+def accented_tokens(text: str) -> list[str]:
+    """Extract lowercase NFC word tokens that carry Vietnamese diacritics."""
+    nfc = unicodedata.normalize("NFC", text).casefold()
+    return [w for w in re.findall(r"\w+", nfc) if w != normalize(w)]
+
+
 def parse(request: RetrievalRequest, require_grade=True) -> ResolvedScope:
+    raw_nfc = unicodedata.normalize("NFC", request.query_text).casefold()
     text = normalize(request.query_text)
     if re.search(r"\b(nua|half|dau nam|taught|da hoc|gan day)\b", text):
         raise Gap(
@@ -23,12 +32,29 @@ def parse(request: RetrievalRequest, require_grade=True) -> ResolvedScope:
     if re.search(r"canh dieu|chan troi", text):
         raise Gap("unsupported_series", "This corpus supports Kết nối tri thức only.")
     subjects = set()
+    # Prevent "điều hòa" / "hòa" (grave accent or compound) from false-matching the subject "hóa".
+    subject_scan_text = re.sub(
+        r"\b(?:dieu|trung|binh|tan|van|cong|hang|minh|do\s*thi)\s+hoa\b",
+        " ",
+        text,
+    )
     for canonical, aliases in CONFIG["subjects"].items():
         for alias in (canonical, *aliases):
-            pattern = r"(?<!\w)" + re.escape(normalize(alias)) + r"(?!\w)"
-            if re.search(pattern, text):
+            norm_alias = normalize(alias)
+            if (
+                norm_alias == "hoa"
+                and re.search(r"\bho[àa]\b", raw_nfc)
+                and not re.search(r"\b(?:hóa|hoá)\b", raw_nfc)
+            ):
+                continue
+            pattern = r"(?<!\w)" + re.escape(norm_alias) + r"(?!\w)"
+            if re.search(pattern, subject_scan_text):
                 subjects.add(canonical)
-                text = re.sub(pattern, " ", text)
+                subject_scan_text = re.sub(pattern, " ", subject_scan_text)
+                if norm_alias != "hoa":
+                    text = re.sub(pattern, " ", text)
+                else:
+                    text = re.sub(r"(?<!\bdieu )(?<!\btrung )\bhoa\b", " ", text)
     if len(subjects) != 1:
         raise Gap(
             "missing_subject" if not subjects else "ambiguous_subject",
@@ -80,14 +106,28 @@ def parse(request: RetrievalRequest, require_grade=True) -> ResolvedScope:
         start, end = number(match[2]), number(match[3] or match[2])
         if start < 1 or end < start or (kind == "semester" and end > 2):
             raise Gap("invalid_range", "Range endpoints must be positive, ordered and valid.")
+        # Reject trailing range numbers like "bài 6 7", "bài 6 và 7", or "chương 2, 4".
+        if re.match(
+            r"^\s*(?:\d+\b|(?:,|&|\bva\b|\band\b)\s*(?:\d+|[ivx]+)\b(?!\s*=))",
+            text[match.end() :],
+        ):
+            raise Gap("ambiguous_range", "Use one chapter, lesson, or semester range per request.")
         text = text[: match.start()] + " " + text[match.end() :]
-    if re.search(r"\b(chuong|chapter|bai|lesson|semester|hoc\s*k[yi])\b|\d", text):
+    if re.search(rf"\b{RANGE_WORDS}\b", text):
         raise Gap("ambiguous_range", "Unresolved range or number; specify one explicit range.")
     keywords = tuple(
         dict.fromkeys(w for w in re.findall(r"\w+", text) if w not in CONFIG["stop_words"])
     )
     if kind == "topic" and not keywords:
         raise Gap("missing_range", "Specify a chapter, lesson, semester, or topic.")
+    keyword_set = set(keywords)
+    accented = tuple(
+        dict.fromkeys(
+            w
+            for w in re.findall(r"\w+", raw_nfc)
+            if normalize(w) in keyword_set and w != normalize(w)
+        )
+    )
     return ResolvedScope(
         subjects.pop(),
         int(grades[0]) if grades else None,
@@ -96,4 +136,5 @@ def parse(request: RetrievalRequest, require_grade=True) -> ResolvedScope:
         end,
         keywords,
         request.edition,
+        accented_keywords=accented,
     )

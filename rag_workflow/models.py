@@ -23,6 +23,7 @@ class RetrievalRequest:
     top_k: int = CONFIG["default_top_k"]
     schema_version: str = VERSION
     edition: str | None = None
+    mode: str = CONFIG["default_mode"]
 
     def __post_init__(self):
         if self.schema_version != VERSION:
@@ -37,6 +38,11 @@ class RetrievalRequest:
             not isinstance(self.edition, str) or not self.edition.strip()
         ):
             raise Gap("invalid_request", "edition must be a nonempty string.")
+        if not isinstance(self.mode, str) or self.mode not in CONFIG["modes"]:
+            raise Gap(
+                "invalid_request",
+                f"mode must be one of {', '.join(CONFIG['modes'])}.",
+            )
 
 
 @dataclass(frozen=True)
@@ -49,6 +55,7 @@ class ResolvedScope:
     keywords: tuple[str, ...]
     edition: str | None
     series: str | None = CONFIG["series"]
+    accented_keywords: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -190,6 +197,8 @@ class RetrievalResponse:
     gaps: list[dict[str, str]] = field(default_factory=list)
     corpus_sha256: str | None = None
     corpus_snapshot: str | None = None
+    mode: str = CONFIG["default_mode"]
+    ranking_method: str = CONFIG["ranking_version"]
     schema_version: str = VERSION
     config_sha256: str = hashlib.sha256(
         json.dumps(CONFIG, sort_keys=True, ensure_ascii=False).encode("utf-8")

@@ -194,10 +194,16 @@ def search_existing(payload, documents, snapshot, corpus_sha256=None):
         kind = request_data.pop("collection", "curriculum")
         if kind not in ("curriculum", "exam"):
             raise Gap("invalid_request", "Choose curriculum or exam search.")
+        if request_data.get("mode") is None:
+            request_data.pop("mode", None)
         try:
             request = RetrievalRequest(**request_data)
         except TypeError as exc:
             raise Gap("invalid_request", "Unknown or missing request fields.") from exc
+        response.mode = request.mode
+        response.ranking_method = CONFIG.get("ranking_versions", {}).get(
+            request.mode, CONFIG["ranking_version"]
+        )
         scope = parse(request, require_grade=kind != "exam")
         if kind == "exam":
             scope = replace(scope, series=None)
@@ -221,7 +227,13 @@ def search_existing(payload, documents, snapshot, corpus_sha256=None):
             eligible = [d for d in eligible if d.edition == scope.edition]
         if not eligible:
             raise Gap("no_documents_in_scope", "No existing corpus documents match this scope.")
-        response.documents = ranked_results(eligible, scope.keywords, request.top_k)
+        response.documents = ranked_results(
+            eligible,
+            scope.keywords,
+            request.top_k,
+            mode=request.mode,
+            accented=scope.accented_keywords,
+        )
         response.status = "success"
     except Gap as exc:
         response.gaps.append({"code": exc.code, "message": str(exc)})

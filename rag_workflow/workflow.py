@@ -3,7 +3,7 @@
 from pathlib import Path
 from .document_loader import load_documents
 from .existing_corpus import search_existing
-from .models import Gap, RetrievalRequest, RetrievalResponse
+from .models import CONFIG, Gap, RetrievalRequest, RetrievalResponse
 from .query_parser import parse
 from .retriever import retrieve
 
@@ -26,13 +26,22 @@ def _run(payload, loader) -> RetrievalResponse:
     try:
         if not isinstance(payload, dict):
             raise Gap("invalid_request", "Request must be a JSON object.")
+        request_data = dict(payload)
+        if request_data.get("mode") is None:
+            request_data.pop("mode", None)
         try:
-            request = RetrievalRequest(**payload)
+            request = RetrievalRequest(**request_data)
         except TypeError as exc:
             raise Gap("invalid_request", "Unknown or missing request fields.") from exc
+        response.mode = request.mode
+        response.ranking_method = CONFIG.get("ranking_versions", {}).get(
+            request.mode, CONFIG["ranking_version"]
+        )
         response.resolved_scope = parse(request)
         documents, response.corpus_sha256 = loader()
-        response.documents = retrieve(documents, response.resolved_scope, request.top_k)
+        response.documents = retrieve(
+            documents, response.resolved_scope, request.top_k, mode=request.mode
+        )
         response.status = "success"
     except Gap as exc:
         response.gaps.append({"code": exc.code, "message": str(exc)})
