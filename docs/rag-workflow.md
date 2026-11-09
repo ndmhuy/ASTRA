@@ -1,9 +1,9 @@
-# RAG retrieval prototype
+# RAG retrieval and evaluation workbench
 
-For ASTRA teammates running, reviewing or integrating the Week 4 retrieval stage.
-Input: a subject and scope/topic query. Output: ranked passages, provenance and
-explicit gaps. Runtime: Python 3.11 standard library; UI: plain HTML/CSS/JavaScript.
-Retrieval uses BM25. Embeddings, LLM answers and exam generation are future work.
+For ASTRA teammates running, reviewing, benchmarking or integrating the retrieval stage.
+Input: a subject and scope/topic query plus an optional retrieval mode (`hybrid`, `bm25`, `embedding`).
+Output: ranked passages, question labels (`passage_label`), score breakdowns (`relevance_score`, `bm25_score`, `embedding_score`), provenance and explicit gaps.
+Runtime: Python 3.11 standard library; UI: plain HTML/CSS/JavaScript.
 This feature does not settle overall team choices in [mvp-plan.md](mvp-plan.md).
 
 ## Quick start
@@ -28,27 +28,27 @@ run `git fetch --all` once if needed. Startup makes no network/model calls.
 Use `--port 8766` if the port is occupied; `--corpus-ref <commit-sha>` pins an
 existing-corpus snapshot. The server binds to `127.0.0.1`, for local use.
 
-## Using the app
+## Using the demonstration & testing app
 
-Choose **Search in**, enter the query and select a result limit. Results show
-status, excerpt and BM25 score. **Read full document** opens the parent text and
-source metadata. The JSON response and source collection are collapsed by
-default. The collection scrolls inside a bounded panel; Segoe UI/Arial support
-Vietnamese text. Text is displayed with `textContent`, including imported HTML.
+1. **Retrieve documents:** Choose **Search in** (`Curriculum` or `Exam transcriptions`), select a **Mode** (`Hybrid`, `BM25`, or `Embedding`), enter a query and click **Retrieve documents**. Result cards display status, question boundary label (`Câu N` when present), excerpt, and score breakdown (`Hybrid · BM25 · Cosine`).
+2. **Compare 3 modes side by side:** Click **Compare 3 modes** to run the query across `Hybrid (RRF + Blend)`, `BM25-v2 (Lexical)`, and `Embedding (Cosine)` simultaneously and inspect rank/score differences.
+3. **Run benchmark suite:** Open **Benchmark & evaluation lab** and click **Run benchmark suite** to run automated gold verification (`auto-corpus-check-v1`) and compare `Hit@5`, `Recall@5`, `MRR`, `Passage Hit@5`, `Gap Acc.`, and `False Gap` across all three retrieval modes. Click any benchmark query row to load and test it live.
 
 | View | Example | Meaning |
 | --- | --- | --- |
 | Curriculum | `Vật lí lớp 11 chương 1 về dao động` | Grade 11, chapter 1 draft KNTT scope records |
-| Curriculum | `Toán lớp 11 bài 6-7` | Inclusive lesson range, using available mappings |
-| Exam transcriptions | `Vật lí về dao động` | Matching passages from usable Physics papers |
-| Demo | `Vật lí lớp 11 chương 4 về định luật Ohm` | Original notes with illustrative chapter labels |
+| Curriculum | `Vật lí lớp 10 định luật 2 Newton` | Numeric topic keyword inside grade 10 scope |
+| Exam transcriptions | `Vật lí dao động điều hòa con lắc` | Question-segmented passages from usable Physics papers |
+| Demo | `Vật lí lớp 11 chương 1 con lắc lò xo` | Semantic/concept match in `embedding` and `hybrid` modes |
 
 Curriculum, demo and approved-pack queries need one subject, grade 10–12 and a
 chapter, lesson, semester or topic. Vietnamese accents, unaccented text, English
-subject aliases and Roman range numerals I–X are supported. Ambiguous ranges,
-multiple subjects and partial chapters return gaps. Unknown semesters remain
-unknown. Unresolved numeric formulas/years may require a clearer query; the
-current parser is deliberately conservative.
+subject aliases and Roman range numerals I–X are supported. Numbers inside scientific
+or historical topics (`định luật 2 Newton`, `năm 1945`, `hàm bậc 3`) are preserved as
+keywords, while unresolved range numbers (`bài 6 7`, `chương 2, 4`) and partial
+chapters (`nửa chương 1`) return `ambiguous_range`. Compound terms containing subject
+substrings (`điều hòa`, `thuật toán`, `bài toán`) are disambiguated so they do not
+false-trigger a second subject.
 
 Exam passages lack verified grade/chapter mappings. Search by subject and topic,
 without a grade. Grade/chapter/lesson/semester constraints return
@@ -58,7 +58,7 @@ without a grade. Grade/chapter/lesson/semester constraints return
 
 ```mermaid
 flowchart TD
-    A[CLI or local browser] --> B[Validate request and parse scope]
+    A[CLI or local browser workbench] --> B[Validate request, mode and scope]
     B --> C{Source mode}
     C --> D[Curriculum: grade and explicit unit mappings]
     C --> E[Exams: registry eligibility and subject/topic]
@@ -66,187 +66,79 @@ flowchart TD
     D --> G[Eligible documents]
     E --> G
     F --> G
-    G --> H[Split passages and rank with BM25]
-    H --> I[Deduplicate and build bounded excerpts]
-    I --> J[Provenance, fingerprints or typed gap]
+    G --> H[Question-aware or window passage splitter + LRU cache]
+    H --> I1[BM25-v2: unigrams + Vietnamese bigrams + diacritics]
+    H --> I2[Embedding-v1: word/bigram + char 4-gram + concept cosine]
+    I1 --> I3[Hybrid-v1: Reciprocal Rank Fusion + normalized blend]
+    I2 --> I3
+    I1 --> J[Deduplicate per source, center excerpts, attach provenance]
+    I2 --> J
+    I3 --> J
 ```
-
-Transport, source ingestion, eligibility and ranking have separate responsibilities.
-Source artifacts remain canonical; the search view is a rebuildable projection.
 
 | Module in `rag_workflow/` | Responsibility |
 | --- | --- |
-| `models.py` | Versioned request, source, scope and response contracts |
-| `query_parser.py` | Unicode normalization, aliases and conservative range parsing |
+| `models.py` | Versioned request, mode, source, scope and response contracts |
+| `query_parser.py` | Unicode normalization, compound disambiguation, accented tokens and range parsing |
 | `document_loader.py` | UTF-8 JSONL validation, duplicate IDs and content checksums |
 | `existing_corpus.py` | Git snapshot projection and internal corpus eligibility |
 | `retriever.py` | Approved-pack approval, rights, edition and scope filters |
-| `search_index.py` | Passage splitting, token statistics and BM25 ranking |
-| `results.py` | Shared deduplication, excerpts, serialization and collection hashing |
+| `search_index.py` | Question-aware chunking, cached passage analysis, BM25-v2, Embedding-v1 and Hybrid RRF |
+| `results.py` | Shared deduplication, excerpts, score breakdowns and collection hashing |
 | `workflow.py` | File-backed and in-memory retrieval entry points |
-| `app.py`, `cli.py` | Local HTTP and command-line entry points |
-| `web/` | Browser form, result/source viewer and session import |
-| `config.json` | Versioned aliases, limits, passage sizes and ranking parameters |
+| `eval.py` | Automated gold-label verification (`auto-corpus-check-v1`) and multi-mode benchmark runner |
+| `app.py`, `cli.py` | Local HTTP (`/api/search`, `/api/compare`, `/api/eval`) and CLI entry points |
+| `web/` | Browser workbench, 3-mode comparison view, benchmark lab and session import |
+| `config.json` | Versioned aliases, concept synonyms, passage sizes and ranking parameters |
 
-Python integration:
+### Question-aware chunking and multi-mode ranking
 
-```python
-from pathlib import Path
-from rag_workflow.workflow import run
+- **Question-aware chunking (`split_passages`):** For exam transcriptions (`content_kind == "exam"` with ≥2 markers), text is split at line-start question/section boundaries (`Câu N`, `**Câu N.**`, `### Câu N`, `Question N`, `PHẦN I`). Short section headers (`< 120` chars) merge forward into the first question, and oversized questions (`> 900` chars) fall back to overlapping windows while keeping `passage_label` (e.g. `"Câu 12"`). Offsets always refer to the unchanged source text:
+  ```python
+  source.content[hit["excerpt_start"]:hit["excerpt_end"]] == hit["excerpt"]
+  ```
+- **BM25 (`bm25-passages-v2`):** Scores unigram rarity and length normalization (`k1=1.2`, `b=0.75`, `title_weight=3`, `content_weight=1`, `phrase_bonus=2`) plus adjacent Vietnamese bigram matches (`bigram_weight=1.5`) and exact accented token matches (`accent_weight=1.0`).
+- **Embedding (`embedding-char-word-v1`):** Builds L2-normalized sparse/subword vectors over IDF-weighted words, adjacent bigrams, accented tokens, character 4-grams (tolerant to OCR noise and morphological variants), and domain concept clusters (`concept_synonyms` in `config.json`), scored by exact Cosine Similarity ($\cos(\vec{q}, \vec{p}) \in [0, 1]$). Runs 100% offline with no external network calls.
+- **Hybrid (`hybrid-rrf-v1`, default):** Combines `bm25-passages-v2` and `embedding-char-word-v1` using Reciprocal Rank Fusion (`rrf_k=60`) and normalized score blending (`hybrid_alpha=0.55`).
 
-response = run(
-    {"query_text": "Physics grade 11 chapter 4 Ohm", "top_k": 5},
-    Path("tests/fixtures/rag_demo_documents.jsonl"),
-)
+## Measured benchmark evaluation
+
+Evaluated on snapshot `8b8fb7b09182b3d9d1eee0b95818027f52ab004d` (`687` curriculum rows, `108` searchable exam papers) using `eval/gold_queries.jsonl` (`37` queries: `20` curriculum, `11` exam with `15` question passage targets, `6` expected-gap guardrails; split into `18` dev and `19` held-out queries). All `68` document targets and `15` passage labels were verified programmatically via `auto-corpus-check-v1`:
+
+```powershell
+python -m rag_workflow.eval --existing --mode all --out runs/eval-existing.json
 ```
 
-`run_documents(payload, documents, corpus_sha256, corpus_info=None)` serves the
-in-memory app. Existing-corpus metadata selects its internal search policy.
-Both policies share `ranked_results`; internal corpus access does not weaken
-approved-pack checks.
+| Mode | Method | Split | Queries | Hit@5 | Recall@5 | MRR | Exam Passage Hit@5 | Gap Accuracy | False Gap Rate |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| **Hybrid** | `hybrid-rrf-v1` | All (37) | 37 | **100.0%** | **92.5%** | **1.000** | **100.0%** | **100.0%** | **0.0%** |
+| **BM25** | `bm25-passages-v2` | All (37) | 37 | 93.5% | 84.4% | 0.935 | 100.0% | 100.0% | 6.5% |
+| **Embedding** | `embedding-char-word-v1` | All (37) | 37 | **100.0%** | **92.5%** | 0.935 | 100.0% | 100.0% | **0.0%** |
+| **Hybrid** | `hybrid-rrf-v1` | Held-out (19) | 19 | **100.0%** | **96.9%** | **1.000** | **100.0%** | **100.0%** | **0.0%** |
+| **BM25** | `bm25-passages-v2` | Held-out (19) | 19 | 93.8% | 87.5% | 0.938 | 100.0% | 100.0% | 6.2% |
+| **Embedding** | `embedding-char-word-v1` | Held-out (19) | 19 | **100.0%** | **96.9%** | 0.969 | 100.0% | 100.0% | **0.0%** |
 
-### Ranking and excerpts
-
-After eligibility filtering, text is split into passages of up to 900 characters
-with a target overlap of 120. The splitter prefers paragraph, sentence and word
-boundaries, with character fallback for very long words. Offsets refer to the
-unchanged source text.
-
-BM25 scores token rarity, frequency saturation and passage length (`k1=1.2`,
-`b=0.75`). Title weight is 3, content weight 1 and normalized exact-phrase bonus 2.
-Parameters live in `config.json`; they are provisional rather than optimized on
-a benchmark. There is no embedding model, vector database or semantic similarity.
-
-One best passage is returned per unique document content hash. Ties use document
-ID and passage start. A range without topic keywords returns eligible documents
-at score 0 in deterministic order. Scores are ranking weights, not confidence.
-Excerpts center on a matching term where possible and are capped at 500
-characters. `top_k` defaults to 5, with a maximum of 20.
-
-Offsets are zero-based Python character indices, end-exclusive:
-
-```python
-source.content[hit["excerpt_start"]:hit["excerpt_end"]] == hit["excerpt"]
-```
-
-## Corpus ingestion and provenance
-
-Observed snapshot: `8b8fb7b09182b3d9d1eee0b95818027f52ab004d`.
-It contains 687 curriculum rows and 134 registered papers: 108 searchable, 26
-excluded. Counts are calculated at startup and depend on the selected snapshot.
-
-The adapter reads a Git archive into memory, without checking out source files:
-
-- **Curriculum:** `rag/data/*.jsonl` titles, supplied keywords and outcomes.
-  Subject aliases become canonical names; chapter membership follows explicit
-  parents/unit identifiers. The original row and draft status stay attached.
-  The English `Kết nối tri thức (Global Success)` label is an explicit series
-  alias. Semester values with missing or `assumed` provenance remain null in the
-  searchable scope; their original values remain visible in provenance.
-  These are scope metadata, not textbook explanations or approved knowledge.
-- **Exams:** registry-listed `corpus/transcriptions/**/de.md` only when
-  `usable_as_content_evidence=True` and class is `official` or
-  `provincial_third_party`. Incomplete, excluded and reference-only papers are
-  omitted. Registry row, STATUS note, source path and available source card stay
-  attached. Exam classification and source authority are separate: a third-party
-  scan remains `third_party`. The view conservatively labels text `ocr-draft`
-  while preserving the original status note.
-
-Keys, profiles, model calls, generated papers and audits are outside the search
-view. The archive can contain companion files/figures; only allowlisted text and
-provenance become searchable records. No source files are written back, copied
-into this feature's code/test fixtures or sent to external services.
-
-Applied guidance: corpus README, registry README, audit protocol, RAG README,
-curriculum architecture/KNTT decision and group CHECKS/GAPS notes. Registry
-usability indicates transcription completeness, not teacher approval. Unknown
-item mappings, semesters and source quality stay explicit. Existing-corpus access
-is authorized for this private internal prototype.
-
-### Replay identifiers
-
-- `corpus_snapshot`: Git commit ID for existing-corpus runs; null for other modes.
-- `corpus_sha256`: 64-character SHA-256 of canonical ordered JSON for in-memory
-  search projections, or exact file bytes for the file-backed approved-pack API.
-- `config_sha256`: SHA-256 of canonical retrieval configuration.
-- `content_sha256` and `source_version`: each document's text hash and source version.
-
-Reproduce a run with the same mode, snapshot/pack, configuration and request. A
-Git commit ID is recorded separately from the corpus SHA-256.
+Why Hybrid wins: `BM25` has strong rank-1 precision on exact terms (`Exam MRR = 1.000`) but fails when queries use synonyms or cross-lingual terms (`Curriculum Hit@5 = 90.0%`, `False Gap = 10.0%`). `Embedding` achieves `100.0%` `Hit@5` and `0.0%` false gaps across synonyms, while `Hybrid` combines both signals to achieve `100.0%` `Hit@5`, `92.5%` `Recall@5`, and `1.000` `MRR`.
 
 ## CLI and HTTP API
 
 ```powershell
-python -m rag_workflow.cli --existing --query "Vật lí lớp 11 chương 1 dao động"
-python -m rag_workflow.cli --existing --collection exam --query "Vật lí dao động"
-python -m rag_workflow.cli --corpus tests/fixtures/rag_demo_documents.jsonl --query "Physics grade 11 chapter 4 Ohm"
+python -m rag_workflow.cli --existing --mode hybrid --query "Vật lí lớp 11 chương 1 dao động"
+python -m rag_workflow.cli --existing --collection exam --mode hybrid --query "Vật lí dao động điều hòa"
+python -m rag_workflow.eval --existing --mode all
+python -m rag_workflow.eval --demo --mode all
 ```
-
-The CLI prints UTF-8 JSON. Exit 0 means success; exit 2 means a structured gap,
-including missing snapshots. See `--help` for `--top-k`, `--edition` and
-`--corpus-ref`.
 
 | Method | Route | Behavior |
 | --- | --- | --- |
-| GET | `/api/collection` | Summaries, aliases, editions, limits and optional `corpus_info` |
-| POST | `/api/search` | Retrieval response plus elapsed milliseconds and collection size |
+| GET | `/api/collection` | Summaries, aliases, editions, modes (`hybrid`, `bm25`, `embedding`), limits and optional `corpus_info` |
+| POST | `/api/search` | Retrieval response (`mode`, `ranking_method`, `documents` with `bm25_score`, `embedding_score`, `passage_label`) |
+| POST | `/api/compare` | Side-by-side response running the query across `hybrid`, `bm25`, and `embedding` |
+| POST | `/api/eval` | Runs `verify_gold_queries` and `evaluate_all_modes` (`split`: `all`, `dev`, `heldout`) |
 | GET | `/api/documents/{id}` | Full parent text, provenance and content checksum |
 | POST | `/api/documents` | Session text import in demo/pack mode; disabled for existing corpus |
 
-Send UTF-8 JSON with `Content-Type: application/json`. Existing-corpus request:
-
-```json
-{
-  "schema_version": "1.0",
-  "collection": "exam",
-  "query_text": "Vật lí dao động",
-  "top_k": 5,
-  "edition": null
-}
-```
-
-`collection` defaults to `curriculum`, or accepts `exam`, in existing-corpus mode.
-Omit this field for demo/approved packs. Response contract:
-
-| Field | Meaning |
-| --- | --- |
-| `status` | `success` or `gap`; check even after HTTP 200 |
-| `resolved_scope` | Subject, nullable grade, range, keywords, edition and applicable series |
-| `documents` | Ranked metadata, excerpts, passage offsets, matched terms and relevance score |
-| `gaps` | Machine-readable code and actionable message |
-| `corpus_sha256`, `corpus_snapshot`, `config_sha256` | Replay identifiers |
-| `elapsed_ms`, `collection_size` | HTTP diagnostics, not benchmark results |
-
-Common gaps: `missing_subject`, `missing_grade`, `ambiguous_range`,
-`unmapped_exam_scope`, `ambiguous_edition`, `no_documents_in_scope`,
-`no_relevant_match`, `corpus_unavailable`, `malformed_document`.
-Malformed JSON/imports return HTTP 400, unknown routes/sources 404, cross-origin
-POSTs 403, and empty/oversized bodies 413. Maximum POST body: 2 MB.
-
-### Imports and approved packs
-
-Demo/pack mode accepts pasted text and `.txt`/`.md` files (500 KB file-picker
-limit). Required import fields: title, content, subject, grade and
-`permission_confirmed: true`. Optional: chapter, lesson, semester, source_locator.
-
-Imports remain in memory, shared across tabs until restart. Their local-user
-selection is not independent teacher verification. Imports use `local-demo-v1`;
-select an edition when the supplied pack has another matching edition. The
-endpoint is a prototype input mechanism, not a publication/approval service.
-
-Approved packs are UTF-8 JSONL following `SourceDocument` in `models.py` and the
-original synthetic [fixture](../tests/fixtures/rag_demo_documents.jsonl). Records
-need stable IDs, subject/grade, scope, KNTT series, edition, source/version/locator,
-content checksum, rights evidence and explicit permissions. `approved` requires
-a named reviewer and ISO date. Duplicate IDs, malformed records or checksum
-mismatches reject the pack. Only approved records permitting local retrieval and
-quotation enter ranking. Unknown scope cannot satisfy an exact range. The strict
-loader rejects raw legacy `unit_id` records as `curriculum_metadata_only`; explore
-those through existing-corpus mode with draft status intact.
-
 ## Development and verification
-
-Runtime needs no packages. Development setup and the portable verification command:
 
 ```powershell
 python -m venv .venv
@@ -254,52 +146,16 @@ python -m venv .venv
 ./.venv/Scripts/python.exe scripts/verify.py
 ```
 
-The command runs compilation, Ruff lint, Ruff formatting checks and unit/HTTP/CLI
-tests. JavaScript syntax is checked when Node is installed, otherwise explicitly
-skipped. Windows needs no Bash. `scripts/verify.sh` delegates to the same command
-and honors `RAG_PYTHON`. Format with
-`python -m ruff format rag_workflow tests scripts`.
-
-Browser checks need separately pinned `requirements-browser.txt` and installed
-Chrome. They create isolated servers and never import into a running user session:
+Browser checks need separately pinned `requirements-browser.txt` and installed Chrome:
 
 ```powershell
-python -m pip install -r requirements-browser.txt
-python scripts/browser_smoke.py
+python scripts/browser_smoke.py --screenshots docs/assets/rag-workflow
 python scripts/browser_smoke.py --existing-corpus
 ```
-
-Coverage includes scope boundaries, approvals/permissions, normalization, BM25,
-deduplication, late matches, exact offsets, hashes, malformed input and corpus
-exclusions. Browser checks cover search, source viewing, gaps, safe rendering,
-Vietnamese fonts, session imports and mobile layout. These are functional checks;
-held-out relevance and teacher acceptance have not been measured. Observed runs
-are recorded in [agent-log/chautanphat.log](../agent-log/chautanphat.log).
-
-Observed on 2026-11-06 after cleanup: 44 tests, compilation, lint, formatting and
-JavaScript syntax checks passed. Demo and existing-corpus browser checks passed;
-the default app and both real-corpus CLI search modes were run successfully.
-
-Demo screenshots use original text only. Regenerate with
-`python scripts/browser_smoke.py --screenshots docs/assets/rag-workflow`:
 
 ![Demo desktop](assets/rag-workflow/astra-rag-desktop.png)
 ![Demo mobile](assets/rag-workflow/astra-rag-mobile.png)
 
 ## Limits and next integration
 
-The index rebuilds after filtering for each query. BM25 can miss paraphrases.
-Character chunks do not guarantee whole exam questions/shared stimuli, and
-figures are not rendered; the full parent text is available for review. There is
-no PDF/OCR ingestion, durable import storage, authentication, solver-specific view
-or generation/export stage. Downstream consumers must treat sources as data,
-separate them from instructions and cite locators.
-
-Next: verified item/curriculum mappings and held-out retrieval evaluation, then
-compare multilingual embeddings/hybrid retrieval against this baseline.
-Production also needs reviewed rights, teacher-approved knowledge packs and
-role-specific evidence views.
-
-AI assistance: Codex authored code, original synthetic examples, tests and docs
-from the member's instructions. Automated checks do not claim independent member
-or teacher review. Personal Week 4 reports belong in the member's lab repository.
+Shared stimuli (`Dựa vào thông tin sau để trả lời các câu 1–3`) are not yet grouped with all dependent questions, and figures are not rendered. Downstream consumers must treat retrieved passages as untrusted data, separate them from instructions and cite locators.
