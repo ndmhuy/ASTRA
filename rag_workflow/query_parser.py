@@ -32,9 +32,10 @@ def parse(request: RetrievalRequest, require_grade=True) -> ResolvedScope:
     if re.search(r"canh dieu|chan troi", text):
         raise Gap("unsupported_series", "This corpus supports Kết nối tri thức only.")
     subjects = set()
-    # Prevent "điều hòa" / "hòa" (grave accent or compound) from false-matching the subject "hóa".
+    # Prevent compound terms ("điều hòa", "thuật toán", "bài toán", "tính toán") from false-matching subjects.
     subject_scan_text = re.sub(
-        r"\b(?:dieu|trung|binh|tan|van|cong|hang|minh|do\s*thi)\s+hoa\b",
+        r"\b(?:dieu|trung|binh|tan|van|cong|hang|minh|do\s*thi)\s+hoa\b"
+        r"|\b(?:thuat|bai|tinh|ke|du|thanh|an)\s+toan\b",
         " ",
         text,
     )
@@ -51,10 +52,12 @@ def parse(request: RetrievalRequest, require_grade=True) -> ResolvedScope:
             if re.search(pattern, subject_scan_text):
                 subjects.add(canonical)
                 subject_scan_text = re.sub(pattern, " ", subject_scan_text)
-                if norm_alias != "hoa":
+                if norm_alias not in ("hoa", "toan"):
                     text = re.sub(pattern, " ", text)
-                else:
+                elif norm_alias == "hoa":
                     text = re.sub(r"(?<!\bdieu )(?<!\btrung )\bhoa\b", " ", text)
+                else:
+                    text = re.sub(r"(?<!\bthuat )(?<!\bbai )(?<!\btinh )\btoan\b", " ", text)
     if len(subjects) != 1:
         raise Gap(
             "missing_subject" if not subjects else "ambiguous_subject",
