@@ -37,7 +37,6 @@ def main():
             page.locator(".result-card").first.wait_for()
             if args.existing_corpus:
                 assert page.locator("#count").inner_text() == str(len(documents))
-                assert "draft" in page.locator(".card-top").first.inner_text()
                 page.locator("#collection-kind").select_option("exam")
                 page.wait_for_function(
                     "document.querySelector('#timing').textContent.startsWith('5 results')"
@@ -48,7 +47,7 @@ def main():
                 page.locator("#document-dialog").wait_for(state="visible")
                 assert "Grade mapping unknown" in page.locator("#doc-meta").inner_text()
                 page.get_by_role("button", name="Close source document").click()
-                page.locator("#query").fill("Vật lí lớp 11 chương 1 dao động")
+                page.locator("#query").fill("tìm tài liệu về")
                 page.locator("#search-button").click()
                 page.get_by_text("No documents retrieved", exact=True).wait_for()
                 assert page.locator(".result-card").count() == 0
@@ -57,7 +56,7 @@ def main():
                 assert not errors, errors
                 browser.close()
                 print(
-                    "PASS: existing corpus counts, curriculum search, exam search, source provenance, scope gap and mobile layout; no JavaScript errors."
+                    "PASS: existing corpus counts, unified & exam search, source provenance, gap and mobile layout; no JavaScript errors."
                 )
                 return
             assert page.locator(".result-card").count() == 2
@@ -102,7 +101,7 @@ def main():
             page.locator("#permission").check()
             page.get_by_role("button", name="Add to collection").click()
             page.get_by_text("Document added", exact=True).wait_for()
-            page.locator("#query").fill("Toán lớp 10 chương 7 về vector")
+            page.locator("#query").fill("vector note")
             page.locator("#search-button").click()
             page.get_by_role("heading", name="My vector note", exact=True).wait_for()
             assert page.locator(".result-card").count() == 1

@@ -1,7 +1,6 @@
 """Read the private staging snapshot locally without copying source data into Git."""
 
 import csv
-from dataclasses import replace
 import hashlib
 import io
 import json
@@ -191,9 +190,9 @@ def search_existing(payload, documents, snapshot, corpus_sha256=None):
         if not isinstance(payload, dict):
             raise Gap("invalid_request", "Request must be a JSON object.")
         request_data = dict(payload)
-        kind = request_data.pop("collection", "curriculum")
-        if kind not in ("curriculum", "exam"):
-            raise Gap("invalid_request", "Choose curriculum or exam search.")
+        kind = request_data.pop("collection", "all") or "all"
+        if kind not in ("all", "curriculum", "exam"):
+            raise Gap("invalid_request", "Choose all, curriculum, or exam search.")
         if request_data.get("mode") is None:
             request_data.pop("mode", None)
         try:
@@ -204,29 +203,17 @@ def search_existing(payload, documents, snapshot, corpus_sha256=None):
         response.ranking_method = CONFIG.get("ranking_versions", {}).get(
             request.mode, CONFIG["ranking_version"]
         )
-        scope = parse(request, require_grade=kind != "exam")
-        if kind == "exam":
-            scope = replace(scope, series=None)
+        scope = parse(request)
         response.resolved_scope = scope
-        if kind == "exam" and (scope.grade is not None or scope.range_type != "topic"):
-            raise Gap(
-                "unmapped_exam_scope",
-                "Exam passages have no verified grade/chapter mappings. Search by subject and topic without a grade; use Curriculum for exact lesson ranges.",
-            )
-        eligible = [d for d in documents if d.content_kind == kind and d.subject == scope.subject]
-        if scope.grade is not None:
-            eligible = [d for d in eligible if d.grade == scope.grade]
-        if scope.range_type != "topic":
-            eligible = [
-                d
-                for d in eligible
-                if getattr(d, scope.range_type) is not None
-                and scope.start <= getattr(d, scope.range_type) <= scope.end
-            ]
+        eligible = (
+            list(documents) if kind == "all" else [d for d in documents if d.content_kind == kind]
+        )
         if scope.edition:
             eligible = [d for d in eligible if d.edition == scope.edition]
         if not eligible:
-            raise Gap("no_documents_in_scope", "No existing corpus documents match this scope.")
+            raise Gap(
+                "no_documents_in_scope", "No existing corpus documents match this collection."
+            )
         response.documents = ranked_results(
             eligible,
             scope.keywords,

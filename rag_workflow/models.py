@@ -47,14 +47,14 @@ class RetrievalRequest:
 
 @dataclass(frozen=True)
 class ResolvedScope:
-    subject: str
-    grade: int | None
-    range_type: str
-    start: int | None
-    end: int | None
-    keywords: tuple[str, ...]
-    edition: str | None
-    series: str | None = CONFIG["series"]
+    subject: str | None = None
+    grade: int | None = None
+    range_type: str = "knowledge"
+    start: int | None = None
+    end: int | None = None
+    keywords: tuple[str, ...] = ()
+    edition: str | None = None
+    series: str | None = None
     accented_keywords: tuple[str, ...] = ()
 
 

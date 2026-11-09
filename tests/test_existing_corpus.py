@@ -78,25 +78,29 @@ class ExistingCorpusTests(unittest.TestCase):
         self.assertEqual(documents[-1].provenance["source"]["provenance_note"], "third-party copy")
         self.assertIsNone(documents[-1].grade)
 
-    def test_parent_scope_and_draft_curriculum_search(self):
+    def test_unified_and_filtered_knowledge_search(self):
         documents, info = self.load()
-        response = search_existing(
-            dict(query_text="Vật lí lớp 11 chương 1 dao động"), documents, info["snapshot"]
+        # Default collection='all' searches both curriculum and exam documents by knowledge alone.
+        unified = search_existing(dict(query_text="dao động điều hòa"), documents, info["snapshot"])
+        self.assertEqual(unified.status, "success")
+        self.assertEqual(len(unified.documents), 3)
+        kinds = {d["content_kind"] for d in unified.documents}
+        self.assertEqual(kinds, {"curriculum", "exam"})
+
+        # Curriculum-only filter
+        cur = search_existing(
+            dict(query_text="dao động điều hòa", collection="curriculum"),
+            documents,
+            info["snapshot"],
         )
-        self.assertEqual(response.status, "success")
-        self.assertEqual(len(response.documents), 2)
-        self.assertTrue(
-            all(d["chapter"] == 1 and d["approval_status"] == "draft" for d in response.documents)
-        )
-        response = search_existing(
-            dict(query_text="Vật lí lớp 11 bài 2"), documents, info["snapshot"]
-        )
-        self.assertEqual([d["document_id"] for d in response.documents], ["vat-li-11-c1-b2"])
+        self.assertEqual(cur.status, "success")
+        self.assertEqual(len(cur.documents), 2)
+        self.assertTrue(all(d["content_kind"] == "curriculum" for d in cur.documents))
 
     def test_exam_topic_search_and_exact_offsets(self):
         documents, info = self.load()
         response = search_existing(
-            dict(query_text="Vật lí dao động", collection="exam"), documents, info["snapshot"]
+            dict(query_text="dao động", collection="exam"), documents, info["snapshot"]
         )
         self.assertEqual(response.status, "success")
         hit = response.documents[0]
@@ -105,21 +109,21 @@ class ExistingCorpusTests(unittest.TestCase):
         )
         self.assertEqual(hit["approval_status"], "ocr-draft")
 
-    def test_exam_scope_is_not_invented(self):
+    def test_queries_with_optional_grade_or_chapter_still_work_in_exam_and_unified_modes(self):
         documents, info = self.load()
-        for query in ("Vật lí lớp 11 dao động", "Vật lí chương 1 dao động"):
+        for query in ("lớp 11 dao động", "chương 1 dao động", "dao động"):
             response = search_existing(
                 dict(query_text=query, collection="exam"), documents, info["snapshot"]
             )
-            self.assertEqual(response.gaps[0]["code"], "unmapped_exam_scope")
-            self.assertEqual(response.documents, [])
+            self.assertEqual(response.status, "success")
+            self.assertEqual(len(response.documents), 1)
 
-    def test_curriculum_range_cannot_leak_later_chapters(self):
+    def test_unmatched_knowledge_returns_no_relevant_match_gap(self):
         documents, info = self.load()
         response = search_existing(
-            dict(query_text="Vật lí lớp 11 chương 2 dao động"), documents, info["snapshot"]
+            dict(query_text="quang hợp thực vật"), documents, info["snapshot"]
         )
-        self.assertEqual(response.gaps[0]["code"], "no_documents_in_scope")
+        self.assertEqual(response.gaps[0]["code"], "no_relevant_match")
 
     def test_broken_parent_graph_fails_ingestion(self):
         self.files["rag/data/vat-li-11.jsonl"] = json.dumps(

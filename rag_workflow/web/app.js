@@ -33,8 +33,8 @@ async function loadCollection() {
   if (existingCorpus) {
     const info = data.corpus_info;
     $('corpus-note').textContent = `${info.curriculum_rows} curriculum rows · ${info.exam_papers} searchable papers · ${info.excluded_papers} excluded papers. Internal prototype; draft/OCR status retained.`;
-    document.querySelector('footer').textContent = `Corpus snapshot ${info.snapshot.slice(0, 12)} · Curriculum rows describe scope. Exam transcriptions may contain OCR errors and require figures.`;
-    $('query').value = 'Vật lí lớp 11 chương 1 về dao động';
+    document.querySelector('footer').textContent = `Corpus snapshot ${info.snapshot.slice(0, 12)} · Knowledge-first unified search across curriculum units and exam transcriptions.`;
+    $('query').value = 'Dao động điều hòa con lắc lò xo';
   }
   $('count').textContent = data.documents.length;
   const selectedEdition = $('edition').value;
@@ -69,9 +69,9 @@ function formatScoreBadge(d, mode) {
 function renderScopeTags(scope, mode) {
   $('scope').replaceChildren();
   if (!scope) return;
-  const range = scope.range_type === 'topic' ? 'Topic search' : `${scope.range_type} ${scope.start}${scope.end !== scope.start ? '–' + scope.end : ''}`;
-  const modeTag = {hybrid: 'Mode: Hybrid RRF', bm25: 'Mode: BM25-v2', embedding: 'Mode: Embedding Cosine'}[mode] || `Mode: ${mode}`;
-  for (const text of [modeTag, label(scope.subject), scope.grade ? 'Grade ' + scope.grade : 'Grade mapping unknown', range]) {
+  const modeTag = {hybrid: 'Mode: Hybrid RRF', bm25: 'Mode: BM25-v2', embedding: 'Mode: Embedding Cosine', compare: 'Mode: 3-Way Comparison'}[mode] || `Mode: ${mode}`;
+  const kwText = scope.keywords?.length ? `Keywords: ${scope.keywords.slice(0, 8).join(', ')}` : 'Knowledge search';
+  for (const text of [modeTag, 'Knowledge search', kwText]) {
     $('scope').append(node('span', 'tag', text));
   }
 }
@@ -93,18 +93,19 @@ async function search(event) {
     renderScopeTags(data.resolved_scope, data.mode || mode);
     if (data.status !== 'success') {
       const hints = {
-        no_documents_in_scope: existingCorpus ? 'Try another scope or inspect the source collection.' : 'Try another scope or add a matching document.',
-        missing_grade: 'Include a grade, for example “lớp 11”.',
-        missing_subject: 'Include a subject, for example “Vật lí”.',
-        ambiguous_range: 'Specify an exact chapter or lesson range, for example “chương 1–4”.',
-        no_relevant_match: 'Try another keyword or switch to Hybrid / Embedding mode.'
+        no_documents_in_scope: existingCorpus ? 'Try another collection filter or inspect the source collection.' : 'No approved documents are available in the collection.',
+        missing_keywords: 'Enter at least one knowledge or topic keyword (for example “dao động điều hòa” or “định luật Ohm”).',
+        no_relevant_match: 'No matching passages found. Try another keyword or switch to Hybrid / Embedding mode.'
       };
       showNotice('No documents retrieved', data.gaps.map(g => hints[g.code] || g.message).join(' '));
       return;
     }
     data.documents.forEach((d, i) => {
       const card = node('article', 'result-card'), top = node('div', 'card-top');
-      const sourceLabel = d.evidence_class === 'synthetic' ? 'Demo note · illustrative' : `${d.content_kind || 'knowledge'} · ${d.approval_status}`;
+      const metaParts = [label(d.subject)];
+      if (d.grade) metaParts.push(`Lớp ${d.grade}`);
+      if (d.chapter) metaParts.push(`Ch. ${d.chapter}`);
+      const sourceLabel = d.evidence_class === 'synthetic' ? `Demo note · ${metaParts.join(' · ')}` : `${d.content_kind || 'knowledge'} · ${metaParts.join(' · ')} · ${d.approval_status}`;
       const qBadge = d.passage_label ? ` · ${d.passage_label}` : '';
       top.append(node('span', '', `${i + 1}. ${sourceLabel}${qBadge}`), node('span', 'score-pill', formatScoreBadge(d, data.mode || mode)));
       const bottom = node('div', 'card-bottom');
@@ -214,7 +215,7 @@ async function runEvalSuite() {
       const qTd = node('td');
       const qBtn = node('button', 'text-button', q.query_text);
       qBtn.addEventListener('click', () => {
-        if (existingCorpus && (q.collection === 'curriculum' || q.collection === 'exam')) $('collection-kind').value = q.collection;
+        if (existingCorpus && ['all', 'curriculum', 'exam'].includes(q.collection)) $('collection-kind').value = q.collection;
         $('query').value = q.query_text;
         search();
       });
@@ -241,11 +242,8 @@ $('search-form').addEventListener('submit', search);
 $('compare-button').addEventListener('click', compareModes);
 $('run-eval').addEventListener('click', runEvalSuite);
 $('retrieval-mode').addEventListener('change', () => search());
-$('collection-kind').addEventListener('change', () => {
-  $('query').value = $('collection-kind').value === 'exam' ? 'Vật lí về dao động' : 'Vật lí lớp 11 chương 1 về dao động';
-  search();
-});
-for (const button of document.querySelectorAll('[data-query]')) button.addEventListener('click', () => { $('collection-kind').value = 'curriculum'; $('query').value = button.dataset.query; search(); });
+$('collection-kind').addEventListener('change', () => search());
+for (const button of document.querySelectorAll('[data-query]')) button.addEventListener('click', () => { $('query').value = button.dataset.query; search(); });
 for (const button of document.querySelectorAll('.close')) button.addEventListener('click', () => button.closest('dialog').close());
 $('add').addEventListener('click', () => { $('import-error').textContent = ''; $('import-dialog').showModal(); });
 $('import-file').addEventListener('change', async event => {

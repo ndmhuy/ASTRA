@@ -14,6 +14,65 @@ QUESTION_BOUNDARY = re.compile(
     r"(?im)^[ \t>*_#]*((?:C(?:â|a\u0302|a)u|Question)\s+\d+|(?:PH(?:Ầ|Â\u0300|A)N|Part)\s+(?:[IVX]+|\d+))\b"
 )
 SUFFIX_IGNORE = frozenset({"tion", "atio", "ment", "ness", "able", "ible", "ings", "ance", "ence"})
+GENERIC_BOUND_SYLLABLES = frozenset(
+    {
+        "dinh",
+        "vat",
+        "so",
+        "the",
+        "dong",
+        "hop",
+        "chat",
+        "phan",
+        "ung",
+        "co",
+        "diem",
+        "nhiet",
+        "anh",
+        "sang",
+        "cac",
+        "mot",
+        "hai",
+        "ba",
+        "khi",
+        "trong",
+        "tren",
+        "duoi",
+        "giua",
+        "theo",
+        "cung",
+        "khac",
+        "nhung",
+        "nhieu",
+        "lon",
+        "nho",
+        "cao",
+        "thap",
+        "moi",
+        "cu",
+        "dung",
+        "sai",
+        "tinh",
+        "do",
+        "he",
+        "dang",
+        "loai",
+        "nhom",
+        "vung",
+        "mien",
+        "qua",
+        "trinh",
+        "hien",
+        "tuong",
+        "su",
+        "viec",
+        "hoat",
+        "thanh",
+        "tao",
+        "bien",
+        "doi",
+    }
+)
 
 
 def tokens(text):
@@ -98,7 +157,7 @@ def _matched_concepts(norm_text, word_set):
 def _char_ngrams(word_set):
     grams = set()
     for w in word_set:
-        if len(w) < 4 or w.isdigit():
+        if len(w) < 4 or w.isdigit() or w in GENERIC_BOUND_SYLLABLES:
             continue
         padded = f"^{w}$"
         for i in range(len(padded) - 3):
@@ -123,11 +182,12 @@ class _AnalyzedPassage:
 
 @lru_cache(maxsize=4096)
 def _analyze_document(title: str, content: str, structured: bool) -> tuple[_AnalyzedPassage, ...]:
-    t_tokens = tokens(title)
+    # For structured exam papers, title is a directory path slug, not passage knowledge.
+    t_tokens = [] if structured else tokens(title)
     t_set = frozenset(t_tokens)
     t_bigrams = frozenset(zip(t_tokens, t_tokens[1:]))
-    t_acc = frozenset(accented_tokens(title))
-    t_norm = normalize(title)
+    t_acc = frozenset() if structured else frozenset(accented_tokens(title))
+    t_norm = "" if structured else normalize(title)
     analyzed = []
     for p in split_passages(content, structured=structured):
         p_tokens = tokens(p.text)
@@ -150,24 +210,69 @@ def _analyze_document(title: str, content: str, structured: bool) -> tuple[_Anal
     return tuple(analyzed)
 
 
+@lru_cache(maxsize=16)
+def _build_corpus_stats(doc_key: tuple[tuple[str, str, bool], ...]):
+    items = []
+    df = Counter()
+    total_len = 0
+    for idx, (title, content, structured) in enumerate(doc_key):
+        for ap in _analyze_document(title, content, structured):
+            items.append((idx, ap))
+            df.update(ap.counts.keys())
+            total_len += ap.length
+    n_items = len(items)
+    avg_len = (total_len / max(n_items, 1)) or 1.0
+    idf_map = {w: math.log(1 + (n_items - count + 0.5) / (count + 0.5)) for w, count in df.items()}
+    default_idf = math.log(1 + (n_items + 0.5) / 0.5)
+
+    p_norms_base = []
+    p_norms_with_cg = []
+    for _, ap in items:
+        word_union = ap.title_tokens | ap.counts.keys()
+        sq = 0.0
+        for w in word_union:
+            idf = idf_map.get(w, default_idf)
+            tf = ap.counts[w]
+            pw = (1.0 + math.log(1 + tf)) * idf * (1.35 if w in ap.title_tokens else 1.0)
+            sq += pw * pw
+        for w1, w2 in ap.bigrams:
+            pw = 1.2 * min(idf_map.get(w1, default_idf), idf_map.get(w2, default_idf))
+            sq += pw * pw
+        for aw in ap.accented:
+            pw = 0.6 * idf_map.get(normalize(aw), default_idf)
+            sq += pw * pw
+        sq += len(ap.concepts) * (1.15 * 1.15)
+        sq_cg = sq + len(ap.char_grams) * (0.35 * 0.35)
+        p_norms_base.append(math.sqrt(sq) if sq > 0 else 0.0)
+        p_norms_with_cg.append(math.sqrt(sq_cg) if sq_cg > 0 else 0.0)
+
+    return items, df, avg_len, idf_map, default_idf, tuple(p_norms_base), tuple(p_norms_with_cg)
+
+
 class PassageIndex:
     def __init__(self, documents):
-        self.items: list[tuple[object, _AnalyzedPassage]] = []
-        for d in documents:
-            structured = getattr(d, "content_kind", None) == "exam"
-            for ap in _analyze_document(d.title, d.content, structured):
-                self.items.append((d, ap))
+        self._docs = tuple(documents)
+        doc_key = tuple(
+            (d.title, d.content, getattr(d, "content_kind", None) == "exam") for d in self._docs
+        )
+        (
+            raw_items,
+            self.document_frequency,
+            self.average_length,
+            self._idf_map,
+            self._default_idf,
+            self._p_norms_base,
+            self._p_norms_cg,
+        ) = _build_corpus_stats(doc_key)
+        self.items: list[tuple[object, _AnalyzedPassage]] = [
+            (self._docs[doc_idx], ap) for doc_idx, ap in raw_items
+        ]
         self.entries = [(d, ap.passage) for d, ap in self.items]
         self.counts = [ap.counts for _, ap in self.items]
         self.lengths = [ap.length for _, ap in self.items]
-        self.average_length = sum(self.lengths) / max(len(self.lengths), 1) or 1
-        self.document_frequency = Counter()
-        for counts in self.counts:
-            self.document_frequency.update(counts.keys())
 
     def _idf(self, word: str) -> float:
-        df = self.document_frequency.get(word, 0)
-        return math.log(1 + (len(self.items) - df + 0.5) / (df + 0.5))
+        return self._idf_map.get(word, self._default_idf)
 
     def ranked_detailed(self, keywords, accented=(), mode="bm25"):
         """Return (relevance_score, bm25_score, embedding_score, document, passage, matched_terms)."""
@@ -201,9 +306,17 @@ class PassageIndex:
         q_norm = math.sqrt(sum(v * v for v in q_vec.values())) or 1.0
 
         candidates = []
-        for d, ap in self.items:
+        for p_idx, (d, ap) in enumerate(self.items):
             word_union = ap.title_tokens | ap.counts.keys()
             matched = sorted(query_set & word_union)
+            shared_concepts = q_concepts & ap.concepts
+            if (
+                len(query_list) >= 2
+                and len(matched) == 1
+                and matched[0] in GENERIC_BOUND_SYLLABLES
+                and not shared_concepts
+            ):
+                matched = []
 
             # 1. BM25-v2 score (lexical + adjacent Vietnamese bigrams + exact diacritics)
             bm25_score = 0.0
@@ -228,34 +341,29 @@ class PassageIndex:
             shared_cgrams = q_cgrams & ap.char_grams
             has_semantic_signal = bool(matched or shared_concepts or len(shared_cgrams) >= 2)
             emb_score = 0.0
+            matched_set = set(matched)
             if has_semantic_signal:
                 dot = 0.0
-                p_sq = 0.0
-                for w in word_union:
+                for w in matched:
                     idf = self._idf(w)
                     tf = ap.counts[w]
                     pw = (1.0 + math.log(1 + tf)) * idf * (1.35 if w in ap.title_tokens else 1.0)
-                    p_sq += pw * pw
                     dot += q_vec.get(f"w:{w}", 0.0) * pw
-                for w1, w2 in ap.bigrams:
-                    pw = 1.2 * min(self._idf(w1), self._idf(w2))
-                    p_sq += pw * pw
-                    dot += q_vec.get(f"bg:{w1}_{w2}", 0.0) * pw
-                for aw in ap.accented:
-                    pw = 0.6 * self._idf(normalize(aw))
-                    p_sq += pw * pw
-                    dot += q_vec.get(f"ac:{aw}", 0.0) * pw
-                for cid in ap.concepts:
-                    pw = 1.15
-                    p_sq += pw * pw
-                    dot += q_vec.get(f"c:{cid}", 0.0) * pw
-                if len(shared_cgrams) >= 2 or matched or shared_concepts:
-                    for cg in ap.char_grams:
-                        pw = 0.35
-                        p_sq += pw * pw
-                        dot += q_vec.get(f"cg:{cg}", 0.0) * pw
-                if p_sq > 0 and dot > 0:
-                    raw_cos = dot / (q_norm * math.sqrt(p_sq))
+                for w1, w2 in q_bigrams:
+                    if (w1, w2) in ap.bigrams:
+                        pw = 1.2 * min(self._idf(w1), self._idf(w2))
+                        dot += q_vec.get(f"bg:{w1}_{w2}", 0.0) * pw
+                for aw in accented:
+                    if aw in ap.accented and normalize(aw) in matched_set:
+                        pw = 0.6 * self._idf(normalize(aw))
+                        dot += q_vec.get(f"ac:{aw}", 0.0) * pw
+                dot += len(shared_concepts) * (1.15 * 1.15)
+                use_cg = len(shared_cgrams) >= 2 or matched or shared_concepts
+                if use_cg:
+                    dot += len(shared_cgrams) * (0.35 * 0.35)
+                p_norm = self._p_norms_cg[p_idx] if use_cg else self._p_norms_base[p_idx]
+                if p_norm > 0 and dot > 0:
+                    raw_cos = dot / (q_norm * p_norm)
                     if matched or shared_concepts or raw_cos >= min_emb:
                         emb_score = min(1.0, raw_cos)
 

@@ -138,7 +138,7 @@ def evaluate_mode(
             "mode": mode,
             "edition": row.get("edition"),
         }
-        if corpus_info is not None and row.get("collection") in ("curriculum", "exam"):
+        if corpus_info is not None and row.get("collection") in ("all", "curriculum", "exam"):
             payload["collection"] = row["collection"]
         started = time.perf_counter()
         resp = run_documents(payload, documents, corpus_sha256, corpus_info)

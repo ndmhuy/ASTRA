@@ -55,7 +55,7 @@ class RetrievalTests(unittest.TestCase):
             "\n".join(json.dumps(r, ensure_ascii=False) for r in records), encoding="utf-8"
         )
 
-    def query(self, text="Physics grade 11 chapter 4 Ohm", **kwargs):
+    def query(self, text="Ohm", **kwargs):
         return run(dict(query_text=text, **kwargs), self.path)
 
     def gap(self, text, code, **kwargs):
@@ -64,35 +64,32 @@ class RetrievalTests(unittest.TestCase):
         self.assertEqual(response.documents, [])
         self.assertEqual(response.gaps[0]["code"], code)
 
-    def test_vietnamese_aliases_and_roman_ranges(self):
-        for name in ("Vật lí", "Vật lý", "vat li", "physics", "vat-li"):
-            with self.subTest(name=name):
-                scope = parse(
-                    RetrievalRequest(f"Tìm tài liệu {name} lớp 11 chương II đến IV về Ohm")
-                )
-                self.assertEqual((scope.subject, scope.start, scope.end), ("vat-li", 2, 4))
-
-    def test_subjects_are_canonical(self):
-        for alias, canonical in (
-            ("Toán", "toan"),
-            ("Hóa học", "hoa-hoc"),
-            ("Ngữ văn", "ngu-van"),
-            ("GDKT&PL", "gdktpl"),
+    def test_pure_knowledge_query_works_without_subject_grade_or_range(self):
+        for q in (
+            "Ohm electrical resistance",
+            "định luật Ohm",
+            "Tìm tài liệu Vật lí lớp 11 chương II đến IV về Ohm",
         ):
-            self.assertEqual(parse(RetrievalRequest(f"{alias} lớp 11 bài 2")).subject, canonical)
+            with self.subTest(q=q):
+                scope = parse(RetrievalRequest(q))
+                self.assertEqual(scope.range_type, "knowledge")
+                self.assertIn("ohm", scope.keywords)
+                self.assertEqual(self.query(q).status, "success")
 
-    def test_invalid_and_ambiguous_queries(self):
+    def test_compound_knowledge_terms_are_preserved(self):
+        for query_text, expected in (
+            ("dao động điều hòa", ("dao", "dong", "dieu", "hoa")),
+            ("thuật toán và tính toán", ("thuat", "toan", "tinh")),
+            ("bảo toàn cơ năng", ("bao", "toan", "co", "nang")),
+        ):
+            self.assertEqual(parse(RetrievalRequest(query_text)).keywords, expected)
+
+    def test_empty_or_stopword_only_queries_return_missing_keywords_gap(self):
         cases = [
-            ("grade 11 chapter 4", "missing_subject"),
-            ("Physics chapter 4", "missing_grade"),
-            ("Physics grade 9 chapter 4", "invalid_grade"),
-            ("Physics grade 11 chapter 4-2", "invalid_range"),
-            ("Physics grade 11", "missing_range"),
-            ("Physics grade 11 half chapter 4", "ambiguous_range"),
-            ("Physics grade 11 chapters 2 and 4", "ambiguous_range"),
-            ("Physics grade 11 chapter 4 semester 1", "ambiguous_range"),
-            ("Physics grade 11 chapter 4 Cánh Diều", "unsupported_series"),
-            ("Physics Mathematics grade 11 chapter 4", "ambiguous_subject"),
+            ("tìm tài liệu về", "missing_keywords"),
+            ("Physics", "missing_keywords"),
+            ("grade 11 chapter 4", "missing_keywords"),
+            ("Vật lí lớp 11 chương 4", "missing_keywords"),
         ]
         for text, code in cases:
             with self.subTest(text=text):
@@ -108,36 +105,47 @@ class RetrievalTests(unittest.TestCase):
         ]:
             self.assertEqual(run(payload, self.path).gaps[0]["code"], code)
 
-    def test_hard_filters_prevent_scope_and_permission_leaks(self):
+    def test_permission_filters_prevent_unapproved_leaks_while_allowing_cross_subject_knowledge(
+        self,
+    ):
         bad = [
-            dict(subject="toan"),
-            dict(grade=10),
-            dict(chapter=3),
             dict(approval_status="draft"),
             dict(approval_status="teacher-checked"),
             dict(approval_status="superseded"),
             dict(allow_local_retrieval=False),
             dict(allow_quotation=False),
-            dict(series="other"),
         ]
-        self.write([record("good")] + [record(f"bad-{i}", **v) for i, v in enumerate(bad)])
-        self.assertEqual([d["document_id"] for d in self.query().documents], ["good"])
+        self.write(
+            [
+                record("good-physics", subject="vat-li", grade=11, chapter=4),
+                record(
+                    "good-math",
+                    subject="toan",
+                    grade=10,
+                    chapter=1,
+                    content="Ohm formula in math modeling.",
+                ),
+            ]
+            + [record(f"bad-{i}", content=f"Unapproved Ohm {i}", **v) for i, v in enumerate(bad)]
+        )
+        ids = [d["document_id"] for d in self.query("Ohm").documents]
+        self.assertEqual(set(ids), {"good-physics", "good-math"})
 
-    def test_missing_semester_is_not_inferred_from_volume_or_position(self):
-        self.gap("Physics grade 11 semester 1", "no_documents_in_scope")
+    def test_no_match_and_no_approved_documents(self):
+        self.gap("quantum chromodynamics", "no_relevant_match")
+        self.write([record(approval_status="draft")])
+        self.gap("Ohm", "no_documents_in_scope")
 
-    def test_lesson_and_topic_ranges(self):
-        self.assertEqual(self.query("Physics grade 11 lesson 24").status, "success")
-        self.assertEqual(self.query("Physics grade 11 Ohm").status, "success")
-
-    def test_no_match_and_no_scope(self):
-        self.gap("Physics grade 11 chapter 4 oscillation", "no_relevant_match")
-        self.gap("Physics grade 11 chapter 2", "no_documents_in_scope")
-
-    def test_multiple_editions_require_confirmation(self):
-        self.write([record(), record("other", edition="other-edition")])
-        self.gap("Physics grade 11 chapter 4", "ambiguous_edition")
-        self.assertEqual(self.query(edition="synthetic-demo-v1").status, "success")
+    def test_multiple_editions_search_all_or_filter_when_specified(self):
+        self.write(
+            [
+                record("ed-1", content="Ohm law in edition one", edition="ed-1"),
+                record("ed-2", content="Ohm law in edition two", edition="ed-2"),
+            ]
+        )
+        self.assertEqual(len(self.query("Ohm law").documents), 2)
+        filtered = self.query("Ohm law", edition="ed-1")
+        self.assertEqual([d["document_id"] for d in filtered.documents], ["ed-1"])
 
     def test_ranking_deduplication_and_limit(self):
         self.write(
@@ -169,7 +177,7 @@ class RetrievalTests(unittest.TestCase):
             [record(content_kind="answer_key")],
         ):
             self.write(records)
-            self.gap("Physics grade 11 chapter 4", "malformed_document")
+            self.gap("Ohm", "malformed_document")
 
     def test_legacy_curriculum_map_is_not_promoted_to_evidence(self):
         with self.assertRaises(Gap) as caught:
@@ -187,16 +195,15 @@ class RetrievalTests(unittest.TestCase):
 
     def test_missing_file_returns_gap(self):
         self.path.unlink()
-        self.gap("Physics grade 11 chapter 4", "corpus_unavailable")
+        self.gap("Ohm", "corpus_unavailable")
 
-    def test_repeated_range_label(self):
+    def test_optional_structural_labels_are_stripped_from_keywords(self):
         scope = parse(RetrievalRequest("Vật lí lớp 11 chương II đến chương IV về Ohm"))
-        self.assertEqual((scope.start, scope.end), (2, 4))
+        self.assertEqual(scope.keywords, ("ohm",))
 
-    def test_formula_symbols_are_not_roman_range_numbers(self):
+    def test_formula_symbols_are_preserved_in_keywords(self):
         scope = parse(RetrievalRequest("Physics grade 11 chapter IV I = U/R"))
-        self.assertEqual(scope.start, 4)
-        self.assertIn("i", scope.keywords)
+        self.assertEqual(scope.keywords, ("i", "u", "r"))
 
     def test_best_passage_has_exact_source_offsets(self):
         text = (
@@ -204,7 +211,7 @@ class RetrievalTests(unittest.TestCase):
             + "\n\nRare Ohm explanation about voltage and resistance."
         )
         self.write([record(title="Electrical notes", content=text)])
-        hit = self.query().documents[0]
+        hit = self.query("Ohm").documents[0]
         self.assertGreater(hit["passage_start"], 0)
         self.assertEqual(hit["excerpt"], text[hit["excerpt_start"] : hit["excerpt_end"]])
         self.assertIn("Ohm", hit["excerpt"])
@@ -266,21 +273,14 @@ class RetrievalTests(unittest.TestCase):
                 json.loads(result.stdout)["status"], "success" if expected == 0 else "gap"
             )
 
-    def test_topic_numbers_are_keywords_while_range_numbers_stay_strict(self):
+    def test_topic_numbers_are_preserved_as_keywords(self):
         for query_text, expected_kw in (
-            ("Vật lí lớp 10 định luật 2 Newton", ("dinh", "luat", "2", "newton")),
-            ("Lịch sử lớp 12 năm 1945", ("nam", "1945")),
-            ("Toán lớp 12 chương 1 hàm số bậc 3", ("ham", "so", "bac", "3")),
+            ("định luật 2 Newton", ("dinh", "luat", "2", "newton")),
+            ("Cách mạng tháng Tám năm 1945", ("cach", "mang", "thang", "tam", "nam", "1945")),
+            ("hàm số bậc 3", ("ham", "so", "bac", "3")),
         ):
             scope = parse(RetrievalRequest(query_text))
             self.assertEqual(scope.keywords, expected_kw)
-        for bad_query in (
-            "Toán lớp 11 bài 6 7",
-            "Toán lớp 11 bài 6 và 7",
-            "Toán lớp 11 chương 2, 4",
-            "Physics grade 11 lessons 2 and 4",
-        ):
-            self.gap(bad_query, "ambiguous_range")
 
     def test_question_aware_splitting_and_labels(self):
         exam_text = (

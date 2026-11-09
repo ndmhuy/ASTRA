@@ -3,12 +3,12 @@
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ASTRA · Retrieval lab</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
 <body>
 <main>
-  <header><div><h1>ASTRA · Retrieval prototype</h1><p class="muted">Subject + scope → matching source passages (BM25 · Embedding · Hybrid RRF)</p></div><button id="add">+ Add a document</button></header>
+  <header><div><h1>ASTRA · Retrieval prototype</h1><p class="muted">Knowledge query → matching source passages (BM25 · Embedding · Hybrid RRF)</p></div><button id="add">+ Add a document</button></header>
   <form id="search-form" class="search-panel">
-    <label for="collection-kind">Search in <select id="collection-kind"><option value="curriculum">Curriculum / lesson map</option><option value="exam">Exam transcriptions</option></select></label>
+    <label for="collection-kind">Search in <select id="collection-kind"><option value="all" selected>All sources (Curriculum + Exams)</option><option value="curriculum">Curriculum / lesson map</option><option value="exam">Exam transcriptions</option></select></label>
     <p id="corpus-note" class="muted small"></p>
-    <label for="query">Query — subject and scope / topic</label>
-    <textarea id="query" required maxlength="2000" rows="2">Tìm tài liệu Vật lí lớp 11 chương 4 về định luật Ohm</textarea>
+    <label for="query">Query — enter knowledge, concepts, or question topics</label>
+    <textarea id="query" required maxlength="2000" rows="2">Định luật Ohm</textarea>
     <div class="search-bottom">
       <label class="limit">Mode <select id="retrieval-mode"><option value="hybrid" selected>Hybrid (BM25 + Embedding)</option><option value="bm25">BM25 (Lexical + Bigrams)</option><option value="embedding">Embedding (Vector Cosine)</option></select></label>
       <label class="limit">Edition <select id="edition"><option value="">Auto</option></select></label>
@@ -19,7 +19,7 @@
       </div>
     </div>
   </form>
-  <div class="examples"><span>Try a query</span><button data-query="Vật lí lớp 11 chương 1 về dao động">Dao động · Lớp 11</button><button data-query="Toán lớp 11 chương 2 về cấp số cộng">Cấp số cộng · Lớp 11</button><button data-query="Hóa học lớp 10 chương 1 về nguyên tử">Nguyên tử · Lớp 10</button><button data-query="Vật lí lớp 11 chương 1 con lắc lò xo">Con lắc lò xo (Semantic)</button><button data-query="Vật lí lớp 10 chương 2 vận tốc gia tốc định luật 2 Newton">Định luật 2 Newton</button></div>
+  <div class="examples"><span>Try a query</span><button data-query="Chu kì và tần số dao động điều hòa">Dao động điều hòa</button><button data-query="Cấp số cộng và công sai">Cấp số cộng</button><button data-query="Cấu tạo nguyên tử hạt nhân proton">Cấu tạo nguyên tử</button><button data-query="Con lắc lò xo biên độ">Con lắc lò xo (Semantic)</button><button data-query="Vận tốc và gia tốc chuyển động thẳng">Vận tốc &amp; gia tốc</button></div>
   <section id="results-section" aria-live="polite" aria-busy="false"><div class="result-heading"><h2>Retrieved documents</h2><span id="timing"></span></div><div id="scope" class="scope"></div><div id="notice" role="status"></div><div id="compare-results" hidden></div><div id="results"></div></section>
   <details id="eval-panel" class="eval-panel"><summary>Benchmark &amp; evaluation lab <span>BM25 vs. Embedding vs. Hybrid</span></summary>
     <div class="eval-controls">

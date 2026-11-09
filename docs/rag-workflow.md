@@ -1,7 +1,7 @@
 # RAG retrieval and evaluation workbench
 
 For ASTRA teammates running, reviewing, benchmarking or integrating the retrieval stage.
-Input: a subject and scope/topic query plus an optional retrieval mode (`hybrid`, `bm25`, `embedding`).
+Input: a knowledge/topic query plus an optional retrieval mode (`hybrid`, `bm25`, `embedding`).
 Output: ranked passages, question labels (`passage_label`), score breakdowns (`relevance_score`, `bm25_score`, `embedding_score`), provenance and explicit gaps.
 Runtime: Python 3.11 standard library; UI: plain HTML/CSS/JavaScript.
 This feature does not settle overall team choices in [mvp-plan.md](mvp-plan.md).
@@ -21,38 +21,33 @@ run `git fetch --all` once if needed. Startup makes no network/model calls.
 
 | Mode | Command | Behavior |
 | --- | --- | --- |
-| Existing corpus | `python -m rag_workflow.app` | Curriculum and usable exam transcriptions; internal prototype |
+| Existing corpus | `python -m rag_workflow.app` | Unified search across curriculum and usable exam transcriptions; internal prototype |
 | Original demo | `python -m rag_workflow.app --demo` | 12 original notes, optional session text imports |
-| Approved pack | `python -m rag_workflow.app --corpus path/to/passages.jsonl` | Strict approval, permissions, KNTT and scope filters |
+| Approved pack | `python -m rag_workflow.app --corpus path/to/passages.jsonl` | Approval and rights permission checks followed by knowledge ranking |
 
 Use `--port 8766` if the port is occupied; `--corpus-ref <commit-sha>` pins an
 existing-corpus snapshot. The server binds to `127.0.0.1`, for local use.
 
 ## Using the demonstration & testing app
 
-1. **Retrieve documents:** Choose **Search in** (`Curriculum` or `Exam transcriptions`), select a **Mode** (`Hybrid`, `BM25`, or `Embedding`), enter a query and click **Retrieve documents**. Result cards display status, question boundary label (`Câu N` when present), excerpt, and score breakdown (`Hybrid · BM25 · Cosine`).
+1. **Retrieve documents:** Choose **Search in** (`All sources (Curriculum + Exams)` by default, or filter to `Curriculum / lesson map` or `Exam transcriptions`), select a **Mode** (`Hybrid`, `BM25`, or `Embedding`), enter any knowledge or topic query, and click **Retrieve documents**. Result cards display the matched source's subject, grade, chapter, status, question boundary label (`Câu N` when present), excerpt, and score breakdown (`Hybrid · BM25 · Cosine`).
 2. **Compare 3 modes side by side:** Click **Compare 3 modes** to run the query across `Hybrid (RRF + Blend)`, `BM25-v2 (Lexical)`, and `Embedding (Cosine)` simultaneously and inspect rank/score differences.
 3. **Run benchmark suite:** Open **Benchmark & evaluation lab** and click **Run benchmark suite** to run automated gold verification (`auto-corpus-check-v1`) and compare `Hit@5`, `Recall@5`, `MRR`, `Passage Hit@5`, `Gap Acc.`, and `False Gap` across all three retrieval modes. Click any benchmark query row to load and test it live.
 
 | View | Example | Meaning |
 | --- | --- | --- |
-| Curriculum | `Vật lí lớp 11 chương 1 về dao động` | Grade 11, chapter 1 draft KNTT scope records |
-| Curriculum | `Vật lí lớp 10 định luật 2 Newton` | Numeric topic keyword inside grade 10 scope |
-| Exam transcriptions | `Vật lí dao động điều hòa con lắc` | Question-segmented passages from usable Physics papers |
-| Demo | `Vật lí lớp 11 chương 1 con lắc lò xo` | Semantic/concept match in `embedding` and `hybrid` modes |
+| All sources (Default) | `dao động điều hòa biên độ pha ban đầu` | Searches across all curriculum units and exam questions simultaneously |
+| Curriculum | `định luật 2 Newton gia tốc lực` | Pure knowledge query with numeric topic keyword |
+| Exam transcriptions | `thí nghiệm tán xạ hạt alpha Rutherford` | Question-segmented passages (`Câu N`) across all usable exam papers |
+| Demo | `con lắc lò xo biên độ` | Semantic/concept match in `embedding` and `hybrid` modes |
 
-Curriculum, demo and approved-pack queries need one subject, grade 10–12 and a
-chapter, lesson, semester or topic. Vietnamese accents, unaccented text, English
-subject aliases and Roman range numerals I–X are supported. Numbers inside scientific
-or historical topics (`định luật 2 Newton`, `năm 1945`, `hàm bậc 3`) are preserved as
-keywords, while unresolved range numbers (`bài 6 7`, `chương 2, 4`) and partial
-chapters (`nửa chương 1`) return `ambiguous_range`. Compound terms containing subject
-substrings (`điều hòa`, `thuật toán`, `bài toán`) are disambiguated so they do not
-false-trigger a second subject.
-
-Exam passages lack verified grade/chapter mappings. Search by subject and topic,
-without a grade. Grade/chapter/lesson/semester constraints return
-`unmapped_exam_scope`. Exam scope reports `grade: null` and `series: null`.
+Queries are **knowledge-first**: users do not need to know or specify the subject,
+grade, chapter, lesson, or semester of a document in the corpus. Optional structural
+labels (such as `Vật lí lớp 11 chương 4`) are stripped automatically so their numbers
+do not pollute topic keywords, while numbers inside scientific or historical topics
+(`định luật 2 Newton`, `năm 1945`, `hàm bậc 3`) and compound words (`điều hòa`,
+`thuật toán`, `bảo toàn`) are preserved as knowledge tokens. Queries containing only
+stop words or bare subject/range labels without knowledge terms return `missing_keywords`.
 
 ## Workflow and architecture
 
@@ -103,7 +98,7 @@ flowchart TD
 
 ## Measured benchmark evaluation
 
-Evaluated on snapshot `8b8fb7b09182b3d9d1eee0b95818027f52ab004d` (`687` curriculum rows, `108` searchable exam papers) using `eval/gold_queries.jsonl` (`37` queries: `20` curriculum, `11` exam with `15` question passage targets, `6` expected-gap guardrails; split into `18` dev and `19` held-out queries). All `68` document targets and `15` passage labels were verified programmatically via `auto-corpus-check-v1`:
+Evaluated on snapshot `8b8fb7b09182b3d9d1eee0b95818027f52ab004d` (`687` curriculum rows, `108` searchable exam papers) using `eval/gold_queries.jsonl` (`35` pure-knowledge queries across `all`, `curriculum`, and `exam` collections with `75` document targets, `15` question passage targets, and `4` expected-gap guardrails; split into `17` dev and `18` held-out queries). All `75` document targets and `15` passage labels were verified programmatically via `auto-corpus-check-v1`:
 
 ```powershell
 python -m rag_workflow.eval --existing --mode all --out runs/eval-existing.json
@@ -111,20 +106,20 @@ python -m rag_workflow.eval --existing --mode all --out runs/eval-existing.json
 
 | Mode | Method | Split | Queries | Hit@5 | Recall@5 | MRR | Exam Passage Hit@5 | Gap Accuracy | False Gap Rate |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| **Hybrid** | `hybrid-rrf-v1` | All (37) | 37 | **100.0%** | **92.5%** | **1.000** | **100.0%** | **100.0%** | **0.0%** |
-| **BM25** | `bm25-passages-v2` | All (37) | 37 | 93.5% | 84.4% | 0.935 | 100.0% | 100.0% | 6.5% |
-| **Embedding** | `embedding-char-word-v1` | All (37) | 37 | **100.0%** | **92.5%** | 0.935 | 100.0% | 100.0% | **0.0%** |
-| **Hybrid** | `hybrid-rrf-v1` | Held-out (19) | 19 | **100.0%** | **96.9%** | **1.000** | **100.0%** | **100.0%** | **0.0%** |
-| **BM25** | `bm25-passages-v2` | Held-out (19) | 19 | 93.8% | 87.5% | 0.938 | 100.0% | 100.0% | 6.2% |
-| **Embedding** | `embedding-char-word-v1` | Held-out (19) | 19 | **100.0%** | **96.9%** | 0.969 | 100.0% | 100.0% | **0.0%** |
+| **Hybrid** | `hybrid-rrf-v1` | All (35) | 35 | **100.0%** | **91.7%** | **1.000** | **100.0%** | **100.0%** | **0.0%** |
+| **BM25** | `bm25-passages-v2` | All (35) | 35 | 93.5% | 85.0% | 0.919 | 100.0% | 100.0% | 6.5% |
+| **Embedding** | `embedding-char-word-v1` | All (35) | 35 | **100.0%** | 85.5% | 0.904 | 100.0% | 100.0% | **0.0%** |
+| **Hybrid** | `hybrid-rrf-v1` | Held-out (18) | 18 | **100.0%** | **93.8%** | **1.000** | **100.0%** | **100.0%** | **0.0%** |
+| **BM25** | `bm25-passages-v2` | Held-out (18) | 18 | 93.8% | 87.0% | 0.938 | 100.0% | 100.0% | 6.2% |
+| **Embedding** | `embedding-char-word-v1` | Held-out (18) | 18 | **100.0%** | 91.7% | 0.896 | 100.0% | 100.0% | **0.0%** |
 
-Why Hybrid wins: `BM25` has strong rank-1 precision on exact terms (`Exam MRR = 1.000`) but fails when queries use synonyms or cross-lingual terms (`Curriculum Hit@5 = 90.0%`, `False Gap = 10.0%`). `Embedding` achieves `100.0%` `Hit@5` and `0.0%` false gaps across synonyms, while `Hybrid` combines both signals to achieve `100.0%` `Hit@5`, `92.5%` `Recall@5`, and `1.000` `MRR`.
+Why Hybrid wins: `BM25` has strong rank-1 precision on exact terms (`Exam MRR = 1.000`) but misses when queries use synonyms or cross-lingual terms (`Curriculum Hit@5 = 84.6%`, `False Gap = 15.4%`). `Embedding` achieves `100.0%` `Hit@5` and `0.0%` false gaps across synonyms, while `Hybrid` combines both signals to achieve `100.0%` `Hit@5`, `91.7%` `Recall@5`, and `1.000` `MRR`.
 
 ## CLI and HTTP API
 
 ```powershell
-python -m rag_workflow.cli --existing --mode hybrid --query "Vật lí lớp 11 chương 1 dao động"
-python -m rag_workflow.cli --existing --collection exam --mode hybrid --query "Vật lí dao động điều hòa"
+python -m rag_workflow.cli --existing --mode hybrid --query "dao động điều hòa con lắc lò xo"
+python -m rag_workflow.cli --existing --collection exam --mode hybrid --query "thí nghiệm tán xạ hạt alpha Rutherford"
 python -m rag_workflow.eval --existing --mode all
 python -m rag_workflow.eval --demo --mode all
 ```
