@@ -830,6 +830,9 @@ def _retrieve_single_question(
     ]
 
     provenance_summary = {
+        "source_id": matched_packs[0]["provenance"]["source_id"],
+        "source_locator": matched_packs[0]["provenance"]["source_locator"],
+        "source_version": release["release_info"]["corpus_snapshot"],
         "corpus_snapshot": release["release_info"]["corpus_snapshot"],
         "release_fingerprint": release["release_fingerprint"],
         "bundle_sha256": release["release_info"]["bundle_sha256"],

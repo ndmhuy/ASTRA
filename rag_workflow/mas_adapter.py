@@ -120,16 +120,23 @@ def render_reference_material(ctx: dict[str, Any]) -> str:
             )
             lines.append(f"  Đề mẫu (Stem): {ex['stem']}")
             if ex.get("options"):
-                opts = " | ".join(f"{o.get('label')}. {o.get('text')}" for o in ex["options"])
+                opts = " | ".join(
+                    f"{o.get('label')}. {o.get('text')}" if isinstance(o, dict) else str(o)
+                    for o in ex["options"]
+                )
                 lines.append(f"  Lựa chọn: {opts}")
             if ex.get("statements"):
                 stmts = " | ".join(
                     f"{s.get('label')}) [{s.get('level', '')}] {s.get('text')}"
+                    if isinstance(s, dict)
+                    else str(s)
                     for s in ex["statements"]
                 )
                 lines.append(f"  Các mệnh đề Đúng/Sai: {stmts}")
             ans_str = ", ".join(
                 f"{a.get('sub') + ':' if a.get('sub') else ''}{a.get('answer')} ({a.get('level')})"
+                if isinstance(a, dict)
+                else str(a)
                 for a in (ex.get("answers") or [])
             )
             lines.append(f"  Đáp án tham chiếu: {ans_str}")

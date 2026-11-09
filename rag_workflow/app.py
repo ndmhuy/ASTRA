@@ -20,14 +20,18 @@ from .eval import (
     load_gold_queries,
 )
 from .existing_corpus import load_existing_corpus
+from .matrix_retriever import default_toan_thpt_matrix, retrieve_exam_context
 from .models import CONFIG, Gap
+from .profile_pack import get_topic_pack, load_profile_release
 from .results import collection_fingerprint, document_dict
 from .workflow import run_documents
 
 WEB = Path(__file__).with_name("web")
 
 
-def create_server(port=8765, documents=None, corpus_info=None):
+def create_server(
+    port=8765, documents=None, corpus_info=None, pack_dir=None, corpus_ref="origin/staging/rag"
+):
     collection = list(demo_documents() if documents is None else documents)
     lock = threading.Lock()
 
@@ -84,6 +88,55 @@ def create_server(port=8765, documents=None, corpus_info=None):
                         "max_top_k": CONFIG["max_top_k"],
                     },
                 )
+            elif route == "/api/topic-packs":
+                try:
+                    rel = load_profile_release(subject="toan", ref=corpus_ref, pack_dir=pack_dir)
+                    packs = [
+                        {
+                            "topic_pack_id": p["topic_pack_id"],
+                            "topic_key": p["topic_key"],
+                            "display_topic": p["display_topic"],
+                            "grades": p["grades"],
+                            "parts_present": p["parts_present"],
+                            "levels_present": p["levels_present"],
+                            "unknown_level_count": p["unknown_level_count"],
+                            "observation_count": len(p["construction_observations"]),
+                            "ready_example_count": len(p["examples"]),
+                            "provenance": p["provenance"],
+                        }
+                        for p in sorted(
+                            rel["topic_packs_by_id"].values(),
+                            key=lambda item: item["display_topic"],
+                        )
+                    ]
+                    self.send(
+                        200,
+                        {
+                            "status": "success",
+                            "release_info": rel["release_info"],
+                            "topic_packs": packs,
+                        },
+                    )
+                except Gap as exc:
+                    self.send(400, {"error": str(exc), "code": exc.code})
+            elif route.startswith("/api/topic-packs/"):
+                identifier = route.removeprefix("/api/topic-packs/")
+                try:
+                    rel = load_profile_release(subject="toan", ref=corpus_ref, pack_dir=pack_dir)
+                    pack = get_topic_pack(rel, identifier)
+                    self.send(
+                        200,
+                        {
+                            "status": "success",
+                            "release_info": rel["release_info"],
+                            "topic_pack": pack,
+                        },
+                    )
+                except Gap as exc:
+                    status_code = 404 if exc.code == "topic_not_found" else 400
+                    self.send(status_code, {"error": str(exc), "code": exc.code})
+            elif route == "/api/matrix-sample":
+                self.send(200, default_toan_thpt_matrix())
             elif route.startswith("/api/documents/"):
                 with lock:
                     document = next(
@@ -97,7 +150,7 @@ def create_server(port=8765, documents=None, corpus_info=None):
                 self.send(404, {"error": "Not found."})
 
         def do_POST(self):
-            # Only the local page may submit requests; no remote website imports.
+            # Only the local page or local orchestrator client may submit requests.
             if self.headers.get("Origin") not in (None, f"http://{self.headers.get('Host')}"):
                 return self.send(403, {"error": "Cross-origin requests are not allowed."})
             try:
@@ -107,6 +160,13 @@ def create_server(port=8765, documents=None, corpus_info=None):
                 payload = json.loads(self.rfile.read(length))
                 if not isinstance(payload, dict):
                     raise ValueError("Expected a JSON object.")
+                if self.path == "/api/matrix-retrieve":
+                    started = time.perf_counter()
+                    res = retrieve_exam_context(
+                        payload, ref=corpus_ref, pack_dir=pack_dir
+                    ).to_dict()
+                    res["elapsed_ms"] = round((time.perf_counter() - started) * 1000, 1)
+                    return self.send(200, res)
                 if self.path == "/api/search":
                     started = time.perf_counter()
                     with lock:
@@ -216,6 +276,7 @@ def main():
     inputs = parser.add_mutually_exclusive_group()
     inputs.add_argument("--corpus", type=Path, help="Approved JSONL pack")
     inputs.add_argument("--demo", action="store_true", help="Use 12 original demo notes")
+    inputs.add_argument("--pack-dir", type=Path, help="Exported release pack directory")
     parser.add_argument(
         "--corpus-ref",
         default="origin/staging/rag",
@@ -227,10 +288,28 @@ def main():
     try:
         if args.corpus:
             documents = load_documents(args.corpus)[0]
+        elif args.pack_dir:
+            rel = load_profile_release(subject="toan", pack_dir=args.pack_dir)
+            documents = rel["curriculum_docs"]
+            info = {
+                "snapshot": rel["release_info"]["corpus_snapshot"],
+                "corpus_sha256": rel["release_fingerprint"],
+                "ref": str(args.pack_dir),
+                "curriculum_rows": len(documents),
+                "exam_papers": 0,
+                "mode": "exported release pack",
+            }
+            print(json.dumps(rel["release_info"], ensure_ascii=True), flush=True)
         elif not args.demo:
             documents, info = load_existing_corpus(args.corpus_ref)
             print(json.dumps(info, ensure_ascii=True), flush=True)
-        server = create_server(args.port, documents, info)
+        server = create_server(
+            args.port,
+            documents,
+            info,
+            pack_dir=args.pack_dir,
+            corpus_ref=args.corpus_ref,
+        )
     except (Gap, OSError) as exc:
         print(f"Cannot start ASTRA: {exc}", file=sys.stderr)
         return 2

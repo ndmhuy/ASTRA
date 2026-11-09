@@ -192,6 +192,7 @@ def _extract_common_mistakes(
 
     for ev_class, pat_list in (patterns_by_class or {}).items():
         for pat in pat_list:
+            mapped_part = PART_KIND_TO_PART.get(pat.get("part_kind", ""), pat.get("part_kind"))
             wo = pat.get("wrong_options")
             if wo and isinstance(wo, str) and wo.strip():
                 key = ("pattern", wo.strip())
@@ -200,12 +201,26 @@ def _extract_common_mistakes(
                     mistakes.append(
                         {
                             "source_type": "pattern_wrong_options",
-                            "part": PART_KIND_TO_PART.get(
-                                pat.get("part_kind", ""), pat.get("part_kind")
-                            ),
+                            "part": mapped_part,
                             "topic": pat.get("topic"),
                             "mistake_kind": "Cơ chế nhiễu theo dạng bài",
                             "detail": wo.strip(),
+                            "evidence_class": ev_class,
+                            "refs": list(pat.get("refs") or []),
+                        }
+                    )
+            elif mapped_part == "P3" and pat.get("difficulty_source"):
+                ds = str(pat["difficulty_source"]).strip()
+                key = ("p3_pattern_trap", ds)
+                if ds and key not in seen:
+                    seen.add(key)
+                    mistakes.append(
+                        {
+                            "source_type": "p3_pattern_difficulty_trap",
+                            "part": "P3",
+                            "topic": pat.get("topic"),
+                            "mistake_kind": "Bẫy mô hình hóa & điều kiện P3",
+                            "detail": ds,
                             "evidence_class": ev_class,
                             "refs": list(pat.get("refs") or []),
                         }
@@ -224,6 +239,22 @@ def _extract_common_mistakes(
                         "topic": obs.get("topic"),
                         "mistake_kind": "Lỗi sai quan sát từ câu nguồn",
                         "detail": wo.strip(),
+                        "evidence_class": obs.get("evidence_class"),
+                        "refs": [obs.get("ref")] if obs.get("ref") else [],
+                    }
+                )
+        elif obs.get("part") == "P3" and obs.get("difficulty_source"):
+            ds = str(obs["difficulty_source"]).strip()
+            key = ("p3_obs_trap", ds)
+            if ds and key not in seen:
+                seen.add(key)
+                mistakes.append(
+                    {
+                        "source_type": "p3_observation_difficulty_trap",
+                        "part": "P3",
+                        "topic": obs.get("topic"),
+                        "mistake_kind": "Điểm dễ sai khi giải tự luận ngắn P3",
+                        "detail": ds,
                         "evidence_class": obs.get("evidence_class"),
                         "refs": [obs.get("ref")] if obs.get("ref") else [],
                     }
