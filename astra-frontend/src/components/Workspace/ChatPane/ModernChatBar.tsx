@@ -97,21 +97,7 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
       )}
 
       {/* Main input container */}
-      <div className="composer-box"
-        style={{
-          border: '1.5px solid #cbd5e1',
-          borderRadius: 6,
-          boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
-          background: '#ffffff',
-          transition: 'border-color 150ms ease',
-        }}
-        onFocusCapture={(e) => {
-          (e.currentTarget as HTMLDivElement).style.borderColor = '#24634b';
-        }}
-        onBlurCapture={(e) => {
-          (e.currentTarget as HTMLDivElement).style.borderColor = '#cbd5e1';
-        }}
-      >
+      <div className="composer-box">
         <textarea
           ref={textareaRef}
           aria-label="Yêu cầu soạn đề"

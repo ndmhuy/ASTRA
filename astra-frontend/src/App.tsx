@@ -1,7 +1,6 @@
-import { House, NotebookPen, Library, Download, FileCheck } from 'lucide-react';
+import { House, NotebookPen, Library } from 'lucide-react';
 import React, { useState, useEffect, useSyncExternalStore, useCallback } from 'react';
 import { AstraWelcome } from './components/AstraWelcome';
-import { SchoolArt } from './components/SchoolArt';
 import { AstraLogo } from './components/AstraLogo';
 import { OnboardingFork } from './components/OnboardingFork';
 import { QuickPresetModal } from './components/QuickPresetModal';
@@ -16,6 +15,7 @@ import { ExamSessions } from './state/examSessions';
 import './styles/workspace.css';
 import './styles/classroom.css';
 import './styles/studio.css';
+import './styles/createVision.css';
 
 export const App: React.FC = () => {
   const [showWelcome, setShowWelcome] = useState(true);
@@ -25,6 +25,7 @@ export const App: React.FC = () => {
   const sessions = useSyncExternalStore(store.subscribe, store.getSnapshot);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [screen, setScreen] = useState<'onboarding' | 'workspace'>('onboarding');
+  const [controlsCollapsed, setControlsCollapsed] = useState(false);
   const [showQuickModal, setShowQuickModal] = useState(false);
   const [configureId, setConfigureId] = useState<string | null>(null);
   const closeQuickModal = useCallback(() => setShowQuickModal(false), []);
@@ -53,17 +54,14 @@ export const App: React.FC = () => {
   if (showWelcome) return <AstraWelcome onComplete={finishWelcome} />;
 
   return (
-    <div className={`app-shell ${screen === 'workspace' ? 'workspace-active' : ''}`}>
+    <div className={`app-shell ${screen === 'workspace' ? 'workspace-active create-mode' : homeTab === 'create' ? 'create-mode' : ''} ${screen === 'workspace' && controlsCollapsed ? 'controls-collapsed' : ''}`}>
       <header className="app-header">
         <button className="app-brand" aria-label="ASTRA · Màn hình chính" onClick={() => { setScreen('onboarding'); setHomeTab('welcome'); }}>
           <AstraLogo className="app-brand-logo" /><span>ASTRA</span>
         </button>
         <nav className="main-tabs" aria-label="Điều hướng chính">{([{id:'welcome',label:'Chào thầy cô',icon:House}, {id:'create',label:'Soạn đề',icon:NotebookPen}, {id:'library',label:'Tủ đề',icon:Library}] as const).map(tab => <button key={tab.id} aria-label={tab.label} title={tab.label} aria-current={(screen === 'workspace' ? tab.id === 'create' : homeTab === tab.id) ? 'page' : undefined} onClick={() => { setHomeTab(tab.id); setScreen('onboarding'); }}><tab.icon size={21} strokeWidth={1.7} aria-hidden="true" /><span>{tab.label}</span></button>)}</nav>
-        {screen === 'workspace' && active?.status === 'complete' && <div className="rail-exports" aria-label="Xuất tài liệu">
-          <button className="button-primary" onClick={handleExportWord}><Download size={18} aria-hidden="true" />Xuất Word</button>
-          <button className="button-secondary" onClick={handleExportAnswer}><FileCheck size={18} aria-hidden="true" />Xuất đáp án</button>
-        </div>}
-        <div className="header-right"><span className="header-session">Cùng thầy cô, mỗi ngày.</span><span className="header-avatar" aria-label="Giáo viên">GV</span></div>
+        {screen === 'workspace' && <button className="side-rail-edge" type="button" onClick={() => setControlsCollapsed(value => !value)} aria-label={controlsCollapsed ? 'Mở rộng thanh điều hướng' : 'Thu gọn thanh điều hướng'} aria-expanded={!controlsCollapsed} title={controlsCollapsed ? 'Mở rộng thanh điều hướng' : 'Thu gọn thanh điều hướng'} />}
+        <div className="header-right"><span className="header-avatar" aria-label="Người dùng: Cùng thầy cô" title="Cùng thầy cô">GV</span><span className="header-session">Cùng thầy cô</span></div>
       </header>
 
       {/* Main content */}
@@ -84,14 +82,13 @@ export const App: React.FC = () => {
           {{
             left: (
               <>
-                <div className="studio-chat-heading"><h2>Cùng soạn đề</h2><span className="studio-heading-art" aria-hidden="true"><SchoolArt kind="book" /></span></div>
+                <div className="studio-chat-heading"><div><span className="studio-kicker">KHÔNG GIAN SOẠN ĐỀ</span><h2>Cùng soạn đề</h2></div></div>
                 <div className="session-context"><strong>{active.title}</strong></div>
                 {(active.status === 'draft' || active.status === 'error') && <div className="session-create-action">
                   {active.error && <p role="alert">{active.error}</p>}
                   <button className="button-primary" onClick={() => { setConfigureId(active.id); setShowQuickModal(true); }}>{active.status === 'error' ? 'Thử tạo lại' : 'Tạo đề từ yêu cầu'}</button>
                 </div>}
-                <ChatHistory messages={messages} onSuggestion={value => store.setDraft(active.id, value)} />
-                <ModernChatBar onSend={handleSendMessage} disabled={isGenerating} draft={active.draft} onDraftChange={value => store.setDraft(active.id, value)} />
+                <ChatHistory messages={messages} onSuggestion={value => store.setDraft(active.id, value)} onEditMessage={message => store.setDraft(active.id, message.content)} onRetractMessage={message => store.retractMessage(active.id, message.id)} onBranchMessage={message => { const branchId = store.branchAtMessage(active.id, message.id); if (branchId) setActiveId(branchId); }} />
               </>
             ),
             right: (
@@ -99,7 +96,9 @@ export const App: React.FC = () => {
                 <CanvasHeader
                   examMeta={examMeta}
                   isGenerating={isGenerating}
-                  canExport={false}
+                  canExport={active.status === 'complete'}
+                  onExportWord={handleExportWord}
+                  onExportAnswer={handleExportAnswer}
                 />
                 <ExamPaperView
                   questions={liveQuestions}
@@ -109,6 +108,7 @@ export const App: React.FC = () => {
                 />
               </>
             ),
+            composer: <ModernChatBar onSend={handleSendMessage} disabled={isGenerating} draft={active.draft} onDraftChange={value => store.setDraft(active.id, value)} />,
           }}
         </WorkspaceLayout>
       )}

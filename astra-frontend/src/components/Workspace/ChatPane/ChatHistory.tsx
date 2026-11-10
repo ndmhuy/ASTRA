@@ -1,14 +1,19 @@
 import React, { useEffect, useRef } from 'react';
+import { Copy, GitBranch, Pencil, RotateCcw } from 'lucide-react';
 import { SchoolArt } from '../../SchoolArt';
 import type { ChatMessage } from '../../../types/exam';
 
 interface ChatHistoryProps {
   messages: ChatMessage[];
   onSuggestion?: (value: string) => void;
+  onEditMessage?: (message: ChatMessage) => void;
+  onRetractMessage?: (message: ChatMessage) => void;
+  onBranchMessage?: (message: ChatMessage) => void;
 }
 
-export const ChatHistory: React.FC<ChatHistoryProps> = ({ messages, onSuggestion }) => {
+export const ChatHistory: React.FC<ChatHistoryProps> = ({ messages, onSuggestion, onEditMessage, onRetractMessage, onBranchMessage }) => {
   const bottomRef = useRef<HTMLDivElement>(null);
+  const [copiedId, setCopiedId] = React.useState<string | null>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'nearest' });
@@ -32,19 +37,26 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({ messages, onSuggestion
         if (msg.role === 'system') return null;
 
         const isUser = msg.role === 'user';
-        return (
-          <div key={msg.id} className={isUser ? 'chat-msg-user' : 'chat-msg-assistant'}>
-            {!isUser && (
-              <div className="chat-msg-label">ASTRA</div>
-            )}
-            <div style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{msg.content}</div>
-            {msg.timestamp && (
-              <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 3 }}>
-                {new Date(msg.timestamp).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
-              </div>
-            )}
+        const copyMessage = async () => {
+          try {
+            await navigator.clipboard.writeText(msg.content);
+            setCopiedId(msg.id);
+            window.setTimeout(() => setCopiedId(current => current === msg.id ? null : current), 1400);
+          } catch { /* Clipboard access may be unavailable in non-secure contexts. */ }
+        };
+        return <article key={msg.id} className={`chat-message-row ${isUser ? 'is-user' : 'is-assistant'}`}>
+          <div className={isUser ? 'chat-msg-user' : 'chat-msg-assistant'}>
+            {!isUser && <div className="chat-msg-label">ASTRA</div>}
+            <div className="chat-message-content">{msg.content}</div>
+            {msg.timestamp && <div className="chat-message-time">{new Date(msg.timestamp).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</div>}
           </div>
-        );
+          <div className="chat-message-actions" aria-label="Thao tác tin nhắn">
+            <button type="button" title={copiedId === msg.id ? 'Đã sao chép' : 'Sao chép'} aria-label="Sao chép tin nhắn" onClick={() => void copyMessage()}><Copy size={14} /><span>{copiedId === msg.id ? 'Đã chép' : 'Sao chép'}</span></button>
+            {isUser && <button type="button" title="Chỉnh sửa tin nhắn" aria-label="Chỉnh sửa tin nhắn" onClick={() => onEditMessage?.(msg)}><Pencil size={14} /><span>Sửa</span></button>}
+            {isUser && <button type="button" title="Thu hồi tin nhắn này và các tin sau" aria-label="Thu hồi tin nhắn" onClick={() => onRetractMessage?.(msg)}><RotateCcw size={14} /><span>Thu hồi</span></button>}
+            <button type="button" title="Tạo nhánh hội thoại tại đây" aria-label="Tạo nhánh hội thoại" onClick={() => onBranchMessage?.(msg)}><GitBranch size={14} /><span>Tạo nhánh</span></button>
+          </div>
+        </article>;
       })}
       <div ref={bottomRef} />
     </div>

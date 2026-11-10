@@ -2,7 +2,7 @@ import { StationeryArt } from './StationeryArt';
 import { SchoolArt } from './SchoolArt';
 import React, { useState } from 'react';
 import type { ExamSession } from '../state/examSessions';
-import { ArrowRight, FileText, Search, Trash2, Library, Clock3, CheckCheck } from 'lucide-react';
+import { ArrowRight, FileText, Search, Trash2, Library, Clock3, CheckCheck, BookOpenCheck, Sparkles } from 'lucide-react';
 
 interface OnboardingForkProps {
   tab: 'welcome' | 'create' | 'library';
@@ -28,8 +28,27 @@ export const OnboardingFork: React.FC<OnboardingForkProps> = ({ tab, onTabChange
         <div className="hero-art"><StationeryArt kind="ruler" className="hero-ruler" /><span className="art-caption">Một chút cảm hứng cho lớp học</span><SchoolArt kind="globe" className="hero-globe" /><SchoolArt kind="book" className="hero-book" /><SchoolArt kind="bag" className="hero-bag" /><span className="art-star star-one">✦</span><span className="art-star star-two">✦</span><span className="art-note">Thầy cô lên ý tưởng,<br />ASTRA cùng soạn đề.</span></div>
       </header>}
       {tab === 'create' && <section className="creation-panel" aria-labelledby="create-heading">
-        <div className="creation-decor" aria-hidden="true"><StationeryArt kind="palette" /><StationeryArt kind="science" /><StationeryArt kind="pencil" /><StationeryArt kind="spring" /></div><div className="creation-intro"><span className="section-number">01 / BẮT ĐẦU</span><h2 id="create-heading">Hôm nay, mình soạn gì?</h2><p>Chọn một cách bắt đầu phù hợp với thầy cô.</p></div>
-        <div className="creation-options"><button className="creation-option" onClick={onQuickMode}><span className="option-number">01</span><SchoolArt kind="book" className="option-art" /><span className="option-copy"><strong>Từ một mẫu có sẵn</strong><small>Chọn môn học, chọn loại đề.<br />Phần còn lại, để ASTRA hỗ trợ.</small><span className="option-cta">Chọn mẫu đề <ArrowRight size={19} /></span></span></button><button className="creation-option" onClick={onProMode}><span className="option-number">02</span><SchoolArt kind="globe" className="option-art" /><span className="option-copy"><strong>Từ ý tưởng của thầy cô</strong><small>Mô tả chủ đề, số câu và độ khó.<br />Một đề thi theo cách của riêng mình.</small><span className="option-cta">Bắt đầu viết <ArrowRight size={19} /></span></span></button></div>
+        <div className="create-intro">
+          <span className="create-eyebrow">SOẠN ĐỀ · ASTRA</span>
+          <h1 id="create-heading">Một ý tưởng hay<br /><em>thành đề thi rõ ràng.</em></h1>
+          <p>Chọn cách bắt đầu. Thầy cô luôn xem lại đề trước khi sử dụng.</p>
+        </div>
+        <div className="create-start-options">
+          <button className="create-start-card create-start-quick" onClick={onQuickMode}>
+            <span className="create-card-icon"><BookOpenCheck size={24} strokeWidth={1.7} /></span>
+            <span className="create-card-copy"><strong>Tạo nhanh</strong><small>Chọn môn học và dạng đề có sẵn để bắt đầu trong vài bước.</small></span>
+            <span className="create-card-action">Chọn mẫu <ArrowRight size={18} aria-hidden="true" /></span>
+          </button>
+          <button className="create-start-card create-start-custom" onClick={onProMode}>
+            <span className="create-card-icon"><Sparkles size={24} strokeWidth={1.7} /></span>
+            <span className="create-card-copy"><strong>Tùy chỉnh đề</strong><small>Mô tả chủ đề, số câu và độ khó trong không gian làm việc.</small></span>
+            <span className="create-card-action">Bắt đầu viết <ArrowRight size={18} aria-hidden="true" /></span>
+          </button>
+        </div>
+        {sessions.some(session => session.status === 'draft' || session.status === 'generating' || session.status === 'error') && <section className="create-recent" aria-label="Đề đang làm">
+          <span className="create-eyebrow">TIẾP TỤC CÔNG VIỆC</span>
+          <div>{sessions.filter(session => session.status === 'draft' || session.status === 'generating' || session.status === 'error').slice(0, 3).map(session => <button key={session.id} onClick={() => onOpenSession(session.id)}><span><strong>{session.title}</strong><small>{session.meta ? `${session.meta.subject} · ${session.meta.completedCount}/${session.meta.totalCount} câu` : 'Bản nháp'}</small></span><ArrowRight size={18} aria-hidden="true" /></button>)}</div>
+        </section>}
       </section>}
       {tab === 'library' && <section className="exam-library" aria-labelledby="library-heading"><header className="library-heading"><div><StationeryArt kind="clipboard" className="library-clipboard" /><h2 id="library-heading">Tủ đề của thầy cô</h2><span>{visible.length} đề thi</span></div>{sessions.length > 0 && <label className="library-search"><Search size={17} /><input aria-label="Tìm đề thi" placeholder="Tìm tên đề, môn học…" value={query} onChange={e => setQuery(e.target.value)} /></label>}</header>
         {sessions.length > 0 && <nav className="library-filters" aria-label="Lọc đề thi">{tabs.map(({ id, label, count }) => <button key={id} aria-pressed={filter === id} onClick={() => setFilter(id)}>{label} <span>{count}</span></button>)}</nav>}

@@ -1,4 +1,6 @@
-## 1. Applying Computational Thinking: User-Centric Flow
+Reviewer: Khang
+
+### 1. Applying Computational Thinking: User-Centric Flow
 
 * **Core Problem:** Differentiate product value across target user segments while outperforming competitor generation speeds (**Decomposition**).
 * **User Personas:**
@@ -11,14 +13,14 @@
     * **Quick Mode:** Instant generation with 2 inputs: subject (11 canon options) and format (THPT, DGNL, or 15-minute test).
     * **Advanced Mode:** Deep configuration: question count by type, difficulty curve, scope/range, time limit, model selection, and verification mode.
 
-## 2. Core Interface Concept & UX Guidelines
+### 2. Core Interface Concept & UX Guidelines
 
 * **Platform & Aesthetics:** Desktop-first; light mode; airy, open, minimal, futuristic vibe.
 * **Entry Flow:** Onboarding prompt asks: *"Generate quickly?"* $\rightarrow$ Yes (Quick Mode) / No (Direct to Pro Mode).
 * **Workspace & Chat:** Standard LLM chat input with document attachment and web search toggles. Renders live exam assembly side-by-side with chat output for real-time visual feedback.
 * **Design Anti-Patterns to Avoid:** Restrain animations to reduce eye fatigue. Avoid generic AI interface cliches: excessive corner rounding, red-yellow-green status palettes, oversized typography, and inline status badges on every element.
 
-## 3. Current Build Issues & Action Items
+### 3. Current Build Issues & Action Items
 
 * **Existing Deficiencies:** Generic fonts, visual inconsistencies, matching foreground/background colors, cluttered "tupperware" containers, disproportionately large sidebars, and redundant element labels.
 * **Layout Restructure:**

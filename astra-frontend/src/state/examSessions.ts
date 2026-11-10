@@ -48,6 +48,29 @@ export class ExamSessions {
     this.emit();
   }
   setDraft(id: string, draft: string) { this.update(id, session => ({ ...session, draft })); }
+  retractMessage(id: string, messageId: string) {
+    this.update(id, session => {
+      const index = session.messages.findIndex(message => message.id === messageId);
+      return index < 0 ? session : { ...session, messages: session.messages.slice(0, index) };
+    });
+  }
+  branchAtMessage(id: string, messageId: string) {
+    const source = this.sessions.find(session => session.id === id);
+    const index = source?.messages.findIndex(message => message.id === messageId) ?? -1;
+    if (!source || index < 0) return null;
+    const branch: ExamSession = {
+      ...source,
+      id: crypto.randomUUID(),
+      title: `Nhánh · ${source.title}`,
+      createdAt: new Date().toISOString(),
+      status: source.status === 'generating' ? 'draft' : source.status,
+      messages: source.messages.slice(0, index + 1),
+      draft: '',
+    };
+    this.sessions = [branch, ...this.sessions];
+    this.emit();
+    return branch.id;
+  }
   sendMessage(id: string, content: string) {
     const message = (role: ChatMessage['role'], text: string): ChatMessage => ({ id: crypto.randomUUID(), role, content: text, timestamp: new Date().toISOString() });
     this.update(id, session => ({ ...session, title: session.mode === 'custom' && !session.meta && session.messages.length === 0 ? content.slice(0, 72) : session.title, draft: '', messages: [...session.messages, message('user', content), message('assistant', session.status === 'complete' ? 'Đã ghi nhận yêu cầu chỉnh sửa cho đề này. Chỉnh sửa bằng hội thoại sẽ khả dụng khi kết nối dịch vụ AI.' : 'Đã ghi nhận yêu cầu cho đề này. Chọn “Tạo đề từ yêu cầu” để chọn môn học, cấu trúc và bắt đầu tạo đề.')] }));
