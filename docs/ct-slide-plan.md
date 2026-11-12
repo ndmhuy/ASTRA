@@ -1,5 +1,7 @@
 # KẾ HOẠCH SLIDE: ASTRA qua 4 trụ cột Computational Thinking
 
+> **English is the primary version for the teams: [ct-slide-plan.en.md](ct-slide-plan.en.md).** This Vietnamese file mirrors it (same slide numbers and tags); change the English file first, then this one.
+
 **Đây là gì:** bản draft bố cục và nội dung cho bộ slide phân tích ASTRA theo 4 pillars (Decomposition, Pattern Recognition, Abstraction, Algorithmic Design). **Cho ai:** nhóm Trial and Success (CSC10014), người soạn slide và người phản biện. **Ngôn ngữ:** thân bài tiếng Việt, thuật ngữ và tag giữ tiếng Anh theo slide môn học. **Trạng thái:** draft do AI soạn từ ý tưởng của Huy ngày 2026-11-12, chưa ai duyệt (xem mục "Chưa kiểm chứng" cuối file).
 
 Nguồn khung lý thuyết: Slide01 (Intro CT), Slide02 (Thinking & Reasoning), Slide03 (Decomposition), Slide04 (Pattern Recognition). Nguồn nội dung dự án: [ASTRA_Trial_and_Success_Report.md](../ASTRA_Trial_and_Success_Report.md), [mvp-plan.md](mvp-plan.md).
