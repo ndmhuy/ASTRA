@@ -2,307 +2,253 @@
 
 > **English is the primary version for the teams: [ct-slide-plan.en.md](ct-slide-plan.en.md).** This Vietnamese file mirrors it (same slide numbers and tags); change the English file first, then this one.
 
-**Đây là gì:** bản draft bố cục và nội dung cho bộ slide phân tích ASTRA theo 4 pillars (Decomposition, Pattern Recognition, Abstraction, Algorithmic Design). **Cho ai:** nhóm Trial and Success (CSC10014), người soạn slide và người phản biện. **Ngôn ngữ:** thân bài tiếng Việt, thuật ngữ và tag giữ tiếng Anh theo slide môn học. **Trạng thái:** draft do AI soạn từ ý tưởng của Huy ngày 2026-11-12, chưa ai duyệt (xem mục "Chưa kiểm chứng" cuối file).
+**Đây là gì:** bố cục và nội dung nháp của bộ slide phân tích ASTRA qua bốn trụ cột (Decomposition, Pattern Recognition, Abstraction, Algorithmic Design). Dành cho nhóm Trial and Success (CSC10014), người làm slide và người duyệt. **Trạng thái:** v2, 2026-11-12. v1 do AI soạn từ ghi chú của Huy; v2 áp các góp ý của nhóm (xem "Thay đổi ở v2"). Chưa ai đọc lại.
 
-Nguồn khung lý thuyết: Slide01 (Intro CT), Slide02 (Thinking & Reasoning), Slide03 (Decomposition), Slide04 (Pattern Recognition). Nguồn nội dung dự án: [ASTRA_Trial_and_Success_Report.md](../ASTRA_Trial_and_Success_Report.md), [mvp-plan.md](mvp-plan.md).
+Nguồn lý thuyết: Slide01 (Intro to CT), Slide02 (Thinking and Reasoning), Slide03 (Decomposition), Slide04 (Pattern Recognition). Nguồn dự án: [ASTRA_Trial_and_Success_Report.md](../ASTRA_Trial_and_Success_Report.md), [mvp-plan.md](mvp-plan.md).
 
-> **Slide về Abstraction và Algorithmic Design chưa được cung cấp.** Với hai trụ này file chỉ dùng định nghĩa ở Slide01/02 (Abstraction = bỏ nhiễu, giữ mô hình lõi; Algorithmic Design = các bước máy làm được; pseudocode; imperative và declarative). Không gán kỹ thuật nào khác cho môn học.
+> **Cảnh báo (từ nhóm): các kiểu reasoning và kĩ thuật gắn vào mục bên dưới CHƯA được kiểm chứng với những gì thầy dạy.** Coi chúng là gợi ý, đối chiếu bài giảng trước khi đưa lên slide. Chỗ nào biết cách thầy nói (Pattern = Subject + frequency + content) thì dùng cách đó.
+>
+> **Chưa có slide giảng cho Abstraction và Algorithmic Design.** Hai trụ này chỉ dùng định nghĩa trong Slide01/02 (Abstraction = bỏ nhiễu, giữ mô hình lõi; Algorithmic Design = các bước đầy đủ để máy làm theo; pseudocode; imperative vs declarative).
 
 ---
 
-## 0. Cách đọc file này
+## 0. Cách đọc file
 
 ### Quy ước slide
 
-Mỗi slide có: **tiêu đề lớn (H1)**, dòng tag, **Bố cục** (hình dung trên màn hình), **Nội dung** (mỗi mục gắn một tag), và **Dòng tư duy** (vì sao slide này đứng sau slide trước). Nội dung dùng sơ đồ, bảng, sequence khi có thể.
+Mỗi slide có: **tiêu đề lớn**, một dòng tag, **Visual** (một hình duy nhất mang slide), **Nói** (người thuyết trình nói gì, mỗi ý một dòng), **Tiếp** (vì sao slide sau nối vào). Trên slide thật chỉ **một hình và ít chữ**; file này được phép nói nhiều hơn slide.
 
-### Tag bước tư duy (mỗi mục nội dung gắn đúng một tag chính)
+### Tag (một dòng mỗi slide, không gắn tag từng dòng)
 
-| Tag | Bước | Ý nghĩa (theo Slide01) |
-| :--- | :--- | :--- |
-| 🟥 `PROBLEM` | Problem Definition | xác định input, output, phạm vi, tiêu chí; CT bắt đầu từ đây, không phải từ thuật toán |
-| 🟦 `DECOMP` | 01 Decomposition | chia vấn đề phức tạp thành phần nhỏ; ghi loại: Structural, Functional, Data-driven, Object-oriented, Temporal |
-| 🟩 `PATTERN` | 02 Pattern Recognition | tìm điểm giống, xu hướng, lặp lại; ghi kỹ thuật: Feature extraction, Grouping, Trend and sequence, Template matching, Regex, ML |
-| 🟨 `ABSTRACT` | 03 Abstraction | chỉ giữ thông tin quan trọng, bỏ nhiễu; ra mô hình lõi |
-| 🟪 `ALGO` | 04 Algorithmic Design | các bước đầy đủ mà máy làm theo được |
-| ⬜ `DOING` | Implementation và Simulation | pha làm, không còn là CT thuần (Slide01: Design → Action) |
-| ➕ | **Đề xuất thêm** | ý mới của người soạn file, chưa có trong ghi chú của Huy; Huy giữ hoặc bỏ |
-| 🔲 | Placeholder | chỗ để nhóm điền |
+| Tag | Bước |
+| :--- | :--- |
+| 🟥 PROBLEM | Problem Definition |
+| 🟦 DECOMP | Decomposition |
+| 🟩 PATTERN | Pattern Recognition |
+| 🟨 ABSTRACT | Abstraction |
+| 🟪 ALGO | Algorithmic Design |
+| ➕ | Đề xuất thêm (ý của người soạn, không có trong ghi chú; Huy giữ hoặc bỏ) |
+| 🔲 | Chỗ trống cho nhóm |
 
-### Tag kiểu lập luận (Slide02, sáu loại)
+### Các mức phức tạp
 
-`Deductive` (quy tắc → hệ quả chắc chắn), `Inductive` (quan sát → quy luật, chỉ có xác suất), `Abductive` (kết quả → giải thích khả dĩ nhất, tức debug), `Probabilistic` (không chắc chắn, dữ liệu thiếu), `Deontic` (phải, được, cấm), `Spatial/Temporal` (đâu và khi nào). Ghi tắt: 🧠D, 🧠I, 🧠A, 🧠P, 🧠Dn, 🧠ST.
+`L1` một hàm → `L2` ba bài toán con → `L3` hệ đa tác tử → `L4` thiết kế hệ thống → `L5` sản phẩm. Chỉ hiện ở slide bản đồ; các slide khác không gắn nhãn mức.
 
-### Thang độ phức tạp (complexity of thinking)
+### Mục lục slide
 
-Mỗi slide ghi mức `L1` đến `L5`. Đây là cách slide cho thấy tư duy đi từ một bài toán đơn thành một sản phẩm.
-
-| Mức | Bài toán lúc này | Slide |
-| :--- | :--- | :--- |
-| L1 | một hàm: (input) → đề thi | 2 đến 4 |
-| L2 | ba bài toán con: input, bộ công thức, kiểm soát chất lượng | 5 đến 6 |
-| L3 | hệ nhiều tác nhân đóng vai tổ ra đề | 7 đến 10 |
-| L4 | thiết kế hệ thống: context, giao thức, pipeline, tham số | 11 đến 17 |
-| L5 | sản phẩm: UI/UX, trợ lý, tính năng, môi trường | 18 đến 21 |
-
-### Chỉ mục slide
-
-| # | Tiêu đề | Tag chính | Mức |
+| # | Tiêu đề | Tag | Visual |
 | :--- | :--- | :--- | :--- |
-| 1 | Bản đồ dòng tư duy ➕ | cả 4 trụ | L1 đến L5 |
-| 2 | Bài toán: Given… Find… | 🟥 | L1 |
-| 3 | Chất lượng đề đầu ra: các metric | 🟥 🔲 | L1 |
-| 4 | Phạm vi (Scope) | 🟥 | L1 |
-| 5 | Từ pattern đến mô hình ánh xạ rồi ba bài toán con | 🟩 🟨 🟦 | L2 |
-| 6 | Giải pháp ngây thơ: vòng lặp LLM | 🟥 🟩 | L2 |
-| 7 | Tổ ra đề thật và hệ đa tác nhân | 🟩 🟦 | L3 |
-| 8 | Các tác nhân và nguyên tắc dừng chia | 🟦 | L3 |
-| 9 | Bài toán trừu tượng chung của mọi tác nhân | 🟨 | L3 |
-| 10 | Nhu cầu giáo viên và cơ chế làm rõ ý định | 🟩 🟨 | L3 |
-| 11 | Tập trung Composer và Retriever: corpus | 🟩 🟨 | L4 |
-| 12 | Metric cho retrieval và độ phủ | 🟥 🔲 | L4 |
-| 13 | Bài toán đầu ra: định dạng, chất lượng, chi phí, đa dạng | 🟥 🟦 | L4 |
-| 14 | Bài toán con đa dạng: hai hướng | 🟦 🔲 | L4 |
-| 15 | Pipeline soạn đề (Temporal) | 🟪 🟦 | L4 |
-| 16 | Pseudocode và trạng thái Orchestrator ➕ | 🟪 | L4 |
-| 17 | Tham số cần tune và cách đo | 🟪 🔲 | L4 |
-| 18 | Chuyển bài toán: từ ra đề đến trợ lý ảo | 🟦 | L5 |
-| 19 | UI/UX cho giáo viên | 🟩 🟨 | L5 |
-| 20 | Trợ lý (assistant) | 🟩 🟪 | L5 |
-| 21 | Tính năng thêm và môi trường làm việc | 🟩 🟪 | L5 |
-| 22 | Đồ thị toàn bộ quá trình bài toán | 🟦 🟥 | L1 đến L5 |
-| 23 | Tổng kết: ma trận lập luận × trụ cột, và vòng lặp ➕ | cả 4 trụ | L1 đến L5 |
+| 1 | Bản đồ mạch tư duy ➕ | tất cả | sơ đồ lộ trình |
+| 2 | Bài toán: đầu vào và đầu ra | 🟥 + 🟨 🟦 | sơ đồ input/output |
+| 3 | Đề thi có tính nhất quán | 🟩 | quan sát → hệ quả |
+| 4 | Một mô hình cho cả lớp đề | 🟨 | khung công thức |
+| 5 | Ba bài toán con | 🟦 | cây |
+| 6 | Baseline: vòng lặp LLM ngây thơ | 🟥 🟩 | vòng lặp |
+| 7 | Hội đồng ra đề thành hệ đa tác tử | 🟩 🟦 | ánh xạ vai trò |
+| 8 | Các agent | 🟦 | sơ đồ tổ chức |
+| 9 | Một khung chung cho mọi agent | 🟨 | sơ đồ lớp |
+| 10 | Giáo viên cần gì | 🟩 🟨 | vòng lặp |
+| 11 | Corpus | 🟩 🟨 | pipeline |
+| 12 | Pipeline soạn đề | 🟪 | swimlane có vòng lặp lại |
+| 13 | Cùng logic đó dưới dạng pseudocode | 🟪 | pseudocode |
+| 14 | Đầu ra và benchmark | 🟥 🔲 | cây + biểu đồ metric |
+| 15 | Đa dạng: các hướng thử | 🟦 🔲 | cây lựa chọn |
+| 16 | Tham số: thứ ta vặn | 🟪 🔲 | vòng lặp chỉnh |
+| 17 | Zoom out: từ soạn đề sang app trợ lý | 🟦 | vòng tròn lồng nhau |
+| 18 | UI/UX | 🟩 🟨 🔲 | nhóm tự chọn |
+| 19 | Trợ lý | 🟩 🟪 🔲 | nhóm tự chọn |
+| 20 | Tính năng bổ sung | 🟩 🟪 🔲 | nhóm tự chọn |
+| 21 | Tổng kết: reasoning × trụ cột, và vòng lặp ➕ | tất cả | ma trận + vòng lặp |
+| 22 | Đồ thị toàn bộ bài toán | 🟦 🟥 | đồ thị |
 
-Phần cuối file có danh sách đề xuất thêm, câu hỏi mở và ghi chú chưa kiểm chứng.
+Các slide trong deck không được lặp một dạng hình: 22 slide trên dùng cây, vòng lặp, flow, swimlane, sơ đồ lớp, đồ thị, biểu đồ, ma trận, vòng tròn lồng, pseudocode. Tránh bảng hai cột trừ chỗ nó thật sự là bảng.
 
 ---
 
-# SLIDE 1 · BẢN ĐỒ DÒNG TƯ DUY ➕
+# SLIDE 1 · BẢN ĐỒ MẠCH TƯ DUY ➕
 
-🟥 `PROBLEM` · 🟦 `DECOMP` · 🟩 `PATTERN` · 🟨 `ABSTRACT` · 🟪 `ALGO` · Mức L1 → L5
+🟥 🟦 🟩 🟨 🟪
 
-**Bố cục:** một hình ngang chiếm cả slide; trục ngang là thời gian của bài nói, trục dọc là độ phức tạp tăng dần. Mỗi mũi tên mang một tag trụ cột.
+**Visual:** một hình lộ trình rộng, trục ngang là thời gian buổi nói, trục dọc là độ phức tạp tăng dần.
 
 ```mermaid
 flowchart LR
-    P["🟥 Định nghĩa bài toán<br/>Given → Find"]
-    D1["🟦 Chia: input, công thức, kiểm soát"]
-    PR1["🟩 Pattern: tổ ra đề thật"]
-    M["🟩 Giải pháp: hệ đa tác nhân"]
-    A1["🟨 Bài toán trừu tượng chung cho tác nhân"]
-    D2["🟦 Chia: Composer và Retriever, đầu ra"]
-    AL["🟪 Pipeline, tham số, vòng sửa"]
-    T["🟥 Chuyển bài toán: sản phẩm cho giáo viên"]
-    D3["🟦 Chia: ra đề, UI/UX, trợ lý, tính năng"]
-    PR2["🟩 Pattern: người dùng và công việc lặp"]
-    G["Đồ thị toàn bộ vấn đề"]
-    P --> D1 --> PR1 --> M --> A1 --> D2 --> AL --> T --> D3 --> PR2 --> G
+    P["Định nghĩa bài toán"] --> D1["Tách thành 3"]
+    D1 --> PR1["Pattern: hội đồng ra đề thật"]
+    PR1 --> M["Hệ đa tác tử"]
+    M --> A1["Khung chung"]
+    A1 --> AL["Pipeline, benchmark, tham số"]
+    AL --> T["Zoom out: sản phẩm cho giáo viên"]
+    T --> G["Đồ thị toàn bộ bài toán"]
 ```
 
-**Nội dung**
+**Nói**
+- Buổi nói không đi "trụ 1, rồi 2, 3, 4". Các trụ lặp lại ở hầu hết các tầng, và mỗi tầng lớn hơn tầng trước.
+- Mỗi tầng kết thúc bằng một bài toán con mới; vì vậy độ phức tạp tăng.
+- CT là giai đoạn thiết kế; làm và đo đến sau (Slide01).
 
-| Mục | Tag |
-| :--- | :--- |
-| Nói rõ: bài nói không đi theo "4 trụ lần lượt" mà **lặp cả 4 trụ ở mỗi tầng** của vấn đề; mỗi tầng phức tạp hơn tầng trước | 🟥 `PROBLEM` |
-| Mỗi tầng kết thúc bằng một bài toán con mới, đó là lý do độ phức tạp tăng | 🟦 `DECOMP` (Functional) |
-| Slide01: CT là giai đoạn **thiết kế**; thực thi và mô phỏng nằm ở pha làm, vòng lặp liên tục | ⬜ `DOING` |
-
-**Dòng tư duy:** slide mở bài, hứa với người nghe một lộ trình; slide 23 quay lại đúng hình này để chốt.
+**Tiếp:** lộ trình đã rõ; bắt đầu từ bài toán.
 
 ---
 
-# SLIDE 2 · BÀI TOÁN: GIVEN… FIND…
+# SLIDE 2 · BÀI TOÁN: ĐẦU VÀO VÀ ĐẦU RA
 
-🟥 `PROBLEM` · 🧠Dn (ràng buộc) · Mức L1
+🟥 PROBLEM · 🟨 ABSTRACT · 🟦 DECOMP
 
-**Bố cục:** trái là khối chữ phát biểu bài toán dạng toán học; phải là sơ đồ input → hàm → output. Dòng dưới cùng ghi "predecomposition: output được định nghĩa trước khi chia nhỏ".
-
-**Nội dung**
-
-| Mục | Tag |
-| :--- | :--- |
-| **Input của giáo viên (T):** ý định ra đề, đề mẫu, tài liệu tham khảo, yêu cầu về template, ma trận đề | 🟥 `PROBLEM` |
-| **Input của ứng dụng (K):** một database những dữ liệu cần cho việc ra đề (nội dung database là bài toán con, giải ở phần sau) | 🟥 `PROBLEM` |
-| **Output (E):** một đề thi dùng được, chính xác về nội dung và đúng về hình thức | 🟥 `PROBLEM` |
-
-**Phát biểu hình thức**
-
-> **Given:** ý định ra đề *I*, đề mẫu *S*, tài liệu tham khảo *R*, yêu cầu template *F*, ma trận đề *M* (từ giáo viên); và cơ sở dữ liệu *K* của ứng dụng.
-> **Find:** một gói đề thi *E* = (đề, đáp án, lời giải, cờ cần xem lại) sao cho
-> (1) **đúng nội dung**: đáp án và lời giải chính xác, có căn cứ;
-> (2) **đúng hình thức**: khớp *F* và *M*, số câu, điểm, thời lượng;
-> (3) **dùng được**: giáo viên duyệt và xuất file mà không phải làm lại.
+**Visual:** bên trái, sơ đồ đầu vào → hộp đen → đầu ra, chia theo ai cung cấp hoặc ai nhìn thấy; bên phải, khung Given/Find.
 
 ```mermaid
 flowchart LR
-    subgraph IN["Input"]
-        T["Giáo viên: ý định I, đề mẫu S, tài liệu R, template F, ma trận M"]
-        K[("Ứng dụng: database K")]
+    subgraph IN["Đầu vào"]
+        direction TB
+        I1["Từ người dùng, bắt buộc"]
+        I2["Từ người dùng, tùy chọn"]
+        I3[("Từ tập dữ liệu: gì, lớn cỡ nào")]
     end
-    X["Hộp đen: ra đề"]
-    subgraph OUT["Output E"]
-        E1["Đề thi"]
-        E2["Đáp án và lời giải"]
-        E3["Cờ cần xem lại"]
+    X["Soạn đề"]
+    subgraph OUT["Đầu ra"]
+        direction TB
+        O1["Người dùng thấy: gói đề thi"]
+        O2["Người dùng không cần thấy: bộ nhớ cập nhật"]
     end
-    T --> X
-    K --> X
-    X --> E1
-    X --> E2
-    X --> E3
+    I1 --> X
+    I2 --> X
+    I3 --> X
+    X --> O1
+    X --> O2
 ```
 
-**Dòng tư duy:** trước khi nghĩ cách giải, phải chốt "đúng" nghĩa là gì → slide 3.
-
----
-
-# SLIDE 3 · CHẤT LƯỢNG ĐỀ ĐẦU RA: CÁC METRIC 🔲
-
-🟥 `PROBLEM` · 🔲 Placeholder · Mức L1
-
-**Bố cục:** một bảng lớn, cột "Metric", "Đo bằng gì", "Giá trị đo được". Cột cuối để trống có chủ ý và gắn nhãn `[CHƯA ĐO]`.
-
-**Nội dung** (tên metric lấy từ Report mục 17; không điền số)
-
-| Metric | Đo bằng gì | Giá trị | Tag |
-| :--- | :--- | :--- | :--- |
-| Độ đúng đáp án | so với đáp án tham chiếu | `[PLACEHOLDER — nhóm điền sau khi chạy]` | 🟥 `PROBLEM` |
-| Tuân thủ blueprint/format | kiểm tra bằng code | `[PLACEHOLDER]` | 🟥 |
-| Hợp lệ phạm vi và nguồn | đối chiếu chương trình, mã nguồn dữ liệu | `[PLACEHOLDER]` | 🟥 |
-| Phân bố độ khó | so với ma trận yêu cầu | `[PLACEHOLDER]` | 🟥 |
-| Tỉ lệ câu mơ hồ | giáo viên đánh giá mù | `[PLACEHOLDER]` | 🟥 |
-| Phút giáo viên phải sửa | đồng hồ trong lần duyệt | `[PLACEHOLDER]` | 🟥 |
-| Chi phí mỗi đề được duyệt | log token và tiền | `[PLACEHOLDER]` | 🟥 |
-| Tỉ lệ xuất file thành công | chạy export | `[PLACEHOLDER]` | 🟥 |
-
-Ghi chú nhỏ cuối slide: các mục tiêu trong báo cáo (≥95% đúng đáp án, 100% đúng format, ≥95% đúng phạm vi, chi phí khoảng 2.000 VND mỗi đề) **là mục tiêu, chưa phải kết quả đo**.
-
-**Dòng tư duy:** có tiêu chí rồi mới biết "đề tốt" là gì; tiếp theo giới hạn phạm vi cho vừa sức → slide 4.
-
----
-
-# SLIDE 4 · PHẠM VI (SCOPE)
-
-🟥 `PROBLEM` · Mức L1
-
-**Bố cục:** hai cột "Trong phạm vi" / "Ngoài phạm vi", kèm một ô vàng ghi câu hỏi mở.
-
-**Nội dung**
-
-| Mục | Tag |
-| :--- | :--- |
-| **Trong phạm vi:** đề THPTQG, môn **[PLACEHOLDER — môn ?]**; đề ĐGNL V-ACT | 🟥 `PROBLEM` |
-| ➕ **Ngoài phạm vi (non-goals, từ Report mục 04):** chấm tự luận tự động hoàn toàn, phân tích học tập cá nhân hoá, thay giáo viên quyết định cuối | 🟥 `PROBLEM` |
-| ➕ Môn đầu tiên nên chọn theo tiêu chí "đáp án kiểm bằng code được" (mvp-plan, Problem 1) | 🟥 `PROBLEM` · 🧠D |
-| Vì sao phạm vi hẹp là một quyết định trừu tượng hoá, không phải thiếu tham vọng (Report mục 05) | 🟨 `ABSTRACT` |
-
-**Dòng tư duy:** biên bài toán đã rõ; giờ nhìn vào các đề thi có sẵn xem chúng giống nhau ở đâu → slide 5.
-
----
-
-# SLIDE 5 · TỪ PATTERN ĐẾN MÔ HÌNH ÁNH XẠ RỒI BA BÀI TOÁN CON
-
-🟩 `PATTERN` → 🟨 `ABSTRACT` → 🟦 `DECOMP` · Mức L2
-
-**Bố cục:** ba hàng nối bằng mũi tên xuống, mỗi hàng một tag trụ cột; hàng cuối là sơ đồ ba bài toán con có mũi tên phụ thuộc.
-
-### Hàng 1 · Pattern
-
-| Quan sát | Kỹ thuật (Slide04) | Lập luận |
+| Nhóm | Nội dung | Trạng thái |
 | :--- | :--- | :--- |
-| Đa số đề thi thống nhất về format | 🟩 Direct template matching (đề mới khớp khung đề cũ) | 🧠I |
-| Số loại câu hỏi hữu hạn và tương đối cố định (nhiều lựa chọn, đúng–sai, trả lời ngắn, tự luận…) | 🟩 Grouping and classification | 🧠I |
-| Mỗi loại câu có cách ra đề tương tự nhau | 🟩 Feature extraction (rút đặc trưng: dạng câu, số ý, độ dài, mức độ) | 🧠I |
-| Nội dung kiến thức ít đổi qua các năm, chỉ dịch chuyển phân bố chủ đề | 🟩 Trend and sequence analysis (tần suất chủ đề theo năm, thứ tự câu trong đề) | 🧠I + 🧠P |
-| ➕ Mã đánh số, nhãn đáp án, tiêu đề phần có cú pháp lặp | 🟩 Regex (làm bộ kiểm hình thức) | 🧠D |
+| Người dùng, bắt buộc | ý định đề thi *I* | đề xuất ➕ (nhóm xác nhận cái nào bắt buộc) |
+| Người dùng, tùy chọn | đề mẫu *S*, tài liệu tham khảo *R*, yêu cầu mẫu đề *F*, ma trận đề *M* | đề xuất ➕ |
+| Tập dữ liệu | cơ sở dữ liệu của ứng dụng *K*; nó chứa gì và lớn cỡ nào | 🔲 `[PLACEHOLDER — nội dung và kích thước]` |
+| Người dùng thấy | đề, đáp án, lời giải, cờ cần xem lại | từ ghi chú của Huy |
+| Người dùng không cần thấy | bộ nhớ cập nhật (thứ app giữ lại cho lần sau) | 🔲 `[PLACEHOLDER — lưu gì]` |
 
-### Hàng 2 · Abstraction
+> **Cho (Given):** ý định đề thi *I*, đề mẫu *S*, tài liệu tham khảo *R*, yêu cầu mẫu đề *F*, ma trận đề *M* (từ giáo viên); và cơ sở dữ liệu của ứng dụng *K*.
+> **Tìm (Find):** một gói đề *E* = (đề, đáp án, lời giải, cờ cần xem lại) sao cho
+> (1) **nội dung đúng:** đáp án và lời giải đúng và có căn cứ;
+> (2) **hình thức đúng:** khớp *F* và *M*, số câu, điểm, thời lượng;
+> (3) **dùng được:** giáo viên xem và xuất file mà không phải làm lại.
 
-🟨 `ABSTRACT` (Slide01: bỏ nhiễu, giữ mô hình lõi): bỏ chi tiết từng năm, từng trường; giữ lại **một phép ánh xạ**
+**Nói**
+- Chia đầu vào/ra theo ai thấy đã làm bài toán nghiêng về hướng sản phẩm (nhóm nhận xét: được, nhưng hãy nói rõ ra).
+- Gọi tên "cái gì là đầu vào, cái gì ẩn" là abstraction; gom nhóm là decomposition. Metric cho "đúng" nằm ở phần đầu ra (slide 14).
 
-> **E = Φ(T, K; θ)**, với θ là một **bộ công thức** cố định (quy tắc blueprint, phân bố độ khó, hồ sơ chấm điểm, mẫu prompt).
+**Tiếp:** bài toán đã chốt; các đề giống nhau ở đâu?
 
-Nói cách khác: không giải từng đề; giải **một lớp** đề bằng một bộ công thức.
+---
 
-### Hàng 3 · Decomposition
+# SLIDE 3 · ĐỀ THI CÓ TÍNH NHẤT QUÁN
+
+🟩 PATTERN
+
+**Visual:** ba thẻ quan sát theo cách thầy nói **Subject + frequency + content**, rồi một mũi tên tới hệ quả. Không dùng bảng.
+
+| Subject | Frequency | Content |
+| :--- | :--- | :--- |
+| Các đề cùng loại (vd THPTQG) | phần lớn `[PLACEHOLDER — đếm]` | theo một format chung |
+| Các câu trong một đề | luôn luôn | thuộc một tập loại câu nhỏ, khá cố định (nhiều lựa chọn, đúng–sai, trả lời ngắn, tự luận…) |
+| Các câu cùng loại | thường | được ra theo cách giống nhau (dạng, số ý, độ dài, mức độ) |
+| Kiến thức môn học | qua các năm | thay đổi ít; chỉ phân bố chủ đề dịch chuyển |
+
+**Hệ quả (ý chốt của slide):** đề thi nhất quán, nên ta có thể áp một **workflow ổn định**. Phần ổn định thành **blueprint**; workflow là quy trình điền vào nó (slide 4, slide 12).
+
+**Nói**
+- Pattern là một hiện tượng có subject, frequency, content; điền đủ ba thì mới là pattern, không thì chỉ là cảm giác.
+- Nhận ra nhóm và đặc trưng (loại câu, số ý, mức độ) cũng là một cách chia đề; các kĩ thuật của Slide04 chỉ là gợi ý và chưa kiểm chứng ở đây.
+
+**Tiếp:** nếu đề nhất quán, bỏ phần khác nhau và giữ mô hình chung.
+
+---
+
+# SLIDE 4 · MỘT MÔ HÌNH CHO CẢ LỚP ĐỀ
+
+🟨 ABSTRACT
+
+**Visual:** khung công thức lớn; bên trái "bỏ" (năm, trường, cách diễn đạt), bên phải "giữ" (phần ổn định ở slide 3).
+
+> **E = Φ(T, K; θ)**, trong đó θ là **bộ công thức** cố định: luật blueprint, phân bố độ khó, hồ sơ chấm điểm, mẫu prompt.
+
+**Nói**
+- Nối thẳng từ slide 3: phần nhất quán (format, loại câu, cách ra từng loại) thành θ; phần khác nhau theo từng đề (năm, trường) bị bỏ.
+- Ta không giải từng đề; ta giải một lớp đề bằng một bộ công thức.
+- Blueprint và workflow là hai mặt của θ: cái gì phải đúng, và làm thế nào.
+
+**Tiếp:** Φ vẫn là một hàm lớn; tách nó ra.
+
+---
+
+# SLIDE 5 · BA BÀI TOÁN CON
+
+🟦 DECOMP
+
+**Visual:** một cây, ba nhánh, mũi tên phụ thuộc giữa chúng.
 
 ```mermaid
 flowchart TD
     ROOT["E = Φ(T, K; θ)"]
-    A["① Input: cần những gì, xử lý thế nào"]
-    B["② Bộ công thức θ: gồm những gì"]
-    C["③ Kiểm soát chất lượng output"]
+    A["Đầu vào: cần gì, xử lý ra sao"]
+    B["Bộ công thức θ: chứa gì"]
+    C["Kiểm soát chất lượng đầu ra"]
     ROOT --> A
     ROOT --> B
     ROOT --> C
     A -- "quyết định dữ liệu cho" --> B
-    B -- "sinh ra cái cần kiểm" --> C
-    C -. "kết quả kiểm chỉnh lại" .-> B
+    B -- "tạo ra thứ cần kiểm" --> C
+    C -. "kết quả chỉnh" .-> B
 ```
 
-🟦 `DECOMP` (Functional + Data-driven): ba bài toán con có quan hệ với nhau (mũi tên trên sơ đồ), đúng như ghi chú của Huy. Phần tiếp theo đi vào bài toán ②, bộ công thức.
+**Nói**
+- Chia theo chức năng. Phụ thuộc mới là điểm chính: chúng là lí do ba phần không giải riêng lẻ được.
+- Các slide sau làm việc trên nhánh giữa, θ.
 
-**Dòng tư duy:** cùng một cấu trúc lặp → trừu tượng thành một hàm → hàm đó quá lớn nên chia ba.
+**Tiếp:** trước khi xây θ, thứ đơn giản nhất có thể chạy là gì?
 
 ---
 
-# SLIDE 6 · GIẢI PHÁP NGÂY THƠ: VÒNG LẶP LLM
+# SLIDE 6 · BASELINE: VÒNG LẶP LLM NGÂY THƠ
 
-🟥 `PROBLEM` (cách giải đầu tiên) · 🟩 `PATTERN` (nhận ra nó sai ở đâu) · Mức L2
+🟥 PROBLEM · 🟩 PATTERN
 
-**Bố cục:** trái là vòng lặp (sơ đồ); phải là bảng "vì sao chưa đủ".
+**Visual:** chỉ một sơ đồ vòng lặp; lí do để ở ghi chú người nói.
 
 ```mermaid
 flowchart LR
-    U["Yêu cầu ra đề"] --> L["LLM sinh đề"]
-    L --> V["Yêu cầu chi tiết hơn / kiểm tra lại"]
-    V --> E["Thêm 'bằng chứng' ngẫu nhiên<br/>(bắt chước người dùng thường)"]
+    U["Yêu cầu một đề"] --> L["LLM viết đề"]
+    L --> V["Hỏi thêm chi tiết, kiểm lại"]
+    V --> E["Thêm 'bằng chứng' ngẫu nhiên"]
     E --> L
 ```
 
-**Nội dung**
+**Nói**
+- Đây là **baseline**: thứ mọi thiết kế sau phải vượt qua, giữ để so sánh (Report mục 16, 17).
+- Vì sao chưa đủ (Report mục 03): không gì ép số câu, điểm, mức độ cùng lúc; một mô hình tự chấm; đầu ra trôi chảy nhưng sai; không có gì để đo.
 
-| Mục | Tag |
-| :--- | :--- |
-| Giải pháp ngây thơ: lặp yêu cầu, bảo LLM làm chi tiết hơn, tự kiểm, thêm bằng chứng ngẫu nhiên giống cách người dùng bình thường vẫn làm | 🟥 `PROBLEM` |
-| Chưa đủ vì (từ Report mục 03): không có cơ chế **ép đồng thời** số câu, điểm, mức độ; một mô hình tự chấm chính mình; lỗi sai nhưng trôi chảy ("exam slop"); không đo được kết quả | 🟩 `PATTERN` · 🧠A (tìm nguyên nhân lỗi) |
-| Dùng làm **baseline** để so sánh (Report mục 16, mục 17), không phải đích | 🟥 `PROBLEM` |
-| ➕ Mỗi lần chạy khác nhau, khó lặp lại và khó debug | 🟩 `PATTERN` · 🧠P |
-
-**Dòng tư duy:** vòng lặp tự kiểm thiếu độc lập → hỏi con người xử lý chuyện này thế nào → slide 7.
+**Tiếp:** tự kiểm thiếu tính độc lập; con người xử lý việc này thế nào?
 
 ---
 
-# SLIDE 7 · TỔ RA ĐỀ THẬT VÀ HỆ ĐA TÁC NHÂN
+# SLIDE 7 · HỘI ĐỒNG RA ĐỀ THÀNH HỆ ĐA TÁC TỬ
 
-🟩 `PATTERN` → 🟦 `DECOMP` (Structural) · Mức L3
+🟩 PATTERN · 🟦 DECOMP
 
-**Bố cục:** trên là ảnh "tổ ra đề" với các vai; dưới là mũi tên "ánh xạ vai → tác nhân".
-
-**Nội dung**
-
-| Mục | Tag |
-| :--- | :--- |
-| **Pattern:** ra đề chính thức cần một tổ nhiều người, vai trò khác nhau: soạn đề, giải mù, phản biện, thẩm định; mục đích là **khách quan** | 🟩 `PATTERN` · Grouping · 🧠I |
-| **Giải pháp đề xuất:** hệ đa tác nhân dựa trên LLM, mỗi tác nhân một chức năng: Composer, Solver, Critics, Educator, Validator, Retriever | 🟦 `DECOMP` · Structural · Object-oriented |
-| Tham chiếu: paper **[PLACEHOLDER — tên đầy đủ và trích dẫn paper "EduAgent…" mà Huy nhớ; chưa tìm thấy trong repo, không tự đoán]** | 🔲 |
-| ➕ Slide03 yêu cầu chọn kiểu chia; ở đây chọn **Structural + Object-oriented**, vì mỗi vai ngoài đời là một "đối tượng" có dữ liệu và hành vi riêng | 🟦 `DECOMP` |
+**Visual:** hai cột vai trò nối bằng mũi tên: vai trò hội đồng bên trái, agent bên phải.
 
 ```mermaid
 flowchart LR
-    subgraph R["Tổ ra đề ngoài đời"]
-        r1["Người soạn đề"]
+    subgraph R["Hội đồng ngoài đời"]
+        r1["Người soạn"]
         r2["Người giải mù"]
         r3["Người phản biện"]
-        r4["Người thẩm định / duyệt"]
+        r4["Người thẩm định"]
     end
-    subgraph S["Hệ đa tác nhân LLM"]
+    subgraph S["Hệ đa tác tử"]
         a1["Composer"]
         a2["Solver"]
         a3["Critics"]
         a4["Validator"]
-        a5["Retriever ➕ vai tra cứu"]
-        a6["Educator ➕ vai sư phạm"]
     end
     r1 --> a1
     r2 --> a2
@@ -310,59 +256,54 @@ flowchart LR
     r4 --> a4
 ```
 
-**Dòng tư duy:** có đội ngũ rồi thì phải xác định mỗi người làm gì và dừng chia ở đâu → slide 8.
+**Nói**
+- Pattern theo cách thầy: **Subject** ra đề chính thức; **frequency** lần nào cũng vậy; **content** nhiều người, vai trò khác nhau, trong đó có người không thấy đáp án, mục đích là khách quan.
+- Nên lời giải phản chiếu nó: mỗi vai trò một agent. Bài báo tham khảo: 🔲 `[PLACEHOLDER — tên đầy đủ và trích dẫn bài "EduAgent…"; không tìm thấy trong repo, không đoán]`.
+
+**Tiếp:** các agent cụ thể là ai, và dừng chia ở đâu?
 
 ---
 
-# SLIDE 8 · CÁC TÁC NHÂN VÀ NGUYÊN TẮC DỪNG CHIA
+# SLIDE 8 · CÁC AGENT
 
-🟦 `DECOMP` (Structural + Functional) · Mức L3
+🟦 DECOMP
 
-**Bố cục:** bảng 6 hàng; cột cuối là ba dấu tích của "When to stop decomposing" (Slide03).
+**Visual:** sơ đồ tổ chức: Orchestrator ở trên, các agent bên dưới, mỗi hộp một cụm từ.
 
-**Nội dung**
+> **Dừng chia khi mỗi agent có một việc, tự hiểu được, và tự kiểm thử được** (Slide03: single responsibility, understandable, independent).
 
-| Tác nhân (Huy) | Tương ứng trong Report/mvp-plan | Một việc duy nhất | Single responsibility | Understandable | Independent |
-| :--- | :--- | :--- | :---: | :---: | :---: |
-| Composer | Writer | soạn câu và lời giải nháp theo blueprint | ✔ | ✔ | ✔ |
-| Retriever | Retriever | lấy đoạn tài liệu kèm id và vị trí | ✔ | ✔ | ✔ |
-| Solver | Blind Solver | giải không nhìn đáp án của Composer | ✔ | ✔ | ✔ |
-| Critics | Appraiser | rõ ràng, mơ hồ, đáp án nhiễu, độ khó, khớp chương trình | ✔ | ✔ | ✔ |
-| Educator ➕ | (trong Appraiser) | đánh giá phù hợp sư phạm: mục tiêu, mức độ nhận thức | ✔ | ✔ | ✔ |
-| Validator | Guardrail Gate | kiểm bằng **code**: số câu, điểm, nhãn, schema | ✔ | ✔ | ✔ |
-| Orchestrator ➕ | Orchestrator | điều phối trạng thái, giới hạn vòng, log | ✔ | ✔ | ✔ |
-| Blueprint Builder ➕ | Planner | biến yêu cầu thành blueprint, hỏi lại chỗ thiếu | ✔ | ✔ | ✔ |
+```mermaid
+flowchart TD
+    OR["Orchestrator ➕: trạng thái và giới hạn"]
+    BB["Blueprint Builder ➕: yêu cầu thành blueprint"]
+    RT["Retriever: đoạn trích có id"]
+    CP["Composer: câu hỏi và lời giải"]
+    SV["Solver: giải mù"]
+    CR["Critics: rõ ràng, mơ hồ, mức độ"]
+    ED["Educator ➕: phù hợp sư phạm"]
+    VA["Validator: kiểm bằng code"]
+    OR --> BB
+    OR --> RT
+    OR --> CP
+    OR --> SV
+    OR --> CR
+    OR --> ED
+    OR --> VA
+```
 
-Ghi chú: các dấu ✔ là **đề xuất** theo tiêu chí Slide03, nhóm kiểm lại từng dòng; hai tác nhân Educator và Validator cần nhóm chốt ranh giới (xem câu hỏi mở).
+**Nói**
+- Một lỗi có thể quy về một agent, thay vì chìm trong một câu trả lời dài.
+- Tên: tên của Huy; Report gọi Composer là "Writer", Solver là "Blind Solver", Critics là "Appraiser", Validator là "Guardrail Gate". Educator có tách khỏi Critics không, và Validator có thuần code không, còn mở (Phụ lục B).
 
-| Mục | Tag |
-| :--- | :--- |
-| Quy tắc dừng chia: một việc, hiểu được độc lập, kiểm thử được riêng | 🟦 `DECOMP` |
-| Ưu điểm cần nói: lỗi gán được cho một tầng thay vì chìm trong một câu trả lời dài | 🟦 `DECOMP` · 🧠A |
-
-**Dòng tư duy:** tác nhân đã tách; giờ hỏi chúng có gì chung → trừu tượng hoá → slide 9.
+**Tiếp:** sáu việc khác nhau; chúng có gì chung?
 
 ---
 
-# SLIDE 9 · BÀI TOÁN TRỪU TƯỢNG CHUNG CỦA MỌI TÁC NHÂN
+# SLIDE 9 · MỘT KHUNG CHUNG CHO MỌI AGENT
 
-🟨 `ABSTRACT` · Mức L3
+🟨 ABSTRACT
 
-**Bố cục:** một bảng "khung tác nhân" (một khung dùng cho cả sáu tác nhân), cạnh đó sơ đồ lớp.
-
-**Nội dung**
-
-| Thành phần chung | Câu hỏi thiết kế | Ví dụ cho Composer | Tag |
-| :--- | :--- | :--- | :--- |
-| Goal | tác nhân tối ưu gì | soạn đúng blueprint | 🟨 `ABSTRACT` |
-| Input | nhận gì, schema nào | blueprint + đoạn tài liệu | 🟨 |
-| Output | trả gì, schema nào | danh sách `Question` | 🟨 |
-| Context management | nạp gì vào cửa sổ ngữ cảnh, bỏ gì | chỉ chủ đề của phần đang soạn, không nạp cả corpus | 🟨 · 🧠P |
-| Protocol | định dạng và phong bì thông điệp | JSON có `schema_version`, `trace_id` | 🟨 · 🧠Dn |
-| Tools | tác nhân gọi được gì | retrieval, máy tính, sympy | 🟨 |
-| Flag | báo cáo bất thường thế nào | `needs_teacher_review` + lý do | 🟨 |
-| Gate | điều kiện qua cổng | số câu đúng, có evidence id | 🟨 · 🧠D |
-| Orchestration | thứ tự, song song, giới hạn | trạng thái, ngân sách, số vòng sửa | 🟨 · 🧠ST |
+**Visual:** sơ đồ lớp UML. Bên cạnh là danh sách ngắn: mỗi phần tử một dòng nói vì sao cần.
 
 ```mermaid
 classDiagram
@@ -371,6 +312,7 @@ classDiagram
       +input_schema
       +output_schema
       +context_policy
+      +tools
       +run(msg) Message
     }
     class Message {
@@ -378,7 +320,6 @@ classDiagram
       +trace_id
       +payload
       +status
-      +errors
     }
     class Gate {
       +check(msg) Verdict
@@ -391,500 +332,420 @@ classDiagram
     Gate --> Message
 ```
 
-🟦 `DECOMP` (UML Class diagram, Slide03): hiển thị phần trừu tượng như một cấu trúc lớp.
+| Phần tử | Vì sao cần |
+| :--- | :--- |
+| Goal | để mỗi agent tối ưu một thứ |
+| Input / output schema | để đổi và kiểm thử từng agent |
+| Context | mô hình chỉ thấy thứ công việc cần |
+| Protocol | một định dạng thông điệp mà code kiểm được |
+| Tools | agent được gọi gì, ngoài ra không có |
+| Flag | agent có thể nói "tôi không chắc" thay vì đoán |
+| Gate | điều kiện qua cổng được viết ra, không phải cảm giác |
 
-**Dòng tư duy:** có khung chung thì chỉ cần thiết kế khung một lần; phần dữ liệu và công việc thay đổi theo từng tác nhân.
+**Nói**
+- Thiết kế khung một lần; mỗi agent chỉ đổi dữ liệu và việc. Đây cũng là chỗ hai kiểu tách nhau: **cổng và schema là declarative** ("cái gì phải đúng"), **điều phối là imperative** ("làm thế nào"; slide 13).
+
+**Tiếp:** agent đã có; giáo viên thật sự cần gì ở chúng?
 
 ---
 
-# SLIDE 10 · NHU CẦU GIÁO VIÊN VÀ CƠ CHẾ LÀM RÕ Ý ĐỊNH
+# SLIDE 10 · GIÁO VIÊN CẦN GÌ
 
-🟩 `PATTERN` → 🟨 `ABSTRACT` · Mức L3
+🟩 PATTERN · 🟨 ABSTRACT
 
-**Bố cục:** trái là bảng "pattern nhu cầu → thành phần cần có"; phải là sơ đồ vòng "làm rõ và đào sâu ý định".
-
-**Nội dung**
-
-| Pattern quan sát | Hệ quả thiết kế | Tag |
-| :--- | :--- | :--- |
-| Giáo viên ra đề theo **khoảng thời gian** nhất định (giữa kỳ, cuối kỳ…) | kế hoạch ra đề theo thời điểm | 🟩 Trend and sequence · 🧠ST |
-| Cho **một hoặc một nhóm khối lớp** có liên đới | curriculum map giữa các khối | 🟩 Grouping |
-| Cho **một hoặc vài môn** | profile theo môn (subject profile, Report mục 10) | 🟩 Grouping |
-| Theo **mục tiêu giảng dạy cá nhân** | ma trận minh hoạ, phân bố độ khó có thể chỉnh | 🟩 Feature extraction |
-| → Cần: **curriculum map**, khung kiến thức chương trình, phân bố độ khó, ma trận minh hoạ | | 🟨 `ABSTRACT` |
-| → Cơ chế **resolve và deepen** nhu cầu: biến yêu cầu mơ hồ thành blueprint đầy đủ | | 🟨 |
+**Visual:** một vòng lặp: yêu cầu mơ hồ → làm rõ → đào sâu → blueprint đủ, với bốn quan sát ngắn ở bên trái.
 
 ```mermaid
 flowchart LR
-    Q["Yêu cầu mơ hồ của giáo viên"] --> R["Resolve: ánh xạ vào khối, môn, thời điểm"]
-    R --> D["Deepen: hỏi thêm chỗ thiếu"]
-    D --> BP{"Blueprint đủ và nhất quán?"}
+    Q["Yêu cầu mơ hồ"] --> R["Làm rõ: lớp, môn, thời điểm"]
+    R --> D["Đào sâu: hỏi chỗ thiếu"]
+    D --> BP{"Blueprint đủ chưa?"}
     BP -- "chưa" --> D
     BP -- "rồi" --> OK["Blueprint chốt"]
 ```
 
-| Mục | Tag |
-| :--- | :--- |
-| Mỗi vòng hỏi lại có giới hạn (không hỏi vô hạn) | 🟪 `ALGO` · 🧠Dn |
-| Blueprint chỉ chốt khi tổng điểm, số câu, mức độ khớp nhau | 🟪 `ALGO` · 🧠D |
+**Nói** (mỗi ý một dòng, *Subject + frequency + content*)
+- Giáo viên ra đề vào các thời điểm cố định, cho một khối lớp hoặc nhóm khối liên quan, một hoặc vài môn, theo mục tiêu giảng dạy cá nhân.
+- Nên cần: bản đồ chương trình, khung kiến thức, phân bố độ khó, ma trận minh họa.
+- Và một cách biến yêu cầu mơ hồ thành blueprint đầy đủ, hỏi tới khi đủ (có giới hạn, không hỏi mãi).
 
-**Dòng tư duy:** đề muốn tốt thì phải có tri thức nền; quay lại hai tác nhân quan trọng nhất → slide 11.
+**Tiếp:** đề tốt cần kiến thức nền; nó đến từ đâu?
 
 ---
 
-# SLIDE 11 · TẬP TRUNG COMPOSER VÀ RETRIEVER: CORPUS
+# SLIDE 11 · CORPUS
 
-🟩 `PATTERN` → 🟨 `ABSTRACT` · Mức L4
+🟩 PATTERN · 🟨 ABSTRACT
 
-**Bố cục:** trái là cách giáo viên ra đề (pattern); giữa là mũi tên "chuẩn bị corpus"; phải là sơ đồ nạp vào context.
-
-**Nội dung**
-
-| Mục | Tag |
-| :--- | :--- |
-| **Pattern:** giáo viên ra đề thường nhìn lại đề cũ, dùng kinh nghiệm và phương pháp ra đề, tuân thủ ràng buộc kiến thức môn học (tức là dựa vào **profile** của mình) | 🟩 `PATTERN` · 🧠I |
-| **Giải pháp:** chuẩn bị một **corpus** gồm đề thật do giáo viên ra, đã tiền xử lý; rút và trừu tượng các yếu tố cần khi làm đề; ma trận mẫu | 🟨 `ABSTRACT` |
-| Mỗi tài liệu qua trích xuất đặc trưng: loại câu, chủ đề, mức độ, cấu trúc, lỗi hay gặp | 🟩 Feature extraction |
-| Phân nhóm theo loại câu và chủ đề; thống kê tần suất qua các năm | 🟩 Grouping · Trend and sequence |
-| Nạp vào context của Composer và Retriever (chọn lọc, không nạp tất cả) | 🟪 `ALGO` · 🧠P |
-| ➕ Quy tắc: chỉ dữ liệu đã duyệt nguồn và giấy phép mới vào corpus (AGENTS.md rule 8; mvp-plan mục 6) | 🟨 · 🧠Dn |
+**Visual:** pipeline từ trái sang phải.
 
 ```mermaid
 flowchart LR
     RAW["Đề thật, ma trận mẫu, chương trình"] --> PRE["Tiền xử lý"]
-    PRE --> FE["Rút đặc trưng và trừu tượng hoá"]
+    PRE --> FE["Rút và trừu tượng hóa các yếu tố"]
     FE --> DB[("Corpus đã duyệt")]
     DB --> RT["Retriever"]
     DB --> CP["Composer"]
-    RT --> CP
 ```
 
-**Dòng tư duy:** đã có corpus thì phải đo xem nó phục vụ đúng không → slide 12.
+**Nói**
+- Pattern: khi ra đề, giáo viên nhìn lại đề cũ, dùng kinh nghiệm, và theo ràng buộc kiến thức môn.
+- Nên ta chuẩn bị corpus đề thật, tiền xử lý, rút các yếu tố ra đề, và nạp có chọn lọc vào Composer và Retriever.
+- ➕ Chỉ dữ liệu có nguồn và giấy phép được duyệt mới vào corpus (AGENTS.md quy tắc 8).
+
+**Tiếp:** các phần đã có; xếp chúng theo thứ tự thời gian.
 
 ---
 
-# SLIDE 12 · METRIC CHO RETRIEVAL VÀ ĐỘ PHỦ 🔲
+# SLIDE 12 · PIPELINE SOẠN ĐỀ
 
-🟥 `PROBLEM` (tiêu chí) · 🔲 Placeholder · Mức L4
+🟪 ALGO
 
-**Bố cục:** hai khối: "đo độ phủ nội dung" và "đo RAG". Không có số liệu, chỉ có định nghĩa và ô trống.
-
-**Nội dung** (tên metric là đề xuất của người soạn file)
-
-| Metric | Câu hỏi nó trả lời | Giá trị | Tag |
-| :--- | :--- | :--- | :--- |
-| Độ phủ nội dung (coverage) | corpus phủ bao nhiêu chủ đề của chương trình | `[PLACEHOLDER]` | 🟥 |
-| Context precision | đoạn lấy về có liên quan không | `[PLACEHOLDER]` | 🟥 |
-| Context recall | đoạn cần thiết có được lấy về không | `[PLACEHOLDER]` | 🟥 |
-| Faithfulness / factual | nội dung câu có bám đoạn nguồn không | `[PLACEHOLDER]` | 🟥 |
-| Answer relevance | câu có đúng chủ đề blueprint không | `[PLACEHOLDER]` | 🟥 |
-| ➕ Source validity | evidence id có thật, trích nguyên văn có đúng | `[PLACEHOLDER]` | 🟥 · 🧠D |
-| ➕ Độ lệch phân bố | chủ đề trong đề so với ma trận | `[PLACEHOLDER]` | 🟥 |
-
-**Dòng tư duy:** đo xong phần đầu vào của soạn đề; chuyển sang đầu ra → slide 13.
-
----
-
-# SLIDE 13 · BÀI TOÁN ĐẦU RA: ĐỊNH DẠNG, CHẤT LƯỢNG, CHI PHÍ, ĐA DẠNG
-
-🟥 `PROBLEM` → 🟦 `DECOMP` · Mức L4
-
-**Bố cục:** một đầu ra ở giữa; ba nhánh: định dạng, hai tiêu chí chính, và một bài toán con mới (đa dạng) có viền nét đứt.
-
-```mermaid
-flowchart TD
-    O["Output: gói đề thi"]
-    O --> F["Định dạng: nhiều loại file, nhiều đuôi"]
-    O --> Q["Tiêu chí 1: đạt chuẩn chất lượng"]
-    O --> C["Tiêu chí 2: chi phí / chất lượng / thời gian"]
-    O -.-> DV["Tiêu chí 3: độ đa dạng của đề → raise subproblem"]
-```
-
-**Nội dung**
-
-| Mục | Tag |
-| :--- | :--- |
-| **Định dạng ra:** đa dạng file, extension (ví dụ DOCX để sửa, PDF để in, LaTeX cho toán; nhóm chốt, mvp-plan Problem 2) | 🟥 `PROBLEM` · 🧠Dn |
-| **Đạt chuẩn chất lượng:** gán các metric từ lab của Huy làm ví dụ; nhóm làm phần này điền | 🔲 `[PLACEHOLDER — metric lấy từ các lab; nhóm điền]` |
-| **Cost / quality / time:** ba đại lượng đánh đổi, đo trên cùng một bộ test | 🟥 `PROBLEM` · 🧠P |
-| **Độ đa dạng:** hai đề cho cùng một yêu cầu không được giống nhau; nảy ra bài toán con | 🟦 `DECOMP` |
-| ➕ Phân biệt rõ "tiêu chí đánh giá" (chính xác, rẻ, dễ dùng) và "loại file" (Report mục 15, "central distinction") | 🟥 `PROBLEM` |
-
-**Dòng tư duy:** bài toán đa dạng là một bài toán con riêng → slide 14.
-
----
-
-# SLIDE 14 · BÀI TOÁN CON ĐA DẠNG: HAI HƯỚNG 🔲
-
-🟦 `DECOMP` (Functional) · 🔲 Placeholder · Mức L4
-
-**Bố cục:** hai cột so sánh A và B, hàng dưới cùng là ô "kết luận: để lại sau đánh giá".
-
-| | Hướng A: nhét database lớn vào context để LLM rút ngẫu nhiên | Hướng B: cơ chế gán trước (preassigned) |
-| :--- | :--- | :--- |
-| Ý tưởng | LLM tự chọn ngẫu nhiên từ dữ liệu lớn trong context | code gán trước chủ đề, dạng, tham số cho từng câu, LLM chỉ viết |
-| Vấn đề | context, dữ liệu, chi phí, thời gian | `[PLACEHOLDER — nhóm liệt kê]`; ➕ gợi ý: phải thiết kế bộ gán, dễ cứng nhắc |
-| Lập luận | 🧠P (ngẫu nhiên) | 🧠Dn (quy tắc) + 🧠D |
-| Tag | 🟦 `DECOMP` | 🟦 `DECOMP` |
-
-> **Kết luận:** chưa chọn. Sẽ đề xuất giải pháp sau khi **đánh giá** cả hai (nhóm chạy thử, đo cost và độ đa dạng).
-
-➕ Gợi ý số đo độ đa dạng: tỉ lệ câu trùng ý (similarity), số dạng đề khác nhau cho cùng blueprint. `[PLACEHOLDER — nhóm chốt metric]`.
-
-**Dòng tư duy:** đã có tác nhân, dữ liệu và bài toán con; giờ sắp xếp thành quy trình có thứ tự → slide 15.
-
----
-
-# SLIDE 15 · PIPELINE SOẠN ĐỀ (TEMPORAL)
-
-🟪 `ALGO` · 🟦 `DECOMP` (Temporal) · 🧠ST · 🧠Dn · 🧠A (vòng sửa) · Mức L4
-
-**Bố cục:** một sơ đồ lớn theo thứ tự thời gian, ba "làn" nối tiếp, nhãn nổi trên mũi tên vòng sửa (loopback). Các bước song song được vẽ cạnh nhau.
-
-**Nội dung**
-
-| Mục | Tag |
-| :--- | :--- |
-| Các quá trình soạn đề **phụ thuộc nhau theo thời gian**: chốt ý định và kế hoạch → soạn đề và vẽ hình → thẩm định và phản biện → xác nhận và xuất file | 🟦 `DECOMP` · Temporal · 🧠ST |
-| Có bước chạy **song song**: Retriever theo từng phần; Composer theo từng phần; vẽ hình ∥ soạn chữ ➕; Critics ∥ Solver ➕; Solver theo từng câu | 🟪 `ALGO` · 🧠ST |
-| **Vòng sửa:** lỗi quay lại Composer, có giới hạn số vòng; hết vòng thì chuyển giáo viên | 🟪 `ALGO` · 🧠A + 🧠Dn |
-| Giáo viên duyệt trước khi xuất, đây là biên giữa tự động và trách nhiệm | 🟪 · 🧠Dn |
+**Visual:** slide này chỉ một sơ đồ, không gì khác. Bốn làn theo thứ tự thời gian; mũi tên sửa lỗi được làm nổi.
 
 ```mermaid
 flowchart LR
-    subgraph L1["① Chốt intent và kế hoạch ra đề"]
-        direction TB
-        I1["Nhận yêu cầu giáo viên"] --> I2["Làm rõ và đào sâu"]
-        I2 --> I3["Blueprint"]
-        I3 --> G1{"Cổng 1: blueprint hợp lệ?"}
-        G1 -- "thiếu hoặc mâu thuẫn" --> I2
+    subgraph L1["Lập kế hoạch"]
+        I1["Yêu cầu"] --> I2["Làm rõ"] --> I3["Blueprint"]
     end
-    subgraph L2["② Pipeline soạn đề"]
-        direction TB
-        RT["Retriever (theo từng phần, song song)"]
-        CP["Composer: soạn câu và lời giải"]
-        IL["Vẽ hình minh hoạ (song song với chữ)"]
-        G2{"Cổng 2: cấu trúc và chính sách"}
-        RT --> CP
-        CP --> G2
-        IL --> G2
+    subgraph L2["Soạn"]
+        RT["Truy xuất (theo phần)"] --> CP["Soạn"]
+        IL["Vẽ hình"]
     end
-    subgraph L3["③ Pipeline thẩm định và phản biện"]
-        direction TB
-        CR["Critics + Educator"]
-        SV["Solver (không thấy đáp án)"]
-        G3{"Cổng 3: Solver khớp đáp án và Critics đạt?"}
-        CR --> G3
-        SV --> G3
+    subgraph L3["Kiểm"]
+        CR["Critics"]
+        SV["Solver, mù"]
     end
-    subgraph L4["④ Xác nhận và xuất"]
-        direction TB
-        FL["Cờ cần xem lại"] --> AP["Giáo viên duyệt"]
-        AP --> EX["Xuất file"]
+    subgraph L4["Xác nhận"]
+        AP["Giáo viên duyệt"] --> EX["Xuất file"]
     end
-    G1 -- "hợp lệ" --> RT
-    G2 -- "đạt" --> CR
-    G2 -- "đạt" --> SV
-    G2 -- "lỗi cấu trúc" --> CP
-    G3 -- "đạt" --> FL
-    G3 -- "không đạt: sửa (còn vòng)" --> CP
-    G3 -- "hết vòng" --> FL
+    I3 --> RT
+    CP --> CR
+    CP --> SV
+    IL --> CR
+    CR --> G{"Qua?"}
+    SV --> G
+    G -- "có" --> AP
+    G -- "không, còn lượt" --> CP
+    G -- "hết lượt" --> AP
 ```
 
-> Nhãn mũi tên "không đạt: sửa (còn vòng)" là **loopback về bước Soạn đề**; đây là mũi tên cần tô nổi trên slide.
+**Nói**
+- Ở đây chỉ nói về thuật toán; không gán loại decomposition nào cho nó (chưa kiểm chứng).
+- Bước song song vẽ cạnh nhau. Mũi tên "không, còn lượt" là vòng lặp lại cần làm nổi.
 
-**Dòng tư duy:** có pipeline rồi thì viết nó thành các bước máy chạy được → slide 16.
+**Tiếp:** viết cùng logic đó thành các bước máy làm theo được.
 
 ---
 
-# SLIDE 16 · PSEUDOCODE VÀ TRẠNG THÁI ORCHESTRATOR ➕
+# SLIDE 13 · CÙNG LOGIC ĐÓ DƯỚI DẠNG PSEUDOCODE
 
-🟪 `ALGO` · Mức L4
+🟪 ALGO
 
-**Bố cục:** trái là khối pseudocode (nền tối như Slide02); phải là sơ đồ trạng thái. Chú thích dưới: phần quy tắc là **declarative** ("cái gì phải đúng"), phần điều phối là **imperative** ("làm thế nào").
+**Visual:** một khối ngắn, nền tối (như Slide02).
 
 ```text
-// Điều phối một lần ra đề (pseudocode, chưa phải code)
-SET blueprint = BUILD_BLUEPRINT(request)          // làm rõ, tối đa N_CLARIFY lần
-IF NOT GATE_BLUEPRINT(blueprint): ASK_TEACHER; RETURN
-FOR EACH section IN blueprint.sections (song song):
-    passages = RETRIEVE(section)
-    items    = COMPOSE(section, passages)
-SET round = 0
-WHILE round < MAX_ROUNDS:
-    flags = GATE_STRUCTURE(items) UNION CRITICS(items) UNION COMPARE(SOLVE_BLIND(items), items.key)
-    IF flags IS EMPTY: BREAK
-    items = REPAIR(items, flags);  round = round + 1
-RETURN PACKAGE(items, flags)    // giáo viên duyệt trước khi xuất
+draft = compose(blueprint)
+repeat up to MAX_ROUNDS:
+    if check(draft) is ok:  return draft  // passed
+    draft = repair(draft)
+give draft and flags to the teacher
 ```
 
-```mermaid
-stateDiagram-v2
-    [*] --> Clarify
-    Clarify --> Compose: blueprint hợp lệ
-    Compose --> Check
-    Check --> Repair: có cờ và còn vòng
-    Repair --> Check
-    Check --> TeacherReview: không còn cờ hoặc hết vòng
-    TeacherReview --> Export: duyệt
-    TeacherReview --> Compose: yêu cầu sửa
-    Export --> [*]
-```
+**Nói**
+- Cố ý ở mức cao: nếu đề ổn thì qua; không thì lặp lại đến giới hạn số vòng, rồi giao cho giáo viên.
+- `check` là phần declarative (luật từ khung ở slide 9); vòng lặp này là phần imperative. Chi tiết (truy xuất, song song theo phần) ở slide 12.
+- Sơ đồ trạng thái của Orchestrator (Clarify → Compose → Check → Repair → Teacher review → Export) có thể để ở ghi chú.
 
-| Mục | Tag |
-| :--- | :--- |
-| Kiểm tra số câu, tổng điểm, nhãn đáp án, schema, thời lượng bằng **code** (deterministic) | 🟪 `ALGO` · 🧠D |
-| Giới hạn vòng, giới hạn chi phí, hành vi khi gọi mô hình lỗi | 🟪 `ALGO` · 🧠Dn |
-| Slide02: pseudocode là cầu nối giữa tư duy và code, kiểm logic trước khi chọn ngôn ngữ | 🟪 `ALGO` |
-
-**Dòng tư duy:** thuật toán có nhiều "núm vặn"; liệt kê và quyết định cách đo → slide 17.
+**Tiếp:** đã có thiết kế; làm sao biết nó tốt?
 
 ---
 
-# SLIDE 17 · THAM SỐ CẦN TUNE VÀ CÁCH ĐO 🔲
+# SLIDE 14 · ĐẦU RA VÀ BENCHMARK
 
-🟪 `ALGO` · ⬜ `DOING` (mô phỏng) · 🔲 Placeholder · Mức L4
+🟥 PROBLEM · 🔲 PLACEHOLDER
 
-**Bố cục:** bảng ba cột "Tham số", "Khoảng thử", "Metric đo". Cuối bảng để dòng trống cho nhóm thêm.
-
-**Nội dung**
-
-| Tham số | Khoảng thử | Đo bằng metric nào | Tag |
-| :--- | :--- | :--- | :--- |
-| Kiến trúc MAS (số và loại tác nhân, tuần tự hay song song) | `[PLACEHOLDER]` | độ đúng, chi phí, thời gian | 🟪 |
-| Cách làm RAG (chunk, embedding, hybrid) | `[PLACEHOLDER]` | context precision/recall | 🟪 |
-| Số vòng lặp sửa | `[PLACEHOLDER]` | tỉ lệ câu được sửa đạt, chi phí | 🟪 |
-| Kích thước input | `[PLACEHOLDER]` | chi phí, độ đúng | 🟪 |
-| Confidential (dữ liệu nào được gửi ra ngoài, mô hình cục bộ hay đám mây) | `[PLACEHOLDER]` | không rò, chất lượng | 🟪 · 🧠Dn |
-| Temperature và cách chọn context | `[PLACEHOLDER]` | độ đa dạng, độ đúng | 🟪 · 🧠P |
-| ➕ Mô hình cho từng vai | `[PLACEHOLDER]` | cost/quality/time | 🟪 |
-| ➕ Ngưỡng của cổng (độ dài trích tối đa, số vòng) | `[PLACEHOLDER]` | lỗi lọt qua | 🟪 |
-| 🔲 `[PLACEHOLDER — nhóm thêm tham số]` | | | 🔲 |
-
-Dòng cuối slide: **Metrics là cái để đo; tham số là cái để vặn.** Hai cột không được trộn.
-
-**Dòng tư duy:** thuật toán xong ở mức thiết kế; còn một bài toán lớn hơn: đưa nó tới người dùng → slide 18.
-
----
-
-# SLIDE 18 · CHUYỂN BÀI TOÁN: TỪ RA ĐỀ ĐẾN TRỢ LÝ ẢO
-
-🟦 `DECOMP` (Functional + Structural) · Mức L5
-
-**Bố cục:** một vòng tròn nhỏ "Ra đề" nằm trong một hình lớn hơn "Ứng dụng trợ lý ảo"; xung quanh ba vòng còn lại.
-
-**Nội dung**
-
-| Mục | Tag |
-| :--- | :--- |
-| **Transfer problem:** bài toán ra đề trở thành **một bài toán con** trong bức tranh lớn là một app trợ lý ảo (transition ý tưởng) | 🟦 `DECOMP` |
-| Chia thành 4: **Ra đề**, **UI/UX**, **Trợ lý chatbot**, **Tính năng thêm** | 🟦 `DECOMP` · Structural |
+**Visual:** bên trái, cây đầu ra nhỏ; bên phải, biểu đồ cột các metric với **cột trống** ghi `[NOT MEASURED]`. Benchmark đặt ở đây, ngay trước phần tham số cố tối đa hóa nó.
 
 ```mermaid
 flowchart TD
-    APP["Ứng dụng trợ lý ảo cho giáo viên"]
-    APP --> A["Ra đề (hệ đa tác nhân, các slide 2 đến 17)"]
+    O["Đầu ra: gói đề thi"]
+    O --> F["Định dạng: loại file"]
+    O --> Q["Chuẩn chất lượng"]
+    O --> C["Chi phí, chất lượng, thời gian"]
+    O -.-> DV["Đa dạng: slide sau"]
+```
+
+| Nhóm | Metric | Giá trị |
+| :--- | :--- | :--- |
+| Chất lượng | đáp án đúng, tuân thủ blueprint/format, hợp lệ phạm vi và nguồn, phân bố độ khó, tỉ lệ mơ hồ | `[PLACEHOLDER]` |
+| Giáo viên | số phút sửa, xuất file thành công | `[PLACEHOLDER]` |
+| Chi phí | chi phí mỗi đề được duyệt | `[PLACEHOLDER]` |
+| Truy xuất (cho corpus) | độ phủ nội dung, context precision, context recall, faithfulness | `[PLACEHOLDER]` |
+
+**Nói**
+- Tên metric lấy từ Report mục 17 và đề xuất của người soạn; mục tiêu trong report là mục tiêu, không phải kết quả.
+- Định dạng đầu ra: DOCX để sửa, PDF để in, LaTeX cho toán (nhóm quyết, mvp-plan Problem 2). Tách tiêu chí đánh giá khỏi loại file.
+- Metric chất lượng "từ các lab của Huy": 🔲 `[PLACEHOLDER — nhóm làm phần này điền]`.
+
+**Tiếp:** một tiêu chí không phải con số mà là bài toán mới: đa dạng.
+
+---
+
+# SLIDE 15 · ĐA DẠNG: CÁC HƯỚNG THỬ
+
+🟦 DECOMP · 🔲 PLACEHOLDER
+
+**Visual:** cây lựa chọn. Không có hộp kết luận cuối; các hướng là ý để nhóm thử.
+
+```mermaid
+flowchart TD
+    DIV["Hai đề cho cùng một yêu cầu phải khác nhau"]
+    DIV --> A["A: CSDL lớn trong context, LLM bốc ngẫu nhiên"]
+    DIV --> B["B: code gán trước chủ đề, dạng, tham số cho từng câu"]
+    DIV --> C["C ➕: sinh rồi lọc câu gần trùng"]
+    DIV --> D["D ➕: mỗi lần chạy đổi một trục (tỉ lệ chủ đề, mức độ, dạng)"]
+```
+
+**Nói**
+- A và B là của Huy; C và D là đề xuất của người soạn, chưa hướng nào được thử. Chưa chọn cũng được: nhóm đề xuất thêm và thử.
+- Chi phí và thời gian khác nhau theo hướng (A: cỡ context, dữ liệu, chi phí; B: phải thiết kế bộ gán, có thể cứng).
+- Cách đo: tỉ lệ câu gần trùng, số dạng đề khác nhau cho một blueprint 🔲 `[PLACEHOLDER — nhóm chốt metric]`.
+
+**Tiếp:** giờ đến các núm vặn: vặn gì để đẩy benchmark lên?
+
+---
+
+# SLIDE 16 · THAM SỐ: THỨ TA VẶN
+
+🟪 ALGO · 🔲 PLACEHOLDER
+
+**Visual:** vòng lặp chỉnh; danh sách tham số xung quanh. Metric (slide 14) là thứ ta đo; tham số là thứ ta vặn.
+
+```mermaid
+flowchart LR
+    P["Tham số"] --> RUN["Chạy trên tập kiểm thử"]
+    RUN --> M["Metric benchmark (slide 14)"]
+    M --> CMP{"Tốt hơn baseline?"}
+    CMP -- "không" --> P
+    CMP -- "có" --> KEEP["Giữ thiết lập"]
+```
+
+| Tham số | Khoảng |
+| :--- | :--- |
+| Kiến trúc MAS (số lượng, loại, tuần tự hay song song) | `[PLACEHOLDER]` |
+| Cách làm RAG (chunking, embedding, hybrid) | `[PLACEHOLDER]` |
+| Số vòng sửa | `[PLACEHOLDER]` |
+| Cỡ đầu vào | `[PLACEHOLDER]` |
+| Bảo mật (dữ liệu nào ra ngoài, mô hình cục bộ hay cloud) | `[PLACEHOLDER]` |
+| Temperature và cách chọn context | `[PLACEHOLDER]` |
+| ➕ Mô hình theo vai trò; ngưỡng cổng | `[PLACEHOLDER]` |
+| 🔲 `[PLACEHOLDER — nhóm thêm]` | |
+
+**Nói**
+- Đây là lí do benchmark được giới thiệu: để các tham số này tối đa hóa nó. Baseline (slide 6) là dòng đầu của phép so sánh.
+
+**Tiếp:** thiết kế đã xong ở mức hệ thống; zoom out.
+
+---
+
+# SLIDE 17 · ZOOM OUT: TỪ SOẠN ĐỀ SANG APP TRỢ LÝ
+
+🟦 DECOMP
+
+**Visual:** các vòng tròn lồng nhau: vòng nhỏ "soạn đề" (slide 2 đến 16) nằm trong hình lớn "app trợ lý ảo cho giáo viên", ba vòng khác xung quanh.
+
+```mermaid
+flowchart TD
+    APP["App trợ lý ảo cho giáo viên"]
+    APP --> A["Soạn đề (slide 2 đến 16)"]
     APP --> B["UI/UX"]
-    APP --> C["Trợ lý chatbot"]
-    APP --> D["Tính năng thêm và môi trường"]
+    APP --> C["Chatbot trợ lý"]
+    APP --> D["Tính năng bổ sung"]
     B --- C
     C --- A
     D --- A
 ```
 
-**Dòng tư duy:** mỗi nhánh mới lại cần pattern riêng, bắt đầu từ người dùng → slide 19.
+**Nói**
+- Mọi thứ nãy giờ chỉ là một nhánh của bức tranh lớn hơn. Zoom out làm bài toán đổi: người dùng không còn là "một yêu cầu" mà là một con người có thói quen.
+- Mỗi nhánh mới cần pattern riêng, bắt đầu từ người dùng.
+
+**Tiếp:** UI/UX trước. (Slide 18 đến 20 ngắn: các nhóm điền việc đã làm và cách chia việc.)
 
 ---
 
-# SLIDE 19 · UI/UX CHO GIÁO VIÊN
+# SLIDE 18 · UI/UX
 
-🟩 `PATTERN` → 🟨 `ABSTRACT` · Mức L5
+🟩 PATTERN · 🟨 ABSTRACT · 🔲 NHÓM TỰ CHỌN
 
-**Bố cục:** trái là chân dung người dùng (persona) ➕; phải là danh sách yêu cầu UI.
+**Visual:** nhóm chọn (màn hình mock, hành trình, cây). Không dùng bảng.
 
-**Nội dung**
-
-| Mục | Tag |
-| :--- | :--- |
-| **Pattern:** người dùng chính là giáo viên; khả năng tiếp cận công nghệ không cao; ngại thao tác phức tạp (friction); mức kiên nhẫn có hạn | 🟩 `PATTERN` · 🧠P |
-| **Pattern:** một số người mắt kém, lớn tuổi | 🟩 `PATTERN` · Grouping |
-| **Yêu cầu UI** (lazy-user skill): hoạt ảnh và cập nhật tiến độ trực tiếp; quản lý "dopamine" (phản hồi nhỏ, liên tục); đơn giản, dễ dùng; chữ to, tương phản cao ➕ | 🟨 `ABSTRACT` |
-| ➕ Ràng buộc đạo đức: giao diện đơn giản không được **che giấu độ không chắc chắn** (Report mục 15) | 🟨 · 🧠Dn |
-| ➕ Quy tắc đặt tên: dùng tên theo việc của giáo viên, không dùng tên kỹ thuật | 🟨 |
-
-**Dòng tư duy:** người dùng ít biết nói yêu cầu → cần trợ lý chủ động → slide 20.
+**Nói**
+- Pattern: người dùng chính là giáo viên; không quá thoải mái với công nghệ; ít kiên nhẫn; một số người mắt kém hoặc lớn tuổi.
+- Nên giao diện cần: tiến độ trực tiếp và phản hồi nhỏ đều đặn, bước đơn giản, chữ lớn, tương phản cao ➕.
+- ➕ Giao diện đơn giản không được giấu sự không chắc chắn (Report mục 15).
+- 🔲 `[NHÓM ĐIỀN: minh chứng việc đã làm, ai làm gì]`
 
 ---
 
-# SLIDE 20 · TRỢ LÝ (ASSISTANT)
+# SLIDE 19 · TRỢ LÝ
 
-🟩 `PATTERN` → 🟪 `ALGO` · Mức L5
+🟩 PATTERN · 🟪 ALGO · 🔲 NHÓM TỰ CHỌN
 
-**Bố cục:** trái là pattern; phải là sơ đồ "hành vi trợ lý" theo luồng đã định.
+**Visual:** luồng hội thoại hoặc sơ đồ trạng thái (nhóm chọn).
 
-**Nội dung**
+**Nói**
+- Pattern: phần lớn người dùng chính không biết prompt hiệu quả.
+- Nên trợ lý gợi ý bước kế tiếp theo các flow định sẵn, hiện tiến độ trên UI, trả lời câu hỏi về app và về đề, và gom đầu vào cơ bản thành một `ExamRequest`.
+- 🔲 `[NHÓM ĐIỀN: minh chứng và chia việc]`
 
-| Mục | Tag |
-| :--- | :--- |
-| **Pattern:** đa số người dùng chính ít biết prompt hiệu quả | 🟩 `PATTERN` · 🧠I |
-| **Gợi ý việc tiếp theo** theo các flow đã định | 🟪 `ALGO` · 🧠ST |
-| **Hướng dẫn làm quen bằng agentic:** thay vì chỉ làm thì **hiện tiến độ trên UI** để người dùng hiểu | 🟪 `ALGO` |
-| **Hỏi đáp** về app và về đề | 🟪 `ALGO` |
-| **Tổng hợp một số input cơ bản** (môn, khối, thời lượng, ma trận) từ cuộc hội thoại thành `ExamRequest` | 🟪 `ALGO` · 🧠A |
+---
+
+# SLIDE 20 · TÍNH NĂNG BỔ SUNG
+
+🟩 PATTERN · 🟪 ALGO · 🔲 NHÓM TỰ CHỌN
+
+**Visual:** vòng tròn "xem lại rồi sửa" với các tính năng xung quanh, hoặc dòng thời gian phiên bản.
+
+**Nói**
+- Pattern: giáo viên hay xem lại việc đã làm, hoặc sửa dựa trên nó.
+- Nên có: xem lại và chỉnh sửa đề; nhân bản, đổi số, sắp xếp lại.
+- ➕ "Đổi số" là phép biến đổi theo luật, nên code kiểm, không gọi LLM lần nữa.
+- 🔲 `[NHÓM ĐIỀN]`
+
+---
+
+# SLIDE 21 · TỔNG KẾT: REASONING × TRỤ CỘT, VÀ VÒNG LẶP ➕
+
+Cả 4 trụ
+
+**Visual:** bên trái, ma trận (Slide02 yêu cầu vẽ ma trận ánh xạ); bên phải, vòng lặp thiết kế → làm → đo → phân tích.
+
+> **Chưa kiểm chứng:** các ô là ví dụ của người soạn. Đối chiếu định nghĩa của thầy trước khi đưa lên slide; bỏ ô nào không bảo vệ được.
+
+| | Decomposition | Pattern Recognition | Abstraction | Algorithmic Design |
+| :--- | :--- | :--- | :--- | :--- |
+| Deductive | tiêu chí dừng kiểm từng agent | khớp mẫu | schema làm câu hỏi hợp lệ | cổng chạy bằng code |
+| Inductive | vai trò từ hội đồng thật | luật rút từ đề cũ | mô hình lõi từ nhiều đề | chọn quy trình từ thực nghiệm |
+| Abductive | quy lỗi về một tầng | vì sao baseline sai | tìm biến đứng sau lỗi | vòng sửa đoán nguyên nhân |
+| Probabilistic | đánh đổi chi phí/chất lượng | xu hướng chủ đề theo năm | đủ context, không nhiễu | temperature, lấy mẫu |
+| Deontic | trách nhiệm của agent | ràng buộc môn học | chính sách, giấy phép | giới hạn vòng, giáo viên duyệt |
+| Spatial/Temporal | thứ tự pipeline | xu hướng theo thời gian | trạng thái | song song, tuần tự, lặp lại |
 
 ```mermaid
 flowchart LR
-    U["Giáo viên nói mơ hồ"] --> AS["Trợ lý"]
-    AS --> S1["Gợi ý bước kế tiếp"]
-    AS --> S2["Hỏi lại chỗ thiếu"]
-    AS --> S3["Tổng hợp thành ExamRequest"]
-    S3 --> RUN["Chạy pipeline (slide 15)"]
-    RUN --> PR["Hiện tiến độ trên UI"]
-    PR --> U
+    DS["Thiết kế: 4 trụ"] --> IM["Làm"]
+    IM --> SM["Chạy trên tập kiểm thử"]
+    SM --> AN["Phân tích: pattern mới"]
+    AN --> DS
 ```
 
-**Dòng tư duy:** sau khi ra đề, giáo viên không dừng lại → slide 21.
+**Nói**
+- CT là chiến lược của giai đoạn thiết kế, không phải sản phẩm; kết quả thật đến từ giai đoạn làm và đo.
+- Về lại slide 1: tư duy đi từ một hàm đến một sản phẩm qua năm tầng.
+
+**Tiếp:** bức tranh cuối.
 
 ---
 
-# SLIDE 21 · TÍNH NĂNG THÊM VÀ MÔI TRƯỜNG LÀM VIỆC
+# SLIDE 22 · ĐỒ THỊ TOÀN BỘ BÀI TOÁN
 
-🟩 `PATTERN` → 🟪 `ALGO` · Mức L5
+🟦 DECOMP · 🟥 PROBLEM
 
-**Bố cục:** vòng tròn "tham chiếu rồi sửa" ở giữa; xung quanh là các tính năng nhỏ.
-
-**Nội dung**
-
-| Mục | Tag |
-| :--- | :--- |
-| **Pattern:** giáo viên luôn có xu hướng tham chiếu lại công việc đã làm, hoặc sửa chữa dựa trên đó | 🟩 `PATTERN` · Template matching · 🧠I |
-| **Cơ chế xem lại, sửa lại đề** (lịch sử phiên bản, so sánh) | 🟪 `ALGO` |
-| **Tác vụ cơ bản:** replicate (nhân bản đề), đổi số, tái cấu trúc | 🟪 `ALGO` · 🧠D |
-| ➕ "Đổi số" là phép biến đổi có quy tắc nên kiểm bằng code, không gọi LLM lại | 🟪 · 🧠D |
-| ➕ Mỗi thao tác giữ nguồn gốc (provenance) và lưu quyết định | 🟪 · 🧠Dn |
-| ➕ Chế độ học sinh (luyện tập, thi thử) là hướng mở rộng, chưa phải lõi (Report mục 15) | 🟦 `DECOMP` |
-
-**Dòng tư duy:** đủ bốn nhánh; vẽ lại toàn bộ cây vấn đề → slide 22.
-
----
-
-# SLIDE 22 · ĐỒ THỊ TOÀN BỘ QUÁ TRÌNH BÀI TOÁN
-
-🟦 `DECOMP` · 🟥 `PROBLEM` · Mức L1 → L5
-
-**Bố cục:** một đồ thị toàn màn hình. Nút hình chữ nhật là **bài toán**; nút bo tròn là **quyết định/giải pháp**; mũi tên đặc là "chia nhỏ", mũi tên đứt là "nảy sinh bài toán con".
+**Visual:** đồ thị toàn màn hình. Hình chữ nhật là bài toán; nút bo tròn là quyết định hoặc lời giải; mũi tên liền "tách thành", mũi tên đứt "sinh ra bài toán con".
 
 ```mermaid
 flowchart TD
-    P0["P0: Ra đề dùng được, đúng, đúng hình thức"]
-    P1["P1: Input và database"]
+    P0["P0: Một đề dùng được, đúng, đúng hình thức"]
+    P1["P1: Đầu vào và cơ sở dữ liệu"]
     P2["P2: Bộ công thức θ"]
     P3["P3: Kiểm soát chất lượng"]
     P0 --> P1
     P0 --> P2
     P0 --> P3
 
-    P1 --> P11["Database gồm những gì?"]
-    P11 -.-> P111["Corpus, ma trận, curriculum map"]
-    P2 --> S2a(["Naive: vòng LLM, bị loại làm baseline"])
-    P2 --> S2b(["Hệ đa tác nhân"])
-    S2b --> P21["P2.1: Các tác nhân và khung chung"]
+    P1 --> P11["Cơ sở dữ liệu chứa gì?"]
+    P11 -.-> P111["Corpus, ma trận, bản đồ chương trình"]
+    P2 --> S2a(["Baseline: vòng lặp LLM ngây thơ"])
+    P2 --> S2b(["Hệ đa tác tử"])
+    S2b --> P21["P2.1: Agent và khung chung"]
     S2b --> P22["P2.2: Composer và Retriever, corpus"]
     S2b --> P23["P2.3: Pipeline và tham số"]
-    P3 --> P31["Metric chất lượng, RAG"]
-    P3 --> P32["Cost, quality, time"]
+    P3 --> P31["Metric benchmark, truy xuất"]
+    P3 --> P32["Chi phí, chất lượng, thời gian"]
     P32 -.-> P33["P3.3: Đa dạng đề"]
-    P33 --> P33a(["Hướng A: context lớn"])
-    P33 --> P33b(["Hướng B: gán trước"])
+    P33 --> P33a(["Hướng A đến D"])
 
-    P0 -.-> PX["P4: Đưa tới người dùng"]
+    P0 -.-> PX["P4: Đưa đến người dùng"]
     PX --> P41["UI/UX"]
     PX --> P42["Trợ lý"]
-    PX --> P43["Tính năng thêm"]
+    PX --> P43["Tính năng bổ sung"]
     P23 --> PX
     P21 --> P23
     P22 --> P23
     P31 --> P23
 ```
 
-| Mục | Tag |
-| :--- | :--- |
-| Đọc đồ thị từ trên xuống: mỗi tầng là một lần chia; các mũi tên đứt là bài toán chưa giải, để làm sau | 🟦 `DECOMP` |
-| Đồ thị cho thấy **độ phức tạp của tư duy**: một hàm ban đầu trở thành một hệ phụ thuộc nhiều tầng | 🟥 `PROBLEM` |
-| ➕ Đánh dấu nút nào **đã quyết định** (liên kết `D-nnn` trong [DECISIONS.md](DECISIONS.md)) và nút nào còn mở | 🟥 |
-
-**Dòng tư duy:** hình tổng quan trước phần kết.
+**Nói**
+- Đọc từ trên xuống: mỗi tầng là một lần tách; mũi tên đứt là bài toán cố ý để lại chưa giải.
+- Đồ thị chính là độ phức tạp của tư duy: một hàm lúc đầu, hệ nhiều tầng phụ thuộc lúc cuối.
+- ➕ Đánh dấu node nào đã quyết (liên kết `D-nnn` trong [DECISIONS.md](DECISIONS.md)) và node nào còn mở.
 
 ---
 
-# SLIDE 23 · TỔNG KẾT: MA TRẬN LẬP LUẬN × TRỤ CỘT, VÀ VÒNG LẶP ➕
+## Thay đổi ở v2 (góp ý của nhóm, 2026-11-12)
 
-Cả 4 trụ cột · Mức L1 → L5
-
-**Bố cục:** trái là ma trận (Slide02 yêu cầu "draw the mapping matrix"); phải là vòng "thiết kế → làm → đo → sửa" (Slide01: continuous loop).
-
-### Ma trận lập luận × trụ cột (ví dụ từ ASTRA)
-
-| | 🟦 Decomposition | 🟩 Pattern Recognition | 🟨 Abstraction | 🟪 Algorithmic Design |
-| :--- | :--- | :--- | :--- | :--- |
-| 🧠 Deductive | tiêu chí dừng chia → kiểm từng tác nhân | khớp template → đề đúng khung | schema → mọi câu hợp lệ | cổng kiểm bằng code |
-| 🧠 Inductive | chia theo vai tổ ra đề thật | quy luật rút từ đề cũ | mô hình lõi từ nhiều đề | chọn quy trình từ thực nghiệm |
-| 🧠 Abductive | gán lỗi cho một tầng | vì sao naive sai | tìm biến chính gây lỗi | vòng sửa: đoán nguyên nhân lỗi |
-| 🧠 Probabilistic | đo cost/quality | xu hướng chủ đề theo năm | chọn đủ context, bỏ nhiễu | temperature, lấy mẫu, độ đa dạng |
-| 🧠 Deontic | ranh giới trách nhiệm tác nhân | ràng buộc môn học | chính sách, giấy phép | giới hạn vòng, giáo viên duyệt |
-| 🧠 Spatial/Temporal | thứ tự pipeline | trend theo thời gian | trạng thái | song song và tuần tự, loopback |
-
-### Vòng lặp
-
-```mermaid
-flowchart LR
-    DS["Thiết kế: 4 trụ cột"] --> IM["Làm: implementation"]
-    IM --> SM["Chạy: simulation trên bộ test"]
-    SM --> AN["Phân tích: pattern mới"]
-    AN --> DS
-```
-
-| Mục | Tag |
+| Góp ý của nhóm | Đã đổi gì |
 | :--- | :--- |
-| Thông điệp: CT là chiến lược ở pha thiết kế, không phải sản phẩm; kết quả thật đến từ pha làm và đo | ⬜ `DOING` |
-| ➕ Quay lại slide 1: tư duy đi từ **một hàm** đến **một sản phẩm** qua 5 tầng; mỗi tầng dùng lại đủ 4 trụ | 🟦 🟩 🟨 🟪 |
+| Deslop, bớt icon; tag chỉ để biết trước | Một dòng tag mỗi slide; không tag từng dòng; emoji chỉ ở dòng tag |
+| Reasoning/kĩ thuật chưa kiểm chứng | Cảnh báo ở đầu file; bỏ tag reasoning khỏi slide; ma trận slide 21 đánh dấu chưa kiểm chứng |
+| Slide 2 chưa define được problem | Thêm đầu vào (người dùng bắt buộc, tùy chọn, tập dữ liệu) và đầu ra (thấy, không thấy); giữ khung Given/Find |
+| Slide 3, 4 cũ | Bỏ; metric dời xuống slide 14 (ở đầu ra); scope và non-goals dời ra ngoài (xem Phụ lục A) |
+| Slide 5 cũ: 3 pattern trong 1 slide, ánh xạ sai | Tách thành slide 3, 4, 5; pattern viết theo Subject + frequency + content; bỏ các dòng sai; nói rõ nhất quán → blueprint/workflow |
+| Slide 6 cũ | Giữ, dùng từ "baseline" |
+| Slide 7, 8 cũ | Viết lại pattern; gộp ba tiêu chí dừng thành một câu; bỏ bảng dấu tick |
+| Slide 9 đến 11 cũ: nói quá nhiều | Mỗi phần tử một dòng |
+| Slide 12 đến 14 cũ nên đứng trước 17 | Benchmark (gộp 12 và 13) và đa dạng dời ngay trước tham số; slide đa dạng không còn kết luận, mà liệt kê các hướng |
+| Slide 15 cũ | Một sơ đồ; bỏ khẳng định decomposition |
+| Slide 16 cũ | Pseudocode nâng lên mức cao; declarative vs imperative giới thiệu ở slide 9 |
+| Slide 18 cũ | Thêm cách nói về zoom out |
+| Slide 19 đến 21 cũ | Ngắn; nhóm điền minh chứng và chia việc; để mở dạng hình |
+| Quá nhiều bảng 2 cột | Ghi dạng hình cho từng slide (cây, vòng lặp, flow, sơ đồ lớp, biểu đồ, đồ thị…) |
+| Slide 22 cũ đứng sau 23 | Đồ thị giờ là slide cuối |
 
----
+## Phụ lục A. Đề xuất thêm ➕ (Huy giữ hoặc bỏ)
 
-## Phụ lục A. Đề xuất thêm ➕ (để Huy giữ hoặc bỏ)
+| # | Đề xuất | Slide |
+| :--- | :--- | :--- |
+| 1 | Slide bản đồ mạch tư duy ở đầu | 1 |
+| 2 | Đầu vào nào bắt buộc, nào tùy chọn | 2 |
+| 3 | Scope và non-goals, nếu nhóm muốn đưa lại (non-goals: Report mục 04; chọn môn đầu tiên theo "đáp án kiểm được bằng code", mvp-plan Problem 1) | sau 2 |
+| 4 | Educator, Orchestrator, Blueprint Builder làm agent riêng | 8 |
+| 5 | Hướng đa dạng C và D | 15 |
+| 6 | Mô hình theo vai trò, ngưỡng cổng làm tham số | 16 |
+| 7 | Chữ lớn, tương phản cao; "đơn giản không được giấu sự không chắc chắn" | 18 |
+| 8 | "Đổi số" kiểm bằng code | 20 |
+| 9 | Ma trận reasoning × trụ cột | 21 |
+| 10 | Liên kết node đồ thị với quyết định `D-nnn` | 22 |
+| 11 | Rủi ro: lỗi tương quan giữa agent, bản quyền, riêng tư (Report mục 18) | sau 16 |
+| 12 | Giao thức đánh giá: baseline vs ASTRA vs giáo viên sửa, mù (Report mục 17) | sau 16 |
 
-| # | Đề xuất | Vì sao | Nằm ở slide |
-| :--- | :--- | :--- | :--- |
-| 1 | Slide bản đồ dòng tư duy ở đầu | người nghe thấy trước lộ trình và độ phức tạp tăng | 1 |
-| 2 | Non-goals (ngoài phạm vi) | Report mục 04; tránh bị hỏi "sao không làm chấm điểm" | 4 |
-| 3 | Chọn môn đầu theo "đáp án kiểm bằng code được" | mvp-plan Problem 1 | 4 |
-| 4 | Gắn tag loại decomposition và kỹ thuật pattern cho mọi mục | đúng thuật ngữ Slide03/04, dễ chấm | cả file |
-| 5 | Bảng ánh xạ tên tác nhân Huy ↔ Report | tránh hai bộ tên song song | 8 |
-| 6 | Educator, Orchestrator, Blueprint Builder làm tác nhân riêng | Report có Planner, Orchestrator; Educator là ý của Huy | 8 |
-| 7 | Slide pseudocode và state diagram | Slide02: pseudocode là cầu nối; thể hiện imperative và declarative | 16 |
-| 8 | Critics song song với Solver, vẽ hình song song với chữ | giảm thời gian; hai bước độc lập | 15 |
-| 9 | Persona giáo viên, chữ to và tương phản | pattern "mắt kém, lớn tuổi" | 19 |
-| 10 | Ràng buộc "đơn giản không được che giấu độ không chắc chắn" | Report mục 15 | 19 |
-| 11 | Ma trận lập luận × trụ cột | Slide02 giao bài này | 23 |
-| 12 | Liên kết nút đồ thị với quyết định `D-nnn` | AGENTS.md rule 12; chứng minh lý do chọn | 22 |
-| 13 | Rủi ro: lỗi tương quan giữa các tác nhân, bản quyền, riêng tư | Report mục 18; thông số "Confidential" của Huy | 17 hoặc slide riêng |
-| 14 | Giao thức đánh giá: baseline vs ASTRA vs giáo viên sửa, mù, báo mẫu số | Report mục 17; chứng minh "tăng độ phức tạp có lợi" | sau slide 17 |
-| 15 | "Đổi số" là phép kiểm bằng code | rẻ, đúng, lặp lại được | 21 |
+## Phụ lục B. Câu hỏi mở cho nhóm
 
-## Phụ lục B. Câu hỏi mở cần nhóm chốt
-
-1. Môn nào trong THPTQG đi đầu (slide 4)?
-2. Educator và Critics tách hay gộp? Validator là code thuần hay có phần LLM (slide 8)?
-3. Tên và trích dẫn paper tham chiếu "EduAgent…" (slide 7); chưa tìm thấy trong repo.
-4. Metric chất lượng lấy từ lab nào (slide 13); nhóm điền.
-5. Hướng A hay B cho độ đa dạng, và đo bằng gì (slide 14).
-6. Slide có cần nói Abstraction và Algorithmic Design theo kỹ thuật cụ thể nào của giảng viên không? (chưa có Slide cho hai trụ này)
-7. Slide có dùng mức L1 đến L5 hay chỉ dùng như ghi chú nội bộ?
+1. Đầu vào nào bắt buộc, nào tùy chọn (slide 2)? "Bộ nhớ cập nhật" chứa gì?
+2. Nội dung và kích thước của tập dữ liệu K (slide 2)?
+3. Tần suất ở slide 3: đếm thật, hay nêu định tính?
+4. Educator và Critics tách hay gộp? Validator thuần code hay một phần LLM (slide 8)?
+5. Tên và trích dẫn bài báo tham khảo "EduAgent…" (slide 7); không tìm thấy trong repo.
+6. Lab nào cung cấp metric chất lượng (slide 14)?
+7. Thử hướng đa dạng nào, đo thế nào (slide 15)?
+8. Các ô ma trận slide 21 có qua được bước đối chiếu bài giảng không?
+9. Dạng hình và nội dung slide 18 đến 20 (nhóm tự chọn).
 
 ## Chưa kiểm chứng
 
-- File do AI soạn (Claude, 2026-11-12) từ ghi chú của Huy, 4 slide môn học, Report và mvp-plan. Chưa ai trong nhóm đọc và duyệt; chưa chạy thử gì.
-- Mọi con số mục tiêu (≥95%, 100%, ≥95%, ~2.000 VND mỗi đề) lấy từ Report là **mục tiêu**, không phải kết quả đo. File không tạo số liệu mới.
-- Sơ đồ Mermaid chưa render thử trong môi trường nào; nên xem bằng bộ xem Markdown hỗ trợ Mermaid trước khi dựng slide.
-- Dấu ✔ ở slide 8 và các ánh xạ lập luận (🧠) là **đề xuất của người soạn**, cần nhóm kiểm.
-- Bốn slide môn học là Slide01 đến Slide04; chưa có slide Abstraction và Algorithmic Design, nên hai trụ này chỉ dùng định nghĩa chung.
+- AI (Claude, 2026-11-12) soạn từ ghi chú của Huy, bốn slide môn học, Report và mvp-plan; v2 áp góp ý của nhóm. Chưa chạy gì; chưa ai đọc lại v2.
+- Mọi con số mục tiêu trong Report (≥95%, 100%, khoảng 2.000 đồng mỗi đề) là mục tiêu, không phải kết quả. File này không tạo con số mới.
+- Các sơ đồ Mermaid chưa được render ở đây; xem bằng trình đọc Markdown hỗ trợ Mermaid trước khi dựng slide.
+- Kiểu reasoning và kĩ thuật chưa được đối chiếu với những gì thầy dạy (cảnh báo của nhóm). Chưa có slide giảng cho Abstraction và Algorithmic Design.

@@ -1,10 +1,12 @@
 # SLIDE PLAN: ASTRA through the 4 Pillars of Computational Thinking
 
-**What this is:** the draft layout and content of the slide deck that analyses ASTRA through the four pillars (Decomposition, Pattern Recognition, Abstraction, Algorithmic Design). **Primary version for the teams to work from.** The Vietnamese counterpart is [ct-slide-plan.md](ct-slide-plan.md); keep the two in step (slide numbers and tags are identical). **Who it is for:** team Trial and Success (CSC10014), slide authors and reviewers. **Status:** AI-drafted on 2026-11-12 from Huy's notes, not yet reviewed by anyone (see "Not verified" at the end).
+**What this is:** the draft layout and content of the slide deck that analyses ASTRA through the four pillars (Decomposition, Pattern Recognition, Abstraction, Algorithmic Design). **Primary version for the teams to work from.** The Vietnamese counterpart is [ct-slide-plan.md](ct-slide-plan.md); keep the two in step (slide numbers are identical). **Who it is for:** team Trial and Success (CSC10014), slide authors and reviewers. **Status:** v2, 2026-11-12. v1 was AI-drafted from Huy's notes; v2 applies the team's review comments (see "Changes in v2"). Not yet re-reviewed.
 
 Theory sources: Slide01 (Intro to CT), Slide02 (Thinking and Reasoning), Slide03 (Decomposition), Slide04 (Pattern Recognition). Project sources: [ASTRA_Trial_and_Success_Report.md](../ASTRA_Trial_and_Success_Report.md), [mvp-plan.md](mvp-plan.md).
 
-> **No lecture slides were supplied for Abstraction and Algorithmic Design.** For these two pillars this file only uses the definitions in Slide01/02 (Abstraction = drop noise, keep the core model; Algorithmic Design = complete steps a machine can follow; pseudocode; imperative vs declarative). No other technique is attributed to the course.
+> **Caution (from the team): the reasoning types and techniques attached to items below are NOT verified against what the lecturer teaches.** Treat them as hints, check against the lecture before they go on a slide. Where the lecturer's own framing is known (Pattern = Subject + frequency + content), it is used instead.
+>
+> **No lecture slides were supplied for Abstraction and Algorithmic Design.** For these two pillars only the definitions in Slide01/02 are used (Abstraction = drop noise, keep the core model; Algorithmic Design = complete steps a machine can follow; pseudocode; imperative vs declarative).
 
 ---
 
@@ -12,118 +14,115 @@ Theory sources: Slide01 (Intro to CT), Slide02 (Thinking and Reasoning), Slide03
 
 ### Slide convention
 
-Every slide has a **large title (H1)**, a tag line, **Layout** (what is on the screen), **Content** (every item carries a tag), and **Line of thought** (why this slide follows the previous one). Content uses diagrams, tables and sequences wherever possible.
+Each slide has: a **large title**, one tag line, **Visual** (the one figure that carries the slide), **Say** (what the presenter says, one line per item), and **Next** (why the next slide follows). On the real slide there is **one figure and few words**; this file may say more than the slide will.
 
-### Step tags (every content item carries one main tag)
+### Tags (kept to one line per slide, no tag per item)
 
-| Tag | Step | Meaning (per Slide01) |
-| :--- | :--- | :--- |
-| 🟥 `PROBLEM` | Problem Definition | fix input, output, scope, criteria; CT starts here, not at the algorithm |
-| 🟦 `DECOMP` | 01 Decomposition | split a complex problem into smaller parts; name the kind: Structural, Functional, Data-driven, Object-oriented, Temporal |
-| 🟩 `PATTERN` | 02 Pattern Recognition | find similarities, trends, repetitions; name the technique: Feature extraction, Grouping, Trend and sequence, Template matching, Regex, ML |
-| 🟨 `ABSTRACT` | 03 Abstraction | keep only the important information, drop noise; yields a core model |
-| 🟪 `ALGO` | 04 Algorithmic Design | complete steps a machine can follow |
-| ⬜ `DOING` | Implementation and Simulation | the doing phase, no longer pure CT (Slide01: Design → Action) |
-| ➕ | **Proposed addition** | idea added by the author of this file, not in Huy's notes; Huy keeps or drops it |
-| 🔲 | Placeholder | space for the team to fill |
+| Tag | Step |
+| :--- | :--- |
+| 🟥 PROBLEM | Problem Definition |
+| 🟦 DECOMP | Decomposition |
+| 🟩 PATTERN | Pattern Recognition |
+| 🟨 ABSTRACT | Abstraction |
+| 🟪 ALGO | Algorithmic Design |
+| ➕ | Proposed addition (author's idea, not in the notes; Huy keeps or drops) |
+| 🔲 | Placeholder for the team |
 
-### Reasoning tags (Slide02, six types)
+### Complexity levels
 
-`Deductive` (rule → certain consequence), `Inductive` (observations → probable rule), `Abductive` (result → most likely explanation, i.e. debugging), `Probabilistic` (uncertainty, incomplete data), `Deontic` (must, may, must not), `Spatial/Temporal` (where and when). Short forms: 🧠D, 🧠I, 🧠A, 🧠P, 🧠Dn, 🧠ST.
-
-### Complexity scale (complexity of thinking)
-
-Every slide carries a level `L1` to `L5`. This is how the deck shows thinking growing from one function to a product.
-
-| Level | The problem at this point | Slides |
-| :--- | :--- | :--- |
-| L1 | one function: (input) → exam | 2 to 4 |
-| L2 | three subproblems: input, formula set, quality control | 5 to 6 |
-| L3 | a multi-agent system playing the exam-writing committee | 7 to 10 |
-| L4 | system design: context, protocol, pipeline, parameters | 11 to 17 |
-| L5 | product: UI/UX, assistant, features, environment | 18 to 21 |
+`L1` one function → `L2` three subproblems → `L3` multi-agent system → `L4` system design → `L5` product. Shown on the map slide only; slides carry no level badge.
 
 ### Slide index
 
-| # | Title | Main tag | Level |
+| # | Title | Tags | Visual |
 | :--- | :--- | :--- | :--- |
-| 1 | Map of the line of thought ➕ | all 4 pillars | L1 to L5 |
-| 2 | The problem: Given… Find… | 🟥 | L1 |
-| 3 | Quality of the output exam: metrics | 🟥 🔲 | L1 |
-| 4 | Scope | 🟥 | L1 |
-| 5 | From pattern to mapping model to three subproblems | 🟩 🟨 🟦 | L2 |
-| 6 | Naive solution: the LLM loop | 🟥 🟩 | L2 |
-| 7 | The real exam committee and the multi-agent system | 🟩 🟦 | L3 |
-| 8 | The agents and when to stop decomposing | 🟦 | L3 |
-| 9 | The abstract problem shared by every agent | 🟨 | L3 |
-| 10 | Teacher needs and the intent-clarification mechanism | 🟩 🟨 | L3 |
-| 11 | Focus on Composer and Retriever: the corpus | 🟩 🟨 | L4 |
-| 12 | Metrics for retrieval and coverage | 🟥 🔲 | L4 |
-| 13 | The output problem: format, quality, cost, diversity | 🟥 🟦 | L4 |
-| 14 | Diversity subproblem: two approaches | 🟦 🔲 | L4 |
-| 15 | The composing pipeline (Temporal) | 🟪 🟦 | L4 |
-| 16 | Pseudocode and the Orchestrator states ➕ | 🟪 | L4 |
-| 17 | Parameters to tune and how to measure | 🟪 🔲 | L4 |
-| 18 | Transfer: from exam writing to a virtual assistant | 🟦 | L5 |
-| 19 | UI/UX for teachers | 🟩 🟨 | L5 |
-| 20 | The assistant | 🟩 🟪 | L5 |
-| 21 | Extra features and working environment | 🟩 🟪 | L5 |
-| 22 | Graph of the whole problem process | 🟦 🟥 | L1 to L5 |
-| 23 | Wrap-up: reasoning × pillar matrix, and the loop ➕ | all 4 pillars | L1 to L5 |
+| 1 | Map of the line of thought ➕ | all | route diagram |
+| 2 | The problem: input and output | 🟥 + 🟨 🟦 | input/output diagram |
+| 3 | Exams are consistent | 🟩 | observation → consequence |
+| 4 | One model for a whole class of exams | 🟨 | formula panel |
+| 5 | Three subproblems | 🟦 | tree |
+| 6 | Baseline: the naive LLM loop | 🟥 🟩 | loop |
+| 7 | The exam committee becomes a multi-agent system | 🟩 🟦 | role mapping |
+| 8 | The agents | 🟦 | org chart |
+| 9 | One frame for every agent | 🟨 | class diagram |
+| 10 | What teachers need | 🟩 🟨 | loop |
+| 11 | The corpus | 🟩 🟨 | pipeline |
+| 12 | The composing pipeline | 🟪 | swimlane with loopback |
+| 13 | The same logic as pseudocode | 🟪 | pseudocode |
+| 14 | Output and benchmark | 🟥 🔲 | tree + metric chart |
+| 15 | Diversity: directions to try | 🟦 🔲 | option tree |
+| 16 | Parameters: what we turn | 🟪 🔲 | tuning loop |
+| 17 | Zoom out: from exam writing to an assistant app | 🟦 | nested circles |
+| 18 | UI/UX | 🟩 🟨 🔲 | team's choice |
+| 19 | The assistant | 🟩 🟪 🔲 | team's choice |
+| 20 | Extra features | 🟩 🟪 🔲 | team's choice |
+| 21 | Wrap-up: reasoning × pillar, and the loop ➕ | all | matrix + loop |
+| 22 | Graph of the whole problem | 🟦 🟥 | graph |
 
-Appendices at the end: list of proposed additions, open questions, and the not-verified note.
+Slides in the deck must not repeat one format: the 22 slides above use tree, loop, flow, swimlane, class diagram, graph, chart, matrix, nested circles, pseudocode. Avoid the two-column table except where it really is a table.
 
 ---
 
 # SLIDE 1 · MAP OF THE LINE OF THOUGHT ➕
 
-🟥 `PROBLEM` · 🟦 `DECOMP` · 🟩 `PATTERN` · 🟨 `ABSTRACT` · 🟪 `ALGO` · Level L1 → L5
+🟥 🟦 🟩 🟨 🟪
 
-**Layout:** one wide figure filling the slide; the horizontal axis is the time of the talk, the vertical axis is rising complexity. Each arrow carries a pillar tag.
+**Visual:** one wide route figure, horizontal axis = talk time, vertical axis = rising complexity.
 
 ```mermaid
 flowchart LR
-    P["🟥 Define the problem<br/>Given → Find"]
-    D1["🟦 Split: input, formulas, quality control"]
-    PR1["🟩 Pattern: the real exam committee"]
-    M["🟩 Solution: a multi-agent system"]
-    A1["🟨 Abstract problem shared by agents"]
-    D2["🟦 Split: Composer and Retriever, output"]
-    AL["🟪 Pipeline, parameters, repair loop"]
-    T["🟥 Transfer: a product for teachers"]
-    D3["🟦 Split: exam writing, UI/UX, assistant, features"]
-    PR2["🟩 Pattern: users and repeated work"]
-    G["Graph of the whole problem"]
-    P --> D1 --> PR1 --> M --> A1 --> D2 --> AL --> T --> D3 --> PR2 --> G
+    P["Define the problem"] --> D1["Split into 3"]
+    D1 --> PR1["Pattern: the real exam committee"]
+    PR1 --> M["Multi-agent system"]
+    M --> A1["Shared frame"]
+    A1 --> AL["Pipeline, benchmark, parameters"]
+    AL --> T["Zoom out: a product for teachers"]
+    T --> G["Graph of the whole problem"]
 ```
 
-**Content**
+**Say**
+- The talk does not go "pillar 1, then 2, 3, 4". The pillars recur at most layers, and each layer is bigger than the last.
+- Each layer ends with a new subproblem; that is why complexity grows.
+- CT is the design phase; doing and measuring come after (Slide01).
 
-| Item | Tag |
-| :--- | :--- |
-| State clearly: the talk does not go "pillar 1, then 2, then 3, then 4"; it **repeats all four pillars at every layer** of the problem, and each layer is more complex than the last | 🟥 `PROBLEM` |
-| Each layer ends with a new subproblem, which is why complexity grows | 🟦 `DECOMP` (Functional) |
-| Slide01: CT is the **design** phase; implementation and simulation belong to the doing phase, in a continuous loop | ⬜ `DOING` |
-
-**Line of thought:** the opening slide promises a route; slide 23 comes back to this same figure to close.
+**Next:** the route is set; start with the problem.
 
 ---
 
-# SLIDE 2 · THE PROBLEM: GIVEN… FIND…
+# SLIDE 2 · THE PROBLEM: INPUT AND OUTPUT
 
-🟥 `PROBLEM` · 🧠Dn (constraints) · Level L1
+🟥 PROBLEM · 🟨 ABSTRACT · 🟦 DECOMP
 
-**Layout:** left, a block of text stating the problem formally; right, a diagram input → function → output. Bottom line: "predecomposition: the output is defined before we split anything".
+**Visual:** left, an input → black box → output diagram, inputs and outputs grouped by who provides or sees them; right, the Given/Find box.
 
-**Content**
+```mermaid
+flowchart LR
+    subgraph IN["Input"]
+        direction TB
+        I1["From the user, required"]
+        I2["From the user, optional"]
+        I3[("From the dataset: what, and how large")]
+    end
+    X["Write the exam"]
+    subgraph OUT["Output"]
+        direction TB
+        O1["User sees: the exam package"]
+        O2["User need not see: updated memory"]
+    end
+    I1 --> X
+    I2 --> X
+    I3 --> X
+    X --> O1
+    X --> O2
+```
 
-| Item | Tag |
-| :--- | :--- |
-| **Teacher input (T):** exam intent, sample exam, reference documents, template requirements, exam matrix | 🟥 `PROBLEM` |
-| **Application input (K):** a database of whatever the app needs to write an exam (what the database contains is a subproblem, solved later) | 🟥 `PROBLEM` |
-| **Output (E):** a usable exam, correct in content and correct in form | 🟥 `PROBLEM` |
-
-**Formal statement**
+| Group | Content | Status |
+| :--- | :--- | :--- |
+| User, required | exam intent *I* | proposal ➕ (team confirms which are required) |
+| User, optional | sample exam *S*, reference documents *R*, template requirements *F*, exam matrix *M* | proposal ➕ |
+| Dataset | application database *K*; what it holds and its size | 🔲 `[PLACEHOLDER — contents and size]` |
+| User sees | paper, answer key, solutions, review flags | from Huy's notes |
+| User need not see | updated memory (what the app keeps for next time) | 🔲 `[PLACEHOLDER — what is stored]` |
 
 > **Given:** exam intent *I*, sample exam *S*, reference documents *R*, template requirements *F*, exam matrix *M* (from the teacher); and the application database *K*.
 > **Find:** an exam package *E* = (paper, answer key, solutions, review flags) such that
@@ -131,176 +130,123 @@ flowchart LR
 > (2) **form is correct:** matches *F* and *M*, item counts, marks, duration;
 > (3) **it is usable:** the teacher reviews and exports it without redoing it.
 
-```mermaid
-flowchart LR
-    subgraph IN["Input"]
-        T["Teacher: intent I, sample S, documents R, template F, matrix M"]
-        K[("Application: database K")]
-    end
-    X["Black box: write the exam"]
-    subgraph OUT["Output E"]
-        E1["Exam paper"]
-        E2["Answer key and solutions"]
-        E3["Review flags"]
-    end
-    T --> X
-    K --> X
-    X --> E1
-    X --> E2
-    X --> E3
-```
+**Say**
+- Splitting input and output by who sees them already makes this a product-shaped problem (note from the team: that is fine, but say so).
+- Naming "what is the input, what is hidden" is abstraction; grouping them is decomposition. The metrics for "correct" come later, at the output (slide 14).
 
-**Line of thought:** before thinking about how to solve it, we must fix what "correct" means → slide 3.
+**Next:** the problem is fixed; where do exams resemble each other?
 
 ---
 
-# SLIDE 3 · QUALITY OF THE OUTPUT EXAM: METRICS 🔲
+# SLIDE 3 · EXAMS ARE CONSISTENT
 
-🟥 `PROBLEM` · 🔲 Placeholder · Level L1
+🟩 PATTERN
 
-**Layout:** one large table with columns "Metric", "Measured by", "Measured value". The last column is empty on purpose and labelled `[NOT MEASURED]`.
+**Visual:** three observation cards in the lecturer's form **Subject + frequency + content**, then one arrow to the consequence. Not a table.
 
-**Content** (metric names come from Report section 17; no numbers are filled in)
-
-| Metric | Measured by | Value | Tag |
-| :--- | :--- | :--- | :--- |
-| Answer correctness | against a reference key | `[PLACEHOLDER — team fills after runs]` | 🟥 `PROBLEM` |
-| Blueprint/format compliance | checked by code | `[PLACEHOLDER]` | 🟥 |
-| Scope and source validity | against syllabus and source ids | `[PLACEHOLDER]` | 🟥 |
-| Difficulty distribution | against the requested matrix | `[PLACEHOLDER]` | 🟥 |
-| Ambiguity rate | blind teacher review | `[PLACEHOLDER]` | 🟥 |
-| Teacher revision minutes | timer during review | `[PLACEHOLDER]` | 🟥 |
-| Cost per approved paper | token and money log | `[PLACEHOLDER]` | 🟥 |
-| Export success rate | run the export | `[PLACEHOLDER]` | 🟥 |
-
-Small note at the bottom: the report's goals (≥95% answer accuracy, 100% format compliance, ≥95% scope validity, about VND 2,000 per exam) **are goals, not measured results**.
-
-**Line of thought:** with criteria we know what a "good exam" is; next we bound the scope to something feasible → slide 4.
-
----
-
-# SLIDE 4 · SCOPE
-
-🟥 `PROBLEM` · Level L1
-
-**Layout:** two columns, "In scope" / "Out of scope", plus a yellow box holding the open question.
-
-**Content**
-
-| Item | Tag |
-| :--- | :--- |
-| **In scope:** THPTQG exams, subject **[PLACEHOLDER — which subject?]**; V-ACT competency-assessment exams | 🟥 `PROBLEM` |
-| ➕ **Out of scope (non-goals, Report section 04):** fully automatic grading of free-form writing, personalised learning analytics, replacing the teacher's final decision | 🟥 `PROBLEM` |
-| ➕ Pick the first subject by the test "can the answer be checked by code" (mvp-plan, Problem 1) | 🟥 `PROBLEM` · 🧠D |
-| Why a narrow scope is an abstraction decision, not a lack of ambition (Report section 05) | 🟨 `ABSTRACT` |
-
-**Line of thought:** the boundary is clear; now look at existing exams to see where they resemble each other → slide 5.
-
----
-
-# SLIDE 5 · FROM PATTERN TO A MAPPING MODEL TO THREE SUBPROBLEMS
-
-🟩 `PATTERN` → 🟨 `ABSTRACT` → 🟦 `DECOMP` · Level L2
-
-**Layout:** three rows joined by downward arrows, one pillar tag per row; the last row is a diagram of three subproblems with dependency arrows.
-
-### Row 1 · Pattern
-
-| Observation | Technique (Slide04) | Reasoning |
+| Subject | Frequency | Content |
 | :--- | :--- | :--- |
-| Most exams share one format | 🟩 Direct template matching (a new exam fits an old frame) | 🧠I |
-| A finite, fairly fixed set of question types (multiple choice, true/false, short answer, essay…) | 🟩 Grouping and classification | 🧠I |
-| Each question type is written by a similar method | 🟩 Feature extraction (question form, number of parts, length, level) | 🧠I |
-| Subject knowledge changes little between years; only the topic distribution shifts | 🟩 Trend and sequence analysis (topic frequency per year, order of questions in a paper) | 🧠I + 🧠P |
-| ➕ Numbering, answer labels and section headings follow repeated syntax | 🟩 Regex (build the form checker) | 🧠D |
+| Exams of one kind (e.g. THPTQG) | most of them `[PLACEHOLDER — count]` | follow one shared format |
+| Questions in an exam | always | belong to a small, fairly fixed set of types (multiple choice, true/false, short answer, essay…) |
+| Questions of one type | usually | are written in a similar way (form, number of parts, length, level) |
+| Subject knowledge | year after year | changes little; only the topic distribution shifts |
 
-### Row 2 · Abstraction
+**Consequence (the point of the slide):** exams are consistent, so we can fit them with one **stable workflow**. The stable parts become the **blueprint**; the workflow is the process that fills it (slide 4, slide 12).
 
-🟨 `ABSTRACT` (Slide01: drop noise, keep the core model): drop the details of each year and each school; keep **one mapping**
+**Say**
+- Pattern is a phenomenon with a subject, a frequency and a content; fill all three, otherwise it is only an impression.
+- Spotting the groups and features (types, number of parts, level) is also a way of splitting the exam; the techniques of Slide04 are hints only and are not verified here.
 
-> **E = Φ(T, K; θ)**, where θ is a fixed **formula set** (blueprint rules, difficulty distribution, scoring profile, prompt templates).
+**Next:** if exams are consistent, throw away what differs and keep the shared model.
 
-In other words: we do not solve each exam; we solve a **class** of exams with one formula set.
+---
 
-### Row 3 · Decomposition
+# SLIDE 4 · ONE MODEL FOR A WHOLE CLASS OF EXAMS
+
+🟨 ABSTRACT
+
+**Visual:** a large formula panel; left of it, "dropped" (year, school, wording), right of it, "kept" (what slide 3 found stable).
+
+> **E = Φ(T, K; θ)**, where θ is the fixed **formula set**: blueprint rules, difficulty distribution, scoring profile, prompt templates.
+
+**Say**
+- This follows slide 3 directly: the consistent parts (format, question types, per-type method) become θ; what differs per exam (year, school) is dropped.
+- We do not solve one exam; we solve a class of exams with one formula set.
+- The blueprint and workflow are the two faces of θ: what must hold, and how to proceed.
+
+**Next:** Φ is still one big function; split it.
+
+---
+
+# SLIDE 5 · THREE SUBPROBLEMS
+
+🟦 DECOMP
+
+**Visual:** a tree, three branches, dependency arrows between them.
 
 ```mermaid
 flowchart TD
     ROOT["E = Φ(T, K; θ)"]
-    A["① Input: what is needed, how it is processed"]
-    B["② Formula set θ: what it contains"]
-    C["③ Quality control of the output"]
+    A["Input: what is needed, how it is processed"]
+    B["Formula set θ: what it contains"]
+    C["Quality control of the output"]
     ROOT --> A
     ROOT --> B
     ROOT --> C
-    A -- "decides the data for" --> B
-    B -- "produces what must be checked" --> C
-    C -. "check results tune" .-> B
+    A -- "decides data for" --> B
+    B -- "produces what to check" --> C
+    C -. "results tune" .-> B
 ```
 
-🟦 `DECOMP` (Functional + Data-driven): three related subproblems (arrows in the diagram), as in Huy's notes. The next slides go into problem ②, the formula set.
+**Say**
+- Split by function. The dependencies are the point; they are why the three cannot be solved in isolation.
+- The next slides work on the middle branch, θ.
 
-**Line of thought:** the same structure repeats → abstract it into one function → that function is too big, so split it in three.
+**Next:** before building θ, what is the simplest thing that could work?
 
 ---
 
-# SLIDE 6 · NAIVE SOLUTION: THE LLM LOOP
+# SLIDE 6 · BASELINE: THE NAIVE LLM LOOP
 
-🟥 `PROBLEM` (first attempt) · 🟩 `PATTERN` (spot where it fails) · Level L2
+🟥 PROBLEM · 🟩 PATTERN
 
-**Layout:** left, the loop (diagram); right, a "why it is not enough" table.
+**Visual:** a loop diagram only; the reasons go in the speaker notes.
 
 ```mermaid
 flowchart LR
-    U["Request an exam"] --> L["LLM generates the exam"]
-    L --> V["Ask for more detail / re-check"]
-    V --> E["Add random 'evidence'<br/>(imitating ordinary users)"]
+    U["Request an exam"] --> L["LLM writes it"]
+    L --> V["Ask for more detail, re-check"]
+    V --> E["Add random 'evidence'"]
     E --> L
 ```
 
-**Content**
+**Say**
+- This is the **baseline**: the thing every later design must beat, kept for comparison (Report sections 16, 17).
+- Why it is not enough (Report section 03): nothing enforces item count, marks, levels at once; one model grades itself; fluent but wrong output; nothing to measure.
 
-| Item | Tag |
-| :--- | :--- |
-| Naive solution: keep repeating the request, ask the LLM for more detail, let it re-check, add random evidence the way ordinary users do | 🟥 `PROBLEM` |
-| Why it is not enough (Report section 03): no mechanism to **enforce at once** the item count, marks and levels; one model grades itself; wrong but fluent output ("exam slop"); nothing to measure | 🟩 `PATTERN` · 🧠A (find the cause of the error) |
-| Kept as the **baseline** for comparison (Report sections 16 and 17), not as the goal | 🟥 `PROBLEM` |
-| ➕ Every run differs, so it is hard to reproduce and to debug | 🟩 `PATTERN` · 🧠P |
-
-**Line of thought:** self-checking lacks independence → ask how people handle this → slide 7.
+**Next:** self-checking lacks independence; how do people solve this?
 
 ---
 
-# SLIDE 7 · THE REAL EXAM COMMITTEE AND THE MULTI-AGENT SYSTEM
+# SLIDE 7 · THE EXAM COMMITTEE BECOMES A MULTI-AGENT SYSTEM
 
-🟩 `PATTERN` → 🟦 `DECOMP` (Structural) · Level L3
+🟩 PATTERN · 🟦 DECOMP
 
-**Layout:** top, a picture of the "exam committee" with its roles; bottom, an arrow "map role → agent".
-
-**Content**
-
-| Item | Tag |
-| :--- | :--- |
-| **Pattern:** official exam writing needs a committee of several people with different roles: write, solve blind, challenge, validate; the aim is **objectivity** | 🟩 `PATTERN` · Grouping · 🧠I |
-| **Proposed solution:** an LLM-based multi-agent system, one function per agent: Composer, Solver, Critics, Educator, Validator, Retriever | 🟦 `DECOMP` · Structural · Object-oriented |
-| Reference paper: **[PLACEHOLDER — full title and citation of the "EduAgent…" paper Huy remembers; not found in the repo, not guessed]** | 🔲 |
-| ➕ Slide03 asks us to choose a kind of split; here **Structural + Object-oriented**, because each real-world role is an "object" with its own data and behaviour | 🟦 `DECOMP` |
+**Visual:** two columns of roles joined by arrows: committee roles on the left, agents on the right.
 
 ```mermaid
 flowchart LR
-    subgraph R["The committee in real life"]
+    subgraph R["Committee in real life"]
         r1["Writer"]
         r2["Blind solver"]
         r3["Challenger"]
-        r4["Validator / approver"]
+        r4["Validator"]
     end
-    subgraph S["LLM multi-agent system"]
+    subgraph S["Multi-agent system"]
         a1["Composer"]
         a2["Solver"]
         a3["Critics"]
         a4["Validator"]
-        a5["Retriever ➕ lookup role"]
-        a6["Educator ➕ pedagogy role"]
     end
     r1 --> a1
     r2 --> a2
@@ -308,59 +254,54 @@ flowchart LR
     r4 --> a4
 ```
 
-**Line of thought:** once the team exists we must say what each member does and where to stop splitting → slide 8.
+**Say**
+- Pattern in the lecturer's form: **Subject** official exam writing; **frequency** every time; **content** several people in different roles, one of whom does not see the key, with objectivity as the aim.
+- So the solution mirrors it: one agent per role. Reference paper: 🔲 `[PLACEHOLDER — full title and citation of the "EduAgent…" paper; not found in the repo, not guessed]`.
+
+**Next:** who exactly are the agents, and where do we stop splitting?
 
 ---
 
-# SLIDE 8 · THE AGENTS AND WHEN TO STOP DECOMPOSING
+# SLIDE 8 · THE AGENTS
 
-🟦 `DECOMP` (Structural + Functional) · Level L3
+🟦 DECOMP
 
-**Layout:** a table of agents; the last three columns are the three ticks of "When to stop decomposing" (Slide03).
+**Visual:** an org chart: Orchestrator on top, agents below, each box one phrase.
 
-**Content**
+> **Stop splitting when each agent has one job, can be understood on its own, and can be tested on its own** (Slide03: single responsibility, understandable, independent).
 
-| Agent (Huy) | Counterpart in Report/mvp-plan | One job | Single responsibility | Understandable | Independent |
-| :--- | :--- | :--- | :---: | :---: | :---: |
-| Composer | Writer | draft questions and provisional solutions from the blueprint | ✔ | ✔ | ✔ |
-| Retriever | Retriever | fetch passages with id and locator | ✔ | ✔ | ✔ |
-| Solver | Blind Solver | solve without seeing the Composer's key | ✔ | ✔ | ✔ |
-| Critics | Appraiser | clarity, ambiguity, distractors, difficulty, syllabus fit | ✔ | ✔ | ✔ |
-| Educator ➕ | (inside Appraiser) | judge pedagogical fit: objectives, cognitive level | ✔ | ✔ | ✔ |
-| Validator | Guardrail Gate | check by **code**: item count, marks, labels, schema | ✔ | ✔ | ✔ |
-| Orchestrator ➕ | Orchestrator | manage state, retry limits, logging | ✔ | ✔ | ✔ |
-| Blueprint Builder ➕ | Planner | turn the request into a blueprint, ask about gaps | ✔ | ✔ | ✔ |
+```mermaid
+flowchart TD
+    OR["Orchestrator ➕: state and limits"]
+    BB["Blueprint Builder ➕: request to blueprint"]
+    RT["Retriever: passages with id"]
+    CP["Composer: questions and solutions"]
+    SV["Solver: solves blind"]
+    CR["Critics: clarity, ambiguity, level"]
+    ED["Educator ➕: pedagogical fit"]
+    VA["Validator: code checks"]
+    OR --> BB
+    OR --> RT
+    OR --> CP
+    OR --> SV
+    OR --> CR
+    OR --> ED
+    OR --> VA
+```
 
-Note: the ticks are a **proposal** by the Slide03 criteria; the team re-checks each row. The boundaries of Educator and Validator need a team decision (see open questions).
+**Say**
+- A failure can be pinned on one agent, instead of drowning in one long answer.
+- Names: Huy's names; Report calls Composer "Writer", Solver "Blind Solver", Critics "Appraiser", Validator "Guardrail Gate". Whether Educator is separate from Critics, and whether Validator is pure code, is open (Appendix B).
 
-| Item | Tag |
-| :--- | :--- |
-| Stop rule: one job, understandable on its own, testable on its own | 🟦 `DECOMP` |
-| Point to make: a failure can be pinned on one layer instead of drowning in one long answer | 🟦 `DECOMP` · 🧠A |
-
-**Line of thought:** the agents are separated; now ask what they have in common → abstraction → slide 9.
+**Next:** six different jobs; what do they share?
 
 ---
 
-# SLIDE 9 · THE ABSTRACT PROBLEM SHARED BY EVERY AGENT
+# SLIDE 9 · ONE FRAME FOR EVERY AGENT
 
-🟨 `ABSTRACT` · Level L3
+🟨 ABSTRACT
 
-**Layout:** one "agent frame" table (one frame for all six agents), next to a class diagram.
-
-**Content**
-
-| Shared component | Design question | Example for the Composer | Tag |
-| :--- | :--- | :--- | :--- |
-| Goal | what the agent optimises | write exactly to the blueprint | 🟨 `ABSTRACT` |
-| Input | what it receives, which schema | blueprint + passages | 🟨 |
-| Output | what it returns, which schema | a list of `Question` | 🟨 |
-| Context management | what goes into the context window, what stays out | only the topic of the current section, not the whole corpus | 🟨 · 🧠P |
-| Protocol | message format and envelope | JSON with `schema_version`, `trace_id` | 🟨 · 🧠Dn |
-| Tools | what the agent may call | retrieval, calculator, sympy | 🟨 |
-| Flag | how it reports an anomaly | `needs_teacher_review` + reason | 🟨 |
-| Gate | condition to pass | correct item count, evidence id present | 🟨 · 🧠D |
-| Orchestration | order, parallelism, limits | states, budgets, number of repair rounds | 🟨 · 🧠ST |
+**Visual:** a UML class diagram. Beside it a short list: one line per element, saying why it is needed.
 
 ```mermaid
 classDiagram
@@ -369,6 +310,7 @@ classDiagram
       +input_schema
       +output_schema
       +context_policy
+      +tools
       +run(msg) Message
     }
     class Message {
@@ -376,7 +318,6 @@ classDiagram
       +trace_id
       +payload
       +status
-      +errors
     }
     class Gate {
       +check(msg) Verdict
@@ -389,388 +330,328 @@ classDiagram
     Gate --> Message
 ```
 
-🟦 `DECOMP` (UML class diagram, Slide03): shows the abstraction as a class structure.
+| Element | Why it is needed |
+| :--- | :--- |
+| Goal | so each agent optimises one thing |
+| Input / output schema | so agents can be swapped and tested |
+| Context | the model sees only what the job needs |
+| Protocol | one message format that the code can check |
+| Tools | what the agent may call, nothing else |
+| Flag | an agent can say "I am unsure" instead of guessing |
+| Gate | the pass condition is written down, not felt |
 
-**Line of thought:** with a shared frame we design the frame once; only the data and the job change per agent.
+**Say**
+- Design the frame once; only data and job change per agent. This is also where the two styles split: the **gates and schemas are declarative** ("what must be true"), the **orchestration is imperative** ("how to proceed"; slide 13).
+
+**Next:** the agents exist; what do teachers actually need from them?
 
 ---
 
-# SLIDE 10 · TEACHER NEEDS AND THE INTENT-CLARIFICATION MECHANISM
+# SLIDE 10 · WHAT TEACHERS NEED
 
-🟩 `PATTERN` → 🟨 `ABSTRACT` · Level L3
+🟩 PATTERN · 🟨 ABSTRACT
 
-**Layout:** left, a table "observed pattern → required component"; right, a loop diagram "clarify and deepen the intent".
-
-**Content**
-
-| Observed pattern | Design consequence | Tag |
-| :--- | :--- | :--- |
-| Teachers write exams at **set times** (mid-term, final…) | exam plan tied to a point in time | 🟩 Trend and sequence · 🧠ST |
-| For **one grade or a group of related grades** | curriculum map across grades | 🟩 Grouping |
-| For **one or a few subjects** | per-subject profile (subject profile, Report section 10) | 🟩 Grouping |
-| By **personal teaching goals** | illustrative matrix, adjustable difficulty distribution | 🟩 Feature extraction |
-| → Needed: **curriculum map**, knowledge framework, difficulty distribution, illustrative matrix | | 🟨 `ABSTRACT` |
-| → A mechanism to **resolve and deepen** the need: turn a vague request into a full blueprint | | 🟨 |
+**Visual:** a loop: vague request → resolve → deepen → complete blueprint, with the four observations as short labels on the left.
 
 ```mermaid
 flowchart LR
-    Q["Teacher's vague request"] --> R["Resolve: map to grade, subject, time"]
+    Q["Vague request"] --> R["Resolve: grade, subject, time"]
     R --> D["Deepen: ask about gaps"]
-    D --> BP{"Blueprint complete and consistent?"}
+    D --> BP{"Blueprint complete?"}
     BP -- "not yet" --> D
     BP -- "yes" --> OK["Blueprint fixed"]
 ```
 
-| Item | Tag |
-| :--- | :--- |
-| Each clarification round is bounded (no endless questioning) | 🟪 `ALGO` · 🧠Dn |
-| The blueprint is fixed only when total marks, item counts and levels agree | 🟪 `ALGO` · 🧠D |
+**Say** (one line each, *Subject + frequency + content*)
+- Teachers write exams at set times, for one grade or a group of grades, in one or a few subjects, by personal goals.
+- So we need: curriculum map, knowledge framework, difficulty distribution, illustrative matrix.
+- And a way to turn a vague request into a full blueprint, asking until it is complete (bounded, no endless questions).
 
-**Line of thought:** a good exam needs background knowledge; return to the two most important agents → slide 11.
+**Next:** a good exam needs background knowledge; where does it come from?
 
 ---
 
-# SLIDE 11 · FOCUS ON COMPOSER AND RETRIEVER: THE CORPUS
+# SLIDE 11 · THE CORPUS
 
-🟩 `PATTERN` → 🟨 `ABSTRACT` · Level L4
+🟩 PATTERN · 🟨 ABSTRACT
 
-**Layout:** left, how teachers write exams (pattern); middle, an arrow "prepare the corpus"; right, a diagram of loading into context.
-
-**Content**
-
-| Item | Tag |
-| :--- | :--- |
-| **Pattern:** when writing an exam teachers look back at old exams, use experience and method, and follow subject-knowledge constraints (in other words, they draw on their own **profile**) | 🟩 `PATTERN` · 🧠I |
-| **Solution:** prepare a **corpus** of real exams written by teachers, preprocessed; extract and abstract the factors needed to write exams; sample matrices | 🟨 `ABSTRACT` |
-| Each document goes through feature extraction: question type, topic, level, structure, common mistakes | 🟩 Feature extraction |
-| Group by question type and topic; count frequency across years | 🟩 Grouping · Trend and sequence |
-| Load into the context of Composer and Retriever (selectively, not everything) | 🟪 `ALGO` · 🧠P |
-| ➕ Rule: only data whose source and licence are approved enters the corpus (AGENTS.md rule 8; mvp-plan section 6) | 🟨 · 🧠Dn |
+**Visual:** a left-to-right pipeline.
 
 ```mermaid
 flowchart LR
     RAW["Real exams, sample matrices, syllabus"] --> PRE["Preprocess"]
-    PRE --> FE["Extract features and abstract"]
+    PRE --> FE["Extract and abstract the factors"]
     FE --> DB[("Approved corpus")]
     DB --> RT["Retriever"]
     DB --> CP["Composer"]
-    RT --> CP
 ```
 
-**Line of thought:** with a corpus we must measure whether it serves us well → slide 12.
+**Say**
+- Pattern: when writing an exam, teachers look back at old exams, use experience, and follow subject constraints.
+- So we prepare a corpus of real exams, preprocessed, with the writing factors extracted, and load it selectively into Composer and Retriever.
+- ➕ Only data whose source and licence are approved enters the corpus (AGENTS.md rule 8).
+
+**Next:** all the parts exist; put them in order in time.
 
 ---
 
-# SLIDE 12 · METRICS FOR RETRIEVAL AND COVERAGE 🔲
+# SLIDE 12 · THE COMPOSING PIPELINE
 
-🟥 `PROBLEM` (criteria) · 🔲 Placeholder · Level L4
+🟪 ALGO
 
-**Layout:** two blocks: "measure content coverage" and "measure RAG". No data, only definitions and empty cells.
+**Visual:** this slide is one diagram and nothing else. Four swimlanes in time order; the repair arrow is highlighted.
 
-**Content** (metric names are the author's proposal)
+```mermaid
+flowchart LR
+    subgraph L1["Plan"]
+        I1["Request"] --> I2["Clarify"] --> I3["Blueprint"]
+    end
+    subgraph L2["Compose"]
+        RT["Retrieve (per section)"] --> CP["Compose"]
+        IL["Draw figures"]
+    end
+    subgraph L3["Check"]
+        CR["Critics"]
+        SV["Solver, blind"]
+    end
+    subgraph L4["Confirm"]
+        AP["Teacher approves"] --> EX["Export"]
+    end
+    I3 --> RT
+    CP --> CR
+    CP --> SV
+    IL --> CR
+    CR --> G{"Pass?"}
+    SV --> G
+    G -- "yes" --> AP
+    G -- "no, rounds left" --> CP
+    G -- "rounds used up" --> AP
+```
 
-| Metric | The question it answers | Value | Tag |
-| :--- | :--- | :--- | :--- |
-| Content coverage | how many syllabus topics the corpus covers | `[PLACEHOLDER]` | 🟥 |
-| Context precision | are the retrieved passages relevant | `[PLACEHOLDER]` | 🟥 |
-| Context recall | were the needed passages retrieved | `[PLACEHOLDER]` | 🟥 |
-| Faithfulness / factual | does the question stay with its source passage | `[PLACEHOLDER]` | 🟥 |
-| Answer relevance | does the question match the blueprint topic | `[PLACEHOLDER]` | 🟥 |
-| ➕ Source validity | do evidence ids exist, are quotes exact | `[PLACEHOLDER]` | 🟥 · 🧠D |
-| ➕ Distribution drift | topics in the exam against the matrix | `[PLACEHOLDER]` | 🟥 |
+**Say**
+- Only the algorithm is claimed here; no decomposition kind is attributed to it (not verified).
+- Parallel steps are drawn side by side. The arrow "no, rounds left" is the loopback to highlight.
 
-**Line of thought:** the input side of composing is measured; now the output side → slide 13.
+**Next:** write the same logic as steps a machine can follow.
 
 ---
 
-# SLIDE 13 · THE OUTPUT PROBLEM: FORMAT, QUALITY, COST, DIVERSITY
+# SLIDE 13 · THE SAME LOGIC AS PSEUDOCODE
 
-🟥 `PROBLEM` → 🟦 `DECOMP` · Level L4
+🟪 ALGO
 
-**Layout:** one output in the middle; three branches: format, the two main criteria, and a new subproblem (diversity) with a dashed outline.
+**Visual:** one short block, dark background (as in Slide02).
+
+```text
+draft = compose(blueprint)
+repeat up to MAX_ROUNDS:
+    if check(draft) is ok:  return draft  // passed
+    draft = repair(draft)
+give draft and flags to the teacher
+```
+
+**Say**
+- High level on purpose: if the exam is ok it passes; otherwise loop back until the round limit, then hand it to the teacher.
+- `check` is the declarative part (rules from the frame, slide 9); this loop is the imperative part. Details (retrieve, per-section parallelism) stay in slide 12.
+- The state diagram of the Orchestrator (Clarify → Compose → Check → Repair → Teacher review → Export) can go in the notes.
+
+**Next:** we have a design; how do we know it is good?
+
+---
+
+# SLIDE 14 · OUTPUT AND BENCHMARK
+
+🟥 PROBLEM · 🔲 PLACEHOLDER
+
+**Visual:** left, a small output tree; right, a bar chart of metrics with **empty bars** labelled `[NOT MEASURED]`. The benchmark sits here, right before the parameters that try to improve it.
 
 ```mermaid
 flowchart TD
     O["Output: exam package"]
-    O --> F["Format: several file types, several extensions"]
-    O --> Q["Criterion 1: meets the quality standard"]
-    O --> C["Criterion 2: cost / quality / time"]
-    O -.-> DV["Criterion 3: diversity of exams → raise a subproblem"]
+    O --> F["Format: file types"]
+    O --> Q["Quality standard"]
+    O --> C["Cost, quality, time"]
+    O -.-> DV["Diversity: next slide"]
 ```
 
-**Content**
-
-| Item | Tag |
-| :--- | :--- |
-| **Output format:** several file types and extensions (for example DOCX to edit, PDF to print, LaTeX for maths; the team decides, mvp-plan Problem 2) | 🟥 `PROBLEM` · 🧠Dn |
-| **Meets the quality standard:** use the metrics from Huy's labs as examples; the team doing this part fills in | 🔲 `[PLACEHOLDER — metrics taken from the labs; team fills]` |
-| **Cost / quality / time:** three trade-off quantities, measured on the same test set | 🟥 `PROBLEM` · 🧠P |
-| **Diversity:** two exams for the same request must not be the same; this raises a subproblem | 🟦 `DECOMP` |
-| ➕ Keep "evaluation criteria" (accurate, cheap, easy to use) apart from "file types" (Report section 15, "central distinction") | 🟥 `PROBLEM` |
-
-**Line of thought:** diversity is a subproblem of its own → slide 14.
-
----
-
-# SLIDE 14 · DIVERSITY SUBPROBLEM: TWO APPROACHES 🔲
-
-🟦 `DECOMP` (Functional) · 🔲 Placeholder · Level L4
-
-**Layout:** two columns comparing A and B; the bottom row is the box "conclusion: deferred until after evaluation".
-
-| | Approach A: put a large database in the context and let the LLM pull at random | Approach B: a preassigned mechanism |
+| Group | Metric | Value |
 | :--- | :--- | :--- |
-| Idea | the LLM picks at random from a large body of data in the context | code assigns topic, form and parameters to each question beforehand; the LLM only writes |
-| Problems | context size, data, cost, time | `[PLACEHOLDER — team lists]`; ➕ hint: the assigner must be designed, may be rigid |
-| Reasoning | 🧠P (randomness) | 🧠Dn (rules) + 🧠D |
-| Tag | 🟦 `DECOMP` | 🟦 `DECOMP` |
+| Quality | answer correctness, blueprint/format compliance, scope and source validity, difficulty distribution, ambiguity rate | `[PLACEHOLDER]` |
+| Teacher | revision minutes, export success | `[PLACEHOLDER]` |
+| Cost | cost per approved paper | `[PLACEHOLDER]` |
+| Retrieval (for the corpus) | content coverage, context precision, context recall, faithfulness | `[PLACEHOLDER]` |
 
-> **Conclusion:** not chosen yet. A solution will be proposed later, after **evaluating** both (the team runs trials and measures cost and diversity).
+**Say**
+- Metric names come from Report section 17 and the author's proposal; the report's targets are goals, not results.
+- Output format: DOCX to edit, PDF to print, LaTeX for maths (team decides, mvp-plan Problem 2). Keep evaluation criteria apart from file types.
+- Quality metrics "from Huy's labs": 🔲 `[PLACEHOLDER — team doing this part fills]`.
 
-➕ Hint for measuring diversity: share of near-duplicate questions (similarity), number of distinct exam forms for one blueprint. `[PLACEHOLDER — team fixes the metric]`.
-
-**Line of thought:** we have agents, data and subproblems; now arrange them into an ordered process → slide 15.
+**Next:** one criterion is not a number but a new problem: diversity.
 
 ---
 
-# SLIDE 15 · THE COMPOSING PIPELINE (TEMPORAL)
+# SLIDE 15 · DIVERSITY: DIRECTIONS TO TRY
 
-🟪 `ALGO` · 🟦 `DECOMP` (Temporal) · 🧠ST · 🧠Dn · 🧠A (repair loop) · Level L4
+🟦 DECOMP · 🔲 PLACEHOLDER
 
-**Layout:** one large diagram in time order, three lanes in sequence, a highlighted label on the repair (loopback) arrow. Parallel steps are drawn side by side.
+**Visual:** an option tree. No final conclusion box; the directions are ideas the team may test.
 
-**Content**
+```mermaid
+flowchart TD
+    DIV["Two exams for one request must differ"]
+    DIV --> A["A: big database in context, LLM draws at random"]
+    DIV --> B["B: code assigns topic, form, parameters per question first"]
+    DIV --> C["C ➕: generate, then filter near-duplicates"]
+    DIV --> D["D ➕: vary one axis per run (topic mix, level mix, form)"]
+```
 
-| Item | Tag |
-| :--- | :--- |
-| The composing processes **depend on each other in time**: fix intent and plan → write the exam and draw figures → validate and challenge → confirm and export | 🟦 `DECOMP` · Temporal · 🧠ST |
-| Some steps run **in parallel**: Retriever per section; Composer per section; drawing figures ∥ writing text ➕; Critics ∥ Solver ➕; Solver per item | 🟪 `ALGO` · 🧠ST |
-| **Repair loop:** failures go back to the Composer, with a bounded number of rounds; once the rounds run out the item goes to the teacher | 🟪 `ALGO` · 🧠A + 🧠Dn |
-| The teacher approves before export; this is the boundary between automation and responsibility | 🟪 · 🧠Dn |
+**Say**
+- A and B are Huy's; C and D are the author's proposals, none tested. Not choosing yet is fine: the team proposes more and tests them.
+- Cost and time differ per direction (A: context size, data, cost; B: the assigner must be designed and may be rigid).
+- How to measure: share of near-duplicate questions, number of distinct forms for one blueprint 🔲 `[PLACEHOLDER — team fixes the metric]`.
+
+**Next:** now the knobs: what do we turn to push the benchmark up?
+
+---
+
+# SLIDE 16 · PARAMETERS: WHAT WE TURN
+
+🟪 ALGO · 🔲 PLACEHOLDER
+
+**Visual:** a tuning loop; the parameter list around it. Metrics (slide 14) are what we measure; parameters are what we turn.
 
 ```mermaid
 flowchart LR
-    subgraph L1["① Fix intent and exam plan"]
-        direction TB
-        I1["Receive teacher request"] --> I2["Clarify and deepen"]
-        I2 --> I3["Blueprint"]
-        I3 --> G1{"Gate 1: blueprint valid?"}
-        G1 -- "missing or contradictory" --> I2
-    end
-    subgraph L2["② Composing pipeline"]
-        direction TB
-        RT["Retriever (per section, parallel)"]
-        CP["Composer: questions and solutions"]
-        IL["Draw illustrations (parallel with text)"]
-        G2{"Gate 2: structure and policy"}
-        RT --> CP
-        CP --> G2
-        IL --> G2
-    end
-    subgraph L3["③ Validation and challenge pipeline"]
-        direction TB
-        CR["Critics + Educator"]
-        SV["Solver (does not see the key)"]
-        G3{"Gate 3: Solver matches key and Critics pass?"}
-        CR --> G3
-        SV --> G3
-    end
-    subgraph L4["④ Confirm and export"]
-        direction TB
-        FL["Review flags"] --> AP["Teacher approves"]
-        AP --> EX["Export files"]
-    end
-    G1 -- "valid" --> RT
-    G2 -- "pass" --> CR
-    G2 -- "pass" --> SV
-    G2 -- "structure error" --> CP
-    G3 -- "pass" --> FL
-    G3 -- "fail: repair (rounds left)" --> CP
-    G3 -- "rounds used up" --> FL
+    P["Parameters"] --> RUN["Run on a test set"]
+    RUN --> M["Benchmark metrics (slide 14)"]
+    M --> CMP{"Better than baseline?"}
+    CMP -- "no" --> P
+    CMP -- "yes" --> KEEP["Keep setting"]
 ```
 
-> The arrow label "fail: repair (rounds left)" is the **loopback to the Composer step**; this is the arrow to highlight on the slide.
-
-**Line of thought:** with a pipeline, write it as steps a machine can run → slide 16.
-
----
-
-# SLIDE 16 · PSEUDOCODE AND THE ORCHESTRATOR STATES ➕
-
-🟪 `ALGO` · Level L4
-
-**Layout:** left, a pseudocode block (dark background as in Slide02); right, a state diagram. Caption below: the rules are **declarative** ("what must hold"), the orchestration is **imperative** ("how to proceed").
-
-```text
-// Orchestrate one exam run (pseudocode, not real code)
-SET blueprint = BUILD_BLUEPRINT(request)          // clarify, at most N_CLARIFY times
-IF NOT GATE_BLUEPRINT(blueprint): ASK_TEACHER; RETURN
-FOR EACH section IN blueprint.sections (in parallel):
-    passages = RETRIEVE(section)
-    items    = COMPOSE(section, passages)
-SET round = 0
-WHILE round < MAX_ROUNDS:
-    flags = GATE_STRUCTURE(items) UNION CRITICS(items) UNION COMPARE(SOLVE_BLIND(items), items.key)
-    IF flags IS EMPTY: BREAK
-    items = REPAIR(items, flags);  round = round + 1
-RETURN PACKAGE(items, flags)    // the teacher approves before export
-```
-
-```mermaid
-stateDiagram-v2
-    [*] --> Clarify
-    Clarify --> Compose: blueprint valid
-    Compose --> Check
-    Check --> Repair: flags and rounds left
-    Repair --> Check
-    Check --> TeacherReview: no flags or rounds used up
-    TeacherReview --> Export: approve
-    TeacherReview --> Compose: request changes
-    Export --> [*]
-```
-
-| Item | Tag |
+| Parameter | Range |
 | :--- | :--- |
-| Check item count, total marks, answer labels, schema and duration by **code** (deterministic) | 🟪 `ALGO` · 🧠D |
-| Round limit, cost limit, behaviour when a model call fails | 🟪 `ALGO` · 🧠Dn |
-| Slide02: pseudocode is the bridge between thinking and code; check the logic before choosing a language | 🟪 `ALGO` |
+| MAS architecture (number, kind, sequential or parallel) | `[PLACEHOLDER]` |
+| RAG approach (chunking, embedding, hybrid) | `[PLACEHOLDER]` |
+| Number of repair loops | `[PLACEHOLDER]` |
+| Size of input | `[PLACEHOLDER]` |
+| Confidentiality (which data leaves, local or cloud model) | `[PLACEHOLDER]` |
+| Temperature and context selection | `[PLACEHOLDER]` |
+| ➕ Model per role; gate thresholds | `[PLACEHOLDER]` |
+| 🔲 `[PLACEHOLDER — team adds]` | |
 
-**Line of thought:** the algorithm has many "knobs"; list them and decide how to measure → slide 17.
+**Say**
+- This is why the benchmark was introduced: to be maximised by these parameters. The baseline (slide 6) is the first row of the comparison.
 
----
-
-# SLIDE 17 · PARAMETERS TO TUNE AND HOW TO MEASURE 🔲
-
-🟪 `ALGO` · ⬜ `DOING` (simulation) · 🔲 Placeholder · Level L4
-
-**Layout:** a three-column table "Parameter", "Range to try", "Metric used". Empty rows at the end for the team to add to.
-
-**Content**
-
-| Parameter | Range to try | Measured by which metric | Tag |
-| :--- | :--- | :--- | :--- |
-| MAS architecture (number and kind of agents, sequential or parallel) | `[PLACEHOLDER]` | correctness, cost, time | 🟪 |
-| RAG approach (chunking, embedding, hybrid) | `[PLACEHOLDER]` | context precision/recall | 🟪 |
-| Number of repair loops | `[PLACEHOLDER]` | share of repaired items that pass, cost | 🟪 |
-| Size of input | `[PLACEHOLDER]` | cost, correctness | 🟪 |
-| Confidentiality (which data leaves, local or cloud model) | `[PLACEHOLDER]` | no leak, quality | 🟪 · 🧠Dn |
-| Temperature and context selection | `[PLACEHOLDER]` | diversity, correctness | 🟪 · 🧠P |
-| ➕ Model per role | `[PLACEHOLDER]` | cost/quality/time | 🟪 |
-| ➕ Gate thresholds (longest allowed quote, number of rounds) | `[PLACEHOLDER]` | errors that slip through | 🟪 |
-| 🔲 `[PLACEHOLDER — team adds parameters]` | | | 🔲 |
-
-Last line of the slide: **metrics are what we measure; parameters are what we turn.** The two columns must not be mixed.
-
-**Line of thought:** the algorithm is done at design level; a bigger problem remains: getting it to users → slide 18.
+**Next:** the design is complete at system level; zoom out.
 
 ---
 
-# SLIDE 18 · TRANSFER: FROM EXAM WRITING TO A VIRTUAL ASSISTANT
+# SLIDE 17 · ZOOM OUT: FROM EXAM WRITING TO AN ASSISTANT APP
 
-🟦 `DECOMP` (Functional + Structural) · Level L5
+🟦 DECOMP
 
-**Layout:** a small circle "Exam writing" inside a larger shape "Virtual assistant app"; the three other circles around it.
-
-**Content**
-
-| Item | Tag |
-| :--- | :--- |
-| **Transfer problem:** exam writing becomes **one subproblem** in a bigger picture, a virtual-assistant app (idea transition) | 🟦 `DECOMP` |
-| Split into 4: **Exam writing**, **UI/UX**, **Chatbot assistant**, **Extra features** | 🟦 `DECOMP` · Structural |
+**Visual:** nested circles: a small circle "exam writing" (slides 2 to 16) inside a larger shape "virtual assistant app for teachers", with three more circles around it.
 
 ```mermaid
 flowchart TD
     APP["Virtual assistant app for teachers"]
-    APP --> A["Exam writing (multi-agent system, slides 2 to 17)"]
+    APP --> A["Exam writing (slides 2 to 16)"]
     APP --> B["UI/UX"]
     APP --> C["Chatbot assistant"]
-    APP --> D["Extra features and environment"]
+    APP --> D["Extra features"]
     B --- C
     C --- A
     D --- A
 ```
 
-**Line of thought:** each new branch needs its own pattern, starting from the user → slide 19.
+**Say**
+- Everything so far was one branch of a bigger picture. Zooming out changes the problem: the user is no longer "a request" but a person with habits.
+- Each new branch needs its own pattern, starting from the user.
+
+**Next:** UI/UX first. (Slides 18 to 20 are brief: teams fill in what they did and how work was split.)
 
 ---
 
-# SLIDE 19 · UI/UX FOR TEACHERS
+# SLIDE 18 · UI/UX
 
-🟩 `PATTERN` → 🟨 `ABSTRACT` · Level L5
+🟩 PATTERN · 🟨 ABSTRACT · 🔲 TEAM'S CHOICE
 
-**Layout:** left, a user persona ➕; right, the list of UI requirements.
+**Visual:** the team chooses (mock screen, journey, tree). Not a table.
 
-**Content**
-
-| Item | Tag |
-| :--- | :--- |
-| **Pattern:** the main users are teachers; limited comfort with technology; low tolerance for complicated steps (friction); limited patience | 🟩 `PATTERN` · 🧠P |
-| **Pattern:** some users have poor eyesight or are older | 🟩 `PATTERN` · Grouping |
-| **UI requirements** (lazy-user skill): animation and live progress updates; "dopamine" management (small, steady feedback); simple, easy to use; large text, high contrast ➕ | 🟨 `ABSTRACT` |
-| ➕ Ethical constraint: a simple interface must not **hide uncertainty** (Report section 15) | 🟨 · 🧠Dn |
-| ➕ Naming rule: name things by the teacher's task, not by technical terms | 🟨 |
-
-**Line of thought:** users do not know how to state requests → a proactive assistant → slide 20.
+**Say**
+- Pattern: main users are teachers; limited comfort with technology; low patience; some have poor eyesight or are older.
+- So the interface needs: live progress and small steady feedback, simple steps, large text, high contrast ➕.
+- ➕ A simple interface must not hide uncertainty (Report section 15).
+- 🔲 `[TEAM FILLS: evidence of what was done, who did what]`
 
 ---
 
-# SLIDE 20 · THE ASSISTANT
+# SLIDE 19 · THE ASSISTANT
 
-🟩 `PATTERN` → 🟪 `ALGO` · Level L5
+🟩 PATTERN · 🟪 ALGO · 🔲 TEAM'S CHOICE
 
-**Layout:** left, the pattern; right, a diagram of "assistant behaviour" along predefined flows.
+**Visual:** a conversation flow or a state diagram (team's choice).
 
-**Content**
+**Say**
+- Pattern: most main users do not know how to prompt well.
+- So the assistant suggests the next step along predefined flows, shows progress on the UI, answers questions about the app and the exam, and gathers basic inputs into an `ExamRequest`.
+- 🔲 `[TEAM FILLS: evidence and work split]`
 
-| Item | Tag |
-| :--- | :--- |
-| **Pattern:** most main users do not know how to prompt effectively | 🟩 `PATTERN` · 🧠I |
-| **Suggest the next step** along predefined flows | 🟪 `ALGO` · 🧠ST |
-| **Onboarding in an agentic way:** instead of only doing the work, **show progress on the UI** so users understand | 🟪 `ALGO` |
-| **Q&A** about the app and about the exam | 🟪 `ALGO` |
-| **Gather basic inputs** (subject, grade, duration, matrix) from the conversation into an `ExamRequest` | 🟪 `ALGO` · 🧠A |
+---
+
+# SLIDE 20 · EXTRA FEATURES
+
+🟩 PATTERN · 🟪 ALGO · 🔲 TEAM'S CHOICE
+
+**Visual:** a circle "refer back, then edit" with the features around it, or a version timeline.
+
+**Say**
+- Pattern: teachers refer back to work they have done, or fix things based on it.
+- So: review and revise an exam; replicate, change the numbers, restructure.
+- ➕ "Change the numbers" is rule-based, so code checks it, not another LLM call.
+- 🔲 `[TEAM FILLS]`
+
+---
+
+# SLIDE 21 · WRAP-UP: REASONING × PILLAR, AND THE LOOP ➕
+
+All 4 pillars
+
+**Visual:** left, the matrix (Slide02 asks us to draw the mapping matrix); right, the loop design → do → measure → analyse.
+
+> **Unverified:** the cells are the author's examples. Check them with the lecturer's definitions before this goes on a slide; drop any cell that is not defensible.
+
+| | Decomposition | Pattern Recognition | Abstraction | Algorithmic Design |
+| :--- | :--- | :--- | :--- | :--- |
+| Deductive | stop criteria checked per agent | template match | schema makes a question valid | gates run by code |
+| Inductive | roles from the real committee | rules drawn from old exams | core model from many exams | process chosen from experiments |
+| Abductive | pin a failure on one layer | why the baseline fails | find the variable behind errors | repair loop guesses the cause |
+| Probabilistic | cost/quality trade-off | topic trends over years | enough context, no noise | temperature, sampling |
+| Deontic | agent responsibility | subject constraints | policy, licences | round limits, teacher approval |
+| Spatial/Temporal | pipeline order | trend over time | states | parallel, sequential, loopback |
 
 ```mermaid
 flowchart LR
-    U["Teacher speaks vaguely"] --> AS["Assistant"]
-    AS --> S1["Suggest next step"]
-    AS --> S2["Ask about gaps"]
-    AS --> S3["Gather into ExamRequest"]
-    S3 --> RUN["Run the pipeline (slide 15)"]
-    RUN --> PR["Show progress on the UI"]
-    PR --> U
+    DS["Design: 4 pillars"] --> IM["Do"]
+    IM --> SM["Run on a test set"]
+    SM --> AN["Analyse: new patterns"]
+    AN --> DS
 ```
 
-**Line of thought:** after the exam is made the teacher does not stop → slide 21.
+**Say**
+- CT is the strategy of the design phase, not the product; real results come from the doing and measuring phase.
+- Back to slide 1: thinking went from one function to one product through five layers.
+
+**Next:** the final picture.
 
 ---
 
-# SLIDE 21 · EXTRA FEATURES AND WORKING ENVIRONMENT
+# SLIDE 22 · GRAPH OF THE WHOLE PROBLEM
 
-🟩 `PATTERN` → 🟪 `ALGO` · Level L5
+🟦 DECOMP · 🟥 PROBLEM
 
-**Layout:** a "refer back, then edit" circle in the middle; small features around it.
-
-**Content**
-
-| Item | Tag |
-| :--- | :--- |
-| **Pattern:** teachers tend to refer back to work they have done, or fix things based on it | 🟩 `PATTERN` · Template matching · 🧠I |
-| **Mechanism to review and revise an exam** (version history, comparison) | 🟪 `ALGO` |
-| **Basic operations:** replicate an exam, change the numbers, restructure | 🟪 `ALGO` · 🧠D |
-| ➕ "Change the numbers" is a rule-based transformation, so it is checked by code, not by calling the LLM again | 🟪 · 🧠D |
-| ➕ Every operation keeps its provenance and records the decision | 🟪 · 🧠Dn |
-| ➕ Student modes (practice, mock exam) are an extension, not the core (Report section 15) | 🟦 `DECOMP` |
-
-**Line of thought:** all four branches are in place; redraw the whole problem tree → slide 22.
-
----
-
-# SLIDE 22 · GRAPH OF THE WHOLE PROBLEM PROCESS
-
-🟦 `DECOMP` · 🟥 `PROBLEM` · Level L1 → L5
-
-**Layout:** a full-screen graph. Rectangular nodes are **problems**; rounded nodes are **decisions/solutions**; solid arrows mean "split into", dashed arrows mean "raises a subproblem".
+**Visual:** a full-screen graph. Rectangles are problems; rounded nodes are decisions or solutions; solid arrows "split into", dashed arrows "raises a subproblem".
 
 ```mermaid
 flowchart TD
@@ -784,16 +665,15 @@ flowchart TD
 
     P1 --> P11["What does the database contain?"]
     P11 -.-> P111["Corpus, matrices, curriculum map"]
-    P2 --> S2a(["Naive: LLM loop, kept as baseline"])
+    P2 --> S2a(["Baseline: naive LLM loop"])
     P2 --> S2b(["Multi-agent system"])
     S2b --> P21["P2.1: Agents and the shared frame"]
     S2b --> P22["P2.2: Composer and Retriever, corpus"]
     S2b --> P23["P2.3: Pipeline and parameters"]
-    P3 --> P31["Quality metrics, RAG"]
+    P3 --> P31["Benchmark metrics, retrieval"]
     P3 --> P32["Cost, quality, time"]
     P32 -.-> P33["P3.3: Exam diversity"]
-    P33 --> P33a(["Approach A: large context"])
-    P33 --> P33b(["Approach B: preassigned"])
+    P33 --> P33a(["Directions A to D"])
 
     P0 -.-> PX["P4: Getting it to users"]
     PX --> P41["UI/UX"]
@@ -805,84 +685,65 @@ flowchart TD
     P31 --> P23
 ```
 
-| Item | Tag |
-| :--- | :--- |
-| Read the graph top-down: each layer is one split; dashed arrows are unsolved problems, left for later | 🟦 `DECOMP` |
-| The graph shows the **complexity of the thinking**: one function at the start grows into a multi-layer system of dependencies | 🟥 `PROBLEM` |
-| ➕ Mark which nodes are **decided** (link `D-nnn` in [DECISIONS.md](DECISIONS.md)) and which are still open | 🟥 |
-
-**Line of thought:** the overview comes before the close.
+**Say**
+- Read top-down: each layer is one split; dashed arrows are problems left unsolved on purpose.
+- The graph is the complexity of the thinking: one function at the start, a multi-layer system of dependencies at the end.
+- ➕ Mark which nodes are decided (link `D-nnn` in [DECISIONS.md](DECISIONS.md)) and which are open.
 
 ---
 
-# SLIDE 23 · WRAP-UP: REASONING × PILLAR MATRIX, AND THE LOOP ➕
+## Changes in v2 (team review, 2026-11-12)
 
-All 4 pillars · Level L1 → L5
-
-**Layout:** left, the matrix (Slide02 asks us to "draw the mapping matrix"); right, the loop "design → do → measure → fix" (Slide01: continuous loop).
-
-### Reasoning × pillar matrix (examples from ASTRA)
-
-| | 🟦 Decomposition | 🟩 Pattern Recognition | 🟨 Abstraction | 🟪 Algorithmic Design |
-| :--- | :--- | :--- | :--- | :--- |
-| 🧠 Deductive | stop criteria → check each agent | template match → exam fits the frame | schema → every question is valid | gates checked by code |
-| 🧠 Inductive | split by the roles of the real committee | rules drawn from old exams | core model from many exams | choose the process from experiments |
-| 🧠 Abductive | pin a failure on one layer | why the naive loop fails | find the key variable behind errors | repair loop: guess the cause of the error |
-| 🧠 Probabilistic | measure cost/quality | topic trends over the years | pick enough context, drop noise | temperature, sampling, diversity |
-| 🧠 Deontic | boundaries of agent responsibility | subject constraints | policy, licences | round limits, teacher approval |
-| 🧠 Spatial/Temporal | pipeline order | trend over time | states | parallel and sequential, loopback |
-
-### The loop
-
-```mermaid
-flowchart LR
-    DS["Design: 4 pillars"] --> IM["Do: implementation"]
-    IM --> SM["Run: simulation on a test set"]
-    SM --> AN["Analyse: new patterns"]
-    AN --> DS
-```
-
-| Item | Tag |
+| Team comment | What changed |
 | :--- | :--- |
-| Message: CT is the strategy of the design phase, not the product; real results come from the doing and measuring phase | ⬜ `DOING` |
-| ➕ Return to slide 1: thinking went from **one function** to **one product** through 5 layers; each layer reused all 4 pillars | 🟦 🟩 🟨 🟪 |
-
----
+| Deslop, fewer icons; tags only as a hint | One tag line per slide; no tag per row; emoji only in the tag line |
+| Reasoning/technique not verified | Banner at top; reasoning tags dropped from slides; matrix on slide 21 flagged unverified |
+| Slide 2 does not define the problem | Input (user required, user optional, dataset) and output (seen, not seen) added; the Given/Find box kept |
+| Old slides 3, 4 | Dropped; metrics moved to slide 14 (at the output); scope and non-goals moved out (see Appendix A) |
+| Old slide 5: 3 patterns in 1 slide, wrong mapping | Split into slides 3, 4, 5; pattern written as Subject + frequency + content; wrong rows removed; consistency → blueprint/workflow made explicit |
+| Old slide 6 | Kept, word "baseline" used |
+| Old slide 7, 8 | Pattern rewritten; three stop criteria merged into one statement; ticks table dropped |
+| Old slides 9 to 11: too much | One line per element |
+| Old slides 12 to 14 should sit before 17 | Benchmark (merged 12 and 13) and diversity moved right before parameters; slide 14 no longer ends with a conclusion, it lists directions |
+| Old slide 15 | One diagram; no decomposition claim |
+| Old slide 16 | Pseudocode made high level; declarative vs imperative introduced on slide 9 |
+| Old slide 18 | Zoom-out wording added |
+| Old slides 19 to 21 | Brief; team fills in evidence and work split; format left open |
+| Too many 2-column tables | Visual format named per slide (tree, loop, flow, class diagram, chart, graph…) |
+| Old slide 22 after 23 | Graph is now the last slide |
 
 ## Appendix A. Proposed additions ➕ (Huy keeps or drops)
 
-| # | Proposal | Why | Slide |
-| :--- | :--- | :--- | :--- |
-| 1 | A map-of-thought slide at the start | the audience sees the route and the rising complexity first | 1 |
-| 2 | Non-goals (out of scope) | Report section 04; avoids "why no grading?" | 4 |
-| 3 | Pick the first subject by "answer checkable by code" | mvp-plan Problem 1 | 4 |
-| 4 | Tag the kind of decomposition and pattern technique on every item | uses Slide03/04 terms, easier to grade | whole file |
-| 5 | A table mapping Huy's agent names to the Report's | avoids two parallel sets of names | 8 |
-| 6 | Educator, Orchestrator, Blueprint Builder as separate agents | Report has Planner, Orchestrator; Educator is Huy's idea | 8 |
-| 7 | Pseudocode slide and state diagram | Slide02: pseudocode is the bridge; shows imperative and declarative | 16 |
-| 8 | Critics in parallel with Solver, drawing figures in parallel with text | saves time; the steps are independent | 15 |
-| 9 | Teacher persona, large text and high contrast | the "poor eyesight, older" pattern | 19 |
-| 10 | Constraint "simple must not hide uncertainty" | Report section 15 | 19 |
-| 11 | Reasoning × pillar matrix | Slide02 assigns this | 23 |
-| 12 | Link graph nodes to decisions `D-nnn` | AGENTS.md rule 12; shows the reason for each choice | 22 |
-| 13 | Risks: correlated errors between agents, copyright, privacy | Report section 18; Huy's "Confidential" parameter | 17 or its own slide |
-| 14 | Evaluation protocol: baseline vs ASTRA vs teacher-edited, blind, report denominators | Report section 17; shows that added complexity pays off | after slide 17 |
-| 15 | "Change the numbers" as a code-checked operation | cheap, correct, repeatable | 21 |
+| # | Proposal | Slide |
+| :--- | :--- | :--- |
+| 1 | Map-of-thought slide at the start | 1 |
+| 2 | Which inputs are required and which optional | 2 |
+| 3 | Scope and non-goals, if the team wants them back (non-goals: Report section 04; first subject by "answer checkable by code", mvp-plan Problem 1) | after 2 |
+| 4 | Educator, Orchestrator, Blueprint Builder as agents | 8 |
+| 5 | Diversity directions C and D | 15 |
+| 6 | Model per role, gate thresholds as parameters | 16 |
+| 7 | Large text and high contrast; "simple must not hide uncertainty" | 18 |
+| 8 | "Change the numbers" checked by code | 20 |
+| 9 | Reasoning × pillar matrix | 21 |
+| 10 | Link graph nodes to decisions `D-nnn` | 22 |
+| 11 | Risks: correlated errors between agents, copyright, privacy (Report section 18) | after 16 |
+| 12 | Evaluation protocol: baseline vs ASTRA vs teacher-edited, blind (Report section 17) | after 16 |
 
 ## Appendix B. Open questions for the team
 
-1. Which THPTQG subject goes first (slide 4)?
-2. Are Educator and Critics separate or merged? Is Validator pure code or partly LLM (slide 8)?
-3. Name and citation of the "EduAgent…" reference paper (slide 7); not found in the repo.
-4. Which labs supply the quality metrics (slide 13); the team fills in.
-5. Approach A or B for diversity, and measured how (slide 14)?
-6. Do we need to present Abstraction and Algorithmic Design with specific techniques from the lecturer? (no lecture slides for these two pillars yet)
-7. Do the slides show levels L1 to L5, or keep them as internal notes?
+1. Which inputs are required, which optional (slide 2)? What does "updated memory" hold?
+2. What are the contents and size of the dataset K (slide 2)?
+3. Frequencies in slide 3: counted, or stated qualitatively?
+4. Educator and Critics separate or merged? Validator pure code or partly LLM (slide 8)?
+5. Name and citation of the "EduAgent…" reference paper (slide 7); not found in the repo.
+6. Which labs supply the quality metrics (slide 14)?
+7. Which diversity directions do we test, measured how (slide 15)?
+8. Do the matrix cells on slide 21 survive a check against the lecture?
+9. Format and content of slides 18 to 20 (team's choice).
 
 ## Not verified
 
-- AI-drafted (Claude, 2026-11-12) from Huy's notes, the four course slides, the Report and mvp-plan. Nobody in the team has read or approved it; nothing was run.
-- All target figures (≥95%, 100%, ≥95%, about VND 2,000 per exam) come from the Report and are **goals**, not measured results. This file creates no new numbers.
-- Mermaid diagrams were not rendered anywhere; view them in a Markdown viewer with Mermaid support before building slides.
-- The ticks on slide 8 and the reasoning tags (🧠) are the author's **proposals**; the team should check them.
-- The four course slides are Slide01 to Slide04; there are no slides for Abstraction and Algorithmic Design, so those two pillars use only the general definitions.
+- AI-drafted (Claude, 2026-11-12) from Huy's notes, the four course slides, the Report and mvp-plan; v2 applies the team's comments. Nothing was run; nobody has re-read v2.
+- All target figures in the Report (≥95%, 100%, about VND 2,000 per exam) are goals, not results. This file creates no new numbers.
+- Mermaid diagrams were not rendered here; view them in a Markdown viewer with Mermaid support before building slides.
+- Reasoning types and techniques are not verified against the lecturer's teaching (team caution). There are no lecture slides for Abstraction and Algorithmic Design.
