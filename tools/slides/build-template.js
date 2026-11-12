@@ -44,6 +44,21 @@ async function glyphPng(key, color) {
   return "image/png;base64," + buf.toString("base64");
 }
 
+
+// pptxgenjs gives the slide-number placeholder a fixed id (25) and tables a fixed id (8), which collide with
+// other shapes on busy slides. PowerPoint then offers to "repair" the file. Renumber every shape id per slide.
+async function fixShapeIds(file) {
+  const JSZip = require("jszip");
+  const fs = require("fs");
+  const zip = await JSZip.loadAsync(fs.readFileSync(file));
+  for (const name of Object.keys(zip.files).filter((n) => /^ppt\/slides\/slide\d+\.xml$/.test(n))) {
+    let n = 0;
+    const xml = (await zip.file(name).async("string")).replace(/<p:cNvPr id="\d+"/g, () => `<p:cNvPr id="${++n}"`);
+    zip.file(name, xml);
+  }
+  fs.writeFileSync(file, await zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE" }));
+}
+
 async function main() {
   const pres = new pptxgen();
   pres.layout = "LAYOUT_WIDE";
@@ -427,6 +442,7 @@ async function main() {
   note(s, "Layout: NEUTRAL. Plain two-column list on purpose: this slide is reference, not decoration.");
 
   await pres.writeFile({ fileName: OUT });
+  await fixShapeIds(OUT);
   if (process.env.APPLY_THEME_JS) {
     const { applyTheme } = require(process.env.APPLY_THEME_JS);
     await applyTheme(OUT, THEME);
