@@ -1,0 +1,91 @@
+/* The original classroom menu treatment, arranged in the shared left rail. */
+.app-shell.sidebar-mode .app-header {
+  border-right: 1.5px solid var(--ink);
+  background: var(--cream);
+  box-shadow: none!important;
+  backdrop-filter: none;
+}
+.app-shell.sidebar-mode .app-brand {
+  color: var(--ink);
+  font-family: Classroom Serif, Georgia, serif;
+  font-size: 25px;
+  letter-spacing: -1px;
+}
+.app-shell.sidebar-mode .main-tabs { gap: 14px; }
+.app-shell.sidebar-mode .main-tabs button {
+  gap: 12px;
+  min-height: 64px;
+  padding: 10px 12px;
+  border: 1.5px solid var(--ink);
+  border-radius: 13px;
+  background: var(--cream);
+  box-shadow: 0 3px 0 var(--ink);
+  color: var(--ink);
+  font: 700 14px/1.4 Classroom Sans, 'Segoe UI', sans-serif;
+}
+.app-shell.sidebar-mode .main-tabs button[aria-current=page] { background: var(--yellow); }
+.app-shell.sidebar-mode .main-tabs button:hover { background: #fff1b7; }
+.app-shell.sidebar-mode .main-tabs button:nth-child(2):hover { background: #e5d8ff; }
+.app-shell.sidebar-mode .main-tabs button:nth-child(3):hover { background: #c2ecd4; }
+.menu-illustration { display: block; flex: 0 0 auto; width: 38px; height: 38px; object-fit: contain; }
+.app-shell.sidebar-mode .sidebar-toggle {
+  border: 1.5px solid var(--ink);
+  border-radius: 11px;
+  background: var(--cream);
+  box-shadow: 0 2px 0 var(--ink);
+  color: var(--ink);
+  font-family: Classroom Sans, 'Segoe UI', sans-serif;
+}
+.app-shell.sidebar-mode .sidebar-toggle:hover { background: var(--yellow); }
+.app-shell.sidebar-mode .header-right { border-color: #18181530; }
+.app-shell.sidebar-mode .header-avatar { border: 1.5px solid var(--ink); background: var(--lilac); color: var(--ink); }
+.app-shell.sidebar-mode .header-session {
+  min-width: 0;
+  overflow: hidden;
+  color: #514f45;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (min-width: 761px) {
+  .app-shell.sidebar-mode.create-mode.workspace-active .main-tabs button {
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    min-height: 82px;
+    padding: 9px 4px;
+    font-size: 12px;
+  }
+  .app-shell.sidebar-mode.controls-collapsed .main-tabs button {
+    justify-content: center;
+    gap: 0;
+    min-height: 60px;
+    padding: 8px 0;
+  }
+}
+@media (min-width: 761px) and (max-width: 1000px) {
+  .app-shell.sidebar-mode .main-tabs button { gap: 8px; padding-inline: 8px; font-size: 12px; }
+  .app-shell.sidebar-mode.controls-collapsed .main-tabs button { gap: 0; padding-inline: 0; }
+}
+@media (max-width: 760px) {
+  .app-shell.sidebar-mode .app-header { border-right: 0; border-bottom: 1.5px solid var(--ink); }
+  .app-shell.sidebar-mode .app-brand { font-size: 20px; }
+  .app-shell.sidebar-mode .main-tabs {
+    order: 3;
+    flex: 1 0 100%;
+    gap: 8px;
+    margin: 0;
+    padding: 0 0 3px;
+    border: 0;
+  }
+  .app-shell.sidebar-mode .main-tabs button {
+    flex: 1;
+    justify-content: center;
+    gap: 5px;
+    min-height: 44px;
+    padding: 5px 3px;
+    border-radius: 9px;
+    font-size: 11px;
+  }
+  .app-shell.sidebar-mode .menu-illustration { width: 27px; height: 27px; }
+}
