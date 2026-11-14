@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "schemaVersion": "0.1",
+  "registryVersion": "astra-ui-0.1-proposal-1",
+  "status": "PROPOSED",
+  "reviewedCommit": "c052b689ee487e6546d7bac6e32f63a6a88e9780",
+  "note": "This document contains capability definitions, not a JSON Schema for the registry itself. parameterSchema values are JSON Schemas. No handlers are installed; do not advertise these actions until implemented and tested.",
+  "maxActionsPerPlan": 5,
+  "capabilities": [
+    {
+      "capabilityId": "ui.navigate",
+      "owner": "ui",
+      "description": "Show a known ASTRA page. Opening workspace requires an existing explicit workspaceSessionId; navigation never silently creates a session.",
+      "target": "application",
+      "behaviorStatus": "IMPLEMENTED",
+      "executorStatus": "PROPOSED",
+      "advertiseToAgent": false,
+      "sourcePaths": ["astra-frontend/src/App.tsx"],
+      "parameterSchema": {
+        "type": "object",
+        "properties": {
+          "screenId": {"enum": ["welcome", "create", "library", "workspace"]},
+          "workspaceSessionId": {"type": "string", "minLength": 1}
+        },
+        "required": ["screenId"],
+        "additionalProperties": false,
+        "allOf": [{
+          "if": {"properties": {"screenId": {"const": "workspace"}}, "required": ["screenId"]},
+          "then": {"required": ["workspaceSessionId"]},
+          "else": {"not": {"required": ["workspaceSessionId"]}}
+        }]
+      },
+      "preconditions": ["executor_installed", "splash_finished", "context_current", "workspace_target_exists_when_requested"],
+      "confirmation": "none",
+      "receipt": "Committed screenId and visibleWorkspaceSessionId match request; updated context returned. Repeating same navigation is a no-op success."
+    },
+    {
+      "capabilityId": "ui.session.create",
+      "owner": "ui",
+      "description": "Create one independent blank exam workspace and show it. Do not use for opening an existing exam or on every chat turn.",
+      "target": "exam-sessions",
+      "behaviorStatus": "IMPLEMENTED",
+      "executorStatus": "PROPOSED",
+      "advertiseToAgent": false,
+      "sourcePaths": ["astra-frontend/src/App.tsx", "astra-frontend/src/state/examSessions.ts"],
+      "parameterSchema": {
+        "type": "object",
+        "properties": {"mode": {"enum": ["template", "custom"]}},
+        "required": ["mode"],
+        "additionalProperties": false
+      },
+      "preconditions": ["executor_installed", "context_current", "explicit_new_exam_intent", "action_not_already_executed"],
+      "confirmation": "none",
+      "receipt": "Return createdWorkspaceSessionId and context after opening it. Replayed action returns same created ID from the action ledger. No generation is started."
+    },
+    {
+      "capabilityId": "ui.exam.open_setup",
+      "owner": "ui",
+      "description": "Open the existing preset configuration dialog for an existing draft/error workspace. This action does not approve or generate an exam and does not prefill arbitrary agent-collected requirements.",
+      "target": "exam-setup",
+      "behaviorStatus": "PARTIAL",
+      "executorStatus": "PROPOSED",
+      "advertiseToAgent": false,
+      "sourcePaths": ["astra-frontend/src/App.tsx", "astra-frontend/src/components/QuickPresetModal.tsx"],
+      "parameterSchema": {
+        "type": "object",
+        "properties": {"workspaceSessionId": {"type": "string", "minLength": 1}},
+        "required": ["workspaceSessionId"],
+        "additionalProperties": false
+      },
+      "preconditions": ["executor_installed", "context_current", "workspace_target_exists", "workspace_status_is_draft_or_error", "no_conflicting_confirmation_or_modal"],
+      "confirmation": "none",
+      "receipt": "Dialog visible, configureId bound to explicit target, and openPanels contains exam-setup. Focus is placed in dialog by the UI. Reopening same target is a no-op; never silently retarget an open dialog."
+    },
+    {
+      "capabilityId": "ui.sidebar.set_collapsed",
+      "owner": "ui",
+      "description": "Set the left navigation to compact or expanded mode without changing the active page or conversation.",
+      "target": "main-navigation",
+      "behaviorStatus": "IMPLEMENTED",
+      "executorStatus": "PROPOSED",
+      "advertiseToAgent": false,
+      "sourcePaths": ["astra-frontend/src/App.tsx", "astra-frontend/src/styles/createVision.css", "astra-frontend/src/styles/sidebar.css"],
+      "parameterSchema": {
+        "type": "object",
+        "properties": {"collapsed": {"type": "boolean"}},
+        "required": ["collapsed"],
+        "additionalProperties": false
+      },
+      "preconditions": ["executor_installed", "context_current", "viewport_width_above_760px"],
+      "confirmation": "none",
+      "receipt": "Return effective sidebarCollapsed state after React commit. Setting current value is a no-op success. On mobile report CAPABILITY_UNAVAILABLE; don't mutate a hidden preference and claim visual success."
+    },
+    {
+      "capabilityId": "exam.generate",
+      "owner": "ui",
+      "effectOwner": "backend",
+      "description": "Submit one backend-validated, teacher-approved pending request through the designated UI generation adapter. The agent must not start a second job separately.",
+      "target": "exam-generation",
+      "behaviorStatus": "PARTIAL",
+      "executorStatus": "PROPOSED",
+      "advertiseToAgent": false,
+      "sourcePaths": ["astra-frontend/src/App.tsx", "astra-frontend/src/state/examSessions.ts", "astra-frontend/src/services/examService.ts"],
+      "parameterSchema": {
+        "type": "object",
+        "properties": {
+          "workspaceSessionId": {"type": "string", "minLength": 1},
+          "approvedRequestId": {"type": "string", "minLength": 1}
+        },
+        "required": ["workspaceSessionId", "approvedRequestId"],
+        "additionalProperties": false
+      },
+      "preconditions": ["executor_installed", "context_current", "workspace_target_exists", "workspace_status_is_draft_or_error", "no_job_currently_running", "backend_schema_validation_passed", "trusted_approval_bound_to_conversation_workspace_request_hash_and_schema", "approval_not_expired_or_superseded", "backend_idempotency_and_start_receipt_supported"],
+      "confirmation": "validated_request_approval",
+      "receipt": "Return confirmed jobId and originating workspaceSessionId once accepted; status success here means job started, not exam completed. Consume approval once; retries resolve same job by idempotency key. Never accept model-supplied raw parameters as proof of validation/approval."
+    }
+  ]
+}
