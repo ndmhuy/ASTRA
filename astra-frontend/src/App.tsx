@@ -5,6 +5,7 @@ import libraryIcon from './assets/navigation/library.svg';
 import React, { useState, useEffect, useSyncExternalStore, useCallback } from 'react';
 import { AstraWelcome } from './components/AstraWelcome';
 import { AstraLogo } from './components/AstraLogo';
+import { StationeryArt } from './components/StationeryArt';
 import { OnboardingFork } from './components/OnboardingFork';
 import { QuickPresetModal } from './components/QuickPresetModal';
 import { WorkspaceLayout } from './components/Workspace/WorkspaceLayout';
@@ -20,6 +21,7 @@ import './styles/classroom.css';
 import './styles/studio.css';
 import './styles/createVision.css';
 import './styles/sidebar.css';
+import './styles/classroomStudio.css';
 
 export const App: React.FC = () => {
   const [showWelcome, setShowWelcome] = useState(true);
@@ -89,7 +91,7 @@ export const App: React.FC = () => {
           {{
             left: (
               <>
-                <div className="studio-chat-heading"><div><span className="studio-kicker">KHÔNG GIAN SOẠN ĐỀ</span><h2>Cùng soạn đề</h2></div></div>
+                <div className="studio-chat-heading"><div><span className="studio-kicker">GÓC TRAO ĐỔI</span><h2>Cùng soạn đề</h2></div><StationeryArt kind="pencil" className="chat-heading-art" /></div>
                 <div className="session-context"><strong>{active.title}</strong></div>
                 {(active.status === 'draft' || active.status === 'error') && <div className="session-create-action">
                   {active.error && <p role="alert">{active.error}</p>}

@@ -1,8 +1,10 @@
 import { StationeryArt } from './StationeryArt';
 import { SchoolArt } from './SchoolArt';
+import classroomDesk from '../assets/classroom-desk.svg';
+import notebook from '../assets/navigation/create.svg';
 import React, { useState } from 'react';
 import type { ExamSession } from '../state/examSessions';
-import { ArrowRight, FileText, Search, Trash2, Library, Clock3, CheckCheck, BookOpenCheck, Sparkles } from 'lucide-react';
+import { ArrowRight, FileText, Search, Trash2, Library, Clock3, CheckCheck } from 'lucide-react';
 
 interface OnboardingForkProps {
   tab: 'welcome' | 'create' | 'library';
@@ -29,18 +31,23 @@ export const OnboardingFork: React.FC<OnboardingForkProps> = ({ tab, onTabChange
       </header>}
       {tab === 'create' && <section className="creation-panel" aria-labelledby="create-heading">
         <div className="create-intro">
+          <div className="create-intro-copy">
           <span className="create-eyebrow">SOẠN ĐỀ · ASTRA</span>
           <h1 id="create-heading">Một ý tưởng hay<br /><em>thành đề thi rõ ràng.</em></h1>
           <p>Chọn cách bắt đầu. Thầy cô luôn xem lại đề trước khi sử dụng.</p>
+          </div>
+          <img className="create-desk-art" src={classroomDesk} alt="" aria-hidden="true" />
         </div>
         <div className="create-start-options">
           <button className="create-start-card create-start-quick" onClick={onQuickMode}>
-            <span className="create-card-icon"><BookOpenCheck size={24} strokeWidth={1.7} /></span>
+            <span className="create-card-number">01 / TỪ MẪU CÓ SẴN</span>
+            <span className="create-card-icon"><StationeryArt kind="clipboard" /></span>
             <span className="create-card-copy"><strong>Tạo nhanh</strong><small>Chọn môn học và dạng đề có sẵn để bắt đầu trong vài bước.</small></span>
             <span className="create-card-action">Chọn mẫu <ArrowRight size={18} aria-hidden="true" /></span>
           </button>
           <button className="create-start-card create-start-custom" onClick={onProMode}>
-            <span className="create-card-icon"><Sparkles size={24} strokeWidth={1.7} /></span>
+            <span className="create-card-number">02 / THEO Ý THẦY CÔ</span>
+            <span className="create-card-icon"><img src={notebook} alt="" aria-hidden="true" /></span>
             <span className="create-card-copy"><strong>Tùy chỉnh đề</strong><small>Mô tả chủ đề, số câu và độ khó trong không gian làm việc.</small></span>
             <span className="create-card-action">Bắt đầu viết <ArrowRight size={18} aria-hidden="true" /></span>
           </button>

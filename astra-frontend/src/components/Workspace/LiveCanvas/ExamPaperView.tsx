@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StationeryArt } from '../../StationeryArt';
-import { SchoolArt } from '../../SchoolArt';
+import classroomDesk from '../../../assets/classroom-desk.svg';
+import { FileText, ListChecks } from 'lucide-react';
 import type { QuestionItem } from '../../../types/exam';
 import { QuestionCard } from './QuestionCard';
 
@@ -24,8 +25,8 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({ questions, examMet
   return <>
     <div className="paper-toolbar">
       <div className="view-switch" role="group" aria-label="Chế độ xem đề thi">
-        <button aria-pressed={!review} onClick={() => setReview(false)}>Đề thi</button>
-        <button aria-pressed={review} onClick={() => setReview(true)}>Xem đáp án</button>
+        <button aria-pressed={!review} onClick={() => setReview(false)}><FileText size={14} aria-hidden="true" />Đề thi</button>
+        <button aria-pressed={review} onClick={() => setReview(true)}><ListChecks size={14} aria-hidden="true" />Xem đáp án</button>
       </div>
       {flaggedCount > 0 && <button className="review-count" onClick={() => setReview(true)}>{flaggedCount} câu cần xem xét</button>}
     </div>
@@ -37,9 +38,10 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({ questions, examMet
           <p>Thời gian: {examMeta.duration} phút <span>·</span> {examMeta.totalCount} câu hỏi</p>
           {!review && <div className="student-line">Họ và tên: ................................................ <span>Lớp: ................</span></div>}
         </header> : <div className="paper-empty">
-          <StationeryArt kind="pencil" className="preview-pencil" /><StationeryArt kind="apple" className="preview-apple" /><span className="preview-label">02 / TRANG ĐỀ</span><SchoolArt kind="book" className="preview-art" />
+          <div className="paper-empty-board"><span className="preview-label">MỖI ĐỀ THI BẮT ĐẦU TỪ MỘT Ý TƯỞNG</span><img className="paper-desk-art" src={classroomDesk} alt="" aria-hidden="true" />
           <h2>Một trang mới,<br />chờ ý tưởng hay.</h2>
           <p>Trao đổi với ASTRA, chọn thiết lập đề, rồi xem từng câu hỏi xuất hiện tại đây.</p>
+          </div><StationeryArt kind="pencil" className="preview-pencil" />
         </div>}
         {questions.map((q, i) => <QuestionCard key={q.id} question={q} index={i} review={review} appearing={i >= latestQuestionCount} onEdit={onEditQuestion ? () => onEditQuestion(q.id) : undefined} />)}
         {isGenerating && <p className="paper-progress" role="status">Đang soạn câu hỏi tiếp theo…</p>}
