@@ -54,7 +54,7 @@ export const App: React.FC = () => {
   if (showWelcome) return <AstraWelcome onComplete={finishWelcome} />;
 
   return (
-    <div className={`app-shell ${screen === 'workspace' ? 'workspace-active create-mode' : homeTab === 'create' ? 'create-mode' : ''} ${screen === 'workspace' && controlsCollapsed ? 'controls-collapsed' : ''}`}>
+    <div className={`app-shell sidebar-mode ${screen === 'workspace' ? 'workspace-active create-mode' : homeTab === 'create' ? 'create-mode' : ''} ${screen === 'workspace' && controlsCollapsed ? 'controls-collapsed' : ''}`}>
       <header className="app-header">
         <button className="app-brand" aria-label="ASTRA · Màn hình chính" onClick={() => { setScreen('onboarding'); setHomeTab('welcome'); }}>
           <AstraLogo className="app-brand-logo" /><span>ASTRA</span>

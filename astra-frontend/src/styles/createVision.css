@@ -1,5 +1,29 @@
 @import url('https://fonts.googleapis.com/css2?family=Google+Sans:opsz,wght@17..18,400..700&family=Quicksand:wght@500;600;700&display=swap');
 
+/* Shared left navigation; individual pages retain their own presentation. */
+.app-shell.sidebar-mode {
+  --vision-edge: rgba(91, 127, 97, .16);
+  --vision-muted: #68756d;
+  display: grid;
+  grid-template-columns: 228px minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+.sidebar-mode .app-header { min-width: 0; }
+.sidebar-mode .home-screen { height: 100%; min-height: 100%; }
+.sidebar-mode .main-tabs button svg { flex-shrink: 0; }
+@media (max-width: 1000px) {
+  .app-shell.sidebar-mode { grid-template-columns: 190px minmax(0, 1fr); }
+}
+@media (max-width: 760px) {
+  .app-shell.sidebar-mode {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+}
+
 /* Soạn đề pilot: spacious green workspace based on the user's presentation. */
 .app-shell.create-mode {
   --vision-ink: #29342e;
@@ -22,7 +46,7 @@
   font-family: 'Google Sans', 'ASTRA Manrope', 'Segoe UI', sans-serif;
 }
 
-.create-mode .app-header,
+.sidebar-mode .app-header,
 .workspace-active.create-mode .app-header {
   grid-column: 1;
   grid-row: 1;
@@ -41,7 +65,7 @@
   backdrop-filter: blur(18px);
 }
 
-.create-mode .app-brand {
+.sidebar-mode .app-brand {
   justify-content: flex-start;
   gap: 8px;
   padding: 4px 10px;
@@ -50,9 +74,9 @@
   letter-spacing: .01em;
 }
 
-.create-mode .app-brand-logo { width: 36px; height: 36px; }
-.create-mode .main-tabs { display: grid; gap: 6px; width: 100%; margin: 8px 0 0; }
-.create-mode .main-tabs button {
+.sidebar-mode .app-brand-logo { width: 36px; height: 36px; }
+.sidebar-mode .main-tabs { display: grid; gap: 6px; width: 100%; margin: 8px 0 0; }
+.sidebar-mode .main-tabs button {
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -69,14 +93,14 @@
   text-align: left;
   transition: background-color 160ms ease, color 160ms ease;
 }
-.create-mode .main-tabs button[aria-current=page] {
+.sidebar-mode .main-tabs button[aria-current=page] {
   border-color: rgba(94, 139, 100, .08);
   background: #e3f0df;
   color: #355f41;
   font-weight: 650;
 }
-.create-mode .main-tabs button:hover { background: #edf5e9; color: #355f41; }
-.create-mode .header-right {
+.sidebar-mode .main-tabs button:hover { background: #edf5e9; color: #355f41; }
+.sidebar-mode .header-right {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -85,17 +109,16 @@
   padding: 16px 8px 2px;
   border-top: 1px solid var(--vision-edge);
 }
-.create-mode .header-session { flex: 1; color: var(--vision-muted); font-size: 12px; line-height: 1.4; }
-.create-mode .header-avatar { flex: 0 0 38px; border: 0; background: #dcebd8; color: #426d4b; font-weight: 650; }
+.sidebar-mode .header-session { flex: 1; color: var(--vision-muted); font-size: 12px; line-height: 1.4; }
+.sidebar-mode .header-avatar { flex: 0 0 38px; border: 0; background: #dcebd8; color: #426d4b; font-weight: 650; }
 
-.create-mode .library-layout {
+.sidebar-mode .library-layout {
   grid-column: 2;
   grid-row: 1;
   min-width: 0;
   min-height: 0;
   height: 100%;
   overflow: auto;
-  background: transparent;
 }
 .create-mode .home-screen {
   min-height: 100%;
@@ -313,15 +336,15 @@
 @media (max-width: 760px) {
   .app-shell.create-mode,
   .workspace-active.create-mode { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
-  .create-mode .app-header,
+  .sidebar-mode .app-header,
   .workspace-active.create-mode .app-header { grid-column: 1; grid-row: 1; flex-direction: row; align-items: center; flex-wrap: wrap; gap: 8px; padding: 8px 14px; border-right: 0; border-bottom: 1px solid var(--vision-edge); overflow: visible; }
-  .create-mode .app-brand { padding: 2px 3px; font-size: 18px; }
-  .create-mode .app-brand-logo { width: 31px; height: 31px; }
-  .create-mode .main-tabs { display: flex; flex: 1; justify-content: flex-end; gap: 4px; width: auto; margin: 0; }
-  .create-mode .main-tabs button { width: auto; min-height: 42px; padding: 0 9px; gap: 6px; border-radius: 9px; font-size: 12px; }
-  .create-mode .main-tabs button svg { width: 17px; height: 17px; }
-  .create-mode .header-right { display: none; }
-  .create-mode .library-layout { grid-column: 1; grid-row: 2; }
+  .sidebar-mode .app-brand { padding: 2px 3px; font-size: 18px; }
+  .sidebar-mode .app-brand-logo { width: 31px; height: 31px; }
+  .sidebar-mode .main-tabs { display: flex; flex: 1; justify-content: flex-end; gap: 4px; width: auto; margin: 0; }
+  .sidebar-mode .main-tabs button { width: auto; min-height: 42px; padding: 0 9px; gap: 6px; border-radius: 9px; font-size: 12px; }
+  .sidebar-mode .main-tabs button svg { width: 17px; height: 17px; }
+  .sidebar-mode .header-right { display: none; }
+  .sidebar-mode .library-layout { grid-column: 1; grid-row: 2; }
   .create-mode .home-content { padding: 26px 20px 20px; }
   .create-mode .creation-panel { min-height: 100%; padding: 18px 0 32px; }
   .create-intro { margin: 0 0 27px; }
