@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ASTRA · Retrieval lab</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
+<body>
+<main>
+  <header><div><h1>ASTRA · Retrieval prototype</h1><p class="muted">Knowledge query → matching source passages (BM25 · Embedding · Hybrid RRF)</p></div><button id="add">+ Add a document</button></header>
+  <form id="search-form" class="search-panel">
+    <label for="collection-kind">Search in <select id="collection-kind"><option value="all" selected>All sources (Curriculum + Exams)</option><option value="curriculum">Curriculum / lesson map</option><option value="exam">Exam transcriptions</option></select></label>
+    <p id="corpus-note" class="muted small"></p>
+    <label for="query">Query — enter knowledge, concepts, or question topics</label>
+    <textarea id="query" required maxlength="2000" rows="2">Định luật Ohm</textarea>
+    <div class="search-bottom">
+      <label class="limit">Mode <select id="retrieval-mode"><option value="hybrid" selected>Hybrid (BM25 + Embedding)</option><option value="bm25">BM25 (Lexical + Bigrams)</option><option value="embedding">Embedding (Vector Cosine)</option></select></label>
+      <label class="limit">Edition <select id="edition"><option value="">Auto</option></select></label>
+      <label class="limit">Results <select id="top-k"><option>3</option><option selected>5</option><option>10</option><option>20</option></select></label>
+      <div class="action-buttons">
+        <button id="compare-button" type="button">Compare 3 modes</button>
+        <button id="search-button" class="primary" type="submit">Retrieve documents <span>↗</span></button>
+      </div>
+    </div>
+  </form>
+  <div class="examples"><span>Try a query</span><button data-query="Chu kì và tần số dao động điều hòa">Dao động điều hòa</button><button data-query="Cấp số cộng và công sai">Cấp số cộng</button><button data-query="Cấu tạo nguyên tử hạt nhân proton">Cấu tạo nguyên tử</button><button data-query="Con lắc lò xo biên độ">Con lắc lò xo (Semantic)</button><button data-query="Vận tốc và gia tốc chuyển động thẳng">Vận tốc &amp; gia tốc</button></div>
+  <section id="results-section" aria-live="polite" aria-busy="false"><div class="result-heading"><h2>Retrieved documents</h2><span id="timing"></span></div><div id="scope" class="scope"></div><div id="notice" role="status"></div><div id="compare-results" hidden></div><div id="results"></div></section>
+  <details id="eval-panel" class="eval-panel"><summary>Benchmark &amp; evaluation lab <span>BM25 vs. Embedding vs. Hybrid</span></summary>
+    <div class="eval-controls">
+      <label class="limit">Split <select id="eval-split"><option value="all" selected>All benchmark queries</option><option value="dev">Dev split</option><option value="heldout">Held-out split</option></select></label>
+      <button id="run-eval" type="button" class="primary">Run benchmark suite</button>
+      <span id="eval-status" class="muted small">Click “Run benchmark suite” to verify gold targets and compare all 3 retrieval modes.</span>
+    </div>
+    <div id="eval-summary"></div>
+    <div id="eval-queries"></div>
+  </details>
+  <details class="json-panel"><summary>Inspect retrieval response <span>JSON</span></summary><pre id="json">Run a query to inspect its response.</pre></details>
+  <details class="collection-panel"><summary>Source collection <span id="count">—</span></summary><nav id="collection" aria-label="Source documents"></nav></details>
+  <footer>Multi-mode retrieval (Hybrid RRF, BM25-v2, and Subword/Concept Embedding). Demo chapter labels are illustrative. Imported notes remain in memory until the server stops.</footer>
+</main>
+<dialog id="document-dialog"><div class="dialog-top"><span class="eyebrow">SOURCE DOCUMENT</span><button class="close" aria-label="Close source document">×</button></div><h2 id="doc-title"></h2><p id="doc-meta" class="muted small"></p><div id="doc-text" class="document-text"></div><details><summary>Source metadata</summary><pre id="doc-json"></pre></details></dialog>
+<dialog id="import-dialog"><div class="dialog-top"><span class="eyebrow">ADD TO THIS SESSION</span><button class="close" aria-label="Close import">×</button></div><h2>Bring your own source.</h2><p class="muted small">Paste a note or load a .txt / .md file. Imports stay in memory until the app stops. Select scope explicitly; use one coherent passage per document.</p>
+<form id="import-form"><label>Title<input id="import-title" required maxlength="200"></label><div class="fields"><label>Subject<select id="import-subject"></select></label><label>Grade<select id="import-grade"><option>10</option><option selected>11</option><option>12</option></select></label><label>Chapter<input id="import-chapter" type="number" min="1" placeholder="Optional"></label></div><div class="fields"><label>Lesson<input id="import-lesson" type="number" min="1" placeholder="Optional"></label><label>Semester<select id="import-semester"><option value="">Unknown</option><option>1</option><option>2</option></select></label></div><label>Source / locator<input id="import-source" placeholder="e.g. My notes, section 2"></label><label>Text file<input id="import-file" type="file" accept=".txt,.md,text/plain,text/markdown"></label><label>Document text<textarea id="import-content" rows="7" required maxlength="500000"></textarea></label><label class="checkbox"><input id="permission" type="checkbox" required>I have permission to use this text in this local session.</label><p id="import-error" class="error" role="alert"></p><button class="primary" type="submit">Add to collection ↗</button></form></dialog>
+</body></html>

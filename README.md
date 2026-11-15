@@ -137,3 +137,23 @@ vẫn chạy được qua launcher tương thích. Uvicorn vẫn dùng `exam_bas
 [Nhập mẫu LaTeX/kho đề và xuất đề, đáp án, phiếu tô LaTeX](docs/guides/LATEX_PIPELINE.md).
 
 [MAS intake và xuất PDF/DOCX sau khi duyệt](docs/MAS_INTAKE_AND_EXPORT.md).
+
+## RAG workflow và bàn giao MAS
+
+Chạy workbench truy hồi tại thư mục repo:
+
+```powershell
+python -m rag_workflow.app
+```
+
+Mở http://127.0.0.1:8765. Module `rag_workflow` hỗ trợ BM25, embedding và hybrid,
+truy xuất ma trận và Topic Pack qua `retrieve_exam_context()` và `get_topic_pack()`.
+Adapter `mas-intake-v1` cung cấp dữ liệu cho luồng tạo đề. Nguồn corpus được đọc
+từ snapshot `origin/staging/rag`; cần `git fetch origin staging/rag` trước khi chạy
+với corpus thật. Xem [hướng dẫn RAG](docs/rag-workflow.md) và
+[bộ đánh giá](eval/README.md).
+
+```powershell
+python scripts/verify.py
+python -m rag_workflow.eval --acceptance
+```
