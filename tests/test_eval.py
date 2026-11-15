@@ -1,11 +1,11 @@
 """Unit tests for the retrieval evaluation harness and automated gold verifier."""
 
 import json
-from pathlib import Path
 import subprocess
 import sys
 import tempfile
 import unittest
+from pathlib import Path
 
 from rag_workflow.demo import demo_documents
 from rag_workflow.eval import (

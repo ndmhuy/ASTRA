@@ -1,17 +1,17 @@
 import hashlib
 import json
-from pathlib import Path
 import subprocess
 import sys
 import tempfile
-import unittest
 import unicodedata
+import unittest
+from pathlib import Path
 
 from rag_workflow.document_loader import decode_documents
 from rag_workflow.models import Gap, RetrievalRequest, SourceDocument
 from rag_workflow.query_parser import parse
-from rag_workflow.workflow import run
 from rag_workflow.search_index import PassageIndex, split_passages
+from rag_workflow.workflow import run
 
 
 def record(document_id="demo-1", **changes):
@@ -223,7 +223,7 @@ class RetrievalTests(unittest.TestCase):
         self.assertGreater(len(passages), 1)
         self.assertEqual(passages[0].start, 0)
         self.assertEqual(passages[-1].end, len(text))
-        for a, b in zip(passages, passages[1:]):
+        for a, b in zip(passages, passages[1:], strict=False):
             self.assertLess(a.start, b.start)
             self.assertLessEqual(b.start, a.end)
         for p in passages:

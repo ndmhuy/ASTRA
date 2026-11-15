@@ -1,13 +1,13 @@
 """Synthetic snapshot tests; no exam content is copied into fixtures."""
 
-from dataclasses import asdict
 import io
 import json
-import tarfile
 import subprocess
 import sys
+import tarfile
 import threading
 import unittest
+from dataclasses import asdict
 from types import SimpleNamespace
 from unittest.mock import patch
 from urllib.request import Request, urlopen

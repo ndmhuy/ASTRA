@@ -5,14 +5,15 @@ The application itself has no external dependencies.
 """
 
 import argparse
-from pathlib import Path
 import sys
 import threading
+from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from playwright.sync_api import sync_playwright
+
 from rag_workflow.app import create_server
 from rag_workflow.existing_corpus import load_existing_corpus
-from playwright.sync_api import sync_playwright
 
 
 def main():
