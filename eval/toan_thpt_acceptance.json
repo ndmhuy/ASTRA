@@ -1,0 +1,177 @@
+{
+  "schema_version": "1.0",
+  "suite_id": "toan-thpt-mas-acceptance-v1",
+  "subject": "toan",
+  "description": "Acceptance test suite for Toán THPT RAG-to-MAS handoff: covers Nguyên hàm P1 TH, Xác suất P2 (a..d), Tối ưu P3, VDC level policies, and explicit missing-data gap cases.",
+  "cases": [
+    {
+      "case_id": "ACC_01_NGUYEN_HAM_P1_TH",
+      "description": "Nguyên hàm P1 mức TH: returns full topic pack, curriculum unit, P1 MCQ patterns, TH observations, ready synthetic example, and distractor mistakes (>150 chars).",
+      "vdc_policy": "fallback_with_warning",
+      "question": {
+        "question_id": "Q_ACC_01",
+        "group_id": "G_ACC_NGUYEN_HAM",
+        "part": "P1",
+        "topic": "Nguyên hàm",
+        "learning_objective": "Tìm họ nguyên hàm của hàm số lũy thừa và hàm lượng giác cơ bản bằng quy tắc nguyên hàm",
+        "level": "TH",
+        "needs": ["knowledge", "patterns", "examples", "common_mistakes"]
+      },
+      "expected": {
+        "status": "ready",
+        "expected_topic_pack_ids": ["5fed66930d74"],
+        "expected_curriculum_ids": ["toan-12-c4-b11"],
+        "effective_level": "TH",
+        "min_patterns": 1,
+        "min_observations": 3,
+        "min_examples": 1,
+        "min_mistakes": 2,
+        "min_reference_chars": 1000
+      }
+    },
+    {
+      "case_id": "ACC_02_XAC_SUAT_P2",
+      "description": "Xác suất P2 với mức độ từng ý (a:NB, b:TH, c:TH, d:VD): resolves Xác suất có điều kiện / Xác suất cổ điển, keeps sibling TF statements together, and covers all 4 statement levels.",
+      "vdc_policy": "fallback_with_warning",
+      "question": {
+        "question_id": "Q_ACC_02",
+        "group_id": "G_ACC_XAC_SUAT",
+        "part": "P2",
+        "topic": "Xác suất",
+        "learning_objective": "Tính xác suất có điều kiện, sử dụng sơ đồ hình cây, công thức xác suất toàn phần và công thức Bayes",
+        "statement_levels": {
+          "a": "NB",
+          "b": "TH",
+          "c": "TH",
+          "d": "VD"
+        },
+        "needs": ["knowledge", "patterns", "examples", "common_mistakes"]
+      },
+      "expected": {
+        "status": "ready",
+        "expected_topic_pack_ids": ["a7bf6c757535"],
+        "effective_level": "P2_PER_STATEMENT",
+        "p2_all_statements_covered": true,
+        "min_patterns": 1,
+        "min_observations": 4,
+        "min_examples": 2,
+        "min_mistakes": 2,
+        "min_reference_chars": 1500
+      }
+    },
+    {
+      "case_id": "ACC_03_TOI_UU_P3",
+      "description": "Tối ưu P3 mức VD: resolves optimization topic packs (Ứng dụng đạo hàm / Quy hoạch tuyến tính), returns P3 short-answer patterns, multi-step observations, and ready examples.",
+      "vdc_policy": "fallback_with_warning",
+      "question": {
+        "question_id": "Q_ACC_03",
+        "group_id": "G_ACC_TOI_UU",
+        "part": "P3",
+        "topic": "Tối ưu",
+        "learning_objective": "Giải bài toán tối ưu thực tiễn (tối đa hóa lợi nhuận, tối thiểu hóa chi phí) bằng đạo hàm hoặc quy hoạch tuyến tính",
+        "level": "VD",
+        "needs": ["knowledge", "patterns", "examples", "common_mistakes"]
+      },
+      "expected": {
+        "status": "ready",
+        "expected_topic_pack_ids": ["a2610837d89f", "d7570c9ec025"],
+        "effective_level": "VD",
+        "min_patterns": 1,
+        "min_observations": 4,
+        "min_examples": 2,
+        "min_mistakes": 1,
+        "min_reference_chars": 1500
+      }
+    },
+    {
+      "case_id": "ACC_04_VDC_FALLBACK_WARNING",
+      "description": "VDC request under fallback_with_warning policy: maps VDC -> VD with explicit warning vdc_mapped_to_vd without silently relabeling high discrimination as VDC.",
+      "vdc_policy": "fallback_with_warning",
+      "question": {
+        "question_id": "Q_ACC_04",
+        "part": "P3",
+        "topic": "Ứng dụng đạo hàm và khảo sát hàm số",
+        "learning_objective": "Bài toán tối ưu thực tiễn vận dụng cao nhiều bước suy luận",
+        "level": "VDC",
+        "needs": ["knowledge", "patterns", "examples", "common_mistakes"]
+      },
+      "expected": {
+        "status": "ready_with_warnings",
+        "expected_topic_pack_ids": ["a2610837d89f"],
+        "effective_level": "VD",
+        "expected_warning_code": "vdc_mapped_to_vd",
+        "min_observations": 3,
+        "min_examples": 1,
+        "min_reference_chars": 1000
+      }
+    },
+    {
+      "case_id": "ACC_05_VDC_STRICT_GAP",
+      "description": "VDC request under strict_error policy: halts and emits level_vdc_not_in_scheme gap for MAS Orchestrator.",
+      "vdc_policy": "strict_error",
+      "question": {
+        "question_id": "Q_ACC_05",
+        "part": "P1",
+        "topic": "Nguyên hàm",
+        "learning_objective": "Nguyên hàm vận dụng cao",
+        "level": "VDC",
+        "needs": ["knowledge", "patterns", "examples", "common_mistakes"]
+      },
+      "expected": {
+        "status": "gap",
+        "expected_gap_code": "level_vdc_not_in_scheme"
+      }
+    },
+    {
+      "case_id": "ACC_06_GAP_TOPIC_NOT_FOUND",
+      "description": "Out-of-curriculum topic (Số phức, removed from GDPT 2018 Toán THPT): emits topic_not_found gap.",
+      "vdc_policy": "fallback_with_warning",
+      "question": {
+        "question_id": "Q_ACC_06",
+        "part": "P1",
+        "topic": "Số phức và căn bậc hai của số phức",
+        "learning_objective": "Tìm môđun và biểu diễn hình học của số phức trên mặt phẳng phức",
+        "level": "TH",
+        "needs": ["knowledge", "patterns", "examples", "common_mistakes"]
+      },
+      "expected": {
+        "status": "gap",
+        "expected_gap_code": "topic_not_found"
+      }
+    },
+    {
+      "case_id": "ACC_07_GAP_PART_NOT_COVERED",
+      "description": "Valid topic (Hàm lượng giác, 394e1209aeff) requested for Part P3 where corpus only has P1 and P2: emits part_not_covered gap.",
+      "vdc_policy": "fallback_with_warning",
+      "question": {
+        "question_id": "Q_ACC_07",
+        "part": "P3",
+        "topic": "Hàm lượng giác",
+        "learning_objective": "Tìm tập giá trị của hàm số lượng giác",
+        "level": "VD",
+        "needs": ["knowledge", "patterns", "examples", "common_mistakes"]
+      },
+      "expected": {
+        "status": "gap",
+        "expected_gap_code": "part_not_covered"
+      }
+    },
+    {
+      "case_id": "ACC_08_GAP_LEVEL_NOT_COVERED",
+      "description": "Valid topic + part (Mũ và lôgarit, P1) requested at level VD where P1 only has TH observations/examples: emits level_not_covered gap.",
+      "vdc_policy": "fallback_with_warning",
+      "question": {
+        "question_id": "Q_ACC_08",
+        "part": "P1",
+        "topic": "Mũ và lôgarit",
+        "learning_objective": "Bất phương trình lôgarit chứa tham số",
+        "level": "VD",
+        "needs": ["knowledge", "patterns", "examples", "common_mistakes"]
+      },
+      "expected": {
+        "status": "gap",
+        "expected_gap_code": "level_not_covered"
+      }
+    }
+  ]
+}

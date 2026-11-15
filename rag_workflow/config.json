@@ -1,0 +1,228 @@
+{
+  "schema_version": "1.0",
+  "grades": [10, 11, 12],
+  "series": "Kết nối tri thức",
+  "corpus_series_aliases": ["Kết nối tri thức", "Kết nối tri thức (Global Success)"],
+  "default_top_k": 5,
+  "max_top_k": 20,
+  "max_query_chars": 2000,
+  "excerpt_chars": 500,
+  "excerpt_leading_chars": 100,
+  "title_weight": 3,
+  "content_weight": 1,
+  "phrase_bonus": 2,
+  "bigram_weight": 1.5,
+  "accent_weight": 1.0,
+  "modes": ["hybrid", "bm25", "embedding"],
+  "default_mode": "hybrid",
+  "ranking_version": "hybrid-rrf-v1",
+  "ranking_versions": {
+    "bm25": "bm25-passages-v2",
+    "embedding": "embedding-char-word-v1",
+    "hybrid": "hybrid-rrf-v1"
+  },
+  "bm25_k1": 1.2,
+  "bm25_b": 0.75,
+  "rrf_k": 60,
+  "hybrid_alpha": 0.55,
+  "min_embedding_score": 0.12,
+  "passage_chars": 900,
+  "passage_overlap_chars": 120,
+  "min_passage_chars": 120,
+  "subjects": {
+    "toan": ["toán", "math", "mathematics"],
+    "vat-li": ["vật lí", "vật lý", "physics"],
+    "hoa-hoc": ["hóa học", "hoá học", "hóa", "chemistry"],
+    "sinh-hoc": ["sinh học", "biology"],
+    "lich-su": ["lịch sử", "history"],
+    "dia-li": ["địa lí", "địa lý", "geography"],
+    "ngu-van": ["ngữ văn", "literature"],
+    "tieng-anh": ["tiếng anh", "english"],
+    "gdktpl": ["gdkt&pl", "giáo dục kinh tế và pháp luật"],
+    "tin-hoc": ["tin học", "informatics", "computer science"],
+    "tieng-nga": ["tiếng nga", "russian"],
+    "tieng-han": ["tiếng hàn", "korean"],
+    "tieng-nhat": ["tiếng nhật", "japanese"],
+    "cong-nghe-cong-nghiep": ["công nghệ công nghiệp"],
+    "cong-nghe-nong-nghiep": ["công nghệ nông nghiệp"]
+  },
+  "concept_synonyms": {
+    "ohm_circuit": ["ohm", "om", "dien tro", "hieu dien the", "dien ap", "cuong do dong dien", "dong dien xoay chieu", "ampe", "von", "resistance", "voltage", "current", "mach dien", "mach noi tiep", "mach song song"],
+    "oscillation_wave": ["dao dong", "dao dong dieu hoa", "chu ki", "tan so", "tan so goc", "bien do", "pha ban dau", "li do", "con lac", "lo xo", "oscillation", "harmonic", "frequency", "period", "song co", "buoc song"],
+    "kinematics_dynamics": ["van toc", "gia toc", "chuyen dong", "dong hoc", "do dich chuyen", "quang duong", "dinh luat newton", "newton", "luc", "quan tinh", "velocity", "acceleration"],
+    "trigonometry": ["luong giac", "ham so luong giac", "phuong trinh luong giac", "duong tron luong giac", "sin", "cos", "tan", "cot", "trigonometry", "sine", "cosine"],
+    "sequences": ["day so", "cap so cong", "cap so nhan", "cong sai", "cong boi", "so hang tong quat", "arithmetic sequence", "geometric sequence"],
+    "calculus_derivative": ["dao ham", "don dieu", "dong bien", "nghich bien", "cuc tri", "cuc dai", "cuc tieu", "bang bien thien", "toc do bien thien", "derivative", "monotonicity"],
+    "probability_statistics": ["xac suat", "thong ke", "bien co", "to hop", "chinh hop", "hoan vi", "phuong sai", "do lech chuan", "probability"],
+    "atomic_structure": ["nguyen tu", "hat nhan", "proton", "neutron", "electron", "dong vi", "so hieu nguyen tu", "so khoi", "lop vo", "atom", "isotope"],
+    "chemical_equilibrium": ["can bang hoa hoc", "phan ung thuan nghich", "hang so can bang", "chat xuc tac", "toc do phan ung", "chemical equilibrium", "catalyst", "ph", "axit", "bazo"],
+    "organic_chemistry": ["hop chat huu co", "hydrocarbon", "ankan", "anken", "ankin", "ancol", "este", "polime", "glucozo", "amino axit"],
+    "cell_transport": ["mang sinh chat", "phospholipid", "tham thau", "khuech tan", "van chuyen chu dong", "van chuyen thu dong", "te bao", "osmosis"],
+    "photosynthesis_respiration": ["quang hop", "diep luc", "chlorophyll", "pha sang", "co dinh carbon", "atp", "nadph", "photosynthesis", "ho hap te bao"],
+    "genetics_evolution": ["di truyen", "gen", "adn", "dna", "arn", "rna", "nhiem sac the", "dot bien", "phien ma", "dich ma", "tien hoa"],
+    "english_tenses": ["present perfect", "past simple", "hien tai hoan thanh", "qua khu don", "grammar", "finished time"],
+    "history_modern": ["cach mang thang tam", "1945", "doc lap", "chien tranh the gioi", "lien hop quoc", "chien tranh lanh", "doi moi"],
+    "geography_climate": ["khi hau", "nhiet doi", "gio mua", "dia hinh", "song ngoi", "dan cu", "do thi hoa", "kinh te"]
+  },
+  "stop_words": ["tim", "tai", "lieu", "ve", "mon", "lop", "khoi", "grade", "chapter", "chuong", "bai", "lesson", "tu", "den", "to", "from", "retrieve", "documents", "about", "hoc", "ki", "ky", "semester", "va", "and", "the", "for", "of", "kntt", "ket", "noi", "tri", "thuc"],
+  "profile_schema_version": "research-generation-profile-v1",
+  "topic_pack_schema_version": "research-topic-pack-v1",
+  "parts": {
+    "P1": "multiple_choice",
+    "P2": "true_false",
+    "P3": "short_answer"
+  },
+  "part_aliases": {
+    "p1": "P1",
+    "phan 1": "P1",
+    "phan i": "P1",
+    "multiple_choice": "P1",
+    "mcq": "P1",
+    "p2": "P2",
+    "phan 2": "P2",
+    "phan ii": "P2",
+    "true_false": "P2",
+    "tf": "P2",
+    "p3": "P3",
+    "phan 3": "P3",
+    "phan iii": "P3",
+    "short_answer": "P3",
+    "sa": "P3"
+  },
+  "cognitive_levels": ["NB", "TH", "VD"],
+  "accepted_request_levels": ["NB", "TH", "VD", "VDC"],
+  "level_aliases": {
+    "nb": "NB",
+    "nhan biet": "NB",
+    "easy": "NB",
+    "th": "TH",
+    "thong hieu": "TH",
+    "medium": "TH",
+    "vd": "VD",
+    "van dung": "VD",
+    "hard": "VD",
+    "vdc": "VDC",
+    "van dung cao": "VDC"
+  },
+  "vdc_policies": ["fallback_with_warning", "strict_error"],
+  "default_vdc_policy": "fallback_with_warning",
+  "p2_statement_keys": ["a", "b", "c", "d"],
+  "retrieval_needs": ["knowledge", "patterns", "examples", "common_mistakes"],
+  "max_matrix_questions": 100,
+  "default_max_observations_per_question": 6,
+  "default_max_examples_per_question": 3,
+  "default_max_curriculum_units_per_question": 3,
+  "toan_umbrella_topics": {
+    "nguyen ham": [
+      "Nguyên hàm",
+      "Nguyên hàm và điều kiện giá trị",
+      "Nguyên hàm và tích lũy",
+      "Nguyên hàm và chuyển động",
+      "Nguyên hàm và tăng trưởng mũ",
+      "Đạo hàm và nguyên hàm",
+      "Đạo hàm và nguyên hàm ứng dụng"
+    ],
+    "tich phan": [
+      "Ứng dụng tích phân: tính diện tích và thể tích",
+      "Tích phân xác định",
+      "Tích phân và tích lũy",
+      "Tích phân và chuyển động",
+      "Tích phân và giá trị trung bình",
+      "Tích phân và tối ưu",
+      "Đạo hàm và tích phân ứng dụng"
+    ],
+    "xac suat": [
+      "Xác suất có điều kiện",
+      "Xác suất cổ điển và tổ hợp",
+      "Quy tắc xác suất",
+      "Xác suất cơ bản",
+      "Xác suất cổ điển",
+      "Xác suất độc lập",
+      "Xác suất cổ điển và hình học",
+      "Quá trình xác suất hữu hạn",
+      "Biến ngẫu nhiên và kỳ vọng"
+    ],
+    "toi uu": [
+      "Ứng dụng đạo hàm và khảo sát hàm số",
+      "Quy hoạch tuyến tính",
+      "Tối ưu hình học",
+      "Tối ưu khoảng cách",
+      "Hệ thức lượng và tối ưu phẳng",
+      "Tích phân và tối ưu",
+      "Đồ thị và tối ưu rời rạc"
+    ],
+    "khao sat ham so": [
+      "Ứng dụng đạo hàm và khảo sát hàm số",
+      "Hàm số cơ bản",
+      "Hàm số và chuyển động",
+      "Ý nghĩa đạo hàm",
+      "Quy tắc đạo hàm"
+    ],
+    "dao ham": [
+      "Ứng dụng đạo hàm và khảo sát hàm số",
+      "Quy tắc đạo hàm",
+      "Ý nghĩa đạo hàm",
+      "Tốc độ biến thiên trung bình",
+      "Hàm số và chuyển động"
+    ],
+    "hinh hoc khong gian": [
+      "Hình học không gian: góc, khoảng cách và thể tích",
+      "Quan hệ song song không gian",
+      "Vị trí tương đối không gian"
+    ],
+    "phuong phap toa do trong khong gian": [
+      "Phương pháp tọa độ trong không gian",
+      "Vectơ và hệ trục tọa độ trong không gian",
+      "Đường thẳng không gian",
+      "Vị trí tương đối không gian",
+      "Tọa độ và chuyển động",
+      "Tọa độ và giải tích chuyển động"
+    ],
+    "oxyz": [
+      "Phương pháp tọa độ trong không gian",
+      "Vectơ và hệ trục tọa độ trong không gian",
+      "Đường thẳng không gian"
+    ],
+    "vecto": [
+      "Vectơ và hệ trục tọa độ trong không gian",
+      "Tọa độ vectơ",
+      "Tích vô hướng",
+      "Tọa độ và tích vô hướng",
+      "Vectơ và chuyển động",
+      "Vectơ phẳng"
+    ],
+    "thong ke": [
+      "Số đặc trưng của mẫu số liệu ghép nhóm"
+    ],
+    "mau so lieu ghep nhom": [
+      "Số đặc trưng của mẫu số liệu ghép nhóm"
+    ],
+    "mu va logarit": [
+      "Mũ và lôgarit"
+    ],
+    "day so": [
+      "Dãy số, cấp số cộng và cấp số nhân",
+      "Tổ hợp và cấp số cộng"
+    ],
+    "cap so cong": [
+      "Dãy số, cấp số cộng và cấp số nhân",
+      "Tổ hợp và cấp số cộng"
+    ],
+    "cap so nhan": [
+      "Dãy số, cấp số cộng và cấp số nhân"
+    ],
+    "luong giac": [
+      "Phương trình lượng giác",
+      "Hàm lượng giác",
+      "Công thức lượng giác"
+    ],
+    "to hop": [
+      "Tổ hợp có ràng buộc",
+      "Tổ hợp",
+      "Tổ hợp và không gian mẫu",
+      "Tổ hợp và cấp số cộng",
+      "Xác suất cổ điển và tổ hợp",
+      "Đếm bằng truy hồi"
+    ]
+  }
+}

@@ -1,17 +1,46 @@
-.env
-.DS_Store
-DO_NOT_DELETE.txt
-__pycache__/
-*.pyc
-.venv/
+# Local environments and Python build products
+.venv*/
 venv/
-node_modules/
-dist/
+__pycache__/
+*.py[cod]
+*.egg-info/
 build/
+dist/
+
+# Test/lint output
+.pytest_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+*.log
+
+# Secrets: only the credential-free template belongs in Git
+.env*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Local requests, generated exams, scratch files
+inputs/
+runs/
+tmp/
+
+# Editors and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# RAG local state and worktrees
+DO_NOT_DELETE.txt
+node_modules/
 *.db
 *.sqlite3
 *.zip
-# Local vector stores and run outputs (see docs/mvp-plan.md)
 data/raw/
 data/index/
-runs/
