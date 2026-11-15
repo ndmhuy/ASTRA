@@ -23,8 +23,8 @@ export const CanvasHeader: React.FC<CanvasHeaderProps> = ({ examMeta, isGenerati
     <div className="canvas-heading-copy">
       <img src={clipboard} className="canvas-heading-art" alt="" aria-hidden="true" />
       <div>
-        <div className="canvas-title">{examMeta?.title || 'Bản xem trước đề thi'}</div>
-        <div className="canvas-status" role="status">{isGenerating && examMeta ? `Đang soạn · ${examMeta.completedCount} / ${examMeta.totalCount} câu` : examMeta ? `${examMeta.totalCount} câu · ${examMeta.duration} phút` : 'Nội dung đề sẽ xuất hiện tại đây'}</div>
+        <div className="canvas-title">Bản xem trước đề thi</div>
+        {examMeta && <div className="canvas-status" role="status">{isGenerating && examMeta ? `Đang soạn · ${examMeta.completedCount} / ${examMeta.totalCount} câu` : examMeta ? `${examMeta.totalCount} câu · ${examMeta.duration} phút` : ''}</div>}
       </div>
     </div>
     {examMeta && !isGenerating && canExport && <div className="canvas-actions">

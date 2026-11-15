@@ -267,3 +267,27 @@
 @media (prefers-reduced-motion: reduce) {
   .app-shell.sidebar-mode .create-start-card:hover { transform: none; }
 }
+
+/* Paper-first workspace: composer stays with the narrower conversation column. */
+.app-shell.sidebar-mode.workspace-active .astra-workspace-stage {
+  margin: 8px 12px 8px 0;
+  grid-template-rows: minmax(0, 1fr);
+}
+.app-shell.sidebar-mode.workspace-active .astra-workspace-split { padding: 8px; gap: 6px; }
+.workspace-chat-body { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; }
+.app-shell.sidebar-mode.workspace-active .workspace-composer-slot { flex-shrink: 0; padding: 8px 10px 12px; }
+.app-shell.sidebar-mode.workspace-active .canvas-topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0; }
+.app-shell.sidebar-mode.workspace-active .canvas-header { flex: 1; min-width: 0; min-height: 40px; padding: 0 0 6px; }
+.app-shell.sidebar-mode.workspace-active .canvas-heading-art { width: 24px; height: 30px; }
+.app-shell.sidebar-mode.workspace-active .paper-toolbar { justify-content: flex-end; flex-shrink: 0; min-height: 40px; padding: 0 0 6px; }
+.app-shell.sidebar-mode.workspace-active .astra-canvas-pane { padding: 8px; }
+@media (min-width: 761px) {
+  .app-shell.sidebar-mode.workspace-active .astra-chat-pane { width: var(--chat-width)!important; min-width: 280px; }
+}
+@media (max-width: 760px) {
+  .app-shell.sidebar-mode.workspace-active .astra-workspace-stage { margin: 4px 8px 8px; }
+  .app-shell.sidebar-mode.workspace-active .astra-workspace-split { padding: 0; }
+  .app-shell.sidebar-mode.workspace-active .canvas-topbar { flex-wrap: wrap; gap: 0 8px; }
+  .app-shell.sidebar-mode.workspace-active .canvas-header { flex-basis: 100%; }
+  .app-shell.sidebar-mode.workspace-active .paper-toolbar { width: 100%; }
+}

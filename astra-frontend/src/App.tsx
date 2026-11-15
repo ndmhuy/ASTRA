@@ -102,14 +102,14 @@ export const App: React.FC = () => {
             ),
             right: (
               <>
-                <CanvasHeader
+                <ExamPaperView
+                  header={<CanvasHeader
                   examMeta={examMeta}
                   isGenerating={isGenerating}
                   canExport={active.status === 'complete'}
                   onExportWord={handleExportWord}
                   onExportAnswer={handleExportAnswer}
-                />
-                <ExamPaperView
+                />}
                   questions={liveQuestions}
                   examMeta={examMeta}
                   isGenerating={isGenerating}
