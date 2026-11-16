@@ -1,6 +1,6 @@
 # Agent + UI/UX merge assessment
 
-**Date:** 2026-11-16 (Asia/Bangkok)  
+**Date:** 2026-11-16 (Asia/Bangkok)
 **Integration branch:** `feat/codex/agent-ui-integration`
 
 ## Revisions combined
