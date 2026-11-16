@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import { Copy, GitBranch, Pencil, RotateCcw, Calculator, Atom, Languages, ArrowUpRight } from 'lucide-react';
-import { StationeryArt } from '../../StationeryArt';
+import { Copy, GitBranch, Pencil, RotateCcw } from 'lucide-react';
+import { SchoolArt } from '../../SchoolArt';
 import type { ChatMessage } from '../../../types/exam';
 
 interface ChatHistoryProps {
@@ -21,7 +21,7 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({ messages, onSuggestion
 
   if (messages.length === 0) {
     return (
-      <div className="chat-empty"><StationeryArt kind="palette" className="chat-empty-art" /><h3>Mình bắt đầu từ đâu?</h3><p>Mô tả một chút về đề thi thầy cô muốn soạn, hoặc thử một gợi ý:</p><div className="prompt-suggestions">{[{text:'20 câu Toán lớp 12 về đạo hàm',icon:Calculator}, {text:'Đề Vật lý: dao động điều hòa',icon:Atom}, {text:'15 câu Tiếng Anh về câu điều kiện',icon:Languages}].map(({text,icon:Icon}) => <button key={text} onClick={() => onSuggestion?.(text)}><Icon size={17} aria-hidden="true" /><span>{text}</span><ArrowUpRight size={15} aria-hidden="true" /></button>)}</div></div>
+      <div className="chat-empty"><SchoolArt kind="globe" /><h3>Mình bắt đầu từ đâu?</h3><p>Mô tả một chút về đề thi thầy cô muốn soạn, hoặc thử một gợi ý:</p><div className="prompt-suggestions">{['20 câu Toán lớp 12 về đạo hàm', 'Đề Vật lý: dao động điều hòa', '15 câu Tiếng Anh về câu điều kiện'].map(text => <button key={text} onClick={() => onSuggestion?.(text)}>{text}<span aria-hidden="true">↗</span></button>)}</div></div>
     );
   }
 

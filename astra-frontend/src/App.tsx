@@ -1,11 +1,7 @@
-import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
-import welcomeIcon from './assets/navigation/welcome.svg';
-import createIcon from './assets/navigation/create.svg';
-import libraryIcon from './assets/navigation/library.svg';
+import { House, NotebookPen, Library } from 'lucide-react';
 import React, { useState, useEffect, useSyncExternalStore, useCallback } from 'react';
 import { AstraWelcome } from './components/AstraWelcome';
 import { AstraLogo } from './components/AstraLogo';
-import { StationeryArt } from './components/StationeryArt';
 import { OnboardingFork } from './components/OnboardingFork';
 import { QuickPresetModal } from './components/QuickPresetModal';
 import { WorkspaceLayout } from './components/Workspace/WorkspaceLayout';
@@ -20,8 +16,6 @@ import './styles/workspace.css';
 import './styles/classroom.css';
 import './styles/studio.css';
 import './styles/createVision.css';
-import './styles/sidebar.css';
-import './styles/classroomStudio.css';
 
 export const App: React.FC = () => {
   const [showWelcome, setShowWelcome] = useState(true);
@@ -60,16 +54,13 @@ export const App: React.FC = () => {
   if (showWelcome) return <AstraWelcome onComplete={finishWelcome} />;
 
   return (
-    <div className={`app-shell sidebar-mode ${screen === 'workspace' ? 'workspace-active create-mode' : homeTab === 'create' ? 'create-mode' : ''} ${controlsCollapsed ? 'controls-collapsed' : ''}`}>
+    <div className={`app-shell ${screen === 'workspace' ? 'workspace-active create-mode' : homeTab === 'create' ? 'create-mode' : ''} ${screen === 'workspace' && controlsCollapsed ? 'controls-collapsed' : ''}`}>
       <header className="app-header">
         <button className="app-brand" aria-label="ASTRA · Màn hình chính" onClick={() => { setScreen('onboarding'); setHomeTab('welcome'); }}>
           <AstraLogo className="app-brand-logo" /><span>ASTRA</span>
         </button>
-        <nav id="main-navigation" className="main-tabs" aria-label="Điều hướng chính">{([{id:'welcome',label:'Chào thầy cô',icon:welcomeIcon}, {id:'create',label:'Soạn đề',icon:createIcon}, {id:'library',label:'Tủ đề',icon:libraryIcon}] as const).map(tab => <button key={tab.id} aria-label={tab.label} title={tab.label} aria-current={(screen === 'workspace' ? tab.id === 'create' : homeTab === tab.id) ? 'page' : undefined} onClick={() => { setHomeTab(tab.id); setScreen('onboarding'); }}><img className="menu-illustration" src={tab.icon} alt="" aria-hidden="true" /><span>{tab.label}</span></button>)}</nav>
-        <button className="sidebar-toggle" type="button" onClick={() => setControlsCollapsed(value => !value)} aria-label={controlsCollapsed ? 'Mở rộng menu' : 'Thu gọn menu'} aria-expanded={!controlsCollapsed} aria-controls="main-navigation" title={controlsCollapsed ? 'Mở rộng menu để xem tên các mục' : 'Thu gọn menu để có thêm không gian'}>
-          {controlsCollapsed ? <PanelLeftOpen size={20} aria-hidden="true" /> : <PanelLeftClose size={20} aria-hidden="true" />}
-          <span>{controlsCollapsed ? 'Mở rộng' : 'Thu gọn'}</span>
-        </button>
+        <nav className="main-tabs" aria-label="Điều hướng chính">{([{id:'welcome',label:'Chào thầy cô',icon:House}, {id:'create',label:'Soạn đề',icon:NotebookPen}, {id:'library',label:'Tủ đề',icon:Library}] as const).map(tab => <button key={tab.id} aria-label={tab.label} title={tab.label} aria-current={(screen === 'workspace' ? tab.id === 'create' : homeTab === tab.id) ? 'page' : undefined} onClick={() => { setHomeTab(tab.id); setScreen('onboarding'); }}><tab.icon size={21} strokeWidth={1.7} aria-hidden="true" /><span>{tab.label}</span></button>)}</nav>
+        {screen === 'workspace' && <button className="side-rail-edge" type="button" onClick={() => setControlsCollapsed(value => !value)} aria-label={controlsCollapsed ? 'Mở rộng thanh điều hướng' : 'Thu gọn thanh điều hướng'} aria-expanded={!controlsCollapsed} title={controlsCollapsed ? 'Mở rộng thanh điều hướng' : 'Thu gọn thanh điều hướng'} />}
         <div className="header-right"><span className="header-avatar" aria-label="Người dùng: Cùng thầy cô" title="Cùng thầy cô">GV</span><span className="header-session">Cùng thầy cô</span></div>
       </header>
 
@@ -91,7 +82,7 @@ export const App: React.FC = () => {
           {{
             left: (
               <>
-                <div className="studio-chat-heading"><div><span className="studio-kicker">GÓC TRAO ĐỔI</span><h2>Cùng soạn đề</h2></div><StationeryArt kind="pencil" className="chat-heading-art" /></div>
+                <div className="studio-chat-heading"><div><span className="studio-kicker">KHÔNG GIAN SOẠN ĐỀ</span><h2>Cùng soạn đề</h2></div></div>
                 <div className="session-context"><strong>{active.title}</strong></div>
                 {(active.status === 'draft' || active.status === 'error') && <div className="session-create-action">
                   {active.error && <p role="alert">{active.error}</p>}
@@ -102,14 +93,14 @@ export const App: React.FC = () => {
             ),
             right: (
               <>
-                <ExamPaperView
-                  header={<CanvasHeader
+                <CanvasHeader
                   examMeta={examMeta}
                   isGenerating={isGenerating}
                   canExport={active.status === 'complete'}
                   onExportWord={handleExportWord}
                   onExportAnswer={handleExportAnswer}
-                />}
+                />
+                <ExamPaperView
                   questions={liveQuestions}
                   examMeta={examMeta}
                   isGenerating={isGenerating}
