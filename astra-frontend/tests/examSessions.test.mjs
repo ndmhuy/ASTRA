@@ -119,3 +119,21 @@ test('deleting before generation starts does not register a late subscription', 
   assert.equal(service.callbacks.size, 0);
   assert.deepEqual(store.getSnapshot(), []);
 });
+
+test('agent messages and pending state are explicit and independent from generation', () => {
+  const store = new ExamSessions(fakeService());
+  const id = store.create('custom');
+  store.appendUserMessage(id, 'Mở Tủ đề');
+  let session = store.getSnapshot().find(item => item.id === id);
+  assert.deepEqual(session.messages.map(message => message.role), ['user']);
+  assert.equal(session.status, 'draft');
+  store.setAgentPending(id, true);
+  session = store.getSnapshot().find(item => item.id === id);
+  assert.equal(session.agentPending, true);
+  assert.equal(session.status, 'draft');
+  store.appendAssistantMessage(id, 'Đã mở Tủ đề.');
+  store.setAgentPending(id, false);
+  session = store.getSnapshot().find(item => item.id === id);
+  assert.deepEqual(session.messages.map(message => message.role), ['user', 'assistant']);
+  assert.equal(session.agentPending, false);
+});

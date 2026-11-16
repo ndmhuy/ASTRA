@@ -78,6 +78,44 @@ class ConversationOrchestrator:
         state.processed_requests[request.request_id] = response
         return response
 
+    def _ui_action(
+        self,
+        request: TurnRequest,
+        state: ConversationState,
+        *,
+        capability_id: str,
+        target: str,
+        params: dict,
+        pending_reply: str,
+    ) -> TurnResponse:
+        if not self.registry.enabled(capability_id, request.screen_context):
+            return self._response(
+                request,
+                state,
+                "reply",
+                "Chức năng giao diện này chưa được cài hoặc chưa khả dụng trên màn hình hiện tại.",
+            )
+        plan = ActionPlan(
+            plan_id=f"plan-{request.request_id}",
+            conversation_id=request.conversation_id,
+            expected_state_version=request.screen_context.state_version,
+            actions=[
+                Action(
+                    action_id=f"action-{request.request_id}",
+                    capability_id=capability_id,
+                    target=target,
+                    params=params,
+                )
+            ],
+        )
+        return self._response(
+            request,
+            state,
+            "action_plan",
+            pending_reply,
+            plan=plan.model_dump(mode="json"),
+        )
+
     def handle_turn(self, request: TurnRequest) -> TurnResponse:
         state = self._state(request)
         if request.workspace_session_id != state.workspace_session_id:
@@ -187,33 +225,51 @@ class ConversationOrchestrator:
                 active_job_id=state.active_job.job_id,
             )
 
-        if "navigate_library" in parsed.intents:
-            if not self.registry.enabled("ui.navigate", request.screen_context):
-                return self._response(
+        navigation = {
+            "navigate_library": ("library", "Mình sẽ mở Tủ đề sau khi giao diện xác nhận."),
+            "navigate_welcome": (
+                "welcome",
+                "Mình sẽ mở màn hình chính sau khi giao diện xác nhận.",
+            ),
+            "navigate_create": ("create", "Mình sẽ mở mục Soạn đề sau khi giao diện xác nhận."),
+        }
+        for intent, (screen_id, pending_reply) in navigation.items():
+            if intent in parsed.intents:
+                return self._ui_action(
                     request,
                     state,
-                    "reply",
-                    "Điều hướng bằng hội thoại hiện chưa được cài trong executor của giao diện.",
+                    capability_id="ui.navigate",
+                    target="application",
+                    params={"screen_id": screen_id},
+                    pending_reply=pending_reply,
                 )
-            plan = ActionPlan(
-                plan_id=f"plan-{request.request_id}",
-                conversation_id=request.conversation_id,
-                expected_state_version=request.screen_context.state_version,
-                actions=[
-                    Action(
-                        action_id=f"action-{request.request_id}",
-                        capability_id="ui.navigate",
-                        target="application",
-                        params={"screen_id": "library"},
-                    )
-                ],
-            )
-            return self._response(
+        if "create_session" in parsed.intents:
+            return self._ui_action(
                 request,
                 state,
-                "action_plan",
-                "Mình sẽ mở Tủ đề sau khi executor xác nhận.",
-                plan=plan.model_dump(mode="json"),
+                capability_id="ui.session.create",
+                target="exam-sessions",
+                params={"mode": parsed.slots.get("session_mode", "custom")},
+                pending_reply="Mình sẽ tạo một bản nháp mới sau khi giao diện xác nhận.",
+            )
+        if "open_exam_setup" in parsed.intents:
+            return self._ui_action(
+                request,
+                state,
+                capability_id="ui.exam.open_setup",
+                target="exam-setup",
+                params={"workspace_session_id": request.workspace_session_id},
+                pending_reply="Mình sẽ mở phần thiết lập cho đề hiện tại.",
+            )
+        if "collapse_sidebar" in parsed.intents or "expand_sidebar" in parsed.intents:
+            collapsed = "collapse_sidebar" in parsed.intents
+            return self._ui_action(
+                request,
+                state,
+                capability_id="ui.sidebar.set_collapsed",
+                target="main-navigation",
+                params={"collapsed": collapsed},
+                pending_reply="Mình sẽ cập nhật thanh điều hướng.",
             )
 
         if "accept_preset" in parsed.intents:

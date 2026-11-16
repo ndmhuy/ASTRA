@@ -106,6 +106,23 @@ def understand(text: str) -> UnderstandingResult:
         intents.append("app_help")
     if re.search(r"\b(mo|den|vao)\b.*\b(tu de|thu vien)\b", normalized):
         intents.append("navigate_library")
+    if re.search(r"\b(?:ve|mo|den|vao)\b.*\b(?:trang chao|man hinh chinh|trang chu)\b", normalized):
+        intents.append("navigate_welcome")
+    if re.search(r"\b(?:mo|den|vao)\b.*\b(?:trang |muc )?(?:soan de|tao de)\b", normalized):
+        intents.append("navigate_create")
+    if re.search(
+        r"\b(?:tao|mo|bat dau)\b.*\b(?:workspace|khong gian|phien lam viec|ban nhap)\b", normalized
+    ):
+        intents.append("create_session")
+        slots["session_mode"] = (
+            "template" if re.search(r"\b(?:tu mau|template)\b", normalized) else "custom"
+        )
+    if re.search(r"\b(?:mo|hien)\b.*\b(?:thiet lap|cau hinh)\b.*\bde\b", normalized):
+        intents.append("open_exam_setup")
+    if re.search(r"\bthu gon\b.*\b(?:menu|thanh ben|sidebar)\b", normalized):
+        intents.append("collapse_sidebar")
+    if re.search(r"\bmo rong\b.*\b(?:menu|thanh ben|sidebar)\b", normalized):
+        intents.append("expand_sidebar")
     if re.search(r"\b(tao|ra|soan|lam)\b.*\b(de|bai kiem tra|exam)\b", normalized):
         intents.append("generate_exam")
     if re.search(r"\b(chon|dong y|lay)\b.*\b(goi y|preset|mau)\b", normalized):

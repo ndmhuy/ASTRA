@@ -4,9 +4,10 @@ UI implementation owner: follow `UI_UX_IMPLEMENTATION_PLAN.md` for the current t
 snake_case wire contract, ownership boundaries, acceptance tests, and branch delivery process.
 This supersedes naming choices in older proposed examples for this integration milestone.
 
-Update: standalone Agent turn/receipt HTTP transport is now implemented. See
-`AGENT_STRUCTURE_AND_WORKLOG.md` for entry point, state limits, tests, and remaining contract gaps.
-React wiring and trusted production adapters remain pending.
+Update: standalone Agent transport and the local React M1/M2 adapter are implemented on
+`feat/longlth2297/m2-ui-agent-orchestration`. See `astra-frontend/UI_AGENT_DELIVERY.md` for files,
+test evidence, limitations, and six UI/UX review decisions. Production auth/persistence, global
+chat shell, browser E2E, trusted approval, and Backend generation adapters remain pending.
 
 ## Delivered offline interfaces
 
@@ -40,6 +41,9 @@ be interpreted as UI owning intent or orchestration.
 5. Implement trusted confirmation UI bound to the exact backend preview/hash.
 6. Preserve conversation/workspace/job/exam/question identity across navigation and late replies.
 
+Items 1–4 and the local workspace identity path now have an implementation for review. Items 5,
+global chat outside a workspace, production identity, and Backend-owned actions are not complete.
+
 ## Joint gate
 
 Choose an integration branch/worktree and test actual backend validation, approval, one start
@@ -47,7 +51,8 @@ caller, status/final package, UI context/executor, and edits. Until those tests 
 
 - Offline conversational core: implemented.
 - External boundaries: mock/proposed/blocked as listed.
-- “ASTRA chatbot integrated”: **not complete**.
+- “ASTRA local UI orchestration”: **implemented for review, not yet UI/UX-approved**.
+- “ASTRA chatbot integrated with Backend generation”: **not complete**.
 
 Do not guess endpoint names, modify teammate branches, overwrite `App.tsx`, or reinterpret the
 current synchronous `/v2` response as an async job receipt.

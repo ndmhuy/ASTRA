@@ -1,5 +1,34 @@
 # Test results
 
+## M2 UI orchestration implementation — 2026-11-16
+
+Observed after implementing the React adapter/executor and matching local Agent capabilities:
+
+```text
+astra-frontend: npm run build
+PASS (exit 0; bundle-size warning only)
+
+astra-frontend: npm run lint
+PASS (exit 0; 2 pre-existing no-useless-escape warnings)
+
+astra-frontend: npm test
+10 passed, 0 failed (exit 0)
+
+python -m ruff check src/exam_baseline/agent tests/agent
+All checks passed (exit 0)
+
+python -m pytest tests/agent -q
+73 passed, 1 dependency warning (exit 0)
+
+python -m pytest -q
+349 passed, 1 dependency warning in 14.81s (exit 0)
+```
+
+The live proxy smoke produced `action_plan -> ui.navigate(library) -> receipt -> reply` through
+`127.0.0.1:5173/agent`, with both Uvicorn endpoints returning 200. Browser automation could not
+start because its Windows native pipe was unavailable, so browser E2E is explicitly unverified.
+No paid model, Backend generation, or external API was called.
+
 ## Agent transport follow-up
 
 Observed after adding standalone HTTP service, correlated receipt handling and intake guards:

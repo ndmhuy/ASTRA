@@ -72,6 +72,42 @@ class CapabilityRegistry:
             )
         }
 
+    @classmethod
+    def local_ui(cls):
+        """Capabilities installed by the reviewed local React adapter; no backend effects."""
+        return cls(
+            [
+                Capability(
+                    capability_id="ui.navigate",
+                    enabled=True,
+                    target="application",
+                    required_params=["screen_id"],
+                    allowed_params=["screen_id", "workspace_session_id"],
+                ),
+                Capability(
+                    capability_id="ui.session.create",
+                    enabled=True,
+                    target="exam-sessions",
+                    required_params=["mode"],
+                    allowed_params=["mode"],
+                ),
+                Capability(
+                    capability_id="ui.exam.open_setup",
+                    enabled=True,
+                    target="exam-setup",
+                    required_params=["workspace_session_id"],
+                    allowed_params=["workspace_session_id"],
+                ),
+                Capability(
+                    capability_id="ui.sidebar.set_collapsed",
+                    enabled=True,
+                    target="main-navigation",
+                    required_params=["collapsed"],
+                    allowed_params=["collapsed"],
+                ),
+            ]
+        )
+
     def enabled(self, capability_id: str, context: ScreenContext) -> bool:
         capability = self.capabilities.get(capability_id)
         return bool(
@@ -97,6 +133,18 @@ class CapabilityRegistry:
                 return "INVALID_PARAMS"
             has_workspace = bool(action.params.get("workspace_session_id"))
             if (screen == "workspace") != has_workspace:
+                return "INVALID_PARAMS"
+        elif action.capability_id == "ui.session.create":
+            if action.params.get("mode") not in {"template", "custom"}:
+                return "INVALID_PARAMS"
+        elif action.capability_id == "ui.exam.open_setup":
+            if (
+                not isinstance(action.params.get("workspace_session_id"), str)
+                or not action.params["workspace_session_id"]
+            ):
+                return "INVALID_PARAMS"
+        elif action.capability_id == "ui.sidebar.set_collapsed":
+            if not isinstance(action.params.get("collapsed"), bool):
                 return "INVALID_PARAMS"
         return None
 
@@ -152,11 +200,29 @@ class MockCapabilityExecutor:
                         context.screen_id = action.params["screen_id"]
                         context.workspace_session_id = action.params.get("workspace_session_id")
                     context.state_version += 1
+                    data: dict[str, Any]
+                    if action.capability_id == "ui.navigate":
+                        data = {
+                            "screen_id": context.screen_id,
+                            "workspace_session_id": context.workspace_session_id,
+                        }
+                    elif action.capability_id == "ui.session.create":
+                        data = {
+                            "created_workspace_session_id": "mock-created-session",
+                            "mode": action.params["mode"],
+                        }
+                    elif action.capability_id == "ui.exam.open_setup":
+                        data = {
+                            "workspace_session_id": action.params["workspace_session_id"],
+                            "dialog_visible": True,
+                        }
+                    else:
+                        data = {"collapsed": action.params["collapsed"]}
                     receipt = ActionReceipt(
                         plan_id=plan.plan_id,
                         action_id=action.action_id,
                         status="success",
-                        data={"screen_id": context.screen_id},
+                        data=data,
                         state_version=context.state_version,
                     )
             self.receipts[key] = receipt

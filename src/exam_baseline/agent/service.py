@@ -90,6 +90,22 @@ class AgentService:
                         and result.data.get("screen_id") != action.params["screen_id"]
                     ):
                         raise ValueError("NAVIGATION_NOT_OBSERVED")
+                    if action.capability_id == "ui.session.create":
+                        created = result.data.get("created_workspace_session_id")
+                        if not isinstance(created, str) or not created:
+                            raise ValueError("SESSION_CREATION_NOT_OBSERVED")
+                        if result.data.get("mode") != action.params["mode"]:
+                            raise ValueError("SESSION_MODE_MISMATCH")
+                    if action.capability_id == "ui.exam.open_setup" and (
+                        result.data.get("dialog_visible") is not True
+                        or result.data.get("workspace_session_id")
+                        != action.params["workspace_session_id"]
+                    ):
+                        raise ValueError("SETUP_NOT_OBSERVED")
+                    if action.capability_id == "ui.sidebar.set_collapsed" and (
+                        result.data.get("collapsed") != action.params["collapsed"]
+                    ):
+                        raise ValueError("SIDEBAR_STATE_NOT_OBSERVED")
                 else:
                     failed = True
             settled = self._settled.get(key)
@@ -98,11 +114,26 @@ class AgentService:
                     raise ValueError("PLAN_ALREADY_SETTLED")
                 return settled[1].model_copy(deep=True)
             successes = sum(result.status == "success" for result in feedback.results)
-            reply = (
-                "Đã mở Tủ đề."
-                if not failed
-                else (f"Đã thực hiện {successes} thao tác; các thao tác còn lại chưa hoàn tất.")
-            )
+            if failed:
+                reply = f"Đã thực hiện {successes} thao tác; các thao tác còn lại chưa hoàn tất."
+            else:
+                action = plan.actions[-1]
+                result = feedback.results[-1]
+                if action.capability_id == "ui.navigate":
+                    labels = {
+                        "welcome": "màn hình chính",
+                        "create": "mục Soạn đề",
+                        "library": "Tủ đề",
+                        "workspace": "không gian làm việc",
+                    }
+                    label = labels[action.params["screen_id"]]
+                    reply = f"Đã mở {label}."
+                elif action.capability_id == "ui.session.create":
+                    reply = "Đã tạo bản nháp mới."
+                elif action.capability_id == "ui.exam.open_setup":
+                    reply = "Đã mở phần thiết lập đề."
+                else:
+                    reply = "Đã thu gọn menu." if result.data["collapsed"] else "Đã mở rộng menu."
             final = TurnResponse(
                 request_id=feedback.original_request_id,
                 conversation_id=feedback.conversation_id,

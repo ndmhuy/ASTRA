@@ -50,3 +50,18 @@ def test_multi_intent():
 
 def test_unknown_is_safe():
     assert understand("xyzzy").intents == ["unknown"]
+
+
+@pytest.mark.parametrize(
+    ("text", "intent"),
+    [
+        ("Về màn hình chính", "navigate_welcome"),
+        ("Mở mục Soạn đề", "navigate_create"),
+        ("Tạo một không gian làm việc mới", "create_session"),
+        ("Mở thiết lập đề", "open_exam_setup"),
+        ("Thu gọn menu", "collapse_sidebar"),
+        ("Mở rộng menu", "expand_sidebar"),
+    ],
+)
+def test_m2_ui_intents(text, intent):
+    assert intent in understand(text).intents

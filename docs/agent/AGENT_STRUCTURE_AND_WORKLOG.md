@@ -85,3 +85,24 @@ không tạo generation service, không gọi inference. Tests dùng TestClient 
 Freeze typed response union và naming cùng UI; thay data map bằng schema cụ thể; thêm repository
 ports khi quyết định persistence; mở rộng policy multi-intent với test giữ đủ các ý người dùng.
 Phía UI chỉ cần triển khai context/exporter + navigation executor + transport để thử vòng hiện có.
+
+## Nhật ký M2 UI orchestration — 2026-11-16
+
+1. Tạo branch riêng `feat/longlth2297/m2-ui-agent-orchestration` từ commit tích hợp `afdbcd6`;
+   không sửa branch `uiux` của đồng đội.
+2. Thêm runtime parser TypeScript, HTTP adapter, executor có stale guard/replay ledger và controller
+   turn → action → receipt → final reply trong `astra-frontend/src/integration`.
+3. Bỏ canned assistant reply; tách Agent pending/error khỏi generation status. Navigation không làm
+   mất conversation gốc vì reply luôn ghi theo workspace khởi phát.
+4. Tái sử dụng state/function hiện hữu của App cho bốn capability local: navigate, create session,
+   open setup và sidebar collapse. Không thay layout/style hay luồng `examService`.
+5. Mở đúng bốn capability trong factory HTTP local; `ConversationOrchestrator()` dùng độc lập vẫn
+   disabled-by-default. Mở rộng deterministic intent, receipt observation và final reply theo action.
+6. Thêm tests parser/executor/store và 18 ca Agent M2/understanding; phát hiện và sửa thứ tự replay/stale
+   trong UI ledger trước khi giao.
+7. Chạy full regression và smoke qua Vite proxy. Không gọi LLM, generation Backend hoặc API ngoài.
+
+Giới hạn còn lại: chat shell toàn cục chưa có vì UI hiện chỉ render chat trong workspace; browser
+automation không chạy được do native pipe của công cụ thiếu; auth/persistence/backend generation vẫn
+ngoài M2. Chi tiết review và các quyết định cần UI/UX xác nhận nằm tại
+`astra-frontend/UI_AGENT_DELIVERY.md`.

@@ -13,6 +13,8 @@ export interface ExamSession {
   jobId: string | null;
   meta: { title: string; subject: string; duration: number; completedCount: number; totalCount: number } | null;
   previousCount: number;
+  agentPending: boolean;
+  agentError?: string;
   error?: string;
 }
 
@@ -37,7 +39,7 @@ export class ExamSessions {
     this.disposed = false;
     const id = crypto.randomUUID();
     const number = this.sessions.length + 1;
-    this.sessions = [{ id, mode, title: `Đề ${number} · ${mode === 'custom' ? 'Theo yêu cầu' : 'Từ mẫu'}`, status: 'draft', createdAt: new Date().toISOString(), messages: [], questions: [], draft: '', jobId: null, meta: null, previousCount: 0 }, ...this.sessions];
+    this.sessions = [{ id, mode, title: `Đề ${number} · ${mode === 'custom' ? 'Theo yêu cầu' : 'Từ mẫu'}`, status: 'draft', createdAt: new Date().toISOString(), messages: [], questions: [], draft: '', jobId: null, meta: null, previousCount: 0, agentPending: false }, ...this.sessions];
     this.emit();
     return id;
   }
@@ -71,10 +73,29 @@ export class ExamSessions {
     this.emit();
     return branch.id;
   }
-  sendMessage(id: string, content: string) {
-    const message = (role: ChatMessage['role'], text: string): ChatMessage => ({ id: crypto.randomUUID(), role, content: text, timestamp: new Date().toISOString() });
-    this.update(id, session => ({ ...session, title: session.mode === 'custom' && !session.meta && session.messages.length === 0 ? content.slice(0, 72) : session.title, draft: '', messages: [...session.messages, message('user', content), message('assistant', session.status === 'complete' ? 'Đã ghi nhận yêu cầu chỉnh sửa cho đề này. Chỉnh sửa bằng hội thoại sẽ khả dụng khi kết nối dịch vụ AI.' : 'Đã ghi nhận yêu cầu cho đề này. Chọn “Tạo đề từ yêu cầu” để chọn môn học, cấu trúc và bắt đầu tạo đề.')] }));
+  private message(role: ChatMessage['role'], content: string): ChatMessage {
+    return { id: crypto.randomUUID(), role, content, timestamp: new Date().toISOString() };
   }
+  appendUserMessage(id: string, content: string) {
+    this.update(id, session => ({
+      ...session,
+      title: session.mode === 'custom' && !session.meta && session.messages.length === 0 ? content.slice(0, 72) : session.title,
+      draft: '',
+      agentError: undefined,
+      messages: [...session.messages, this.message('user', content)],
+    }));
+  }
+  appendAssistantMessage(id: string, content: string) {
+    this.update(id, session => ({ ...session, messages: [...session.messages, this.message('assistant', content)] }));
+  }
+  setAgentPending(id: string, pending: boolean) {
+    this.update(id, session => ({ ...session, agentPending: pending, agentError: pending ? undefined : session.agentError }));
+  }
+  setAgentError(id: string, error: string) {
+    this.update(id, session => ({ ...session, agentPending: false, agentError: error }));
+  }
+  // Compatibility helper for callers that only need to record a user message.
+  sendMessage(id: string, content: string) { this.appendUserMessage(id, content); }
   async generate(id: string, params: ExamRequestParams) {
     const existing = this.sessions.find(session => session.id === id);
     if (!existing || existing.status === 'generating') return;

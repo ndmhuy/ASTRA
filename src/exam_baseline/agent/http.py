@@ -2,12 +2,16 @@
 
 from fastapi import FastAPI, HTTPException
 
+from .capabilities import CapabilityRegistry
 from .models import TurnRequest, TurnResponse
+from .orchestrator import ConversationOrchestrator
 from .service import AgentService, ExecutionFeedback
 
 
 def create_agent_app(service: AgentService | None = None) -> FastAPI:
-    service = service or AgentService()
+    service = service or AgentService(
+        ConversationOrchestrator(registry=CapabilityRegistry.local_ui())
+    )
     app = FastAPI(title="ASTRA Agent offline transport", version="0.1")
 
     @app.post("/agent/turns", response_model=TurnResponse)
