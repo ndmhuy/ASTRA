@@ -24,6 +24,11 @@ The React app still uses its placeholder chat response and mock generation servi
 Agent currently exposes an in-process API only; no HTTP transport, runtime UI executor, trusted
 approval service, or backend teacher-draft converter has been added.
 
+Here, “UI calls Agent” means only that the UI transports the teacher message and trusted context
+to the Agent. The Agent remains the semantic orchestrator: it returns a typed instruction/action
+plan; the UI validates and executes that plan, then returns a receipt. See
+`AGENT_UI_COORDINATION_REPORT.md` for the agreed direction and team split.
+
 ## Verification on the merged tree
 
 | Check | Observed result |
@@ -66,5 +71,6 @@ test commands. Do not ask reviewers to treat this PR as a completed chatbot inte
   history merge and large one-time repository import.
 - **Request changes** if the team instead wants a clean new root repository or subtree strategy;
   that is a repository-history decision, not a source-code conflict.
-- Create a smaller follow-up PR for the first real vertical slice: UI turn transport → Python
-  Agent clarification response, with generation still mocked and visibly labeled.
+- Create a smaller follow-up PR for the first real vertical slice: composer message → Agent
+  `ui.navigate` instruction → UI executor → receipt → final Agent reply. Keep generation mocked
+  and visibly labeled.

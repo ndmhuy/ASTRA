@@ -34,7 +34,8 @@ This records Phase A reconnaissance after `git fetch --all --prune` on 2026-11-1
   `README.md` and `pyproject.toml`.
 - UI branch: `npm run build`, `npm run lint`; store tests use
   `node --experimental-strip-types --test tests/examSessions.test.mjs` in the handoff.
-- No UI source was merged into this branch.
+- This evidence was first recorded on the isolated Agent branch. UI source is now co-located only
+  on the later integration branch; no functional transport/executor wiring is implied by the merge.
 
 ## Branch decision
 

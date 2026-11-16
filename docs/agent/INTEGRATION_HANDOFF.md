@@ -21,6 +21,10 @@
 
 ## UI checklist
 
+UI sends the teacher's message and trusted context to Agent as transport. Agent decides the
+semantic instruction; UI validates/executes it and returns a receipt. “UI calls Agent” must not
+be interpreted as UI owning intent or orchestration.
+
 1. Export fresh structured `ScreenContext` and state version; never send DOM/raw file objects.
 2. Install and runtime-validate only agreed capabilities; keep registry flags false beforehand.
 3. Return serial receipts after committed UI state and preserve partial success.

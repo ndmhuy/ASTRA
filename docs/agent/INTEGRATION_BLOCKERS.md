@@ -11,7 +11,7 @@
 | Display index to stable question ID bridge | UI + Backend | Not implemented | Accept explicit test mapping; otherwise `needs_target` |
 | Deferred revision batch API | Backend | Not implemented | Consolidated proposal only; `applied=false` |
 | Authentication, permissions, retention, multi-process persistence | Backend/Infra | Not found | In-memory single-process limitation documented |
-| Unified Generation + RAG + UI integration branch | Tech lead | Not selected | No merge; ports remain independent |
+| Shared UI + backend + Agent source branch | Tech lead | Integration branch created; functional wiring absent | Keep ports independent until reviewed contracts are implemented |
 
 None of these blockers prevents the offline core. They prevent any claim that the chatbot is
 integrated with production ASTRA.
