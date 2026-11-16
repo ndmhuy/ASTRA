@@ -40,6 +40,6 @@ This records Phase A reconnaissance after `git fetch --all --prune` on 2026-11-1
 
 Repository rules normally require branches from `origin/main`, but `origin/main@9f93fa4`
 contains team documents and no runnable backend. The master prompt names `24a2d092` as the
-temporary integration baseline. Therefore local branch `feat/codex/agent-orchestrator` was
+temporary integration baseline. Therefore local branch `feat/longlth2297/agent-orchestrator` was
 cut from that exact ref. No teammate branch was checked out, modified, merged, rebased, or
 pushed.

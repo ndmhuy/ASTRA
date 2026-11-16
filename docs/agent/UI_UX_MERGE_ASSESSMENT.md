@@ -1,12 +1,12 @@
 # Agent + UI/UX merge assessment
 
 **Date:** 2026-11-16 (Asia/Bangkok)
-**Integration branch:** `feat/letranhoanglong2227-maker/agent-ui-integration`
+**Integration branch:** `feat/longlth2297/agent-ui-integration`
 
 ## Revisions combined
 
 - UI/UX first parent: `origin/uiux@eb673e33ab667369489307bc8974ff3d2904d86b`.
-- Agent/backend second parent: `feat/codex/agent-orchestrator@52ebad671b39e9e78925a0cd976eb5b9d683accb`.
+- Agent/backend second parent: `feat/longlth2297/agent-orchestrator@52ebad671b39e9e78925a0cd976eb5b9d683accb`.
 - Merge commit: `cb6dd8ff064875f8544d3b5e5c8f9e1f4cdee8fa`.
 
 The source histories had no merge base. The merge therefore required
