@@ -80,6 +80,10 @@ class ConversationOrchestrator:
 
     def handle_turn(self, request: TurnRequest) -> TurnResponse:
         state = self._state(request)
+        if request.workspace_session_id != state.workspace_session_id:
+            raise ValueError("conversation workspace mismatch")
+        if request.screen_context.workspace_session_id not in {None, state.workspace_session_id}:
+            raise ValueError("screen context workspace mismatch")
         prior = state.processed_requests.get(request.request_id)
         if prior:
             return prior
@@ -306,7 +310,10 @@ class ConversationOrchestrator:
             raise ValueError("unknown conversation")
         draft = state.draft
         expected = (
-            approval.workspace_session_id == state.workspace_session_id
+            bool(draft.request_hash)
+            and draft.normalized_preview is not None
+            and bool(approval.actor_id)
+            and approval.workspace_session_id == state.workspace_session_id
             and approval.draft_id == draft.draft_id
             and approval.draft_revision == draft.revision
             and approval.request_hash == draft.request_hash

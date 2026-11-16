@@ -1,5 +1,21 @@
 # Test results
 
+## Agent transport follow-up
+
+Observed after adding standalone HTTP service, correlated receipt handling and intake guards:
+
+```text
+python -m ruff check .
+All checks passed! (exit 0)
+python -m pytest -q
+331 passed, 1 warning in 13.62s (exit 0)
+```
+
+The 13 additional cases cover HTTP round trip/replay, request ID payload collision, wrong receipt
+address/action/plan, unobserved navigation, workspace isolation, resource limits, strict inbound
+JSON, OpenAPI exposure, empty/unaccepted topics and wrong field types. No UI source changed.
+Prior results below are retained as historical Phase 1 evidence.
+
 This file is updated from commands actually executed on Windows, Python 3.12.10. No API key,
 network inference, paid model, browser, or generation backend was used.
 

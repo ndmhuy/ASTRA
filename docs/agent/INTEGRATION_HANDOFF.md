@@ -1,5 +1,9 @@
 # Integration readiness handoff
 
+Update: standalone Agent turn/receipt HTTP transport is now implemented. See
+`AGENT_STRUCTURE_AND_WORKLOG.md` for entry point, state limits, tests, and remaining contract gaps.
+React wiring and trusted production adapters remain pending.
+
 ## Delivered offline interfaces
 
 - `RequirementsProvider` and versioned `RequirementsDescriptor`.

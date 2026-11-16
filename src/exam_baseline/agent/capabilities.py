@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import Field, model_validator
 
@@ -25,7 +25,7 @@ class Action(AgentModel):
 
 
 class ActionPlan(AgentModel):
-    schema_version: str = "agent-actions/0.1"
+    schema_version: Literal["agent-actions/0.1"] = "agent-actions/0.1"
     plan_id: str
     conversation_id: str
     expected_state_version: int
@@ -42,10 +42,16 @@ class ActionPlan(AgentModel):
 class ActionReceipt(AgentModel):
     plan_id: str
     action_id: str
-    status: str
+    status: Literal["success", "failed", "skipped"]
     error_code: str | None = None
     data: dict[str, Any] = Field(default_factory=dict)
     state_version: int
+
+    @model_validator(mode="after")
+    def consistent_outcome(self):
+        if (self.status == "success") != (self.error_code is None):
+            raise ValueError("success requires no error; failure/skipped requires an error")
+        return self
 
 
 class CapabilityRegistry:

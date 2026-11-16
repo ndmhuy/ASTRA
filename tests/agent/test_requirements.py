@@ -86,3 +86,19 @@ def test_patch_invalidates_preview_and_approval():
     assert item.normalized_preview is None
     assert item.request_hash is None
     assert item.approved_revision is None
+
+
+def test_empty_or_unaccepted_topics_do_not_complete_intake():
+    descriptor = FixtureRequirementsProvider().get_descriptor()
+    item = draft(descriptor.schema_version)
+    item.patch({"topics": []}, "m1")
+    assert "topics" in MockDraftEvaluationPort().evaluate(item, descriptor).missing_fields
+    item.patch({"topics": ["đạo hàm"]}, "m2", status="suggested")
+    assert "topics" in MockDraftEvaluationPort().evaluate(item, descriptor).missing_fields
+
+
+def test_wrong_topic_type_is_invalid_instead_of_crashing():
+    descriptor = FixtureRequirementsProvider().get_descriptor()
+    item = draft(descriptor.schema_version)
+    item.patch({"topics": 12}, "m1")
+    assert MockDraftEvaluationPort().evaluate(item, descriptor).status == "invalid"

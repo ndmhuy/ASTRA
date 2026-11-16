@@ -92,7 +92,8 @@ def missing_required_fields(
 ) -> list[RequirementField]:
     missing: list[RequirementField] = []
     for field in descriptor.fields:
-        if field.key in draft.fields:
+        collected = draft.fields.get(field.key)
+        if collected and collected.status != "suggested" and collected.value not in (None, "", []):
             continue
         if field.default is not None:
             continue
@@ -124,12 +125,29 @@ def validate_collected_values(
             errors.append(f"unknown field: {key}")
             continue
         value = collected.value
+        if requirement.value_type == "string" and not isinstance(value, str):
+            errors.append(f"{key} must be a string")
+            continue
+        if requirement.value_type == "string_list" and (
+            not isinstance(value, list)
+            or any(not isinstance(item, str) or not item.strip() for item in value)
+        ):
+            errors.append(f"{key} must be a list of nonempty strings")
+            continue
         if requirement.value_type == "integer" and type(value) is not int:
             errors.append(f"{key} must be an integer")
             continue
-        if requirement.minimum is not None and value < requirement.minimum:
+        if (
+            requirement.value_type == "integer"
+            and requirement.minimum is not None
+            and value < requirement.minimum
+        ):
             errors.append(f"{key} is below minimum {requirement.minimum}")
-        if requirement.maximum is not None and value > requirement.maximum:
+        if (
+            requirement.value_type == "integer"
+            and requirement.maximum is not None
+            and value > requirement.maximum
+        ):
             errors.append(f"{key} exceeds maximum {requirement.maximum}")
         if requirement.allowed_values and value not in requirement.allowed_values:
             errors.append(f"{key} is not an allowed value")
