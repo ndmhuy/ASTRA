@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { StationeryArt } from '../../StationeryArt';
 import { SchoolArt } from '../../SchoolArt';
+import { FileText, ListChecks } from 'lucide-react';
 import type { QuestionItem } from '../../../types/exam';
 import { QuestionCard } from './QuestionCard';
 
 interface ExamPaperViewProps {
+  header?: React.ReactNode;
   questions: QuestionItem[];
   examMeta: {
     title: string;
@@ -18,16 +20,18 @@ interface ExamPaperViewProps {
   onEditQuestion?: (questionId: number) => void;
 }
 
-export const ExamPaperView: React.FC<ExamPaperViewProps> = ({ questions, examMeta, isGenerating, latestQuestionCount = 0, onEditQuestion }) => {
+export const ExamPaperView: React.FC<ExamPaperViewProps> = ({ header, questions, examMeta, isGenerating, latestQuestionCount = 0, onEditQuestion }) => {
   const [review, setReview] = useState(false);
   const flaggedCount = questions.filter(q => q.status === 'FLAGGED').length;
   return <>
+    <div className="canvas-topbar">{header}
     <div className="paper-toolbar">
       <div className="view-switch" role="group" aria-label="Chế độ xem đề thi">
-        <button aria-pressed={!review} onClick={() => setReview(false)}>Đề thi</button>
-        <button aria-pressed={review} onClick={() => setReview(true)}>Xem đáp án</button>
+        <button aria-pressed={!review} onClick={() => setReview(false)}><FileText size={14} aria-hidden="true" />Đề thi</button>
+        <button aria-pressed={review} onClick={() => setReview(true)}><ListChecks size={14} aria-hidden="true" />Xem đáp án</button>
       </div>
       {flaggedCount > 0 && <button className="review-count" onClick={() => setReview(true)}>{flaggedCount} câu cần xem xét</button>}
+    </div>
     </div>
     <div className="paper-scroll">
       <article className={`exam-paper ${!examMeta ? 'is-empty' : ''}`}>

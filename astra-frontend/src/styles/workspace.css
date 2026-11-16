@@ -47,18 +47,20 @@ button:focus-visible, a:focus-visible, summary:focus-visible, select:focus-visib
 .eyebrow { font: 600 12px/1.5 var(--font-ui); letter-spacing: .09em; text-transform: uppercase; color: #657168; }
 /* Workspace */
 .astra-workspace-split { display: flex; height: calc(100dvh - 64px); overflow: hidden; }
-.astra-chat-pane { width: var(--chat-width, 360px); flex-shrink: 0; min-width: 300px; display: flex; flex-direction: column; background: white; overflow: hidden; }
+.astra-chat-pane { width: var(--chat-width, 320px); flex-shrink: 0; min-width: 280px; display: flex; flex-direction: column; background: white; overflow: hidden; }
+.workspace-chat-body { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; }
 .workspace-divider { width: 7px; flex-shrink: 0; background: #f0f2ed; border-inline: 1px solid #dde2dc; cursor: col-resize; touch-action: none; }
 .workspace-divider:hover, .workspace-divider:focus-visible { background: #c5d8cb; }
 .astra-canvas-pane { flex: 1; min-width: 0; display: flex; flex-direction: column; background: #f0f2ed; overflow: hidden; }
 .chat-msg-user, .chat-msg-assistant { padding: 16px 24px; font-size: 14px; line-height: 1.7; color: #3f4b43; }
 .chat-msg-user { background: #f6f7f4; margin: 8px 16px; padding: 14px; border-left: 2px solid #ccd4cd; }
 .chat-msg-label { font-size: 11px; font-weight: 600; color: #657168; letter-spacing: .07em; margin-bottom: 6px; }
-.canvas-header { min-height: 68px; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid #dde2dc; background: white; flex-shrink: 0; flex-wrap: wrap; }
+.canvas-topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid #dde2dc; background: white; flex-shrink: 0; }
+.canvas-header { min-height: 54px; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; background: transparent; flex-shrink: 0; flex: 1; min-width: 0; }
 .canvas-title { font-size: 14px; font-weight: 600; }
 .canvas-status { color: #657168; font-size: 12px; }
 .canvas-actions { display: flex; gap: 8px; }
-.paper-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 12px 24px; flex-shrink: 0; }
+.paper-toolbar { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 10px; padding: 10px 20px; flex-shrink: 0; }
 .view-switch { display: flex; gap: 4px; }
 .view-switch button { background: transparent; border: 1px solid transparent; padding: 8px 12px; border-radius: 4px; color: #657168; font-size: 13px; }
 .view-switch button[aria-pressed="true"] { color: #202923; background: white; border-color: #d3dbd4; font-weight: 600; }

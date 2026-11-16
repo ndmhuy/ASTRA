@@ -205,7 +205,7 @@
 .create-recent button svg { flex: 0 0 auto; color: #638b6a; }
 
 .workspace-active.create-mode { grid-template-columns: 228px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); background: linear-gradient(0deg, rgb(220, 232, 209) 0%, rgb(227, 245, 220) 50%, rgb(237, 251, 230) 100%); }
-.workspace-active.create-mode .astra-workspace-stage { display: grid; grid-template-rows: minmax(0, 1fr) auto; min-width: 0; min-height: 0; overflow: hidden; }
+.workspace-active.create-mode .astra-workspace-stage { display: grid; grid-template-rows: minmax(0, 1fr); min-width: 0; min-height: 0; overflow: hidden; }
 .workspace-active.create-mode .astra-workspace-stage { grid-column: 2; grid-row: 1; }
 .workspace-active.create-mode .astra-workspace-split {
   grid-column: auto;
@@ -219,13 +219,17 @@
   animation: none;
 }
 .workspace-active.create-mode .astra-chat-pane {
-  width: var(--chat-width, 420px);
-  min-width: 300px;
+  width: var(--chat-width, 320px);
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   border: 1px solid var(--vision-edge);
   border-radius: 18px;
   background: rgba(252, 253, 249, .91);
   box-shadow: 0 8px 28px rgba(49, 89, 58, .07);
 }
+.workspace-chat-body { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; }
 .workspace-active.create-mode .studio-chat-heading {
   justify-content: flex-start;
   min-height: 76px;
@@ -255,9 +259,13 @@
   background: rgba(232, 244, 227, .72);
   box-shadow: 0 8px 28px rgba(49, 89, 58, .055);
 }
+.canvas-topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0; }
+.workspace-active.create-mode .canvas-topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0; }
 .workspace-active.create-mode .canvas-header {
-  min-height: 70px;
-  padding: 5px 10px 13px;
+  flex: 1;
+  min-width: 0;
+  min-height: 48px;
+  padding: 5px 10px 10px;
   border: 0;
   background: transparent;
 }
@@ -267,7 +275,7 @@
 .workspace-active.create-mode .canvas-actions button { min-height: 40px; padding: 8px 12px; border-radius: 10px; font-size: 12px; }
 .workspace-active.create-mode .canvas-actions .button-primary { border: 1px solid #5d9169; background: #5d9169; color: white; }
 .workspace-active.create-mode .canvas-actions .button-secondary { border-color: var(--vision-edge); background: rgba(252, 253, 249, .84); color: #55705b; }
-.workspace-active.create-mode .paper-toolbar { padding: 7px 10px 11px; border: 0; background: transparent; }
+.workspace-active.create-mode .paper-toolbar { justify-content: flex-end; flex-shrink: 0; padding: 5px 10px 10px; border: 0; background: transparent; }
 .workspace-active.create-mode .view-switch { padding: 3px; border: 1px solid rgba(101, 139, 105, .12); border-radius: 11px; background: rgba(248, 251, 245, .68); }
 .workspace-active.create-mode .view-switch button { min-height: 34px; padding: 6px 13px; border-radius: 8px; color: #68766b; font-size: 12px; }
 .workspace-active.create-mode .view-switch button[aria-pressed=true] { background: white; color: #436c4c; box-shadow: 0 1px 4px rgba(49, 89, 58, .08); }
