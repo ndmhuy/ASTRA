@@ -1,0 +1,103 @@
+import asyncio
+import json
+
+import pytest
+
+from exam_baseline.core.contracts import Completion, ProviderError
+from exam_baseline.pipeline.rendering.syntax import prose, validate_drawing_code
+from exam_baseline.thpt.agents import ComposerAgent, ReviewerAgent
+from exam_baseline.thpt.runtime import ContractError, RecordingProvider
+from tests.thpt.test_generation import question, request
+
+
+class Responses:
+    def __init__(self, responses):
+        self.responses = iter(responses)
+        self.requests = []
+
+    async def complete(self, prompt):
+        self.requests.append(json.loads(prompt.user))
+        value = next(self.responses)
+        if isinstance(value, Exception):
+            raise value
+        return Completion(text=value, model="fixture")
+
+
+def test_complete_fenced_json_is_accepted_without_extra_call(tmp_path):
+    raw = json.dumps({"questions": [question(request().slots[0]).model_dump()]})
+    provider = Responses(["```json\n" + raw + "\n```"])
+    calls = []
+    traced = RecordingProvider(provider, "composer", 1, calls, tmp_path)
+    result, _ = asyncio.run(ComposerAgent().run(traced, {}))
+    assert result.questions[0].id == "P1-1"
+    assert len(calls) == 1 and calls[0]["normalized_json_fence"]
+
+
+def test_invalid_json_gets_one_correction_with_raw_diagnostics(tmp_path):
+    raw = json.dumps({"questions": [question(request().slots[0]).model_dump()]})
+    provider = Responses(['{"questions": [', raw])
+    calls = []
+    traced = RecordingProvider(provider, "composer", 1, calls, tmp_path)
+    asyncio.run(ComposerAgent().run(traced, {}))
+    assert [c["status"] for c in calls] == ["invalid_contract", "validated"]
+    assert "contract_feedback" in provider.requests[1]
+    assert (tmp_path / "call_01_composer_r1.txt").read_text() == '{"questions": ['
+
+
+@pytest.mark.parametrize("agent,attempts", [(ComposerAgent(), 2), (ReviewerAgent(), 1)])
+def test_schema_correction_is_bounded_and_reviewer_runs_once(agent, attempts, tmp_path):
+    provider = Responses(["invalid"] * attempts)
+    calls = []
+    with pytest.raises(ContractError) as error:
+        asyncio.run(agent.run(RecordingProvider(provider, agent.role, 1, calls, tmp_path), {}))
+    assert len(calls) == attempts
+    assert error.value.stage == agent.role
+    assert error.value.fields[0]["type"] == "json_invalid"
+
+
+def test_provider_failure_is_recorded_even_without_completion(tmp_path):
+    provider = Responses([ProviderError("provider_unavailable", "HTTP 503", http_status=503)])
+    calls = []
+    with pytest.raises(ProviderError):
+        asyncio.run(
+            ComposerAgent().run(RecordingProvider(provider, "composer", 1, calls, tmp_path), {})
+        )
+    assert len(calls) == 1
+    assert calls[0]["http_status"] == 503
+
+
+def test_short_answer_schema_requires_answer_and_exact_question_count():
+    contract = ComposerAgent().contract({"part": "P3"})
+    schema = contract.model_json_schema()
+    assert "answer" in schema["$defs"]["ShortAnswerQuestion"]["required"]
+    assert schema["properties"]["questions"]["minItems"] == 6
+    data = {"questions": [question(s).model_dump() for s in request().slots if s.part == "P3"]}
+    contract.model_validate(data)
+    data["questions"][0].pop("answer")
+    with pytest.raises(ValueError):
+        contract.model_validate(data)
+
+
+def test_variation_arrows_are_valid_math():
+    assert prose(r"$+\infty \searrow 0 \nearrow +\infty$") == (
+        r"$+\infty \searrow 0 \nearrow +\infty$"
+    )
+
+
+def test_native_tikz_plot_variable_is_allowed_only_in_drawings():
+    validate_drawing_code(r"\begin{tikzpicture}\draw plot (\x,{\x*\x});\end{tikzpicture}")
+    with pytest.raises(ValueError):
+        prose(r"$\x$")
+
+
+def test_transient_error_retries_once_and_records_both_attempts(tmp_path):
+    provider = Responses(
+        [
+            ProviderError("provider_unavailable", "HTTP 503", http_status=503),
+            json.dumps({"questions": [question(request().slots[0]).model_dump()]}),
+        ]
+    )
+    calls = []
+    traced = RecordingProvider(provider, "composer", 1, calls, tmp_path, retries=1)
+    asyncio.run(ComposerAgent().run(traced, {}))
+    assert [c["status"] for c in calls] == ["failed", "validated"]
