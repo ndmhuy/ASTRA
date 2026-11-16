@@ -14,6 +14,10 @@ def create_agent_app(service: AgentService | None = None) -> FastAPI:
     )
     app = FastAPI(title="ASTRA Agent offline transport", version="0.1")
 
+    @app.get("/agent/health")
+    def health():
+        return {"service": "astra-agent", "schema_version": "agent-turn/0.1", "status": "ok"}
+
     @app.post("/agent/turns", response_model=TurnResponse)
     def turn(request: TurnRequest):
         try:

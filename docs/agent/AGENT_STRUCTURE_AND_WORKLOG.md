@@ -1,5 +1,8 @@
 # Agent: cấu trúc, vận hành và nhật ký công việc
 
+Đợt sửa lỗi kết nối và retry tiếp theo được ghi tại `CONNECTION_RECOVERY_REPORT.md`:
+nguyên nhân 502, dev launcher, controller ledger, executor concurrency và browser tests thật.
+
 ## Cách đọc module
 
 | File | Trách nhiệm |

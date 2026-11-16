@@ -30,3 +30,20 @@ If you are developing a production application, we recommend enabling type-aware
 ```
 
 See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+
+# Running UI + Agent locally
+
+From `astra-frontend`, run `npm run dev`, then open the Local URL printed by Vite.
+This command starts the offline Agent on `127.0.0.1:8010`, waits for its health check,
+and starts the UI. Keep the terminal running. Ctrl+C stops the processes started by it.
+If 5173 is already occupied, Vite prints another port; use that URL.
+
+`npm run dev:ui` starts only Vite and requires an independently running Agent.
+`npm run preview` previews static assets; it does not start the Agent or provide its proxy.
+
+If the Agent connection fails, use **Thử lại kết nối**. The existing message/request ID
+is preserved; completed UI actions are not repeated when retrying their receipt.
+Session and retry data live in memory and disappear on browser reload or Agent restart.
+
+Checks: `npm test`, `npm run build`, `npm run lint`, `npm run test:browser`.
+Browser tests require installed Google Chrome and launch an isolated headless profile.

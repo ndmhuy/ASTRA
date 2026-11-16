@@ -1,5 +1,10 @@
 # UI ↔ Agent delivery for UI/UX review
 
+Connection recovery follow-up: see `docs/agent/CONNECTION_RECOVERY_REPORT.md`.
+`npm run dev` now starts both processes. Automated headless Chrome E2E is now available
+via `npm run test:browser`; four real UI/Agent cases pass. Earlier limitations and results
+below describe the initial delivery, before this follow-up.
+
 Status: implemented on `feat/longlth2297/m2-ui-agent-orchestration`; not merged into the
 teammate-owned `uiux` branch. Base commit: `afdbcd6` from
 `feat/longlth2297/agent-ui-integration`.

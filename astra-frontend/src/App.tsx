@@ -40,7 +40,7 @@ export const App: React.FC = () => {
   const [showQuickModal, setShowQuickModal] = useState(false);
   const [configureId, setConfigureId] = useState<string | null>(null);
   const [uiStateVersion, setUiStateVersion] = useState(1);
-  const closeQuickModal = useCallback(() => setShowQuickModal(false), []);
+  const closeQuickModal = useCallback(() => { setShowQuickModal(false); setUiStateVersion(value => value + 1); }, []);
   const active = sessions.find(session => session.id === activeId);
   const messages = active?.messages || [];
   const liveQuestions = active?.questions || EMPTY_QUESTIONS;
@@ -69,10 +69,12 @@ export const App: React.FC = () => {
     question_index_map: Object.fromEntries(liveQuestions.map((question, index) => [String(index + 1), String(question.id)])),
     available_actions: ['ui.navigate', 'ui.session.create', 'ui.exam.open_setup', 'ui.sidebar.set_collapsed'],
   }), [activeId, liveQuestions, screen, screenId, uiStateVersion]);
+  const observedUiRef = useRef({ showQuickModal, configureId, controlsCollapsed });
+  useLayoutEffect(() => { observedUiRef.current = { showQuickModal, configureId, controlsCollapsed }; }, [showQuickModal, configureId, controlsCollapsed]);
   useLayoutEffect(() => { contextRef.current = currentContext; }, [currentContext]);
   const waitForCommit = useCallback(async (predicate: (context: ScreenContext) => boolean): Promise<ScreenContext> => {
     for (let attempt = 0; attempt < 60; attempt += 1) {
-      await new Promise<void>(resolve => window.requestAnimationFrame(() => resolve()));
+      await new Promise<void>(resolve => window.setTimeout(resolve, 25));
       if (predicate(contextRef.current)) return contextRef.current;
     }
     throw new Error('ACTION_NOT_OBSERVED');
@@ -113,7 +115,7 @@ export const App: React.FC = () => {
       setConfigureId(workspaceId);
       setShowQuickModal(true);
       bumpUiState();
-      const observed = await waitForCommit(context => context.state_version > previousVersion && context.screen_id === 'workspace' && context.workspace_session_id === workspaceId);
+      const observed = await waitForCommit(context => context.state_version > previousVersion && context.screen_id === 'workspace' && context.workspace_session_id === workspaceId && observedUiRef.current.showQuickModal && observedUiRef.current.configureId === workspaceId);
       return { data: { workspace_session_id: workspaceId, dialog_visible: true }, stateVersion: observed.state_version };
     },
     'ui.sidebar.set_collapsed': async action => {
@@ -122,7 +124,7 @@ export const App: React.FC = () => {
       if (typeof collapsed !== 'boolean') throw new Error('INVALID_PARAMS');
       setControlsCollapsed(collapsed);
       bumpUiState();
-      const observed = await waitForCommit(context => context.state_version > previousVersion);
+      const observed = await waitForCommit(context => context.state_version > previousVersion && observedUiRef.current.controlsCollapsed === collapsed);
       return { data: { collapsed }, stateVersion: observed.state_version };
     },
   }), [bumpUiState, store, waitForCommit]);
@@ -165,12 +167,12 @@ export const App: React.FC = () => {
       {screen === 'onboarding' && (
         <OnboardingFork
           tab={homeTab}
-          onTabChange={setHomeTab}
-          onQuickMode={() => { setConfigureId(null); setShowQuickModal(true); }}
+          onTabChange={tab => { setHomeTab(tab); bumpUiState(); }}
+          onQuickMode={() => { setConfigureId(null); setShowQuickModal(true); bumpUiState(); }}
           onProMode={handleProMode}
           sessions={sessions}
           onOpenSession={openSession}
-          onDeleteSession={id => { store.remove(id); if (activeId === id) setActiveId(null); if (configureId === id) setConfigureId(null); }}
+          onDeleteSession={id => { store.remove(id); bumpUiState(); if (activeId === id) setActiveId(null); if (configureId === id) setConfigureId(null); }}
         />
       )}
 
@@ -186,7 +188,8 @@ export const App: React.FC = () => {
                   <button className="button-primary" onClick={() => { setConfigureId(active.id); setShowQuickModal(true); }}>{active.status === 'error' ? 'Thử tạo lại' : 'Tạo đề từ yêu cầu'}</button>
                 </div>}
                 <ChatHistory messages={messages} onSuggestion={value => store.setDraft(active.id, value)} onEditMessage={message => store.setDraft(active.id, message.content)} onRetractMessage={message => store.retractMessage(active.id, message.id)} onBranchMessage={message => { const branchId = store.branchAtMessage(active.id, message.id); if (branchId) setActiveId(branchId); }} />
-                {active.agentError && <p role="alert" className="agent-turn-error">{active.agentError}</p>}
+                {active.agentPending && <p role="status">Agent đang xử lý yêu cầu…</p>}
+                {active.agentError && <div role="alert" className="agent-turn-error"><p>{active.agentError}</p><button onClick={() => { const executor = executorRef.current; if (executor) void runAgentTurn(active.id, null, { store, getContext: () => contextRef.current, executor }); }}>Thử lại kết nối</button></div>}
               </>
             ),
             right: (
@@ -206,7 +209,7 @@ export const App: React.FC = () => {
                 />
               </>
             ),
-            composer: <ModernChatBar onSend={handleSendMessage} disabled={active.agentPending} draft={active.draft} onDraftChange={value => store.setDraft(active.id, value)} />,
+            composer: <ModernChatBar onSend={handleSendMessage} disabled={active.agentPending || Boolean(active.agentError)} draft={active.draft} onDraftChange={value => store.setDraft(active.id, value)} />,
           }}
         </WorkspaceLayout>
       )}

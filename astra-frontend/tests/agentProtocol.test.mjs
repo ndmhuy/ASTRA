@@ -40,3 +40,25 @@ test('executor is stale-safe and replays a committed action without repeating it
   const stale = { ...parsed, plan_id: 'p2', expected_state_version: 2, actions: [{ ...parsed.actions[0], action_id: 'a2' }] };
   assert.equal((await executor.execute(stale))[0].error_code, 'STALE_CONTEXT');
 });
+
+test('concurrent redelivery is serialized before any effect', async () => {
+  const context = { state_version: 3, available_actions: ['ui.navigate'] };
+  let effects = 0;
+  const executor = new UiExecutor({ 'ui.navigate': async () => {
+    effects++;
+    await new Promise(resolve => setImmediate(resolve));
+    context.state_version++;
+    return { data: { screen_id: 'library' }, stateVersion: context.state_version };
+  } }, () => context);
+  const [first, second] = await Promise.all([executor.execute(plan()), executor.execute(plan())]);
+  assert.equal(effects, 1);
+  assert.deepEqual(first, second);
+});
+
+test('invalid target and withdrawn capability have zero effects', async () => {
+  let effects = 0;
+  const executor = new UiExecutor({ 'ui.navigate': async () => { effects++; return { data: {}, stateVersion: 4 }; } }, () => ({ state_version: 3, available_actions: [] }));
+  await assert.rejects(() => executor.execute({ ...plan(), actions: [{ ...plan().actions[0], target: 'wrong' }] }), /INVALID_TARGET/);
+  assert.equal((await executor.execute(plan()))[0].error_code, 'CAPABILITY_UNAVAILABLE');
+  assert.equal(effects, 0);
+});

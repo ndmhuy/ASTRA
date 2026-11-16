@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from uuid import NAMESPACE_URL, uuid5
 
 from .capabilities import Action, ActionPlan, CapabilityRegistry
@@ -126,6 +127,26 @@ class ConversationOrchestrator:
         if prior:
             return prior
         parsed = understand(request.message)
+        # Deterministic parser cannot safely resolve negated or hypothetical UI commands.
+        # Ask instead of turning a mention of a control into an authorized effect.
+        ui_intents = {
+            "navigate_library",
+            "navigate_welcome",
+            "navigate_create",
+            "create_session",
+            "open_exam_setup",
+            "collapse_sidebar",
+            "expand_sidebar",
+        }
+        if ui_intents.intersection(parsed.intents):
+            if re.search(r"\b(khong(?! gian\b)|dung|chua|neu|vi du)\b", parsed.normalized_text):
+                return self._response(
+                    request,
+                    state,
+                    "clarification",
+                    "Mình chưa thực hiện thao tác. "
+                    "Thầy cô vui lòng xác nhận trực tiếp thao tác muốn làm.",
+                )
         descriptor = self.requirements.get_descriptor()
         apply_descriptor_defaults(state.draft, descriptor, request.request_id)
 

@@ -1,10 +1,12 @@
-import type { ActionPlan, ActionReceipt, AgentAction, CapabilityId, ScreenContext } from './agentProtocol';
+import { parseActionPlan, type ActionPlan, type ActionReceipt, type AgentAction, type CapabilityId, type ScreenContext } from './agentProtocol.ts';
 
 export interface UiCapabilityResult { data: Record<string, unknown>; stateVersion: number }
 export type UiCapabilityHandler = (action: AgentAction) => Promise<UiCapabilityResult>;
 export type UiCapabilityRegistry = Partial<Record<CapabilityId, UiCapabilityHandler>>;
 
 export class UiExecutor {
+  private queue: Promise<unknown> = Promise.resolve();
+  private readonly plans = new Map<string, string>();
   private readonly ledger = new Map<string, { fingerprint: string; receipt: ActionReceipt }>();
   private readonly registry: UiCapabilityRegistry;
   private readonly getContext: () => ScreenContext;
@@ -14,6 +16,18 @@ export class UiExecutor {
   }
 
   async execute(plan: ActionPlan): Promise<ActionReceipt[]> {
+    plan = parseActionPlan(plan);
+    const key = `${plan.conversation_id}\u0000${plan.plan_id}`;
+    const canonical = JSON.stringify(plan);
+    const prior = this.plans.get(key);
+    if (prior && prior !== canonical) throw new Error('PLAN_ACTION_ID_REUSED');
+    this.plans.set(key, canonical);
+    const task = this.queue.then(() => this.executeSerial(plan));
+    this.queue = task.catch(() => {});
+    return task;
+  }
+
+  private async executeSerial(plan: ActionPlan): Promise<ActionReceipt[]> {
     const fingerprint = (action: AgentAction) => JSON.stringify({ expected_state_version: plan.expected_state_version, capability_id: action.capability_id, target: action.target, params: action.params });
     const replay = plan.actions.map(action => {
       const record = this.ledger.get(`${plan.conversation_id}\u0000${plan.plan_id}\u0000${action.action_id}`);
@@ -39,7 +53,7 @@ export class UiExecutor {
         receipt = { plan_id: plan.plan_id, action_id: action.action_id, status: 'skipped', error_code: 'DEPENDENCY_FAILED', data: {}, state_version: this.getContext().state_version };
       } else {
         const handler = this.registry[action.capability_id];
-        if (!handler) {
+        if (!handler || !this.getContext().available_actions.includes(action.capability_id)) {
           receipt = { plan_id: plan.plan_id, action_id: action.action_id, status: 'failed', error_code: 'CAPABILITY_UNAVAILABLE', data: {}, state_version: this.getContext().state_version };
         } else {
           try {

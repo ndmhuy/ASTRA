@@ -1,5 +1,13 @@
 # Test results
 
+## Connection recovery follow-up
+
+See `CONNECTION_RECOVERY_REPORT.md` for root cause and reproduction. Latest checks:
+frontend unit tests 16/16; headless Chrome through real Vite + Agent 4/4;
+Python regression 354 pass (one existing dependency warning); build and Ruff pass;
+frontend lint passes with two pre-existing warnings. This supersedes the earlier
+statement that browser E2E could not be executed.
+
 ## M2 UI orchestration implementation — 2026-11-16
 
 Observed after implementing the React adapter/executor and matching local Agent capabilities:

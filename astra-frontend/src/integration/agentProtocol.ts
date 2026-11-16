@@ -79,7 +79,7 @@ function parseAction(value: unknown): AgentAction {
   const params = value.params;
   if (capability === 'ui.navigate') {
     if (!exactKeys(params, ['screen_id'], ['workspace_session_id']) || !['welcome', 'create', 'library', 'workspace'].includes(String(params.screen_id))) throw new Error('INVALID_PARAMS');
-    if ((params.screen_id === 'workspace') !== nonEmpty(params.workspace_session_id)) throw new Error('INVALID_PARAMS');
+    if (params.screen_id === 'workspace' ? !nonEmpty(params.workspace_session_id) : 'workspace_session_id' in params) throw new Error('INVALID_PARAMS');
   } else if (capability === 'ui.session.create') {
     if (!exactKeys(params, ['mode']) || !['template', 'custom'].includes(String(params.mode))) throw new Error('INVALID_PARAMS');
   } else if (capability === 'ui.exam.open_setup') {
@@ -92,7 +92,7 @@ function parseAction(value: unknown): AgentAction {
 
 export function parseActionPlan(value: unknown): ActionPlan {
   if (!isRecord(value) || !exactKeys(value, ['schema_version', 'plan_id', 'conversation_id', 'expected_state_version', 'actions'])) throw new Error('INVALID_PLAN_SHAPE');
-  if (value.schema_version !== 'agent-actions/0.1' || !nonEmpty(value.plan_id) || !nonEmpty(value.conversation_id) || !Number.isInteger(value.expected_state_version)) throw new Error('INVALID_PLAN_VALUE');
+  if (value.schema_version !== 'agent-actions/0.1' || !nonEmpty(value.plan_id) || !nonEmpty(value.conversation_id) || !Number.isSafeInteger(value.expected_state_version) || Number(value.expected_state_version) < 0) throw new Error('INVALID_PLAN_VALUE');
   if (!Array.isArray(value.actions) || value.actions.length < 1 || value.actions.length > 5) throw new Error('INVALID_ACTION_COUNT');
   const actions = value.actions.map(parseAction);
   if (new Set(actions.map(action => action.action_id)).size !== actions.length) throw new Error('DUPLICATE_ACTION_ID');

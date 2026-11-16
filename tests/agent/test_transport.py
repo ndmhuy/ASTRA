@@ -90,3 +90,13 @@ def test_openapi_exposes_real_transport_contracts():
     schema = create_agent_app().openapi()
     assert "/agent/turns" in schema["paths"]
     assert "ExecutionFeedback" in schema["components"]["schemas"]
+
+
+def test_health_endpoint_identifies_offline_agent():
+    response = TestClient(create_agent_app()).get("/agent/health")
+    assert response.status_code == 200
+    assert response.json() == {
+        "service": "astra-agent",
+        "schema_version": "agent-turn/0.1",
+        "status": "ok",
+    }

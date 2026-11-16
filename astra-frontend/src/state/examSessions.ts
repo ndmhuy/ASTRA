@@ -68,6 +68,8 @@ export class ExamSessions {
       status: source.status === 'generating' ? 'draft' : source.status,
       messages: source.messages.slice(0, index + 1),
       draft: '',
+      agentPending: false,
+      agentError: undefined,
     };
     this.sessions = [branch, ...this.sessions];
     this.emit();

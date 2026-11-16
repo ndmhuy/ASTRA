@@ -15,6 +15,16 @@ ALL_UI_ACTIONS = [
 ]
 
 
+@pytest.mark.parametrize(
+    "message", ["Đừng mở Tủ đề", "Không thu gọn menu", "Nếu mở thiết lập đề", "Ví dụ mở Tủ đề"]
+)
+def test_negated_or_hypothetical_ui_command_never_emits_effect(message):
+    agent = ConversationOrchestrator(registry=CapabilityRegistry.local_ui())
+    response = agent.handle_turn(request(message, context=ui_context()))
+    assert response.kind == "clarification"
+    assert "plan" not in response.data
+
+
 def ui_context():
     return ScreenContext(
         screen_id="workspace",
