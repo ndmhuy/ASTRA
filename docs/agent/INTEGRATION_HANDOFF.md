@@ -1,5 +1,9 @@
 # Integration readiness handoff
 
+UI implementation owner: follow `UI_UX_IMPLEMENTATION_PLAN.md` for the current task table,
+snake_case wire contract, ownership boundaries, acceptance tests, and branch delivery process.
+This supersedes naming choices in older proposed examples for this integration milestone.
+
 Update: standalone Agent turn/receipt HTTP transport is now implemented. See
 `AGENT_STRUCTURE_AND_WORKLOG.md` for entry point, state limits, tests, and remaining contract gaps.
 React wiring and trusted production adapters remain pending.
