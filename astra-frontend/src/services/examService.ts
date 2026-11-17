@@ -11,6 +11,7 @@
 
 import type {
   ExamPackage,
+  ExamPreviewState,
   ExamRequestParams,
   GenerationProgress,
   QuestionItem
@@ -25,6 +26,9 @@ export interface IExamService {
   updateQuestion(jobId: string, updatedQuestion: QuestionItem): Promise<void>;
   downloadExport(jobId: string, type: 'STUDENT_EXAM' | 'TEACHER_KEY' | 'MATRIX', format: ExportFormat): Promise<void>;
   approveExam?(jobId: string, pkg: ExamPackage): Promise<ExamPackage>;
+  requestPreview?(jobId: string, binding: { revision: number; contentHash: string }): Promise<ExamPreviewState>;
+  getPreviewStatus?(jobId: string, binding: { revision: number; contentHash: string }, statusUrl?: string): Promise<ExamPreviewState>;
+  getPreviewLog?(logUrl: string): Promise<string>;
 }
 
 // ============================================================================
@@ -197,6 +201,38 @@ const INITIAL_MOCK_QUESTIONS: QuestionItem[] = [
 // ============================================================================
 // MOCK IMPLEMENTATION (Simulates multi-stage generation, delay & RTC)
 // ============================================================================
+const MOCK_PDF_DATA_URL = `data:application/pdf;base64,${btoa(
+  '%PDF-1.4\n1 0 obj<<>>endobj\n2 0 obj<< /Type /Catalog /Pages 3 0 R >>endobj\n3 0 obj<< /Type /Pages /Count 1 /Kids [4 0 R] >>endobj\n4 0 obj<< /Type /Page /Parent 3 0 R /MediaBox [0 0 595 842] >>endobj\ntrailer<< /Root 2 0 R >>\n%%EOF\n'
+)}`;
+
+function mockHash(seed: string): string {
+  const clean = seed.replace(/[^a-f0-9]/gi, '').toLowerCase();
+  return (clean + '0'.repeat(64)).slice(0, 64);
+}
+
+function buildMockPreview(
+  jobId: string,
+  revision: number,
+  contentHash: string,
+  approved: boolean,
+  status: ExamPreviewState['status'] = 'ready'
+): ExamPreviewState {
+  const query = `revision=${revision}&contentHash=${contentHash}`;
+  const base = `/api/exams/${jobId}/preview`;
+  return {
+    status,
+    revision,
+    contentHash,
+    sourceHash: mockHash(contentHash.split('').reverse().join('')),
+    compilerAvailable: true,
+    draft: !approved,
+    statusUrl: `${base}?${query}`,
+    pdfUrl: status === 'ready' ? MOCK_PDF_DATA_URL : `${base}.pdf?${query}`,
+    logUrl: `${base}.log?${query}`,
+    ...(status === 'ready' ? { pageCount: 1, pdfHash: mockHash(`${revision}${contentHash}`) } : {}),
+  };
+}
+
 export class MockExamService implements IExamService {
   private jobs = new Map<string, ExamPackage>();
   private getJob(jobId: string): ExamPackage {
@@ -207,16 +243,24 @@ export class MockExamService implements IExamService {
 
   async startGeneration(params: ExamRequestParams): Promise<{ jobId: string }> {
     const jobId = 'astra-job-' + crypto.randomUUID();
-    
+    const contentHash = mockHash(jobId.replace(/-/g, '') + '1');
+
     // Construct initialized ExamPackage
     const pkg: ExamPackage = {
-      examId: `ASTRA-${params.subject.toUpperCase()}-${Date.now().toString().slice(-4)}`,
+      examId: jobId,
       title: `Đề Khảo Sát Chất Lượng Môn ${params.subject} - Lớp ${params.grade}`,
       subject: params.subject,
       grade: params.grade,
       durationMinutes: params.durationMinutes,
       totalScore: 10,
       createdAt: new Date().toLocaleDateString('vi-VN'),
+      revision: 1,
+      contentHash,
+      approved: false,
+      approval: null,
+      hasDrawings: false,
+      visualWarnings: [],
+      preview: buildMockPreview(jobId, 1, contentHash, false, 'ready'),
       blueprint: {
         subject: params.subject,
         grade: params.grade,
@@ -232,7 +276,7 @@ export class MockExamService implements IExamService {
         },
         topics: ['Dao động cơ', 'Sóng cơ & Sóng âm', 'Dòng điện xoay chiều', 'Dao động & Sóng điện từ', 'Sóng ánh sáng']
       },
-      questions: structuredClone(INITIAL_MOCK_QUESTIONS)
+      questions: structuredClone(INITIAL_MOCK_QUESTIONS).map(question => ({ ...question, examRevision: 1 }))
     };
 
     this.jobs.set(jobId, pkg);
@@ -303,11 +347,23 @@ export class MockExamService implements IExamService {
     return structuredClone(this.getJob(jobId));
   }
 
+  private bumpRevision(pkg: ExamPackage, jobId: string) {
+    const nextRevision = (pkg.revision ?? 1) + 1;
+    const nextHash = mockHash(jobId.replace(/-/g, '') + String(nextRevision));
+    pkg.revision = nextRevision;
+    pkg.contentHash = nextHash;
+    pkg.approved = false;
+    pkg.approval = null;
+    pkg.questions = pkg.questions.map(question => ({ ...question, examRevision: nextRevision }));
+    pkg.preview = buildMockPreview(jobId, nextRevision, nextHash, false, 'not_requested');
+  }
+
   async regenerateQuestion(jobId: string, questionId: number, instruction?: string): Promise<QuestionItem> {
     // Simulate targeted LLM repair for a single item
     await new Promise((res) => setTimeout(res, 1200));
 
-    const currentQuestions = this.getJob(jobId).questions;
+    const pkg = this.getJob(jobId);
+    const currentQuestions = pkg.questions;
     const index = currentQuestions.findIndex((q) => q.id === questionId);
     if (index === -1) {
       throw new Error(`Question ${questionId} not found`);
@@ -324,21 +380,54 @@ export class MockExamService implements IExamService {
     };
 
     currentQuestions[index] = repaired;
-    return repaired;
+    this.bumpRevision(pkg, jobId);
+    return currentQuestions[index];
   }
 
   async updateQuestion(jobId: string, updatedQuestion: QuestionItem): Promise<void> {
-    const currentQuestions = this.getJob(jobId).questions;
+    const pkg = this.getJob(jobId);
+    const currentQuestions = pkg.questions;
     const index = currentQuestions.findIndex((q) => q.id === updatedQuestion.id);
     if (index !== -1) {
       currentQuestions[index] = { ...updatedQuestion };
+      this.bumpRevision(pkg, jobId);
     }
+  }
+
+  async approveExam(jobId: string, pkg: ExamPackage): Promise<ExamPackage> {
+    const stored = this.getJob(jobId);
+    stored.approved = true;
+    stored.approval = {
+      revision: pkg.revision ?? stored.revision ?? 1,
+      contentHash: pkg.contentHash ?? stored.contentHash ?? '',
+      reviewer: 'local-teacher',
+      approvedAt: new Date().toISOString(),
+    };
+    if (stored.preview) {
+      stored.preview = { ...stored.preview, draft: false };
+    }
+    return structuredClone(stored);
+  }
+
+  async requestPreview(jobId: string, binding: { revision: number; contentHash: string }): Promise<ExamPreviewState> {
+    const stored = this.getJob(jobId);
+    const ready = buildMockPreview(jobId, binding.revision, binding.contentHash, Boolean(stored.approved), 'ready');
+    stored.preview = ready;
+    return structuredClone(ready);
+  }
+
+  async getPreviewStatus(jobId: string, binding: { revision: number; contentHash: string }): Promise<ExamPreviewState> {
+    return this.requestPreview(jobId, binding);
+  }
+
+  async getPreviewLog(): Promise<string> {
+    return 'Mock LaTeX preview compiled with 0 errors.';
   }
 
   async downloadExport(jobId: string, type: 'STUDENT_EXAM' | 'TEACHER_KEY' | 'MATRIX', format: ExportFormat): Promise<void> {
     const pkg = this.getJob(jobId);
     const title = pkg.title;
-    const filename = `${title}_${type}.${format === 'docx' ? 'doc' : 'txt'}`;
+    const filename = `${title}_${type}.${format === 'docx' ? 'doc' : format}`;
 
     let content = `==========================================================\n`;
     content += `${title.toUpperCase()}\n`;
@@ -364,7 +453,9 @@ export class MockExamService implements IExamService {
       content += `\n`;
     });
 
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const blob = format === 'pdf'
+      ? new Blob([atob(MOCK_PDF_DATA_URL.split(',')[1])], { type: 'application/pdf' })
+      : new Blob([content], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -378,20 +469,66 @@ export class MockExamService implements IExamService {
 
 export class ApiError extends Error {
   code: string;
-  constructor(message: string, code = 'request_failed') { super(message); this.code = code; }
+  status?: number;
+  details?: unknown;
+  constructor(message: string, code = 'request_failed', status?: number, details?: unknown) {
+    super(message);
+    this.code = code;
+    this.status = status;
+    this.details = details;
+  }
 }
 
 const apiBaseUrl = import.meta.env?.VITE_API_BASE_URL ?? '/api';
+
+export function resolveApiUrl(pathOrUrl: string, baseUrl: string = apiBaseUrl): string {
+  if (/^(https?:|blob:|data:)/i.test(pathOrUrl)) return pathOrUrl;
+  const normalizedBase = baseUrl.replace(/\/+$/, '');
+  if (pathOrUrl === '/api' || pathOrUrl.startsWith('/api/')) {
+    const originPrefix = normalizedBase.endsWith('/api')
+      ? normalizedBase.slice(0, -'/api'.length)
+      : normalizedBase;
+    return `${originPrefix}${pathOrUrl}`;
+  }
+  const cleanPath = pathOrUrl.replace(/^\/+/, '');
+  return normalizedBase ? `${normalizedBase}/${cleanPath}` : `/${cleanPath}`;
+}
+
+function normalizePreview(
+  preview: ExamPreviewState | undefined,
+  baseUrl: string
+): ExamPreviewState | undefined {
+  if (!preview) return undefined;
+  return {
+    ...preview,
+    statusUrl: preview.statusUrl ? resolveApiUrl(preview.statusUrl, baseUrl) : preview.statusUrl,
+    pdfUrl: preview.pdfUrl ? resolveApiUrl(preview.pdfUrl, baseUrl) : preview.pdfUrl,
+    logUrl: preview.logUrl ? resolveApiUrl(preview.logUrl, baseUrl) : preview.logUrl,
+  };
+}
 
 async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
   let response: Response;
   try { response = await fetch(url, init); }
   catch { throw new ApiError('Không kết nối được máy chủ. Bạn có thể thử lại để nối lại job.', 'network_error'); }
-  const body = await response.json();
-  if (!response.ok) {
-    throw new ApiError(body.error?.message || JSON.stringify(body.detail || body), body.error?.code);
+  let body: Record<string, unknown> = {};
+  try {
+    body = await response.json() as Record<string, unknown>;
+  } catch {
+    if (!response.ok) {
+      throw new ApiError(response.statusText || 'Request failed', 'request_failed', response.status);
+    }
   }
-  return body;
+  if (!response.ok) {
+    const err = body.error as { code?: string; message?: string; details?: unknown } | undefined;
+    throw new ApiError(
+      err?.message || JSON.stringify(body.detail || body),
+      err?.code || 'request_failed',
+      response.status,
+      err?.details
+    );
+  }
+  return body as T;
 }
 
 export async function getExamFormats(): Promise<ExamFormat[]> {
@@ -448,7 +585,11 @@ export class ApiExamService implements IExamService {
   }
 
   async getExamPackage(jobId: string): Promise<ExamPackage> {
-    return requestJson(`${this.baseUrl}/exams/${jobId}`);
+    const pkg = await requestJson<ExamPackage>(`${this.baseUrl}/exams/${jobId}`);
+    return {
+      ...pkg,
+      preview: normalizePreview(pkg.preview, this.baseUrl),
+    };
   }
 
   async regenerateQuestion(jobId: string, questionId: number, instruction?: string, revision?: number): Promise<QuestionItem> {
@@ -470,15 +611,68 @@ export class ApiExamService implements IExamService {
   }
 
   async approveExam(jobId: string, pkg: ExamPackage): Promise<ExamPackage> {
-    return requestJson(`${this.baseUrl}/exams/${jobId}/approve`, {
+    const updated = await requestJson<ExamPackage>(`${this.baseUrl}/exams/${jobId}/approve`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ revision: pkg.revision, contentHash: pkg.contentHash, reviewer: 'local-teacher' })
     });
+    return {
+      ...updated,
+      preview: normalizePreview(updated.preview, this.baseUrl),
+    };
+  }
+
+  async requestPreview(jobId: string, binding: { revision: number; contentHash: string }): Promise<ExamPreviewState> {
+    const state = await requestJson<ExamPreviewState>(`${this.baseUrl}/exams/${jobId}/preview`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ revision: binding.revision, contentHash: binding.contentHash })
+    });
+    return normalizePreview(state, this.baseUrl)!;
+  }
+
+  async getPreviewStatus(jobId: string, binding: { revision: number; contentHash: string }, statusUrl?: string): Promise<ExamPreviewState> {
+    const url = statusUrl
+      ? resolveApiUrl(statusUrl, this.baseUrl)
+      : `${this.baseUrl}/exams/${jobId}/preview?revision=${binding.revision}&contentHash=${encodeURIComponent(binding.contentHash)}`;
+    const state = await requestJson<ExamPreviewState>(url);
+    return normalizePreview(state, this.baseUrl)!;
+  }
+
+  async getPreviewLog(logUrl: string): Promise<string> {
+    let response: Response;
+    try {
+      response = await fetch(resolveApiUrl(logUrl, this.baseUrl));
+    } catch {
+      return 'Không tải được nhật ký biên dịch LaTeX.';
+    }
+    if (!response.ok) {
+      try {
+        const body = await response.json() as { error?: { message?: string } };
+        return body.error?.message || `Không đọc được nhật ký biên dịch (HTTP ${response.status}).`;
+      } catch {
+        return `Không đọc được nhật ký biên dịch (HTTP ${response.status}).`;
+      }
+    }
+    return response.text();
   }
 
   async downloadExport(jobId: string, type: 'STUDENT_EXAM' | 'TEACHER_KEY' | 'MATRIX', format: ExportFormat): Promise<void> {
-    const response = await fetch(`${this.baseUrl}/exams/${jobId}/export?type=${type}&format=${format}`);
-    if (!response.ok) { const body = await response.json(); throw new ApiError(body.error?.message || 'Export failed'); }
+    let response: Response;
+    try {
+      response = await fetch(`${this.baseUrl}/exams/${jobId}/export?type=${type}&format=${format}`);
+    } catch {
+      throw new ApiError('Không kết nối được máy chủ khi tải file.', 'network_error');
+    }
+    if (!response.ok) {
+      let body: { error?: { code?: string; message?: string; details?: unknown } } = {};
+      try { body = await response.json(); } catch { /* non-JSON error body */ }
+      throw new ApiError(
+        body.error?.message || 'Export failed',
+        body.error?.code || 'export_failed',
+        response.status,
+        body.error?.details
+      );
+    }
     const url = URL.createObjectURL(await response.blob());
     const link = document.createElement('a'); link.href = url;
     link.download = type === 'STUDENT_EXAM' ? `de_thi.${format}` : `dap_an.${format}`;

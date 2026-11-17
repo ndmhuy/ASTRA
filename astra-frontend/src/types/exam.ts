@@ -33,11 +33,43 @@ export interface ExamBlueprint {
   levelDistribution: { nhanBiet: number; thongHieu: number; vanDung: number; vanDungCao: number; };
   topics: string[];
 }
+export type ExamPreviewStatus =
+  | 'not_requested'
+  | 'unavailable'
+  | 'queued'
+  | 'compiling'
+  | 'ready'
+  | 'failed';
+
+export interface ExamPreviewState {
+  status: ExamPreviewStatus;
+  revision: number;
+  contentHash: string;
+  sourceHash: string;
+  compilerAvailable: boolean;
+  draft: boolean;
+  statusUrl: string;
+  pdfUrl: string;
+  logUrl: string;
+  pageCount?: number;
+  pdfHash?: string;
+  error?: string;
+}
+
+export interface VisualWarning {
+  questionId: string;
+  code: string;
+}
+
 export interface ExamPackage {
   examId: string; title: string; subject: Subject; grade: number;
   durationMinutes: number; totalScore: number; createdAt: string;
   blueprint: ExamBlueprint; questions: QuestionItem[];
   revision?: number; contentHash?: string; approved?: boolean;
+  approval?: { revision: number; contentHash: string; reviewer: string; approvedAt: string } | null;
+  preview?: ExamPreviewState;
+  hasDrawings?: boolean;
+  visualWarnings?: VisualWarning[];
   warnings?: { code: string; message: string; questionId?: string }[];
   gaps?: { code: string; message: string }[];
   provenance?: Record<string, unknown>;

@@ -8,7 +8,7 @@ import { WorkspaceLayout } from './components/Workspace/WorkspaceLayout';
 import { ChatHistory } from './components/Workspace/ChatPane/ChatHistory';
 import { ModernChatBar } from './components/Workspace/ChatPane/ModernChatBar';
 import { CanvasHeader } from './components/Workspace/LiveCanvas/CanvasHeader';
-import { ExamPaperView } from './components/Workspace/LiveCanvas/ExamPaperView';
+import { ExamPaperView, type ExamCanvasViewMode } from './components/Workspace/LiveCanvas/ExamPaperView';
 import type { ExamRequestParams, QuestionItem } from './types/exam';
 import { QuestionEditor } from './components/QuestionEditor';
 import { examService } from './services/examService';
@@ -33,6 +33,7 @@ export const App: React.FC = () => {
   const sessions = useSyncExternalStore(store.subscribe, store.getSnapshot);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [screen, setScreen] = useState<'start' | 'workspace'>('start');
+  const [viewMode, setViewMode] = useState<ExamCanvasViewMode>('paper');
   const [controlsCollapsed, setControlsCollapsed] = useState(false);
   const [showQuickModal, setShowQuickModal] = useState(false);
   const [configureId, setConfigureId] = useState<string | null>(null);
@@ -46,6 +47,10 @@ export const App: React.FC = () => {
   const isGenerating = active?.status === 'generating';
   const prevQuestionCount = active?.previousCount || 0;
   useEffect(() => { store.resume(); return () => store.dispose(); }, [store]);
+  useEffect(() => {
+    setViewMode('paper');
+    store.setActiveSession(screen === 'workspace' ? activeId : null);
+  }, [store, screen, activeId]);
   useEffect(() => () => { if (transitionTimer.current) clearTimeout(transitionTimer.current); }, []);
   const cancelTransition = () => { composerOrigin.current = null; if (transitionTimer.current) clearTimeout(transitionTimer.current); setLeavingStart(false); setRevealingWorkspace(false); };
   const openSession = (id: string) => { cancelTransition(); setActiveId(id); setScreen('workspace'); };
@@ -103,22 +108,29 @@ export const App: React.FC = () => {
     void store.generate(id, { ...params, uploadedFiles: [...params.uploadedFiles, ...attachedFiles.current.map(file => file.name)], prompt: instructions ? `${params.prompt}\n${instructions}` : params.prompt });
   };
   const handleSendMessage = (content: string) => { if (activeId) store.sendMessage(activeId, content); };
-  const exportFile = async (type: 'STUDENT_EXAM' | 'TEACHER_KEY') => {
+  const exportFile = async (type: 'STUDENT_EXAM' | 'TEACHER_KEY', format: 'tex' | 'pdf' | 'json') => {
     const session = active;
     if (!session?.jobId) return;
-    try { await examService.downloadExport(session.jobId, type, type === 'STUDENT_EXAM' ? 'tex' : 'json'); }
-    catch (error) { store.setError(session.id, error); }
+    try { await examService.downloadExport(session.jobId, type, format); }
+    catch (error) { await store.handleActionError(session.id, error); }
   };
-  const handleExportWord = () => { void exportFile('STUDENT_EXAM'); };
-  const handleExportAnswer = () => { void exportFile('TEACHER_KEY'); };
+  const handleExportPdf = () => { void exportFile('STUDENT_EXAM', 'pdf'); };
+  const handleExportWord = () => { void exportFile('STUDENT_EXAM', 'tex'); };
+  const handleExportAnswer = () => { void exportFile('TEACHER_KEY', 'json'); };
   const approve = async () => {
     const session = active;
-    if (!session?.jobId || !session.package || !examService.approveExam) return;
+    if (!session?.jobId || !session.package || !examService.approveExam || !store.canApprove(session.id)) return;
     setApproving(true);
     try { await examService.approveExam(session.jobId, session.package); await store.refresh(session.id); }
-    catch (error) { store.setError(session.id, error); }
+    catch (error) { await store.handleActionError(session.id, error); }
     finally { setApproving(false); }
   };
+  const handlePreviewOpened = useCallback(() => {
+    if (activeId) store.markPreviewOpened(activeId);
+  }, [store, activeId]);
+  const handleRetryPreview = useCallback(() => {
+    if (activeId) void store.requestPreview(activeId, true);
+  }, [store, activeId]);
 
 
   const sidebarLabel = controlsCollapsed ? 'Mở rộng thanh điều hướng' : 'Thu gọn thanh điều hướng';
@@ -162,21 +174,54 @@ export const App: React.FC = () => {
                 {active.error && <p role="alert">{active.error}</p>}
                 {isGenerating && active.progress && <p role="status">{active.progress.statusMessage} ({active.progress.percent}%)</p>}
                 {!!active.package?.warnings?.length && <details><summary>Cảnh báo nguồn ({active.package.warnings.length})</summary>{active.package.warnings.map((warning, i) => <p key={i}>{warning.questionId}: {warning.message}</p>)}</details>}
+                {!!active.package?.visualWarnings?.length && (
+                  <div className="pdf-preview-warning" role="alert">
+                    <strong>Cảnh báo hình vẽ / bảng biểu ({active.package.visualWarnings.length})</strong>
+                    <p>Các đề đã tạo không tự sinh hình vẽ còn thiếu trong PDF. Hãy sửa hoặc tạo lại câu hỏi bị ảnh hưởng.</p>
+                    {active.package.visualWarnings.map((warning, i) => (
+                      <p key={`${warning.questionId}-${i}`}><code>{warning.questionId}</code>: {warning.code}</p>
+                    ))}
+                  </div>
+                )}
                 <ExamPaperView
                   header={<CanvasHeader
-                  examMeta={examMeta}
-                  isGenerating={isGenerating}
-                  canExport={active.package?.approved === true}
-                  canApprove={active.status === 'complete' && !active.package?.approved}
-                  approving={approving}
-                  onApprove={() => { void approve(); }}
-                  onExportWord={handleExportWord}
-                  onExportAnswer={handleExportAnswer}
-                />}
+                    examMeta={examMeta}
+                    isGenerating={isGenerating}
+                    canExport={active.package?.approved === true && !active.artifactChanged}
+                    canExportPdf={Boolean(
+                      active.package?.approved &&
+                      !active.artifactChanged &&
+                      active.preview?.status === 'ready' &&
+                      active.preview.revision === active.package.revision &&
+                      active.preview.contentHash === active.package.contentHash
+                    )}
+                    showApprove={active.status === 'complete' && !active.package?.approved && !active.artifactChanged}
+                    canApprove={store.canApprove(active.id)}
+                    approving={approving}
+                    onOpenPdfPreview={() => setViewMode('pdf')}
+                    onApprove={() => { void approve(); }}
+                    onExportPdf={handleExportPdf}
+                    onExportWord={handleExportWord}
+                    onExportAnswer={handleExportAnswer}
+                  />}
                   questions={liveQuestions}
                   examMeta={examMeta}
                   isGenerating={isGenerating}
                   latestQuestionCount={prevQuestionCount}
+                  viewMode={viewMode}
+                  onViewModeChange={setViewMode}
+                  examId={active.jobId || active.package?.examId}
+                  revision={active.package?.revision}
+                  contentHash={active.package?.contentHash}
+                  approved={active.package?.approved}
+                  preview={active.preview}
+                  visualWarnings={active.package?.visualWarnings}
+                  previewLog={active.previewLog}
+                  previewError={active.previewError}
+                  previewErrorCode={active.previewErrorCode}
+                  artifactChanged={active.artifactChanged}
+                  onRetryPreview={handleRetryPreview}
+                  onPreviewOpened={handlePreviewOpened}
                   onEditQuestion={id => {
                     const question = active.questions.find(item => item.id === id);
                     if (active.jobId && question) setEditor({ sessionId: active.id, jobId: active.jobId, question });
@@ -198,8 +243,28 @@ export const App: React.FC = () => {
         />
       )}
       {editor && <QuestionEditor question={editor.question} onClose={() => setEditor(null)}
-        onSave={async question => { await examService.updateQuestion(editor.jobId, question); await store.refresh(editor.sessionId); setEditor(null); }}
-        onRegenerate={async instruction => { await examService.regenerateQuestion(editor.jobId, editor.question.id, instruction, editor.question.examRevision); await store.refresh(editor.sessionId); setEditor(null); }}
+        onSave={async question => {
+          try {
+            await examService.updateQuestion(editor.jobId, question);
+            store.invalidatePreview(editor.sessionId);
+            await store.refresh(editor.sessionId);
+            setEditor(null);
+          } catch (error) {
+            await store.handleActionError(editor.sessionId, error);
+            throw error;
+          }
+        }}
+        onRegenerate={async instruction => {
+          try {
+            await examService.regenerateQuestion(editor.jobId, editor.question.id, instruction, editor.question.examRevision);
+            store.invalidatePreview(editor.sessionId);
+            await store.refresh(editor.sessionId);
+            setEditor(null);
+          } catch (error) {
+            await store.handleActionError(editor.sessionId, error);
+            throw error;
+          }
+        }}
       />}
     </div>
   );
