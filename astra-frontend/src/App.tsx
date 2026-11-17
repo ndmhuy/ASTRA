@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useSyncExternalStore, useCallback, useLayoutEffect, useRef } from 'react';
 import { WorkspaceStart } from './components/WorkspaceStart';
+import { AstraWelcome } from './components/AstraWelcome';
 import { SidebarExamLibrary } from './components/SidebarExamLibrary';
 import { AstraLogo } from './components/AstraLogo';
 import { QuickPresetModal } from './components/QuickPresetModal';
@@ -18,6 +19,8 @@ import './styles/createVision.css';
 import './styles/integratedWorkspace.css';
 
 export const App: React.FC = () => {
+  const [showWelcome, setShowWelcome] = useState(true);
+  const finishWelcome = useCallback(() => setShowWelcome(false), []);
   const [landingDraft, setLandingDraft] = useState('');
   const [leavingStart, setLeavingStart] = useState(false);
   const [revealingWorkspace, setRevealingWorkspace] = useState(false);
@@ -62,6 +65,13 @@ export const App: React.FC = () => {
     const animation = target.animate([{ transform: `translate(${from.left - to.left}px, ${from.top - to.top}px)`, width: `${from.width}px` }, { transform: 'translate(0, 0)', width: `${to.width}px` }], { duration: 360, easing: 'cubic-bezier(.2,.75,.25,1)' });
     return () => animation.cancel();
   }, [screen, activeId]);
+  const handleDetailedStart = () => {
+    const id = configureId || store.create('custom');
+    store.setDraft(id, landingDraft);
+    setShowQuickModal(false);
+    setConfigureId(null);
+    revealSession(id);
+  };
   const handleLandingSend = (content: string, options: { searchWeb: boolean; attachedFiles: File[] }) => {
     const id = configureId || store.create('custom');
     store.sendMessage(id, content);
@@ -87,6 +97,8 @@ export const App: React.FC = () => {
     else newExam();
   };
 
+  if (showWelcome) return <AstraWelcome onComplete={finishWelcome} />;
+
   return (
     <div className={`app-shell create-mode workspace-active integrated-shell ${revealingWorkspace ? 'workspace-revealing' : ''} ${controlsCollapsed ? 'controls-collapsed' : ''}`}>
       <header className="app-header">
@@ -99,7 +111,7 @@ export const App: React.FC = () => {
       </header>
 
       {/* Main content */}
-      {screen === 'start' && <WorkspaceStart exiting={leavingStart} draft={landingDraft} onDraftChange={setLandingDraft} onTemplate={() => { setConfigureId(null); attachedFiles.current = []; setShowQuickModal(true); }} onSend={handleLandingSend} />}
+      {screen === 'start' && <WorkspaceStart exiting={leavingStart} draft={landingDraft} onDraftChange={setLandingDraft} onTemplate={() => { setConfigureId(null); attachedFiles.current = []; setShowQuickModal(true); }} onDetailed={handleDetailedStart} onSend={handleLandingSend} />}
 
       {screen === 'workspace' && active && (
         <WorkspaceLayout key={active.id}>
