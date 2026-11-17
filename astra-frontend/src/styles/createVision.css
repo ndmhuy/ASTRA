@@ -349,7 +349,7 @@
   position: relative;
   grid-template-columns: 144px minmax(0, 1fr);
   background: linear-gradient(118deg, #f1f6f5 0%, #f6f9f8 48%, #f8fafb 100%);
-  transition: grid-template-columns 280ms cubic-bezier(.2,.75,.25,1);
+  transition: grid-template-columns 220ms cubic-bezier(.2,.75,.25,1);
   will-change: grid-template-columns;
 }
 .workspace-active.create-mode::before {
@@ -368,7 +368,7 @@
   overflow: visible;
   background: #f8fbfa;
   box-shadow: 5px 0 22px rgba(48, 91, 42, .15), 1px 0 4px rgba(48, 91, 42, .08);
-  transition: padding 280ms cubic-bezier(.2,.75,.25,1), box-shadow 280ms ease;
+  transition: padding 220ms cubic-bezier(.2,.75,.25,1), box-shadow 280ms ease;
 }
 .app-shell.create-mode .app-brand span,
 .app-shell.create-mode .main-tabs button span,
@@ -378,7 +378,7 @@
   overflow: hidden;
   opacity: 1;
   white-space: nowrap;
-  transition: max-width 280ms cubic-bezier(.2,.75,.25,1), opacity 150ms ease;
+  transition: max-width 220ms cubic-bezier(.2,.75,.25,1), opacity 140ms ease, visibility 0s linear;
 }
 .app-shell.create-mode .header-session { max-width: 180px; }
 .app-shell.create-mode .main-tabs { grid-template-columns: minmax(0, 1fr); min-width: 0; gap: 9px; margin-top: 4px; }
@@ -394,7 +394,7 @@
   border-color: transparent!important;
   border-radius: 10px;
   font-size: 12px;
-  transition: gap 280ms cubic-bezier(.2,.75,.25,1), background-color 160ms ease, color 160ms ease;
+  transition: gap 220ms cubic-bezier(.2,.75,.25,1), background-color 160ms ease, color 160ms ease;
 }
 .app-shell.create-mode .main-tabs button[aria-current=page] { border-color: transparent!important; outline: 0; }
 .app-shell.create-mode .side-rail-edge {
@@ -407,7 +407,7 @@
   padding: 0;
   border: 0;
   border-radius: 0;
-  background: rgb(252, 254, 249);
+  background: transparent;
   box-shadow: none;
   cursor: w-resize;
 }
@@ -418,7 +418,7 @@
 .app-shell.create-mode.controls-collapsed .app-brand { justify-content: flex-start; gap: 0; padding-inline: 0; }
 .app-shell.create-mode.controls-collapsed .app-brand span,
 .app-shell.create-mode.controls-collapsed .main-tabs button span,
-.app-shell.create-mode.controls-collapsed .header-session { max-width: 0; opacity: 0; visibility: hidden; }
+.app-shell.create-mode.controls-collapsed .header-session { max-width: 0; opacity: 0; visibility: hidden; transition: max-width 220ms cubic-bezier(.2,.75,.25,1), opacity 140ms ease, visibility 0s linear 220ms; }
 .app-shell.create-mode.controls-collapsed .main-tabs { gap: 9px; }
 .app-shell.create-mode.controls-collapsed .main-tabs button { justify-content: flex-start; gap: 0; padding-inline: 9px; }
 .app-shell.create-mode.controls-collapsed .header-right { justify-content: center; padding-inline: 0; }
@@ -445,7 +445,7 @@
   flex: 1 1 0;
   min-width: 0;
   padding: 11px;
-  background: rgb(212, 247, 219);
+  background: rgb(231, 241, 236);
   border-color: rgba(71, 107, 74, .13);
   box-shadow: 0 9px 26px rgba(47, 100, 43, .16), 0 2px 5px rgba(47, 100, 43, .1);
 }
@@ -456,7 +456,7 @@
   min-width: 300px;
   border: 0;
   border-radius: 0;
-  background: rgb(252, 254, 249);
+  background: transparent;
   box-shadow: none;
   overflow: hidden;
 }
@@ -464,11 +464,11 @@
   min-height: 64px;
   padding: 12px 16px 8px;
   border: 0;
-  background: rgb(252, 254, 249);
+  background: transparent;
 }
 .workspace-active.create-mode .studio-kicker { font-size: 9px; }
 .workspace-active.create-mode .studio-chat-heading h2 { margin-top: 3px; font-size: 18px; }
-.workspace-active.create-mode .session-context { padding: 2px 16px 8px; background: rgb(252, 254, 249); }
+.workspace-active.create-mode .session-context { padding: 2px 16px 8px; background: transparent; }
 .workspace-active.create-mode .session-context strong { font-size: 11px; }
 .workspace-active.create-mode .session-create-action { padding: 4px 16px 10px; border-color: rgba(61, 91, 62, .14); }
 .workspace-active.create-mode .chat-empty { text-align: left; padding: 18px 16px; }
@@ -486,7 +486,7 @@
   margin: 0;
   border: 0;
   border-radius: 0;
-  background: rgb(252, 254, 249);
+  background: transparent;
   color: #304535;
   font-size: 13px;
   line-height: 1.62;
@@ -511,7 +511,7 @@
   padding: 3px 6px;
   border: 1px solid transparent;
   border-radius: 7px;
-  background: rgb(252, 254, 249);
+  background: transparent;
   color: #5e745e;
   font: 450 10px/1 var(--font-ui);
 }
@@ -561,8 +561,8 @@
   scrollbar-color: rgba(75, 111, 68, .32) transparent;
   scrollbar-width: thin;
 }
-.workspace-active.create-mode :is(.paper-scroll, .exam-paper, .chat-history, .composer-box textarea)::-webkit-scrollbar { width: 8px; height: 8px; background: rgb(252, 254, 249); }
-.workspace-active.create-mode :is(.paper-scroll, .exam-paper, .chat-history, .composer-box textarea)::-webkit-scrollbar-track { background: rgb(252, 254, 249); }
+.workspace-active.create-mode :is(.paper-scroll, .exam-paper, .chat-history, .composer-box textarea)::-webkit-scrollbar { width: 8px; height: 8px; background: transparent; }
+.workspace-active.create-mode :is(.paper-scroll, .exam-paper, .chat-history, .composer-box textarea)::-webkit-scrollbar-track { background: transparent; }
 .workspace-active.create-mode :is(.paper-scroll, .exam-paper, .chat-history, .composer-box textarea)::-webkit-scrollbar-thumb {
   border: 2px solid transparent;
   border-radius: 8px;
@@ -628,8 +628,8 @@
 .workspace-active.create-mode .exam-paper > .paper-empty { padding: 10px 0; }
 .workspace-active.create-mode .exam-paper.is-empty { min-height: 0; }
 .workspace-active.create-mode .exam-paper::-webkit-scrollbar { width: 5px; }
-.workspace-active.create-mode .exam-paper::-webkit-scrollbar-track { margin-block: 56px; background: rgb(252, 254, 249); }
-.workspace-active.create-mode .exam-paper::-webkit-scrollbar-track-piece { margin-block: 56px; background: rgb(252, 254, 249); }
+.workspace-active.create-mode .exam-paper::-webkit-scrollbar-track { margin-block: 56px; background: transparent; }
+.workspace-active.create-mode .exam-paper::-webkit-scrollbar-track-piece { margin-block: 56px; background: transparent; }
 .workspace-active.create-mode .composer-box textarea::-webkit-scrollbar-button,
 .workspace-active.create-mode .composer-box textarea::-webkit-scrollbar-button:vertical:decrement,
 .workspace-active.create-mode .composer-box textarea::-webkit-scrollbar-button:vertical:increment {
@@ -660,7 +660,7 @@
   flex: 0 0 auto;
   padding: 0 6px 10px;
   border: 0;
-  background: rgb(252, 254, 249);
+  background: transparent;
 }
 .workspace-active.create-mode .canvas-header {
   display: flex;
@@ -672,7 +672,7 @@
   min-height: 0;
   padding: 0;
   border: 0;
-  background: rgb(252, 254, 249);
+  background: transparent;
 }
 .workspace-active.create-mode .canvas-heading-copy { flex: 1 1 140px; min-width: 0; }
 .workspace-active.create-mode .canvas-actions { display: flex; flex: 0 1 auto; flex-wrap: wrap; gap: 6px; }
@@ -830,4 +830,11 @@
     padding: 6px 4px;
     font-size: 11px;
   }
+}
+
+@media (min-width: 801px) and (prefers-reduced-motion: reduce) {
+  .app-shell.create-mode { transition: grid-template-columns 180ms ease-out!important; }
+  .app-shell.create-mode .app-header { transition: padding 180ms ease-out!important; }
+  .app-shell.create-mode .main-tabs button { transition: gap 180ms ease-out!important; }
+  .app-shell.create-mode :is(.app-brand span, .main-tabs button span, .header-session) { transition: max-width 180ms ease-out, opacity 120ms ease-out!important; }
 }
