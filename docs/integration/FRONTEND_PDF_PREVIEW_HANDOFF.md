@@ -2,7 +2,8 @@
 
 For the frontend teammate. Backend branch: `merge-mas-and-uiux`.
 This branch includes the previous `main` + `uiux2` integration and the backend fixes below.
-Frontend components have **not** been changed by this fix.
+UI integration is now included in commit `6ac1ba0`; the items below describe the
+contract the UI team implemented. See `CONNECTED_THPT_UI.md` for the current workflow.
 
 ## Problem and backend changes
 
@@ -87,7 +88,7 @@ If using a separate API origin, resolve returned `/api/...` paths against that o
 do not prepend `/api` twice. Retain the complete query string. A browser without an
 inline PDF viewer should offer a link to open the preview in another tab.
 
-## Frontend changes to make
+## Frontend behavior implemented by the UI team
 
 - Add preview types and service methods next to the current exam API client.
 - Add a **PDF preview** tab/panel beside the HTML question editor. Do not use

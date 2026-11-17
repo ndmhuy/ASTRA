@@ -21,9 +21,9 @@ npm.cmd ci
 npm.cmd run dev -- --host 127.0.0.1
 ```
 
-Mở URL Vite in ra. Kiểm tra và phê duyệt bản hiện tại trước khi tải đề LaTeX/đáp án JSON.
-Sửa câu hỏi sẽ hủy phê duyệt cũ. Backend có PDF preview và xuất PDF sau phê duyệt;
-frontend cần nối phần xem PDF theo [handoff](docs/integration/FRONTEND_PDF_PREVIEW_HANDOFF.md).
+Mở URL Vite in ra. Sau khi tạo đề, chọn **Xem trước PDF**, chờ biên dịch và kiểm tra
+bố cục/hình vẽ. Phê duyệt bản hiện tại rồi tải **PDF**, LaTeX hoặc đáp án JSON.
+Sửa câu hỏi sẽ hủy phê duyệt cũ; mở PDF của phiên bản mới trước khi duyệt lại.
 Cài compiler local trước khi dùng PDF:
 
 ```powershell

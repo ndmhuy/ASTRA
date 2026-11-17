@@ -2,6 +2,7 @@
 
 import asyncio
 import json
+import shutil
 from hashlib import sha256
 from pathlib import Path
 from uuid import uuid4
@@ -79,7 +80,9 @@ class PreviewService:
 
     async def _compile(self, directory, source, compiler):
         # Unique staging prevents canceled/timed-out work from publishing an old PDF.
-        attempt = directory / f"attempt-{uuid4().hex}"
+        # Job roots can be deeply nested on Windows. Keep TeX work paths short;
+        # only validated PDF/log/metadata are published into the revision cache.
+        attempt = self.settings.latex_cache_dir / "previews" / uuid4().hex
         try:
             async with self.capacity:
                 attempt.mkdir(parents=True)
@@ -98,14 +101,22 @@ class PreviewService:
                 if pages < 1:
                     raise ValueError("empty_pdf")
                 digest = sha256(pdf.read_bytes()).hexdigest()
-                pdf.replace(directory / "preview.pdf")
+                pending = directory / "preview.tmp"
+                shutil.copyfile(pdf, pending)
+                pending.replace(directory / "preview.pdf")
                 self._copy_log(attempt, directory)
                 self._save(directory, {"status": "ready", "pageCount": pages, "pdfHash": digest})
         except asyncio.CancelledError:
             self._save(directory, {"status": "failed", "error": "preview_interrupted"})
             raise
         except Exception as exc:
-            self._copy_log(attempt, directory)
+            if not self._copy_log(attempt, directory):
+                (directory / "compile.log").write_text(
+                    "Preview failed before compiler diagnostics were available: "
+                    f"{type(exc).__name__}; errno={getattr(exc, 'errno', None)}; "
+                    f"winerror={getattr(exc, 'winerror', None)}\n",
+                    encoding="utf-8",
+                )
             code = (
                 "latex_compile_timeout"
                 if str(exc) == "latex_compile_timeout"
@@ -118,6 +129,8 @@ class PreviewService:
         if log.is_file():
             # Compiler has no provider API keys; diagnostics never include private answer files.
             (directory / "compile.log").write_bytes(log.read_bytes())
+            return True
+        return False
 
     def file(self, job, *, log=False):
         state = self.status(job)

@@ -56,7 +56,7 @@ def fixture_app(root, **kwargs):
         role: Scripted(role, False) for role in ("composer", "illustrator", "solver", "reviewer")
     }
     app = create_app(
-        Settings.for_offline(),
+        Settings.for_offline().model_copy(update={"latex_cache_dir": Path(root) / "_tex-cache"}),
         pipeline_providers=providers,
         ui_output_root=root,
         rag_retriever=kwargs.get("retriever", retrieval),

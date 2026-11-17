@@ -65,8 +65,8 @@ def main():
         output = root / "preview.pdf"
         output.write_bytes(pdf.content)
         source = (root / job / "de_thi.tex").read_bytes()
-        compiled_source = next((root / job / "_preview").glob("*/attempt-*/de_thi.tex"))
-        assert compiled_source.read_bytes() == source
+        staged = app.state.ui_jobs.settings.latex_cache_dir / "previews"
+        assert any(path.read_bytes() == source for path in staged.glob("*/de_thi.tex"))
         assert b"tikzpicture" in source and b"PRIVATE_BANK_KEY" not in source
         assert not package["approved"]
         receipt = {"jobId": job, "pdf": str(output.resolve()), "preview": state}

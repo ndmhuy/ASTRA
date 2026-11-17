@@ -11,6 +11,7 @@ import subprocess
 import sys
 import time
 from pathlib import Path
+from urllib.parse import urljoin
 from uuid import uuid4
 
 import httpx
@@ -25,15 +26,41 @@ def create_smoke_app():
 
     if os.environ.get("ASTRA_UI_SMOKE_LIVE") == "1":
         return create_app(ui_output_root=Path(os.environ["ASTRA_UI_SMOKE_ROOT"]))
+    from exam_baseline.core.contracts import Completion
+    from scripts.ui_pdf_smoke import TIKZ
     from tests.thpt.test_generation import Scripted
+
+    providers = {
+        role: Scripted(role, False) for role in ("composer", "illustrator", "solver", "reviewer")
+    }
+    compose = providers["composer"].complete
+
+    async def compose_with_graph(prompt):
+        completion = await compose(prompt)
+        data = json.loads(completion.text)
+        if json.loads(prompt.user)["part"] == "P1":
+            data["questions"][2].update(
+                stem="Cho đồ thị như hình vẽ. Hàm số nào được biểu diễn?",
+                illustration_request="Draw y=x^2 with labeled x/y axes.",
+                choices={"A": "$y=x^2$", "B": "$y=x$", "C": "$y=-x$", "D": "$y=-x^2$"},
+                answer="A",
+            )
+        return Completion(text=json.dumps(data), model=completion.model)
+
+    async def illustrate_graph(prompt):
+        providers["illustrator"].calls.append(json.loads(prompt.user))
+        return Completion(
+            text=json.dumps({"drawings": [{"question_id": "P1-3", "latex": TIKZ}]}),
+            model="offline-contract-fixture",
+        )
+
+    providers["composer"].complete = compose_with_graph
+    providers["illustrator"].complete = illustrate_graph
 
     return create_app(
         Settings.for_offline(),
         ui_output_root=Path(os.environ["ASTRA_UI_SMOKE_ROOT"]),
-        pipeline_providers={
-            role: Scripted(role, False)
-            for role in ("composer", "illustrator", "solver", "reviewer")
-        },
+        pipeline_providers=providers,
     )
 
 
@@ -154,13 +181,46 @@ def main():
                         )
                     )
                     return
+                # Approval now requires opening the current ready PDF in the UI.
+                expect(approve).to_be_disabled()
+                page.get_by_role("button", name="Xem trước PDF", exact=True).click()
+                frame = page.locator('iframe[title="Student exam PDF preview"]')
+                page.wait_for_function(
+                    """() => document.querySelector('iframe[title="Student exam PDF preview"]')
+                        || document.querySelector('.pdf-preview-error')""",
+                    timeout=330000,
+                )
+                expect(frame).to_have_count(1)
+                expect(approve).to_be_enabled()
+                expect(page.locator(".pdf-preview-banner")).to_contain_text("human review required")
+                first_pdf_url = urljoin(page.url, frame.get_attribute("src"))
+                draft_pdf = httpx.get(first_pdf_url, timeout=30)
+                assert draft_pdf.status_code == 200
+                assert draft_pdf.headers["content-type"] == "application/pdf"
+                (output / "draft.pdf").write_bytes(draft_pdf.content)
+                # Chrome's native PDF plugin paints after the iframe/network load.
+                page.wait_for_timeout(1500)
+                page.screenshot(path=str(output / "pdf-before-review.png"), full_page=True)
                 approve.click()
+                with page.expect_download() as download:
+                    page.get_by_role("button", name="Xuất PDF", exact=True).click()
+                student_pdf = output / "student.pdf"
+                download.value.save_as(student_pdf)
+                assert student_pdf.read_bytes() == draft_pdf.content
+                from pypdf import PdfReader
+
+                pdf_reader = PdfReader(student_pdf)
+                assert len(pdf_reader.pages) >= 1
+                pdf_text = "\n".join(p.extract_text() for p in pdf_reader.pages)
+                assert "KỲ THI TỐT NGHIỆP" in pdf_text
+                assert "PRIVATE_BANK_KEY" not in pdf_text and "Cộng trực tiếp" not in pdf_text
                 with page.expect_download() as download:
                     page.get_by_role("button", name="Xuất LaTeX").click()
                 student_path = output / "student.tex"
                 download.value.save_as(student_path)
                 source = student_path.read_text("utf-8")
                 assert source.count(r"\textbf{Câu ") == 22
+                assert source.count(r"\begin{tikzpicture}") == 1
                 assert "Cộng trực tiếp" not in source
                 page.get_by_role("button", name="Xem đáp án", exact=True).click()
                 page.locator(".question-review summary").first.click()
@@ -171,6 +231,25 @@ def main():
                 expect(dialog).to_have_count(0)
                 approve.wait_for()
                 expect(page.get_by_role("button", name="Xuất LaTeX")).to_have_count(0)
+                assert httpx.get(first_pdf_url, timeout=10).status_code == 409
+                page.get_by_role("button", name="Xem trước PDF", exact=True).click()
+                page.wait_for_function(
+                    """() => document.querySelector('iframe[title="Student exam PDF preview"]')
+                        || document.querySelector('.pdf-preview-error')""",
+                    timeout=330000,
+                )
+                expect(frame).to_have_count(1)
+                expect(approve).to_be_enabled()
+                next_pdf_url = urljoin(page.url, frame.get_attribute("src"))
+                assert next_pdf_url != first_pdf_url
+                revised_pdf = httpx.get(next_pdf_url, timeout=30)
+                assert revised_pdf.status_code == 200
+                (output / "revised.pdf").write_bytes(revised_pdf.content)
+                page.wait_for_timeout(1500)
+                page.screenshot(path=str(output / "pdf-after-edit.png"), full_page=True)
+                assert "giáo viên đã sửa" in "\n".join(
+                    p.extract_text() for p in PdfReader(output / "revised.pdf").pages
+                )
                 page.reload()
                 page.get_by_role("button", name="Soạn từ mẫu").wait_for()
                 # Reload restores the workspace in the sidebar without another start call.
@@ -181,16 +260,18 @@ def main():
                 assert not errors, errors
                 page.screenshot(path=str(output / "restored.png"), full_page=True)
                 browser.close()
-            print(
-                json.dumps(
-                    {
-                        "status": "passed",
-                        "live_model": args.live,
-                        "rag": "real pinned release",
-                        "output": str(output),
-                    }
-                )
-            )
+            receipt = {
+                "status": "passed",
+                "live_model": args.live,
+                "rag": "real pinned release",
+                "pdf": "real local TeX",
+                "graph": "native TikZ",
+                "pages": len(pdf_reader.pages),
+                "old_preview_after_edit": 409,
+                "output": str(output),
+            }
+            (output / "receipt.json").write_text(json.dumps(receipt, indent=2), "utf-8")
+            print(json.dumps(receipt))
     finally:
         for process in reversed(processes):
             process.terminate()

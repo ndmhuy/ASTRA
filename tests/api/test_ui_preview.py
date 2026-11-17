@@ -1,6 +1,7 @@
 import json
 import time
 from hashlib import sha256
+from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
@@ -45,7 +46,9 @@ def compiler(monkeypatch):
     return calls
 
 
-def test_preview_exact_source_cache_restart_and_reviewed_pdf_export(tmp_path, compiler):
+def test_preview_exact_source_cache_restart_and_reviewed_pdf_export(
+    tmp_path, compiler, monkeypatch
+):
     app, providers = fixture_app(tmp_path)
     with TestClient(app) as client:
         job, package, binding = start(client)
@@ -53,10 +56,24 @@ def test_preview_exact_source_cache_restart_and_reviewed_pdf_export(tmp_path, co
         url = f"/api/exams/{job}/preview"
         assert package["preview"]["status"] == "not_requested"
         assert client.get(url + ".pdf", params=binding).status_code == 409
+        replace = Path.replace
+
+        def same_directory_replace(source, target):
+            # A configured cache may reside on another filesystem/drive from jobs.
+            if source.parent != Path(target).parent:
+                raise OSError(18, "Cross-device move is not supported")
+            return replace(source, target)
+
+        monkeypatch.setattr(Path, "replace", same_directory_replace)
         assert client.post(url, json=binding).status_code == 202
         state = ready(client, job, binding)
         assert state["status"] == "ready" and state["pageCount"] == 1 and state["draft"]
         assert compiler == [(tmp_path / job / "de_thi.tex").read_bytes()]
+        # Staging must not append another UUID directory under the long source-hash cache.
+        assert not list((tmp_path / job / "_preview").glob("*/attempt-*"))
+        staged_sources = list((tmp_path / "_tex-cache" / "previews").glob("*/de_thi.tex"))
+        assert len(staged_sources) == 1
+        assert staged_sources[0].read_bytes() == compiler[0]
         assert client.post(url, json=binding).status_code == 200
         assert len(compiler) == 1
         pdf = client.get(state["pdfUrl"])
@@ -110,7 +127,7 @@ def test_revision_hash_source_and_cached_pdf_tampering_are_rejected(tmp_path, co
         assert client.post(url, json=new_binding).status_code == 409
 
 
-@pytest.mark.parametrize("failure", ["missing", "timeout", "invalid_pdf"])
+@pytest.mark.parametrize("failure", ["missing", "timeout", "invalid_pdf", "preparation"])
 def test_compiler_failures_have_diagnostics_and_no_pdf(tmp_path, monkeypatch, failure):
     monkeypatch.setattr(
         "exam_baseline.ui.preview.find_compiler",
@@ -118,6 +135,8 @@ def test_compiler_failures_have_diagnostics_and_no_pdf(tmp_path, monkeypatch, fa
     )
 
     def fail(path, **kwargs):
+        if failure == "preparation":
+            raise OSError(206, "test preparation failure")
         (path.parent / "compile.log").write_text("compile diagnostic", "utf-8")
         if failure == "timeout":
             raise ValueError("latex_compile_timeout")
@@ -128,6 +147,10 @@ def test_compiler_failures_have_diagnostics_and_no_pdf(tmp_path, monkeypatch, fa
     with TestClient(app) as client:
         job, _, binding = start(client)
         url = f"/api/exams/{job}/preview"
+        if failure == "preparation":
+            directory = app.state.ui_jobs.previews.directory(app.state.ui_jobs.get(job))
+            directory.mkdir(parents=True)
+            (directory / "compile.log").write_text("stale successful compile", "utf-8")
         response = client.post(url, json=binding)
         if failure == "missing":
             assert response.status_code == 503
@@ -138,7 +161,13 @@ def test_compiler_failures_have_diagnostics_and_no_pdf(tmp_path, monkeypatch, fa
             "latex_compile_timeout" if failure == "timeout" else "latex_compile_failed"
         )
         assert client.get(state["pdfUrl"]).status_code == 409
-        assert client.get(state["logUrl"]).text == "compile diagnostic"
+        diagnostics = client.get(state["logUrl"])
+        assert diagnostics.status_code == 200
+        if failure == "preparation":
+            assert "OSError" in diagnostics.text
+            assert "stale successful compile" not in diagnostics.text
+        else:
+            assert diagnostics.text == "compile diagnostic"
 
 
 def test_legacy_visual_warnings_are_explicit_and_source_is_not_rewritten(tmp_path):

@@ -44,16 +44,22 @@ Use one backend worker. This local job runner is not a distributed queue.
 1. Choose **Soạn từ mẫu**, or open **Soạn chi tiết** and then choose its generation setup.
 2. The backend catalog supplies the authoritative 22-question, 90-minute format.
 3. Start generation. Progress reports real RAG/Composer/Illustrator/Solver/Reviewer stages.
-4. Inspect all three question types, source warnings and proposed answers.
-5. Click **Đã kiểm tra, phê duyệt bản này** to approve the exact revision/content hash.
-6. Download the student `.tex` or separate teacher answer `.json`.
-7. Editing or regenerating a question preserves its stable ID and invalidates approval.
+4. Inspect all three question types, source warnings and proposed answers in the HTML editor.
+5. Open **Xem trước PDF** and wait for the local compiler. Check the actual template and TikZ.
+6. Click **Đã kiểm tra, phê duyệt bản này** to approve the exact revision/content hash.
+7. Download the student `.pdf`/`.tex` or separate teacher answer `.json`.
+8. Editing or regenerating a question preserves its stable ID and invalidates approval.
+   Reopen the current PDF before approving again; old preview URLs return 409.
 
-The current browser exposes TikZ source and an HTML editor. Backend now provides a
-revision-bound PDF preview compiled from the saved `.tex`, plus PDF export after approval.
-The frontend must connect this API to a PDF viewer to reproduce the actual template and figures.
-Setup, exact endpoints and frontend acceptance checks are in the
-[PDF preview handoff](FRONTEND_PDF_PREVIEW_HANDOFF.md). DOCX is not implemented for this path.
+The PDF viewer was integrated by the UI team in `6ac1ba0`. It uses the revision-bound
+backend preview, including compilation states/errors, diagnostics and visual warnings.
+HTML remains the question editor; PDF is the canonical visual preview. Install a local
+compiler using `python scripts/install_latex_compiler.py` or configure an existing compiler.
+The first compile may download TeX support packages. On Windows, compilation stages
+under `EXAM_LATEX_CACHE_DIR/previews/` to avoid deeply nested job paths; final PDF/logs
+remain attached to the job's current revision/source hash. No model call occurs for preview.
+Exact endpoints are in the [PDF preview handoff](FRONTEND_PDF_PREVIEW_HANDOFF.md).
+DOCX is not implemented for this path.
 The older generic exporter and CLI flows are unchanged.
 
 ## Backend contract
@@ -70,6 +76,11 @@ The older generic exporter and CLI flows are unchanged.
 | `PUT /api/exams/{jobId}/questions/{id}` | Validated edit with expected exam revision |
 | `POST /api/exams/{jobId}/questions/{id}/regenerate` | Targeted Composer repair, illustration and independent Solver check |
 | `POST /api/exams/{jobId}/approve` | Human approval bound to revision and content hash |
+| `POST /api/exams/{jobId}/preview` | Start/reuse local compilation for the requested revision/hash |
+| `GET /api/exams/{jobId}/preview` | Poll compilation state; use returned PDF/log URLs |
+| `GET /api/exams/{jobId}/preview.pdf` | Inline student draft PDF, bound to revision/hash |
+| `GET /api/exams/{jobId}/preview.log` | Local compilation diagnostics |
+| `GET /api/exams/{jobId}/export?type=STUDENT_EXAM&format=pdf` | Reviewed student PDF; preview must be ready |
 | `GET /api/exams/{jobId}/export?type=STUDENT_EXAM&format=tex` | Reviewed student LaTeX |
 | `GET /api/exams/{jobId}/export?type=TEACHER_KEY&format=json` | Reviewed teacher answers |
 
@@ -118,7 +129,10 @@ For the browser check, install `requirements-browser.txt` and Chrome, then run f
 ```
 
 This uses real pinned RAG and native agents with **explicit replay model responses**.
-It checks teacher approval, student export, editing and local workspace restoration.
+It checks real local PDF compilation with native TikZ, the UI approval gate, student
+PDF/LaTeX export, editing, stale-preview rejection and local workspace restoration.
+Install a compiler before this check. Only model responses are replayed; the pinned RAG,
+HTTP servers, Chrome, native renderer and TeX compiler run for real.
 It does not measure model accuracy. Add `--live` only to use the configured external model.
 Live mode sends retrieved context to that provider and stops at pending human review;
 it does not automate approval or export of the generated exam.
