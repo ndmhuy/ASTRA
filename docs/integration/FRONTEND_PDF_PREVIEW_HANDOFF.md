@@ -1,6 +1,6 @@
 # Frontend handoff: exact LaTeX PDF preview
 
-For the frontend teammate. Backend branch: `codex/backend-pdf-preview`.
+For the frontend teammate. Backend branch: `merge-mas-and-uiux`.
 This branch includes the previous `main` + `uiux2` integration and the backend fixes below.
 Frontend components have **not** been changed by this fix.
 

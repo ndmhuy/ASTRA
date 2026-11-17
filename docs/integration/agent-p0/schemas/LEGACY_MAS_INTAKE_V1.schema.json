@@ -1,0 +1,448 @@
+{
+  "$defs": {
+    "ChatbotIntent": {
+      "additionalProperties": false,
+      "description": "The chatbot must resolve ambiguity before submitting this contract.",
+      "properties": {
+        "intent": {
+          "const": "generate_exam",
+          "title": "Intent",
+          "type": "string"
+        },
+        "grade": {
+          "maximum": 12,
+          "minimum": 1,
+          "title": "Grade",
+          "type": "integer"
+        },
+        "curriculum": {
+          "minLength": 1,
+          "title": "Curriculum",
+          "type": "string"
+        },
+        "textbook": {
+          "minLength": 1,
+          "title": "Textbook",
+          "type": "string"
+        },
+        "textbook_year": {
+          "maximum": 2100,
+          "minimum": 2000,
+          "title": "Textbook Year",
+          "type": "integer"
+        },
+        "language": {
+          "default": "vi",
+          "enum": [
+            "vi",
+            "en"
+          ],
+          "title": "Language",
+          "type": "string"
+        },
+        "matrix": {
+          "$ref": "#/$defs/ExamMatrix"
+        },
+        "exam_format": {
+          "enum": [
+            "practice",
+            "quiz",
+            "midterm",
+            "final"
+          ],
+          "title": "Exam Format",
+          "type": "string"
+        },
+        "answer_format": {
+          "enum": [
+            "answer_only",
+            "worked_solutions"
+          ],
+          "title": "Answer Format",
+          "type": "string"
+        },
+        "audience": {
+          "default": "teacher",
+          "enum": [
+            "student",
+            "teacher"
+          ],
+          "title": "Audience",
+          "type": "string"
+        },
+        "accommodations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Accommodations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "intent",
+        "grade",
+        "curriculum",
+        "textbook",
+        "textbook_year",
+        "matrix",
+        "exam_format",
+        "answer_format"
+      ],
+      "title": "ChatbotIntent",
+      "type": "object"
+    },
+    "Difficulty": {
+      "enum": [
+        "easy",
+        "medium",
+        "hard"
+      ],
+      "title": "Difficulty",
+      "type": "string"
+    },
+    "ExamMatrix": {
+      "additionalProperties": false,
+      "properties": {
+        "subject": {
+          "maxLength": 30000,
+          "minLength": 1,
+          "title": "Subject",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 30000,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "topics": {
+          "items": {
+            "$ref": "#/$defs/Topic"
+          },
+          "maxItems": 200,
+          "minItems": 1,
+          "title": "Topics",
+          "type": "array"
+        },
+        "question_count": {
+          "exclusiveMinimum": 0,
+          "maximum": 500,
+          "title": "Question Count",
+          "type": "integer"
+        },
+        "question_type_distribution": {
+          "additionalProperties": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "propertyNames": {
+            "$ref": "#/$defs/QuestionType"
+          },
+          "title": "Question Type Distribution",
+          "type": "object"
+        },
+        "difficulty_distribution": {
+          "additionalProperties": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "propertyNames": {
+            "$ref": "#/$defs/Difficulty"
+          },
+          "title": "Difficulty Distribution",
+          "type": "object"
+        },
+        "total_points": {
+          "exclusiveMinimum": 0,
+          "title": "Total Points",
+          "type": "number"
+        },
+        "points_by_type": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "minimum": 0,
+                "type": "number"
+              },
+              "propertyNames": {
+                "$ref": "#/$defs/QuestionType"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Points By Type"
+        },
+        "duration_minutes": {
+          "exclusiveMinimum": 0,
+          "maximum": 1440,
+          "title": "Duration Minutes",
+          "type": "integer"
+        },
+        "additional_constraints": {
+          "items": {
+            "maxLength": 30000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Additional Constraints",
+          "type": "array"
+        }
+      },
+      "required": [
+        "subject",
+        "title",
+        "topics",
+        "question_count",
+        "question_type_distribution",
+        "difficulty_distribution",
+        "total_points",
+        "duration_minutes"
+      ],
+      "title": "ExamMatrix",
+      "type": "object"
+    },
+    "LearningObjective": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "description": {
+          "maxLength": 30000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "description"
+      ],
+      "title": "LearningObjective",
+      "type": "object"
+    },
+    "QuestionType": {
+      "enum": [
+        "multiple_choice",
+        "short_answer",
+        "essay",
+        "true_false"
+      ],
+      "title": "QuestionType",
+      "type": "string"
+    },
+    "RagPassage": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "text": {
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "content_support",
+            "form_example"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "source_title": {
+          "minLength": 1,
+          "title": "Source Title",
+          "type": "string"
+        },
+        "locator": {
+          "minLength": 1,
+          "title": "Locator",
+          "type": "string"
+        },
+        "subject": {
+          "minLength": 1,
+          "title": "Subject",
+          "type": "string"
+        },
+        "grade": {
+          "maximum": 12,
+          "minimum": 1,
+          "title": "Grade",
+          "type": "integer"
+        },
+        "textbook": {
+          "minLength": 1,
+          "title": "Textbook",
+          "type": "string"
+        },
+        "textbook_year": {
+          "maximum": 2100,
+          "minimum": 2000,
+          "title": "Textbook Year",
+          "type": "integer"
+        },
+        "topic_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Topic Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "text",
+        "role",
+        "source_title",
+        "locator",
+        "subject",
+        "grade",
+        "textbook",
+        "textbook_year",
+        "topic_ids"
+      ],
+      "title": "RagPassage",
+      "type": "object"
+    },
+    "Topic": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 30000,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "subtopics": {
+          "items": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Subtopics",
+          "type": "array"
+        },
+        "learning_objectives": {
+          "items": {
+            "$ref": "#/$defs/LearningObjective"
+          },
+          "maxItems": 100,
+          "title": "Learning Objectives",
+          "type": "array"
+        },
+        "question_count": {
+          "minimum": 0,
+          "title": "Question Count",
+          "type": "integer"
+        },
+        "points": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Points"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "question_count"
+      ],
+      "title": "Topic",
+      "type": "object"
+    },
+    "UserInput": {
+      "additionalProperties": false,
+      "properties": {
+        "request_text": {
+          "maxLength": 10000,
+          "minLength": 1,
+          "title": "Request Text",
+          "type": "string"
+        },
+        "additional_constraints": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Additional Constraints",
+          "type": "array"
+        }
+      },
+      "required": [
+        "request_text"
+      ],
+      "title": "UserInput",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "mas-intake-v1",
+      "default": "mas-intake-v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "chatbot": {
+      "$ref": "#/$defs/ChatbotIntent"
+    },
+    "user": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/UserInput"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "rag": {
+      "items": {
+        "$ref": "#/$defs/RagPassage"
+      },
+      "minItems": 1,
+      "title": "Rag",
+      "type": "array"
+    },
+    "required_visual_question_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Required Visual Question Ids",
+      "type": "array"
+    }
+  },
+  "required": [
+    "chatbot",
+    "rag"
+  ],
+  "title": "Intake",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

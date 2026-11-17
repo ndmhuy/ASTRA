@@ -1,0 +1,127 @@
+{
+  "$defs": {
+    "Slot": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^P[123]-[1-9][0-9]?$",
+          "title": "Id",
+          "type": "string"
+        },
+        "part": {
+          "enum": [
+            "P1",
+            "P2",
+            "P3"
+          ],
+          "title": "Part",
+          "type": "string"
+        },
+        "topic": {
+          "maxLength": 30000,
+          "minLength": 1,
+          "title": "Topic",
+          "type": "string"
+        },
+        "objective": {
+          "maxLength": 30000,
+          "minLength": 1,
+          "title": "Objective",
+          "type": "string"
+        },
+        "level": {
+          "enum": [
+            "NB",
+            "TH",
+            "VD",
+            "VDC"
+          ],
+          "title": "Level",
+          "type": "string"
+        },
+        "statement_levels": {
+          "items": {
+            "enum": [
+              "NB",
+              "TH",
+              "VD",
+              "VDC"
+            ],
+            "type": "string"
+          },
+          "title": "Statement Levels",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "part",
+        "topic",
+        "objective",
+        "level"
+      ],
+      "title": "Slot",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "template_id": {
+      "const": "thpt_math_v2",
+      "default": "thpt_math_v2",
+      "title": "Template Id",
+      "type": "string"
+    },
+    "font_profile": {
+      "default": "unicode_times",
+      "enum": [
+        "unicode_times",
+        "original_t5"
+      ],
+      "title": "Font Profile",
+      "type": "string"
+    },
+    "composer_concurrency": {
+      "default": 3,
+      "maximum": 3,
+      "minimum": 1,
+      "title": "Composer Concurrency",
+      "type": "integer"
+    },
+    "slots": {
+      "items": {
+        "$ref": "#/$defs/Slot"
+      },
+      "maxItems": 22,
+      "minItems": 22,
+      "title": "Slots",
+      "type": "array"
+    },
+    "reference_material": {
+      "items": {
+        "maxLength": 30000,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 20,
+      "title": "Reference Material",
+      "type": "array"
+    },
+    "requirements": {
+      "items": {
+        "maxLength": 30000,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 30,
+      "title": "Requirements",
+      "type": "array"
+    }
+  },
+  "required": [
+    "slots"
+  ],
+  "title": "Request",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}
