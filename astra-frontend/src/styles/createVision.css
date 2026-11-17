@@ -150,7 +150,7 @@
   border: 1px solid rgba(101, 139, 105, .14);
   border-radius: 19px;
   background: var(--vision-surface);
-  box-shadow: 0 9px 28px rgba(48, 99, 42, .13), 0 2px 4px rgba(48, 99, 42, .09);
+  box-shadow: 0 9px 28px rgba(48, 99, 42, .17), 0 2px 4px rgba(48, 99, 42, .11);
   color: var(--vision-ink);
   text-align: left;
   transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
@@ -338,6 +338,12 @@
   .create-mode *, .create-mode *::before, .create-mode *::after { transition-duration: .01ms!important; animation-duration: .01ms!important; animation-iteration-count: 1!important; }
 }
 
+/* Soạn đề retains its original bottom-to-top green gradient. */
+.app-shell.create-mode:has(.tab-create),
+.app-shell.workspace-active.create-mode {
+  background: linear-gradient(0deg, rgb(220, 232, 209) 0%, rgb(227, 245, 220) 50%, rgb(237, 251, 230) 100%);
+}
+
 /* Shared navigation rail; content keeps its screen-specific layout. */
 .app-shell.create-mode {
   position: relative;
@@ -361,7 +367,7 @@
   padding: 22px 10px 18px;
   overflow: visible;
   background: #f8fbfa;
-  box-shadow: 3px 0 18px rgba(38, 70, 56, .05);
+  box-shadow: 5px 0 22px rgba(48, 91, 42, .15), 1px 0 4px rgba(48, 91, 42, .08);
   transition: padding 280ms cubic-bezier(.2,.75,.25,1), box-shadow 280ms ease;
 }
 .app-shell.create-mode .app-brand span,
@@ -394,21 +400,19 @@
 .app-shell.create-mode .side-rail-edge {
   position: absolute;
   z-index: 5;
-  top: 76px;
-  right: -12px;
-  display: grid;
-  place-items: center;
-  width: 24px;
-  height: 28px;
+  top: 0;
+  right: -8px;
+  bottom: 0;
+  width: 16px;
   padding: 0;
-  border: 1px solid var(--ui-edge);
-  border-radius: 8px;
-  background: #f8fbfa;
-  color: var(--ui-green-dark);
-  box-shadow: 0 2px 8px rgba(38, 70, 56, .06);
-  cursor: pointer;
+  border: 0;
+  border-radius: 0;
+  background: rgb(252, 254, 249);
+  box-shadow: none;
+  cursor: w-resize;
 }
-.app-shell.create-mode .side-rail-edge:hover { background: var(--ui-green-soft); }
+.app-shell.create-mode .rail-logo-toggle { cursor: w-resize; }
+.app-shell.create-mode.controls-collapsed :is(.rail-logo-toggle, .side-rail-edge) { cursor: e-resize; }
 .app-shell.create-mode .side-rail-edge::after { display: none; }
 .app-shell.create-mode.controls-collapsed .app-header { align-items: center; padding-inline: 10px 8px; }
 .app-shell.create-mode.controls-collapsed .app-brand { justify-content: flex-start; gap: 0; padding-inline: 0; }
@@ -441,7 +445,7 @@
   flex: 1 1 0;
   min-width: 0;
   padding: 11px;
-  background: #edf4f1;
+  background: rgb(212, 247, 219);
   border-color: rgba(71, 107, 74, .13);
   box-shadow: 0 9px 26px rgba(47, 100, 43, .16), 0 2px 5px rgba(47, 100, 43, .1);
 }
@@ -452,7 +456,7 @@
   min-width: 300px;
   border: 0;
   border-radius: 0;
-  background: transparent;
+  background: rgb(252, 254, 249);
   box-shadow: none;
   overflow: hidden;
 }
@@ -460,11 +464,11 @@
   min-height: 64px;
   padding: 12px 16px 8px;
   border: 0;
-  background: transparent;
+  background: rgb(252, 254, 249);
 }
 .workspace-active.create-mode .studio-kicker { font-size: 9px; }
 .workspace-active.create-mode .studio-chat-heading h2 { margin-top: 3px; font-size: 18px; }
-.workspace-active.create-mode .session-context { padding: 2px 16px 8px; background: transparent; }
+.workspace-active.create-mode .session-context { padding: 2px 16px 8px; background: rgb(252, 254, 249); }
 .workspace-active.create-mode .session-context strong { font-size: 11px; }
 .workspace-active.create-mode .session-create-action { padding: 4px 16px 10px; border-color: rgba(61, 91, 62, .14); }
 .workspace-active.create-mode .chat-empty { text-align: left; padding: 18px 16px; }
@@ -482,7 +486,7 @@
   margin: 0;
   border: 0;
   border-radius: 0;
-  background: transparent;
+  background: rgb(252, 254, 249);
   color: #304535;
   font-size: 13px;
   line-height: 1.62;
@@ -507,7 +511,7 @@
   padding: 3px 6px;
   border: 1px solid transparent;
   border-radius: 7px;
-  background: transparent;
+  background: rgb(252, 254, 249);
   color: #5e745e;
   font: 450 10px/1 var(--font-ui);
 }
@@ -557,8 +561,8 @@
   scrollbar-color: rgba(75, 111, 68, .32) transparent;
   scrollbar-width: thin;
 }
-.workspace-active.create-mode :is(.paper-scroll, .exam-paper, .chat-history, .composer-box textarea)::-webkit-scrollbar { width: 8px; height: 8px; background: transparent; }
-.workspace-active.create-mode :is(.paper-scroll, .exam-paper, .chat-history, .composer-box textarea)::-webkit-scrollbar-track { background: transparent; }
+.workspace-active.create-mode :is(.paper-scroll, .exam-paper, .chat-history, .composer-box textarea)::-webkit-scrollbar { width: 8px; height: 8px; background: rgb(252, 254, 249); }
+.workspace-active.create-mode :is(.paper-scroll, .exam-paper, .chat-history, .composer-box textarea)::-webkit-scrollbar-track { background: rgb(252, 254, 249); }
 .workspace-active.create-mode :is(.paper-scroll, .exam-paper, .chat-history, .composer-box textarea)::-webkit-scrollbar-thumb {
   border: 2px solid transparent;
   border-radius: 8px;
@@ -605,7 +609,7 @@
 .workspace-active.create-mode .composer-box button[aria-label='Gửi yêu cầu'] { width: 32px!important; height: 32px!important; border-radius: 10px!important; }
 
 /* Shared soft glow and a denser exam layout with more room for questions. */
-.workspace-active.create-mode { --workspace-shared-shadow: 0 4px 20px rgba(38, 70, 56, .08); }
+.workspace-active.create-mode { --workspace-shared-shadow: 0 6px 24px rgba(47, 89, 40, .18), 0 2px 6px rgba(47, 89, 40, .09); }
 .workspace-active.create-mode .astra-canvas-pane,
 .workspace-active.create-mode .composer-box { box-shadow: var(--workspace-shared-shadow)!important; }
 .workspace-active.create-mode .astra-canvas-pane { border: 0!important; outline: 0!important; container-type: inline-size; container-name: exam-panel; }
@@ -624,8 +628,8 @@
 .workspace-active.create-mode .exam-paper > .paper-empty { padding: 10px 0; }
 .workspace-active.create-mode .exam-paper.is-empty { min-height: 0; }
 .workspace-active.create-mode .exam-paper::-webkit-scrollbar { width: 5px; }
-.workspace-active.create-mode .exam-paper::-webkit-scrollbar-track { margin-block: 56px; background: transparent; }
-.workspace-active.create-mode .exam-paper::-webkit-scrollbar-track-piece { margin-block: 56px; background: transparent; }
+.workspace-active.create-mode .exam-paper::-webkit-scrollbar-track { margin-block: 56px; background: rgb(252, 254, 249); }
+.workspace-active.create-mode .exam-paper::-webkit-scrollbar-track-piece { margin-block: 56px; background: rgb(252, 254, 249); }
 .workspace-active.create-mode .composer-box textarea::-webkit-scrollbar-button,
 .workspace-active.create-mode .composer-box textarea::-webkit-scrollbar-button:vertical:decrement,
 .workspace-active.create-mode .composer-box textarea::-webkit-scrollbar-button:vertical:increment {
@@ -656,7 +660,7 @@
   flex: 0 0 auto;
   padding: 0 6px 10px;
   border: 0;
-  background: transparent;
+  background: rgb(252, 254, 249);
 }
 .workspace-active.create-mode .canvas-header {
   display: flex;
@@ -668,7 +672,7 @@
   min-height: 0;
   padding: 0;
   border: 0;
-  background: transparent;
+  background: rgb(252, 254, 249);
 }
 .workspace-active.create-mode .canvas-heading-copy { flex: 1 1 140px; min-width: 0; }
 .workspace-active.create-mode .canvas-actions { display: flex; flex: 0 1 auto; flex-wrap: wrap; gap: 6px; }
@@ -681,7 +685,7 @@
   gap: 6px;
   border: 1px solid var(--ui-edge);
   border-radius: 8px;
-  background: transparent;
+  background: rgb(252, 254, 249);
   color: var(--ui-green-dark);
   font: 600 12px/1.4 var(--font-ui);
   white-space: nowrap;
@@ -699,7 +703,7 @@
   padding: 5px 9px;
   border: 0;
   border-radius: 6px;
-  background: transparent;
+  background: rgb(252, 254, 249);
   color: var(--ui-muted);
   font: 500 12px/1.4 var(--font-ui);
   white-space: nowrap;
