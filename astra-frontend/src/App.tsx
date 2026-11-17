@@ -65,6 +65,18 @@ export const App: React.FC = () => {
     const animation = target.animate([{ transform: `translate(${from.left - to.left}px, ${from.top - to.top}px)`, width: `${from.width}px` }, { transform: 'translate(0, 0)', width: `${to.width}px` }], { duration: 360, easing: 'cubic-bezier(.2,.75,.25,1)' });
     return () => animation.cancel();
   }, [screen, activeId]);
+  useLayoutEffect(() => {
+    if (showWelcome || revealingWorkspace || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const view = document.querySelector<HTMLElement>(screen === 'workspace' ? '.astra-workspace-stage' : '.integrated-start');
+    if (!view) return;
+    const animation = view.animate([
+      { opacity: 0, transform: 'translateY(8px)' },
+      { opacity: 1, transform: 'translateY(0)' },
+    ], { duration: 220, easing: 'cubic-bezier(.2,.75,.25,1)' });
+    return () => animation.cancel();
+    // Session updates and sidebar resizing must not replay the navigation animation.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [screen, activeId, showWelcome]);
   const handleDetailedStart = () => {
     const id = configureId || store.create('custom');
     store.setDraft(id, landingDraft);

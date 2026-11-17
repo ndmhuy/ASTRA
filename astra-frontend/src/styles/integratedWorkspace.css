@@ -5,15 +5,14 @@
 .integrated-shell .sidebar-library-heading { font: 600 11px/1.4 var(--font-ui); color: var(--ui-muted); margin: 14px 7px 2px; }
 .integrated-shell .sidebar-library-empty { color: var(--ui-muted); font-size: 11px; line-height: 1.6; padding: 0 7px; }
 .integrated-shell .sidebar-exams { list-style: none; padding: 0; margin: 0; min-height: 0; overflow-y: auto; scrollbar-width: thin; }
-.integrated-shell .sidebar-exam-row { position: relative; }
-.integrated-shell .sidebar-exam { display: flex; width: 100%; min-width: 0; align-items: center; gap: 6px; padding: 10px 5px; border: 0; border-radius: 8px; background: transparent; color: var(--ui-ink); font: 500 12px/1.4 var(--font-ui); text-align: left; }
+.integrated-shell .sidebar-exam-row { position: relative; display: flex; align-items: flex-start; }
+.integrated-shell .sidebar-exam { display: flex; flex: 1; width: 100%; min-width: 0; align-items: flex-start; gap: 6px; padding: 10px 5px; border: 0; border-radius: 8px; background: transparent; color: var(--ui-ink); font: 500 12px/1.4 var(--font-ui); text-align: left; }
 .integrated-shell .sidebar-exam:hover, .integrated-shell .sidebar-exam[aria-current=page] { background: var(--ui-green-soft); }
-.integrated-shell .sidebar-exam-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.integrated-shell .sidebar-exam-document { flex: 0 0 14px; }
-.integrated-shell .sidebar-exam-status { display: flex; align-items: center; justify-content: center; flex: 0 0 14px; height: 14px; color: var(--ui-green-dark); }
+.integrated-shell .sidebar-exam-title { flex: 1; min-width: 0; overflow: visible; white-space: normal; overflow-wrap: anywhere; }
+.integrated-shell .sidebar-exam-document { flex: 0 0 14px; margin-top: 1px; }
+.integrated-shell .sidebar-exam-status { display: flex; align-items: center; justify-content: center; flex: 0 0 14px; height: 14px; margin-top: 1px; color: var(--ui-green-dark); }
 .integrated-shell .sidebar-exam-status svg { width: 14px; height: 14px; }
-.integrated-shell .sidebar-exam-delete { display: grid; place-items: center; width: 24px; height: 24px; position: absolute; right: 21px; top: 6px; padding: 0; border: 0; border-radius: 5px; background: #f8fbfa; color: var(--ui-muted); opacity: 0; pointer-events: none; }
-.integrated-shell .sidebar-exam-row:hover .sidebar-exam-title, .integrated-shell .sidebar-exam-row:focus-within .sidebar-exam-title { padding-right: 20px; }
+.integrated-shell .sidebar-exam-delete { display: grid; place-items: center; flex: 0 0 20px; width: 20px; height: 24px; margin-top: 6px; padding: 0; border: 0; border-radius: 5px; background: #f8fbfa; color: var(--ui-muted); opacity: 0; pointer-events: none; }
 .integrated-shell .sidebar-exam-row:hover .sidebar-exam-delete, .integrated-shell .sidebar-exam-delete:focus-visible { opacity: 1; pointer-events: auto; }
 .integrated-shell .sidebar-delete-confirm { display: flex; flex-wrap: wrap; gap: 5px; padding: 6px; font-size: 11px; }
 .integrated-shell .sidebar-delete-confirm button { border: 1px solid var(--ui-edge); border-radius: 5px; background: #fcfef9; color: var(--ui-ink); padding: 3px 6px; font-size: 11px; }
@@ -55,7 +54,7 @@
   .integrated-shell .sidebar-exams > li { flex: 0 0 165px; }
   .integrated-shell .sidebar-new-exam { width: max-content; }
   .integrated-shell.controls-collapsed .sidebar-label { opacity: 1; max-width: 150px; padding-inline: initial; margin-inline: initial; }
-  .integrated-shell.controls-collapsed .sidebar-exam-title { display: inline; }
+  .integrated-shell.controls-collapsed .sidebar-exam-title { display: inline; max-width: none; white-space: normal; overflow: visible; }
   .integrated-shell .sidebar-library-empty { display: none; }
   .integrated-greeting-logo { width: 100px; height: 90px; }
 }
@@ -71,5 +70,6 @@
 
 @media (hover: none) {
   .integrated-shell .sidebar-exam-delete { opacity: 1; pointer-events: auto; }
-  .integrated-shell .sidebar-exam-title { padding-right: 20px; }
 }
+
+.integrated-shell:not(.controls-collapsed) .sidebar-exam-title { max-width: none; }
