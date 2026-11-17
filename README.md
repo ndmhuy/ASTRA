@@ -2,6 +2,29 @@
 
 Chạy các lệnh trong PowerShell tại thư mục dự án. Dùng CPython chuẩn 3.10 trở lên.
 
+## Frontend + RAG + MAS
+
+Luồng web hiện hỗ trợ Toán THPT 22 câu, 90 phút, với RAG được ghim phiên bản.
+Giữ nguyên `.env` đang dùng; không đưa API key vào frontend.
+
+```powershell
+git fetch --no-tags origin 8b8fb7b09182b3d9d1eee0b95818027f52ab004d
+.\.venv-win\Scripts\python.exe -m pip install -e ".[dev]" -c requirements-tested.txt
+.\.venv-win\Scripts\python.exe -m uvicorn exam_baseline.main:app --host 127.0.0.1 --port 8000
+```
+
+Terminal khác:
+
+```powershell
+cd astra-frontend
+npm.cmd ci
+npm.cmd run dev -- --host 127.0.0.1
+```
+
+Mở URL Vite in ra. Kiểm tra và phê duyệt bản hiện tại trước khi tải đề LaTeX/đáp án JSON.
+Sửa câu hỏi sẽ hủy phê duyệt cũ. Các định dạng khác, upload và PDF/DOCX chưa nối vào
+luồng web này. Xem [hướng dẫn và contract tích hợp](docs/integration/CONNECTED_THPT_UI.md).
+
 ## Đề Toán THPT — template gốc cố định
 
 Sau khi cấu hình `.env`, chạy:

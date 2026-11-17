@@ -5,14 +5,19 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.responses import JSONResponse
+from pydantic import ValidationError
 
 from exam_baseline import __version__
 from exam_baseline.api.routes_baseline import router as baseline_router
 from exam_baseline.api.routes_pipeline import router as pipeline_router
+from exam_baseline.api.routes_ui import router as ui_router
 from exam_baseline.baseline.bootstrap import service_scope
 from exam_baseline.baseline.service import GenerationService
 from exam_baseline.config import Settings
 from exam_baseline.core.contracts import LLMProvider
+from exam_baseline.ui.jobs import JobManager, UiError
+from exam_baseline.ui.storage import JobConflict
 
 
 def create_app(
@@ -22,18 +27,31 @@ def create_app(
     service: GenerationService | None = None,
     pipeline_providers: dict[str, LLMProvider] | None = None,
     pipeline_output_root: Path | None = None,
+    ui_output_root: Path | None = None,
+    ui_runner=None,
+    rag_retriever=None,
 ) -> FastAPI:
     settings = settings if settings is not None else Settings()
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
-        if service is not None:
-            app.state.service = service
-            yield
-        else:
-            async with service_scope(settings, provider) as current:
-                app.state.service = current
+        app.state.ui_jobs = JobManager(
+            settings,
+            root=ui_output_root,
+            providers=pipeline_providers,
+            retriever=rag_retriever,
+            runner=ui_runner,
+        )
+        try:
+            if service is not None:
+                app.state.service = service
                 yield
+            else:
+                async with service_scope(settings, provider) as current:
+                    app.state.service = current
+                    yield
+        finally:
+            await app.state.ui_jobs.close()
 
     app = FastAPI(
         title="ASTRA Exam Generation",
@@ -47,6 +65,35 @@ def create_app(
     app.state.pipeline_output_root = pipeline_output_root
     app.include_router(baseline_router)
     app.include_router(pipeline_router)
+    app.include_router(ui_router)
+
+    @app.exception_handler(UiError)
+    async def ui_error(request, exc):
+        return JSONResponse(status_code=exc.status, content={"error": exc.payload()})
+
+    @app.exception_handler(JobConflict)
+    async def job_conflict(request, exc):
+        return JSONResponse(
+            status_code=409,
+            content={"error": {"code": "idempotency_conflict", "message": str(exc)}},
+        )
+
+    @app.exception_handler(ValidationError)
+    async def contract_error(request, exc):
+        return JSONResponse(
+            status_code=422,
+            content={
+                "error": {
+                    "code": "invalid_contract",
+                    "message": "Invalid exam content",
+                    "fields": [
+                        {"location": list(e["loc"]), "type": e["type"]}
+                        for e in exc.errors(include_input=False, include_url=False)
+                    ],
+                }
+            },
+        )
+
     return app
 
 

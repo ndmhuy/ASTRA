@@ -126,7 +126,11 @@ When feedback is supplied, correct its issues while preserving all slot IDs and 
             slots=[s.model_dump() for s in request.slots if s.part == part],
             requirements=request.requirements,
             reference_exam=reference,
-            reference_material=request.reference_material,
+            reference_material=[
+                text for text in request.reference_material
+                if not text.startswith("[THPT_PART:")
+                or text.startswith(f"[THPT_PART:{part}]")
+            ],
             feedback=feedback,
         )
 

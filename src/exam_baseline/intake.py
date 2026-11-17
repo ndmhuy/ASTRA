@@ -114,6 +114,42 @@ def encode_pipeline(intake: Intake) -> PipelineRequest:
     return PipelineRequest.model_validate(encode_intake(intake).model_dump())
 
 
+def encode_thpt_retrieval(request, retrieval: dict):
+    """Bind the RAG team's rich handoff to THPT slots without changing source metadata.
+
+    THPT includes prerequisite material from grades 10/11, so the older generic
+    intake's same-grade restriction must not be bypassed by relabeling that material.
+    Preserve the original mas_intake_rag records in the job's private provenance.
+    """
+    if retrieval.get("status") != "success" or retrieval.get("gaps"):
+        raise ValueError("RAG reported missing evidence; generation cannot proceed")
+    expected = {slot.id for slot in request.slots}
+    contexts = retrieval.get("question_contexts", [])
+    entries = retrieval.get("mas_intake_rag", [])
+    context_ids = [entry.get("question_id") for entry in contexts]
+    entry_ids = [entry.get("question_id") for entry in entries]
+    if (
+        len(context_ids) != len(expected)
+        or set(context_ids) != expected
+        or len(entry_ids) != len(expected)
+        or set(entry_ids) != expected
+    ):
+        raise ValueError("RAG handoff must cover every THPT slot exactly once")
+    groups = {part: [] for part in ("P1", "P2", "P3")}
+    for entry in entries:
+        if entry.get("subject") != "Toán" or not entry.get("text", "").strip():
+            raise ValueError("RAG handoff must contain nonempty mathematics evidence")
+        groups[entry["question_id"].split("-")[0]].append(entry["text"])
+    # Three section-scoped contexts fit the existing max-20 reference contract.
+    return request.model_copy(
+        update={
+            "reference_material": [
+                f"[THPT_PART:{part}]\n" + "\n\n".join(group) for part, group in groups.items()
+            ]
+        }
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Validate chatbot/RAG intake and write MiniRequest JSON"

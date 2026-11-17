@@ -80,8 +80,9 @@ class Orchestrator:
             review=review.model_dump(), previous_questions=[q.model_dump() for q in questions]
         )
 
-    def __init__(self, providers: dict[str, LLMProvider]):
+    def __init__(self, providers: dict[str, LLMProvider], *, on_progress=None):
         self.providers = providers
+        self.on_progress = on_progress
 
     async def run(self, request: Request, output: Path, *, resume: bool = False) -> dict:
         started = perf_counter()
@@ -121,6 +122,8 @@ class Orchestrator:
         async def call(agent, data, revision):
             report["active_stage"] = agent.role
             report["active_part"] = data.get("part")
+            if self.on_progress:
+                self.on_progress(agent.role, data.get("part"), revision)
             fingerprint = sha256(
                 json.dumps(
                     {
