@@ -22,8 +22,16 @@ npm.cmd run dev -- --host 127.0.0.1
 ```
 
 Mở URL Vite in ra. Kiểm tra và phê duyệt bản hiện tại trước khi tải đề LaTeX/đáp án JSON.
-Sửa câu hỏi sẽ hủy phê duyệt cũ. Các định dạng khác, upload và PDF/DOCX chưa nối vào
-luồng web này. Xem [hướng dẫn và contract tích hợp](docs/integration/CONNECTED_THPT_UI.md).
+Sửa câu hỏi sẽ hủy phê duyệt cũ. Backend có PDF preview và xuất PDF sau phê duyệt;
+frontend cần nối phần xem PDF theo [handoff](docs/integration/FRONTEND_PDF_PREVIEW_HANDOFF.md).
+Cài compiler local trước khi dùng PDF:
+
+```powershell
+.\.venv-win\Scripts\python.exe scripts/install_latex_compiler.py
+```
+
+Các định dạng khác, upload và DOCX chưa nối vào luồng web này.
+Xem [hướng dẫn và contract tích hợp](docs/integration/CONNECTED_THPT_UI.md).
 
 ## Đề Toán THPT — template gốc cố định
 

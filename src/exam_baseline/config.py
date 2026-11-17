@@ -33,6 +33,9 @@ class Settings(BaseSettings):
     output_price_per_million: float | None = Field(default=None, ge=0, allow_inf_nan=False)
     evaluation_jsonl: Path | None = None
     ui_output_root: Path = Path("runs/ui")
+    latex_compiler: Path | None = None
+    latex_timeout_seconds: float = Field(default=300, gt=0, allow_inf_nan=False)
+    latex_cache_dir: Path = Path("runs/latex-cache")
     rag_corpus_ref: str = "8b8fb7b09182b3d9d1eee0b95818027f52ab004d"
     rag_pack_dir: Path | None = None
 

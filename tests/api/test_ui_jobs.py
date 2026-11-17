@@ -217,6 +217,11 @@ def test_targeted_regeneration_keeps_ids_invalidates_approval_and_has_no_second_
         ).json()["jobId"]
         assert wait(client, job)["status"] == "completed"
         package = client.get(f"/api/exams/{job}").json()
+        # Old stored jobs may contain a missing figure, rejected by the new validator.
+        # Regeneration must replace the bad target before validating the other questions.
+        raw = app.state.ui_jobs.get(job)
+        raw["rawQuestions"][0]["stem"] = "Dựa vào bảng biến thiên như sau."
+        app.state.ui_jobs.store.save(raw)
         result = client.post(
             f"/api/exams/{job}/questions/1/regenerate",
             json={"revision": package["revision"], "instruction": "Tạo lại câu này"},

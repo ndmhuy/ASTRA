@@ -49,9 +49,11 @@ Use one backend worker. This local job runner is not a distributed queue.
 6. Download the student `.tex` or separate teacher answer `.json`.
 7. Editing or regenerating a question preserves its stable ID and invalidates approval.
 
-Native TikZ source remains editable in the exam. The browser exposes its source rather than
-pretending to render TikZ. Compile `.tex` with XeLaTeX/LuaLaTeX to inspect the final figures.
-PDF/DOCX export from this locked-template path is not implemented; the UI does not offer it.
+The current browser exposes TikZ source and an HTML editor. Backend now provides a
+revision-bound PDF preview compiled from the saved `.tex`, plus PDF export after approval.
+The frontend must connect this API to a PDF viewer to reproduce the actual template and figures.
+Setup, exact endpoints and frontend acceptance checks are in the
+[PDF preview handoff](FRONTEND_PDF_PREVIEW_HANDOFF.md). DOCX is not implemented for this path.
 The older generic exporter and CLI flows are unchanged.
 
 ## Backend contract

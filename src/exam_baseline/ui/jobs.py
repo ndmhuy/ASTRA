@@ -17,7 +17,10 @@ from exam_baseline.thpt.content import choice_latex
 from exam_baseline.thpt.models import Illustrations, Question, Request, Slot
 from exam_baseline.thpt.orchestrator import Orchestrator
 from exam_baseline.thpt.rendering import render, student_view
+from exam_baseline.thpt.visuals import visual_issues
 from exam_baseline.ui.contracts import GenerateRequest
+from exam_baseline.ui.errors import UiError
+from exam_baseline.ui.preview import PreviewService
 from exam_baseline.ui.storage import JobStore
 from rag_workflow.matrix_retriever import default_toan_thpt_matrix, retrieve_exam_context
 
@@ -28,15 +31,6 @@ def now():
 
 def fingerprint(value):
     return sha256(json.dumps(value, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
-
-
-class UiError(ValueError):
-    def __init__(self, code, message, status=409, details=None):
-        super().__init__(message)
-        self.code, self.status, self.details = code, status, details
-
-    def payload(self):
-        return {"code": self.code, "message": str(self), "details": self.details}
 
 
 def resolve_request(payload: GenerateRequest) -> tuple[Request, dict]:
@@ -99,6 +93,7 @@ class JobManager:
         self.tasks = set()
         self.locks = {}
         self.capacity = asyncio.Semaphore(2)
+        self.previews = PreviewService(self.root, settings)
 
     def lock(self, job_id):
         return self.locks.setdefault(job_id, asyncio.Lock())
@@ -343,6 +338,13 @@ class JobManager:
             "contentHash": job["contentHash"],
             "approved": bool(job["approval"]),
             "approval": job["approval"],
+            "preview": self.previews.status(job),
+            "visualWarnings": [
+                {"questionId": raw["id"], "code": issue}
+                for raw in job["rawQuestions"]
+                for issue in visual_issues(raw["stem"], raw.get("illustration_request"))
+            ],
+            "hasDrawings": bool(drawings),
             "warnings": [
                 dict(warning, questionId=c["question_id"])
                 for c in retrieval["question_contexts"]
@@ -466,8 +468,10 @@ class JobManager:
                     if [d.question_id for d in new_drawings.drawings] != [repaired.id]:
                         raise UiError("invalid_repair", "Illustrator changed the question binding")
                     drawings.drawings.extend(new_drawings.drawings)
-                questions = [Question.model_validate(q) for q in job["rawQuestions"]]
-                questions[index] = repaired
+                questions = [
+                    repaired if position == index else Question.model_validate(q)
+                    for position, q in enumerate(job["rawQuestions"])
+                ]
                 solutions, _ = await SolverAgent().run(
                     providers["solver"],
                     {"questions": student_view(questions), "drawings": drawings.model_dump()},
@@ -488,7 +492,12 @@ class JobManager:
             return self.package(job_id)
 
     def _verify_source(self, job):
-        source = (self.root / job["jobId"] / "de_thi.tex").read_bytes()
+        try:
+            source = (self.root / job["jobId"] / "de_thi.tex").read_bytes()
+        except OSError:
+            raise UiError(
+                "artifact_changed", "The saved exam source is missing or unreadable"
+            ) from None
         if sha256(source).hexdigest() != job["sourceHash"]:
             raise UiError("artifact_changed", "Exam source changed outside the reviewed revision")
 
@@ -508,6 +517,8 @@ class JobManager:
             root = self.root / job_id
             if kind == "STUDENT_EXAM" and file_format == "tex":
                 return root / "de_thi.tex", "application/x-tex"
+            if kind == "STUDENT_EXAM" and file_format == "pdf":
+                return self.previews.file(job), "application/pdf"
             if kind == "TEACHER_KEY" and file_format == "json":
                 path = root / "reviewed_answers.json"
                 path.write_text(
@@ -523,12 +534,22 @@ class JobManager:
                     "utf-8",
                 )
                 return path, "application/json"
-            raise UiError(
-                "unsupported_export", "This engine exports student LaTeX and teacher JSON", 422
-            )
+            raise UiError("unsupported_export", "Use student tex/pdf or teacher json", 422)
+
+    async def preview(self, job_id, revision, content_hash, *, start=False, file=False, log=False):
+        async with self.lock(job_id):
+            job = self._completed(job_id)
+            self._check_revision(job, revision)
+            if job["contentHash"] != content_hash:
+                raise UiError("stale_hash", "Preview does not match the current exam")
+            self._verify_source(job)
+            if file or log:
+                return self.previews.file(job, log=log)
+            return self.previews.request(job) if start else self.previews.status(job)
 
     async def close(self):
         tasks = list(self.tasks)
         for task in tasks:
             task.cancel()
         await asyncio.gather(*tasks, return_exceptions=True)
+        await self.previews.close()

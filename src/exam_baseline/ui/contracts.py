@@ -36,9 +36,12 @@ class GenerateRequest(Model):
         return self
 
 
-class ApprovalRequest(Model):
+class PreviewRequest(Model):
     revision: int = Field(ge=1)
     contentHash: str = Field(pattern=r"^[a-f0-9]{64}$")
+
+
+class ApprovalRequest(PreviewRequest):
     reviewer: str = Field(min_length=1, max_length=120)
 
 

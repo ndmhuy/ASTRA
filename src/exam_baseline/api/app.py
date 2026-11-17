@@ -16,7 +16,8 @@ from exam_baseline.baseline.bootstrap import service_scope
 from exam_baseline.baseline.service import GenerationService
 from exam_baseline.config import Settings
 from exam_baseline.core.contracts import LLMProvider
-from exam_baseline.ui.jobs import JobManager, UiError
+from exam_baseline.ui.errors import UiError
+from exam_baseline.ui.jobs import JobManager
 from exam_baseline.ui.storage import JobConflict
 
 

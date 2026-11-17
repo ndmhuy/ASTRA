@@ -107,6 +107,9 @@ All questions need detailed private solutions.
 Student stems/options must not reveal answers. Keep answers/solutions in private fields.
 For diagrams, give an explicit mathematical illustration_request with coordinates,
 equations and relationships; do not generate TikZ yourself. Avoid ambiguous diagrams.
+Every reference to a figure, graph or variation/data table MUST have a nonempty
+illustration_request containing ALL its mathematical data. Never put pipe-delimited
+tables in stems. Ask Illustrator for native TikZ tables with nodes/arrows instead.
 Reference style and complexity guide calibration, not copying or shuffling reference answers.
 When feedback is supplied, correct its issues while preserving all slot IDs and objectives.
 """
