@@ -1,0 +1,75 @@
+/* Entry flow and sidebar only: the established exam studio remains unchanged. */
+.integrated-shell .sidebar-library { display: flex; flex: 1; min-height: 0; min-width: 0; flex-direction: column; gap: 8px; overflow: hidden; }
+.integrated-shell .sidebar-new-exam { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 40px; padding: 9px 7px; border: 1px solid var(--ui-edge); border-radius: 9px; background: var(--ui-green-soft); color: var(--ui-green-dark); font: 600 12px/1.4 var(--font-ui); text-align: left; white-space: nowrap; }
+.integrated-shell .sidebar-new-exam svg { flex-shrink: 0; }
+.integrated-shell .sidebar-library-heading { font: 600 11px/1.4 var(--font-ui); color: var(--ui-muted); margin: 14px 7px 2px; }
+.integrated-shell .sidebar-library-empty { color: var(--ui-muted); font-size: 11px; line-height: 1.6; padding: 0 7px; }
+.integrated-shell .sidebar-exams { list-style: none; padding: 0; margin: 0; min-height: 0; overflow-y: auto; scrollbar-width: thin; }
+.integrated-shell .sidebar-exam-row { position: relative; }
+.integrated-shell .sidebar-exam { display: flex; width: 100%; min-width: 0; align-items: center; gap: 6px; padding: 10px 5px; border: 0; border-radius: 8px; background: transparent; color: var(--ui-ink); font: 500 12px/1.4 var(--font-ui); text-align: left; }
+.integrated-shell .sidebar-exam:hover, .integrated-shell .sidebar-exam[aria-current=page] { background: var(--ui-green-soft); }
+.integrated-shell .sidebar-exam-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.integrated-shell .sidebar-exam-document { flex: 0 0 14px; }
+.integrated-shell .sidebar-exam-status { display: flex; align-items: center; justify-content: center; flex: 0 0 14px; height: 14px; color: var(--ui-green-dark); }
+.integrated-shell .sidebar-exam-status svg { width: 14px; height: 14px; }
+.integrated-shell .sidebar-exam-delete { display: grid; place-items: center; width: 24px; height: 24px; position: absolute; right: 21px; top: 6px; padding: 0; border: 0; border-radius: 5px; background: #f8fbfa; color: var(--ui-muted); opacity: 0; pointer-events: none; }
+.integrated-shell .sidebar-exam-row:hover .sidebar-exam-title, .integrated-shell .sidebar-exam-row:focus-within .sidebar-exam-title { padding-right: 20px; }
+.integrated-shell .sidebar-exam-row:hover .sidebar-exam-delete, .integrated-shell .sidebar-exam-delete:focus-visible { opacity: 1; pointer-events: auto; }
+.integrated-shell .sidebar-delete-confirm { display: flex; flex-wrap: wrap; gap: 5px; padding: 6px; font-size: 11px; }
+.integrated-shell .sidebar-delete-confirm button { border: 1px solid var(--ui-edge); border-radius: 5px; background: #fcfef9; color: var(--ui-ink); padding: 3px 6px; font-size: 11px; }
+.integrated-shell .sidebar-label { opacity: 1; max-width: 150px; transition: max-width 220ms ease, opacity 150ms ease; }
+.integrated-shell.controls-collapsed .sidebar-label { max-width: 0; opacity: 0; overflow: hidden; white-space: nowrap; margin-inline: 0; padding-inline: 0; }
+.integrated-shell.controls-collapsed .sidebar-new-exam { gap: 0; }
+.integrated-shell.controls-collapsed .sidebar-exam-title { display: none; }
+.integrated-shell.controls-collapsed .sidebar-exam { gap: 1px; padding-inline: 1px; }
+.integrated-shell.controls-collapsed .sidebar-exam-delete { display: none; }
+.exam-status-spinner { animation: exam-status-spin 1s linear infinite; }
+.exam-status-error { color: #a4433b; }
+.exam-status-done { animation: exam-status-complete 1.6s ease both; }
+.integrated-shell .integrated-start { grid-column: 2; grid-row: 1; min-width: 0; min-height: 0; height: 100%; overflow-y: auto; display: grid; place-items: center; padding: 36px clamp(20px, 5vw, 72px); }
+.integrated-start-content { width: min(760px, 100%); text-align: center; }
+.integrated-greeting-logo { display: block; width: 125px; height: 112px; margin: 0 auto 12px; }
+.integrated-greeting h1 { color: var(--ui-ink); font: 600 clamp(34px, 4vw, 50px)/1.2 var(--font-display); margin: 0; letter-spacing: -.035em; }
+.integrated-greeting p { color: var(--ui-muted); font-size: 15px; margin: 12px 0 0; }
+.integrated-start-actions { display: flex; justify-content: center; gap: 12px; margin: 30px 0 20px; }
+.integrated-shell .integrated-start-actions button { display: inline-flex; gap: 8px; align-items: center; padding: 12px 20px; font-size: 14px; }
+.integrated-start-composer { width: 100%; }
+.integrated-shell .integrated-start .studio-composer { padding: 0!important; border: 0!important; background: transparent!important; }
+.integrated-start-help { color: var(--ui-muted); font-size: 12px; line-height: 1.6; margin: 14px auto 0; max-width: 520px; }
+.integrated-start :is(.integrated-start-actions, .integrated-start-composer, .integrated-start-help) { opacity: 0; transform: translateY(12px); }
+.integrated-start.is-ready :is(.integrated-start-actions, .integrated-start-composer, .integrated-start-help) { animation: workspace-float-in 320ms ease both; }
+.integrated-start.is-ready .integrated-start-composer { animation-delay: 70ms; }
+.integrated-start.is-ready .integrated-start-help { animation-delay: 100ms; }
+.integrated-start.is-exiting .integrated-greeting, .integrated-start.is-exiting .integrated-start-actions, .integrated-start.is-exiting .integrated-start-help { animation: workspace-float-out 180ms ease both; }
+.workspace-revealing .astra-workspace-split { animation: workspace-float-in 360ms ease both!important; }
+@keyframes workspace-float-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes workspace-float-out { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-10px); } }
+@keyframes exam-status-spin { to { transform: rotate(360deg); } }
+@keyframes exam-status-complete { 0% { opacity: 0; transform: scale(.6); } 20%, 75% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1); } }
+@media (max-width: 800px) {
+  .integrated-shell .integrated-start { grid-column: 1; grid-row: 2; padding: 24px 20px; }
+  .integrated-shell .app-header { align-content: flex-start; }
+  .integrated-shell .sidebar-library { flex: 1 1 100%; max-height: 150px; }
+  .integrated-shell .sidebar-library-heading { margin-top: 0; }
+  .integrated-shell .sidebar-exams { display: flex; gap: 6px; overflow-x: auto; }
+  .integrated-shell .sidebar-exams > li { flex: 0 0 165px; }
+  .integrated-shell .sidebar-new-exam { width: max-content; }
+  .integrated-shell.controls-collapsed .sidebar-label { opacity: 1; max-width: 150px; padding-inline: initial; margin-inline: initial; }
+  .integrated-shell.controls-collapsed .sidebar-exam-title { display: inline; }
+  .integrated-shell .sidebar-library-empty { display: none; }
+  .integrated-greeting-logo { width: 100px; height: 90px; }
+}
+@media (max-width: 480px) {
+  .integrated-start-actions { gap: 8px; }
+  .integrated-shell .integrated-start-actions button { padding: 10px 12px; font-size: 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .integrated-start *, .workspace-revealing .astra-workspace-split { animation: none!important; }
+  .integrated-start :is(.integrated-start-actions, .integrated-start-composer, .integrated-start-help) { opacity: 1; transform: none; }
+  .exam-status-done { animation: none; }
+}
+
+@media (hover: none) {
+  .integrated-shell .sidebar-exam-delete { opacity: 1; pointer-events: auto; }
+  .integrated-shell .sidebar-exam-title { padding-right: 20px; }
+}

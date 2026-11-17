@@ -1,8 +1,7 @@
-import { House, NotebookPen, Library } from 'lucide-react';
-import React, { useState, useEffect, useSyncExternalStore, useCallback } from 'react';
-import { AstraWelcome } from './components/AstraWelcome';
+import React, { useState, useEffect, useSyncExternalStore, useCallback, useLayoutEffect, useRef } from 'react';
+import { WorkspaceStart } from './components/WorkspaceStart';
+import { SidebarExamLibrary } from './components/SidebarExamLibrary';
 import { AstraLogo } from './components/AstraLogo';
-import { OnboardingFork } from './components/OnboardingFork';
 import { QuickPresetModal } from './components/QuickPresetModal';
 import { WorkspaceLayout } from './components/Workspace/WorkspaceLayout';
 import { ChatHistory } from './components/Workspace/ChatPane/ChatHistory';
@@ -16,15 +15,19 @@ import './styles/workspace.css';
 import './styles/classroom.css';
 import './styles/studio.css';
 import './styles/createVision.css';
+import './styles/integratedWorkspace.css';
 
 export const App: React.FC = () => {
-  const [showWelcome, setShowWelcome] = useState(true);
-  const finishWelcome = useCallback(() => setShowWelcome(false), []);
-  const [homeTab, setHomeTab] = useState<'welcome' | 'create' | 'library'>('welcome');
+  const [landingDraft, setLandingDraft] = useState('');
+  const [leavingStart, setLeavingStart] = useState(false);
+  const [revealingWorkspace, setRevealingWorkspace] = useState(false);
+  const transitionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const composerOrigin = useRef<DOMRect | null>(null);
+  const attachedFiles = useRef<File[]>([]);
   const [store] = useState(() => new ExamSessions(examService));
   const sessions = useSyncExternalStore(store.subscribe, store.getSnapshot);
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [screen, setScreen] = useState<'onboarding' | 'workspace'>('onboarding');
+  const [screen, setScreen] = useState<'start' | 'workspace'>('start');
   const [controlsCollapsed, setControlsCollapsed] = useState(false);
   const [showQuickModal, setShowQuickModal] = useState(false);
   const [configureId, setConfigureId] = useState<string | null>(null);
@@ -36,57 +39,67 @@ export const App: React.FC = () => {
   const isGenerating = active?.status === 'generating';
   const prevQuestionCount = active?.previousCount || 0;
   useEffect(() => () => store.dispose(), [store]);
-  const openSession = (id: string) => { setActiveId(id); setScreen('workspace'); };
-  const handleProMode = () => openSession(store.create('custom'));
+  useEffect(() => () => { if (transitionTimer.current) clearTimeout(transitionTimer.current); }, []);
+  const cancelTransition = () => { composerOrigin.current = null; if (transitionTimer.current) clearTimeout(transitionTimer.current); setLeavingStart(false); setRevealingWorkspace(false); };
+  const openSession = (id: string) => { cancelTransition(); setActiveId(id); setScreen('workspace'); };
+  const newExam = () => { cancelTransition(); setActiveId(null); setConfigureId(null); setLandingDraft(''); attachedFiles.current = []; setShowQuickModal(false); setScreen('start'); };
+  const revealSession = (id: string) => {
+    if (screen === 'workspace') { openSession(id); return; }
+    composerOrigin.current = document.querySelector('.integrated-start .composer-box')?.getBoundingClientRect() || null;
+    setLeavingStart(true);
+    transitionTimer.current = setTimeout(() => {
+      setActiveId(id); setScreen('workspace'); setLeavingStart(false); setRevealingWorkspace(true);
+      transitionTimer.current = setTimeout(() => setRevealingWorkspace(false), 420);
+    }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 180);
+  };
+  useLayoutEffect(() => {
+    const from = composerOrigin.current;
+    if (screen !== 'workspace' || !from) return;
+    composerOrigin.current = null;
+    const target = document.querySelector<HTMLElement>('.workspace-composer-slot .composer-box');
+    if (!target || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const to = target.getBoundingClientRect();
+    const animation = target.animate([{ transform: `translate(${from.left - to.left}px, ${from.top - to.top}px)`, width: `${from.width}px` }, { transform: 'translate(0, 0)', width: `${to.width}px` }], { duration: 360, easing: 'cubic-bezier(.2,.75,.25,1)' });
+    return () => animation.cancel();
+  }, [screen, activeId]);
+  const handleLandingSend = (content: string, options: { searchWeb: boolean; attachedFiles: File[] }) => {
+    const id = configureId || store.create('custom');
+    store.sendMessage(id, content);
+    attachedFiles.current = options.attachedFiles;
+    setLandingDraft(''); setConfigureId(id); setShowQuickModal(true);
+  };
   const handleQuickStart = (params: ExamRequestParams) => {
     const id = configureId || store.create('template');
-    const session = sessions.find(item => item.id === id);
+    const session = store.getSnapshot().find(item => item.id === id);
     const instructions = session?.messages.filter(message => message.role === 'user').map(message => message.content).join('\n');
     setShowQuickModal(false);
-    openSession(id);
-    void store.generate(id, { ...params, prompt: instructions ? `${params.prompt}\n${instructions}` : params.prompt });
+    revealSession(id);
+    void store.generate(id, { ...params, uploadedFiles: [...params.uploadedFiles, ...attachedFiles.current.map(file => file.name)], prompt: instructions ? `${params.prompt}\n${instructions}` : params.prompt });
   };
   const handleSendMessage = (content: string) => { if (activeId) store.sendMessage(activeId, content); };
   const handleExportWord = () => { if (active?.jobId) void examService.downloadExport(active.jobId, 'STUDENT_EXAM', 'docx'); };
   const handleExportAnswer = () => { if (active?.jobId) void examService.downloadExport(active.jobId, 'TEACHER_KEY', 'docx'); };
 
 
-  const isCreateScreen = screen === 'workspace' || homeTab === 'create';
   const sidebarLabel = controlsCollapsed ? 'Mở rộng thanh điều hướng' : 'Thu gọn thanh điều hướng';
   const handleLogoClick = () => {
-    if (isCreateScreen && window.matchMedia('(min-width: 801px)').matches) {
-      setControlsCollapsed(value => !value);
-    } else {
-      setScreen('onboarding');
-      setHomeTab('welcome');
-    }
+    if (window.matchMedia('(min-width: 801px)').matches) setControlsCollapsed(value => !value);
+    else newExam();
   };
 
-  if (showWelcome) return <AstraWelcome onComplete={finishWelcome} />;
-
   return (
-    <div className={`app-shell create-mode ${screen === 'workspace' ? 'workspace-active' : ''} ${controlsCollapsed ? 'controls-collapsed' : ''}`}>
+    <div className={`app-shell create-mode workspace-active integrated-shell ${revealingWorkspace ? 'workspace-revealing' : ''} ${controlsCollapsed ? 'controls-collapsed' : ''}`}>
       <header className="app-header">
-        <button className={`app-brand ${isCreateScreen ? 'rail-logo-toggle' : ''}`} aria-label={isCreateScreen ? `ASTRA — ${sidebarLabel}` : 'ASTRA — Màn hình chính'} aria-expanded={isCreateScreen ? !controlsCollapsed : undefined} title={isCreateScreen ? sidebarLabel : 'Màn hình chính'} onClick={handleLogoClick}>
+        <button className="app-brand rail-logo-toggle" aria-label={`ASTRA — ${sidebarLabel}`} aria-expanded={!controlsCollapsed} title={sidebarLabel} onClick={handleLogoClick}>
           <AstraLogo className="app-brand-logo" /><span>ASTRA</span>
         </button>
-        <nav className="main-tabs" aria-label="Điều hướng chính">{([{id:'welcome',label:'Chào thầy cô',icon:House}, {id:'create',label:'Soạn đề',icon:NotebookPen}, {id:'library',label:'Tủ đề',icon:Library}] as const).map(tab => <button key={tab.id} aria-label={tab.label} title={tab.label} aria-current={(screen === 'workspace' ? tab.id === 'create' : homeTab === tab.id) ? 'page' : undefined} onClick={() => { setHomeTab(tab.id); setScreen('onboarding'); }}><tab.icon size={21} strokeWidth={1.7} aria-hidden="true" /><span>{tab.label}</span></button>)}</nav>
+        <SidebarExamLibrary sessions={sessions} activeId={screen === 'workspace' ? activeId : null} onNew={newExam} onOpen={openSession} onDelete={id => { store.remove(id); if (activeId === id) newExam(); if (configureId === id) { setConfigureId(null); setShowQuickModal(false); } }} />
         <button className="side-rail-edge" type="button" onClick={() => setControlsCollapsed(value => !value)} aria-label={sidebarLabel} aria-expanded={!controlsCollapsed} title={sidebarLabel} />
         <div className="header-right"><span className="header-avatar" aria-label="Người dùng: Cùng thầy cô" title="Cùng thầy cô">GV</span><span className="header-session">Cùng thầy cô</span></div>
       </header>
 
       {/* Main content */}
-      {screen === 'onboarding' && (
-        <OnboardingFork
-          tab={homeTab}
-          onTabChange={setHomeTab}
-          onQuickMode={() => { setConfigureId(null); setShowQuickModal(true); }}
-          onProMode={handleProMode}
-          sessions={sessions}
-          onOpenSession={openSession}
-          onDeleteSession={id => { store.remove(id); if (activeId === id) setActiveId(null); if (configureId === id) setConfigureId(null); }}
-        />
-      )}
+      {screen === 'start' && <WorkspaceStart exiting={leavingStart} draft={landingDraft} onDraftChange={setLandingDraft} onTemplate={() => { setConfigureId(null); attachedFiles.current = []; setShowQuickModal(true); }} onSend={handleLandingSend} />}
 
       {screen === 'workspace' && active && (
         <WorkspaceLayout key={active.id}>
