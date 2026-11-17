@@ -1,4 +1,4 @@
-import { House, NotebookPen, Library } from 'lucide-react';
+import { House, NotebookPen, Library, ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useState, useEffect, useSyncExternalStore, useCallback } from 'react';
 import { AstraWelcome } from './components/AstraWelcome';
 import { AstraLogo } from './components/AstraLogo';
@@ -54,13 +54,13 @@ export const App: React.FC = () => {
   if (showWelcome) return <AstraWelcome onComplete={finishWelcome} />;
 
   return (
-    <div className={`app-shell ${screen === 'workspace' ? 'workspace-active create-mode' : homeTab === 'create' ? 'create-mode' : ''} ${screen === 'workspace' && controlsCollapsed ? 'controls-collapsed' : ''}`}>
+    <div className={`app-shell create-mode ${screen === 'workspace' ? 'workspace-active' : ''} ${controlsCollapsed ? 'controls-collapsed' : ''}`}>
       <header className="app-header">
         <button className="app-brand" aria-label="ASTRA · Màn hình chính" onClick={() => { setScreen('onboarding'); setHomeTab('welcome'); }}>
           <AstraLogo className="app-brand-logo" /><span>ASTRA</span>
         </button>
         <nav className="main-tabs" aria-label="Điều hướng chính">{([{id:'welcome',label:'Chào thầy cô',icon:House}, {id:'create',label:'Soạn đề',icon:NotebookPen}, {id:'library',label:'Tủ đề',icon:Library}] as const).map(tab => <button key={tab.id} aria-label={tab.label} title={tab.label} aria-current={(screen === 'workspace' ? tab.id === 'create' : homeTab === tab.id) ? 'page' : undefined} onClick={() => { setHomeTab(tab.id); setScreen('onboarding'); }}><tab.icon size={21} strokeWidth={1.7} aria-hidden="true" /><span>{tab.label}</span></button>)}</nav>
-        {screen === 'workspace' && <button className="side-rail-edge" type="button" onClick={() => setControlsCollapsed(value => !value)} aria-label={controlsCollapsed ? 'Mở rộng thanh điều hướng' : 'Thu gọn thanh điều hướng'} aria-expanded={!controlsCollapsed} title={controlsCollapsed ? 'Mở rộng thanh điều hướng' : 'Thu gọn thanh điều hướng'} />}
+        <button className="side-rail-edge" type="button" onClick={() => setControlsCollapsed(value => !value)} aria-label={controlsCollapsed ? 'Mở rộng thanh điều hướng' : 'Thu gọn thanh điều hướng'} aria-expanded={!controlsCollapsed} title={controlsCollapsed ? 'Mở rộng thanh điều hướng' : 'Thu gọn thanh điều hướng'}>{controlsCollapsed ? <ChevronRight size={14} aria-hidden="true" /> : <ChevronLeft size={14} aria-hidden="true" />}</button>
         <div className="header-right"><span className="header-avatar" aria-label="Người dùng: Cùng thầy cô" title="Cùng thầy cô">GV</span><span className="header-session">Cùng thầy cô</span></div>
       </header>
 
