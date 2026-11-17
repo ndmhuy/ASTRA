@@ -29,8 +29,16 @@
   unicode-range: U+0030-0039;
 }
 :root {
-  --font-ui: 'ASTRA Manrope', 'Segoe UI', sans-serif;
-  --font-heading: 'ASTRA Lora', Georgia, serif;
+  --font-ui: 'Google Sans', 'Segoe UI', sans-serif;
+  --font-display: 'Quicksand', 'Google Sans', sans-serif;
+  --font-heading: var(--font-ui);
+  --ui-ink: #29342e;
+  --ui-muted: #68756d;
+  --ui-green: #568866;
+  --ui-green-dark: #3f704e;
+  --ui-green-soft: #eaf4e7;
+  --ui-edge: rgba(91, 127, 97, .16);
+  --ui-surface: rgba(252, 253, 249, .94);
 }
 body { font-family: var(--font-ui); }
 /* Shared surfaces and controls */
@@ -360,7 +368,7 @@ body { background: #f7f8f6; color: #24352b; font-size: 16px; }
 .app-brand { color: #242323; }
 .app-brand-logo { width: 54px; height: 48px; display: block; flex-shrink: 0; }
 .app-brand > span {
-  font-family: 'ASTRA Smart Teacher', var(--font-ui);
+  font-family: var(--font-ui);
   font-weight: 400;
   letter-spacing: .025em;
 }

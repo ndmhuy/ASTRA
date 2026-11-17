@@ -29,7 +29,8 @@ export const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({ children }) =>
         onPointerMove={e => { if (e.currentTarget.hasPointerCapture(e.pointerId)) resize((container.current?.getBoundingClientRect().right || 0) - e.clientX); }}
         onPointerUp={e => e.currentTarget.releasePointerCapture(e.pointerId)}
         onKeyDown={e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); resize(visibleWidth + (e.key === 'ArrowLeft' ? -20 : 20)); } else if (e.key === 'Home' || e.key === 'End') { e.preventDefault(); resize(e.key === 'Home' ? 280 : maxWidth); } }} />
-      <div id="studio-chat" className="astra-chat-pane" role="region" aria-label="Trao đổi và yêu cầu soạn đề"><div className="workspace-chat-body">{children.left}</div><div className="workspace-composer-slot">{children.composer}</div></div>
+      <div id="studio-chat" className="astra-chat-pane" role="region" aria-label="Trao đổi và yêu cầu soạn đề"><div className="workspace-chat-body">{children.left}</div></div>
     </div>
+    <div className="workspace-composer-slot">{children.composer}</div>
   </div>;
 };

@@ -27,7 +27,7 @@ export const CanvasHeader: React.FC<CanvasHeaderProps> = ({ examMeta, isGenerati
     </div>
     {examMeta && !isGenerating && canExport && <div className="canvas-actions">
       <button className="button-secondary" onClick={onExportAnswer}><FileCheck2 size={15} aria-hidden="true" />Xuất đáp án</button>
-      <button className="button-primary" onClick={onExportWord}><Download size={15} aria-hidden="true" />Xuất Word</button>
+      <button className="button-primary" onClick={onExportWord}><Download size={15} aria-hidden="true" />Xuất đề thi</button>
     </div>}
   </header>
 );
