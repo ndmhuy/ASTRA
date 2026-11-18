@@ -33,3 +33,18 @@ def test_missing_usage_or_unpriced_model_is_not_reported_as_complete():
     assert not metrics["estimate_complete"]
     assert metrics["standard_price_estimate_usd"] == 0
     assert metrics["input_tokens"] == 10
+
+
+def test_haiku_report_uses_its_actual_price_source():
+    metrics = summarize_calls(
+        [
+            {
+                "role": "composer",
+                "model": "claude-haiku-4-5-20251001",
+                "usage": {"input_tokens": 1104, "output_tokens": 164},
+            }
+        ]
+    )
+    assert metrics["standard_price_estimate_usd"] == pytest.approx(0.001924)
+    assert metrics["estimate_complete"]
+    assert "claude.com" in metrics["pricing_source"]

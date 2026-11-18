@@ -98,6 +98,19 @@ EXAM_TIMEOUT_SECONDS=120
 
 Quyền truy cập và hạn mức phụ thuộc tài khoản. Khởi động lại server sau khi sửa `.env`.
 
+Với Claude Haiku, dùng endpoint `https://api.anthropic.com/v1`, model
+`claude-haiku-4-5-20251001`, `EXAM_TOKEN_LIMIT_FIELD=max_tokens` và
+`EXAM_SCHEMA_AS_TOOL=true`. Các agent vẫn kiểm toàn bộ schema bằng Python.
+Cấu hình đầy đủ có trong `.env.example`.
+
+`EXAM_SPEND_LIMIT_USD=5` bật trần **ước tính chi phí tích lũy trong ASTRA**, theo giá
+input/output đã cấu hình. Mỗi request giữ trước ngân sách cho prompt và max output,
+sau đó cập nhật theo usage; timeout/usage thiếu giữ khoản dự phòng. SQLite ở
+`EXAM_SPEND_LEDGER` lưu qua restart và các worker. Không xóa ledger/đổi budget ID để
+reset trong lúc chạy. Đây không phải hóa đơn hoặc giới hạn tài khoản Anthropic;
+Monthly spend limit cần đặt riêng trên Claude Console. Giá Haiku theo
+[bảng giá Anthropic](https://platform.claude.com/docs/en/about-claude/pricing).
+
 **Terminal 1:** chạy server và giữ terminal mở:
 
 ```powershell
