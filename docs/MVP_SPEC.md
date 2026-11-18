@@ -185,6 +185,30 @@ flowchart LR
 
 Known limit that follows from D5 and D10: the agents may share model biases, so independent solving lowers but does not remove errors.
 
+### 3.4 Separation of responsibility
+
+**Between the four parts of the product.**
+
+| Part | Responsibility | Meets the others through | In the repository |
+| :--- | :--- | :--- | :--- |
+| Chatbot | turn a vague request into a resolved intent (grade, subject, counts, distributions) | `chatbot.json` | not in the repository; `intake.py` only receives its output and refuses missing fields |
+| RAG (`rag_workflow/`) | return passages with source and locator, or a named gap | `rag.json`, an array of passages | implemented |
+| MAS (`src/exam_baseline/`) | generate, solve, review and export the exam | `mas-intake-v1` (user, chatbot, rag) | implemented |
+| UI | request form, matrix editor, review and approval | MAS API (`/v1`, `/v2`) and files | only a RAG workbench; no teacher UI (Could, Week 10) |
+
+RAG and MAS do not import each other (checked by searching imports in both directions). The only contract is the JSON `mas-intake-v1`; `rag_workflow/mas_adapter.py` turns retrieved passages into reference text for the Composer, in one direction, and passage text is treated as untrusted data, never as an instruction.
+
+**Inside the MAS.** Each agent has its own file, prompt and schema. The Illustrator and the Solver receive explicit data views (`pipeline/views.py`): the Solver never gets the key, the bank or the evidence. The Orchestrator is plain Python and holds no exam content. Two architecture tests keep `core/` free of runtime and transport imports, and keep benchmark gold out of agents and orchestration.
+
+**Known limits of the separation.**
+
+1. Two orchestration paths exist (`pipeline/orchestration/` and `thpt/orchestrator.py`), and V-ACT inherits from THPT; shared orchestration logic is not yet in one place.
+2. The Reviewer sees the Composer's key and the Solver's solution by design, so it is not independent of the Composer.
+3. Through the CLI all four roles use one model and endpoint; Python allows one provider per role, but this is not used yet.
+4. Pedagogical fit (Educator) is not a separate role; the Reviewer covers it.
+5. RAG reads its default data from a local git ref (`origin/staging/rag`), so it does not yet run from an independent data store.
+6. The chatbot, RAG and MAS contract is described in `intake.py` and `docs/MAS_INTAKE_AND_EXPORT.md`; no test runs all three together.
+
 ---
 
 ## 4. Testing
