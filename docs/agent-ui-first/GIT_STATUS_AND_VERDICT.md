@@ -13,8 +13,9 @@
 ## Commit inventory
 
 - `2c79e21` — `feat(web): add UI-first conversational agent`
+- `ac16724` — `docs(agent): record UI-first integration evidence`
 
-The implementation and tests are committed locally. Reporting files are being recorded separately. No commit has been pushed, no PR opened, and no merge/rebase/reset was performed.
+The implementation, tests, reports and audit log are committed locally. No commit has been pushed, no PR opened, and no merge/rebase/reset was performed.
 
 ## Diff scope
 
