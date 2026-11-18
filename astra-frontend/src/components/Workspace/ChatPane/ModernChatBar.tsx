@@ -6,16 +6,14 @@ interface ModernChatBarProps {
   disabled?: boolean;
   draft?: string;
   onDraftChange?: (value: string) => void;
+  busy?: boolean;
 }
 
-export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled = false, draft, onDraftChange }) => {
+export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled = false, draft, onDraftChange, busy = false }) => {
   const [localText, setLocalText] = useState('');
   const text = draft ?? localText;
   const setText = (value: string) => { setLocalText(value); onDraftChange?.(value); };
-  const [searchWeb, setSearchWeb] = useState(false);
-  const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const adjustHeight = useCallback(() => {
     const el = textareaRef.current;
@@ -41,20 +39,12 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
 
   const handleSend = () => {
     const trimmed = text.trim();
-    if (!trimmed || disabled) return;
-    onSend(trimmed, { searchWeb, attachedFiles });
+    if (!trimmed || disabled || busy) return;
+    onSend(trimmed, { searchWeb: false, attachedFiles: [] });
     setText('');
-    setAttachedFiles([]);
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
     }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setAttachedFiles((prev) => [...prev, ...Array.from(e.target.files!)]);
-    }
-    e.target.value = '';
   };
 
   return (
@@ -66,36 +56,6 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
         flexShrink: 0,
       }}
     >
-      {/* Attached files indicator */}
-      {attachedFiles.length > 0 && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
-          {attachedFiles.map((f, i) => (
-            <span
-              key={i}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 4,
-                fontSize: 12,
-                color: '#334155',
-                background: '#f1f5f9',
-                border: '1px solid #e2e8f0',
-                borderRadius: 4,
-                padding: '2px 8px',
-              }}
-            >
-              {f.name}
-              <button
-                onClick={() => setAttachedFiles((prev) => prev.filter((_, j) => j !== i))}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', padding: 0, lineHeight: 1 }}
-              >
-                ×
-              </button>
-            </span>
-          ))}
-        </div>
-      )}
-
       {/* Main input container */}
       <div className="composer-box">
         <textarea
@@ -104,7 +64,7 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
           value={text}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
-          disabled={disabled}
+            disabled={disabled || busy}
           placeholder="Mô tả yêu cầu cho đề Toán THPT 22 câu"
           rows={1}
           style={{
@@ -134,13 +94,13 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
         >
           {/* Attach */}
           <button
-            onClick={() => fileInputRef.current?.click()}
-            title="Đính kèm tài liệu"
-            aria-label="Đính kèm tài liệu"
+            disabled
+            title="Đính kèm chưa được hỗ trợ trong phiên bản này"
+            aria-label="Đính kèm chưa được hỗ trợ"
             style={{
               background: 'none',
               border: 'none',
-              cursor: 'pointer',
+              cursor: 'not-allowed',
               fontSize: 15,
               color: '#64748b',
               padding: '4px 6px',
@@ -150,29 +110,21 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
           >
             <Paperclip size={18} />
           </button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            multiple
-            style={{ display: 'none' }}
-            onChange={handleFileChange}
-          />
-
           {/* Search web toggle */}
           <button
-            onClick={() => setSearchWeb((v) => !v)}
-            title="Tìm trên mạng"
-            aria-pressed={searchWeb}
+            disabled
+            title="Tìm mạng chưa được hỗ trợ trong phiên bản này"
+            aria-pressed={false}
             style={{
-              background: searchWeb ? '#edf4ef' : 'none',
-              border: searchWeb ? '1px solid #059669' : '1px solid transparent',
-              cursor: 'pointer',
+              background: 'none',
+              border: '1px solid transparent',
+              cursor: 'not-allowed',
               fontSize: 13,
-              color: searchWeb ? '#24634b' : '#64748b',
+              color: '#94a3b8',
               padding: '3px 8px',
               borderRadius: 4,
               lineHeight: 1.5,
-              fontWeight: searchWeb ? 600 : 400,
+              fontWeight: 400,
               transition: 'all 150ms ease',
               display: 'flex',
               alignItems: 'center',
@@ -189,15 +141,15 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
           {/* Send button */}
           <button
             onClick={handleSend}
-            disabled={!text.trim() || disabled}
+            disabled={!text.trim() || disabled || busy}
             style={{
-              background: !text.trim() || disabled ? '#e2e8f0' : '#24634b',
-              color: !text.trim() || disabled ? '#94a3b8' : '#ffffff',
+              background: !text.trim() || disabled || busy ? '#e2e8f0' : '#24634b',
+              color: !text.trim() || disabled || busy ? '#94a3b8' : '#ffffff',
               border: 'none',
               borderRadius: 5,
               width: 44,
               height: 44,
-              cursor: !text.trim() || disabled ? 'not-allowed' : 'pointer',
+              cursor: !text.trim() || disabled || busy ? 'not-allowed' : 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -205,7 +157,7 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
               transition: 'background 150ms ease',
               flexShrink: 0,
             }}
-            title="Gửi"
+            title={busy ? 'ASTRA đang xử lý' : 'Gửi'}
             aria-label="Gửi yêu cầu"
           >
             <ArrowUp size={18} />

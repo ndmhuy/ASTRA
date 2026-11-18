@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Copy, GitBranch, Pencil, RotateCcw, Calculator, Atom, Languages, ArrowUpRight } from 'lucide-react';
+import { Copy, GitBranch, Pencil, RotateCcw, Settings2, CircleHelp, Activity, ArrowUpRight } from 'lucide-react';
 import { SchoolArt } from '../../SchoolArt';
 import type { ChatMessage } from '../../../types/exam';
 
@@ -21,7 +21,7 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({ messages, onSuggestion
 
   if (messages.length === 0) {
     return (
-      <div className="chat-empty"><SchoolArt kind="globe" /><h3>Mình bắt đầu từ đâu?</h3><p>Mô tả một chút về đề thi thầy cô muốn soạn, hoặc thử một gợi ý:</p><div className="prompt-suggestions">{[{text:'20 câu Toán lớp 12 về đạo hàm',icon:Calculator}, {text:'Đề Vật lý: dao động điều hòa',icon:Atom}, {text:'15 câu Tiếng Anh về câu điều kiện',icon:Languages}].map(({text,icon:Icon}) => <button key={text} onClick={() => onSuggestion?.(text)}><Icon size={17} aria-hidden="true" /><span>{text}</span><ArrowUpRight size={15} aria-hidden="true" /></button>)}</div></div>
+      <div className="chat-empty"><SchoolArt kind="globe" /><h3>Mình bắt đầu từ đâu?</h3><p>Dùng lệnh giao diện đã xác minh, hoặc thử một gợi ý:</p><div className="prompt-suggestions">{[{text:'Mở thiết lập đề Toán THPT',icon:Settings2}, {text:'ASTRA làm được gì?',icon:CircleHelp}, {text:'Xem trạng thái đề đang soạn',icon:Activity}].map(({text,icon:Icon}) => <button key={text} onClick={() => onSuggestion?.(text)}><Icon size={17} aria-hidden="true" /><span>{text}</span><ArrowUpRight size={15} aria-hidden="true" /></button>)}</div></div>
     );
   }
 

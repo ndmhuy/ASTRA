@@ -11,8 +11,14 @@ import { CanvasHeader } from './components/Workspace/LiveCanvas/CanvasHeader';
 import { ExamPaperView, type ExamCanvasViewMode } from './components/Workspace/LiveCanvas/ExamPaperView';
 import type { ExamRequestParams, QuestionItem } from './types/exam';
 import { QuestionEditor } from './components/QuestionEditor';
+import { AgentNotes } from './components/AgentNotes';
 import { examService } from './services/examService';
 import { ExamSessions } from './state/examSessions';
+import { AgentClient, AgentTransportError } from './agent/client';
+import { UI_CAPABILITY_MANIFEST } from './agent/capabilities';
+import { UiContextTracker, type UnversionedUiContext } from './agent/context';
+import { UiActionExecutor, executeActionPlan } from './agent/executor';
+import type { UiActionProposal, UiContextSnapshot } from './agent/contracts';
 import './styles/workspace.css';
 import './styles/classroom.css';
 import './styles/studio.css';
@@ -39,6 +45,11 @@ export const App: React.FC = () => {
   const [configureId, setConfigureId] = useState<string | null>(null);
   const [editor, setEditor] = useState<{ sessionId: string; jobId: string; question: QuestionItem } | null>(null);
   const [approving, setApproving] = useState(false);
+  const [agentBusy, setAgentBusy] = useState(false);
+  const [agentClient] = useState(() => new AgentClient());
+  const [contextTracker] = useState(() => new UiContextTracker());
+  const executorRef = useRef<UiActionExecutor | null>(null);
+  const runtimeRef = useRef({ screen: 'start' as 'start' | 'workspace', activeId: null as string | null, showQuickModal: false, controlsCollapsed: false });
   const closeQuickModal = useCallback(() => setShowQuickModal(false), []);
   const active = sessions.find(session => session.id === activeId);
   const messages = active?.messages || [];
@@ -52,6 +63,9 @@ export const App: React.FC = () => {
     store.setActiveSession(screen === 'workspace' ? activeId : null);
   }, [store, screen, activeId]);
   useEffect(() => () => { if (transitionTimer.current) clearTimeout(transitionTimer.current); }, []);
+  useLayoutEffect(() => {
+    runtimeRef.current = { screen, activeId, showQuickModal, controlsCollapsed };
+  }, [screen, activeId, showQuickModal, controlsCollapsed]);
   const cancelTransition = () => { composerOrigin.current = null; if (transitionTimer.current) clearTimeout(transitionTimer.current); setLeavingStart(false); setRevealingWorkspace(false); };
   const openSession = (id: string) => { cancelTransition(); setActiveId(id); setScreen('workspace'); };
   const newExam = () => { cancelTransition(); setActiveId(null); setConfigureId(null); setLandingDraft(''); attachedFiles.current = []; setShowQuickModal(false); setScreen('start'); };
@@ -93,12 +107,7 @@ export const App: React.FC = () => {
     setConfigureId(null);
     revealSession(id);
   };
-  const handleLandingSend = (content: string, options: { searchWeb: boolean; attachedFiles: File[] }) => {
-    const id = configureId || store.create('custom');
-    store.sendMessage(id, content);
-    attachedFiles.current = options.attachedFiles;
-    setLandingDraft(''); setConfigureId(id); setShowQuickModal(true);
-  };
+  function handleLandingSend(content: string) { setLandingDraft(''); void processAgentTurn(null, content); }
   const handleQuickStart = (params: ExamRequestParams) => {
     const id = configureId || store.create('template');
     const session = store.getSnapshot().find(item => item.id === id);
@@ -107,7 +116,6 @@ export const App: React.FC = () => {
     revealSession(id);
     void store.generate(id, { ...params, uploadedFiles: [...params.uploadedFiles, ...attachedFiles.current.map(file => file.name)], prompt: instructions ? `${params.prompt}\n${instructions}` : params.prompt });
   };
-  const handleSendMessage = (content: string) => { if (activeId) store.sendMessage(activeId, content); };
   const exportFile = async (type: 'STUDENT_EXAM' | 'TEACHER_KEY', format: 'tex' | 'pdf' | 'json') => {
     const session = active;
     if (!session?.jobId) return;
@@ -139,6 +147,120 @@ export const App: React.FC = () => {
     else newExam();
   };
 
+  const unversionedContext = (): UnversionedUiContext => {
+    const runtime = runtimeRef.current;
+    const currentSessions = store.getSnapshot();
+    const current = currentSessions.find(session => session.id === runtime.activeId);
+    const progressSource = import.meta.env.VITE_SERVICE_MODE === 'mock' ? 'mock' : 'real';
+    return {
+      workspaceId: runtime.screen === 'workspace' ? runtime.activeId : null,
+      screen: runtime.screen,
+      activeModal: runtime.showQuickModal ? 'exam_setup' : null,
+      sidebarCollapsed: runtime.controlsCollapsed,
+      activeJob: current?.status === 'generating' && current.jobId ? {
+        id: current.jobId,
+        stage: current.progress?.stageName || current.progress?.statusMessage || 'Đang khởi tạo',
+        percent: Math.max(0, Math.min(100, current.progress?.percent || 0)),
+        source: progressSource,
+      } : null,
+      examRevision: current?.package?.revision || null,
+      sessions: currentSessions.slice(0, 50).map(session => ({ id: session.id, title: session.title, status: session.status, createdAt: session.createdAt })),
+      notes: (current?.agentNotes || []).map(note => ({ id: note.id, targetQuestion: note.targetQuestion, requestedChange: note.requestedChange, status: note.status })),
+      capabilities: UI_CAPABILITY_MANIFEST,
+    };
+  };
+  const captureContext = (): UiContextSnapshot => contextTracker.capture(unversionedContext());
+
+  if (!executorRef.current) {
+    executorRef.current = new UiActionExecutor(captureContext, {
+      'ui.navigate': params => {
+        if (params.destination === 'start') newExam();
+        else openSession(String(params.workspaceId));
+      },
+      'ui.session.create': params => {
+        const workspaceId = store.create(params.mode === 'template' ? 'template' : 'custom');
+        openSession(workspaceId);
+        return { workspaceId };
+      },
+      'ui.session.open': params => { openSession(String(params.workspaceId)); },
+      'ui.exam.open_setup': () => {
+        const workspaceId = runtimeRef.current.activeId;
+        setConfigureId(workspaceId);
+        attachedFiles.current = [];
+        setShowQuickModal(true);
+      },
+      'ui.sidebar.set_collapsed': params => { setControlsCollapsed(params.collapsed === true); },
+      'ui.note.add': params => {
+        const workspaceId = runtimeRef.current.activeId;
+        if (!workspaceId) throw new Error('No active workspace');
+        const note = store.addNote(workspaceId, {
+          targetQuestion: typeof params.targetQuestion === 'number' ? params.targetQuestion : undefined,
+          requestedChange: String(params.requestedChange),
+          teacherText: String(params.teacherText || params.requestedChange),
+        });
+        if (!note) throw new Error('Note was not stored');
+        return { noteId: note.id };
+      },
+      'ui.note.update': params => {
+        const workspaceId = runtimeRef.current.activeId;
+        if (!workspaceId || !store.updateNote(workspaceId, String(params.noteId), String(params.requestedChange))) throw new Error('Note was not updated');
+        return { noteId: String(params.noteId) };
+      },
+      'ui.note.cancel': params => {
+        const workspaceId = runtimeRef.current.activeId;
+        if (!workspaceId || !store.cancelNote(workspaceId, String(params.noteId))) throw new Error('Note was not cancelled');
+        return { noteId: String(params.noteId) };
+      },
+    }, () => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+  }
+
+  async function processAgentTurn(initialSessionId: string | null, content: string) {
+    if (agentBusy) return;
+    let messageSessionId = initialSessionId;
+    if (messageSessionId) store.sendMessage(messageSessionId, content);
+    setAgentBusy(true);
+    try {
+      const response = await agentClient.interpret(content, captureContext());
+      const proposals = response.decisions.filter((decision): decision is UiActionProposal => decision.kind === 'propose_ui_action');
+      const plain = response.decisions.filter(decision => decision.kind !== 'propose_ui_action');
+      const receipts = await executeActionPlan(proposals, executorRef.current!);
+      const created = receipts.find(receipt => receipt.status === 'success' && typeof receipt.result?.workspaceId === 'string');
+      if (!messageSessionId && created) messageSessionId = String(created.result?.workspaceId);
+      if (!messageSessionId) {
+        const currentId = runtimeRef.current.activeId;
+        messageSessionId = currentId || store.create('custom');
+        if (!currentId) openSession(messageSessionId);
+      }
+      if (!initialSessionId) store.sendMessage(messageSessionId, content);
+      for (const decision of plain) store.addAssistantMessage(messageSessionId, decision.text);
+      proposals.forEach((proposal, index) => {
+        const receipt = receipts[index];
+        if (receipt.status === 'success') {
+          store.addAssistantMessage(messageSessionId!, `${proposal.text} Giao diện đã xác nhận thao tác thành công.`);
+        } else {
+          const detail = receipt.errorCode === 'STALE_CONTEXT'
+            ? 'Trạng thái giao diện đã thay đổi nên tôi không thực hiện thao tác cũ.'
+            : receipt.errorCode === 'DEPENDENCY_FAILED'
+              ? 'Bước trước không thành công nên bước phụ thuộc đã được bỏ qua.'
+              : 'Giao diện không xác nhận được kết quả nên thao tác đã dừng an toàn.';
+          store.addAssistantMessage(messageSessionId!, `${proposal.text} ${detail}`);
+        }
+      });
+    } catch (error) {
+      if (!messageSessionId) {
+        messageSessionId = store.create('custom');
+        openSession(messageSessionId);
+        store.sendMessage(messageSessionId, content);
+      }
+      const text = error instanceof AgentTransportError ? error.message : 'Agent gặp lỗi cục bộ và chưa thực hiện thao tác nào.';
+      store.addAssistantMessage(messageSessionId, text);
+    } finally {
+      setAgentBusy(false);
+    }
+  }
+
+  const handleSendMessage = (content: string) => { if (activeId) void processAgentTurn(activeId, content); };
+
   if (showWelcome) return <AstraWelcome onComplete={finishWelcome} />;
 
   return (
@@ -167,6 +289,9 @@ export const App: React.FC = () => {
                   <button className="button-primary" onClick={() => { setConfigureId(active.id); setShowQuickModal(true); }}>{active.status === 'error' ? 'Thử tạo lại' : 'Tạo đề từ yêu cầu'}</button>
                 </div>}
                 <ChatHistory messages={messages} onSuggestion={value => store.setDraft(active.id, value)} onEditMessage={message => store.setDraft(active.id, message.content)} onRetractMessage={message => store.retractMessage(active.id, message.id)} onBranchMessage={message => { const branchId = store.branchAtMessage(active.id, message.id); if (branchId) setActiveId(branchId); }} />
+                <AgentNotes notes={active.agentNotes || []}
+                  onCancel={noteId => store.cancelNote(active.id, noteId)}
+                  onPrepareEdit={note => store.setDraft(active.id, `Sửa ghi chú ${note.id}: ${note.requestedChange}`)} />
               </>
             ),
             right: (
@@ -229,7 +354,7 @@ export const App: React.FC = () => {
                 />
               </>
             ),
-            composer: <ModernChatBar onSend={handleSendMessage} disabled={isGenerating} draft={active.draft} onDraftChange={value => store.setDraft(active.id, value)} />,
+            composer: <ModernChatBar onSend={handleSendMessage} busy={agentBusy} draft={active.draft} onDraftChange={value => store.setDraft(active.id, value)} />,
           }}
         </WorkspaceLayout>
       )}

@@ -1,5 +1,6 @@
 import type { ChatMessage, ExamPackage, ExamPreviewState, ExamRequestParams, QuestionItem, GenerationProgress } from '../types/exam';
 import type { IExamService } from '../services/examService';
+import type { DeferredAgentNote } from '../agent/contracts';
 
 export interface ExamSession {
   id: string;
@@ -25,6 +26,7 @@ export interface ExamSession {
   requestId?: string;
   requestSignature?: string;
   progress?: GenerationProgress;
+  agentNotes: DeferredAgentNote[];
 }
 
 function previewBindingKey(jobId: string, revision: number, contentHash: string): string {
@@ -69,7 +71,9 @@ export class ExamSessions {
     if (typeof localStorage !== 'undefined') {
       try {
         const saved = JSON.parse(localStorage.getItem('astra.sessions.v1') || '[]');
-        if (Array.isArray(saved)) this.sessions = saved.filter(item => typeof item.id === 'string' && Array.isArray(item.messages));
+        if (Array.isArray(saved)) this.sessions = saved
+          .filter(item => typeof item.id === 'string' && Array.isArray(item.messages))
+          .map(item => ({ ...item, agentNotes: Array.isArray(item.agentNotes) ? item.agentNotes : [] }));
       } catch { console.warn('Could not restore local exam workspaces'); }
     }
   }
@@ -187,7 +191,7 @@ export class ExamSessions {
     this.disposed = false;
     const id = crypto.randomUUID();
     const number = this.sessions.length + 1;
-    this.sessions = [{ id, mode, title: `Đề ${number} · ${mode === 'custom' ? 'Theo yêu cầu' : 'Từ mẫu'}`, status: 'draft', createdAt: new Date().toISOString(), messages: [], questions: [], draft: '', jobId: null, meta: null, previousCount: 0 }, ...this.sessions];
+    this.sessions = [{ id, mode, title: `Đề ${number} · ${mode === 'custom' ? 'Theo yêu cầu' : 'Từ mẫu'}`, status: 'draft', createdAt: new Date().toISOString(), messages: [], questions: [], draft: '', jobId: null, meta: null, previousCount: 0, agentNotes: [] }, ...this.sessions];
     this.emit();
     return id;
   }
@@ -219,14 +223,52 @@ export class ExamSessions {
       jobId: null, package: undefined, questions: [], meta: null, status: 'draft',
       preview: undefined, previewOpenedRevision: null, previewLog: undefined,
       previewError: undefined, previewErrorCode: undefined, artifactChanged: false,
+      agentNotes: [],
     };
     this.sessions = [branch, ...this.sessions];
     this.emit();
     return branch.id;
   }
+  private message(role: ChatMessage['role'], content: string): ChatMessage {
+    return { id: crypto.randomUUID(), role, content, timestamp: new Date().toISOString() };
+  }
   sendMessage(id: string, content: string) {
-    const message = (role: ChatMessage['role'], text: string): ChatMessage => ({ id: crypto.randomUUID(), role, content: text, timestamp: new Date().toISOString() });
-    this.update(id, session => ({ ...session, title: session.mode === 'custom' && !session.meta && session.messages.length === 0 ? content.slice(0, 72) : session.title, draft: '', messages: [...session.messages, message('user', content), message('assistant', session.status === 'complete' ? 'Đã ghi nhận yêu cầu chỉnh sửa cho đề này. Chỉnh sửa bằng hội thoại sẽ khả dụng khi kết nối dịch vụ AI.' : 'Đã ghi nhận yêu cầu cho đề này. Chọn “Tạo đề từ yêu cầu” để chọn môn học, cấu trúc và bắt đầu tạo đề.')] }));
+    this.update(id, session => ({
+      ...session,
+      title: session.mode === 'custom' && !session.meta && session.messages.length === 0 ? content.slice(0, 72) : session.title,
+      draft: '',
+      messages: [...session.messages, this.message('user', content)],
+    }));
+  }
+  addAssistantMessage(id: string, content: string) {
+    this.update(id, session => ({ ...session, messages: [...session.messages, this.message('assistant', content)] }));
+  }
+  addNote(id: string, input: { targetQuestion?: number; requestedChange: string; teacherText: string }): DeferredAgentNote | null {
+    const session = this.sessions.find(item => item.id === id);
+    if (!session || session.status !== 'generating') return null;
+    const now = new Date().toISOString();
+    const note: DeferredAgentNote = {
+      id: crypto.randomUUID(), workspaceId: id, jobId: session.jobId,
+      targetQuestion: input.targetQuestion || null,
+      requestedChange: input.requestedChange.trim(), teacherText: input.teacherText,
+      status: 'pending', createdAt: now, updatedAt: now,
+    };
+    this.update(id, item => ({ ...item, agentNotes: [...item.agentNotes, note] }));
+    return note;
+  }
+  updateNote(id: string, noteId: string, requestedChange: string): boolean {
+    const session = this.sessions.find(item => item.id === id);
+    if (!session?.agentNotes.some(note => note.id === noteId && note.status === 'pending')) return false;
+    const updatedAt = new Date().toISOString();
+    this.update(id, item => ({ ...item, agentNotes: item.agentNotes.map(note => note.id === noteId ? { ...note, requestedChange: requestedChange.trim(), updatedAt } : note) }));
+    return true;
+  }
+  cancelNote(id: string, noteId: string): boolean {
+    const session = this.sessions.find(item => item.id === id);
+    if (!session?.agentNotes.some(note => note.id === noteId && note.status === 'pending')) return false;
+    const updatedAt = new Date().toISOString();
+    this.update(id, item => ({ ...item, agentNotes: item.agentNotes.map(note => note.id === noteId ? { ...note, status: 'cancelled', updatedAt } : note) }));
+    return true;
   }
   async generate(id: string, params: ExamRequestParams) {
     const existing = this.sessions.find(session => session.id === id);
@@ -574,7 +616,9 @@ export class ExamSessions {
         : {}),
       messages: session.status === 'complete'
         ? session.messages
-        : [...session.messages, { id: crypto.randomUUID(), role: 'assistant', content: `Đã soạn xong ${pkg.questions.length} câu. Hãy kiểm tra bản xem trước PDF và phê duyệt bản hiện tại trước khi xuất file.`, timestamp: new Date().toISOString() }],
+        : [...session.messages, this.message('assistant', session.agentNotes.some(note => note.status === 'pending')
+          ? `Đã soạn xong ${pkg.questions.length} câu. Có ${session.agentNotes.filter(note => note.status === 'pending').length} ghi chú đang chờ; hãy xem lại, sửa hoặc hủy ghi chú trước khi điều chỉnh từng câu. Ghi chú chưa được tự động áp dụng.`
+          : `Đã soạn xong ${pkg.questions.length} câu. Hãy kiểm tra bản xem trước PDF và phê duyệt bản hiện tại trước khi xuất file.`)],
     }));
     if (this.service.requestPreview && pkg.revision && pkg.contentHash) {
       const status = pkg.preview?.status;
