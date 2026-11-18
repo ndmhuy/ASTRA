@@ -8,7 +8,7 @@ from fastapi.testclient import TestClient
 
 from exam_baseline.api.app import create_app
 from exam_baseline.config import Settings
-from exam_baseline.core.contracts import Completion
+from exam_baseline.core.contracts import Completion, ProviderError
 from tests.thpt.test_generation import Scripted
 
 PAYLOAD = {
@@ -174,6 +174,26 @@ def test_invalid_scope_idempotency_conflict_and_retrieval_gaps(tmp_path):
         )
         assert conflict.status_code == 409
         assert client.get("/api/exams/not-a-uuid/status").status_code == 422
+
+
+def test_spending_guard_failure_reaches_the_teacher_without_http_unknown(tmp_path):
+    app, providers = fixture_app(tmp_path)
+
+    async def exhausted(_):
+        raise ProviderError("spend_limit_exceeded", "ASTRA đã đạt trần 5 USD.")
+
+    providers["composer"].complete = exhausted
+    with TestClient(app) as client:
+        job = client.post(
+            "/api/exams/generate",
+            json=PAYLOAD,
+            headers={"Idempotency-Key": "budget"},
+        ).json()["jobId"]
+        result = wait(client, job)
+        assert result["status"] == "failed"
+        assert result["error"]["code"] == "spend_limit_exceeded"
+        assert "5 USD" in result["error"]["message"]
+        assert "unknown" not in result["error"]["message"]
 
 
 def test_tampered_student_artifact_cannot_be_approved(tmp_path):

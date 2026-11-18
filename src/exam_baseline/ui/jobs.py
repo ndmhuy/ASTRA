@@ -248,7 +248,10 @@ class JobManager:
                 error = exc
             elif isinstance(exc, ProviderError):
                 error = UiError(
-                    exc.code, f"Model provider failed (HTTP {exc.http_status or 'unknown'})"
+                    exc.code,
+                    str(exc)
+                    if exc.code == "spend_limit_exceeded"
+                    else f"Model provider failed (HTTP {exc.http_status or 'unknown'})",
                 )
             else:
                 error = UiError(
