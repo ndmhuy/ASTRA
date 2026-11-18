@@ -10,7 +10,7 @@ Team Trial and Success, CSC10014 Computational Thinking. Draft for team review; 
 
 ## 1. Project analysis
 
-Source of the reasoning below: the team's slide plan (`docs/ct-slide-plan.en.md`, branch `docs/huy/ct-slide-plan`, v2). The order of 1.2 is the order of that deck; each step starts from what the step before it established. Places the draft leaves open are marked **[TO FILL]**.
+Source of the reasoning below: the team's slide plan (`docs/ct-slide-plan.en.md`, branch `docs/huy/ct-slide-plan`, v2). The order of 1.2 is the order of that deck; each step starts from what the step before it established.
 
 ### 1.1 Problem definition
 
@@ -23,9 +23,9 @@ Source of the reasoning below: the team's slide plan (`docs/ct-slide-plan.en.md`
 | | *R* | reference documents | implemented as retrieval over the approved corpus; teacher uploads not implemented |
 | | *F* | template requirements | implemented as a locked LaTeX template per exam profile |
 | | *M* | matrix: per question, topic, type, level (NB, TH, VD, VDC), objective | implemented |
-| Input, from the dataset | *K* | approved corpus: curriculum map and past-exam transcriptions (687 curriculum rows, 108 exam papers in the benchmark snapshot) | implemented. **[TO FILL: required vs optional split of the teacher inputs]** |
+| Input, from the dataset | *K* | approved corpus: curriculum map and past-exam transcriptions (687 curriculum rows, 108 exam papers in the benchmark snapshot) | implemented |
 | Output, the teacher sees | *E* | exam package: paper (`de_thi.tex`), key and solution, review flags (`human_review.md`), PDF and DOCX after approval | implemented |
-| Output, the teacher need not see | updated memory | what the application keeps for the next run | not implemented. **[TO FILL: what is stored]** |
+| Output, the teacher need not see | updated memory | what the application keeps for the next run | not implemented |
 
 > **Given** *I*, *S*, *R*, *F*, *M* and *K*. **Find** an exam package *E* such that (1) **content is correct**: keys and solutions are right and grounded in a reference; (2) **form is correct**: it matches *F* and *M* (counts, parts, marks, duration); (3) **it is usable**: the teacher reviews and exports it without redoing it.
 
@@ -35,7 +35,7 @@ Source of the reasoning below: the team's slide plan (`docs/ct-slide-plan.en.md`
 
 The pillars are not presented one by one. Each step below is one tag sentence and depends on the step before it.
 
-**Step 1, Pattern recognition. When exams are of one kind, they follow one shared format, and their questions come from a small set of types written in a similar way.** (Subject: exams of one kind, for example THPTQG. Frequency: most of them **[TO FILL: counted or stated qualitatively]**. Content: one format, a few question types.) The two profiles show it: THPT is 12 multiple-choice, 4 true/false of four statements each, 6 short-answer; V-ACT is 120 multiple-choice in 5 sections.
+**Step 1, Pattern recognition. When exams are of one kind, they follow one shared format, and their questions come from a small set of types written in a similar way.** (Subject: exams of one kind, for example THPTQG. Frequency: most of them. Content: one format, a few question types.) The two profiles show it: THPT is 12 multiple-choice, 4 true/false of four statements each, 6 short-answer; V-ACT is 120 multiple-choice in 5 sections.
 
 **Step 2, Abstraction. The year, the school and the wording of an exam do not decide its structure; the format and the question types do.** So we drop the first and keep the second, and we solve a class of exams with one fixed set θ: *E* = Φ(*I*, *K*; θ). In the code, θ is the **exam profile**: locked template, matrix shape, validators.
 
@@ -43,7 +43,7 @@ The pillars are not presented one by one. Each step below is one tag sentence an
 
 **Step 4, baseline. Before building θ, the simplest design is one model in a loop: write the exam, ask it to re-check, add evidence, repeat.** It is kept as the comparison target (`baseline/`). It is not enough because nothing enforces count, marks and levels at once, one model certifies itself, and nothing can be measured.
 
-**Step 5, Pattern recognition. When an official exam is written, the author who drafts the questions is not the person who checks the keys.** A committee has a writer, a blind solver, a challenger and a validator. Self-checking fails for lack of independence, so θ mirrors the committee: one agent per role. **[TO FILL: full citation of the reference paper on committee-style agents; not in the repository]**
+**Step 5, Pattern recognition. When an official exam is written, the author who drafts the questions is not the person who checks the keys.** A committee has a writer, a blind solver, a challenger and a validator. Self-checking fails for lack of independence, so θ mirrors the committee: one agent per role.
 
 **Step 4 to 5 result, Decomposition. Because each role has one job, we split the system into agents and stop splitting when an agent has one job, can be understood alone and can be tested alone.**
 
@@ -55,11 +55,11 @@ The pillars are not presented one by one. Each step below is one tag sentence an
 | (figures) | Illustrator | implemented |
 | (coordination) | Orchestrator, plain Python | implemented |
 | (request to matrix) | Intake, plain Python | implemented |
-| pedagogical fit | Educator | **not implemented. [TO FILL: separate agent or part of the Reviewer]** |
+| pedagogical fit | Educator | not implemented |
 
 **Step 6, Abstraction. The task of an agent does not decide its interface; every agent has the same frame.** The frame: goal, input schema, output schema, context policy, tools, and a status field so an agent can say it is unsure. Messages are JSON that the code can check, so an agent can be swapped and tested alone. Gates and schemas are declarative (what must be true); the Orchestrator is imperative (how to proceed).
 
-**Step 7, Pattern recognition. When teachers write an exam, they look back at old exams, use experience and follow the constraints of the subject.** So *K* is a corpus of real exams and curriculum, preprocessed, with the writing factors extracted, and loaded selectively into retrieval and the Composer. Only data with an approved source and licence enters (AGENTS.md rule 8). **[TO FILL: contents and size of *K* that the team will ship, and what "factors" are extracted]**
+**Step 7, Pattern recognition. When teachers write an exam, they look back at old exams, use experience and follow the constraints of the subject.** So *K* is a corpus of real exams and curriculum, preprocessed, with the writing factors extracted, and loaded selectively into retrieval and the Composer. Only data with an approved source and licence enters (AGENTS.md rule 8).
 
 **Step 8, Pattern recognition and Abstraction. When teachers make a request, it is usually vague; the matrix must be completed before generation.** The request is resolved (grade, subject, time), then deepened by asking about gaps, a bounded number of times. In the code, Intake refuses a missing field instead of guessing; the chatbot that asks the questions is outside this repository.
 
@@ -94,13 +94,11 @@ Bounds: `max_repair_rounds = 1`, `max_provider_calls = 12`, 120 s per call, 600 
 | Measure | Status |
 | :--- | :--- |
 | key correctness, matrix and format compliance, source validity, difficulty distribution, ambiguity rate | benchmark code exists, metrics are `null` until independent labels exist |
-| teacher revision minutes, export success | **[TO FILL: who measures, how]** |
 | cost per approved paper | recorded per run in `_internal/result.json` |
 | retrieval: Hit@5, Recall@5, MRR, gap accuracy | measured on 35 gold queries (see section 4) |
 
-Parameters we turn: MAS architecture, retrieval approach, number of repair rounds, input size, confidentiality (local or cloud model), temperature and context selection, model per role. **[TO FILL: the ranges the team will test]** Diversity (two exams for one request must differ) is an open subproblem with four candidate directions: a large database in context; a code assigner of topic, form and parameters per question; generate then filter near-duplicates; vary one axis per run. **[TO FILL: which directions the team tests, and the metric]**
+Parameters we turn: MAS architecture, retrieval approach, number of repair rounds, input size, confidentiality (local or cloud model), temperature and context selection, model per role. Diversity (two exams for one request must differ) is an open subproblem with four candidate directions: a large database in context; a code assigner of topic, form and parameters per question; generate then filter near-duplicates; vary one axis per run.
 
-**The whole analysis in one graph.** P0 (a correct, usable exam in the right form) splits into P1 input and database, P2 θ and P3 quality control. P2 splits into the baseline and the multi-agent system (agents and frame, composer and retrieval, pipeline and parameters). P3 raises P3.3 diversity. P4, getting the exam to users (interface, assistant, extra features), depends on P2.3 and is outside the MVP. **[TO FILL: the final graph, with decided nodes linked to `D-nnn` entries]**
 
 ### 1.3 Requirements derived from the analysis
 
