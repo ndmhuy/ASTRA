@@ -12,6 +12,7 @@ from tests.thpt.test_generation import question, request
         "Cho hàm số có đồ thị như hình vẽ. Tìm khoảng đồng biến.",
         "Cho hàm số có bảng biến thiên như sau.",
         "Dựa vào bảng số liệu sau, tính trung bình.",
+        "Dựa vào bảng sau, tính trung bình.",
     ],
 )
 def test_referenced_visual_requires_illustrator(stem):
@@ -28,6 +29,16 @@ def test_pipe_table_rejected_even_when_drawing_is_requested():
         "pseudo_table"
         in visual_issues("$x$ | $-1$ | $0$ | $1$\n$y$ | $2$ | $3$ | $4$", "Draw a table")[0]
     )
+
+
+@pytest.mark.parametrize("delimiters", [("", ""), ("$", "$")])
+def test_raw_latex_table_is_rejected_even_inside_math(delimiters):
+    raw = question(request().slots[0]).model_dump()
+    start, end = delimiters
+    raw["stem"] = "Dùng bảng sau: " + start + r"\begin{array}{cc}1&2\end{array}" + end
+    raw["illustration_request"] = "Draw an example table"
+    with pytest.raises(ValidationError, match="raw_table"):
+        Question.model_validate(raw)
 
 
 @pytest.mark.parametrize(

@@ -14,9 +14,11 @@ class Responses:
     def __init__(self, responses):
         self.responses = iter(responses)
         self.requests = []
+        self.instructions = []
 
     async def complete(self, prompt):
         self.requests.append(json.loads(prompt.user))
+        self.instructions.append(prompt.system)
         value = next(self.responses)
         if isinstance(value, Exception):
             raise value
@@ -76,6 +78,50 @@ def test_short_answer_schema_requires_answer_and_exact_question_count():
     data["questions"][0].pop("answer")
     with pytest.raises(ValueError):
         contract.model_validate(data)
+
+
+@pytest.mark.parametrize("wrong_id", [False, True])
+def test_targeted_composer_retry_preserves_valid_questions_and_checks_id(wrong_id, tmp_path):
+    slots = [slot for slot in request().slots if slot.part == "P3"]
+    questions = [question(slot).model_dump() for slot in slots]
+    questions[1]["answer"] = "1178,1"
+    replacement = {
+        **questions[1],
+        "stem": "Tính $1{,}2+0{,}3$.",
+        "solution": "$1{,}2+0{,}3=1{,}5$.",
+        "answer": "1,5",
+        "id": "P3-1" if wrong_id else "P3-2",
+    }
+    provider = Responses(
+        [
+            json.dumps({"questions": questions}),
+            json.dumps({"questions": [replacement]}),
+        ]
+    )
+    calls = []
+    invocation = ComposerAgent().run(
+        RecordingProvider(provider, "composer", 1, calls, tmp_path),
+        {"part": "P3", "slots": [slot.model_dump() for slot in slots]},
+    )
+    if wrong_id:
+        with pytest.raises(ContractError) as exc:
+            asyncio.run(invocation)
+        assert exc.value.fields[0]["type"] == "repair_binding"
+        assert calls[-1]["status"] == "invalid_contract"
+    else:
+        result, _ = asyncio.run(invocation)
+        assert [item.model_dump() for item in result.questions] == [
+            questions[0],
+            replacement,
+            *questions[2:],
+        ]
+    assert len(calls) == 2
+    retry = provider.requests[1]
+    assert [slot["id"] for slot in retry["slots"]] == ["P3-2"]
+    assert retry["output_schema"]["properties"]["questions"]["maxItems"] == 1
+    assert retry["contract_feedback"]["previous_questions"] == [questions[1]]
+    assert "one question per" in provider.instructions[1]
+    assert "six numeric short answers" not in provider.instructions[1]
 
 
 def test_variation_arrows_are_valid_math():

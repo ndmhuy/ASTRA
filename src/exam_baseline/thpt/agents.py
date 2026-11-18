@@ -1,6 +1,7 @@
 """Section-based Composer adapted from the supplied composer.py contract."""
 
 import json
+from copy import deepcopy
 
 from pydantic import BaseModel, ValidationError
 
@@ -34,11 +35,49 @@ NB=nhận biết; TH=thông hiểu; VD=vận dụng; VDC=vận dụng cao. Meet 
 topic, objective and cognitive level; do not merely label an easy question VDC.
 """
 
+QUESTION_FORMAT = r"""For THPT question content, use ordinary prose and inline $...$ formulas.
+For a table, either state all data in prose without referring to a table, or put
+all headers, rows, values and units in illustration_request for Illustrator.
+Never put \begin{array}, \begin{tabular}, \hline, TikZ, or pipe tables in the stem,
+even if the reference shows these commands. Example: stem="Dựa vào bảng số liệu
+sau, xác định nhóm có tần số lớn nhất."; illustration_request="Vẽ bảng hai hàng.
+Hàng Khoảng (phút): [0;10), [10;20), [20;30). Hàng Tần số: 3, 8, 2."
+For P3, solve first and check the final numeric answer fits at most four characters
+including minus sign and decimal comma (e.g. "-1,2"). If it does not fit, redesign
+the numbers or explicitly change the unit or rounding in the stem, then recalculate
+the answer and solution. Never truncate the answer to make it fit.
+"""
+
+
+def _replace_questions(text, original, indices, stage):
+    """Bind a small correction to the original question IDs before section validation."""
+    try:
+        replacements = json.loads(text)["questions"]
+        ids = [item["id"] for item in replacements]
+        if not isinstance(replacements, list) or ids != [original[i]["id"] for i in indices]:
+            raise ValueError
+    except (ValueError, KeyError, TypeError) as exc:
+        raise ContractError(
+            stage,
+            [
+                {
+                    "location": ["questions"],
+                    "type": "repair_binding",
+                    "message": "Return exactly the requested question IDs in order.",
+                }
+            ],
+        ) from exc
+    merged = list(original)
+    for index, replacement in zip(indices, replacements, strict=True):
+        merged[index] = replacement
+    return json.dumps({"questions": merged}, ensure_ascii=False)
+
 
 class Agent:
     common = COMMON
     role: str
     instruction: str
+    correction_instruction: str
     response: type[BaseModel]
 
     def contract(self, data: dict):
@@ -50,27 +89,41 @@ class Agent:
     def prepare_schema(self, schema, data):
         return self.wire_schema(schema)
 
+    def targeted_correction(self, data, schema, text, fields):
+        return None
+
     async def run(self, provider: LLMProvider, data: dict):
         contract = self.contract(data)
         schema = contract.model_json_schema()
         feedback = None
+        targeted = None
         # Schema repair is separate from the once-only content review policy.
         # Reviewer itself is never called a second time, even for invalid JSON.
         attempts = 1 if self.role == "reviewer" else 2
-        for _ in range(attempts):
+        for attempt in range(attempts):
             payload = {**data, "output_schema": schema}
+            output_schema = self.prepare_schema(schema, data)
             if feedback:
                 payload["contract_feedback"] = feedback
+            if targeted:
+                payload, output_schema, original, indices = targeted
+            instruction = self.correction_instruction if targeted else self.instruction
             completion = await provider.complete(
                 CompletionRequest(
-                    system=self.common + self.instruction,
+                    system=self.common + instruction,
                     user=json.dumps(payload, ensure_ascii=False),
-                    output_schema=self.prepare_schema(schema, data),
+                    output_schema=output_schema,
                 )
             )
             text, normalized = normalize_json(completion.text)
             try:
+                if targeted:
+                    text = _replace_questions(text, original, indices, self.role)
                 response = contract.model_validate_json(text)
+            except ContractError as exc:
+                if hasattr(provider, "record_contract"):
+                    provider.record_contract("invalid_contract", exc.fields, normalized)
+                raise
             except ValidationError as exc:
                 fields = [
                     {"location": list(e["loc"]), "type": e["type"], "message": e["msg"]}
@@ -83,6 +136,8 @@ class Agent:
                 }
                 if hasattr(provider, "record_contract"):
                     provider.record_contract("invalid_contract", fields, normalized)
+                if attempt == 0 and attempts > 1:
+                    targeted = self.targeted_correction(data, schema, text, fields)
             else:
                 if hasattr(provider, "record_contract"):
                     provider.record_contract("validated", normalized=normalized)
@@ -93,7 +148,8 @@ class Agent:
 class ComposerAgent(Agent):
     role = "composer"
     response = Section
-    instruction = """Compose only the requested section and ordered slot IDs.
+    instruction = (
+        """Compose only the requested section and ordered slot IDs.
 P1: twelve single-choice questions, exactly A/B/C/D with one correct option.
 Every mathematical expression in choices MUST be enclosed in $...$, including
 intervals, sets, coordinates, fractions and single numbers. Mixed prose must put
@@ -108,11 +164,58 @@ Student stems/options must not reveal answers. Keep answers/solutions in private
 For diagrams, give an explicit mathematical illustration_request with coordinates,
 equations and relationships; do not generate TikZ yourself. Avoid ambiguous diagrams.
 Every reference to a figure, graph or variation/data table MUST have a nonempty
-illustration_request containing ALL its mathematical data. Never put pipe-delimited
-tables in stems. Ask Illustrator for native TikZ tables with nodes/arrows instead.
+illustration_request containing ALL its mathematical data.
 Reference style and complexity guide calibration, not copying or shuffling reference answers.
 When feedback is supplied, correct its issues while preserving all slot IDs and objectives.
 """
+        + QUESTION_FORMAT
+    )
+    correction_instruction = (
+        """Correct only the questions in contract_feedback.previous_questions.
+Return an object with a questions array in slots order. Return one question per
+supplied slot, even when that is only one question. Keep the slot ID, topic,
+objective and level. Follow the supplied output_schema. Ensure the question,
+answer, and private solution agree. For multiple choice, use A/B/C/D exactly.
+"""
+        + QUESTION_FORMAT
+    )
+
+    def targeted_correction(self, data, schema, text, fields):
+        locations = [field["location"] for field in fields]
+        if not data.get("slots") or not all(
+            len(path) >= 2 and path[0] == "questions" and isinstance(path[1], int)
+            for path in locations
+        ):
+            return None
+        try:
+            packet = json.loads(text)
+            questions = packet["questions"]
+            ids = [item["id"] for item in questions]
+        except (ValueError, KeyError, TypeError):
+            return None
+        if set(packet) != {"questions"} or ids != [slot["id"] for slot in data["slots"]]:
+            return None
+        indices = sorted({path[1] for path in locations})
+        correction_schema = deepcopy(schema)
+        correction_schema["properties"]["questions"].update(
+            minItems=len(indices), maxItems=len(indices)
+        )
+        payload = {
+            "part": data["part"],
+            "slots": [data["slots"][i] for i in indices],
+            "requirements": data.get("requirements", []),
+            "output_schema": correction_schema,
+            "contract_feedback": {
+                "fields": [
+                    {**field, "question_id": ids[path[1]]}
+                    for field, path in zip(fields, locations, strict=True)
+                ],
+                "previous_questions": [questions[i] for i in indices],
+                "instruction": "Return only these corrected questions in the listed slot order. "
+                "Preserve their IDs and objectives. The other questions are kept.",
+            },
+        }
+        return payload, self.prepare_schema(correction_schema, payload), questions, indices
 
     def data(self, request: Request, part: str, reference: str, feedback: dict | None):
         if feedback:
@@ -130,9 +233,9 @@ When feedback is supplied, correct its issues while preserving all slot IDs and 
             requirements=request.requirements,
             reference_exam=reference,
             reference_material=[
-                text for text in request.reference_material
-                if not text.startswith("[THPT_PART:")
-                or text.startswith(f"[THPT_PART:{part}]")
+                text
+                for text in request.reference_material
+                if not text.startswith("[THPT_PART:") or text.startswith(f"[THPT_PART:{part}]")
             ],
             feedback=feedback,
         )
@@ -150,6 +253,8 @@ class IllustratorAgent(Agent):
 Each latex field is one self-contained tikzpicture. Only existing TikZ/PGFPlots
 packages/libraries may be used (arrows.meta, positioning, patterns). No external
 files, images, shell commands, libraries, definitions or layout changes.
+For data tables, use positioned TikZ nodes and a drawn grid. Preserve every
+header, unit and cell supplied by Composer. Do not use a LaTeX array or tabular.
 Return drawings=[] when no illustrations are requested."""
 
 
