@@ -21,6 +21,27 @@ class GeminiProviderError(RuntimeError):
         self.code = code
 
 
+def classify_provider_exception(error: Exception) -> tuple[str, int | str | None]:
+    status = getattr(error, "status_code", None) or getattr(error, "code", None)
+    if status in {401, 403}:
+        code = "auth_error"
+    elif status == 404:
+        code = "model_unavailable"
+    elif status == 429:
+        code = "quota"
+    elif status == 400:
+        code = "request_rejected"
+    elif isinstance(status, int) and 500 <= status < 600:
+        code = "upstream_server_error"
+    elif error.__class__.__name__ in {"ConnectError", "NetworkError", "TransportError"}:
+        code = "network_error"
+    elif isinstance(error, (TypeError, ValueError)):
+        code = "sdk_error"
+    else:
+        code = "provider_error"
+    return code, status
+
+
 class GeminiInterpretationProvider:
     """Optional schema-bounded Gemini interpreter with no tools or backend access."""
 
@@ -85,7 +106,12 @@ class GeminiInterpretationProvider:
                 api_key=self.settings.gemini_api_key,
                 http_options=types.HttpOptions(
                     timeout=15_000,
-                    retry_options=types.HttpRetryOptions(attempts=1),
+                    retry_options=types.HttpRetryOptions(
+                        attempts=2,
+                        initial_delay=0.5,
+                        max_delay=1.0,
+                        http_status_codes=[500, 502, 503, 504],
+                    ),
                 ),
             )
             response = client.models.generate_content(
@@ -116,24 +142,13 @@ class GeminiInterpretationProvider:
         except (asyncio.TimeoutError, TimeoutError) as error:
             raise GeminiProviderError("timeout", "Gemini request timed out") from error
         except Exception as error:
-            status = getattr(error, "status_code", None) or getattr(error, "code", None)
-            if status in {401, 403}:
-                code = "auth_error"
-            elif status == 404:
-                code = "model_unavailable"
-            elif status == 429:
-                code = "quota"
-            elif status == 400:
-                code = "request_rejected"
-            elif error.__class__.__name__ in {"ConnectError", "NetworkError", "TransportError"}:
-                code = "network_error"
-            elif isinstance(error, (TypeError, ValueError)):
-                code = "sdk_error"
-            else:
-                code = "provider_error"
+            code, status = classify_provider_exception(error)
             logger.warning(
-                "Gemini interpretation failed code=%s exception_type=%s",
+                "Gemini interpretation failed code=%s exception_type=%s "
+                "provider_status=%s provider_reason=%s",
                 code,
                 type(error).__name__,
+                status if isinstance(status, int) else "unknown",
+                getattr(error, "status", None) or "unknown",
             )
             raise GeminiProviderError(code, "Gemini interpretation is unavailable") from error

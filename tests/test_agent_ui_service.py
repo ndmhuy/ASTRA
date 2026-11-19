@@ -10,7 +10,11 @@ from fastapi.testclient import TestClient
 
 from astra_agent_ui.app import create_app
 from astra_agent_ui.config import AgentSettings
-from astra_agent_ui.gemini_provider import GeminiInterpretationProvider, GeminiProviderError
+from astra_agent_ui.gemini_provider import (
+    GeminiInterpretationProvider,
+    GeminiProviderError,
+    classify_provider_exception,
+)
 from astra_agent_ui.interpreter import AgentInterpreter
 from astra_agent_ui.knowledge import ApprovedJsonKnowledgeSource
 from astra_agent_ui.models import AgentTurnRequest, GeminiDecision, GeminiPlan, UiContextSnapshot
@@ -292,6 +296,17 @@ def test_gemini_mode_missing_key_and_quota_are_explicit_http_errors() -> None:
     assert quota.json()["error"]["code"] == "gemini_quota"
 
 
+def test_gemini_server_error_is_not_reported_as_generic_provider_failure() -> None:
+    class SyntheticServerError(RuntimeError):
+        code = 503
+        status = "UNAVAILABLE"
+
+    assert classify_provider_exception(SyntheticServerError("sanitized")) == (
+        "upstream_server_error",
+        503,
+    )
+
+
 def test_gemini_provider_invokes_generate_content_and_uses_structured_response(monkeypatch) -> None:
     calls = []
 
@@ -307,6 +322,8 @@ def test_gemini_provider_invokes_generate_content_and_uses_structured_response(m
         def __init__(self, *, api_key, http_options):
             assert api_key == "synthetic-test-key"
             assert http_options["timeout"] == 15_000
+            assert http_options["retry_options"]["attempts"] == 2
+            assert http_options["retry_options"]["http_status_codes"] == [500, 502, 503, 504]
             self.models = FakeModels()
 
     google_module = ModuleType("google")

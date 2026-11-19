@@ -64,6 +64,7 @@ def create_app(
             "network_error": status.HTTP_502_BAD_GATEWAY,
             "request_rejected": status.HTTP_502_BAD_GATEWAY,
             "sdk_error": status.HTTP_500_INTERNAL_SERVER_ERROR,
+            "upstream_server_error": status.HTTP_502_BAD_GATEWAY,
         }.get(error.code, status.HTTP_503_SERVICE_UNAVAILABLE)
         messages = {
             "disabled": "Gemini AI mode is not enabled.",
@@ -79,6 +80,10 @@ def create_app(
             "network_error": "Gemini network transport failed.",
             "request_rejected": "Gemini rejected the structured interpretation request.",
             "sdk_error": "The local Gemini SDK failed before a valid response was returned.",
+            "upstream_server_error": (
+                "Gemini returned an upstream server error. "
+                "Retry once later; no UI action was executed."
+            ),
         }
         return JSONResponse(
             status_code=status_code,
