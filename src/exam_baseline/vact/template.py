@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from hashlib import sha256
 from importlib.resources import files
 
-TEMPLATE_SHA256 = "88929426928a869409f9a422cedf02f1ebc2ca686e4adf208dcb94e4a113147d"
+TEMPLATE_SHA256 = "b3527e3bf51e5057f96b1c1a12658a78d40bec1f8bbbeed5f6900bb45944762b"
 SECTIONS = ("TV", "TA", "TO", "LOGIC", "SCIENCE")
 
 

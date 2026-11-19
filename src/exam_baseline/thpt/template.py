@@ -4,7 +4,7 @@ import re
 from hashlib import sha256
 from importlib.resources import files
 
-TEMPLATE_SHA256 = "e1af472a5363364814072625c40c98f7e6a77a00093d709568068826feacfdb7"
+TEMPLATE_SHA256 = "5eab732a7153ca72237ebe74dac4441689197ae08824cb1fa7d4c9a3c9a14ea1"
 
 
 def original() -> bytes:
