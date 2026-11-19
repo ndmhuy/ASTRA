@@ -269,7 +269,7 @@ def test_gemini_provider_invokes_generate_content_and_uses_structured_response(m
         def generate_content(self, **kwargs):
             calls.append(kwargs)
             return SimpleNamespace(
-                parsed=GeminiDecision(kind="answer", text="Phản hồi mô hình thử nghiệm."),
+                parsed={"kind": "answer", "text": "Phản hồi mô hình thử nghiệm."},
                 text=None,
             )
 
@@ -298,9 +298,36 @@ def test_gemini_provider_invokes_generate_content_and_uses_structured_response(m
     )
     assert result.text == "Phản hồi mô hình thử nghiệm."
     assert calls[0]["model"] == "gemini-3.8-flash"
-    assert calls[0]["config"]["response_schema"] is GeminiDecision
+    assert calls[0]["config"]["response_json_schema"] == GeminiDecision.model_json_schema()
+    assert "response_schema" not in calls[0]["config"]
     assert calls[0]["config"]["max_output_tokens"] == 500
     assert calls[0]["config"]["automatic_continuation"] is False
+
+
+def test_gemini_json_schema_reaches_sdk_request_layer_without_network(monkeypatch) -> None:
+    genai = pytest.importorskip("google.genai")
+    types = pytest.importorskip("google.genai.types")
+    client = genai.Client(api_key="synthetic-test-key")
+
+    class RequestLayerReached(RuntimeError):
+        pass
+
+    def stop_before_network(*_args, **_kwargs):
+        raise RequestLayerReached
+
+    monkeypatch.setattr(client._api_client, "request", stop_before_network)
+    with pytest.raises(RequestLayerReached):
+        client.models.generate_content(
+            model="gemini-3.8-flash",
+            contents="offline schema conversion test",
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json",
+                response_json_schema=GeminiDecision.model_json_schema(),
+                max_output_tokens=500,
+                temperature=0.1,
+                automatic_continuation=False,
+            ),
+        )
 
 
 def test_future_knowledge_fixture_requires_approval_and_matching_baseline(tmp_path: Path) -> None:

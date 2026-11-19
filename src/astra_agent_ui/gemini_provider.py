@@ -82,7 +82,7 @@ class GeminiInterpretationProvider:
                 config=types.GenerateContentConfig(
                     system_instruction=system_instruction,
                     response_mime_type="application/json",
-                    response_schema=GeminiDecision,
+                    response_json_schema=GeminiDecision.model_json_schema(),
                     max_output_tokens=500,
                     temperature=0.1,
                     automatic_continuation=False,
@@ -91,6 +91,8 @@ class GeminiInterpretationProvider:
             parsed = response.parsed
             if isinstance(parsed, GeminiDecision):
                 return parsed
+            if isinstance(parsed, dict):
+                return GeminiDecision.model_validate(parsed)
             if response.text:
                 return GeminiDecision.model_validate_json(response.text)
             raise GeminiProviderError("empty_response", "Gemini returned no structured result")
