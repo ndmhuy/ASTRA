@@ -23,7 +23,7 @@ Source evidence:
 
 ## Gemini integration
 
-`GeminiPlan` is a schema-bounded list of 1-4 decisions. React still validates every returned action. SDK timeout is 15 seconds, retries are bounded to one attempt, output is capped at 900 tokens, and sanitized error classes distinguish timeout, transport, request rejection, auth, model access, quota, local SDK and generic provider errors. Mandatory Gemini mode remains fail-closed; offline mode remains labelled offline. No live Gemini request was made.
+`GeminiPlan` is a schema-bounded list of 1-4 decisions. React still validates every returned action. Each SDK attempt is bounded to 15 seconds, one retry is allowed only for selected 5xx statuses, and the total budget is 32 seconds. Output is capped at 900 tokens and sanitized errors distinguish timeout, transport, request rejection, auth, model access, quota, local SDK and upstream errors. Mandatory Gemini mode remains fail-closed; offline mode remains labelled offline. Live verification was later authorized and passed for Agent interpretation and one complete 22-question Backend job; see `AI_PROVIDER_EXECUTION_AUDIT.md`.
 
 ## Verification
 

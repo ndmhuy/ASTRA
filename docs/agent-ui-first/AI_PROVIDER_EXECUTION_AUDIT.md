@@ -1,5 +1,18 @@
 # AI Provider Execution Audit
 
+## Live verification update — 2026-11-19
+
+The previously blocked live checks now pass with independently configured local credentials and `gemini-3.1-flash-lite`.
+
+- Root cause: `gemini-3.8-flash` model access succeeded, but minimal text inference and Agent structured inference repeatedly returned Google `504 DEADLINE_EXCEEDED` or exceeded 30 seconds. This was not authentication, model-not-found, local-network, or React parsing failure.
+- Agent: direct `/agent/interpret` returned HTTP 200 in 4.83 seconds with `provider=gemini` and `ui.session.create`. A request through Vite `/agent` returned `ui.exam.open_setup` in 2.77 seconds.
+- Backend provider-only: the existing OpenAI-compatible adapter returned schema-valid JSON in 2.44 seconds; response metadata identified `gemini-3.1-flash-lite` and included token usage.
+- Complete job: `dc23a558-a670-4ff6-9172-585295133a2e` traversed RAG, Composer, Solver and Reviewer, then completed at 100% with 22 questions, revision 1 and a content hash. It remained unapproved.
+- Sanitized internal metadata records eight real calls: Composer 5, Illustrator 1, Solver 1 and Reviewer 1; all record `gemini-3.1-flash-lite`. No result was simulated.
+- UI boundary: Vite `/api/health` returned `providerConfigured=true`; Vite proxied `/agent/interpret` to the Agent. The Agent still has no business Backend client.
+
+Future availability still depends on the Google project's quota. No automatic model fallback was added; Agent and Backend load separate ignored environment files.
+
 Date: 2026-11-19 (Asia/Bangkok)
 
 Audited remote baseline: `origin/merge-mas-and-uiux` at

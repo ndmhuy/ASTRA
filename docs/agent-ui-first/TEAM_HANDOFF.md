@@ -95,7 +95,7 @@ AGENT_HOST=127.0.0.1
 AGENT_PORT=8010
 AGENT_ALLOWED_ORIGINS=http://127.0.0.1:5173,http://localhost:5173
 AGENT_MODE=gemini
-GEMINI_MODEL=gemini-3.8-flash
+GEMINI_MODEL=gemini-3.1-flash-lite
 GEMINI_API_KEY=<YOUR_OWN_GEMINI_KEY>
 ```
 
@@ -103,7 +103,7 @@ Backend variables consumed by `src/exam_baseline/config.py`:
 
 ```dotenv
 EXAM_PROVIDER=chat_completions
-EXAM_MODEL=gemini-3.8-flash
+EXAM_MODEL=gemini-3.1-flash-lite
 EXAM_API_KEY=<YOUR_OWN_GEMINI_KEY>
 EXAM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai
 EXAM_TIMEOUT_SECONDS=90

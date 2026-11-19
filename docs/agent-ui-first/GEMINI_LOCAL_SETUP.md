@@ -4,7 +4,7 @@ Gemini is mandatory whenever Agent AI mode is selected. A separate, explicitly l
 
 ## Verified provider choice
 
-As checked on 2026-11-18, Google's official model catalog lists `gemini-3.8-flash` as stable, and official structured-output documentation supports JSON Schema/Pydantic through the maintained `google-genai` SDK: [Gemini model catalog](https://aistudio.google.com/docs/models), [structured outputs](https://aistudio.google.com/docs/structured-output), [API key security](https://aistudio.google.com/docs/api-key), and [rate limits](https://aistudio.google.com/docs/rate-limits).
+Live checks on 2026-11-19 selected `gemini-3.1-flash-lite`: it completed the Agent structured plan in 3.3 seconds, while accessible `gemini-3.8-flash` repeatedly returned `504 DEADLINE_EXCEEDED`. Official structured-output documentation supports JSON Schema/Pydantic through the maintained `google-genai` SDK.
 
 Runtime account/project access remains authoritative. The implementation never silently substitutes a model.
 
@@ -19,7 +19,7 @@ Default values:
 
 ```text
 AGENT_MODE=offline
-GEMINI_MODEL=gemini-3.8-flash
+GEMINI_MODEL=gemini-3.1-flash-lite
 GEMINI_API_KEY=<absent>
 ```
 
@@ -38,7 +38,7 @@ The service health response exposes only `geminiKeyConfigured: false`, never a v
 
    ```text
    AGENT_MODE=gemini
-   GEMINI_MODEL=gemini-3.8-flash
+   GEMINI_MODEL=gemini-3.1-flash-lite
    GEMINI_API_KEY=<developer supplies locally>
    ```
 
@@ -54,9 +54,9 @@ The service health response exposes only `geminiKeyConfigured: false`, never a v
 
 - The model receives at most the teacher message, minimal workspace/screen/job/note summaries and current capability descriptions.
 - It receives no Backend endpoint catalog, provider credential, full exam, answer key, arbitrary LocalStorage or attachment content.
-- Output is constrained to `GeminiDecision`, then revalidated against the current callable registry.
+- Output is constrained to `GeminiPlan` (maximum four decisions), then revalidated against the current callable registry.
 - The model has no tools and cannot invoke the UI or Backend.
-- Inference timeout is 15 seconds; output is capped at 500 tokens; temperature is 0.1.
+- Each attempt is limited to 15 seconds; one selected-5xx retry has a 32-second total budget. Output is capped at 900 tokens; temperature is 0.1.
 - In Gemini mode, every natural-language turn calls Gemini before any action proposal is returned.
 - Missing key, 401/403, 404, 429, timeout and other provider errors return explicit HTTP errors; there is no deterministic fallback.
 - Offline mode returns `provider="offline"` and is never represented as Gemini-powered.
@@ -64,7 +64,7 @@ The service health response exposes only `geminiKeyConfigured: false`, never a v
 
 ## Live smoke result
 
-`BLOCKED_EXTERNAL / NOT RUN`: no developer key or explicit live-inference opt-in was supplied during this implementation. No Gemini quota was consumed and no claim of live model success is made. The fake-provider, missing-key, quota and invented-action tests passed offline.
+`LIVE VERIFIED`: direct Agent interpretation returned HTTP 200 in 4.83 seconds, and a Vite-proxied interpretation returned HTTP 200 in 2.77 seconds with `provider=gemini`. One separately authorized Backend job completed 22 questions using the same model through independently configured Backend credentials.
 
 ## Secret checks performed
 

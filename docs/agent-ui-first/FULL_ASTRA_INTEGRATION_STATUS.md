@@ -215,11 +215,11 @@ These labels describe the current integrated application, not roadmap promises.
 | Agent UI proposals | **REAL** | Registered capabilities, context validation, and safe setup proposal are implemented. |
 | React action execution and receipts | **REAL** | Existing executor/tests and prior browser observation; no Backend bypass. |
 | React Backend adapter | **REAL** | `VITE_SERVICE_MODE=api`; health and catalog succeeded through `/api`. |
-| Backend routes, JobManager, MAS, RAG, validation, preview, approval, export | **REAL code path; live generation unverified** | Existing merged implementation and focused tests; no live job in this task. |
-| Agent Gemini mode | **PARTIAL / live unverified** | Real SDK invocation and fail-closed tests exist; no inference was authorized. |
-| Backend Gemini-compatible provider | **PARTIAL / live unverified** | Existing adapter compatibility is tested offline; quota/model access not exercised. |
-| Current Agent runtime used for connectivity | **MOCK/OFFLINE-LABELLED** | Deterministic offline interpretation, explicitly reported as `provider=offline`. |
-| Current Backend provider used for connectivity | **MOCK** | Process override `EXAM_PROVIDER=mock`; no generation was submitted. |
+| Backend routes, JobManager, MAS, RAG, validation, preview, approval, export | **REAL; live generation verified** | Job `dc23a558-a670-4ff6-9172-585295133a2e` completed 22 questions on 2026-11-19. |
+| Agent Gemini mode | **REAL / LIVE VERIFIED** | Direct and Vite-proxied structured interpretations succeeded with `gemini-3.1-flash-lite`. |
+| Backend Gemini-compatible provider | **REAL / LIVE VERIFIED** | Provider-only schema call and eight-call generation pipeline completed. |
+| Current Agent runtime used for connectivity | **REAL GEMINI** | `provider=gemini`; configured model `gemini-3.1-flash-lite`. |
+| Current Backend provider used for connectivity | **REAL GEMINI-COMPATIBLE** | `EXAM_PROVIDER=chat_completions`; one complete generation job observed. |
 | Agent starts generation directly | **UNSUPPORTED** | Agent may open setup only; teacher must confirm in the existing UI. |
 | Agent directly calls Backend business APIs | **UNSUPPORTED / prohibited** | No business client exists in Agent. |
 | Word/DOCX, V-ACT UI flow, uploads, web search, question focus | **UNSUPPORTED** | Controls/actions remain unavailable rather than simulated. |
@@ -227,9 +227,9 @@ These labels describe the current integrated application, not roadmap promises.
 
 ## Remaining blockers
 
-1. A live Gemini turn still needs explicit authorization plus verification of the configured project/model quota.
-2. A complete Backend generation job still needs separate explicit authorization after quota/cost review.
-3. No successful real generation job has been observed, so end-to-end generated exam quality and final job completion remain unverified.
+1. Future availability still depends on externally managed Google project quota/billing.
+2. The generated exam remains a draft requiring teacher review and approval.
+3. `gemini-3.8-flash` was accessible but too slow for this local flow; the explicit configured model is now `gemini-3.1-flash-lite`.
 4. A fresh browser automation pass requires either a working Windows Computer Use helper or installation of the existing optional Playwright tooling. This is not required for the current HTTP wiring result.
 5. Production authentication, tenancy, secret management, and deployment proxy configuration remain outside this local-development integration.
 6. The official approved Application Knowledge artifact remains external and must not be invented.
