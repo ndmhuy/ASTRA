@@ -46,6 +46,7 @@ export interface ExamSetupSnapshot {
 }
 
 export interface PendingAgentConfirmation {
+  binding?: string;
   id: string;
   kind: 'generation' | 'revision' | 'approval' | 'ui_action';
   workspaceId: string;

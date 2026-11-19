@@ -6,6 +6,8 @@ import { UI_CAPABILITY_MANIFEST } from '../src/agent/capabilities.ts';
 import { CALLABLE_CAPABILITIES, capabilityCatalog } from '../src/agent/capabilities.ts';
 import { ExamSessions } from '../src/state/examSessions.ts';
 import { AgentTaskController } from '../src/agent/orchestrator.ts';
+import { isExplicitConfirmation } from '../src/agent/orchestrator.ts';
+import { confirmationBinding, confirmationValid, actionScope } from '../src/agent/confirmation.ts';
 
 function baseRaw(overrides = {}) {
   return {
@@ -43,6 +45,24 @@ test('context version changes only when sanitized UI state changes', () => {
   assert.equal(JSON.stringify(changed).includes('GEMINI_API_KEY'), false);
 });
 
+test('cancellation while awaiting a handler prevents the next dispatch', async () => {
+  let release;
+  const controller = new AgentTaskController();
+  const tracker = new UiContextTracker();
+  let raw = baseRaw();
+  const capture = () => tracker.capture(raw);
+  let calls=0;
+  const executor = new UiActionExecutor(capture, {'ui.sidebar.set_collapsed': async p => { calls++; await new Promise(r => {release=r;}); raw={...raw,sidebarCollapsed:p.collapsed}; }});
+  const proposal={kind:'propose_ui_action',text:'toggle',actionId:'cancel-1',capabilityId:'ui.sidebar.set_collapsed',expectedStateVersion:1,params:{collapsed:true},target:{}};
+  const run=controller.execute('test',null,[proposal,{...proposal,actionId:'cancel-2',params:{collapsed:false}}],executor,capture);
+  const duplicate=executor.execute(proposal);
+  controller.cancel(); release();
+  const result=await run;
+  assert.equal(result.task.taskStatus,'cancelled');
+  assert.equal((await duplicate).duplicate,true);
+  assert.equal(calls,1);
+});
+
 test('answer-view contract is published and executor observes the review transition', async () => {
   let raw = baseRaw({ workspaceId: 'w', screen: 'workspace', examId: 'e', examRevision: 1 });
   const tracker = new UiContextTracker();
@@ -59,9 +79,20 @@ test('approval cannot execute without a matching revision-bound confirmation', (
   const raw = baseRaw({ workspaceId: 'w', examId: 'e', examRevision: 2, contentHash: 'h', preview: { status: 'ready', revision: 2, opened: true } });
   const action = CALLABLE_CAPABILITIES['exam.approve'];
   assert.equal(action.validate({}, raw), 'CONFIRMATION_REQUIRED');
-  raw.pendingConfirmation = { id: 'c', capabilityId: 'exam.approve', workspaceId: 'w', revision: 2, contentHash: 'h', params: {} };
+  raw.pendingConfirmation = { id: 'c', kind: 'ui_action', createdAt: new Date().toISOString(), binding: confirmationBinding(raw,'ui_action'), capabilityId: 'exam.approve', workspaceId: 'w', revision: 2, contentHash: 'h', params: {} };
   assert.equal(action.validate({ confirmationId: 'c' }, raw), null);
   assert.equal(action.validate({ confirmationId: 'c' }, { ...raw, examRevision: 3 }), 'CONFIRMATION_REQUIRED');
+});
+
+test('confirmation binds the actual draft, expires, and accepts Vietnamese consent', () => {
+  const ctx = baseRaw({ workspaceId:'w', setup:{status:'ready',selectedFormatId:'thpt-math',prompt:'A',formats:[]} });
+  ctx.pendingConfirmation = {id:'c',kind:'generation',workspaceId:'w',createdAt:new Date().toISOString(),binding:confirmationBinding(ctx,'generation')};
+  assert.equal(confirmationValid(ctx),true);
+  assert.equal(confirmationValid({...ctx,setup:{...ctx.setup,prompt:'B'}}),false);
+  assert.equal(confirmationValid({...ctx,pendingConfirmation:{...ctx.pendingConfirmation,createdAt:'2000-01-01T00:00:00Z'}}),false);
+  assert.equal(isExplicitConfirmation('đồng ý'),true);
+  assert.equal(isExplicitConfirmation('không đồng ý'),false);
+  assert.equal(actionScope({...ctx,activeJob:{id:'j',percent:10}}),actionScope({...ctx,activeJob:{id:'j',percent:80}}));
 });
 
 test('task controller rebases every dependent step on fresh UI state and records receipts', async () => {

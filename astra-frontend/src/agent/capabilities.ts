@@ -1,4 +1,5 @@
 import type { UiCapabilitySummary, UiContextSnapshot } from './contracts';
+import { confirmationValid, stableValue } from './confirmation.ts';
 
 export interface CapabilityDefinition extends UiCapabilitySummary {
   validate: (params: Record<string, unknown>, context: UiContextSnapshot) => string | null;
@@ -66,7 +67,7 @@ export const CALLABLE_CAPABILITIES: Record<string, CapabilityDefinition> = {
     validate: (params, context) => {
       const pending = context.pendingConfirmation;
       if (!pending || pending.kind !== 'generation' || pending.workspaceId !== context.workspaceId) return 'CONFIRMATION_REQUIRED';
-      if (params.confirmationId !== pending.id) return 'CONFIRMATION_REQUIRED';
+      if (params.confirmationId !== pending.id || !confirmationValid(context)) return 'CONFIRMATION_REQUIRED';
       if (context.activeModal !== 'exam_setup' || context.setup.status !== 'ready' || !context.setup.selectedFormatId) return 'SETUP_NOT_READY';
       if (context.activeJob) return 'GENERATION_ALREADY_RUNNING';
       return null;
@@ -150,7 +151,7 @@ export const CALLABLE_CAPABILITIES: Record<string, CapabilityDefinition> = {
     status: 'available_real', callable: true, requiresConfirmation: true,
     validate: (params, context) => {
       const pending = context.pendingConfirmation;
-      if (!pending || pending.kind !== 'revision' || pending.noteId !== params.noteId || params.confirmationId !== pending.id) return 'CONFIRMATION_REQUIRED';
+      if (!pending || pending.kind !== 'revision' || pending.noteId !== params.noteId || params.confirmationId !== pending.id || !confirmationValid(context)) return 'CONFIRMATION_REQUIRED';
       if (!context.examId || !context.examRevision || context.approved) return 'REVISION_PRECONDITION_FAILED';
       return context.notes.some(note => note.id === params.noteId && note.status === 'approved') ? null : 'NOTE_NOT_APPROVED';
     },
@@ -204,9 +205,9 @@ for (const [id, spec] of Object.entries(EXTRA_ACTIONS)) {
     validate: (p,c) => {
       if (spec.consequential) {
         const pending = c.pendingConfirmation;
-        if (!pending || pending.capabilityId !== id || pending.id !== p.confirmationId || pending.workspaceId !== c.workspaceId || pending.revision !== c.examRevision || pending.contentHash !== c.contentHash) return 'CONFIRMATION_REQUIRED';
+        if (!pending || pending.capabilityId !== id || pending.id !== p.confirmationId || !confirmationValid(c)) return 'CONFIRMATION_REQUIRED';
         const { confirmationId: _id, ...args } = p;
-        if (JSON.stringify(args) !== JSON.stringify(pending.params || {})) return 'CONFIRMATION_MISMATCH';
+        if (stableValue(args) !== stableValue(pending.params || {})) return 'CONFIRMATION_MISMATCH';
       }
       return spec.validate(p,c);
     }, verify: spec.verify,
@@ -225,6 +226,13 @@ export function capabilityCatalog(context: Omit<UiContextSnapshot, 'stateVersion
     if (['exam.approve', 'exam.export.download', 'exam.preview.retry', 'ui.exam.view_mode'].includes(item.id) && !context.examId) reason = 'EXAM_NOT_READY';
     if (item.id === 'ui.exam.configure_setup' && context.setup.status !== 'ready') reason = 'CATALOG_NOT_READY';
     if (item.id === 'ui.note.add' && !context.activeJob && !context.examId) reason = 'NO_ACTIVE_EXAM';
+    if (['ui.editor.fill','ui.editor.close','exam.editor.save'].includes(item.id) && context.activeModal !== 'question_editor') reason = 'EDITOR_NOT_OPEN';
+    if (item.id === 'ui.exam.close_setup' && context.activeModal !== 'exam_setup') reason = 'SETUP_NOT_OPEN';
+    if (item.id === 'exam.approve' && context.examId && (!context.preview?.opened || context.preview.status !== 'ready')) reason = 'PREVIEW_REVIEW_REQUIRED';
+    if (item.id === 'exam.export.download' && context.examId && !context.approved) reason = 'APPROVAL_REQUIRED';
+    if (item.id === 'exam.generate.start' && context.activeJob) reason = 'GENERATION_ALREADY_RUNNING';
+    if (item.id === 'ui.note.approve' && !context.notes.some(n => n.status === 'pending')) reason = 'NOTE_NOT_FOUND';
+    if (item.id === 'exam.note.apply' && !context.notes.some(n => n.status === 'approved')) reason = 'NOTE_NOT_APPROVED';
     return { ...item, availability: reason ? 'SUPPORTED_BUT_UNAVAILABLE_NOW' : item.requiresConfirmation ? 'REQUIRES_CONFIRMATION' : 'SUPPORTED_AND_AVAILABLE', ...(reason ? { unavailableReason: reason } : {}) };
   });
 }

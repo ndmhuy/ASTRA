@@ -19,6 +19,9 @@ try {
       const mode=body.message==='Quay lại đề'?'paper':'review';
       const specs=body.message==='Thiết lập trước khi tạo'
         ? [['ui.exam.open_setup',{}],['ui.exam.configure_setup',{formatId:format.id,prompt:'Synthetic intake draft'}]]
+        : body.message==='Sửa bản nháp câu 1' ? [['ui.question.open_editor',{questionId:1}],['ui.editor.fill',{patch:{stem:'Updated synthetic question'}}]]
+        : body.message==='Đóng editor' ? [['ui.editor.close',{}]]
+        : body.message==='Mở lời giải' ? [['ui.details.set_expanded',{group:'questions',expanded:true}]]
         : [['ui.exam.view_mode',{mode}]];
       if(body.message.includes('câu này')) specs.push(['ui.question.focus',{questionId:1}]);
       assert.deepEqual(ctx.capabilities.find(c=>c.id==='ui.exam.view_mode').parameterSchema.mode,['paper','review','pdf']);
@@ -43,6 +46,14 @@ try {
   const task=await page.evaluate(()=>JSON.parse(localStorage.getItem('astra.sessions.v1'))[0].agentTask);
   assert.equal(task.taskStatus,'completed'); assert.equal(task.completedSteps.length,2);
   assert.equal(task.lastExecutionReceipt.status,'success'); assert.deepEqual(errors,[]);
+  await composer.fill('Mở lời giải'); await composer.press('Enter');
+  await page.waitForFunction(()=>document.querySelector('.question-review')?.open);
+  await composer.fill('Sửa bản nháp câu 1'); await composer.press('Enter');
+  await page.waitForFunction(()=>document.querySelector('.integration-editor textarea')?.value==='Updated synthetic question');
+  assert.equal(await page.locator('.integration-editor textarea').first().inputValue(),'Updated synthetic question');
+  // Exercise the real editor close button; no save or model inference.
+  await page.locator('.integration-editor button').last().click();
+  await page.waitForFunction(()=>!document.querySelector('.integration-editor'));
   await composer.fill('Thiết lập trước khi tạo'); await composer.press('Enter');
   await page.waitForFunction(()=>JSON.parse(localStorage.getItem('astra.sessions.v1'))[0].agentTask?.taskStatus==='awaiting_confirmation');
   assert.equal(await page.locator('[role="dialog"] input[type="radio"]:checked').count(),1);
@@ -50,5 +61,7 @@ try {
   assert.equal(setupTask.completedSteps.length,2);
   assert.equal(setupTask.lastExecutionReceipt.status,'success');
   assert.deepEqual(errors,[]);
-  console.log(JSON.stringify({browser:'chrome',turns:4,answers:'passed',questionFocus:'passed',setup:'awaiting_confirmation',setupReceipts:2,liveCalls:0}));
+  await page.locator('.agent-confirm-toast .button-secondary').click();
+  assert.equal(await page.locator('.agent-confirm-toast').count(),0);
+  console.log(JSON.stringify({browser:'chrome',turns:6,answers:'passed',questionFocus:'passed',editorDraft:'passed',disclosures:'passed',cancel:'passed',setup:'awaiting_confirmation',setupReceipts:2,liveCalls:0}));
 } finally { await browser.close(); }

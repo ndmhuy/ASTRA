@@ -17,6 +17,8 @@ function signature(proposal: UiActionProposal): string {
 function now(): string { return new Date().toISOString(); }
 
 export class AgentTaskController {
+  private epoch = 0;
+  cancel() { this.epoch += 1; }
   async execute(
     teacherGoal: string,
     workspaceId: string | null,
@@ -26,6 +28,7 @@ export class AgentTaskController {
     previous: AgentTaskState | null = null,
     onUpdate: (task: AgentTaskState) => void = () => undefined,
   ): Promise<{ task: AgentTaskState; receipts: UiExecutionReceipt[] }> {
+    const epoch = this.epoch;
     const bounded = proposals.slice(0, MAX_ACTIONS_PER_TURN);
     const taskId = previous && previous.taskStatus === 'awaiting_confirmation'
       ? previous.taskId
@@ -67,6 +70,7 @@ export class AgentTaskController {
     const seen = new Set<string>();
     const receipts: UiExecutionReceipt[] = [];
     for (let index = 0; index < bounded.length; index += 1) {
+      if (epoch !== this.epoch) { task.taskStatus = 'cancelled'; task.blockingReason = 'TEACHER_CANCELLED'; break; }
       const original = bounded[index];
       const step = task.plan[index];
       const actionSignature = signature(original);
@@ -111,6 +115,10 @@ export class AgentTaskController {
       const proposal = { ...original, expectedStateVersion: current.stateVersion };
       const receipt = await executor.execute(proposal);
       receipts.push(receipt);
+      if (epoch !== this.epoch) {
+        task = { ...task, taskStatus: 'cancelled', blockingReason: 'CANCELLED_AFTER_DISPATCH', lastExecutionReceipt: receipt, updatedAt: now() };
+        onUpdate(task); break;
+      }
       step.receipt = receipt;
       step.status = receipt.status === 'success' ? 'completed' : receipt.status === 'skipped' ? 'skipped' : 'failed';
       task = {
@@ -148,6 +156,6 @@ export class AgentTaskController {
 }
 
 export function isExplicitConfirmation(message: string): boolean {
-  const normalized = message.trim().toLocaleLowerCase('vi').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const normalized = message.trim().toLocaleLowerCase('vi').replace(/đ/g, 'd').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   return /^(xac nhan|dong y|bat dau|tien hanh|ap dung|duyet)(\s+(tao de|ghi chu|chinh sua|ban nay))?[.!]?$/u.test(normalized);
 }

@@ -19,6 +19,7 @@ import { UI_CAPABILITY_MANIFEST, capabilityCatalog } from './agent/capabilities'
 import { UiContextTracker, type UnversionedUiContext } from './agent/context';
 import { UiActionExecutor } from './agent/executor';
 import { AgentTaskController, isExplicitConfirmation } from './agent/orchestrator';
+import { actionScope, confirmationBinding, confirmationValid } from './agent/confirmation';
 import type { PendingAgentConfirmation, UiActionProposal, UiContextSnapshot } from './agent/contracts';
 import './styles/workspace.css';
 import './styles/classroom.css';
@@ -57,9 +58,11 @@ export const App: React.FC = () => {
   const [contextTracker] = useState(() => new UiContextTracker());
   const executorRef = useRef<UiActionExecutor | null>(null);
   const [taskController] = useState(() => new AgentTaskController());
+  const turnEpoch = useRef(0);
   const runtimeRef = useRef({ screen: 'start' as 'start' | 'workspace', activeId: null as string | null, showQuickModal: false, controlsCollapsed: false, viewMode: 'paper' as ExamCanvasViewMode, editor: null as typeof editor, selectedQuestionId: null as number | null, pendingConfirmation: null as PendingAgentConfirmation | null, setupState });
   const closeQuickModal = useCallback(() => { setShowQuickModal(false); setSetupState(value => ({ ...value, status: 'closed' })); setPendingConfirmation(null); }, []);
   const handleSetupState = useCallback((value: { status: 'loading' | 'ready' | 'error'; formats: ExamFormat[]; selectedId: string; error?: string }) => {
+    setPendingConfirmation(pending => value.selectedId !== runtimeRef.current.setupState.selectedId ? null : pending);
     setSetupState(current => ({ ...current, ...value }));
   }, []);
   const active = sessions.find(session => session.id === activeId);
@@ -78,7 +81,7 @@ export const App: React.FC = () => {
     runtimeRef.current = { screen, activeId, showQuickModal, controlsCollapsed, viewMode, editor, selectedQuestionId, pendingConfirmation, setupState };
   }, [screen, activeId, showQuickModal, controlsCollapsed, viewMode, editor, selectedQuestionId, pendingConfirmation, setupState]);
   const cancelTransition = () => { composerOrigin.current = null; if (transitionTimer.current) clearTimeout(transitionTimer.current); setLeavingStart(false); setRevealingWorkspace(false); };
-  const openSession = (id: string) => { cancelTransition(); setActiveId(id); setScreen('workspace'); };
+  const openSession = (id: string) => { cancelTransition(); if (runtimeRef.current.activeId !== id) { setEditor(null); setSelectedQuestionId(null); setPendingConfirmation(null); } setActiveId(id); setScreen('workspace'); };
   const newExam = () => { cancelTransition(); setActiveId(null); setConfigureId(null); setLandingDraft(''); attachedFiles.current = []; setShowQuickModal(false); setPendingConfirmation(null); setSelectedQuestionId(null); setSetupState({ status: 'closed', formats: [], selectedId: '', prompt: '' }); setScreen('start'); };
   const revealSession = (id: string) => {
     if (screen === 'workspace') { openSession(id); return; }
@@ -249,7 +252,7 @@ export const App: React.FC = () => {
         store.invalidatePreview(session.id); await store.refresh(session.id); setPendingConfirmation(null);
       },
       'ui.editor.close': () => setEditor(null),
-      'ui.task.cancel': () => { setPendingConfirmation(null); const id = runtimeRef.current.activeId; if (id) store.cancelAgentTask(id); },
+      'ui.task.cancel': () => { taskController.cancel(); setPendingConfirmation(null); const id = runtimeRef.current.activeId; if (id) store.cancelAgentTask(id); },
       'ui.chat.draft': params => { store.setDraft(runtimeRef.current.activeId!, String(params.text)); return { draftUpdated: true }; },
       'ui.chat.branch': params => { const id = store.branchAtMessage(runtimeRef.current.activeId!, String(params.messageId)); if (!id) throw new Error('Branch failed'); openSession(id); return { workspaceId: id }; },
       'ui.chat.retract': params => store.retractMessage(runtimeRef.current.activeId!, String(params.messageId)),
@@ -270,6 +273,7 @@ export const App: React.FC = () => {
         const ctx = captureContext();
         if (!ctx.workspaceId) throw new Error('No active workspace');
         const confirmation: PendingAgentConfirmation = { id: crypto.randomUUID(), kind: 'ui_action', workspaceId: ctx.workspaceId, summary: `Confirm ${String(params.capabilityId)}: ${JSON.stringify(params.actionParams || {})}`, capabilityId: String(params.capabilityId), params: (params.actionParams || {}) as Record<string,unknown>, revision: ctx.examRevision, contentHash: ctx.contentHash, createdAt: new Date().toISOString() };
+        confirmation.binding = confirmationBinding(ctx, confirmation.kind);
         setPendingConfirmation(confirmation); return { pendingConfirmation: 'ui_action', confirmationId: confirmation.id };
       },
       'ui.navigate': params => {
@@ -307,6 +311,8 @@ export const App: React.FC = () => {
           summary: `Tạo đề theo định dạng ${formatId}`, createdAt: new Date().toISOString(),
         };
         setSetupState(value => ({ ...value, selectedId: formatId, prompt }));
+        const ctx = captureContext();
+        confirmation.binding = confirmationBinding({ ...ctx, setup: { ...ctx.setup, selectedFormatId: formatId, prompt } }, confirmation.kind);
         setPendingConfirmation(confirmation);
         return { pendingConfirmation: 'generation', confirmationId: confirmation.id };
       },
@@ -331,6 +337,7 @@ export const App: React.FC = () => {
         const question = session?.questions.find(item => item.id === Number(params.questionId));
         if (!session?.jobId || !question) throw new Error('Question is not available');
         setSelectedQuestionId(question.id);
+        setPendingConfirmation(null);
         setEditor({ sessionId: session.id, jobId: session.jobId, question });
       },
       'ui.sidebar.set_collapsed': params => { setControlsCollapsed(params.collapsed === true); },
@@ -362,6 +369,7 @@ export const App: React.FC = () => {
           id: crypto.randomUUID(), kind: 'revision', workspaceId, noteId: String(params.noteId),
           summary: `Áp dụng ghi chú ${String(params.noteId)}`, createdAt: new Date().toISOString(),
         };
+        confirmation.binding = confirmationBinding(captureContext(), confirmation.kind);
         setPendingConfirmation(confirmation);
         return { pendingConfirmation: 'revision', confirmationId: confirmation.id };
       },
@@ -380,10 +388,12 @@ export const App: React.FC = () => {
     let messageSessionId = initialSessionId;
     if (messageSessionId) store.sendMessage(messageSessionId, content);
     setAgentBusy(true);
+    const epoch = turnEpoch.current;
     try {
       const requestedContext = captureContext();
       const response = await agentClient.interpret(content, requestedContext);
-      if (captureContext().stateVersion !== requestedContext.stateVersion) throw new AgentTransportError('STALE_CONTEXT', 'Giao diện đã thay đổi trong lúc Agent xử lý. Hãy gửi lại yêu cầu cho trạng thái hiện tại.');
+      if (epoch !== turnEpoch.current) return;
+      if (actionScope(captureContext()) !== actionScope(requestedContext)) throw new AgentTransportError('STALE_CONTEXT', 'Giao diện đã thay đổi trong lúc Agent xử lý. Hãy gửi lại yêu cầu cho trạng thái hiện tại.');
       let proposals = response.decisions.filter((decision): decision is UiActionProposal => decision.kind === 'propose_ui_action');
       // A model-visible token is not authorization. Only this turn's explicit
       // teacher confirmation may attach the pending token below.
@@ -394,6 +404,7 @@ export const App: React.FC = () => {
       const plain = response.decisions.filter(decision => decision.kind !== 'propose_ui_action');
       const pending = runtimeRef.current.pendingConfirmation;
       if (pending && isExplicitConfirmation(content)) {
+        if (!confirmationValid(captureContext())) { setPendingConfirmation(null); throw new AgentTransportError('CONFIRMATION_EXPIRED', 'Nội dung hoặc đối tượng đã thay đổi. Hãy chuẩn bị lại thao tác trước khi xác nhận.'); }
         const capabilityId = pending.kind === 'generation' ? 'exam.generate.start' : pending.kind === 'revision' ? 'exam.note.apply' : pending.kind === 'ui_action' ? pending.capabilityId || '' : '';
         if (capabilityId) {
           const existing = proposals.find(proposal => proposal.capabilityId === capabilityId);
@@ -493,9 +504,9 @@ export const App: React.FC = () => {
                   onPrepareEdit={note => store.setDraft(active.id, `Sửa ghi chú ${note.id}: ${note.requestedChange}`)}
                   onApprove={noteId => {
                     if (!store.approveNote(active.id, noteId)) return;
-                    setPendingConfirmation({ id: crypto.randomUUID(), kind: 'revision', workspaceId: active.id, noteId, summary: `Áp dụng ghi chú ${noteId}`, createdAt: new Date().toISOString() });
+                    setPendingConfirmation({ id: crypto.randomUUID(), kind: 'revision', workspaceId: active.id, noteId, summary: `Áp dụng ghi chú ${noteId}`, createdAt: new Date().toISOString(), binding: confirmationBinding(captureContext(), 'revision') });
                   }}
-                  onApply={noteId => { void store.applyNote(active.id, noteId).then(() => setPendingConfirmation(null)); }} />
+                  onApply={noteId => { void store.applyNote(active.id, noteId).then(() => setPendingConfirmation(null)).catch(error => store.handleActionError(active.id, error)); }} />
               </>
             ),
             right: (
@@ -585,7 +596,7 @@ export const App: React.FC = () => {
         <p>{pendingConfirmation.summary}</p>
         <div className="agent-confirm-actions">
           <button className="button-primary" disabled={agentBusy} onClick={() => { void processAgentTurn(pendingConfirmation.workspaceId, 'xac nhan'); }}>Xác nhận tác vụ</button>
-          <button className="button-secondary" disabled={agentBusy} onClick={() => { setPendingConfirmation(null); store.cancelAgentTask(pendingConfirmation.workspaceId); }}>Hủy tác vụ</button>
+          <button className="button-secondary" onClick={() => { turnEpoch.current += 1; taskController.cancel(); setPendingConfirmation(null); store.cancelAgentTask(pendingConfirmation.workspaceId); }}>Hủy tác vụ</button>
         </div>
       </aside>}
       {showQuickModal && (

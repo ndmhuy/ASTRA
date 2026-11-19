@@ -326,6 +326,9 @@ export class ExamSessions {
     if (!session?.jobId || session.status !== 'complete' || !session.package || session.package.approved || !revision || !note || !question) {
       throw Object.assign(new Error('Revision preconditions are not satisfied'), { code: 'revision_precondition_failed' });
     }
+    if (note.jobId !== session.jobId || note.examId !== session.package.examId || note.examRevision !== revision || note.stableQuestionId !== (question.stableId || null)) {
+      throw Object.assign(new Error('The approved note belongs to another exam revision; review it again'), { code: 'stale_note' });
+    }
     this.update(id, item => ({ ...item, agentNotes: item.agentNotes.map(value => value.id === noteId ? { ...value, status: 'applying', updatedAt: new Date().toISOString() } : value) }));
     try {
       await this.service.regenerateQuestion(session.jobId, question.id, note.requestedChange, revision);

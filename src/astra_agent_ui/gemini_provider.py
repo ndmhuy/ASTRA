@@ -99,6 +99,19 @@ class GeminiInterpretationProvider:
             "viewMode": context.view_mode,
             "setup": context.setup,
             "pendingConfirmation": context.pending_confirmation,
+            "activeTask": {
+                key: context.active_task.get(key)
+                for key in (
+                    "taskId",
+                    "teacherGoal",
+                    "taskStatus",
+                    "pendingSteps",
+                    "blockingReason",
+                    "lastExecutionReceipt",
+                )
+            }
+            if context.active_task
+            else None,
             "capabilities": capabilities,
         }
         system_instruction = (

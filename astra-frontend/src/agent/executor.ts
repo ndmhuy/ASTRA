@@ -5,6 +5,7 @@ export type UiActionHandler = (params: Record<string, unknown>) => Promise<Recor
 
 export class UiActionExecutor {
   private receipts = new Map<string, UiExecutionReceipt>();
+  private inFlight = new Map<string, Promise<UiExecutionReceipt>>();
   private getContext: () => UiContextSnapshot;
   private handlers: Record<string, UiActionHandler>;
   private settle: () => Promise<void>;
@@ -20,6 +21,14 @@ export class UiActionExecutor {
   }
 
   async execute(proposal: UiActionProposal): Promise<UiExecutionReceipt> {
+    const running = this.inFlight.get(proposal.actionId);
+    if (running) return { ...await running, duplicate: true };
+    const work = this.executeOnce(proposal);
+    this.inFlight.set(proposal.actionId, work);
+    try { return await work; } finally { this.inFlight.delete(proposal.actionId); }
+  }
+
+  private async executeOnce(proposal: UiActionProposal): Promise<UiExecutionReceipt> {
     const duplicate = this.receipts.get(proposal.actionId);
     if (duplicate) return { ...duplicate, duplicate: true };
     const before = this.getContext();
