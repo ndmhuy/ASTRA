@@ -15,7 +15,7 @@ import { AgentNotes } from './components/AgentNotes';
 import { examService } from './services/examService';
 import { ExamSessions } from './state/examSessions';
 import { AgentClient, AgentTransportError } from './agent/client';
-import { UI_CAPABILITY_MANIFEST } from './agent/capabilities';
+import { UI_CAPABILITY_MANIFEST, capabilityCatalog } from './agent/capabilities';
 import { UiContextTracker, type UnversionedUiContext } from './agent/context';
 import { UiActionExecutor } from './agent/executor';
 import { AgentTaskController, isExplicitConfirmation } from './agent/orchestrator';
@@ -46,6 +46,9 @@ export const App: React.FC = () => {
   const [configureId, setConfigureId] = useState<string | null>(null);
   const [editor, setEditor] = useState<{ sessionId: string; jobId: string; question: QuestionItem } | null>(null);
   const [selectedQuestionId, setSelectedQuestionId] = useState<number | null>(null);
+  const [disclosures, setDisclosures] = useState<{ questions?: boolean; warnings?: boolean }>({});
+  const disclosuresRef = useRef(disclosures);
+  useLayoutEffect(() => { disclosuresRef.current = disclosures; }, [disclosures]);
   const [pendingConfirmation, setPendingConfirmation] = useState<PendingAgentConfirmation | null>(null);
   const [setupState, setSetupState] = useState<{ status: 'closed' | 'loading' | 'ready' | 'error'; formats: ExamFormat[]; selectedId: string; prompt: string; error?: string }>({ status: 'closed', formats: [], selectedId: '', prompt: '' });
   const [approving, setApproving] = useState(false);
@@ -194,12 +197,81 @@ export const App: React.FC = () => {
       sessions: currentSessions.slice(0, 50).map(session => ({ id: session.id, title: session.title, status: session.status, createdAt: session.createdAt })),
       notes: (current?.agentNotes || []).map(note => ({ id: note.id, targetQuestion: note.targetQuestion, stableQuestionId: note.stableQuestionId, requestedChange: note.requestedChange, status: note.status })),
       capabilities: UI_CAPABILITY_MANIFEST,
+      messages: (current?.messages || []).slice(-50).map(message => ({ id: message.id, role: message.role })),
+      editorDraft: runtime.editor ? { ...runtime.editor.question } : null,
+      composerDraft: current?.draft || '',
+      disclosures: disclosuresRef.current,
     };
   };
-  const captureContext = (): UiContextSnapshot => contextTracker.capture(unversionedContext());
+  const captureContext = (): UiContextSnapshot => {
+    const raw = unversionedContext();
+    return contextTracker.capture({ ...raw, capabilities: capabilityCatalog(raw) });
+  };
 
   if (!executorRef.current) {
     executorRef.current = new UiActionExecutor(captureContext, {
+      'ui.details.set_expanded': params => { setDisclosures(value => ({ ...value, [String(params.group)]: params.expanded === true })); return { disclosureUpdated: true }; },
+      'ui.chat.restore': params => {
+        const session = store.getSnapshot().find(s => s.id === runtimeRef.current.activeId);
+        const message = session?.messages.find(m => m.id === params.messageId);
+        if (!session || !message) throw new Error('Message missing');
+        store.setDraft(session.id, message.content); return { draftText: message.content };
+      },
+      'ui.chat.copy': async params => {
+        const message = store.getSnapshot().find(s => s.id === runtimeRef.current.activeId)?.messages.find(m => m.id === params.messageId);
+        if (!message) throw new Error('Message missing');
+        await navigator.clipboard.writeText(message.content); return { clipboardAcknowledged: true };
+      },
+      'ui.editor.fill': params => {
+        const current = runtimeRef.current.editor;
+        if (!current) throw new Error('Editor not open');
+        const patch = params.patch as Partial<QuestionItem>;
+        for (const key of ['stem', 'key', 'explanation'] as const) {
+          if (key in patch && (typeof patch[key] !== 'string' || patch[key]!.length > 10000)) throw new Error('Invalid editor text');
+        }
+        if ('choices' in patch && (!patch.choices || !['A','B','C','D'].every(key => typeof patch.choices?.[key as keyof typeof patch.choices] === 'string'))) throw new Error('Invalid choices');
+        if ('statements' in patch && (!Array.isArray(patch.statements) || patch.statements.length !== current.question.statements?.length || patch.statements.some(s => !s || typeof s.text !== 'string' || typeof s.answer !== 'boolean' || typeof s.solution !== 'string'))) throw new Error('Invalid statements');
+        setPendingConfirmation(null);
+        setEditor({ ...current, question: { ...current.question, ...patch } });
+        return { draftUpdated: true };
+      },
+      'exam.editor.save': async () => {
+        const current = runtimeRef.current.editor;
+        if (!current) throw new Error('Editor not open');
+        await examService.updateQuestion(current.jobId, current.question);
+        store.invalidatePreview(current.sessionId); await store.refresh(current.sessionId);
+        setEditor(null); setPendingConfirmation(null);
+      },
+      'exam.question.regenerate': async params => {
+        const session = store.getSnapshot().find(s => s.id === runtimeRef.current.activeId);
+        if (!session?.jobId || !session.package?.revision) throw new Error('Revision missing');
+        await examService.regenerateQuestion(session.jobId, Number(params.questionId), String(params.instruction), session.package.revision);
+        store.invalidatePreview(session.id); await store.refresh(session.id); setPendingConfirmation(null);
+      },
+      'ui.editor.close': () => setEditor(null),
+      'ui.task.cancel': () => { setPendingConfirmation(null); const id = runtimeRef.current.activeId; if (id) store.cancelAgentTask(id); },
+      'ui.chat.draft': params => { store.setDraft(runtimeRef.current.activeId!, String(params.text)); return { draftUpdated: true }; },
+      'ui.chat.branch': params => { const id = store.branchAtMessage(runtimeRef.current.activeId!, String(params.messageId)); if (!id) throw new Error('Branch failed'); openSession(id); return { workspaceId: id }; },
+      'ui.chat.retract': params => store.retractMessage(runtimeRef.current.activeId!, String(params.messageId)),
+      'ui.session.delete': params => { const id = String(params.workspaceId); store.remove(id); if (runtimeRef.current.activeId === id) newExam(); },
+      'exam.preview.retry': async () => { await store.requestPreview(runtimeRef.current.activeId!, true); return { previewRequested: true }; },
+      'exam.approve': async () => {
+        const session = store.getSnapshot().find(s => s.id === runtimeRef.current.activeId);
+        if (!session?.jobId || !session.package || !examService.approveExam || !store.canApprove(session.id)) throw new Error('Approval preconditions failed');
+        await examService.approveExam(session.jobId, session.package); await store.refresh(session.id); setPendingConfirmation(null);
+      },
+      'exam.export.download': async params => {
+        const session = store.getSnapshot().find(s => s.id === runtimeRef.current.activeId);
+        if (!session?.jobId || !session.package?.approved || session.artifactChanged) throw new Error('Export preconditions failed');
+        await examService.downloadExport(session.jobId, params.type as 'STUDENT_EXAM' | 'TEACHER_KEY', params.format as 'pdf' | 'tex' | 'json');
+        setPendingConfirmation(null); return { downloadDispatched: true };
+      },
+      'ui.action.prepare': params => {
+        const ctx = captureContext();
+        if (!ctx.workspaceId) throw new Error('No active workspace');
+        const confirmation: PendingAgentConfirmation = { id: crypto.randomUUID(), kind: 'ui_action', workspaceId: ctx.workspaceId, summary: `Confirm ${String(params.capabilityId)}: ${JSON.stringify(params.actionParams || {})}`, capabilityId: String(params.capabilityId), params: (params.actionParams || {}) as Record<string,unknown>, revision: ctx.examRevision, contentHash: ctx.contentHash, createdAt: new Date().toISOString() };
+        setPendingConfirmation(confirmation); return { pendingConfirmation: 'ui_action', confirmationId: confirmation.id };
+      },
       'ui.navigate': params => {
         if (params.destination === 'start') newExam();
         else openSession(String(params.workspaceId));
@@ -210,11 +282,18 @@ export const App: React.FC = () => {
         return { workspaceId };
       },
       'ui.session.open': params => { openSession(String(params.workspaceId)); },
-      'ui.exam.open_setup': () => {
+      'ui.exam.open_setup': async () => {
         const workspaceId = runtimeRef.current.activeId;
         setConfigureId(workspaceId);
         attachedFiles.current = [];
         setShowQuickModal(true);
+        const deadline = Date.now() + 5000;
+        while (Date.now() < deadline) {
+          await new Promise(resolve => requestAnimationFrame(resolve));
+          if (runtimeRef.current.setupState.status === 'ready') return;
+          if (runtimeRef.current.setupState.status === 'error') throw new Error('Catalog unavailable');
+        }
+        throw new Error('Catalog timeout');
       },
       'ui.exam.close_setup': () => closeQuickModal(),
       'ui.exam.configure_setup': params => {
@@ -245,7 +324,7 @@ export const App: React.FC = () => {
         return result;
       },
       'ui.exam.view_mode': params => setViewMode(params.mode as ExamCanvasViewMode),
-      'ui.question.focus': params => { setSelectedQuestionId(Number(params.questionId)); setViewMode('paper'); },
+      'ui.question.focus': params => { setSelectedQuestionId(Number(params.questionId)); },
       'ui.question.open_editor': params => {
         const runtime = runtimeRef.current;
         const session = store.getSnapshot().find(item => item.id === runtime.activeId);
@@ -302,20 +381,28 @@ export const App: React.FC = () => {
     if (messageSessionId) store.sendMessage(messageSessionId, content);
     setAgentBusy(true);
     try {
-      const response = await agentClient.interpret(content, captureContext());
+      const requestedContext = captureContext();
+      const response = await agentClient.interpret(content, requestedContext);
+      if (captureContext().stateVersion !== requestedContext.stateVersion) throw new AgentTransportError('STALE_CONTEXT', 'Giao diện đã thay đổi trong lúc Agent xử lý. Hãy gửi lại yêu cầu cho trạng thái hiện tại.');
       let proposals = response.decisions.filter((decision): decision is UiActionProposal => decision.kind === 'propose_ui_action');
+      // A model-visible token is not authorization. Only this turn's explicit
+      // teacher confirmation may attach the pending token below.
+      proposals = proposals.map(proposal => {
+        const { confirmationId: _ignored, ...params } = proposal.params;
+        return { ...proposal, params };
+      });
       const plain = response.decisions.filter(decision => decision.kind !== 'propose_ui_action');
       const pending = runtimeRef.current.pendingConfirmation;
       if (pending && isExplicitConfirmation(content)) {
-        const capabilityId = pending.kind === 'generation' ? 'exam.generate.start' : pending.kind === 'revision' ? 'exam.note.apply' : '';
+        const capabilityId = pending.kind === 'generation' ? 'exam.generate.start' : pending.kind === 'revision' ? 'exam.note.apply' : pending.kind === 'ui_action' ? pending.capabilityId || '' : '';
         if (capabilityId) {
           const existing = proposals.find(proposal => proposal.capabilityId === capabilityId);
           const confirmed: UiActionProposal = existing ? {
-            ...existing, params: { ...existing.params, confirmationId: pending.id, ...(pending.noteId ? { noteId: pending.noteId } : {}) },
+            ...existing, params: { ...(pending.params || existing.params), confirmationId: pending.id, ...(pending.noteId ? { noteId: pending.noteId } : {}) },
           } : {
             kind: 'propose_ui_action', text: 'Tôi sẽ tiếp tục tác vụ đã chờ xác nhận.', actionId: crypto.randomUUID(),
             capabilityId, expectedStateVersion: captureContext().stateVersion,
-            params: { confirmationId: pending.id, ...(pending.noteId ? { noteId: pending.noteId } : {}) }, target: { workspaceId: pending.workspaceId },
+            params: { ...(pending.params || {}), confirmationId: pending.id, ...(pending.noteId ? { noteId: pending.noteId } : {}) }, target: { workspaceId: pending.workspaceId },
           };
           proposals = existing ? proposals.map(item => item === existing ? confirmed : item) : [confirmed];
         }
@@ -327,6 +414,12 @@ export const App: React.FC = () => {
         if (workspaceId) store.setAgentTask(workspaceId, { ...task, workspaceId });
       });
       const receipts = execution.receipts;
+      if (import.meta.env.DEV) console.debug('[ASTRA action turn]', {
+        turnId: response.turnId, provider: response.provider,
+        plan: proposals.map(p => ({ actionId: p.actionId, capabilityId: p.capabilityId })),
+        receipts: receipts.map(r => ({ actionId: r.actionId, capabilityId: r.capabilityId, status: r.status, observedStateVersion: r.observedStateVersion, errorCode: r.errorCode })),
+        taskStatus: execution.task.taskStatus,
+      });
       const created = receipts.find(receipt => receipt.status === 'success' && typeof receipt.result?.workspaceId === 'string');
       if (!messageSessionId && created) messageSessionId = String(created.result?.workspaceId);
       if (!messageSessionId) {
@@ -339,6 +432,7 @@ export const App: React.FC = () => {
       for (const decision of plain) store.addAssistantMessage(messageSessionId, decision.text);
       proposals.forEach((proposal, index) => {
         const receipt = receipts[index];
+        if (!receipt) return;
         if (receipt.status === 'success') {
           store.addAssistantMessage(messageSessionId!, `${proposal.text} Giao diện đã xác nhận thao tác thành công.`);
         } else {
@@ -388,6 +482,7 @@ export const App: React.FC = () => {
               <>
                 <div className="studio-chat-heading"><div><span className="studio-kicker">KHÔNG GIAN SOẠN ĐỀ</span><h2>Cùng soạn đề</h2></div></div>
                 <div className="session-context"><strong>{active.title}</strong></div>
+                {pendingConfirmation?.workspaceId === active.id && <div role="status" className="agent-notes"><p>{pendingConfirmation.summary}</p><p>Gửi “xác nhận” để tiếp tục hoặc “hủy” để dừng.</p></div>}
                 {(active.status === 'draft' || active.status === 'error') && <div className="session-create-action">
                   {active.error && <p role="alert">{active.error}</p>}
                   <button className="button-primary" onClick={() => { setConfigureId(active.id); setShowQuickModal(true); }}>{active.status === 'error' ? 'Thử tạo lại' : 'Tạo đề từ yêu cầu'}</button>
@@ -407,7 +502,7 @@ export const App: React.FC = () => {
               <>
                 {active.error && <p role="alert">{active.error}</p>}
                 {isGenerating && active.progress && <p role="status">{active.progress.statusMessage} ({active.progress.percent}%)</p>}
-                {!!active.package?.warnings?.length && <details><summary>Cảnh báo nguồn ({active.package.warnings.length})</summary>{active.package.warnings.map((warning, i) => <p key={i}>{warning.questionId}: {warning.message}</p>)}</details>}
+                {!!active.package?.warnings?.length && <details open={disclosures.warnings}><summary>Cảnh báo nguồn ({active.package.warnings.length})</summary>{active.package.warnings.map((warning, i) => <p key={i}>{warning.questionId}: {warning.message}</p>)}</details>}
                 {!!active.package?.visualWarnings?.length && (
                   <div className="pdf-preview-warning" role="alert">
                     <strong>Cảnh báo hình vẽ / bảng biểu ({active.package.visualWarnings.length})</strong>
@@ -457,6 +552,7 @@ export const App: React.FC = () => {
                   onRetryPreview={handleRetryPreview}
                   onPreviewOpened={handlePreviewOpened}
                   focusedQuestionId={selectedQuestionId}
+                  expandedDetails={disclosures.questions}
                   onEditQuestion={id => {
                     const question = active.questions.find(item => item.id === id);
                     if (active.jobId && question) { setSelectedQuestionId(id); setEditor({ sessionId: active.id, jobId: active.jobId, question }); }
@@ -470,6 +566,11 @@ export const App: React.FC = () => {
       )}
 
       {/* Quick preset modal */}
+      {pendingConfirmation && <aside style={{ position: 'fixed', bottom: 16, right: 16, zIndex: 2001, background: 'white', border: '1px solid #ccc', padding: 16, maxWidth: 360 }} aria-label="Xác nhận tác vụ Agent">
+        <p>{pendingConfirmation.summary}</p>
+        <button disabled={agentBusy} onClick={() => { void processAgentTurn(pendingConfirmation.workspaceId, 'xac nhan'); }}>Xác nhận tác vụ</button>
+        <button disabled={agentBusy} onClick={() => { setPendingConfirmation(null); store.cancelAgentTask(pendingConfirmation.workspaceId); }}>Hủy tác vụ</button>
+      </aside>}
       {showQuickModal && (
         <QuickPresetModal
           title={configureId ? 'Thiết lập đề theo yêu cầu' : 'Tạo đề từ mẫu'}
@@ -477,10 +578,11 @@ export const App: React.FC = () => {
           onClose={closeQuickModal}
           selectedId={setupState.selectedId}
           prompt={setupState.prompt}
+          onPromptChange={prompt => { setPendingConfirmation(null); setSetupState(value => ({ ...value, prompt })); }}
           onStateChange={handleSetupState}
         />
       )}
-      {editor && <QuestionEditor question={editor.question} onClose={() => setEditor(null)}
+      {editor && <QuestionEditor question={editor.question} onClose={() => setEditor(null)} onDraftChange={question => { setPendingConfirmation(null); setEditor(value => value ? { ...value, question } : null); }}
         onSave={async question => {
           try {
             await examService.updateQuestion(editor.jobId, question);

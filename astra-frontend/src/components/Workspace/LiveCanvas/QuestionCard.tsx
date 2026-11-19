@@ -8,9 +8,10 @@ interface QuestionCardProps {
   onEdit?: () => void;
   appearing?: boolean;
   review?: boolean;
+  expandedDetails?: boolean;
 }
 
-export const QuestionCard: React.FC<QuestionCardProps> = ({ question, index, onEdit, appearing = false, review = false }) => {
+export const QuestionCard: React.FC<QuestionCardProps> = ({ question, index, onEdit, appearing = false, review = false, expandedDetails }) => {
   const [visible, setVisible] = useState(!appearing);
   useEffect(() => {
     const frame = requestAnimationFrame(() => setVisible(true));
@@ -20,7 +21,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, index, onE
   return (
     <section className={`exam-question-card ${visible ? 'visible' : 'appearing'}`} aria-label={`Câu ${index + 1}`}>
       <div className="question-stem"><strong>Câu {question.stableId?.split('-')[1] || index + 1}.</strong><MathRenderer content={question.stem} /></div>
-      {question.drawingLatex && <details><summary>Hình vẽ TikZ (xem khi biên dịch LaTeX)</summary><pre>{question.drawingLatex}</pre></details>}
+      {question.drawingLatex && <details open={expandedDetails}><summary>Hình vẽ TikZ (xem khi biên dịch LaTeX)</summary><pre>{question.drawingLatex}</pre></details>}
       {(!question.questionType || question.questionType === 'mcq') && <div className="question-choices">
         {(['A', 'B', 'C', 'D'] as const).map(key => (
           <div key={key} className={`question-choice ${review && question.status === 'VERIFIED' && question.key === key ? 'correct' : ''}`}>
@@ -35,7 +36,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, index, onE
       </div>)}
       {question.questionType === 'short_answer' && <p>Đáp án: {review ? question.key : '□ □ □ □'}</p>}
       {review && (
-        <details className={`question-review ${flagged ? 'flagged' : ''}`}>
+        <details open={expandedDetails} className={`question-review ${flagged ? 'flagged' : ''}`}>
           <summary>{flagged ? 'Cần xem xét · Xem ghi chú' : question.status === 'VERIFIED' ? 'Đã đối chiếu · Xem lời giải' : 'Chờ kiểm định · Xem đáp án dự kiến'}</summary>
           <div className="review-content">
             {flagged ? <>

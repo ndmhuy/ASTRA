@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { UiContextTracker } from '../src/agent/context.ts';
 import { UiActionExecutor, executeActionPlan } from '../src/agent/executor.ts';
 import { UI_CAPABILITY_MANIFEST } from '../src/agent/capabilities.ts';
+import { CALLABLE_CAPABILITIES, capabilityCatalog } from '../src/agent/capabilities.ts';
 import { ExamSessions } from '../src/state/examSessions.ts';
 import { AgentTaskController } from '../src/agent/orchestrator.ts';
 
@@ -40,6 +41,27 @@ test('context version changes only when sanitized UI state changes', () => {
   assert.equal(same.stateVersion, 1);
   assert.equal(changed.stateVersion, 2);
   assert.equal(JSON.stringify(changed).includes('GEMINI_API_KEY'), false);
+});
+
+test('answer-view contract is published and executor observes the review transition', async () => {
+  let raw = baseRaw({ workspaceId: 'w', screen: 'workspace', examId: 'e', examRevision: 1 });
+  const tracker = new UiContextTracker();
+  const capture = () => tracker.capture(raw);
+  assert.deepEqual(CALLABLE_CAPABILITIES['ui.exam.view_mode'].parameterSchema.mode, ['paper','review','pdf']);
+  const executor = new UiActionExecutor(capture, { 'ui.exam.view_mode': p => { raw = { ...raw, viewMode: p.mode }; } });
+  const result = await executor.execute({ kind: 'propose_ui_action', text: 'answers', actionId: 'review', capabilityId: 'ui.exam.view_mode', expectedStateVersion: capture().stateVersion, params: { mode: 'review' }, target: {} });
+  assert.equal(result.status, 'success');
+  assert.equal(raw.viewMode, 'review');
+  assert.equal(capabilityCatalog(baseRaw()).find(c => c.id === 'ui.exam.view_mode').availability, 'SUPPORTED_BUT_UNAVAILABLE_NOW');
+});
+
+test('approval cannot execute without a matching revision-bound confirmation', () => {
+  const raw = baseRaw({ workspaceId: 'w', examId: 'e', examRevision: 2, contentHash: 'h', preview: { status: 'ready', revision: 2, opened: true } });
+  const action = CALLABLE_CAPABILITIES['exam.approve'];
+  assert.equal(action.validate({}, raw), 'CONFIRMATION_REQUIRED');
+  raw.pendingConfirmation = { id: 'c', capabilityId: 'exam.approve', workspaceId: 'w', revision: 2, contentHash: 'h', params: {} };
+  assert.equal(action.validate({ confirmationId: 'c' }, raw), null);
+  assert.equal(action.validate({ confirmationId: 'c' }, { ...raw, examRevision: 3 }), 'CONFIRMATION_REQUIRED');
 });
 
 test('task controller rebases every dependent step on fresh UI state and records receipts', async () => {

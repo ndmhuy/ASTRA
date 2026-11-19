@@ -6,10 +6,13 @@ interface Props {
   onSave: (question: QuestionItem) => Promise<void>;
   onRegenerate: (instruction: string) => Promise<void>;
   onClose: () => void;
+  onDraftChange?: (question: QuestionItem) => void;
 }
 
-export const QuestionEditor: React.FC<Props> = ({ question, onSave, onRegenerate, onClose }) => {
-  const [draft, setDraft] = useState(() => structuredClone(question));
+export const QuestionEditor: React.FC<Props> = ({ question, onSave, onRegenerate, onClose, onDraftChange }) => {
+  const [localDraft, setLocalDraft] = useState(() => structuredClone(question));
+  const draft = onDraftChange ? question : localDraft;
+  const setDraft = (value: QuestionItem) => { setLocalDraft(value); onDraftChange?.(value); };
   const [instruction, setInstruction] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');

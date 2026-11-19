@@ -6,6 +6,9 @@ export interface UiCapabilitySummary {
   status: CapabilityStatus;
   callable: boolean;
   requiresConfirmation: boolean;
+  parameterSchema?: Record<string, unknown>;
+  availability?: 'SUPPORTED_AND_AVAILABLE' | 'SUPPORTED_BUT_UNAVAILABLE_NOW' | 'REQUIRES_CONFIRMATION' | 'UNSUPPORTED';
+  unavailableReason?: string;
 }
 
 export interface DeferredAgentNote {
@@ -44,11 +47,15 @@ export interface ExamSetupSnapshot {
 
 export interface PendingAgentConfirmation {
   id: string;
-  kind: 'generation' | 'revision' | 'approval';
+  kind: 'generation' | 'revision' | 'approval' | 'ui_action';
   workspaceId: string;
   summary: string;
   noteId?: string;
   createdAt: string;
+  capabilityId?: string;
+  params?: Record<string, unknown>;
+  revision?: number | null;
+  contentHash?: string | null;
 }
 
 export interface AgentTaskStep {
@@ -101,6 +108,10 @@ export interface UiContextSnapshot {
   sessions: { id: string; title: string; status: 'draft' | 'generating' | 'complete' | 'error'; createdAt: string }[];
   notes: { id: string; targetQuestion: number | null; stableQuestionId: string | null; requestedChange: string; status: DeferredAgentNote['status'] }[];
   capabilities: UiCapabilitySummary[];
+  messages?: { id: string; role: string }[];
+  editorDraft?: Record<string, unknown> | null;
+  composerDraft?: string;
+  disclosures?: { questions?: boolean; warnings?: boolean };
 }
 
 export interface UiActionProposal {

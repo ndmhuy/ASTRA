@@ -8,12 +8,14 @@ interface Props {
   onClose: () => void;
   selectedId?: string;
   prompt?: string;
+  onPromptChange?: (value: string) => void;
   onStateChange?: (state: { status: 'loading' | 'ready' | 'error'; formats: ExamFormat[]; selectedId: string; error?: string }) => void;
 }
 
-export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, selectedId: requestedId, prompt, onStateChange, title = 'Tạo đề từ mẫu' }) => {
+export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, selectedId: requestedId, prompt, onPromptChange, onStateChange, title = 'Tạo đề từ mẫu' }) => {
   const [formats, setFormats] = useState<ExamFormat[]>([]);
-  const [selectedId, setSelectedId] = useState('thpt-math');
+  const [localSelectedId, setSelectedId] = useState('thpt-math');
+  const selectedId = requestedId || localSelectedId;
   const [error, setError] = useState('');
   const modalRef = useRef<HTMLDivElement>(null);
   const selected = formats.find(format => format.id === selectedId);
@@ -22,8 +24,7 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, selectedId
     onStateChange?.({ status: 'loading', formats: [], selectedId: '' });
     getExamFormats().then(items => {
       if (!active) return;
-      const nextId = items.some(item => item.id === requestedId && item.available)
-        ? requestedId! : items.find(item => item.available)?.id || '';
+      const nextId = items.find(item => item.available)?.id || '';
       setFormats(items); setSelectedId(nextId);
       onStateChange?.({ status: 'ready', formats: items, selectedId: nextId });
     }).catch(reason => {
@@ -33,7 +34,7 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, selectedId
       onStateChange?.({ status: 'error', formats: [], selectedId: '', error: message });
     });
     return () => { active = false; };
-  }, [onStateChange, requestedId]);
+  }, [onStateChange]);
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
     const modal = modalRef.current;
@@ -60,6 +61,7 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, selectedId
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,.45)', zIndex: 999 }} />
     <div ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="preset-title" style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', zIndex: 1000, background: 'white', border: '1px solid #e2e8f0', borderRadius: 8, width: 'calc(100% - 32px)', maxWidth: 600, padding: 28, maxHeight: '90dvh', overflowY: 'auto' }}>
       <h2 id="preset-title">{title}</h2>
+      <label>Yêu cầu bổ sung<textarea aria-label="Yêu cầu bổ sung" value={prompt || ''} maxLength={1000} onChange={event => onPromptChange?.(event.target.value)} /></label>
       {error && <p role="alert">{error}</p>}
       {!error && !formats.length && <p role="status">Đang tải định dạng từ máy chủ…</p>}
       {formats.map(format => <label key={format.id} style={{ display: 'block', padding: 16, border: '1px solid #e2e8f0', margin: '16px 0' }}>

@@ -263,7 +263,7 @@ export class ExamSessions {
   }
   addNote(id: string, input: { targetQuestion?: number; requestedChange: string; teacherText: string }): DeferredAgentNote | null {
     const session = this.sessions.find(item => item.id === id);
-    if (!session || session.status !== 'generating') return null;
+    if (!session || !['generating', 'complete'].includes(session.status)) return null;
     const requestedChange = input.requestedChange.trim();
     const duplicate = session.agentNotes.find(note => note.jobId === session.jobId
       && note.targetQuestion === (input.targetQuestion || null)

@@ -36,6 +36,10 @@ export class UiActionExecutor {
       const result = await this.handlers[proposal.capabilityId](proposal.params);
       await this.settle();
       const after = this.getContext();
+      const workspaceActions = ['ui.navigate', 'ui.session.create', 'ui.session.open', 'ui.session.delete', 'ui.chat.branch'];
+      if (before.workspaceId !== after.workspaceId && !workspaceActions.includes(proposal.capabilityId)) {
+        return this.remember(proposal, after.stateVersion, 'failed', 'WORKSPACE_CHANGED');
+      }
       if (!capability.verify(before, after, proposal.params, result || undefined)) {
         return this.remember(proposal, after.stateVersion, 'failed', 'EFFECT_NOT_OBSERVED', result || undefined);
       }

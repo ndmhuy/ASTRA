@@ -70,6 +70,10 @@ class GeminiInterpretationProvider:
                 "description": capability.description,
                 "callable": capability.callable,
                 "status": capability.status,
+                "parameterSchema": capability.parameter_schema,
+                "requiresConfirmation": capability.requires_confirmation,
+                "availability": capability.availability,
+                "unavailableReason": capability.unavailable_reason,
             }
             for capability in context.capabilities
         ]
@@ -82,6 +86,13 @@ class GeminiInterpretationProvider:
             if context.active_job
             else None,
             "sessionCount": len(context.sessions),
+            "sessions": [session.model_dump(by_alias=True) for session in context.sessions],
+            "examId": context.exam_id,
+            "examRevision": context.exam_revision,
+            "approved": context.approved,
+            "preview": context.preview,
+            "messages": context.messages,
+            "editorDraft": context.editor_draft,
             "notes": [note.model_dump(by_alias=True) for note in context.notes],
             "selectedQuestion": context.selected_question,
             "questions": context.questions,
@@ -91,6 +102,24 @@ class GeminiInterpretationProvider:
             "capabilities": capabilities,
         }
         system_instruction = (
+            "You operate ASTRA's React UI through typed action proposals. "
+            "For requests to show/open/change UI, return propose_ui_action, not instructions "
+            "telling the teacher to click buttons. Use only the supplied capabilities and their "
+            "parameterSchema. Put arguments in params, never in target. "
+            "Viewing answers/solutions (xem đáp án, lời giải) means ui.exam.view_mode "
+            "with params {mode: 'review'}. Viewing the exam means mode 'paper'; PDF means 'pdf'. "
+            "These are read-only navigation actions and need no confirmation. "
+            "Use the current workspace when present. If no exam exists, explain that an exam "
+            "must be generated first; never claim to have shown answers. "
+            "For an existing exam in another workspace, open its exact sessions id first. "
+            "For a specific question's answers, focus its actual questionId then set review mode. "
+            "Never claim an action succeeded: React will verify the result. "
+            "Ask for clarification only when the target cannot be resolved from context. "
+            "Respond naturally in Vietnamese. "
+            "For consequential approval/export/delete/retract requests, first propose "
+            "ui.action.prepare with capabilityId and actionParams. React requires a separate "
+            "confirmation bound to the workspace, exact parameters and exam revision. "
+            "If the user cancels a pending action, propose ui.task.cancel. "
             "Bạn là bộ diễn giải giao diện ASTRA. Chỉ trả về dữ liệu theo schema. "
             "Chỉ đề xuất capability callable và available_real trong context. "
             "Không gọi công cụ, không gọi Backend, không tự tạo đề, "

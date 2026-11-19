@@ -15,6 +15,9 @@ class CapabilitySummary(CamelModel):
     status: Literal["available_real", "available_mock", "unavailable", "planned"]
     callable: bool = False
     requires_confirmation: bool = Field(default=False, alias="requiresConfirmation")
+    parameter_schema: dict[str, Any] = Field(default_factory=dict, alias="parameterSchema")
+    availability: str | None = None
+    unavailable_reason: str | None = Field(default=None, alias="unavailableReason")
 
 
 class SessionSummary(CamelModel):
@@ -57,6 +60,10 @@ class UiContextSnapshot(CamelModel):
     setup: dict[str, Any] = Field(default_factory=dict)
     pending_confirmation: dict[str, Any] | None = Field(default=None, alias="pendingConfirmation")
     active_task: dict[str, Any] | None = Field(default=None, alias="activeTask")
+    messages: list[dict[str, str]] = Field(default_factory=list, max_length=50)
+    editor_draft: dict[str, Any] | None = Field(default=None, alias="editorDraft")
+    composer_draft: str = Field(default="", alias="composerDraft", max_length=10000)
+    disclosures: dict[str, bool] = Field(default_factory=dict)
     sessions: list[SessionSummary] = Field(default_factory=list, max_length=50)
     notes: list[NoteSummary] = Field(default_factory=list, max_length=50)
     capabilities: list[CapabilitySummary] = Field(default_factory=list, max_length=50)

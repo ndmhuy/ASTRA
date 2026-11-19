@@ -116,8 +116,8 @@ export const CALLABLE_CAPABILITIES: Record<string, CapabilityDefinition> = {
     id: 'ui.note.add',
     description: 'Ghi một yêu cầu chỉnh sửa để xem lại sau khi tác vụ tạo đề hoàn tất; không sửa đề đang chạy.',
     status: 'available_real', callable: true, requiresConfirmation: false,
-    validate: (params, context) => !context.activeJob ? 'NO_ACTIVE_JOB' : typeof params.requestedChange !== 'string' || !params.requestedChange.trim() || params.requestedChange.length > 500 ? 'INVALID_NOTE' : params.targetQuestion !== undefined && (!Number.isInteger(params.targetQuestion) || Number(params.targetQuestion) < 1) ? 'INVALID_QUESTION' : null,
-    verify: (before, after) => after.notes.filter(note => note.status === 'pending').length === before.notes.filter(note => note.status === 'pending').length + 1,
+    validate: (params, context) => !context.activeJob && !context.examId ? 'NO_ACTIVE_EXAM' : typeof params.requestedChange !== 'string' || !params.requestedChange.trim() || params.requestedChange.length > 500 ? 'INVALID_NOTE' : params.targetQuestion !== undefined && (!Number.isInteger(params.targetQuestion) || Number(params.targetQuestion) < 1) ? 'INVALID_QUESTION' : null,
+    verify: (_before, after, params, result) => after.notes.some(note => note.id === result?.noteId && note.requestedChange === String(params.requestedChange).trim()),
   },
   'ui.note.update': {
     id: 'ui.note.update',
@@ -158,6 +158,76 @@ export const CALLABLE_CAPABILITIES: Record<string, CapabilityDefinition> = {
       && Boolean(after.examRevision && before.examRevision && after.examRevision > before.examRevision),
   },
 };
+
+const ACTION_PARAMETERS: Record<string, Record<string, unknown>> = {
+  'ui.navigate': { destination: ['start', 'workspace'], workspaceId: 'existing session id when destination=workspace' },
+  'ui.session.create': { mode: ['custom', 'template'] },
+  'ui.session.open': { workspaceId: 'exact id from sessions' },
+  'ui.exam.open_setup': {},
+  'ui.exam.close_setup': {},
+  'ui.exam.configure_setup': { formatId: 'available setup.formats id', prompt: 'teacher instructions, optional string' },
+  'exam.generate.start': { confirmationId: 'React supplies only after explicit teacher confirmation' },
+  'ui.exam.view_mode': { mode: ['paper', 'review', 'pdf'], meanings: { paper: 'exam questions', review: 'answers and solutions / đáp án, lời giải', pdf: 'PDF preview' } },
+  'ui.question.focus': { questionId: 'integer id from questions; preserves current view mode' },
+  'ui.question.open_editor': { questionId: 'integer id from questions' },
+  'ui.sidebar.set_collapsed': { collapsed: 'boolean' },
+  'ui.note.add': { targetQuestion: 'optional integer question id', requestedChange: 'nonempty string, max 500 characters' },
+  'ui.note.update': { noteId: 'exact id from notes', requestedChange: 'nonempty string, max 500 characters' },
+  'ui.note.cancel': { noteId: 'exact id from notes' },
+  'ui.note.approve': { noteId: 'exact pending note id' },
+  'exam.note.apply': { noteId: 'exact approved note id', confirmationId: 'React supplies after explicit teacher confirmation' },
+};
+
+const EXTRA_ACTIONS: Record<string, { description: string; params: Record<string, unknown>; validate: CapabilityDefinition['validate']; verify: CapabilityDefinition['verify']; consequential?: boolean }> = {
+  'ui.details.set_expanded': { description: 'Expand/collapse question solutions/TikZ disclosures or source-warning details. Use review mode first for solutions.', params: { group: ['questions','warnings'], expanded: 'boolean' }, validate: (p,c) => !c.examId ? 'EXAM_NOT_READY' : !['questions','warnings'].includes(String(p.group)) || typeof p.expanded !== 'boolean' ? 'INVALID_DISCLOSURE' : null, verify: (_b,_a,_p,r) => r?.disclosureUpdated === true },
+  'ui.chat.restore': { description: 'Restore an existing user message into the composer for editing, without sending.', params: { messageId: 'exact user message id' }, validate: (p,c) => c.messages?.some(m => m.id === p.messageId && m.role === 'user') ? null : 'MESSAGE_NOT_FOUND', verify: (_b,a,_p,r) => typeof r?.draftText === 'string' && a.composerDraft === r.draftText },
+  'ui.chat.copy': { description: 'Copy an existing chat message to the local clipboard.', params: { messageId: 'exact id from messages' }, validate: (p,c) => c.messages?.some(m => m.id === p.messageId) ? null : 'MESSAGE_NOT_FOUND', verify: (_b,_a,_p,r) => r?.clipboardAcknowledged === true },
+  'ui.editor.fill': { description: 'Fill the open question editor draft; does not save.', params: { patch: 'object with only stem, key, explanation, choices or statements matching the existing question type' }, validate: (p,c) => c.activeModal !== 'question_editor' ? 'EDITOR_NOT_OPEN' : !p.patch || typeof p.patch !== 'object' || Object.keys(p.patch).some(k => !['stem','key','explanation','choices','statements'].includes(k)) ? 'INVALID_PATCH' : null, verify: (_b,_a,_p,r) => r?.draftUpdated === true },
+  'exam.editor.save': { description: 'Save the reviewed editor draft after confirmation.', params: {}, consequential: true, validate: (_p,c) => c.activeModal === 'question_editor' && c.examRevision ? null : 'EDITOR_NOT_OPEN', verify: (b,a) => Boolean(a.examRevision && b.examRevision && a.examRevision > b.examRevision) },
+  'exam.question.regenerate': { description: 'Regenerate a question using the existing React service after confirmation.', params: { questionId: 'integer from questions', instruction: 'nonempty string up to 4000 characters' }, consequential: true, validate: (p,c) => !c.examRevision || c.activeJob || !c.questions.some(q => q.id === p.questionId) ? 'QUESTION_NOT_READY' : typeof p.instruction !== 'string' || !p.instruction.trim() || p.instruction.length > 4000 ? 'INVALID_INSTRUCTION' : null, verify: (b,a) => Boolean(a.examRevision && b.examRevision && a.examRevision > b.examRevision) },
+  'ui.editor.close': { description: 'Close the question editor without saving.', params: {}, validate: (_p,c) => c.activeModal === 'question_editor' ? null : 'EDITOR_NOT_OPEN', verify: (_b,a) => a.activeModal !== 'question_editor' },
+  'ui.task.cancel': { description: 'Cancel the pending Agent task/confirmation, not a Backend generation job.', params: {}, validate: () => null, verify: (_b,a) => !a.pendingConfirmation },
+  'ui.chat.draft': { description: 'Fill the chat composer without sending.', params: { text: 'string, max 4000 characters' }, validate: (p,c) => !c.workspaceId ? 'NO_ACTIVE_WORKSPACE' : typeof p.text !== 'string' || p.text.length > 4000 ? 'INVALID_DRAFT' : null, verify: (_b,a,p) => a.composerDraft === p.text },
+  'ui.chat.branch': { description: 'Create and open a conversation branch at an existing message.', params: { messageId: 'exact id from messages' }, validate: (p,c) => c.messages?.some(m => m.id === p.messageId) ? null : 'MESSAGE_NOT_FOUND', verify: (b,a,_p,r) => a.workspaceId !== b.workspaceId && a.workspaceId === r?.workspaceId },
+  'ui.chat.retract': { description: 'Remove a user message and later messages after confirmation.', params: { messageId: 'exact user message id' }, consequential: true, validate: (p,c) => c.messages?.some(m => m.id === p.messageId && m.role === 'user') ? null : 'MESSAGE_NOT_FOUND', verify: (_b,a,p) => !a.messages?.some(m => m.id === p.messageId) },
+  'ui.session.delete': { description: 'Delete a local workspace after confirmation.', params: { workspaceId: 'exact session id' }, consequential: true, validate: (p,c) => validWorkspace(p.workspaceId,c) ? null : 'WORKSPACE_NOT_FOUND', verify: (_b,a,p) => !a.sessions.some(s => s.id === p.workspaceId) },
+  'exam.preview.retry': { description: 'Request/retry PDF compilation using the existing preview service.', params: {}, validate: (_p,c) => c.examId && !c.activeJob ? null : 'EXAM_NOT_READY', verify: (_b,_a,_p,r) => r?.previewRequested === true },
+  'exam.approve': { description: 'Approve the current revision after reviewing its matching PDF and explicit confirmation.', params: {}, consequential: true, validate: (_p,c) => c.examId && c.preview?.status === 'ready' && c.preview.opened && c.preview.revision === c.examRevision && !c.approved ? null : 'PREVIEW_REVIEW_REQUIRED', verify: (_b,a) => a.approved },
+  'exam.export.download': { description: 'Download approved student PDF/LaTeX or teacher answer JSON after confirmation.', params: { type: ['STUDENT_EXAM','TEACHER_KEY'], format: ['pdf','tex','json'] }, consequential: true, validate: (p,c) => !c.approved ? 'APPROVAL_REQUIRED' : !((p.type === 'STUDENT_EXAM' && ['pdf','tex'].includes(String(p.format))) || (p.type === 'TEACHER_KEY' && p.format === 'json')) ? 'INVALID_EXPORT' : p.format === 'pdf' && c.preview?.status !== 'ready' ? 'PREVIEW_NOT_READY' : null, verify: (_b,_a,_p,r) => r?.downloadDispatched === true },
+  'ui.action.prepare': { description: 'Present a confirmation for a consequential action; performs no business mutation.', params: { capabilityId: 'consequential capability id', actionParams: 'parameters for that action' }, validate: (p,c) => { const d = EXTRA_ACTIONS[String(p.capabilityId)]; return !d?.consequential ? 'INVALID_CONFIRMATION_ACTION' : d.validate((p.actionParams || {}) as Record<string,unknown>,c); }, verify: (_b,a,_p,r) => a.pendingConfirmation?.id === r?.confirmationId },
+};
+for (const [id, spec] of Object.entries(EXTRA_ACTIONS)) {
+  ACTION_PARAMETERS[id] = spec.params;
+  CALLABLE_CAPABILITIES[id] = {
+    id, description: spec.description, status: 'available_real', callable: true,
+    requiresConfirmation: Boolean(spec.consequential),
+    validate: (p,c) => {
+      if (spec.consequential) {
+        const pending = c.pendingConfirmation;
+        if (!pending || pending.capabilityId !== id || pending.id !== p.confirmationId || pending.workspaceId !== c.workspaceId || pending.revision !== c.examRevision || pending.contentHash !== c.contentHash) return 'CONFIRMATION_REQUIRED';
+        const { confirmationId: _id, ...args } = p;
+        if (JSON.stringify(args) !== JSON.stringify(pending.params || {})) return 'CONFIRMATION_MISMATCH';
+      }
+      return spec.validate(p,c);
+    }, verify: spec.verify,
+  };
+}
+
+for (const [id, definition] of Object.entries(CALLABLE_CAPABILITIES)) {
+  definition.parameterSchema = ACTION_PARAMETERS[id];
+}
+
+export function capabilityCatalog(context: Omit<UiContextSnapshot, 'stateVersion' | 'capabilities'>): UiCapabilitySummary[] {
+  return UI_CAPABILITY_MANIFEST.map(item => {
+    if (!item.callable) return { ...item, availability: item.status === 'unavailable' ? 'UNSUPPORTED' : 'SUPPORTED_BUT_UNAVAILABLE_NOW' };
+    let reason: string | undefined;
+    if (item.id.startsWith('ui.question.') && !context.questions.length) reason = 'EXAM_NOT_READY';
+    if (['exam.approve', 'exam.export.download', 'exam.preview.retry', 'ui.exam.view_mode'].includes(item.id) && !context.examId) reason = 'EXAM_NOT_READY';
+    if (item.id === 'ui.exam.configure_setup' && context.setup.status !== 'ready') reason = 'CATALOG_NOT_READY';
+    if (item.id === 'ui.note.add' && !context.activeJob && !context.examId) reason = 'NO_ACTIVE_EXAM';
+    return { ...item, availability: reason ? 'SUPPORTED_BUT_UNAVAILABLE_NOW' : item.requiresConfirmation ? 'REQUIRES_CONFIRMATION' : 'SUPPORTED_AND_AVAILABLE', ...(reason ? { unavailableReason: reason } : {}) };
+  });
+}
 
 export const UI_CAPABILITY_MANIFEST: UiCapabilitySummary[] = [
   ...Object.values(CALLABLE_CAPABILITIES),
