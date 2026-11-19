@@ -83,7 +83,7 @@ This is a `REAL_UI_PASS` for Agent service -> proposal -> UI executor -> observe
 | `npm test` | 18/18 frontend tests passed |
 | `npm run build` | Passed; existing >500 kB chunk warning remains |
 | `npm run lint` | Passed |
-| `python -m pytest -q` | 406 tests plus 7 subtests passed; one existing Starlette/httpx warning |
+| `python -m pytest -q` | 410 tests plus 7 subtests passed in the fresh Agent environment |
 | `python -m ruff check src/astra_agent_ui tests/test_agent_ui_service.py` | Passed |
 | boundary `rg` scan | No Agent fetch/business route/import found |
 | bundle secret scan | No `GEMINI_API_KEY` or `VITE_*GEMINI` in frontend source/build |

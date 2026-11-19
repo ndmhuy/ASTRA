@@ -1,6 +1,6 @@
-# Optional Gemini Local Setup
+# Gemini AI Mode and Offline Mode Setup
 
-Gemini is optional. ASTRA's deterministic UI commands, unsupported-feature answers, status explanation and registry-based help work with no key. The browser never receives the key.
+Gemini is mandatory whenever Agent AI mode is selected. A separate, explicitly labelled offline mode supports deterministic UI commands without claiming Gemini inference. The browser never receives the key.
 
 ## Verified provider choice
 
@@ -18,7 +18,7 @@ python -m uvicorn astra_agent_ui.app:app --app-dir src --host 127.0.0.1 --port 8
 Default values:
 
 ```text
-AGENT_LLM_ENABLED=false
+AGENT_MODE=offline
 GEMINI_MODEL=gemini-3.8-flash
 GEMINI_API_KEY=<absent>
 ```
@@ -37,7 +37,7 @@ The service health response exposes only `geminiKeyConfigured: false`, never a v
 3. Put the developer's key only in the ignored local file:
 
    ```text
-   AGENT_LLM_ENABLED=true
+   AGENT_MODE=gemini
    GEMINI_MODEL=gemini-3.8-flash
    GEMINI_API_KEY=<developer supplies locally>
    ```
@@ -57,8 +57,9 @@ The service health response exposes only `geminiKeyConfigured: false`, never a v
 - Output is constrained to `GeminiDecision`, then revalidated against the current callable registry.
 - The model has no tools and cannot invoke the UI or Backend.
 - Inference timeout is 15 seconds; output is capped at 500 tokens; temperature is 0.1.
-- Missing key/disabled mode falls back to deterministic clarification.
-- 401/403, 404, 429, timeout and other provider errors return bounded safe fallback text. UI actions are not retried automatically.
+- In Gemini mode, every natural-language turn calls Gemini before any action proposal is returned.
+- Missing key, 401/403, 404, 429, timeout and other provider errors return explicit HTTP errors; there is no deterministic fallback.
+- Offline mode returns `provider="offline"` and is never represented as Gemini-powered.
 - Unknown/invented actions are rejected both in the Agent service and UI executor.
 
 ## Live smoke result

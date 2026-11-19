@@ -55,16 +55,16 @@ All IDs below are illustrative/redacted. Traces show the implemented protocol bo
 - Response: note is recorded for later review and has not changed the running exam.
 - Evidence: interpreter plus UI-store tests; `UNIT_ONLY`, no live generation was launched.
 
-## 6. Missing Gemini key
+## 6. Missing Gemini key in AI mode
 
 - Teacher: an open-ended request not covered by deterministic commands.
 - Snapshot: minimal UI state; no secret field; real capability descriptions only.
-- Agent provider: disabled/missing local key.
-- Decision: `clarify` fallback; no invented action.
+- Agent provider: Gemini mode with missing local key.
+- Result: explicit HTTP 503 envelope with `gemini_missing_key`; no model decision is fabricated.
 - UI validation/execution: no proposal and no UI mutation.
 - Receipt: none.
-- Response: Gemini is not enabled; basic commands remain available; asks for a shorter concrete UI request.
-- Evidence: service test and real browser help/action run with `AGENT_LLM_ENABLED=false`; `REAL_UI_PASS` for fallback availability.
+- Response: Gemini AI mode requires a local key. Offline behavior is available only by explicitly selecting `AGENT_MODE=offline`.
+- Evidence: service test for the explicit error; the earlier browser help/action run remains a `REAL_UI_PASS` for labelled offline mode only.
 
 ## 7. Stale or duplicate proposal
 

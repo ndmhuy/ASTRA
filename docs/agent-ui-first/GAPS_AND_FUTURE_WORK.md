@@ -22,7 +22,7 @@ This list is limited to verified UI/integration gaps. It does not create Backend
 ## Gemini gaps
 
 - SDK adapter is implemented and official model identity was checked, but the developer's project access, quota and billing/free-tier status were not tested.
-- No live inference was run. `AGENT_LLM_ENABLED=false` remains the default.
+- No live inference was run. Explicit `AGENT_MODE=offline` remains the key-free default; Gemini mode never falls back to it.
 - The current adapter performs one idempotent inference attempt with a 15-second timeout; it does not retry 429/5xx automatically, preventing retry storms. A future bounded retry policy should respect official `Retry-After` behavior and product latency targets.
 - No independent teacher-authored language evaluation exists. The 24-case offline set is implementation-authored and cannot certify natural-language quality.
 - Future teacher BYOK needs authenticated identity, encrypted server-side handling, revoke/forget, quota/privacy notices and cross-session isolation. Browser or LocalStorage key persistence is prohibited.

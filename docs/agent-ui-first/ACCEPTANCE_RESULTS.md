@@ -58,10 +58,10 @@ Baseline: `8f12fbb2e9c7b6adb43b20b1966b256da6f45586`. Verdict terms follow `05_A
 
 | ID | Result | Evidence / limitation |
 |---|---|---|
-| L01 | `REAL_UI_PASS` | Workspace action, setup and help worked with LLM disabled and no key |
-| L02 | `UNIT_ONLY` | Fake 429/quota provider returns bounded fallback and no action |
+| L01 | `REAL_UI_PASS` | Workspace action, setup and help worked in explicitly labelled offline mode with no key |
+| L02 | `UNIT_ONLY` | Fake 429/quota provider returns explicit HTTP 429 and no action; no deterministic fallback |
 | L03 | `UNIT_ONLY` | Fake `backend.deleteExam` is rejected by service allowlist and UI executor |
-| L04 | `UNIT_ONLY` | Provider/parse errors fail through the same no-action fallback; no live malformed model response used |
+| L04 | `UNIT_ONLY` | Provider/parse errors fail explicitly with no action; no live malformed model response used |
 
 ## S — security and boundary
 
@@ -97,6 +97,6 @@ This is an implementation-authored offline candidate set, **not** an independent
 ## Test inventory
 
 - Frontend: 18 tests, including five executor/context/note cases plus completion review.
-- Python: 31 Agent service cases, including 24 parametrized language cases; full repository total 406 tests plus 7 subtests.
+- Python: 34 Agent service cases plus one Backend Gemini-compatibility case; full repository total 410 tests plus 7 subtests.
 - Real browser: workspace action, no-key help, and catalog-backed setup modal.
 - Live Gemini/live generation: not run.
