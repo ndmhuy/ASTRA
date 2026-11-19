@@ -1,5 +1,9 @@
 # Team-Owned Wiring Changes
 
+## Full UI orchestration update (2026-11-19)
+
+App exposes additional existing preview/approval/export/editor/chat/workspace handlers, renders bound confirmation controls and records sanitized development receipts. QuestionEditor shares its visible draft with App. QuickPresetModal fixes the selection/catalog reload loop and shows the intake prompt. ExamPaperView/QuestionCard preserve view during focus and expose disclosure groups. Agent contracts now carry argument documentation and dynamic availability hints. Business Backend code and local credential contents are untouched. Browser acceptance covers answers, focus and setup with intercepted model HTTP responses; other new adapters require wider acceptance coverage. See the five full-orchestration reports for exact limits.
+
 ## 2026-11-19 orchestration expansion
 
 - `App.tsx`: adds compact setup/exam/question/task context, bounded task-controller integration, resumable generation/revision confirmations, and adapters to existing generation, view, focus, editor and note handlers.
