@@ -21,7 +21,7 @@ def test_existing_adapter_targets_gemini_openai_compatible_endpoint_and_parses_r
             200,
             json={
                 "id": "synthetic-response-id",
-                "model": "gemini-3.8-flash",
+                "model": "gemini-3.1-flash-lite",
                 "choices": [
                     {
                         "finish_reason": "stop",
@@ -35,7 +35,7 @@ def test_existing_adapter_targets_gemini_openai_compatible_endpoint_and_parses_r
     settings = Settings(
         _env_file=None,
         provider="chat_completions",
-        model="gemini-3.8-flash",
+        model="gemini-3.1-flash-lite",
         api_key="synthetic-test-key",
         base_url="https://generativelanguage.googleapis.com/v1beta/openai",
         token_limit_field="max_tokens",
@@ -62,8 +62,8 @@ def test_existing_adapter_targets_gemini_openai_compatible_endpoint_and_parses_r
         "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
     )
     assert observed["authorization"] == "Bearer synthetic-test-key"
-    assert observed["payload"]["model"] == "gemini-3.8-flash"
+    assert observed["payload"]["model"] == "gemini-3.1-flash-lite"
     assert observed["payload"]["max_tokens"] == 8192
     assert observed["payload"]["response_format"]["type"] == "json_schema"
     assert completion.text == '{"ok":true}'
-    assert completion.model == "gemini-3.8-flash"
+    assert completion.model == "gemini-3.1-flash-lite"

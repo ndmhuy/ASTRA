@@ -66,6 +66,6 @@ class AgentSettings:
             port=int(os.getenv("AGENT_PORT", "8010")),
             allowed_origins=origins,
             mode=mode,
-            gemini_model=os.getenv("GEMINI_MODEL", "gemini-3.8-flash").strip(),
+            gemini_model=os.getenv("GEMINI_MODEL", "gemini-3.1-flash-lite").strip(),
             gemini_api_key=os.getenv("GEMINI_API_KEY") or None,
         )
