@@ -10,6 +10,9 @@ from .models import GeminiPlan, UiContextSnapshot
 
 logger = logging.getLogger(__name__)
 
+GEMINI_ATTEMPT_TIMEOUT_MS = 15_000
+GEMINI_TOTAL_TIMEOUT_SECONDS = 32
+
 
 class InterpretationProvider(Protocol):
     async def interpret(self, message: str, context: UiContextSnapshot) -> GeminiPlan: ...
@@ -105,7 +108,7 @@ class GeminiInterpretationProvider:
             client = genai.Client(
                 api_key=self.settings.gemini_api_key,
                 http_options=types.HttpOptions(
-                    timeout=15_000,
+                    timeout=GEMINI_ATTEMPT_TIMEOUT_MS,
                     retry_options=types.HttpRetryOptions(
                         attempts=2,
                         initial_delay=0.5,
@@ -136,7 +139,9 @@ class GeminiInterpretationProvider:
             raise GeminiProviderError("empty_response", "Gemini returned no structured result")
 
         try:
-            return await asyncio.wait_for(asyncio.to_thread(call_model), timeout=15)
+            return await asyncio.wait_for(
+                asyncio.to_thread(call_model), timeout=GEMINI_TOTAL_TIMEOUT_SECONDS
+            )
         except GeminiProviderError:
             raise
         except (asyncio.TimeoutError, TimeoutError) as error:

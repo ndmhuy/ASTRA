@@ -11,6 +11,8 @@ from fastapi.testclient import TestClient
 from astra_agent_ui.app import create_app
 from astra_agent_ui.config import AgentSettings
 from astra_agent_ui.gemini_provider import (
+    GEMINI_ATTEMPT_TIMEOUT_MS,
+    GEMINI_TOTAL_TIMEOUT_SECONDS,
     GeminiInterpretationProvider,
     GeminiProviderError,
     classify_provider_exception,
@@ -308,6 +310,8 @@ def test_gemini_server_error_is_not_reported_as_generic_provider_failure() -> No
 
 
 def test_gemini_provider_invokes_generate_content_and_uses_structured_response(monkeypatch) -> None:
+    assert GEMINI_ATTEMPT_TIMEOUT_MS == 15_000
+    assert GEMINI_TOTAL_TIMEOUT_SECONDS >= (2 * GEMINI_ATTEMPT_TIMEOUT_MS / 1000) + 1
     calls = []
 
     class FakeModels:
