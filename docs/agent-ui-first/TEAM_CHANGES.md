@@ -1,5 +1,15 @@
 # Team-Owned Wiring Changes
 
+## 2026-11-19 orchestration expansion
+
+- `App.tsx`: adds compact setup/exam/question/task context, bounded task-controller integration, resumable generation/revision confirmations, and adapters to existing generation, view, focus, editor and note handlers.
+- `examSessions.ts`: persists per-workspace task state and extends the existing note ledger through approved/applying/applied/failed; `applyNote` reuses `regenerateQuestion` and requires an observed revision increment.
+- `QuickPresetModal.tsx`: still owns the same Backend catalog request, but now reports catalog/selection state to the React context and accepts an Agent-prepared selection/prompt.
+- `AgentNotes.tsx`: adds teacher-visible approve/apply lifecycle controls; no automatic revision.
+- `ExamPaperView.tsx` and `integratedWorkspace.css`: add selected-question scroll/focus presentation.
+- `src/astra_agent_ui/*`: expands the context schema and Gemini output from one decision to a maximum-four typed plan; adds bounded retry and sanitized failure classification.
+- Backend business core, provider pipeline, routes, RAG, preview, approval and export implementations were not changed.
+
 This file is the review checklist for teammates whose merged UI files were changed. No ASTRA business Backend, RAG, generator, validation schema, storage, preview, approval, or export implementation was modified.
 
 | File | Before | After / reason | Verification | Review risk |
