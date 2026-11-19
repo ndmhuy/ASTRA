@@ -285,6 +285,7 @@ export class ExamSessions {
     return note;
   }
   updateNote(id: string, noteId: string, requestedChange: string): boolean {
+    if (!requestedChange.trim() || requestedChange.trim().length > 500) return false;
     const session = this.sessions.find(item => item.id === id);
     if (!session?.agentNotes.some(note => note.id === noteId && ['pending', 'approved', 'failed'].includes(note.status))) return false;
     const updatedAt = new Date().toISOString();
@@ -301,7 +302,7 @@ export class ExamSessions {
   approveNote(id: string, noteId: string): DeferredAgentNote | null {
     const session = this.sessions.find(item => item.id === id);
     const note = session?.agentNotes.find(item => item.id === noteId && item.status === 'pending');
-    if (!session || session.status !== 'complete' || !session.package || !note || !note.targetQuestion) return null;
+    if (!session || session.status !== 'complete' || !session.package || !note || !note.targetQuestion || note.jobId !== session.jobId) return null;
     const question = session.questions.find(item => item.id === note.targetQuestion);
     if (!question) return null;
     const updatedAt = new Date().toISOString();
@@ -392,6 +393,7 @@ export class ExamSessions {
           return;
         }
         this.update(id, session => {
+          if (progress.status !== 'completed' && session.progress && progress.percent < session.progress.percent) return session;
           const item = progress.latestItemPreview;
           const append = item && !session.questions.some(question => question.id === item.id);
           return { ...session, progress, meta: session.meta ? { ...session.meta, completedCount: progress.completedItems, totalCount: progress.totalItems || session.meta.totalCount } : null, previousCount: append ? session.questions.length : session.previousCount, questions: append ? [...session.questions, item] : session.questions };
@@ -679,6 +681,11 @@ export class ExamSessions {
       status: 'complete',
       title: session.mode === 'custom' ? session.title : pkg.title,
       questions: pkg.questions,
+      agentNotes: session.agentNotes.map(note => {
+        if (note.jobId !== session.jobId || note.status !== 'pending' || !note.targetQuestion) return note;
+        const question = pkg.questions.find(q => q.id === note.targetQuestion);
+        return question ? { ...note, stableQuestionId: question.stableId || null, examId: pkg.examId, examRevision: pkg.revision || null } : note;
+      }),
       meta: { title: pkg.title, subject: pkg.subject, duration: pkg.durationMinutes, completedCount: pkg.questions.length, totalCount: pkg.questions.length },
       preview: pkg.preview,
       ...(bindingChanged
@@ -715,6 +722,7 @@ export class ExamSessions {
   }
   private fail(id: string, error?: unknown) {
     this.stopPreviewPoll(id);
+    this.update(id, session => ({ ...session, progress: session.progress ? { ...session.progress, status: 'failed', stageName: 'failed', statusMessage: 'Tác vụ đã dừng; xem lỗi để biết nguyên nhân.' } : undefined }));
     this.update(id, session => ({ ...session, status: 'error', error: error instanceof Error ? error.message : 'Chưa tạo được đề. Hãy kiểm tra kết nối và thử lại.', errorCode: error && typeof error === 'object' && 'code' in error ? String(error.code) : undefined }));
   }
   dispose() {

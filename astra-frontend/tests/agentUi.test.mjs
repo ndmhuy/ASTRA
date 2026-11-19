@@ -45,6 +45,16 @@ test('context version changes only when sanitized UI state changes', () => {
   assert.equal(JSON.stringify(changed).includes('GEMINI_API_KEY'), false);
 });
 
+test('explicit wrong target and reused action ID with changed payload never dispatch', async () => {
+  const tracker=new UiContextTracker(); let calls=0;
+  const capture=()=>tracker.capture(baseRaw({workspaceId:'w',screen:'workspace'}));
+  const executor=new UiActionExecutor(capture,{'ui.sidebar.set_collapsed':()=>{calls++;}});
+  const action={kind:'propose_ui_action',text:'test',actionId:'scope',capabilityId:'ui.sidebar.set_collapsed',params:{collapsed:true},target:{workspaceId:'other'},expectedStateVersion:1};
+  assert.equal((await executor.execute(action)).errorCode,'TARGET_CHANGED');
+  assert.equal((await executor.execute({...action,params:{collapsed:false}})).errorCode,'ACTION_ID_CONFLICT');
+  assert.equal(calls,0);
+});
+
 test('cancellation while awaiting a handler prevents the next dispatch', async () => {
   let release;
   const controller = new AgentTaskController();

@@ -10,12 +10,16 @@ const session = { id:'fixture', title:'Synthetic exam', mode:'custom', status:'c
 const browser = await chromium.launch({ channel:'chrome', headless:true });
 try {
   const page = await browser.newPage({ reducedMotion:'reduce' });
+  let releaseStale;
+  const staleGate = new Promise(resolve => { releaseStale = resolve; });
   await page.addInitScript(s => localStorage.setItem('astra.sessions.v1',JSON.stringify([s])), session);
   await page.route('**/*', async route => {
     const url=route.request().url();
     if(url.includes('/agent/session')) return route.fulfill({json:{token:'offline-test-only'}});
     if(url.includes('/agent/interpret')) {
       const body=route.request().postDataJSON(), ctx=body.context;
+      if (body.message === 'Random từ ngân hàng') return route.fulfill({json:{turnId:body.turnId,provider:'offline',knowledgeStatus:'verified_ui_registry_only',decisions:[{kind:'unsupported',text:'Chưa có ngân hàng câu hỏi hoặc custom random.'}]}});
+      if (body.message === 'Stale request') await staleGate;
       const mode=body.message==='Quay lại đề'?'paper':'review';
       const specs=body.message==='Thiết lập trước khi tạo'
         ? [['ui.exam.open_setup',{}],['ui.exam.configure_setup',{formatId:format.id,prompt:'Synthetic intake draft'}]]
@@ -35,6 +39,9 @@ try {
   await page.goto('http://127.0.0.1:5173');
   await page.locator('.sidebar-exam').click();
   const composer=page.locator('.workspace-composer-slot textarea');
+  await composer.fill('Random từ ngân hàng'); await composer.press('Enter');
+  await page.getByText('Chưa có ngân hàng câu hỏi hoặc custom random.', {exact:true}).waitFor();
+  assert.equal(await page.locator('.view-switch button').first().getAttribute('aria-pressed'),'true');
   for(const text of ['Tôi muốn xem đáp án','Quay lại đề','Cho xem đáp án câu này']) {
     await composer.fill(text); await composer.press('Enter');
     const mode=text==='Quay lại đề'?'paper':'review';
@@ -63,5 +70,11 @@ try {
   assert.deepEqual(errors,[]);
   await page.locator('.agent-confirm-toast .button-secondary').click();
   assert.equal(await page.locator('.agent-confirm-toast').count(),0);
-  console.log(JSON.stringify({browser:'chrome',turns:6,answers:'passed',questionFocus:'passed',editorDraft:'passed',disclosures:'passed',cancel:'passed',setup:'awaiting_confirmation',setupReceipts:2,liveCalls:0}));
+  await page.locator('[role="dialog"] .setup-footer-actions .button-secondary').click();
+  const requestSeen=page.waitForRequest(r=>r.url().includes('/agent/interpret') && r.postDataJSON().message==='Stale request');
+  await composer.fill('Stale request'); await composer.press('Enter'); await requestSeen;
+  await page.locator('.sidebar-new-exam').click(); releaseStale();
+  await page.waitForFunction(()=>JSON.parse(localStorage.getItem('astra.sessions.v1'))[0].messages.some(m=>m.content.includes('Giao diện đã thay đổi')));
+  assert.equal(await page.locator('.view-switch').count(),0);
+  console.log(JSON.stringify({browser:'chrome',turns:8,answers:'passed',questionFocus:'passed',editorDraft:'passed',disclosures:'passed',cancel:'passed',unsupported:'passed',staleAbort:'passed',setup:'awaiting_confirmation',setupReceipts:2,liveCalls:0}));
 } finally { await browser.close(); }

@@ -15,6 +15,7 @@ from .models import (
     GeminiPlan,
     UiContextSnapshot,
 )
+from .plan_safety import validate_plan
 
 
 def normalize_vietnamese(value: str) -> str:
@@ -338,7 +339,7 @@ class AgentInterpreter:
             ]
         return AgentTurnResponse(
             turnId=request.turn_id,
-            decisions=decisions,
+            decisions=validate_plan(request, decisions),
             provider="gemini",
             knowledgeStatus=self.knowledge.status,
         )

@@ -309,6 +309,66 @@ def test_gemini_server_error_is_not_reported_as_generic_provider_failure() -> No
     )
 
 
+@pytest.mark.parametrize(
+    ("message", "params", "selected", "expected"),
+    [
+        ("Sửa câu này", {"questionId": 8}, None, "clarify"),
+        ("Sửa câu 5", {"questionId": 8}, {"id": 8}, "clarify"),
+        ("Sửa câu 5", {"questionId": 5}, {"id": 8}, "propose_ui_action"),
+        ("Câu này khó nhỉ", {"questionId": 8}, {"id": 8}, "answer"),
+        ("Tạo đề BANK_ONLY", {}, None, "unsupported"),
+    ],
+)
+def test_edge_plan_target_and_source_guards(message, params, selected, expected):
+    from astra_agent_ui.models import AgentDecision
+    from astra_agent_ui.plan_safety import validate_plan
+
+    req = request(message, selectedQuestion=selected)
+    action = AgentDecision(
+        kind="propose_ui_action",
+        text="predicted",
+        capabilityId="ui.question.open_editor",
+        params=params,
+    )
+    result = validate_plan(req, [action])
+    assert result[0].kind == expected
+
+
+def test_rejected_dependency_cannot_leave_an_executable_tail():
+    from astra_agent_ui.models import AgentDecision
+    from astra_agent_ui.plan_safety import validate_plan
+
+    actions = [
+        AgentDecision(kind="clarify", text="unknown target"),
+        AgentDecision(kind="propose_ui_action", text="open", capabilityId="ui.exam.open_setup"),
+    ]
+    assert all(
+        d.kind != "propose_ui_action" for d in validate_plan(request("Mở cấu hình"), actions)
+    )
+
+
+def test_negated_generation_and_reload_confirmation_do_not_dispatch():
+    from astra_agent_ui.models import AgentDecision
+    from astra_agent_ui.plan_safety import validate_plan
+
+    action = AgentDecision(
+        kind="propose_ui_action", text="create", capabilityId="exam.generate.start"
+    )
+    assert validate_plan(request("Đừng tạo đề"), [action])[0].kind == "clarify"
+    resumed = request(
+        "Tiếp tục", activeTask={"taskStatus": "awaiting_confirmation"}, pendingConfirmation=None
+    )
+    assert validate_plan(resumed, [action])[0].kind == "clarify"
+
+
+def test_agent_bootstrap_is_rate_limited_without_inference():
+    client = TestClient(create_app(settings=settings(), interpreter=AgentInterpreter()))
+    codes = [
+        client.post("/agent/session", headers={"Origin": ORIGIN}).status_code for _ in range(31)
+    ]
+    assert codes[-1] == 429
+
+
 def test_gemini_provider_invokes_generate_content_and_uses_structured_response(monkeypatch) -> None:
     assert GEMINI_ATTEMPT_TIMEOUT_MS == 15_000
     assert GEMINI_TOTAL_TIMEOUT_SECONDS >= (2 * GEMINI_ATTEMPT_TIMEOUT_MS / 1000) + 1

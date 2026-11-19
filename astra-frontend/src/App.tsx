@@ -17,7 +17,7 @@ import { ExamSessions } from './state/examSessions';
 import { AgentClient, AgentTransportError } from './agent/client';
 import { UI_CAPABILITY_MANIFEST, capabilityCatalog } from './agent/capabilities';
 import { UiContextTracker, type UnversionedUiContext } from './agent/context';
-import { UiActionExecutor } from './agent/executor';
+import { UiActionExecutor, actionFailureMessage } from './agent/executor';
 import { AgentTaskController, isExplicitConfirmation } from './agent/orchestrator';
 import { actionScope, confirmationBinding, confirmationValid } from './agent/confirmation';
 import type { PendingAgentConfirmation, UiActionProposal, UiContextSnapshot } from './agent/contracts';
@@ -54,6 +54,7 @@ export const App: React.FC = () => {
   const [setupState, setSetupState] = useState<{ status: 'closed' | 'loading' | 'ready' | 'error'; formats: ExamFormat[]; selectedId: string; prompt: string; error?: string }>({ status: 'closed', formats: [], selectedId: '', prompt: '' });
   const [approving, setApproving] = useState(false);
   const [agentBusy, setAgentBusy] = useState(false);
+  const turnBusy = useRef(false);
   const [agentClient] = useState(() => new AgentClient());
   const [contextTracker] = useState(() => new UiContextTracker());
   const executorRef = useRef<UiActionExecutor | null>(null);
@@ -384,7 +385,14 @@ export const App: React.FC = () => {
   }
 
   async function processAgentTurn(initialSessionId: string | null, content: string) {
-    if (agentBusy) return;
+    if (turnBusy.current) return;
+    if (!content.trim() || content.length > 4000) {
+      const id = initialSessionId || store.create('custom');
+      if (!initialSessionId) openSession(id);
+      store.addAssistantMessage(id, 'Yêu cầu tối đa 4.000 ký tự. Hãy chia thành các yêu cầu ngắn; tải tệp hiện chưa được hỗ trợ.');
+      return;
+    }
+    turnBusy.current = true;
     let messageSessionId = initialSessionId;
     if (messageSessionId) store.sendMessage(messageSessionId, content);
     setAgentBusy(true);
@@ -440,19 +448,20 @@ export const App: React.FC = () => {
       }
       if (!initialSessionId) store.sendMessage(messageSessionId, content);
       store.setAgentTask(messageSessionId, { ...execution.task, workspaceId: messageSessionId });
-      for (const decision of plain) store.addAssistantMessage(messageSessionId, decision.text);
+      if (response.provider === 'offline') store.addAssistantMessage(messageSessionId, 'Chế độ offline/demo: lượt này không sử dụng Gemini.');
+      if (!proposals.length) for (const decision of plain) store.addAssistantMessage(messageSessionId, decision.text);
       proposals.forEach((proposal, index) => {
         const receipt = receipts[index];
         if (!receipt) return;
         if (receipt.status === 'success') {
-          store.addAssistantMessage(messageSessionId!, `${proposal.text} Giao diện đã xác nhận thao tác thành công.`);
+          store.addAssistantMessage(messageSessionId!, `Giao diện đã xác nhận: ${proposal.capabilityId}.`);
         } else {
           const detail = receipt.errorCode === 'STALE_CONTEXT'
             ? 'Trạng thái giao diện đã thay đổi nên tôi không thực hiện thao tác cũ.'
             : receipt.errorCode === 'DEPENDENCY_FAILED'
               ? 'Bước trước không thành công nên bước phụ thuộc đã được bỏ qua.'
               : 'Giao diện không xác nhận được kết quả nên thao tác đã dừng an toàn.';
-          store.addAssistantMessage(messageSessionId!, `${proposal.text} ${detail}`);
+          store.addAssistantMessage(messageSessionId!, `${detail} ${actionFailureMessage(receipt.errorCode)} Mã: ${receipt.errorCode || 'UNKNOWN'}.`);
         }
       });
     } catch (error) {
@@ -464,6 +473,7 @@ export const App: React.FC = () => {
       const text = error instanceof AgentTransportError ? error.message : 'Agent gặp lỗi cục bộ và chưa thực hiện thao tác nào.';
       store.addAssistantMessage(messageSessionId, text);
     } finally {
+      turnBusy.current = false;
       setAgentBusy(false);
     }
   }

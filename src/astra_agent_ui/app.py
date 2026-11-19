@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import secrets
 import time
+from collections import deque
 from collections.abc import Awaitable, Callable
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request, Response, status
@@ -44,6 +45,7 @@ def create_app(
     )
     tokens = SessionTokens(active_settings.session_ttl_seconds)
     turn_slots = asyncio.Semaphore(active_settings.max_concurrent_turns)
+    rate_windows: dict[str, deque[float]] = {}
     app = FastAPI(title="ASTRA UI Agent", version="0.1.0", docs_url=None, redoc_url=None)
     app.add_middleware(
         CORSMiddleware,
@@ -103,8 +105,38 @@ def create_app(
         if origin and origin not in active_settings.allowed_origins:
             return Response(status_code=status.HTTP_403_FORBIDDEN)
         length = request.headers.get("content-length")
+        if length and (not length.isdigit()):
+            return Response(status_code=400)
         if length and int(length) > active_settings.max_body_bytes:
             return Response(status_code=status.HTTP_413_CONTENT_TOO_LARGE)
+        if request.method == "POST":
+            if len(await request.body()) > active_settings.max_body_bytes:
+                return Response(status_code=status.HTTP_413_CONTENT_TOO_LARGE)
+            now = time.monotonic()
+            for key in list(rate_windows):
+                if not rate_windows[key] or rate_windows[key][-1] <= now - 60:
+                    del rate_windows[key]
+            # Session bootstrap is limited per local client; interpretation per
+            # opaque token. Neither is user/tenant authorization.
+            candidate = request.headers.get("x-astra-agent-session")
+            identity = (candidate if tokens.valid(candidate) else None) or (
+                request.client.host if request.client else "local"
+            )
+            bucket = rate_windows.setdefault(identity, deque())
+            while bucket and bucket[0] <= now - 60:
+                bucket.popleft()
+            if len(bucket) >= 30:
+                return JSONResponse(
+                    status_code=429,
+                    content={
+                        "error": {
+                            "code": "agent_rate_limited",
+                            "message": "Too many Agent requests. Wait a minute before retrying.",
+                        }
+                    },
+                    headers={"Retry-After": "60"},
+                )
+            bucket.append(now)
         return await call_next(request)
 
     def require_session(
@@ -136,6 +168,8 @@ def create_app(
         dependencies=[Depends(require_session)],
     )
     async def interpret(request: AgentTurnRequest) -> AgentTurnResponse:
+        if turn_slots.locked():
+            raise HTTPException(status_code=429, detail="Agent is busy; retry later")
         async with turn_slots:
             return await active_interpreter.interpret(request)
 
