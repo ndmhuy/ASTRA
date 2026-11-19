@@ -20,7 +20,17 @@ export class AgentClient {
       this.token = null;
       throw new AgentTransportError('SESSION_EXPIRED', 'Phiên Agent đã hết hạn. Vui lòng gửi lại yêu cầu.');
     }
-    if (!response.ok) throw new AgentTransportError('AGENT_UNAVAILABLE', 'Dịch vụ Agent cục bộ chưa sẵn sàng.');
+    if (!response.ok) {
+      let error = { code: 'AGENT_UNAVAILABLE', message: 'Dịch vụ Agent cục bộ chưa sẵn sàng.' };
+      try {
+        const body = await response.json() as { error?: { code?: string; message?: string } };
+        error = {
+          code: body.error?.code || error.code,
+          message: body.error?.message || error.message,
+        };
+      } catch { /* Preserve the safe transport error when no JSON envelope exists. */ }
+      throw new AgentTransportError(error.code, error.message);
+    }
     return response.json() as Promise<AgentTurnResponse>;
   }
 

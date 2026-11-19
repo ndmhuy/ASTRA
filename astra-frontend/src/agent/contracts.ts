@@ -50,7 +50,7 @@ export type AgentDecision =
 export interface AgentTurnResponse {
   turnId: string;
   decisions: AgentDecision[];
-  provider: 'deterministic' | 'gemini' | 'fallback';
+  provider: 'offline' | 'gemini';
   knowledgeStatus: 'verified_ui_registry_only' | 'approved_document';
 }
 

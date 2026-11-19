@@ -72,7 +72,10 @@ class GeminiInterpretationProvider:
         )
 
         def call_model() -> GeminiDecision:
-            client = genai.Client(api_key=self.settings.gemini_api_key)
+            client = genai.Client(
+                api_key=self.settings.gemini_api_key,
+                http_options=types.HttpOptions(timeout=15_000),
+            )
             response = client.models.generate_content(
                 model=self.settings.gemini_model,
                 contents=prompt,
@@ -82,6 +85,7 @@ class GeminiInterpretationProvider:
                     response_schema=GeminiDecision,
                     max_output_tokens=500,
                     temperature=0.1,
+                    automatic_continuation=False,
                 ),
             )
             parsed = response.parsed

@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 import unicodedata
 import uuid
+from typing import Literal
 
 from .gemini_provider import GeminiProviderError, InterpretationProvider
 from .knowledge import ApplicationKnowledgeSource, RegistryKnowledgeSource
@@ -25,9 +26,11 @@ class AgentInterpreter:
         self,
         provider: InterpretationProvider | None = None,
         knowledge: ApplicationKnowledgeSource | None = None,
+        mode: Literal["offline", "gemini"] = "offline",
     ):
         self.provider = provider
         self.knowledge = knowledge or RegistryKnowledgeSource()
+        self.mode = mode
 
     def _action(
         self,
@@ -291,52 +294,31 @@ class AgentInterpreter:
         )
 
     async def interpret(self, request: AgentTurnRequest) -> AgentTurnResponse:
-        deterministic = self.deterministic(request.message, request.context)
-        if deterministic:
+        if self.mode == "offline":
+            deterministic = self.deterministic(request.message, request.context)
+            if deterministic is None:
+                deterministic = AgentDecision(
+                    kind="clarify",
+                    text=(
+                        "Chế độ offline chưa hiểu chắc yêu cầu. Thầy cô có thể nói rõ muốn mở "
+                        "trang, mở thiết lập hay xem trạng thái đề không?"
+                    ),
+                )
             return AgentTurnResponse(
                 turnId=request.turn_id,
                 decisions=[deterministic],
-                provider="deterministic",
+                provider="offline",
                 knowledgeStatus=self.knowledge.status,
             )
-        if self.provider:
-            try:
-                model_decision = await self.provider.interpret(request.message, request.context)
-                decision = self._validate_model_decision(model_decision, request.context)
-                return AgentTurnResponse(
-                    turnId=request.turn_id,
-                    decisions=[decision],
-                    provider="gemini",
-                    knowledgeStatus=self.knowledge.status,
-                )
-            except GeminiProviderError as error:
-                if error.code not in {"disabled", "missing_key"}:
-                    text = (
-                        "Dịch vụ diễn giải Gemini tạm thời không khả dụng. "
-                        "Thầy cô có thể dùng lệnh giao diện ngắn hoặc thử lại sau."
-                    )
-                else:
-                    text = (
-                        "Gemini chưa được bật hoặc chưa có khóa cục bộ. Các lệnh giao diện "
-                        "cơ bản vẫn dùng được; vui lòng diễn đạt yêu cầu này ngắn và cụ thể hơn."
-                    )
-                return AgentTurnResponse(
-                    turnId=request.turn_id,
-                    decisions=[AgentDecision(kind="clarify", text=text)],
-                    provider="fallback",
-                    knowledgeStatus=self.knowledge.status,
-                )
+        if self.provider is None:
+            raise GeminiProviderError(
+                "provider_not_configured", "Gemini provider is not configured for AI mode"
+            )
+        model_decision = await self.provider.interpret(request.message, request.context)
+        decision = self._validate_model_decision(model_decision, request.context)
         return AgentTurnResponse(
             turnId=request.turn_id,
-            decisions=[
-                AgentDecision(
-                    kind="clarify",
-                    text=(
-                        "Tôi chưa hiểu chắc yêu cầu. Thầy cô có thể nói rõ muốn mở trang, "
-                        "mở thiết lập hay xem trạng thái đề không?"
-                    ),
-                )
-            ],
-            provider="fallback",
+            decisions=[decision],
+            provider="gemini",
             knowledgeStatus=self.knowledge.status,
         )

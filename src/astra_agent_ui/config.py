@@ -3,11 +3,12 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Literal
 
 _ALLOWED_ENV_KEYS = {
     "AGENT_ALLOWED_ORIGINS",
     "AGENT_HOST",
-    "AGENT_LLM_ENABLED",
+    "AGENT_MODE",
     "AGENT_PORT",
     "GEMINI_API_KEY",
     "GEMINI_MODEL",
@@ -28,21 +29,21 @@ def _load_local_env(path: Path) -> None:
             os.environ[key] = value.strip().strip('"').strip("'")
 
 
-def _as_bool(value: str | None) -> bool:
-    return (value or "").strip().lower() in {"1", "true", "yes", "on"}
-
-
 @dataclass(frozen=True)
 class AgentSettings:
     host: str
     port: int
     allowed_origins: tuple[str, ...]
-    llm_enabled: bool
+    mode: Literal["offline", "gemini"]
     gemini_model: str
     gemini_api_key: str | None
     max_body_bytes: int = 64 * 1024
     max_concurrent_turns: int = 4
     session_ttl_seconds: int = 8 * 60 * 60
+
+    @property
+    def llm_enabled(self) -> bool:
+        return self.mode == "gemini"
 
     @classmethod
     def from_environment(cls, env_file: Path | None = None) -> AgentSettings:
@@ -57,11 +58,14 @@ class AgentSettings:
         host = os.getenv("AGENT_HOST", "127.0.0.1").strip()
         if host not in {"127.0.0.1", "localhost"}:
             raise ValueError("Agent service must bind to loopback in local mode")
+        mode = os.getenv("AGENT_MODE", "offline").strip().lower()
+        if mode not in {"offline", "gemini"}:
+            raise ValueError("AGENT_MODE must be either offline or gemini")
         return cls(
             host=host,
             port=int(os.getenv("AGENT_PORT", "8010")),
             allowed_origins=origins,
-            llm_enabled=_as_bool(os.getenv("AGENT_LLM_ENABLED", "false")),
+            mode=mode,
             gemini_model=os.getenv("GEMINI_MODEL", "gemini-3.8-flash").strip(),
             gemini_api_key=os.getenv("GEMINI_API_KEY") or None,
         )

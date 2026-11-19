@@ -7,9 +7,10 @@ from collections.abc import Awaitable, Callable
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request, Response, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from .config import AgentSettings
-from .gemini_provider import GeminiInterpretationProvider
+from .gemini_provider import GeminiInterpretationProvider, GeminiProviderError
 from .interpreter import AgentInterpreter
 from .models import AgentTurnRequest, AgentTurnResponse
 
@@ -39,7 +40,7 @@ def create_app(
 ) -> FastAPI:
     active_settings = settings or AgentSettings.from_environment()
     active_interpreter = interpreter or AgentInterpreter(
-        provider=GeminiInterpretationProvider(active_settings)
+        provider=GeminiInterpretationProvider(active_settings), mode=active_settings.mode
     )
     tokens = SessionTokens(active_settings.session_ttl_seconds)
     turn_slots = asyncio.Semaphore(active_settings.max_concurrent_turns)
@@ -51,6 +52,37 @@ def create_app(
         allow_methods=["GET", "POST", "OPTIONS"],
         allow_headers=["Content-Type", "X-ASTRA-Agent-Session"],
     )
+
+    @app.exception_handler(GeminiProviderError)
+    async def gemini_error(_request: Request, error: GeminiProviderError) -> JSONResponse:
+        status_code = {
+            "quota": status.HTTP_429_TOO_MANY_REQUESTS,
+            "timeout": status.HTTP_504_GATEWAY_TIMEOUT,
+            "auth_error": status.HTTP_502_BAD_GATEWAY,
+            "model_unavailable": status.HTTP_502_BAD_GATEWAY,
+            "provider_error": status.HTTP_502_BAD_GATEWAY,
+        }.get(error.code, status.HTTP_503_SERVICE_UNAVAILABLE)
+        messages = {
+            "disabled": "Gemini AI mode is not enabled.",
+            "missing_key": "Gemini AI mode requires a local GEMINI_API_KEY.",
+            "sdk_missing": "Gemini AI mode requires the optional google-genai package.",
+            "provider_not_configured": "Gemini provider is not configured for AI mode.",
+            "auth_error": "Gemini rejected the configured API key or project access.",
+            "model_unavailable": "The configured Gemini model is unavailable to this project.",
+            "quota": "Gemini quota or rate limit was exceeded.",
+            "timeout": "Gemini interpretation timed out.",
+            "empty_response": "Gemini returned no structured interpretation.",
+            "provider_error": "Gemini interpretation failed.",
+        }
+        return JSONResponse(
+            status_code=status_code,
+            content={
+                "error": {
+                    "code": f"gemini_{error.code}",
+                    "message": messages.get(error.code, "Gemini interpretation failed."),
+                }
+            },
+        )
 
     @app.middleware("http")
     async def protect_local_boundary(
@@ -74,6 +106,7 @@ def create_app(
     async def health() -> dict[str, object]:
         return {
             "status": "ok",
+            "mode": active_settings.mode,
             "llmEnabled": active_settings.llm_enabled,
             "geminiKeyConfigured": bool(active_settings.gemini_api_key),
             "model": active_settings.gemini_model,

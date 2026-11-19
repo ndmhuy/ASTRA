@@ -70,7 +70,7 @@ class AgentDecision(CamelModel):
 class AgentTurnResponse(CamelModel):
     turn_id: str = Field(alias="turnId")
     decisions: list[AgentDecision] = Field(min_length=1, max_length=4)
-    provider: Literal["deterministic", "gemini", "fallback"]
+    provider: Literal["offline", "gemini"]
     knowledge_status: Literal["verified_ui_registry_only", "approved_document"] = Field(
         alias="knowledgeStatus"
     )
