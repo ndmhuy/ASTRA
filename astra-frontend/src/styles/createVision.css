@@ -254,14 +254,14 @@
   min-width: 0;
   padding: 14px;
   border: 1px solid rgba(101, 139, 105, .12);
-  border-radius: 18px;
+  border-radius: 6px;
   background: rgba(232, 244, 227, .72);
   box-shadow: 0 8px 28px rgba(49, 89, 58, .055);
 }
 .workspace-active.create-mode .canvas-title { color: #344139; font-size: 16px; font-weight: 650; }
 .workspace-active.create-mode .canvas-status { color: var(--ui-muted); font-size: 12px; }
 .workspace-active.create-mode .review-count { color: #8a7550; font-size: 12px; }
-.workspace-active.create-mode .exam-paper { max-width: none; min-height: 100%; padding: 36px clamp(24px, 3vw, 44px); border: 1px solid rgba(101, 139, 105, .1); border-radius: 16px; background: rgba(253, 254, 250, .96); box-shadow: 0 5px 18px rgba(49, 89, 58, .055); }
+.workspace-active.create-mode .exam-paper { max-width: none; min-height: 100%; padding: 36px clamp(24px, 3vw, 44px); border: 1px solid rgba(101, 139, 105, .1); border-radius: 4px; background: rgba(253, 254, 250, .96); box-shadow: 0 5px 18px rgba(49, 89, 58, .055); }
 .workspace-active.create-mode .exam-paper-heading { border-color: rgba(101, 139, 105, .2); }
 .workspace-active.create-mode .exam-paper-heading .eyebrow { color: #718a75; }
 .workspace-active.create-mode .question-review.flagged { border-color: #c0a368; color: #7a6948; }
@@ -271,10 +271,10 @@
 .workspace-active.create-mode .chat-empty { padding: 24px 22px; text-align: left; }
 .workspace-active.create-mode .chat-empty h3 { color: #39483d; font: 600 20px/1.35 var(--font-ui); }
 .workspace-active.create-mode .chat-empty p { color: var(--ui-muted); font-size: 13px; }
-.workspace-active.create-mode .prompt-suggestions button { min-height: 42px; border-color: rgba(101, 139, 105, .14); border-radius: 10px; background: #f4f8f0; color: #4c5d50; font-size: 12px; }
+.workspace-active.create-mode .prompt-suggestions button { min-height: 42px; border-color: rgba(101, 139, 105, .14); border-radius: 5px; background: #f4f8f0; color: #4c5d50; font-size: 12px; }
 .workspace-active.create-mode .prompt-suggestions button:nth-child(2),
 .workspace-active.create-mode .prompt-suggestions button:nth-child(3) { background: #f4f8f0; }
-.workspace-active.create-mode .chat-msg-user { border: 1px solid rgba(101, 139, 105, .08); border-radius: 12px; background: #edf5e9; color: #455448; }
+.workspace-active.create-mode .chat-msg-user { border: 1px solid rgba(101, 139, 105, .08); border-radius: 6px; background: #edf5e9; color: #455448; }
 .workspace-active.create-mode .chat-msg-assistant { color: #47564a; }
 .workspace-active.create-mode .workspace-composer-slot { padding: 8px 26px 20px; }
 .workspace-active.create-mode .studio-composer { padding: 0!important; border: 0!important; background: transparent!important; }
@@ -283,7 +283,7 @@
 .workspace-active.create-mode .composer-box button[aria-label='Gửi yêu cầu'] { width: 42px!important; height: 42px!important; border-radius: 13px!important; background: var(--ui-green)!important; }
 .workspace-active.create-mode .composer-box button[aria-pressed=true] { border-radius: 10px!important; background: #e8f2e4!important; color: #47734f!important; }
 .workspace-active.create-mode .composer-box button:not([aria-label='Gửi yêu cầu']) { border-radius: 10px; }
-.create-mode [role=dialog] { border: 1px solid var(--vision-edge)!important; border-radius: 18px!important; box-shadow: 0 18px 55px rgba(38, 67, 43, .18)!important; font-family: var(--font-ui); }
+.create-mode [role=dialog] { border: 1px solid var(--vision-edge)!important; border-radius: 6px!important; box-shadow: 0 16px 40px rgba(24, 38, 28, .16)!important; font-family: var(--font-ui); }
 .create-mode [role=dialog] h2 { color: #35443a!important; font-family: var(--font-ui)!important; }
 .create-mode [role=dialog] label:has(input:checked) { border-color: #76a37c!important; background: #edf5e9!important; }
 .create-mode :is(button, a, summary, input, select, textarea, [role=separator]):focus-visible { outline: 3px solid #70a77a!important; outline-offset: 3px; }
@@ -347,7 +347,7 @@
 /* Shared navigation rail; content keeps its screen-specific layout. */
 .app-shell.create-mode {
   position: relative;
-  grid-template-columns: 164px minmax(0, 1fr);
+  grid-template-columns: 216px minmax(0, 1fr);
   background: linear-gradient(118deg, #f1f6f5 0%, #f6f9f8 48%, #f8fafb 100%);
   transition: grid-template-columns 220ms cubic-bezier(.2,.75,.25,1);
   will-change: grid-template-columns;
@@ -374,7 +374,7 @@
 .app-shell.create-mode .main-tabs button span,
 .app-shell.create-mode .header-session {
   display: inline-block;
-  max-width: 130px;
+  max-width: 175px;
   overflow: hidden;
   opacity: 1;
   white-space: nowrap;
@@ -495,7 +495,7 @@
   max-width: 88%;
   padding: 9px 12px;
   border: 1px solid rgba(68, 103, 70, .12);
-  border-radius: 14px 14px 4px 14px;
+  border-radius: 6px;
   background: rgba(248, 251, 241, .84);
   box-shadow: 0 3px 9px rgba(47, 91, 42, .12);
 }
@@ -533,7 +533,7 @@
 }
 
 @media (max-width: 1000px) {
-  .app-shell.create-mode { grid-template-columns: 164px minmax(0, 1fr); }
+  .app-shell.create-mode { grid-template-columns: 192px minmax(0, 1fr); }
   .app-shell.create-mode.controls-collapsed { grid-template-columns: 58px minmax(0, 1fr); }
   .workspace-active.create-mode .astra-workspace-split { padding: 12px 13px 5px; gap: 8px; }
   .workspace-active.create-mode .astra-chat-pane { min-width: 260px; }
@@ -605,8 +605,8 @@
   align-items: center;
   padding: 0 2px!important;
 }
-.workspace-active.create-mode .composer-box > div > button { min-width: 30px; min-height: 30px; padding: 4px!important; }
-.workspace-active.create-mode .composer-box button[aria-label='Gửi yêu cầu'] { width: 32px!important; height: 32px!important; border-radius: 10px!important; }
+.workspace-active.create-mode .composer-box > div > button { min-width: 30px; min-height: 30px; padding: 4px!important; border-radius: 5px!important; }
+.workspace-active.create-mode .composer-box button[aria-label='Gửi yêu cầu'] { width: 32px!important; height: 32px!important; border-radius: 5px!important; }
 
 /* Shared soft glow and a denser exam layout with more room for questions. */
 .workspace-active.create-mode { --workspace-shared-shadow: 0 6px 24px rgba(47, 89, 40, .18), 0 2px 6px rgba(47, 89, 40, .09); }
@@ -639,7 +639,7 @@
   border: 0!important;
 }
 .workspace-active.create-mode .workspace-composer-slot { padding: 14px 22px 20px; }
-.workspace-active.create-mode .composer-box { border-radius: 14px!important; }
+.workspace-active.create-mode .composer-box { border-radius: 6px!important; }
 
 @media (max-width: 1000px) {
   .workspace-active.create-mode .workspace-composer-slot { padding-inline: 13px; }
@@ -720,7 +720,7 @@
   padding: 22px clamp(18px, 2vw, 30px);
   overflow-x: hidden;
   overflow-y: auto;
-  border-radius: 12px;
+  border-radius: 4px;
   box-shadow: none;
   font-size: 14px;
 }
@@ -782,13 +782,14 @@
 .create-mode .exam-delete-actions button { border: 1px solid var(--ui-edge); border-radius: 8px; background: transparent; color: var(--ui-muted); }
 .create-mode .exam-delete-actions .delete-confirm { background: #fbeeed; color: #9b4d46; border-color: #eacac6; }
 .create-mode .exam-delete-actions button:hover { background: #eef4f2; }
-.create-mode .button-primary { background: var(--ui-green); border: 1px solid var(--ui-green); border-radius: 10px; color: white; }
-.create-mode .button-primary:hover { background: var(--ui-green-dark); border-color: var(--ui-green-dark); }
-.create-mode .button-secondary { background: transparent; border: 1px solid var(--ui-edge); border-radius: 10px; color: var(--ui-green-dark); }
-.create-mode .button-secondary:hover { background: var(--ui-green-soft); }
+.create-mode .button-primary { background: var(--ui-green); border: 1px solid var(--ui-green); border-radius: 5px; color: white; transition: background-color 140ms ease, border-color 140ms ease, opacity 140ms ease; }
+.create-mode .button-primary:hover:not(:disabled) { background: var(--ui-green-dark); border-color: var(--ui-green-dark); }
+.create-mode .button-primary:disabled { opacity: .52; cursor: not-allowed; }
+.create-mode .button-secondary { background: rgba(255, 255, 255, .75); border: 1px solid var(--ui-edge); border-radius: 5px; color: var(--ui-green-dark); transition: background-color 140ms ease, border-color 140ms ease, opacity 140ms ease; }
+.create-mode .button-secondary:hover:not(:disabled) { background: var(--ui-green-soft); border-color: rgba(86, 136, 102, .35); }
+.create-mode .button-secondary:disabled { opacity: .52; cursor: not-allowed; }
 .create-mode [role=dialog] input { accent-color: var(--ui-green)!important; }
 .create-mode [role=dialog] label:has(input:checked) { background: var(--ui-green-soft)!important; border-color: var(--ui-green)!important; }
-.create-mode [role=dialog] > button:first-of-type { background: var(--ui-green-soft)!important; border-color: var(--ui-edge)!important; }
 .create-mode :is(button,a,summary,input,select,textarea):focus-visible { outline: 2px solid var(--ui-green-dark)!important; outline-offset: 3px; }
 @media (max-width: 1000px) {
   .create-mode .classroom-hero { gap: 20px; }

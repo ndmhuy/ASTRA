@@ -65,7 +65,7 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
           onChange={handleChange}
           onKeyDown={handleKeyDown}
             disabled={disabled || busy}
-          placeholder="Mô tả yêu cầu cho đề Toán THPT 22 câu"
+          placeholder="Mô tả yêu cầu soạn đề hoặc nhập lệnh cho ASTRA..."
           rows={1}
           style={{
             width: '100%',

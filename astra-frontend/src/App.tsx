@@ -502,7 +502,21 @@ export const App: React.FC = () => {
               <>
                 {active.error && <p role="alert">{active.error}</p>}
                 {isGenerating && active.progress && <p role="status">{active.progress.statusMessage} ({active.progress.percent}%)</p>}
-                {!!active.package?.warnings?.length && <details open={disclosures.warnings}><summary>Cảnh báo nguồn ({active.package.warnings.length})</summary>{active.package.warnings.map((warning, i) => <p key={i}>{warning.questionId}: {warning.message}</p>)}</details>}
+                {!!active.package?.warnings?.length && (
+                  <details className="source-warnings-box" open={disclosures.warnings}>
+                    <summary>Lưu ý nguồn tham khảo ({active.package.warnings.length})</summary>
+                    <ul>
+                      {active.package.warnings.map((warning, i) => {
+                        const coverageMatch = warning.message.match(/statement level\(s\):\s*([^.]+)\./i);
+                        const levelMap: Record<string, string> = { NB: 'Nhận biết', TH: 'Thông hiểu', VD: 'Vận dụng', VDC: 'Vận dụng cao' };
+                        const readable = coverageMatch
+                          ? `Kho ngữ liệu chưa có câu mẫu trực tiếp cho mức ${coverageMatch[1].replace(/\b(NB|TH|VD|VDC)\b/g, m => levelMap[m] || m)}; hệ thống đã dùng câu mẫu cùng chủ đề để tham khảo.`
+                          : warning.message;
+                        return <li key={i}><strong>{warning.questionId || 'Chung'}:</strong> {readable}</li>;
+                      })}
+                    </ul>
+                  </details>
+                )}
                 {!!active.package?.visualWarnings?.length && (
                   <div className="pdf-preview-warning" role="alert">
                     <strong>Cảnh báo hình vẽ / bảng biểu ({active.package.visualWarnings.length})</strong>
@@ -566,10 +580,13 @@ export const App: React.FC = () => {
       )}
 
       {/* Quick preset modal */}
-      {pendingConfirmation && <aside style={{ position: 'fixed', bottom: 16, right: 16, zIndex: 2001, background: 'white', border: '1px solid #ccc', padding: 16, maxWidth: 360 }} aria-label="Xác nhận tác vụ Agent">
+      {pendingConfirmation && <aside className="agent-confirm-toast" aria-label="Xác nhận tác vụ Agent">
+        <span className="agent-confirm-eyebrow">Chờ xác nhận</span>
         <p>{pendingConfirmation.summary}</p>
-        <button disabled={agentBusy} onClick={() => { void processAgentTurn(pendingConfirmation.workspaceId, 'xac nhan'); }}>Xác nhận tác vụ</button>
-        <button disabled={agentBusy} onClick={() => { setPendingConfirmation(null); store.cancelAgentTask(pendingConfirmation.workspaceId); }}>Hủy tác vụ</button>
+        <div className="agent-confirm-actions">
+          <button className="button-primary" disabled={agentBusy} onClick={() => { void processAgentTurn(pendingConfirmation.workspaceId, 'xac nhan'); }}>Xác nhận tác vụ</button>
+          <button className="button-secondary" disabled={agentBusy} onClick={() => { setPendingConfirmation(null); store.cancelAgentTask(pendingConfirmation.workspaceId); }}>Hủy tác vụ</button>
+        </div>
       </aside>}
       {showQuickModal && (
         <QuickPresetModal

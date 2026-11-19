@@ -125,11 +125,11 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
     return (
       <section className="pdf-preview-panel" aria-label="Bản xem trước PDF chuẩn mẫu LaTeX">
         <div className={`pdf-preview-banner ${isDraft ? 'is-draft' : 'is-approved'}`} role="status">
-          <div>
+          <div className="pdf-preview-banner-text">
             <strong>
               {isDraft
-                ? 'Draft — human review required (Bản nháp dành cho giáo viên kiểm tra)'
-                : 'Đã phê duyệt bản xem trước hiện tại'}
+                ? 'Bản nháp (chờ giáo viên kiểm tra)'
+                : 'Đã phê duyệt bản hiện tại'}
             </strong>
             <span>
               {revision ? ` · Phiên bản ${revision}` : ''}
@@ -137,8 +137,8 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
             </span>
           </div>
           {bindingMatch && preview?.status === 'ready' && !artifactChanged && (
-            <a className="button-secondary" href={preview.pdfUrl} target="_blank" rel="noreferrer">
-              Mở PDF trong tab mới
+            <a className="pdf-open-tab-link" href={preview.pdfUrl} target="_blank" rel="noreferrer">
+              Mở tab mới
             </a>
           )}
         </div>
@@ -229,7 +229,7 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
               key={`${examId}:${revision}:${preview.pdfHash}`}
               title="Student exam PDF preview"
               src={preview.pdfUrl}
-              style={{ width: '100%', height: '80vh', border: 0 }}
+              className="pdf-preview-iframe"
             />
           </div>
         )}
