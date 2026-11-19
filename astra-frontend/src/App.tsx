@@ -9,7 +9,7 @@ import { ChatHistory } from './components/Workspace/ChatPane/ChatHistory';
 import { ModernChatBar } from './components/Workspace/ChatPane/ModernChatBar';
 import { CanvasHeader } from './components/Workspace/LiveCanvas/CanvasHeader';
 import { ExamPaperView, type ExamCanvasViewMode } from './components/Workspace/LiveCanvas/ExamPaperView';
-import type { ExamRequestParams, QuestionItem } from './types/exam';
+import type { ExamFormat, ExamRequestParams, QuestionItem } from './types/exam';
 import { QuestionEditor } from './components/QuestionEditor';
 import { AgentNotes } from './components/AgentNotes';
 import { examService } from './services/examService';
@@ -17,8 +17,9 @@ import { ExamSessions } from './state/examSessions';
 import { AgentClient, AgentTransportError } from './agent/client';
 import { UI_CAPABILITY_MANIFEST } from './agent/capabilities';
 import { UiContextTracker, type UnversionedUiContext } from './agent/context';
-import { UiActionExecutor, executeActionPlan } from './agent/executor';
-import type { UiActionProposal, UiContextSnapshot } from './agent/contracts';
+import { UiActionExecutor } from './agent/executor';
+import { AgentTaskController, isExplicitConfirmation } from './agent/orchestrator';
+import type { PendingAgentConfirmation, UiActionProposal, UiContextSnapshot } from './agent/contracts';
 import './styles/workspace.css';
 import './styles/classroom.css';
 import './styles/studio.css';
@@ -44,13 +45,20 @@ export const App: React.FC = () => {
   const [showQuickModal, setShowQuickModal] = useState(false);
   const [configureId, setConfigureId] = useState<string | null>(null);
   const [editor, setEditor] = useState<{ sessionId: string; jobId: string; question: QuestionItem } | null>(null);
+  const [selectedQuestionId, setSelectedQuestionId] = useState<number | null>(null);
+  const [pendingConfirmation, setPendingConfirmation] = useState<PendingAgentConfirmation | null>(null);
+  const [setupState, setSetupState] = useState<{ status: 'closed' | 'loading' | 'ready' | 'error'; formats: ExamFormat[]; selectedId: string; prompt: string; error?: string }>({ status: 'closed', formats: [], selectedId: '', prompt: '' });
   const [approving, setApproving] = useState(false);
   const [agentBusy, setAgentBusy] = useState(false);
   const [agentClient] = useState(() => new AgentClient());
   const [contextTracker] = useState(() => new UiContextTracker());
   const executorRef = useRef<UiActionExecutor | null>(null);
-  const runtimeRef = useRef({ screen: 'start' as 'start' | 'workspace', activeId: null as string | null, showQuickModal: false, controlsCollapsed: false });
-  const closeQuickModal = useCallback(() => setShowQuickModal(false), []);
+  const [taskController] = useState(() => new AgentTaskController());
+  const runtimeRef = useRef({ screen: 'start' as 'start' | 'workspace', activeId: null as string | null, showQuickModal: false, controlsCollapsed: false, viewMode: 'paper' as ExamCanvasViewMode, editor: null as typeof editor, selectedQuestionId: null as number | null, pendingConfirmation: null as PendingAgentConfirmation | null, setupState });
+  const closeQuickModal = useCallback(() => { setShowQuickModal(false); setSetupState(value => ({ ...value, status: 'closed' })); setPendingConfirmation(null); }, []);
+  const handleSetupState = useCallback((value: { status: 'loading' | 'ready' | 'error'; formats: ExamFormat[]; selectedId: string; error?: string }) => {
+    setSetupState(current => ({ ...current, ...value }));
+  }, []);
   const active = sessions.find(session => session.id === activeId);
   const messages = active?.messages || [];
   const liveQuestions = active?.questions || [];
@@ -64,11 +72,11 @@ export const App: React.FC = () => {
   }, [store, screen, activeId]);
   useEffect(() => () => { if (transitionTimer.current) clearTimeout(transitionTimer.current); }, []);
   useLayoutEffect(() => {
-    runtimeRef.current = { screen, activeId, showQuickModal, controlsCollapsed };
-  }, [screen, activeId, showQuickModal, controlsCollapsed]);
+    runtimeRef.current = { screen, activeId, showQuickModal, controlsCollapsed, viewMode, editor, selectedQuestionId, pendingConfirmation, setupState };
+  }, [screen, activeId, showQuickModal, controlsCollapsed, viewMode, editor, selectedQuestionId, pendingConfirmation, setupState]);
   const cancelTransition = () => { composerOrigin.current = null; if (transitionTimer.current) clearTimeout(transitionTimer.current); setLeavingStart(false); setRevealingWorkspace(false); };
   const openSession = (id: string) => { cancelTransition(); setActiveId(id); setScreen('workspace'); };
-  const newExam = () => { cancelTransition(); setActiveId(null); setConfigureId(null); setLandingDraft(''); attachedFiles.current = []; setShowQuickModal(false); setScreen('start'); };
+  const newExam = () => { cancelTransition(); setActiveId(null); setConfigureId(null); setLandingDraft(''); attachedFiles.current = []; setShowQuickModal(false); setPendingConfirmation(null); setSelectedQuestionId(null); setSetupState({ status: 'closed', formats: [], selectedId: '', prompt: '' }); setScreen('start'); };
   const revealSession = (id: string) => {
     if (screen === 'workspace') { openSession(id); return; }
     composerOrigin.current = document.querySelector('.integrated-start .composer-box')?.getBoundingClientRect() || null;
@@ -155,7 +163,7 @@ export const App: React.FC = () => {
     return {
       workspaceId: runtime.screen === 'workspace' ? runtime.activeId : null,
       screen: runtime.screen,
-      activeModal: runtime.showQuickModal ? 'exam_setup' : null,
+      activeModal: runtime.editor ? 'question_editor' : runtime.showQuickModal ? 'exam_setup' : null,
       sidebarCollapsed: runtime.controlsCollapsed,
       activeJob: current?.status === 'generating' && current.jobId ? {
         id: current.jobId,
@@ -164,8 +172,27 @@ export const App: React.FC = () => {
         source: progressSource,
       } : null,
       examRevision: current?.package?.revision || null,
+      examId: current?.package?.examId || null,
+      contentHash: current?.package?.contentHash || null,
+      selectedQuestion: runtime.selectedQuestionId ? {
+        id: runtime.selectedQuestionId,
+        stableId: current?.questions.find(item => item.id === runtime.selectedQuestionId)?.stableId || null,
+      } : null,
+      questions: (current?.questions || []).map(question => ({ id: question.id, stableId: question.stableId || null })),
+      viewMode: runtime.viewMode,
+      preview: current?.preview ? { status: current.preview.status, revision: current.preview.revision || null, opened: Boolean(current.previewOpenedRevision) } : null,
+      approved: current?.package?.approved === true,
+      setup: {
+        status: runtime.showQuickModal ? runtime.setupState.status : 'closed',
+        selectedFormatId: runtime.setupState.selectedId || null,
+        prompt: runtime.setupState.prompt,
+        formats: runtime.setupState.formats.map(format => ({ id: format.id, version: format.version, displayName: format.displayName, subject: format.subjects[0], grade: format.grades[0], durationMinutes: format.durationMinutes, totalQuestions: format.totalQuestions, available: format.available })),
+        ...(runtime.setupState.error ? { errorCode: 'CATALOG_LOAD_FAILED' } : {}),
+      },
+      pendingConfirmation: runtime.pendingConfirmation,
+      activeTask: current?.agentTask || null,
       sessions: currentSessions.slice(0, 50).map(session => ({ id: session.id, title: session.title, status: session.status, createdAt: session.createdAt })),
-      notes: (current?.agentNotes || []).map(note => ({ id: note.id, targetQuestion: note.targetQuestion, requestedChange: note.requestedChange, status: note.status })),
+      notes: (current?.agentNotes || []).map(note => ({ id: note.id, targetQuestion: note.targetQuestion, stableQuestionId: note.stableQuestionId, requestedChange: note.requestedChange, status: note.status })),
       capabilities: UI_CAPABILITY_MANIFEST,
     };
   };
@@ -189,6 +216,44 @@ export const App: React.FC = () => {
         attachedFiles.current = [];
         setShowQuickModal(true);
       },
+      'ui.exam.close_setup': () => closeQuickModal(),
+      'ui.exam.configure_setup': params => {
+        const runtime = runtimeRef.current;
+        const formatId = typeof params.formatId === 'string' ? params.formatId : runtime.setupState.selectedId;
+        const prompt = typeof params.prompt === 'string' ? params.prompt : runtime.setupState.prompt;
+        const workspaceId = runtime.activeId;
+        if (!workspaceId) throw new Error('No active workspace');
+        const confirmation: PendingAgentConfirmation = {
+          id: crypto.randomUUID(), kind: 'generation', workspaceId,
+          summary: `Tạo đề theo định dạng ${formatId}`, createdAt: new Date().toISOString(),
+        };
+        setSetupState(value => ({ ...value, selectedId: formatId, prompt }));
+        setPendingConfirmation(confirmation);
+        return { pendingConfirmation: 'generation', confirmationId: confirmation.id };
+      },
+      'exam.generate.start': async () => {
+        const runtime = runtimeRef.current;
+        const format = runtime.setupState.formats.find(item => item.id === runtime.setupState.selectedId && item.available);
+        if (!runtime.activeId || !format) throw new Error('Setup is not ready');
+        const result = await store.generate(runtime.activeId, {
+          formatId: format.id, formatVersion: format.version, subject: format.subjects[0], grade: format.grades[0],
+          examType: format.examType, durationMinutes: format.durationMinutes, itemCount: format.totalQuestions,
+          prompt: runtime.setupState.prompt.trim() || `Tạo đề ${format.displayName}`, uploadedFiles: [],
+        });
+        if (!result) throw new Error('Generation was not started');
+        setPendingConfirmation(null); setShowQuickModal(false);
+        return result;
+      },
+      'ui.exam.view_mode': params => setViewMode(params.mode as ExamCanvasViewMode),
+      'ui.question.focus': params => { setSelectedQuestionId(Number(params.questionId)); setViewMode('paper'); },
+      'ui.question.open_editor': params => {
+        const runtime = runtimeRef.current;
+        const session = store.getSnapshot().find(item => item.id === runtime.activeId);
+        const question = session?.questions.find(item => item.id === Number(params.questionId));
+        if (!session?.jobId || !question) throw new Error('Question is not available');
+        setSelectedQuestionId(question.id);
+        setEditor({ sessionId: session.id, jobId: session.jobId, question });
+      },
       'ui.sidebar.set_collapsed': params => { setControlsCollapsed(params.collapsed === true); },
       'ui.note.add': params => {
         const workspaceId = runtimeRef.current.activeId;
@@ -211,6 +276,23 @@ export const App: React.FC = () => {
         if (!workspaceId || !store.cancelNote(workspaceId, String(params.noteId))) throw new Error('Note was not cancelled');
         return { noteId: String(params.noteId) };
       },
+      'ui.note.approve': params => {
+        const workspaceId = runtimeRef.current.activeId;
+        if (!workspaceId || !store.approveNote(workspaceId, String(params.noteId))) throw new Error('Note was not approved');
+        const confirmation: PendingAgentConfirmation = {
+          id: crypto.randomUUID(), kind: 'revision', workspaceId, noteId: String(params.noteId),
+          summary: `Áp dụng ghi chú ${String(params.noteId)}`, createdAt: new Date().toISOString(),
+        };
+        setPendingConfirmation(confirmation);
+        return { pendingConfirmation: 'revision', confirmationId: confirmation.id };
+      },
+      'exam.note.apply': async params => {
+        const workspaceId = runtimeRef.current.activeId;
+        if (!workspaceId) throw new Error('No active workspace');
+        const result = await store.applyNote(workspaceId, String(params.noteId));
+        setPendingConfirmation(null);
+        return result;
+      },
     }, () => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
   }
 
@@ -221,9 +303,30 @@ export const App: React.FC = () => {
     setAgentBusy(true);
     try {
       const response = await agentClient.interpret(content, captureContext());
-      const proposals = response.decisions.filter((decision): decision is UiActionProposal => decision.kind === 'propose_ui_action');
+      let proposals = response.decisions.filter((decision): decision is UiActionProposal => decision.kind === 'propose_ui_action');
       const plain = response.decisions.filter(decision => decision.kind !== 'propose_ui_action');
-      const receipts = await executeActionPlan(proposals, executorRef.current!);
+      const pending = runtimeRef.current.pendingConfirmation;
+      if (pending && isExplicitConfirmation(content)) {
+        const capabilityId = pending.kind === 'generation' ? 'exam.generate.start' : pending.kind === 'revision' ? 'exam.note.apply' : '';
+        if (capabilityId) {
+          const existing = proposals.find(proposal => proposal.capabilityId === capabilityId);
+          const confirmed: UiActionProposal = existing ? {
+            ...existing, params: { ...existing.params, confirmationId: pending.id, ...(pending.noteId ? { noteId: pending.noteId } : {}) },
+          } : {
+            kind: 'propose_ui_action', text: 'Tôi sẽ tiếp tục tác vụ đã chờ xác nhận.', actionId: crypto.randomUUID(),
+            capabilityId, expectedStateVersion: captureContext().stateVersion,
+            params: { confirmationId: pending.id, ...(pending.noteId ? { noteId: pending.noteId } : {}) }, target: { workspaceId: pending.workspaceId },
+          };
+          proposals = existing ? proposals.map(item => item === existing ? confirmed : item) : [confirmed];
+        }
+      }
+      const initialContext = captureContext();
+      const previousTask = store.getSnapshot().find(item => item.id === initialContext.workspaceId)?.agentTask || null;
+      const execution = await taskController.execute(content, initialContext.workspaceId, proposals, executorRef.current!, captureContext, previousTask, task => {
+        const workspaceId = task.workspaceId || runtimeRef.current.activeId;
+        if (workspaceId) store.setAgentTask(workspaceId, { ...task, workspaceId });
+      });
+      const receipts = execution.receipts;
       const created = receipts.find(receipt => receipt.status === 'success' && typeof receipt.result?.workspaceId === 'string');
       if (!messageSessionId && created) messageSessionId = String(created.result?.workspaceId);
       if (!messageSessionId) {
@@ -232,6 +335,7 @@ export const App: React.FC = () => {
         if (!currentId) openSession(messageSessionId);
       }
       if (!initialSessionId) store.sendMessage(messageSessionId, content);
+      store.setAgentTask(messageSessionId, { ...execution.task, workspaceId: messageSessionId });
       for (const decision of plain) store.addAssistantMessage(messageSessionId, decision.text);
       proposals.forEach((proposal, index) => {
         const receipt = receipts[index];
@@ -291,7 +395,12 @@ export const App: React.FC = () => {
                 <ChatHistory messages={messages} onSuggestion={value => store.setDraft(active.id, value)} onEditMessage={message => store.setDraft(active.id, message.content)} onRetractMessage={message => store.retractMessage(active.id, message.id)} onBranchMessage={message => { const branchId = store.branchAtMessage(active.id, message.id); if (branchId) setActiveId(branchId); }} />
                 <AgentNotes notes={active.agentNotes || []}
                   onCancel={noteId => store.cancelNote(active.id, noteId)}
-                  onPrepareEdit={note => store.setDraft(active.id, `Sửa ghi chú ${note.id}: ${note.requestedChange}`)} />
+                  onPrepareEdit={note => store.setDraft(active.id, `Sửa ghi chú ${note.id}: ${note.requestedChange}`)}
+                  onApprove={noteId => {
+                    if (!store.approveNote(active.id, noteId)) return;
+                    setPendingConfirmation({ id: crypto.randomUUID(), kind: 'revision', workspaceId: active.id, noteId, summary: `Áp dụng ghi chú ${noteId}`, createdAt: new Date().toISOString() });
+                  }}
+                  onApply={noteId => { void store.applyNote(active.id, noteId).then(() => setPendingConfirmation(null)); }} />
               </>
             ),
             right: (
@@ -347,9 +456,10 @@ export const App: React.FC = () => {
                   artifactChanged={active.artifactChanged}
                   onRetryPreview={handleRetryPreview}
                   onPreviewOpened={handlePreviewOpened}
+                  focusedQuestionId={selectedQuestionId}
                   onEditQuestion={id => {
                     const question = active.questions.find(item => item.id === id);
-                    if (active.jobId && question) setEditor({ sessionId: active.id, jobId: active.jobId, question });
+                    if (active.jobId && question) { setSelectedQuestionId(id); setEditor({ sessionId: active.id, jobId: active.jobId, question }); }
                   }}
                 />
               </>
@@ -365,6 +475,9 @@ export const App: React.FC = () => {
           title={configureId ? 'Thiết lập đề theo yêu cầu' : 'Tạo đề từ mẫu'}
           onStart={handleQuickStart}
           onClose={closeQuickModal}
+          selectedId={setupState.selectedId}
+          prompt={setupState.prompt}
+          onStateChange={handleSetupState}
         />
       )}
       {editor && <QuestionEditor question={editor.question} onClose={() => setEditor(null)}

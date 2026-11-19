@@ -13,7 +13,7 @@ from astra_agent_ui.config import AgentSettings
 from astra_agent_ui.gemini_provider import GeminiInterpretationProvider, GeminiProviderError
 from astra_agent_ui.interpreter import AgentInterpreter
 from astra_agent_ui.knowledge import ApprovedJsonKnowledgeSource
-from astra_agent_ui.models import AgentTurnRequest, GeminiDecision, UiContextSnapshot
+from astra_agent_ui.models import AgentTurnRequest, GeminiDecision, GeminiPlan, UiContextSnapshot
 
 ORIGIN = "http://127.0.0.1:5173"
 
@@ -156,6 +156,36 @@ class QuotaProvider:
         raise GeminiProviderError("quota", "rate limited")
 
 
+class MultiPlanProvider:
+    async def interpret(self, message, ui_context):
+        del message, ui_context
+        return GeminiPlan(
+            decisions=[
+                GeminiDecision(
+                    kind="propose_ui_action",
+                    text="create",
+                    capabilityId="ui.session.create",
+                    params={"mode": "custom"},
+                ),
+                GeminiDecision(
+                    kind="propose_ui_action", text="setup", capabilityId="ui.exam.open_setup"
+                ),
+            ]
+        )
+
+
+def test_gemini_plan_preserves_multiple_allowlisted_ui_steps() -> None:
+    result = __import__("asyncio").run(
+        AgentInterpreter(provider=MultiPlanProvider(), mode="gemini").interpret(
+            request("create then setup")
+        )
+    )
+    assert [item.capability_id for item in result.decisions] == [
+        "ui.session.create",
+        "ui.exam.open_setup",
+    ]
+
+
 def test_model_invented_action_is_rejected_and_provider_errors_do_not_fall_back() -> None:
     invented = __import__("asyncio").run(
         AgentInterpreter(provider=InventedActionProvider(), mode="gemini").interpret(
@@ -269,7 +299,7 @@ def test_gemini_provider_invokes_generate_content_and_uses_structured_response(m
         def generate_content(self, **kwargs):
             calls.append(kwargs)
             return SimpleNamespace(
-                parsed={"kind": "answer", "text": "Phản hồi mô hình thử nghiệm."},
+                parsed={"decisions": [{"kind": "answer", "text": "Phản hồi mô hình thử nghiệm."}]},
                 text=None,
             )
 
@@ -285,6 +315,7 @@ def test_gemini_provider_invokes_generate_content_and_uses_structured_response(m
     genai_module.Client = FakeClient
     types_module.GenerateContentConfig = lambda **kwargs: kwargs
     types_module.HttpOptions = lambda **kwargs: kwargs
+    types_module.HttpRetryOptions = lambda **kwargs: kwargs
     google_module.genai = genai_module
     monkeypatch.setitem(sys.modules, "google", google_module)
     monkeypatch.setitem(sys.modules, "google.genai", genai_module)
@@ -296,11 +327,11 @@ def test_gemini_provider_invokes_generate_content_and_uses_structured_response(m
             "Hãy giải thích trạng thái hiện tại", UiContextSnapshot.model_validate(context())
         )
     )
-    assert result.text == "Phản hồi mô hình thử nghiệm."
+    assert result.decisions[0].text == "Phản hồi mô hình thử nghiệm."
     assert calls[0]["model"] == "gemini-3.8-flash"
-    assert calls[0]["config"]["response_json_schema"] == GeminiDecision.model_json_schema()
+    assert calls[0]["config"]["response_json_schema"] == GeminiPlan.model_json_schema()
     assert "response_schema" not in calls[0]["config"]
-    assert calls[0]["config"]["max_output_tokens"] == 500
+    assert calls[0]["config"]["max_output_tokens"] == 900
     assert calls[0]["config"]["automatic_continuation"] is False
 
 
@@ -322,8 +353,8 @@ def test_gemini_json_schema_reaches_sdk_request_layer_without_network(monkeypatc
             contents="offline schema conversion test",
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",
-                response_json_schema=GeminiDecision.model_json_schema(),
-                max_output_tokens=500,
+                response_json_schema=GeminiPlan.model_json_schema(),
+                max_output_tokens=900,
                 temperature=0.1,
                 automatic_continuation=False,
             ),

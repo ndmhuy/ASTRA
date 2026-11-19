@@ -4,6 +4,7 @@ import { UiContextTracker } from '../src/agent/context.ts';
 import { UiActionExecutor, executeActionPlan } from '../src/agent/executor.ts';
 import { UI_CAPABILITY_MANIFEST } from '../src/agent/capabilities.ts';
 import { ExamSessions } from '../src/state/examSessions.ts';
+import { AgentTaskController } from '../src/agent/orchestrator.ts';
 
 function baseRaw(overrides = {}) {
   return {
@@ -13,6 +14,16 @@ function baseRaw(overrides = {}) {
     sidebarCollapsed: false,
     activeJob: null,
     examRevision: null,
+    examId: null,
+    contentHash: null,
+    selectedQuestion: null,
+    questions: [],
+    viewMode: 'paper',
+    preview: null,
+    approved: false,
+    setup: { status: 'closed', selectedFormatId: null, prompt: '', formats: [] },
+    pendingConfirmation: null,
+    activeTask: null,
     sessions: [],
     notes: [],
     capabilities: UI_CAPABILITY_MANIFEST,
@@ -29,6 +40,28 @@ test('context version changes only when sanitized UI state changes', () => {
   assert.equal(same.stateVersion, 1);
   assert.equal(changed.stateVersion, 2);
   assert.equal(JSON.stringify(changed).includes('GEMINI_API_KEY'), false);
+});
+
+test('task controller rebases every dependent step on fresh UI state and records receipts', async () => {
+  const tracker = new UiContextTracker();
+  let raw = baseRaw();
+  const context = () => tracker.capture(raw);
+  const executor = new UiActionExecutor(context, {
+    'ui.session.create': () => {
+      raw = baseRaw({ workspaceId: 'workspace-1', screen: 'workspace', sessions: [{ id: 'workspace-1', title: 'New', status: 'draft', createdAt: 'now' }] });
+      return { workspaceId: 'workspace-1' };
+    },
+    'ui.exam.open_setup': () => { raw = { ...raw, activeModal: 'exam_setup' }; },
+  });
+  const proposals = [
+    { kind: 'propose_ui_action', text: 'create', actionId: 'task-1', capabilityId: 'ui.session.create', expectedStateVersion: 1, params: { mode: 'custom' }, target: {} },
+    { kind: 'propose_ui_action', text: 'setup', actionId: 'task-2', capabilityId: 'ui.exam.open_setup', expectedStateVersion: 1, params: {}, target: {} },
+  ];
+  const result = await new AgentTaskController().execute('create and configure', null, proposals, executor, context);
+  assert.deepEqual(result.receipts.map(item => item.status), ['success', 'success']);
+  assert.equal(result.task.taskStatus, 'completed');
+  assert.equal(result.task.completedSteps.length, 2);
+  assert.ok(result.receipts[1].observedStateVersion > result.receipts[0].observedStateVersion);
 });
 
 test('executor observes real effect, reuses duplicate receipt and rejects stale input', async () => {
@@ -137,5 +170,35 @@ test('completion with pending notes asks for review and never claims they were a
   const assistant = store.getSnapshot()[0].messages.at(-1).content;
   assert.match(assistant, /ghi chú đang chờ/);
   assert.match(assistant, /chưa được tự động áp dụng/);
+  store.dispose();
+});
+
+test('approved deferred note uses existing single-question regeneration and observes revision', async () => {
+  let progress;
+  let revision = 1;
+  let regenerateCalls = 0;
+  const service = {
+    async startGeneration() { return { jobId: 'job-revision' }; },
+    onProgress(_id, callback) { progress = callback; return () => {}; },
+    async getExamPackage() {
+      return { examId: 'exam-1', title: 'Exam', subject: 'Math', durationMinutes: 90,
+        questions: [{ id: 1, stableId: 'q-stable', examRevision: revision }], revision, contentHash: String(revision).repeat(64), approved: false };
+    },
+    async regenerateQuestion(_jobId, questionId, instruction, expectedRevision) {
+      assert.equal(questionId, 1); assert.equal(instruction, 'Easier'); assert.equal(expectedRevision, 1);
+      regenerateCalls++; revision++; return { id: 1, stableId: 'q-stable', examRevision: revision };
+    },
+  };
+  const store = new ExamSessions(service);
+  const id = store.create('custom');
+  await store.generate(id, { subject: 'Math', grade: 12, examType: 'THPT_STANDARD', durationMinutes: 90, itemCount: 1, prompt: 'test', uploadedFiles: [] });
+  const note = store.addNote(id, { targetQuestion: 1, requestedChange: 'Easier', teacherText: 'Make it easier' });
+  progress({ status: 'completed', stage: 5, percent: 100, completedItems: 1, totalItems: 1 });
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(store.approveNote(id, note.id).status, 'approved');
+  const result = await store.applyNote(id, note.id);
+  assert.equal(result.revision, 2);
+  assert.equal(regenerateCalls, 1);
+  assert.equal(store.getSnapshot()[0].agentNotes[0].status, 'applied');
   store.dispose();
 });

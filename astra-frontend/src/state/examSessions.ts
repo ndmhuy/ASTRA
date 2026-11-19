@@ -1,6 +1,6 @@
 import type { ChatMessage, ExamPackage, ExamPreviewState, ExamRequestParams, QuestionItem, GenerationProgress } from '../types/exam';
 import type { IExamService } from '../services/examService';
-import type { DeferredAgentNote } from '../agent/contracts';
+import type { AgentTaskState, DeferredAgentNote } from '../agent/contracts';
 
 export interface ExamSession {
   id: string;
@@ -27,6 +27,7 @@ export interface ExamSession {
   requestSignature?: string;
   progress?: GenerationProgress;
   agentNotes: DeferredAgentNote[];
+  agentTask?: AgentTaskState;
 }
 
 function previewBindingKey(jobId: string, revision: number, contentHash: string): string {
@@ -73,7 +74,15 @@ export class ExamSessions {
         const saved = JSON.parse(localStorage.getItem('astra.sessions.v1') || '[]');
         if (Array.isArray(saved)) this.sessions = saved
           .filter(item => typeof item.id === 'string' && Array.isArray(item.messages))
-          .map(item => ({ ...item, agentNotes: Array.isArray(item.agentNotes) ? item.agentNotes : [] }));
+          .map(item => ({
+            ...item,
+            agentNotes: Array.isArray(item.agentNotes) ? item.agentNotes.map((note: DeferredAgentNote) => ({
+              ...note,
+              stableQuestionId: note.stableQuestionId || null,
+              examId: note.examId || null,
+              examRevision: note.examRevision || null,
+            })) : [],
+          }));
       } catch { console.warn('Could not restore local exam workspaces'); }
     }
   }
@@ -243,14 +252,33 @@ export class ExamSessions {
   addAssistantMessage(id: string, content: string) {
     this.update(id, session => ({ ...session, messages: [...session.messages, this.message('assistant', content)] }));
   }
+  setAgentTask(id: string, task: AgentTaskState) {
+    this.update(id, session => ({ ...session, agentTask: task }));
+  }
+  cancelAgentTask(id: string, reason = 'TEACHER_CANCELLED') {
+    this.update(id, session => session.agentTask ? {
+      ...session,
+      agentTask: { ...session.agentTask, taskStatus: 'cancelled', blockingReason: reason, pendingConfirmation: null, updatedAt: new Date().toISOString() },
+    } : session);
+  }
   addNote(id: string, input: { targetQuestion?: number; requestedChange: string; teacherText: string }): DeferredAgentNote | null {
     const session = this.sessions.find(item => item.id === id);
     if (!session || session.status !== 'generating') return null;
+    const requestedChange = input.requestedChange.trim();
+    const duplicate = session.agentNotes.find(note => note.jobId === session.jobId
+      && note.targetQuestion === (input.targetQuestion || null)
+      && note.status !== 'cancelled'
+      && note.requestedChange.toLocaleLowerCase('vi') === requestedChange.toLocaleLowerCase('vi'));
+    if (duplicate) return duplicate;
     const now = new Date().toISOString();
+    const question = input.targetQuestion ? session.questions.find(item => item.id === input.targetQuestion) : undefined;
     const note: DeferredAgentNote = {
       id: crypto.randomUUID(), workspaceId: id, jobId: session.jobId,
       targetQuestion: input.targetQuestion || null,
-      requestedChange: input.requestedChange.trim(), teacherText: input.teacherText,
+      stableQuestionId: question?.stableId || null,
+      examId: session.package?.examId || null,
+      examRevision: session.package?.revision || null,
+      requestedChange, teacherText: input.teacherText,
       status: 'pending', createdAt: now, updatedAt: now,
     };
     this.update(id, item => ({ ...item, agentNotes: [...item.agentNotes, note] }));
@@ -258,21 +286,65 @@ export class ExamSessions {
   }
   updateNote(id: string, noteId: string, requestedChange: string): boolean {
     const session = this.sessions.find(item => item.id === id);
-    if (!session?.agentNotes.some(note => note.id === noteId && note.status === 'pending')) return false;
+    if (!session?.agentNotes.some(note => note.id === noteId && ['pending', 'approved', 'failed'].includes(note.status))) return false;
     const updatedAt = new Date().toISOString();
-    this.update(id, item => ({ ...item, agentNotes: item.agentNotes.map(note => note.id === noteId ? { ...note, requestedChange: requestedChange.trim(), updatedAt } : note) }));
+    this.update(id, item => ({ ...item, agentNotes: item.agentNotes.map(note => note.id === noteId ? { ...note, requestedChange: requestedChange.trim(), status: 'pending', errorCode: undefined, updatedAt } : note) }));
     return true;
   }
   cancelNote(id: string, noteId: string): boolean {
     const session = this.sessions.find(item => item.id === id);
-    if (!session?.agentNotes.some(note => note.id === noteId && note.status === 'pending')) return false;
+    if (!session?.agentNotes.some(note => note.id === noteId && ['pending', 'approved', 'failed'].includes(note.status))) return false;
     const updatedAt = new Date().toISOString();
     this.update(id, item => ({ ...item, agentNotes: item.agentNotes.map(note => note.id === noteId ? { ...note, status: 'cancelled', updatedAt } : note) }));
     return true;
   }
-  async generate(id: string, params: ExamRequestParams) {
+  approveNote(id: string, noteId: string): DeferredAgentNote | null {
+    const session = this.sessions.find(item => item.id === id);
+    const note = session?.agentNotes.find(item => item.id === noteId && item.status === 'pending');
+    if (!session || session.status !== 'complete' || !session.package || !note || !note.targetQuestion) return null;
+    const question = session.questions.find(item => item.id === note.targetQuestion);
+    if (!question) return null;
+    const updatedAt = new Date().toISOString();
+    const approved: DeferredAgentNote = {
+      ...note,
+      status: 'approved',
+      jobId: session.jobId,
+      examId: session.package.examId,
+      examRevision: session.package.revision || null,
+      stableQuestionId: question.stableId || null,
+      errorCode: undefined,
+      updatedAt,
+    };
+    this.update(id, item => ({ ...item, agentNotes: item.agentNotes.map(value => value.id === noteId ? approved : value) }));
+    return approved;
+  }
+  async applyNote(id: string, noteId: string): Promise<{ revision: number }> {
+    const session = this.sessions.find(item => item.id === id);
+    const note = session?.agentNotes.find(item => item.id === noteId && item.status === 'approved');
+    const question = note?.targetQuestion ? session?.questions.find(item => item.id === note.targetQuestion) : undefined;
+    const revision = session?.package?.revision;
+    if (!session?.jobId || session.status !== 'complete' || !session.package || session.package.approved || !revision || !note || !question) {
+      throw Object.assign(new Error('Revision preconditions are not satisfied'), { code: 'revision_precondition_failed' });
+    }
+    this.update(id, item => ({ ...item, agentNotes: item.agentNotes.map(value => value.id === noteId ? { ...value, status: 'applying', updatedAt: new Date().toISOString() } : value) }));
+    try {
+      await this.service.regenerateQuestion(session.jobId, question.id, note.requestedChange, revision);
+      this.invalidatePreview(id);
+      await this.refresh(id);
+      const next = this.sessions.find(item => item.id === id);
+      const nextRevision = next?.package?.revision;
+      if (!nextRevision || nextRevision <= revision) throw Object.assign(new Error('Revision was not observed'), { code: 'revision_not_observed' });
+      this.update(id, item => ({ ...item, agentNotes: item.agentNotes.map(value => value.id === noteId ? { ...value, status: 'applied', appliedRevision: nextRevision, errorCode: undefined, updatedAt: new Date().toISOString() } : value) }));
+      return { revision: nextRevision };
+    } catch (error) {
+      const details = extractErrorDetails(error);
+      this.update(id, item => ({ ...item, agentNotes: item.agentNotes.map(value => value.id === noteId ? { ...value, status: 'failed', errorCode: details.code || 'revision_failed', updatedAt: new Date().toISOString() } : value) }));
+      throw error;
+    }
+  }
+  async generate(id: string, params: ExamRequestParams): Promise<{ jobId: string } | null> {
     const existing = this.sessions.find(session => session.id === id);
-    if (!existing || existing.status === 'generating') return;
+    if (!existing || existing.status === 'generating') return null;
     this.subscriptions.get(id)?.();
     this.stopPreviewPoll(id);
     const requestSignature = JSON.stringify(params);
@@ -299,10 +371,11 @@ export class ExamSessions {
     }));
     try {
       const { jobId } = await this.service.startGeneration({ ...params, clientRequestId: requestId });
-      if (this.disposed || !this.sessions.some(session => session.id === id)) return;
+      if (this.disposed || !this.sessions.some(session => session.id === id)) return null;
       this.update(id, session => ({ ...session, jobId }));
       this.watch(id, jobId);
-    } catch (error) { this.fail(id, error); }
+      return { jobId };
+    } catch (error) { this.fail(id, error); return null; }
   }
   private watch(id: string, jobId: string) {
     let finishing = false;

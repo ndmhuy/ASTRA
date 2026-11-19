@@ -12,6 +12,7 @@ from .models import (
     AgentTurnRequest,
     AgentTurnResponse,
     GeminiDecision,
+    GeminiPlan,
     UiContextSnapshot,
 )
 
@@ -202,6 +203,13 @@ class AgentInterpreter:
                 ),
             )
         if question_match and any(term in normalized for term in ("xem", "mo", "focus")):
+            if self._callable(context, "ui.question.focus"):
+                return self._action(
+                    context,
+                    "ui.question.focus",
+                    "Tôi sẽ chuyển tiêu điểm đến câu hỏi đã chọn.",
+                    {"questionId": int(question_match.group(1))},
+                )
             return AgentDecision(
                 kind="unsupported",
                 text="Hiện ASTRA chưa có hành động Agent để chuyển tiêu điểm đến một câu cụ thể.",
@@ -314,11 +322,23 @@ class AgentInterpreter:
             raise GeminiProviderError(
                 "provider_not_configured", "Gemini provider is not configured for AI mode"
             )
-        model_decision = await self.provider.interpret(request.message, request.context)
-        decision = self._validate_model_decision(model_decision, request.context)
+        model_plan = await self.provider.interpret(request.message, request.context)
+        raw_decisions = model_plan.decisions if isinstance(model_plan, GeminiPlan) else [model_plan]
+        decisions: list[AgentDecision] = []
+        seen: set[tuple[str | None, str, str]] = set()
+        for raw in raw_decisions[:4]:
+            key = (raw.capability_id, repr(raw.params), repr(raw.target))
+            if raw.kind == "propose_ui_action" and key in seen:
+                continue
+            seen.add(key)
+            decisions.append(self._validate_model_decision(raw, request.context))
+        if not decisions:
+            decisions = [
+                AgentDecision(kind="clarify", text="Kế hoạch không có bước giao diện hợp lệ.")
+            ]
         return AgentTurnResponse(
             turnId=request.turn_id,
-            decisions=[decision],
+            decisions=decisions,
             provider="gemini",
             knowledgeStatus=self.knowledge.status,
         )

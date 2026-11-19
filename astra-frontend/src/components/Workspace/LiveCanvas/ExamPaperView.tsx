@@ -34,6 +34,7 @@ interface ExamPaperViewProps {
   artifactChanged?: boolean;
   onRetryPreview?: () => void;
   onPreviewOpened?: () => void;
+  focusedQuestionId?: number | null;
 }
 
 export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
@@ -57,6 +58,7 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
   artifactChanged = false,
   onRetryPreview,
   onPreviewOpened,
+  focusedQuestionId,
 }) => {
   const [internalMode, setInternalMode] = useState<ExamCanvasViewMode>('paper');
   const activeMode = viewMode ?? internalMode;
@@ -74,6 +76,9 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
     preview.revision === revision &&
     preview.contentHash === contentHash
   );
+  useEffect(() => {
+    if (focusedQuestionId) document.getElementById(`question-${focusedQuestionId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [focusedQuestionId]);
 
   useEffect(() => {
     if (activeMode !== 'pdf' || isGenerating || artifactChanged || !examId || revision === undefined || !contentHash) {
@@ -254,10 +259,10 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
             <h2>Một trang mới,<br />chờ ý tưởng hay.</h2>
             <p>Trao đổi với ASTRA, chọn thiết lập đề, rồi xem từng câu hỏi xuất hiện tại đây.</p>
           </div>}
-          {questions.map((q, i) => <React.Fragment key={q.id}>
+          {questions.map((q, i) => <div id={`question-${q.id}`} className={focusedQuestionId === q.id ? 'agent-question-focus' : ''} key={q.id}>
             {q.part && q.part !== questions[i - 1]?.part && <h2>{q.part === 'P1' ? 'Phần I. Trắc nghiệm nhiều lựa chọn' : q.part === 'P2' ? 'Phần II. Trắc nghiệm đúng/sai' : 'Phần III. Trả lời ngắn'}</h2>}
             <QuestionCard question={q} index={i} review={review} appearing={i >= latestQuestionCount} onEdit={onEditQuestion ? () => onEditQuestion(q.id) : undefined} />
-          </React.Fragment>)}
+          </div>)}
           {isGenerating && <p className="paper-progress" role="status">Đang soạn câu hỏi tiếp theo…</p>}
           {questions.length > 0 && !isGenerating && <footer className="paper-end">— Hết —</footer>}
         </article>

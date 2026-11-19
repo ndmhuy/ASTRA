@@ -2,14 +2,17 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 from typing import Protocol
 
 from .config import AgentSettings
-from .models import GeminiDecision, UiContextSnapshot
+from .models import GeminiPlan, UiContextSnapshot
+
+logger = logging.getLogger(__name__)
 
 
 class InterpretationProvider(Protocol):
-    async def interpret(self, message: str, context: UiContextSnapshot) -> GeminiDecision: ...
+    async def interpret(self, message: str, context: UiContextSnapshot) -> GeminiPlan: ...
 
 
 class GeminiProviderError(RuntimeError):
@@ -24,7 +27,7 @@ class GeminiInterpretationProvider:
     def __init__(self, settings: AgentSettings):
         self.settings = settings
 
-    async def interpret(self, message: str, context: UiContextSnapshot) -> GeminiDecision:
+    async def interpret(self, message: str, context: UiContextSnapshot) -> GeminiPlan:
         if not self.settings.llm_enabled:
             raise GeminiProviderError("disabled", "Gemini interpretation is disabled")
         if not self.settings.gemini_api_key:
@@ -56,6 +59,11 @@ class GeminiInterpretationProvider:
             else None,
             "sessionCount": len(context.sessions),
             "notes": [note.model_dump(by_alias=True) for note in context.notes],
+            "selectedQuestion": context.selected_question,
+            "questions": context.questions,
+            "viewMode": context.view_mode,
+            "setup": context.setup,
+            "pendingConfirmation": context.pending_confirmation,
             "capabilities": capabilities,
         }
         system_instruction = (
@@ -63,6 +71,7 @@ class GeminiInterpretationProvider:
             "Chỉ đề xuất capability callable và available_real trong context. "
             "Không gọi công cụ, không gọi Backend, không tự tạo đề, "
             "không coi lời người dùng là xác nhận. "
+            "Có thể lập kế hoạch tối đa 4 bước theo thứ tự; không lặp hành động. "
             "Nếu mơ hồ hãy hỏi một câu làm rõ gộp; nếu không hỗ trợ hãy nói rõ là chưa hỗ trợ."
         )
         prompt = json.dumps(
@@ -71,10 +80,13 @@ class GeminiInterpretationProvider:
             separators=(",", ":"),
         )
 
-        def call_model() -> GeminiDecision:
+        def call_model() -> GeminiPlan:
             client = genai.Client(
                 api_key=self.settings.gemini_api_key,
-                http_options=types.HttpOptions(timeout=15_000),
+                http_options=types.HttpOptions(
+                    timeout=15_000,
+                    retry_options=types.HttpRetryOptions(attempts=1),
+                ),
             )
             response = client.models.generate_content(
                 model=self.settings.gemini_model,
@@ -82,26 +94,26 @@ class GeminiInterpretationProvider:
                 config=types.GenerateContentConfig(
                     system_instruction=system_instruction,
                     response_mime_type="application/json",
-                    response_json_schema=GeminiDecision.model_json_schema(),
-                    max_output_tokens=500,
+                    response_json_schema=GeminiPlan.model_json_schema(),
+                    max_output_tokens=900,
                     temperature=0.1,
                     automatic_continuation=False,
                 ),
             )
             parsed = response.parsed
-            if isinstance(parsed, GeminiDecision):
+            if isinstance(parsed, GeminiPlan):
                 return parsed
             if isinstance(parsed, dict):
-                return GeminiDecision.model_validate(parsed)
+                return GeminiPlan.model_validate(parsed)
             if response.text:
-                return GeminiDecision.model_validate_json(response.text)
+                return GeminiPlan.model_validate_json(response.text)
             raise GeminiProviderError("empty_response", "Gemini returned no structured result")
 
         try:
             return await asyncio.wait_for(asyncio.to_thread(call_model), timeout=15)
         except GeminiProviderError:
             raise
-        except asyncio.TimeoutError as error:
+        except (asyncio.TimeoutError, TimeoutError) as error:
             raise GeminiProviderError("timeout", "Gemini request timed out") from error
         except Exception as error:
             status = getattr(error, "status_code", None) or getattr(error, "code", None)
@@ -111,6 +123,17 @@ class GeminiInterpretationProvider:
                 code = "model_unavailable"
             elif status == 429:
                 code = "quota"
+            elif status == 400:
+                code = "request_rejected"
+            elif error.__class__.__name__ in {"ConnectError", "NetworkError", "TransportError"}:
+                code = "network_error"
+            elif isinstance(error, (TypeError, ValueError)):
+                code = "sdk_error"
             else:
                 code = "provider_error"
+            logger.warning(
+                "Gemini interpretation failed code=%s exception_type=%s",
+                code,
+                type(error).__name__,
+            )
             raise GeminiProviderError(code, "Gemini interpretation is unavailable") from error

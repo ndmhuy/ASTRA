@@ -36,6 +36,75 @@ export const CALLABLE_CAPABILITIES: Record<string, CapabilityDefinition> = {
     validate: () => null,
     verify: (_before, after) => after.activeModal === 'exam_setup',
   },
+  'ui.exam.close_setup': {
+    id: 'ui.exam.close_setup',
+    description: 'Đóng hộp thiết lập đề mà không bắt đầu tạo đề.',
+    status: 'available_real', callable: true, requiresConfirmation: false,
+    validate: (_params, context) => context.activeModal === 'exam_setup' ? null : 'SETUP_NOT_OPEN',
+    verify: (_before, after) => after.activeModal === null,
+  },
+  'ui.exam.configure_setup': {
+    id: 'ui.exam.configure_setup',
+    description: 'Đọc catalog thật, chọn định dạng được hỗ trợ và chuẩn bị bản tóm tắt; chưa tạo đề.',
+    status: 'available_real', callable: true, requiresConfirmation: false,
+    validate: (params, context) => {
+      if (context.activeModal !== 'exam_setup') return 'SETUP_NOT_OPEN';
+      if (context.setup.status !== 'ready') return 'CATALOG_NOT_READY';
+      const formatId = typeof params.formatId === 'string' ? params.formatId : context.setup.selectedFormatId;
+      if (!formatId || !context.setup.formats.some(format => format.id === formatId && format.available)) return 'FORMAT_UNAVAILABLE';
+      return typeof params.prompt === 'string' && params.prompt.length > 1000 ? 'PROMPT_TOO_LONG' : null;
+    },
+    verify: (_before, after, params, result) => after.activeModal === 'exam_setup'
+      && after.setup.status === 'ready'
+      && after.setup.selectedFormatId === (params.formatId || after.setup.selectedFormatId)
+      && result?.pendingConfirmation === 'generation',
+  },
+  'exam.generate.start': {
+    id: 'exam.generate.start',
+    description: 'Bắt đầu job tạo đề qua handler React hiện có sau xác nhận rõ ràng của giáo viên.',
+    status: 'available_real', callable: true, requiresConfirmation: true,
+    validate: (params, context) => {
+      const pending = context.pendingConfirmation;
+      if (!pending || pending.kind !== 'generation' || pending.workspaceId !== context.workspaceId) return 'CONFIRMATION_REQUIRED';
+      if (params.confirmationId !== pending.id) return 'CONFIRMATION_REQUIRED';
+      if (context.activeModal !== 'exam_setup' || context.setup.status !== 'ready' || !context.setup.selectedFormatId) return 'SETUP_NOT_READY';
+      if (context.activeJob) return 'GENERATION_ALREADY_RUNNING';
+      return null;
+    },
+    verify: (_before, after, _params, result) => typeof result?.jobId === 'string'
+      && after.activeJob?.id === result.jobId,
+  },
+  'ui.exam.view_mode': {
+    id: 'ui.exam.view_mode',
+    description: 'Chuyển giữa trang đề, xem đáp án và xem trước PDF của đề hiện tại.',
+    status: 'available_real', callable: true, requiresConfirmation: false,
+    validate: (params, context) => !context.workspaceId
+      ? 'NO_ACTIVE_WORKSPACE'
+      : !['paper', 'review', 'pdf'].includes(String(params.mode))
+        ? 'INVALID_VIEW_MODE'
+        : params.mode !== 'paper' && !context.examId ? 'EXAM_NOT_READY' : null,
+    verify: (_before, after, params) => after.viewMode === params.mode,
+  },
+  'ui.question.focus': {
+    id: 'ui.question.focus',
+    description: 'Chuyển tiêu điểm tới một câu hỏi thật đang có trong đề hiện tại.',
+    status: 'available_real', callable: true, requiresConfirmation: false,
+    validate: (params, context) => !Number.isInteger(params.questionId)
+      ? 'INVALID_QUESTION'
+      : !context.questions.some(question => question.id === params.questionId)
+        ? 'QUESTION_NOT_FOUND' : null,
+    verify: (_before, after, params) => after.selectedQuestion?.id === params.questionId,
+  },
+  'ui.question.open_editor': {
+    id: 'ui.question.open_editor',
+    description: 'Mở trình sửa câu hỏi hiện có; chưa lưu hoặc tạo lại câu hỏi.',
+    status: 'available_real', callable: true, requiresConfirmation: false,
+    validate: (params, context) => !context.examId
+      ? 'EXAM_NOT_READY'
+      : !Number.isInteger(params.questionId) || !context.questions.some(question => question.id === params.questionId)
+        ? 'QUESTION_NOT_FOUND' : null,
+    verify: (_before, after, params) => after.selectedQuestion?.id === params.questionId && after.activeModal === 'question_editor',
+  },
   'ui.sidebar.set_collapsed': {
     id: 'ui.sidebar.set_collapsed',
     description: 'Thu gọn hoặc mở rộng thanh điều hướng.',
@@ -61,21 +130,44 @@ export const CALLABLE_CAPABILITIES: Record<string, CapabilityDefinition> = {
     id: 'ui.note.cancel',
     description: 'Hủy một ghi chú chỉnh sửa đang chờ.',
     status: 'available_real', callable: true, requiresConfirmation: false,
-    validate: (params, context) => typeof params.noteId === 'string' && context.notes.some(note => note.id === params.noteId && note.status === 'pending') ? null : 'NOTE_NOT_FOUND',
+    validate: (params, context) => typeof params.noteId === 'string' && context.notes.some(note => note.id === params.noteId && ['pending', 'approved', 'failed'].includes(note.status)) ? null : 'NOTE_NOT_FOUND',
     verify: (_before, after, params) => after.notes.some(note => note.id === params.noteId && note.status === 'cancelled'),
+  },
+  'ui.note.approve': {
+    id: 'ui.note.approve',
+    description: 'Duyệt một ghi chú sau khi đề hoàn tất; chưa gọi Backend revision.',
+    status: 'available_real', callable: true, requiresConfirmation: true,
+    validate: (params, context) => !context.examId || !context.examRevision
+      ? 'EXAM_NOT_READY'
+      : typeof params.noteId !== 'string' || !context.notes.some(note => note.id === params.noteId && note.status === 'pending')
+        ? 'NOTE_NOT_FOUND' : null,
+    verify: (_before, after, params, result) => after.notes.some(note => note.id === params.noteId && note.status === 'approved')
+      && result?.pendingConfirmation === 'revision',
+  },
+  'exam.note.apply': {
+    id: 'exam.note.apply',
+    description: 'Áp dụng tuần tự một ghi chú đã duyệt qua handler regenerate câu hỏi hiện có.',
+    status: 'available_real', callable: true, requiresConfirmation: true,
+    validate: (params, context) => {
+      const pending = context.pendingConfirmation;
+      if (!pending || pending.kind !== 'revision' || pending.noteId !== params.noteId || params.confirmationId !== pending.id) return 'CONFIRMATION_REQUIRED';
+      if (!context.examId || !context.examRevision || context.approved) return 'REVISION_PRECONDITION_FAILED';
+      return context.notes.some(note => note.id === params.noteId && note.status === 'approved') ? null : 'NOTE_NOT_APPROVED';
+    },
+    verify: (before, after, params) => after.notes.some(note => note.id === params.noteId && note.status === 'applied')
+      && Boolean(after.examRevision && before.examRevision && after.examRevision > before.examRevision),
   },
 };
 
 export const UI_CAPABILITY_MANIFEST: UiCapabilitySummary[] = [
   ...Object.values(CALLABLE_CAPABILITIES),
-  { id: 'exam.generate.via_ui', description: 'Thiết lập và tạo đề Toán THPT lớp 12, 22 câu, 90 phút sau xác nhận trực tiếp trong giao diện.', status: 'available_real', callable: false, requiresConfirmation: true },
+  { id: 'exam.generate.via_ui', description: 'Alias mô tả cũ; dùng ui.exam.configure_setup rồi exam.generate.start.', status: 'available_real', callable: false, requiresConfirmation: true },
   { id: 'exam.progress.stage', description: 'Xem tiến độ thật theo giai đoạn; không có phát trực tiếp đáng tin cậy theo từng câu.', status: 'available_real', callable: false, requiresConfirmation: false },
-  { id: 'exam.question.edit', description: 'Sửa hoặc tạo lại từng câu sau khi đề hoàn tất bằng trình sửa của giao diện.', status: 'available_real', callable: false, requiresConfirmation: true },
+  { id: 'exam.question.edit', description: 'Sửa trực tiếp vẫn qua trình sửa; Agent có thể mở editor và áp dụng ghi chú đã duyệt bằng regenerate từng câu.', status: 'available_real', callable: false, requiresConfirmation: true },
   { id: 'exam.preview.approve', description: 'Xem trước PDF và phê duyệt đúng phiên bản trước khi xuất.', status: 'available_real', callable: false, requiresConfirmation: true },
   { id: 'exam.export', description: 'Xuất PDF, LaTeX hoặc JSON sau các điều kiện xem trước và phê duyệt.', status: 'available_real', callable: false, requiresConfirmation: true },
   { id: 'exam.export.word', description: 'Xuất Word/DOCX chưa được hỗ trợ trong phiên bản hiện tại.', status: 'unavailable', callable: false, requiresConfirmation: false },
   { id: 'exam.vact', description: 'Luồng V-ACT chưa được hỗ trợ trong giao diện hiện tại.', status: 'unavailable', callable: false, requiresConfirmation: false },
   { id: 'ui.attachment.upload', description: 'Tải và đọc tệp đính kèm chưa được hỗ trợ.', status: 'unavailable', callable: false, requiresConfirmation: false },
   { id: 'ui.web_search', description: 'Tìm web chưa có đường thực thi đã xác minh.', status: 'unavailable', callable: false, requiresConfirmation: false },
-  { id: 'ui.question.focus', description: 'Agent chưa thể chuyển tiêu điểm tới câu hỏi cụ thể.', status: 'unavailable', callable: false, requiresConfirmation: false },
 ];

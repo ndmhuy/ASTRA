@@ -2,9 +2,16 @@ import React, { useEffect, useRef, useState } from 'react';
 import type { ExamFormat, ExamRequestParams } from '../types/exam';
 import { getExamFormats } from '../services/examService';
 
-interface Props { title?: string; onStart: (params: ExamRequestParams) => void; onClose: () => void; }
+interface Props {
+  title?: string;
+  onStart: (params: ExamRequestParams) => void;
+  onClose: () => void;
+  selectedId?: string;
+  prompt?: string;
+  onStateChange?: (state: { status: 'loading' | 'ready' | 'error'; formats: ExamFormat[]; selectedId: string; error?: string }) => void;
+}
 
-export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, title = 'Tạo đề từ mẫu' }) => {
+export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, selectedId: requestedId, prompt, onStateChange, title = 'Tạo đề từ mẫu' }) => {
   const [formats, setFormats] = useState<ExamFormat[]>([]);
   const [selectedId, setSelectedId] = useState('thpt-math');
   const [error, setError] = useState('');
@@ -12,10 +19,21 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, title = 'T
   const selected = formats.find(format => format.id === selectedId);
   useEffect(() => {
     let active = true;
-    getExamFormats().then(items => { if (active) { setFormats(items); setSelectedId(items.find(item => item.available)?.id || ''); } })
-      .catch(error => { if (active) setError(error instanceof Error ? error.message : 'Không tải được danh mục định dạng'); });
+    onStateChange?.({ status: 'loading', formats: [], selectedId: '' });
+    getExamFormats().then(items => {
+      if (!active) return;
+      const nextId = items.some(item => item.id === requestedId && item.available)
+        ? requestedId! : items.find(item => item.available)?.id || '';
+      setFormats(items); setSelectedId(nextId);
+      onStateChange?.({ status: 'ready', formats: items, selectedId: nextId });
+    }).catch(reason => {
+      if (!active) return;
+      const message = reason instanceof Error ? reason.message : 'Không tải được danh mục định dạng';
+      setError(message);
+      onStateChange?.({ status: 'error', formats: [], selectedId: '', error: message });
+    });
     return () => { active = false; };
-  }, []);
+  }, [onStateChange, requestedId]);
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
     const modal = modalRef.current;
@@ -36,7 +54,7 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, title = 'T
     if (!selected?.available) return;
     onStart({ formatId: selected.id, formatVersion: selected.version, subject: selected.subjects[0],
       grade: selected.grades[0], examType: selected.examType, durationMinutes: selected.durationMinutes,
-      itemCount: selected.totalQuestions, prompt: `Tạo đề ${selected.displayName}`, uploadedFiles: [] });
+      itemCount: selected.totalQuestions, prompt: prompt?.trim() || `Tạo đề ${selected.displayName}`, uploadedFiles: [] });
   };
   return <>
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,.45)', zIndex: 999 }} />
@@ -45,7 +63,7 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, title = 'T
       {error && <p role="alert">{error}</p>}
       {!error && !formats.length && <p role="status">Đang tải định dạng từ máy chủ…</p>}
       {formats.map(format => <label key={format.id} style={{ display: 'block', padding: 16, border: '1px solid #e2e8f0', margin: '16px 0' }}>
-        <input type="radio" name="preset" checked={selectedId === format.id} disabled={!format.available} onChange={() => setSelectedId(format.id)} />
+        <input type="radio" name="preset" checked={selectedId === format.id} disabled={!format.available} onChange={() => { setSelectedId(format.id); onStateChange?.({ status: 'ready', formats, selectedId: format.id }); }} />
         {' '}{format.displayName} · {format.totalQuestions} câu · {format.durationMinutes} phút
         <p>{format.sections.map(section => `${section.id}: ${section.count} ${section.type === 'mcq' ? 'câu nhiều lựa chọn' : section.type === 'true_false' ? 'câu đúng/sai' : 'câu trả lời ngắn'}`).join(' · ')}</p>
       </label>)}

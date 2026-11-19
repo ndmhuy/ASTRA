@@ -61,6 +61,9 @@ def create_app(
             "auth_error": status.HTTP_502_BAD_GATEWAY,
             "model_unavailable": status.HTTP_502_BAD_GATEWAY,
             "provider_error": status.HTTP_502_BAD_GATEWAY,
+            "network_error": status.HTTP_502_BAD_GATEWAY,
+            "request_rejected": status.HTTP_502_BAD_GATEWAY,
+            "sdk_error": status.HTTP_500_INTERNAL_SERVER_ERROR,
         }.get(error.code, status.HTTP_503_SERVICE_UNAVAILABLE)
         messages = {
             "disabled": "Gemini AI mode is not enabled.",
@@ -73,6 +76,9 @@ def create_app(
             "timeout": "Gemini interpretation timed out.",
             "empty_response": "Gemini returned no structured interpretation.",
             "provider_error": "Gemini interpretation failed.",
+            "network_error": "Gemini network transport failed.",
+            "request_rejected": "Gemini rejected the structured interpretation request.",
+            "sdk_error": "The local Gemini SDK failed before a valid response was returned.",
         }
         return JSONResponse(
             status_code=status_code,

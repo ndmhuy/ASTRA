@@ -28,7 +28,8 @@ class NoteSummary(CamelModel):
     id: str
     target_question: int | None = Field(default=None, alias="targetQuestion")
     requested_change: str = Field(alias="requestedChange", max_length=500)
-    status: Literal["pending", "cancelled"]
+    stable_question_id: str | None = Field(default=None, alias="stableQuestionId")
+    status: Literal["pending", "approved", "applying", "applied", "failed", "cancelled"]
 
 
 class ActiveJobSummary(CamelModel):
@@ -46,6 +47,16 @@ class UiContextSnapshot(CamelModel):
     state_version: int = Field(alias="stateVersion", ge=1)
     active_job: ActiveJobSummary | None = Field(default=None, alias="activeJob")
     exam_revision: int | None = Field(default=None, alias="examRevision")
+    exam_id: str | None = Field(default=None, alias="examId")
+    content_hash: str | None = Field(default=None, alias="contentHash")
+    selected_question: dict[str, Any] | None = Field(default=None, alias="selectedQuestion")
+    questions: list[dict[str, Any]] = Field(default_factory=list, max_length=100)
+    view_mode: Literal["paper", "review", "pdf"] = Field(default="paper", alias="viewMode")
+    preview: dict[str, Any] | None = None
+    approved: bool = False
+    setup: dict[str, Any] = Field(default_factory=dict)
+    pending_confirmation: dict[str, Any] | None = Field(default=None, alias="pendingConfirmation")
+    active_task: dict[str, Any] | None = Field(default=None, alias="activeTask")
     sessions: list[SessionSummary] = Field(default_factory=list, max_length=50)
     notes: list[NoteSummary] = Field(default_factory=list, max_length=50)
     capabilities: list[CapabilitySummary] = Field(default_factory=list, max_length=50)
@@ -82,3 +93,7 @@ class GeminiDecision(CamelModel):
     capability_id: str | None = Field(default=None, alias="capabilityId", max_length=80)
     params: dict[str, Any] = Field(default_factory=dict)
     target: dict[str, Any] = Field(default_factory=dict)
+
+
+class GeminiPlan(CamelModel):
+    decisions: list[GeminiDecision] = Field(min_length=1, max_length=4)
