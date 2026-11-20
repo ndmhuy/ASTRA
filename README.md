@@ -10,9 +10,13 @@ từ thư mục gốc repo sau khi cấu hình provider trong `.env`:
 ```powershell
 git fetch origin staging/rag
 .\.venv-win\Scripts\python.exe -m exam_baseline.thpt.cli --rag --output runs/thpt/rag_01
+.\.venv-win\Scripts\python.exe -m exam_baseline.thpt.cli --prompt "Đề chuyên đề đạo hàm và tích phân lớp 11-12" --output runs/thpt/chuyen_de_01
 ```
 
-Thêm `--request <file.json>` để dùng ma trận THPT của bạn. Có thể chọn commit corpus
+Dùng `--prompt "..."` hoặc `--prompt-file <file.txt>` để hệ thống tự lập ma trận 22 slot
+căn cứ trên kho RAG (gán sẵn `curriculum_unit_ids` đã xác minh và chặn sớm chủ đề ngoài
+chương trình). Thêm `--plan-only` để xuất `planned_request.json` và `rag_audit.json` kiểm tra
+trước khi gọi model. Thêm `--request <file.json>` để dùng ma trận THPT tự soạn. Có thể chọn commit corpus
 bằng `--rag-corpus-ref <sha>` hoặc dùng gói corpus đã xuất với `--rag-pack-dir <directory>`.
 Đề chuyên đề có thể ghi `curriculum_unit_ids` theo từng slot để chỉ bàn giao các bài
 chương trình đã chọn. RAG xác minh các ID này trên snapshot trước khi sinh đề.
