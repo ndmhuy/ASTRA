@@ -1,3 +1,4 @@
+import asyncio
 import json
 import subprocess
 import sys
@@ -5,8 +6,11 @@ import sys
 import pytest
 
 from exam_baseline.config import Settings
+from exam_baseline.core.contracts import Completion
 from exam_baseline.thpt import cli
 from exam_baseline.thpt.agents import ComposerAgent
+from exam_baseline.thpt.orchestrator import Orchestrator, compare_answers
+from exam_baseline.thpt.planner import plan_request_from_prompt
 from exam_baseline.thpt.rag import (
     RagHandoffError,
     default_request,
@@ -15,7 +19,7 @@ from exam_baseline.thpt.rag import (
 )
 from rag_workflow import retrieve_exam_context
 from tests.paths import ROOT
-from tests.thpt.test_generation import Scripted
+from tests.thpt.test_generation import Scripted, question
 
 CORPUS = "8b8fb7b09182b3d9d1eee0b95818027f52ab004d"
 
@@ -148,3 +152,156 @@ def test_rag_curriculum_scope_is_applied_to_the_passage(monkeypatch):
         retrieve_request(request, corpus_ref=CORPUS)
     [gap] = error.value.gaps
     assert (gap["question_id"], gap["code"]) == ("P1-3", "curriculum_unit_not_found")
+
+
+def test_default_curriculum_linking_avoids_cross_topic_drift(monkeypatch):
+    if subprocess.run(["git", "cat-file", "-e", CORPUS], cwd=ROOT, capture_output=True).returncode:
+        pytest.skip("Fetch origin/staging/rag to run the corpus integration test")
+    monkeypatch.chdir(ROOT)
+    resolved = retrieve_request(default_request(), corpus_ref=CORPUS)
+    ev = resolved.rag_evidence
+    assert "toan-11-c8-b30" not in ev["P1-10"].curriculum_unit_ids
+    assert any(u.startswith("toan-11-c6-") for u in ev["P1-10"].curriculum_unit_ids)
+    assert "toan-11-c8-b30" not in ev["P1-11"].curriculum_unit_ids
+    assert any(u.startswith("toan-11-c2-") for u in ev["P1-11"].curriculum_unit_ids)
+    assert "toan-12-c1-b5" not in ev["P2-4"].curriculum_unit_ids
+    assert any(u.startswith(("toan-11-c8-", "toan-10-c9-")) for u in ev["P2-4"].curriculum_unit_ids)
+    assert any(u.startswith("toan-12-c5-") for u in ev["P1-9"].curriculum_unit_ids)
+    assert any(u.startswith("toan-12-c3-") for u in ev["P1-12"].curriculum_unit_ids)
+
+
+def test_prompt_planner_grounds_slots_in_rag_and_blocks_invalid_scope(
+    tmp_path, monkeypatch, capsys
+):
+    if subprocess.run(["git", "cat-file", "-e", CORPUS], cwd=ROOT, capture_output=True).returncode:
+        pytest.skip("Fetch origin/staging/rag to run the corpus integration test")
+    monkeypatch.chdir(ROOT)
+    prompt = (
+        "Tạo đề Toán THPT (cấu trúc 12 câu trắc nghiệm, 4 câu đúng/sai, 6 câu trả lời ngắn) "
+        "tập trung vào Ứng dụng đạo hàm và Tích phân (kèm nguyên hàm). "
+        "Yêu cầu: không có câu hỏi nằm ngoài 2 chuyên đề này; "
+        "Phần III ưu tiên bài toán thực tiễn tối ưu và ứng dụng tích phân."
+    )
+    planned = plan_request_from_prompt(prompt, corpus_ref=CORPUS)
+    bound = retrieve_request(planned, corpus_ref=CORPUS)
+    assert len(bound.slots) == 22
+    assert bound.requirements[0] == prompt
+    for slot in bound.slots:
+        assert slot.curriculum_unit_ids
+        assert all(
+            u.startswith(("toan-11-c9-", "toan-12-c1-", "toan-12-c4-"))
+            for u in bound.rag_evidence[slot.id].curriculum_unit_ids
+        )
+    composer = ComposerAgent()
+    for part in ("P1", "P2", "P3"):
+        assert composer.data(bound, part, "Mixed template", None)["reference_exam"] == ""
+
+    plan_out = tmp_path / "plan-only"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "exam-thpt",
+            "--prompt",
+            prompt,
+            "--plan-only",
+            "--rag-corpus-ref",
+            CORPUS,
+            "--output",
+            str(plan_out),
+        ],
+    )
+    monkeypatch.setattr(cli, "Settings", lambda: pytest.fail("plan-only called Settings"))
+    assert cli.main() == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["status"] == "planned"
+    assert payload["slot_count"] == 22
+    assert (plan_out / "planned_request.json").is_file()
+    assert (plan_out / "rag_audit.json").is_file()
+
+    for bad_prompt, expected_code in (
+        ("Tạo đề Toán có câu Số phức", "out_of_curriculum_topic"),
+        ("Tạo đề về vật lý lượng tử", "topic_not_found"),
+        ("Chỉ tạo đề về Hàm lượng giác", "part_not_covered"),
+    ):
+        with pytest.raises(RagHandoffError) as exc:
+            plan_request_from_prompt(bad_prompt, corpus_ref=CORPUS)
+        assert exc.value.gaps[0]["code"] == expected_code
+
+
+def test_orchestrator_passes_rag_scope_to_reviewer_and_gates_solver_mismatch(tmp_path, monkeypatch):
+    if subprocess.run(["git", "cat-file", "-e", CORPUS], cwd=ROOT, capture_output=True).returncode:
+        pytest.skip("Fetch origin/staging/rag to run the corpus integration test")
+    monkeypatch.chdir(ROOT)
+    bound = retrieve_request(default_request(), corpus_ref=CORPUS)
+    ids = [slot.id for slot in bound.slots]
+
+    class MismatchSolver(Scripted):
+        async def complete(self, prompt):
+            data = json.loads(prompt.user)
+            self.calls.append(data)
+            entries = []
+            for slot in bound.slots:
+                n = int(slot.id.split("-")[1])
+                if slot.id == "P1-1" and len(self.calls) == 1:
+                    ans = "B"  # disagrees with Composer's A on revision 1
+                elif slot.part == "P1":
+                    ans = "A"
+                elif slot.part == "P2":
+                    ans = "a: Đúng; b: Đúng; c: Đúng; d: Đúng"
+                else:
+                    ans = str(n + 1)
+                entries.append(
+                    dict(question_id=slot.id, answer=ans, reasoning="Solved.", status="solved")
+                )
+            return Completion(text=json.dumps({"entries": entries}), model=self.model)
+
+    reviewer = Scripted("reviewer", False)
+    providers = {
+        "composer": Scripted("composer", False),
+        "illustrator": Scripted("illustrator", False),
+        "solver": MismatchSolver("solver", False),
+        "reviewer": reviewer,
+    }
+    out = tmp_path / "mismatch-gate"
+    report = asyncio.run(Orchestrator(providers).run(bound, out))
+    assert report["execution_status"] == "completed"
+    assert report["reviewer_feedback_sent"] is True
+    assert report["revision"] == 2
+    assert report["solver_agreement"]["agreed_count"] == 22
+    assert report["solver_agreement"]["mismatched_count"] == 0
+    assert "rag_evidence" not in reviewer.calls[0]["matrix"]
+    assert set(reviewer.calls[0]["rag_scope"]) == set(ids)
+    review_saved = json.loads((out / "_internal/revision_1/review.json").read_text("utf-8"))
+    assert review_saved["decision"] == "needs_revision"
+    assert any("P1-1" in issue for issue in review_saved["issues"])
+
+    qs = [question(s) for s in bound.slots]
+    from exam_baseline.thpt.models import Solution, Solutions
+
+    sols = Solutions(
+        entries=[
+            Solution(
+                question_id=s.id,
+                answer=(
+                    "A"
+                    if s.part == "P1"
+                    else (
+                        "a: Đúng; b: Sai; c: Đúng; d: Đúng"
+                        if s.id == "P2-1"
+                        else (
+                            "a: Đúng; b: Đúng; c: Đúng; d: Đúng"
+                            if s.part == "P2"
+                            else ("99" if s.id == "P3-1" else str(int(s.id.split("-")[1]) + 1))
+                        )
+                    )
+                ),
+                reasoning="Check.",
+                status="solved",
+            )
+            for s in bound.slots
+        ]
+    )
+    summary = compare_answers(qs, sols)
+    assert summary["agreed_count"] == 20
+    assert {m["question_id"] for m in summary["mismatched"]} == {"P2-1", "P3-1"}
