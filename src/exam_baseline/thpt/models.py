@@ -59,8 +59,8 @@ class Request(Model):
 
 class Statement(Model):
     text: Text
-    answer: bool = Field(strict=True)
     solution: Text
+    answer: bool = Field(strict=True)
 
     @field_validator("text", "solution")
     @classmethod
@@ -74,8 +74,8 @@ class Question(Model):
     stem: Text
     choices: dict[str, Text] = Field(default_factory=dict)
     statements: list[Statement] = Field(default_factory=list)
-    answer: str | None = None
     solution: Text
+    answer: str | None = None
     illustration_request: str | None = None
 
     @field_validator("stem", "solution")
@@ -115,8 +115,9 @@ class Section(Model):
 
 
 class MultipleChoiceQuestion(Question):
-    answer: Literal["A", "B", "C", "D"]
     choices: dict[str, Text] = Field(min_length=4, max_length=4)
+    solution: Text
+    answer: Literal["A", "B", "C", "D"]
 
 
 class TrueFalseQuestion(Question):
@@ -124,6 +125,7 @@ class TrueFalseQuestion(Question):
 
 
 class ShortAnswerQuestion(Question):
+    solution: Text
     answer: str = Field(min_length=1, max_length=4, pattern=r"^-?\d+(?:,\d+)?$")
 
 
@@ -150,8 +152,8 @@ class Illustrations(Model):
 
 class Solution(Model):
     question_id: str
-    answer: Text
     reasoning: Text
+    answer: Text
     status: Literal["solved", "ambiguous", "unsolvable"]
 
 

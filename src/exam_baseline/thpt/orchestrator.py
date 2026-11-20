@@ -2,6 +2,8 @@
 
 import asyncio
 import json
+import re
+from decimal import Decimal, InvalidOperation
 from hashlib import sha256
 from pathlib import Path
 from time import perf_counter
@@ -22,6 +24,109 @@ from exam_baseline.thpt.runtime import ContractError, RecordingProvider
 
 def save(path: Path, data):
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+_BOOL_TRUE = frozenset({"đúng", "dung", "đ", "d", "true", "t"})
+_BOOL_FALSE = frozenset({"sai", "s", "false", "f"})
+
+
+def _parse_p1_letter(answer: str) -> str | None:
+    cleaned = answer.strip()
+    if cleaned.upper() in {"A", "B", "C", "D"}:
+        return cleaned.upper()
+    match = re.fullmatch(
+        r"(?:đáp\s*án|dap\s*an|chọn|chon)?\s*[:.]?\s*([ABCD])(?:[.):])?",
+        cleaned,
+        flags=re.IGNORECASE,
+    )
+    return match.group(1).upper() if match else None
+
+
+def _parse_p2_booleans(answer: str) -> list[bool] | None:
+    lowered = answer.casefold()
+    labeled = re.findall(
+        r"(?<![a-zà-ỹ])([a-d])\s*[):.\-=]\s*(đúng|dung|sai|true|false|đ|d|s|t|f)(?![a-zà-ỹ])",
+        lowered,
+    )
+    if labeled:
+        by_label = {label: token in _BOOL_TRUE for label, token in labeled}
+        if set(by_label) == {"a", "b", "c", "d"}:
+            return [by_label[k] for k in ("a", "b", "c", "d")]
+    tokens = re.findall(r"(?<![a-zà-ỹ])(đúng|dung|sai|true|false|đ|s|t|f)(?![a-zà-ỹ])", lowered)
+    if len(tokens) == 4:
+        return [tok in _BOOL_TRUE for tok in tokens]
+    return None
+
+
+def _parse_p3_decimal(answer: str) -> Decimal | None:
+    cleaned = answer.strip()
+    match = re.fullmatch(r"(-?\d+(?:[.,]\d+)?)(?:\s*[^\d.,\s]{1,12})?", cleaned)
+    if not match:
+        return None
+    try:
+        return Decimal(match.group(1).replace(",", "."))
+    except InvalidOperation:
+        return None
+
+
+def compare_answers(questions, solutions) -> dict:
+    """Deterministically compare Composer keys against Blind Solver answers."""
+    by_id = {entry.question_id: entry for entry in solutions.entries}
+    agreed: list[str] = []
+    mismatched: list[dict] = []
+    unparsed: list[str] = []
+
+    for q in questions:
+        entry = by_id.get(q.id)
+        if entry is None or entry.status != "solved":
+            unparsed.append(q.id)
+            continue
+        if getattr(q, "choices", None) and getattr(q, "answer", None):
+            solver_letter = _parse_p1_letter(entry.answer)
+            if solver_letter is None:
+                unparsed.append(q.id)
+            elif solver_letter == q.answer.strip().upper():
+                agreed.append(q.id)
+            else:
+                mismatched.append(
+                    {"question_id": q.id, "composer": q.answer, "solver": solver_letter}
+                )
+        elif getattr(q, "statements", None):
+            solver_bools = _parse_p2_booleans(entry.answer)
+            composer_bools = [st.answer for st in q.statements]
+            if solver_bools is None or len(solver_bools) != len(composer_bools):
+                unparsed.append(q.id)
+            elif solver_bools == composer_bools:
+                agreed.append(q.id)
+            else:
+                mismatched.append(
+                    {
+                        "question_id": q.id,
+                        "composer": "".join("Đ" if b else "S" for b in composer_bools),
+                        "solver": "".join("Đ" if b else "S" for b in solver_bools),
+                    }
+                )
+        elif getattr(q, "answer", None):
+            solver_num = _parse_p3_decimal(entry.answer)
+            composer_num = _parse_p3_decimal(q.answer)
+            if solver_num is None or composer_num is None:
+                unparsed.append(q.id)
+            elif solver_num == composer_num:
+                agreed.append(q.id)
+            else:
+                mismatched.append(
+                    {"question_id": q.id, "composer": q.answer, "solver": entry.answer.strip()}
+                )
+        else:
+            unparsed.append(q.id)
+
+    return {
+        "agreed_count": len(agreed),
+        "mismatched_count": len(mismatched),
+        "unparsed_count": len(unparsed),
+        "mismatched": mismatched,
+        "unparsed": unparsed,
+    }
 
 
 class Orchestrator:
@@ -67,13 +172,23 @@ class Orchestrator:
         )
 
     def review_data(self, request, questions, drawings, solutions, source, sections):
-        return dict(
+        data = dict(
             matrix=request.model_dump(exclude={"rag_evidence"}),
             questions=[q.model_dump() for q in questions],
             drawings=drawings.model_dump(),
             solver=solutions.model_dump(),
             student_latex=source.decode("utf-8"),
         )
+        if isinstance(request, Request) and request.rag_evidence:
+            data["rag_scope"] = {
+                qid: {
+                    "source_ids": passage.source_ids,
+                    "curriculum_unit_ids": passage.curriculum_unit_ids,
+                    "warnings": passage.warnings,
+                }
+                for qid, passage in request.rag_evidence.items()
+            }
+        return data
 
     def feedback_data(self, review, questions, sections):
         return dict(
@@ -227,6 +342,8 @@ class Orchestrator:
                 if [s.question_id for s in solutions.entries] != ids:
                     raise ValueError("Solver must cover every question in matrix order")
                 save(folder / "solver.json", solutions.model_dump())
+                agreement = compare_answers(questions, solutions)
+                report["solver_agreement"] = agreement
                 if revision == 1:
                     review = await call(
                         self.reviewer_type(),
@@ -238,6 +355,12 @@ class Orchestrator:
                     if any(s.status != "solved" for s in solutions.entries):
                         review.decision = "needs_revision"
                         review.issues.append("Solver found ambiguous or unsolvable questions")
+                    for mismatch in agreement["mismatched"]:
+                        review.decision = "needs_revision"
+                        review.issues.append(
+                            f"{mismatch['question_id']}: Composer key ({mismatch['composer']}) "
+                            f"disagrees with independent Solver ({mismatch['solver']})."
+                        )
                     save(folder / "review.json", review.model_dump())
                     if review.decision == "needs_revision":
                         feedback = self.feedback_data(review, questions, sections)
