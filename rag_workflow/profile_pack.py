@@ -23,6 +23,292 @@ PART_KIND_TO_PART = {
 
 _RELEASE_CACHE: dict[tuple[str, str], dict[str, Any]] = {}
 
+_GENERIC_LINK_UNIGRAMS = frozenset(
+    {
+        "toan",
+        "bai",
+        "cau",
+        "phan",
+        "muc",
+        "do",
+        "tim",
+        "tinh",
+        "cho",
+        "biet",
+        "xac",
+        "dinh",
+        "gia",
+        "tri",
+        "cua",
+        "trong",
+        "tren",
+        "voi",
+        "mot",
+        "hai",
+        "ba",
+        "bon",
+        "cac",
+        "va",
+        "hoac",
+        "khi",
+        "theo",
+        "tu",
+        "den",
+        "ung",
+        "dung",
+        "co",
+        "ban",
+        "thuc",
+        "te",
+        "tien",
+        "cong",
+        "quy",
+        "tac",
+        "nghia",
+        "chat",
+        "dang",
+        "so",
+        "ham",
+        "phuong",
+        "trinh",
+        "he",
+        "giai",
+        "quyet",
+        "van",
+        "de",
+        "lien",
+        "quan",
+        "su",
+        "bieu",
+        "dien",
+        "mo",
+        "ta",
+        "nhan",
+        "duoc",
+        "nhung",
+        "nhieu",
+        "buoc",
+        "bang",
+        "tuong",
+        "doi",
+        "giua",
+        "hinh",
+        "hoc",
+        "cach",
+        "khai",
+        "niem",
+        "phep",
+        "bien",
+        "lap",
+        "viet",
+        "xet",
+        "dieu",
+        "kien",
+        "tong",
+        "hieu",
+        "thuong",
+        "don",
+        "gian",
+        "chi",
+        "tiet",
+        "sanh",
+        "uoc",
+        "luong",
+        "kiem",
+        "tra",
+        "hoat",
+        "trai",
+        "nghiem",
+        "tap",
+        "cuoi",
+        "nam",
+        "on",
+        "trung",
+        "tam",
+        "phang",
+        "diem",
+        "duong",
+        "mat",
+        "khong",
+        "gian",
+        "goc",
+        "dai",
+        "canh",
+        "loai",
+        "truong",
+        "hop",
+        "chinh",
+        "sau",
+        "day",
+        "nay",
+        "nhau",
+        "nhu",
+        "nho",
+        "lon",
+        "nhat",
+        "bac",
+        "cap",
+    }
+)
+
+_GENERIC_LINK_BIGRAMS = frozenset(
+    {
+        "bai toan",
+        "cong thuc",
+        "gia tri",
+        "phuong trinh",
+        "phuong phap",
+        "ung dung",
+        "thuc tien",
+        "thuc te",
+        "mot so",
+        "van de",
+        "lien quan",
+        "giai quyet",
+        "cua ham",
+        "cua mot",
+        "cac phep",
+        "phep toan",
+        "quy tac",
+        "dinh nghia",
+        "tinh chat",
+        "co ban",
+        "ham so",
+        "trong mat",
+        "trong khong",
+        "giai bai",
+        "de giai",
+        "xac dinh",
+        "tinh gia",
+        "bien thien",
+        "dieu kien",
+    }
+)
+
+
+def _link_tokens(text: str) -> list[str]:
+    return re.findall(r"[a-z0-9]+", normalize(text))
+
+
+def _link_bigrams(tokens: list[str]) -> set[str]:
+    return {f"{tokens[i]} {tokens[i + 1]}" for i in range(len(tokens) - 1)}
+
+
+def _has_phrase(phrase: str, haystack: str) -> bool:
+    if len(phrase) < 4:
+        return False
+    return bool(re.search(r"(?<!\w)" + re.escape(phrase) + r"(?!\w)", haystack))
+
+
+def _is_core_curriculum_lesson(row: dict[str, Any]) -> bool:
+    if row.get("kind") == "chương":
+        return False
+    uid = str(row.get("unit_id") or "")
+    if uid.endswith(("-btcc", "-cuoi-nam")) or "-hd" in uid:
+        return False
+    return True
+
+
+def _link_curriculum_units(
+    display_topic: str,
+    topic_key: str,
+    raw_topics: list[str],
+    grades: list[int],
+    curriculum_rows: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Link a Topic Pack to verified curriculum lessons using domain phrases and bigrams."""
+    stop_unigrams = set(CONFIG["stop_words"]) | _GENERIC_LINK_UNIGRAMS
+    disp_norm = normalize(display_topic)
+    pack_norm = normalize(" ".join([display_topic, topic_key.replace("-", " "), *raw_topics]))
+
+    disp_toks = _link_tokens(disp_norm)
+    pack_toks = _link_tokens(pack_norm)
+    disp_bi = _link_bigrams(disp_toks) - _GENERIC_LINK_BIGRAMS
+    pack_bi = _link_bigrams(pack_toks) - _GENERIC_LINK_BIGRAMS
+    disp_uni = {w for w in disp_toks if (len(w) >= 3 or w == "mu") and w not in stop_unigrams}
+    pack_uni = {w for w in pack_toks if (len(w) >= 3 or w == "mu") and w not in stop_unigrams}
+
+    scored: list[tuple[float, float, dict[str, Any]]] = []
+    fallback: list[tuple[float, dict[str, Any]]] = []
+    for crow in curriculum_rows:
+        if not _is_core_curriculum_lesson(crow):
+            continue
+        c_title = re.sub(r"^(?:bai|chuong)\s+\d+\s*[.:]\s*", "", normalize(crow["title"])).strip()
+        c_chap = re.sub(
+            r"^(?:chuong)\s+(?:\d+|[ivx]+)\s*[.:]\s*",
+            "",
+            normalize(str(crow.get("chapter_title") or "")),
+        ).strip()
+        c_kw_norms = [normalize(k).strip() for k in crow.get("keywords_vi") or [] if str(k).strip()]
+        c_core_norm = f"{c_title} {' '.join(c_kw_norms)}".strip()
+        c_out_norm = normalize(" ".join(str(x) for x in crow.get("outcomes_vi") or []))
+
+        title_toks = _link_tokens(c_title)
+        chap_toks = _link_tokens(c_chap)
+        core_toks = _link_tokens(c_core_norm)
+        title_bi = _link_bigrams(title_toks) - _GENERIC_LINK_BIGRAMS
+        chap_bi = _link_bigrams(chap_toks) - _GENERIC_LINK_BIGRAMS
+        core_bi = _link_bigrams(core_toks) - _GENERIC_LINK_BIGRAMS
+        title_uni = {w for w in title_toks if (len(w) >= 3 or w == "mu") and w not in stop_unigrams}
+        core_uni = {w for w in core_toks if (len(w) >= 3 or w == "mu") and w not in stop_unigrams}
+
+        phrase_score = 0.0
+        if _has_phrase(c_title, disp_norm) or _has_phrase(disp_norm, c_title):
+            phrase_score += 12.0
+        elif _has_phrase(c_title, pack_norm):
+            phrase_score += 7.0
+        if c_chap and (_has_phrase(c_chap, disp_norm) or _has_phrase(disp_norm, c_chap)):
+            phrase_score += 6.0
+        kw_disp_hits = sum(1 for kw in c_kw_norms if _has_phrase(kw, disp_norm))
+        kw_pack_hits = sum(1 for kw in c_kw_norms if _has_phrase(kw, pack_norm))
+        phrase_score += min(12.0, 5.0 * kw_disp_hits) + min(8.0, 2.5 * kw_pack_hits)
+
+        bi_score = (
+            5.0 * len(disp_bi & title_bi)
+            + 3.0 * len(disp_bi & core_bi)
+            + 4.0 * len(disp_bi & chap_bi)
+            + 1.5 * len(pack_bi & core_bi)
+        )
+        uni_score = (
+            3.0 * len(disp_uni & title_uni)
+            + 1.5 * len(disp_uni & core_uni)
+            + 0.75 * len(pack_uni & core_uni)
+        )
+        domain_score = phrase_score + bi_score + uni_score
+
+        out_bi = _link_bigrams(_link_tokens(c_out_norm)) - _GENERIC_LINK_BIGRAMS
+        out_uni = {
+            w for w in _link_tokens(c_out_norm) if (len(w) >= 3 or w == "mu") and w not in stop_unigrams
+        }
+        out_bonus = min(3.0, 0.75 * len(pack_bi & out_bi) + 0.3 * len(disp_uni & out_uni))
+        if not grades or crow["grade"] in grades:
+            grade_bonus = 2.5
+        elif grades == [12] and crow["grade"] == 10:
+            grade_bonus = -3.0
+        else:
+            grade_bonus = -0.5
+
+        if domain_score >= 3.5:
+            scored.append((domain_score + out_bonus + grade_bonus, domain_score, crow))
+        else:
+            fb_score = (
+                2.0 * len(disp_bi & out_bi)
+                + 1.0 * len(pack_bi & out_bi)
+                + 0.5 * len(pack_uni & out_uni)
+            )
+            if fb_score >= 1.5:
+                fallback.append((fb_score + grade_bonus, crow))
+
+    if scored:
+        scored.sort(key=lambda item: (-item[0], -item[1], item[2]["grade"], item[2]["unit_id"]))
+        top_domain = scored[0][1]
+        cutoff = max(3.5, min(14.0, top_domain * 0.35))
+        filtered = [item for item in scored if item[1] >= cutoff]
+        return [item[2] for item in filtered[:6]]
+
+    fallback.sort(key=lambda item: (-item[0], item[1]["grade"], item[1]["unit_id"]))
+    return [item[1] for item in fallback[:3]]
+
 
 def _sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
@@ -118,6 +404,7 @@ def _parse_curriculum_rows(
         by_id = {row["unit_id"]: row for row in rows}
         for row in rows:
             chapter = None
+            chapter_title = None
             current, visited = row, set()
             while current:
                 if current["unit_id"] in visited:
@@ -126,6 +413,7 @@ def _parse_curriculum_rows(
                 match = re.search(r"-c(\d+)$", current["unit_id"])
                 if match and current.get("kind") == "chương":
                     chapter = int(match[1])
+                    chapter_title = current.get("title_vi")
                     break
                 parent = current.get("parent_id")
                 current = by_id.get(parent) if parent else None
@@ -146,6 +434,7 @@ def _parse_curriculum_rows(
                 "subject": subject,
                 "grade": int(row["grade"]),
                 "chapter": chapter,
+                "chapter_title": chapter_title,
                 "lesson": lesson,
                 "semester": semester,
                 "kind": row.get("kind"),
@@ -579,39 +868,14 @@ def load_profile_release(
             patterns_by_class_raw, joined_observations, ready_examples
         )
 
-        # Link curriculum units by matching topic tokens and grades.
-        tp_norm_text = normalize(
-            " ".join([display_topic, topic_key, *(topic_meta.get("raw_topics") or [])])
+        # Link curriculum units by domain phrases, Vietnamese bigrams and grades.
+        top_curriculum = _link_curriculum_units(
+            display_topic,
+            topic_key,
+            list(topic_meta.get("raw_topics") or []),
+            grades,
+            curriculum_rows,
         )
-        tp_tokens = {
-            w
-            for w in re.findall(r"\w+", tp_norm_text)
-            if len(w) >= 3 and w not in CONFIG["stop_words"]
-        }
-        linked_curriculum: list[tuple[int, dict[str, Any]]] = []
-        for crow in curriculum_rows:
-            if crow["kind"] == "chương":
-                continue
-            c_norm = normalize(
-                " ".join(
-                    [crow["title"], *crow["keywords_vi"], *(str(x) for x in crow["outcomes_vi"])]
-                )
-            )
-            c_title_norm = normalize(crow["title"])
-            c_tokens = set(re.findall(r"\w+", c_norm))
-            overlap = len(tp_tokens & c_tokens)
-            title_hit = (
-                3
-                if normalize(display_topic) in c_title_norm
-                or c_title_norm in normalize(display_topic)
-                else 0
-            )
-            grade_bonus = 2 if (not grades or crow["grade"] in grades) else 0
-            score_c = overlap + title_hit + grade_bonus
-            if overlap >= 2 or title_hit > 0:
-                linked_curriculum.append((score_c, crow))
-        linked_curriculum.sort(key=lambda item: (-item[0], item[1]["grade"], item[1]["unit_id"]))
-        top_curriculum = [item[1] for item in linked_curriculum[:5]]
 
         parts_present = sorted({obs["part"] for obs in joined_observations if obs.get("part")})
         levels_present = sorted(
