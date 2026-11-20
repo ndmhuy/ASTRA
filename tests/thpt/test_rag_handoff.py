@@ -6,7 +6,13 @@ import pytest
 
 from exam_baseline.config import Settings
 from exam_baseline.thpt import cli
-from exam_baseline.thpt.rag import default_request, retrieval_matrix
+from exam_baseline.thpt.agents import ComposerAgent
+from exam_baseline.thpt.rag import (
+    RagHandoffError,
+    default_request,
+    retrieval_matrix,
+    retrieve_request,
+)
 from rag_workflow import retrieve_exam_context
 from tests.paths import ROOT
 from tests.thpt.test_generation import Scripted
@@ -115,3 +121,30 @@ def test_real_rag_through_thpt_cli_and_resume(tmp_path, monkeypatch, capsys):
     [gap] = json.loads(capsys.readouterr().out)["gaps"]
     assert (gap["question_id"], gap["code"]) == ("P1-1", "topic_not_found")
     assert not blocked_output.exists()
+
+
+def test_rag_curriculum_scope_is_applied_to_the_passage(monkeypatch):
+    if subprocess.run(["git", "cat-file", "-e", CORPUS], cwd=ROOT, capture_output=True).returncode:
+        pytest.skip("Fetch origin/staging/rag to run the corpus integration test")
+    monkeypatch.chdir(ROOT)
+    request = default_request()
+    slot = request.slots[2]
+    assert slot.id == "P1-3"
+    slot.curriculum_unit_ids = ["toan-12-c1-b1"]
+    resolved = retrieve_request(request, corpus_ref=CORPUS)
+    evidence = resolved.rag_evidence[slot.id]
+    assert evidence.curriculum_unit_ids == ["toan-12-c1-b1"]
+    assert "[toan-12-c1-b1]" in evidence.text
+    assert "toan-11-c8-b30" not in evidence.text
+    composer = ComposerAgent()
+    assert (
+        composer.data(resolved, "P1", "Mixed-topic template questions", None)["reference_exam"]
+        == ""
+    )
+    assert composer.data(resolved, "P2", "Mixed-topic template questions", None)["reference_exam"]
+
+    slot.curriculum_unit_ids = ["not-in-verified-corpus"]
+    with pytest.raises(RagHandoffError) as error:
+        retrieve_request(request, corpus_ref=CORPUS)
+    [gap] = error.value.gaps
+    assert (gap["question_id"], gap["code"]) == ("P1-3", "curriculum_unit_not_found")

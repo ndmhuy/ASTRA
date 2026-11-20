@@ -127,7 +127,7 @@ When feedback is supplied, correct its issues while preserving all slot IDs and 
             part=part,
             slots=[s.model_dump() for s in slots],
             requirements=request.requirements,
-            reference_exam=reference,
+            reference_exam="" if any(slot.curriculum_unit_ids for slot in slots) else reference,
             reference_material=[
                 *request.reference_material,
                 *(request.rag_evidence[slot.id].text for slot in slots if request.rag_evidence),
@@ -166,6 +166,7 @@ class ReviewerAgent(Agent):
     instruction = """Check all IDs against the matrix: curriculum, cognitive demand,
 all four P2 statement levels, mathematical correctness, answer uniqueness, distractors,
 rounding, diagram consistency and disclosure of answers in student content.
+Mark needs_revision if an item assesses a different topic or learning objective than its slot.
 Compare independent Solver results with Composer's private answers and detailed solutions.
 Any unsolved/ambiguous result requires needs_revision with actionable issues.
 Also check template content fit and LaTeX content syntax. Do not rewrite the template.

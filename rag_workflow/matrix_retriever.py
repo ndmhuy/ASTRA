@@ -574,6 +574,7 @@ def _retrieve_single_question(
         "level": q_spec.level,
         "statement_levels": q_spec.statement_levels,
         "needs": list(q_spec.needs),
+        "curriculum_unit_ids": list(q_spec.curriculum_unit_ids),
     }
 
     matched_packs = _resolve_candidate_topic_packs(release, q_spec)
@@ -643,6 +644,20 @@ def _retrieve_single_question(
             if c["unit_id"] not in seen_curr_ids:
                 seen_curr_ids.add(c["unit_id"])
                 all_curriculum.append(c)
+
+    if q_spec.curriculum_unit_ids:
+        lessons = {
+            row["unit_id"]: row for row in release["curriculum_rows"] if row["kind"] != "chương"
+        }
+        missing_ids = [unit for unit in q_spec.curriculum_unit_ids if unit not in lessons]
+        if missing_ids:
+            gaps.append(
+                {
+                    "code": "curriculum_unit_not_found",
+                    "message": f"No verified curriculum lesson for: {', '.join(missing_ids)}.",
+                }
+            )
+        all_curriculum = [lessons[unit] for unit in q_spec.curriculum_unit_ids if unit in lessons]
 
     if not all_part_obs and not all_part_patterns and not all_part_examples:
         available_parts = sorted(
@@ -910,6 +925,9 @@ def parse_matrix_request(payload: dict[str, Any]) -> MatrixRetrievalRequest:
         if not isinstance(q, dict):
             raise Gap("invalid_request", f"Question entry #{idx} must be a JSON object.")
         needs_raw = q.get("needs")
+        curriculum_ids = q.get("curriculum_unit_ids", [])
+        if not isinstance(curriculum_ids, list):
+            raise Gap("invalid_request", f"curriculum_unit_ids must be a list for question #{idx}.")
         spec_kwargs: dict[str, Any] = {
             "question_id": q.get("question_id") or q.get("id") or f"Q{idx:02d}",
             "part": q.get("part"),
@@ -918,6 +936,7 @@ def parse_matrix_request(payload: dict[str, Any]) -> MatrixRetrievalRequest:
             "level": q.get("level"),
             "statement_levels": q.get("statement_levels"),
             "group_id": q.get("group_id"),
+            "curriculum_unit_ids": tuple(curriculum_ids),
         }
         if needs_raw is not None:
             if not isinstance(needs_raw, list):

@@ -14,6 +14,10 @@ git fetch origin staging/rag
 
 Thêm `--request <file.json>` để dùng ma trận THPT của bạn. Có thể chọn commit corpus
 bằng `--rag-corpus-ref <sha>` hoặc dùng gói corpus đã xuất với `--rag-pack-dir <directory>`.
+Đề chuyên đề có thể ghi `curriculum_unit_ids` theo từng slot để chỉ bàn giao các bài
+chương trình đã chọn. RAG xác minh các ID này trên snapshot trước khi sinh đề.
+Phần có slot giới hạn bài chương trình dùng dẫn chứng đã truy hồi và mục tiêu của
+ma trận khi soạn câu. Khung LaTeX của đề vẫn lấy từ template THPT.
 Khi thiếu dẫn chứng bắt buộc, CLI báo `retrieval_gap` và ID câu trước khi gọi model.
 Cảnh báo và nguồn theo từng câu nằm trong `_internal/result.json`. Ngữ cảnh đầy đủ nằm
 trong `_internal/request.json`. Để tiếp tục một lượt bị gián đoạn, dùng cùng request

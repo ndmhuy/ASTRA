@@ -5,7 +5,7 @@ from typing import Literal
 
 from pydantic import Field, field_validator, model_validator
 
-from exam_baseline.core.models import Model, Text
+from exam_baseline.core.models import Identifier, Model, Text
 from exam_baseline.thpt.content import choice_latex, content_latex
 from exam_baseline.thpt.fonts import DEFAULT_FONT_PROFILE, FontProfile
 
@@ -21,6 +21,7 @@ class Slot(Model):
     objective: Text
     level: Level
     statement_levels: list[Level] = Field(default_factory=list)
+    curriculum_unit_ids: list[Identifier] = Field(default_factory=list)
 
 
 class RagPassage(Model):
@@ -28,6 +29,7 @@ class RagPassage(Model):
     source_ids: list[str] = Field(min_length=1)
     source_locator: Text
     source_version: Text
+    curriculum_unit_ids: list[Identifier] = Field(default_factory=list)
     warnings: list[dict[str, str]] = Field(default_factory=list)
 
 

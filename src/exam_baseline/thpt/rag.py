@@ -49,6 +49,7 @@ def retrieval_matrix(request: Request) -> dict:
                 "topic": slot.topic,
                 "learning_objective": slot.objective,
                 "level": slot.level,
+                "curriculum_unit_ids": slot.curriculum_unit_ids,
                 **(
                     {"statement_levels": dict(zip("abcd", slot.statement_levels, strict=True))}
                     if slot.part == "P2"
@@ -80,6 +81,7 @@ def bind_retrieval(request: Request, retrieval: MatrixRetrievalResponse) -> Requ
         context, entry = contexts[slot.id], entries[slot.id]
         requested = context["requested"]
         statement_levels = dict(zip("abcd", slot.statement_levels, strict=False))
+        curriculum_ids = [item["unit_id"] for item in context["curriculum_knowledge"]]
         if (
             context["status"] not in {"ready", "ready_with_warnings"}
             or requested["part"] != slot.part
@@ -87,6 +89,11 @@ def bind_retrieval(request: Request, retrieval: MatrixRetrievalResponse) -> Requ
             or requested["learning_objective"] != slot.objective
             or requested["level"] != slot.level
             or (requested["statement_levels"] or {}) != statement_levels
+            or requested.get("curriculum_unit_ids", []) != slot.curriculum_unit_ids
+            or (
+                slot.curriculum_unit_ids
+                and (not curriculum_ids or not set(curriculum_ids) <= set(slot.curriculum_unit_ids))
+            )
             or entry["subject"] != "Toán"
             or entry["role"] != "content_support"
             or entry["text"] != context["reference_material_text"]
@@ -99,6 +106,7 @@ def bind_retrieval(request: Request, retrieval: MatrixRetrievalResponse) -> Requ
             "source_ids": entry["topic_ids"],
             "source_locator": entry["locator"],
             "source_version": entry["source_version"],
+            "curriculum_unit_ids": curriculum_ids,
             "warnings": context["warnings"],
         }
     return Request.model_validate({**request.model_dump(), "rag_evidence": evidence})

@@ -251,6 +251,7 @@ class MatrixQuestionSpec:
     statement_levels: dict[str, str] | None = None
     group_id: str | None = None
     needs: tuple[str, ...] = tuple(CONFIG["retrieval_needs"])
+    curriculum_unit_ids: tuple[str, ...] = ()
 
     def __post_init__(self):
         if not isinstance(self.question_id, str) or not self.question_id.strip():
@@ -301,6 +302,15 @@ class MatrixQuestionSpec:
                 f"needs must be a subset of {', '.join(CONFIG['retrieval_needs'])}.",
             )
         object.__setattr__(self, "needs", tuple(dict.fromkeys(self.needs)))
+        if (
+            not isinstance(self.curriculum_unit_ids, tuple)
+            or len(self.curriculum_unit_ids) > CONFIG["max_top_k"]
+            or any(
+                not isinstance(unit, str) or not unit.strip() for unit in self.curriculum_unit_ids
+            )
+            or len(set(self.curriculum_unit_ids)) != len(self.curriculum_unit_ids)
+        ):
+            raise Gap("invalid_request", "curriculum_unit_ids must contain distinct lesson IDs.")
 
 
 @dataclass(frozen=True)
