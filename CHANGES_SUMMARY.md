@@ -28,6 +28,17 @@
   `01_UIUX_HANDOFF_REQUEST.md`, `AGENT_UI_COORDINATION_REPORT.md`, `UIUX_HANDOFF_RESPONSE.md`, `UIUX_IMPLEMENTATION_STATUS.md`, `document.md`, `plan.md`, `restructuring_17.11.26.md`, `review_06.11.26.md`.
 - Kept only standard repo config files (`README.md`, `AGENTS.md`, `CLAUDE.md`) plus this `CHANGES_SUMMARY.md` at the repository root.
 
+### 4. `1010a7d` — `feat(web): add exam storage view and polish LaTeX/PDF workspace UX`
+- **Dedicated Exam Storage ("Kho đề") view (`ExamStorageView.tsx` + `ExamSessions.rename()`):**
+  - Full-page local storage library with search, status filters (*Tất cả, Đã duyệt, Chờ duyệt, Đang soạn, Bản nháp, Lỗi*), inline rename (trimmed and clamped to 100 chars matching `SessionSummary.title`), short session ID + timestamp disambiguation, honest local-storage note (no fake cloud sync), and explicit delete warning when a job is running.
+  - Preserved `UiContextSnapshot.screen` (`'start' | 'workspace'`) in `App.tsx` so `/agent/interpret` Pydantic validation never rejects `'library'` view turns.
+- **Cleaner left sidebar (`SidebarExamLibrary.tsx`):** Added **Kho đề** counter button and narrowed the sidebar list to the top 5 recent exams with a **Xem tất cả** link.
+- **LaTeX/TikZ rendering & PDF-first completion (`MathRenderer.tsx`, `QuestionCard.tsx`, `ExamPaperView.tsx`):**
+  - Upgraded `MathRenderer.tsx` to render `\begin{tabular}` tables (including nested-brace column specs), `\(...\)`, `\[...\]`, `\textbf{}`, `\textit{}`, `\emph{}`, `\underline{}`, and strip `\begin{center}`/`\begin{adjustbox}` layout wrappers.
+  - Replaced raw TikZ `<pre>` dumps on the student **Đề thi** tab with a PDF jump callout while keeping collapsible TikZ technical source in **Xem đáp án** for teachers.
+  - Auto-switches active workspaces from `generating` → `complete` straight to **Xem trước PDF**, moved warnings into the `.paper-scroll` `notices` slot (eliminating duplicate `visualWarnings`), and added a **Xem dạng văn bản** fallback on PDF error states.
+- **Verified:** `npm.cmd test` (26/26 passed), `npm.cmd run lint` (`oxlint`, 0 warnings/errors), `npm.cmd run build` (`tsc -b && vite build`), and `pytest -q tests/test_agent_ui_service.py tests/api/test_ui_jobs.py` (50 passed).
+
 ## Notes for Next Teammate / Agent
 - **No secrets committed:** `.env` and `agent-service/.env.local` remain gitignored.
 - **V-ACT next step:** When backend adds a V-ACT UI job adapter in `src/exam_baseline/ui/contracts.py` and `jobs.py`, load `vact_dgnl_v1.json` in `format_catalog()` and set `"available": true`; the frontend setup modal will automatically enable V-ACT generation.
