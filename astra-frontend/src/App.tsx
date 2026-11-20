@@ -2,6 +2,7 @@ import React, { useState, useEffect, useSyncExternalStore, useCallback, useLayou
 import { WorkspaceStart } from './components/WorkspaceStart';
 import { AstraWelcome } from './components/AstraWelcome';
 import { SidebarExamLibrary } from './components/SidebarExamLibrary';
+import { ExamStorageView } from './components/ExamStorageView';
 import { AstraLogo } from './components/AstraLogo';
 import { QuickPresetModal } from './components/QuickPresetModal';
 import { WorkspaceLayout } from './components/Workspace/WorkspaceLayout';
@@ -40,7 +41,7 @@ export const App: React.FC = () => {
   const [store] = useState(() => new ExamSessions(examService));
   const sessions = useSyncExternalStore(store.subscribe, store.getSnapshot);
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [screen, setScreen] = useState<'start' | 'workspace'>('start');
+  const [screen, setScreen] = useState<'start' | 'workspace' | 'library'>('start');
   const [viewMode, setViewMode] = useState<ExamCanvasViewMode>('paper');
   const [controlsCollapsed, setControlsCollapsed] = useState(false);
   const [showQuickModal, setShowQuickModal] = useState(false);
@@ -60,7 +61,8 @@ export const App: React.FC = () => {
   const executorRef = useRef<UiActionExecutor | null>(null);
   const [taskController] = useState(() => new AgentTaskController());
   const turnEpoch = useRef(0);
-  const runtimeRef = useRef({ screen: 'start' as 'start' | 'workspace', activeId: null as string | null, showQuickModal: false, controlsCollapsed: false, viewMode: 'paper' as ExamCanvasViewMode, editor: null as typeof editor, selectedQuestionId: null as number | null, pendingConfirmation: null as PendingAgentConfirmation | null, setupState });
+  const prevStatusRef = useRef<{ id: string | null; status?: string }>({ id: null });
+  const runtimeRef = useRef({ screen: 'start' as 'start' | 'workspace' | 'library', activeId: null as string | null, showQuickModal: false, controlsCollapsed: false, viewMode: 'paper' as ExamCanvasViewMode, editor: null as typeof editor, selectedQuestionId: null as number | null, pendingConfirmation: null as PendingAgentConfirmation | null, setupState });
   const closeQuickModal = useCallback(() => { setShowQuickModal(false); setSetupState(value => ({ ...value, status: 'closed' })); setPendingConfirmation(null); }, []);
   const handleSetupState = useCallback((value: { status: 'loading' | 'ready' | 'error'; formats: ExamFormat[]; selectedId: string; error?: string }) => {
     setPendingConfirmation(pending => value.selectedId !== runtimeRef.current.setupState.selectedId ? null : pending);
@@ -77,12 +79,27 @@ export const App: React.FC = () => {
     setViewMode('paper');
     store.setActiveSession(screen === 'workspace' ? activeId : null);
   }, [store, screen, activeId]);
+  useEffect(() => {
+    const currentId = active?.id || null;
+    const currentStatus = active?.status;
+    if (
+      screen === 'workspace' &&
+      currentId &&
+      prevStatusRef.current.id === currentId &&
+      prevStatusRef.current.status === 'generating' &&
+      currentStatus === 'complete'
+    ) {
+      setViewMode('pdf');
+    }
+    prevStatusRef.current = { id: currentId, status: currentStatus };
+  }, [active?.id, active?.status, screen]);
   useEffect(() => () => { if (transitionTimer.current) clearTimeout(transitionTimer.current); }, []);
   useLayoutEffect(() => {
     runtimeRef.current = { screen, activeId, showQuickModal, controlsCollapsed, viewMode, editor, selectedQuestionId, pendingConfirmation, setupState };
   }, [screen, activeId, showQuickModal, controlsCollapsed, viewMode, editor, selectedQuestionId, pendingConfirmation, setupState]);
   const cancelTransition = () => { composerOrigin.current = null; if (transitionTimer.current) clearTimeout(transitionTimer.current); setLeavingStart(false); setRevealingWorkspace(false); };
   const openSession = (id: string) => { cancelTransition(); if (runtimeRef.current.activeId !== id) { setEditor(null); setSelectedQuestionId(null); setPendingConfirmation(null); } setActiveId(id); setScreen('workspace'); };
+  const openStorage = () => { cancelTransition(); setShowQuickModal(false); setPendingConfirmation(null); setScreen('library'); };
   const newExam = () => { cancelTransition(); setActiveId(null); setConfigureId(null); setLandingDraft(''); attachedFiles.current = []; setShowQuickModal(false); setPendingConfirmation(null); setSelectedQuestionId(null); setSetupState({ status: 'closed', formats: [], selectedId: '', prompt: '' }); setScreen('start'); };
   const revealSession = (id: string) => {
     if (screen === 'workspace') { openSession(id); return; }
@@ -105,7 +122,8 @@ export const App: React.FC = () => {
   }, [screen, activeId]);
   useLayoutEffect(() => {
     if (showWelcome || revealingWorkspace || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const view = document.querySelector<HTMLElement>(screen === 'workspace' ? '.astra-workspace-stage' : '.integrated-start');
+    const selector = screen === 'workspace' ? '.astra-workspace-stage' : screen === 'library' ? '.exam-storage-view' : '.integrated-start';
+    const view = document.querySelector<HTMLElement>(selector);
     if (!view) return;
     const animation = view.animate([
       { opacity: 0, transform: 'translateY(8px)' },
@@ -169,7 +187,7 @@ export const App: React.FC = () => {
     const progressSource = import.meta.env.VITE_SERVICE_MODE === 'mock' ? 'mock' : 'real';
     return {
       workspaceId: runtime.screen === 'workspace' ? runtime.activeId : null,
-      screen: runtime.screen,
+      screen: runtime.screen === 'workspace' ? 'workspace' : 'start',
       activeModal: runtime.editor ? 'question_editor' : runtime.showQuickModal ? 'exam_setup' : null,
       sidebarCollapsed: runtime.controlsCollapsed,
       activeJob: current?.status === 'generating' && current.jobId ? {
@@ -488,13 +506,43 @@ export const App: React.FC = () => {
         <button className="app-brand rail-logo-toggle" aria-label={`ASTRA — ${sidebarLabel}`} aria-expanded={!controlsCollapsed} title={sidebarLabel} onClick={handleLogoClick}>
           <AstraLogo className="app-brand-logo" /><span>ASTRA</span>
         </button>
-        <SidebarExamLibrary sessions={sessions} activeId={screen === 'workspace' ? activeId : null} onNew={newExam} onOpen={openSession} onDelete={id => { store.remove(id); if (activeId === id) newExam(); if (configureId === id) { setConfigureId(null); setShowQuickModal(false); } }} />
+        <SidebarExamLibrary
+          sessions={sessions}
+          activeId={screen === 'workspace' ? activeId : null}
+          storageActive={screen === 'library'}
+          onNew={newExam}
+          onOpen={openSession}
+          onOpenStorage={openStorage}
+          onDelete={id => {
+            store.remove(id);
+            if (activeId === id) {
+              setActiveId(null);
+              if (screen === 'workspace') newExam();
+            }
+            if (configureId === id) { setConfigureId(null); setShowQuickModal(false); }
+          }}
+        />
         <button className="side-rail-edge" type="button" onClick={() => setControlsCollapsed(value => !value)} aria-label={sidebarLabel} aria-expanded={!controlsCollapsed} title={sidebarLabel} />
         <div className="header-right"><span className="header-avatar" aria-label="Người dùng: Cùng thầy cô" title="Cùng thầy cô">GV</span><span className="header-session">Cùng thầy cô</span></div>
       </header>
 
       {/* Main content */}
       {screen === 'start' && <WorkspaceStart exiting={leavingStart} draft={landingDraft} onDraftChange={setLandingDraft} onTemplate={() => { setConfigureId(null); attachedFiles.current = []; setShowQuickModal(true); }} onDetailed={handleDetailedStart} onSend={handleLandingSend} />}
+
+      {screen === 'library' && (
+        <ExamStorageView
+          sessions={sessions}
+          activeId={activeId}
+          onNew={newExam}
+          onOpen={openSession}
+          onRename={(id, title) => { store.rename(id, title); }}
+          onDelete={id => {
+            store.remove(id);
+            if (activeId === id) setActiveId(null);
+            if (configureId === id) { setConfigureId(null); setShowQuickModal(false); }
+          }}
+        />
+      )}
 
       {screen === 'workspace' && active && (
         <WorkspaceLayout key={active.id}>
@@ -520,80 +568,86 @@ export const App: React.FC = () => {
               </>
             ),
             right: (
-              <>
-                {active.error && <p role="alert">{active.error}</p>}
-                {isGenerating && active.progress && <p role="status">{active.progress.statusMessage} ({active.progress.percent}%)</p>}
-                {!!active.package?.warnings?.length && (
-                  <details className="source-warnings-box" open={disclosures.warnings}>
-                    <summary>Lưu ý nguồn tham khảo ({active.package.warnings.length})</summary>
-                    <ul>
-                      {active.package.warnings.map((warning, i) => {
-                        const coverageMatch = warning.message.match(/statement level\(s\):\s*([^.]+)\./i);
-                        const levelMap: Record<string, string> = { NB: 'Nhận biết', TH: 'Thông hiểu', VD: 'Vận dụng', VDC: 'Vận dụng cao' };
-                        const readable = coverageMatch
-                          ? `Kho ngữ liệu chưa có câu mẫu trực tiếp cho mức ${coverageMatch[1].replace(/\b(NB|TH|VD|VDC)\b/g, m => levelMap[m] || m)}; hệ thống đã dùng câu mẫu cùng chủ đề để tham khảo.`
-                          : warning.message;
-                        return <li key={i}><strong>{warning.questionId || 'Chung'}:</strong> {readable}</li>;
-                      })}
-                    </ul>
-                  </details>
-                )}
-                {!!active.package?.visualWarnings?.length && (
-                  <div className="pdf-preview-warning" role="alert">
-                    <strong>Cảnh báo hình vẽ / bảng biểu ({active.package.visualWarnings.length})</strong>
-                    <p>Các đề đã tạo không tự sinh hình vẽ còn thiếu trong PDF. Hãy sửa hoặc tạo lại câu hỏi bị ảnh hưởng.</p>
-                    {active.package.visualWarnings.map((warning, i) => (
-                      <p key={`${warning.questionId}-${i}`}><code>{warning.questionId}</code>: {warning.code}</p>
-                    ))}
-                  </div>
-                )}
-                <ExamPaperView
-                  header={<CanvasHeader
-                    examMeta={examMeta}
-                    isGenerating={isGenerating}
-                    canExport={active.package?.approved === true && !active.artifactChanged}
-                    canExportPdf={Boolean(
-                      active.package?.approved &&
-                      !active.artifactChanged &&
-                      active.preview?.status === 'ready' &&
-                      active.preview.revision === active.package.revision &&
-                      active.preview.contentHash === active.package.contentHash
-                    )}
-                    showApprove={active.status === 'complete' && !active.package?.approved && !active.artifactChanged}
-                    canApprove={store.canApprove(active.id)}
-                    approving={approving}
-                    onOpenPdfPreview={() => setViewMode('pdf')}
-                    onApprove={() => { void approve(); }}
-                    onExportPdf={handleExportPdf}
-                    onExportWord={handleExportWord}
-                    onExportAnswer={handleExportAnswer}
-                  />}
-                  questions={liveQuestions}
+              <ExamPaperView
+                header={<CanvasHeader
                   examMeta={examMeta}
                   isGenerating={isGenerating}
-                  latestQuestionCount={prevQuestionCount}
-                  viewMode={viewMode}
-                  onViewModeChange={setViewMode}
-                  examId={active.jobId || active.package?.examId}
-                  revision={active.package?.revision}
-                  contentHash={active.package?.contentHash}
-                  approved={active.package?.approved}
-                  preview={active.preview}
-                  visualWarnings={active.package?.visualWarnings}
-                  previewLog={active.previewLog}
-                  previewError={active.previewError}
-                  previewErrorCode={active.previewErrorCode}
-                  artifactChanged={active.artifactChanged}
-                  onRetryPreview={handleRetryPreview}
-                  onPreviewOpened={handlePreviewOpened}
-                  focusedQuestionId={selectedQuestionId}
-                  expandedDetails={disclosures.questions}
-                  onEditQuestion={id => {
-                    const question = active.questions.find(item => item.id === id);
-                    if (active.jobId && question) { setSelectedQuestionId(id); setEditor({ sessionId: active.id, jobId: active.jobId, question }); }
-                  }}
-                />
-              </>
+                  canExport={active.package?.approved === true && !active.artifactChanged}
+                  canExportPdf={Boolean(
+                    active.package?.approved &&
+                    !active.artifactChanged &&
+                    active.preview?.status === 'ready' &&
+                    active.preview.revision === active.package.revision &&
+                    active.preview.contentHash === active.package.contentHash
+                  )}
+                  showApprove={active.status === 'complete' && !active.package?.approved && !active.artifactChanged}
+                  canApprove={store.canApprove(active.id)}
+                  approving={approving}
+                  onOpenPdfPreview={() => setViewMode('pdf')}
+                  onApprove={() => { void approve(); }}
+                  onExportPdf={handleExportPdf}
+                  onExportWord={handleExportWord}
+                  onExportAnswer={handleExportAnswer}
+                />}
+                notices={(
+                  <>
+                    {active.error && <p className="canvas-alert-strip" role="alert">{active.error}</p>}
+                    {isGenerating && active.progress && (
+                      <p className="canvas-progress-strip" role="status">
+                        {active.progress.statusMessage} ({active.progress.percent}%)
+                      </p>
+                    )}
+                    {!!active.package?.warnings?.length && (
+                      <details className="source-warnings-box" open={disclosures.warnings}>
+                        <summary>Lưu ý nguồn tham khảo ({active.package.warnings.length})</summary>
+                        <ul>
+                          {active.package.warnings.map((warning, i) => {
+                            const coverageMatch = warning.message.match(/statement level\(s\):\s*([^.]+)\./i);
+                            const levelMap: Record<string, string> = { NB: 'Nhận biết', TH: 'Thông hiểu', VD: 'Vận dụng', VDC: 'Vận dụng cao' };
+                            const readable = coverageMatch
+                              ? `Kho ngữ liệu chưa có câu mẫu trực tiếp cho mức ${coverageMatch[1].replace(/\b(NB|TH|VD|VDC)\b/g, m => levelMap[m] || m)}; hệ thống đã dùng câu mẫu cùng chủ đề để tham khảo.`
+                              : warning.message;
+                            return <li key={i}><strong>{warning.questionId || 'Chung'}:</strong> {readable}</li>;
+                          })}
+                        </ul>
+                      </details>
+                    )}
+                    {viewMode !== 'pdf' && !!active.package?.visualWarnings?.length && (
+                      <div className="pdf-preview-warning" role="alert">
+                        <strong>Cảnh báo hình vẽ / bảng biểu ({active.package.visualWarnings.length})</strong>
+                        <p>Các đề đã tạo không tự sinh hình vẽ còn thiếu trong PDF. Hãy sửa hoặc tạo lại câu hỏi bị ảnh hưởng.</p>
+                        {active.package.visualWarnings.map((warning, i) => (
+                          <p key={`${warning.questionId}-${i}`}><code>{warning.questionId}</code>: {warning.code}</p>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+                questions={liveQuestions}
+                examMeta={examMeta}
+                isGenerating={isGenerating}
+                latestQuestionCount={prevQuestionCount}
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+                examId={active.jobId || active.package?.examId}
+                revision={active.package?.revision}
+                contentHash={active.package?.contentHash}
+                approved={active.package?.approved}
+                preview={active.preview}
+                visualWarnings={active.package?.visualWarnings}
+                previewLog={active.previewLog}
+                previewError={active.previewError}
+                previewErrorCode={active.previewErrorCode}
+                artifactChanged={active.artifactChanged}
+                onRetryPreview={handleRetryPreview}
+                onPreviewOpened={handlePreviewOpened}
+                focusedQuestionId={selectedQuestionId}
+                expandedDetails={disclosures.questions}
+                onEditQuestion={id => {
+                  const question = active.questions.find(item => item.id === id);
+                  if (active.jobId && question) { setSelectedQuestionId(id); setEditor({ sessionId: active.id, jobId: active.jobId, question }); }
+                }}
+              />
             ),
             composer: <ModernChatBar onSend={handleSendMessage} busy={agentBusy} draft={active.draft} onDraftChange={value => store.setDraft(active.id, value)} />,
           }}

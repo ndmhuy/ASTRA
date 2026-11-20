@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Image as ImageIcon } from 'lucide-react';
 import type { QuestionItem } from '../../../types/exam';
 import { MathRenderer } from '../../MathRenderer';
 
@@ -6,12 +7,13 @@ interface QuestionCardProps {
   question: QuestionItem;
   index: number;
   onEdit?: () => void;
+  onOpenPdf?: () => void;
   appearing?: boolean;
   review?: boolean;
   expandedDetails?: boolean;
 }
 
-export const QuestionCard: React.FC<QuestionCardProps> = ({ question, index, onEdit, appearing = false, review = false, expandedDetails }) => {
+export const QuestionCard: React.FC<QuestionCardProps> = ({ question, index, onEdit, onOpenPdf, appearing = false, review = false, expandedDetails }) => {
   const [visible, setVisible] = useState(!appearing);
   useEffect(() => {
     const frame = requestAnimationFrame(() => setVisible(true));
@@ -21,7 +23,25 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, index, onE
   return (
     <section className={`exam-question-card ${visible ? 'visible' : 'appearing'}`} aria-label={`Câu ${index + 1}`}>
       <div className="question-stem"><strong>Câu {question.stableId?.split('-')[1] || index + 1}.</strong><MathRenderer content={question.stem} /></div>
-      {question.drawingLatex && <details open={expandedDetails}><summary>Hình vẽ TikZ (xem khi biên dịch LaTeX)</summary><pre>{question.drawingLatex}</pre></details>}
+      {question.drawingLatex && !review && (
+        <div className="question-figure-callout">
+          <span className="question-figure-note">
+            <ImageIcon size={14} aria-hidden="true" />
+            Câu hỏi có hình vẽ minh họa trong bản in LaTeX/PDF.
+          </span>
+          {onOpenPdf && (
+            <button type="button" className="question-figure-btn" onClick={onOpenPdf}>
+              Xem hình trong bản PDF
+            </button>
+          )}
+        </div>
+      )}
+      {question.drawingLatex && review && (
+        <details open={expandedDetails} className="question-tikz-source">
+          <summary>Mã nguồn hình vẽ TikZ (tham khảo kỹ thuật)</summary>
+          <pre>{question.drawingLatex}</pre>
+        </details>
+      )}
       {(!question.questionType || question.questionType === 'mcq') && <div className="question-choices">
         {(['A', 'B', 'C', 'D'] as const).map(key => (
           <div key={key} className={`question-choice ${review && question.status === 'VERIFIED' && question.key === key ? 'correct' : ''}`}>

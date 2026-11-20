@@ -119,3 +119,16 @@ test('deleting before generation starts does not register a late subscription', 
   assert.equal(service.callbacks.size, 0);
   assert.deepEqual(store.getSnapshot(), []);
 });
+
+test('rename updates session title, ignores blank input, and clamps to 100 chars', () => {
+  const store = new ExamSessions(fakeService());
+  const id = store.create('custom');
+  assert.equal(store.rename(id, '   '), false);
+  assert.equal(store.rename('missing-id', 'Hợp lệ'), false);
+  assert.equal(store.rename(id, '  Đề ôn tập Toán THPT 01  '), true);
+  assert.equal(store.getSnapshot()[0].title, 'Đề ôn tập Toán THPT 01');
+  const longTitle = 'A'.repeat(140);
+  assert.equal(store.rename(id, longTitle), true);
+  assert.equal(store.getSnapshot()[0].title.length, 100);
+  store.dispose();
+});

@@ -204,6 +204,12 @@ export class ExamSessions {
     this.emit();
     return id;
   }
+  rename(id: string, title: string): boolean {
+    const normalized = title.trim().slice(0, 100);
+    if (!normalized || !this.sessions.some(session => session.id === id)) return false;
+    this.update(id, session => ({ ...session, title: normalized }));
+    return true;
+  }
   remove(id: string) {
     this.subscriptions.get(id)?.();
     this.subscriptions.delete(id);

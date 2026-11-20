@@ -9,6 +9,7 @@ export type ExamCanvasViewMode = 'paper' | 'review' | 'pdf';
 
 interface ExamPaperViewProps {
   header?: React.ReactNode;
+  notices?: React.ReactNode;
   questions: QuestionItem[];
   examMeta: {
     title: string;
@@ -40,6 +41,7 @@ interface ExamPaperViewProps {
 
 export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
   header,
+  notices,
   questions,
   examMeta,
   isGenerating,
@@ -184,6 +186,11 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
             <p>
               {previewError || 'Máy chủ chưa tìm thấy Tectonic/XeLaTeX/LuaLaTeX. Chạy scripts/install_latex_compiler.py hoặc cấu hình EXAM_LATEX_COMPILER trên backend; không cần tạo lại đề thi.'}
             </p>
+            <div className="pdf-preview-meta">
+              <button type="button" className="button-secondary" onClick={() => setMode('paper')}>
+                Xem dạng văn bản (Đề thi)
+              </button>
+            </div>
           </div>
         )}
 
@@ -218,6 +225,9 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
                   Xem file nhật ký (`compile.log`)
                 </a>
               )}
+              <button type="button" className="button-secondary" onClick={() => setMode('paper')}>
+                Xem dạng văn bản (Đề thi)
+              </button>
             </div>
             {previewLog && <pre className="pdf-compile-log">{previewLog}</pre>}
           </div>
@@ -249,6 +259,7 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
     </div>
     </div>
     <div className="paper-scroll">
+      {notices}
       {activeMode === 'pdf' ? renderPdfPanel() : (
         <article className={`exam-paper ${!examMeta ? 'is-empty' : ''}`}>
           {examMeta ? <header className="exam-paper-heading">
@@ -263,7 +274,15 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
           </div>}
           {questions.map((q, i) => <div id={`question-${q.id}`} className={focusedQuestionId === q.id ? 'agent-question-focus' : ''} key={q.id}>
             {q.part && q.part !== questions[i - 1]?.part && <h2>{q.part === 'P1' ? 'Phần I. Trắc nghiệm nhiều lựa chọn' : q.part === 'P2' ? 'Phần II. Trắc nghiệm đúng/sai' : 'Phần III. Trả lời ngắn'}</h2>}
-            <QuestionCard question={q} index={i} review={review} expandedDetails={expandedDetails} appearing={i >= latestQuestionCount} onEdit={onEditQuestion ? () => onEditQuestion(q.id) : undefined} />
+            <QuestionCard
+              question={q}
+              index={i}
+              review={review}
+              expandedDetails={expandedDetails}
+              appearing={i >= latestQuestionCount}
+              onOpenPdf={() => setMode('pdf')}
+              onEdit={onEditQuestion ? () => onEditQuestion(q.id) : undefined}
+            />
           </div>)}
           {isGenerating && <p className="paper-progress" role="status">Đang soạn câu hỏi tiếp theo…</p>}
           {questions.length > 0 && !isGenerating && <footer className="paper-end">— Hết —</footer>}
