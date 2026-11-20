@@ -547,6 +547,17 @@ def _score_observation(
     return score
 
 
+def _example_levels(example: dict[str, Any]) -> set[str]:
+    return {
+        level
+        for level in [
+            example.get("level"),
+            *(a.get("level") for a in (example.get("answers") or [])),
+        ]
+        if level
+    }
+
+
 def _retrieve_single_question(
     release: dict[str, Any],
     q_spec: MatrixQuestionSpec,
@@ -706,16 +717,22 @@ def _retrieve_single_question(
                 break
             selected_obs.extend(g_obs_sorted)
 
-        # Select P2 examples matching any of the statement levels.
-        scored_ex = sorted(
-            all_part_examples,
-            key=lambda e: (
-                -(1 if e.get("level") in needed_levels else 0),
-                -(1 if e.get("official_anchor_available") else 0),
-                e.get("example_id", ""),
-            ),
-        )
-        selected_examples = scored_ex[: req.max_examples]
+        # Prefer examples that supply levels missing from the selected sibling groups.
+        uncovered = needed_levels - {obs.get("level") for obs in selected_obs}
+        candidates = all_part_examples.copy()
+        for _ in range(min(len(candidates), req.max_examples)):
+            example = min(
+                candidates,
+                key=lambda e: (
+                    -len(_example_levels(e) & uncovered),
+                    -len(_example_levels(e) & needed_levels),
+                    -bool(e.get("official_anchor_available")),
+                    e["example_id"],
+                ),
+            )
+            selected_examples.append(example)
+            candidates.remove(example)
+            uncovered.difference_update(_example_levels(example))
 
         # Build per-statement (a, b, c, d) coverage diagnostic.
         p2_coverage = {}
@@ -725,12 +742,9 @@ def _retrieve_single_question(
                 continue
             eff_l = eff_stmts[sub_key]
             req_l = req_stmts[sub_key]
-            matching_refs = [o["ref"] for o in all_part_obs if o.get("level") == eff_l]
+            matching_refs = [o["ref"] for o in selected_obs if o.get("level") == eff_l]
             matching_ex_ids = [
-                e["example_id"]
-                for e in all_part_examples
-                if e.get("level") == eff_l
-                or any(a.get("level") == eff_l for a in (e.get("answers") or []))
+                e["example_id"] for e in selected_examples if eff_l in _example_levels(e)
             ]
             is_cov = bool(matching_refs or matching_ex_ids)
             if not is_cov:
@@ -747,8 +761,8 @@ def _retrieve_single_question(
                 {
                     "code": "p2_sublevel_incomplete",
                     "message": (
-                        f"P2 topic pack(s) do not have direct observation/example coverage for statement level(s): "
-                        f"{', '.join(missing_stmt_keys)}. Sibling P2 observations from available levels are provided."
+                        "Selected P2 evidence lacks an observation or example for level(s): "
+                        f"{', '.join(missing_stmt_keys)}."
                     ),
                 }
             )

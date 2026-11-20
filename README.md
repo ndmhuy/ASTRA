@@ -4,6 +4,21 @@ Chạy các lệnh trong PowerShell tại thư mục dự án. Dùng CPython chu
 
 ## Đề Toán THPT — template gốc cố định
 
+Để chạy luồng RAG → MAS với ma trận mẫu 22 câu, tải snapshot corpus và chạy
+từ thư mục gốc repo sau khi cấu hình provider trong `.env`:
+
+```powershell
+git fetch origin staging/rag
+.\.venv-win\Scripts\python.exe -m exam_baseline.thpt.cli --rag --output runs/thpt/rag_01
+```
+
+Thêm `--request <file.json>` để dùng ma trận THPT của bạn. Có thể chọn commit corpus
+bằng `--rag-corpus-ref <sha>` hoặc dùng gói corpus đã xuất với `--rag-pack-dir <directory>`.
+Khi thiếu dẫn chứng bắt buộc, CLI báo `retrieval_gap` và ID câu trước khi gọi model.
+Cảnh báo và nguồn theo từng câu nằm trong `_internal/result.json`. Ngữ cảnh đầy đủ nằm
+trong `_internal/request.json`. Để tiếp tục một lượt bị gián đoạn, dùng cùng request
+và output với `--rag --resume`; CLI sẽ dùng lại ngữ cảnh đã lưu.
+
 Sau khi cấu hình `.env`, chạy:
 
 ```powershell

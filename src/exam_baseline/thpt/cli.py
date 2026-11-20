@@ -13,15 +13,37 @@ from exam_baseline.core.contracts import ProviderError
 from exam_baseline.providers.chat_completions import ChatCompletionsProvider
 from exam_baseline.thpt.models import Request
 from exam_baseline.thpt.orchestrator import Orchestrator
+from exam_baseline.thpt.rag import (
+    DEFAULT_CORPUS_REF,
+    RagHandoffError,
+    default_request,
+    retrieve_request,
+)
 from exam_baseline.thpt.runtime import ContractError
 
 
 async def run(args, request_model=Request, workflow_type=Orchestrator):
-    request = request_model.model_validate_json(args.request.read_bytes())
+    request = (
+        request_model.model_validate_json(args.request.read_bytes())
+        if args.request
+        else default_request()
+    )
     if args.composer_concurrency is not None:
         request.composer_concurrency = args.composer_concurrency
     if getattr(args, "solver_concurrency", None) is not None:
         request.solver_concurrency = args.solver_concurrency
+    if getattr(args, "rag", False):
+        if args.resume:
+            saved = Request.model_validate_json(
+                (args.output / "_internal/request.json").read_bytes()
+            )
+            if not saved.rag_evidence:
+                raise ValueError("Resume with --rag requires an original RAG-enabled run")
+            request.rag_evidence = saved.rag_evidence
+        else:
+            request = retrieve_request(
+                request, corpus_ref=args.rag_corpus_ref, pack_dir=args.rag_pack_dir
+            )
     settings = Settings()
     if settings.provider != "chat_completions":
         raise ValueError("Configure EXAM_PROVIDER=chat_completions in .env")
@@ -36,7 +58,7 @@ async def run(args, request_model=Request, workflow_type=Orchestrator):
 
 def main(workflow_type=Orchestrator, request_model=Request, description=__doc__):
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument("--request", type=Path, required=True)
+    parser.add_argument("--request", type=Path, required=request_model is not Request)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--resume", action="store_true", help="Continue an interrupted run")
     parser.add_argument(
@@ -48,11 +70,22 @@ def main(workflow_type=Orchestrator, request_model=Request, description=__doc__)
     )
     if "solver_concurrency" in request_model.model_fields:
         parser.add_argument("--solver-concurrency", type=int, choices=(1, 2, 3), default=None)
+    if request_model is Request:
+        parser.add_argument(
+            "--rag", action="store_true", help="Retrieve context for each THPT slot"
+        )
+        parser.add_argument("--rag-corpus-ref", default=DEFAULT_CORPUS_REF)
+        parser.add_argument("--rag-pack-dir", type=Path)
     args = parser.parse_args()
+    if args.request is None and not getattr(args, "rag", False):
+        parser.error("--request is required unless --rag uses the sample RAG matrix")
     if args.output.exists() and not args.resume:
         parser.error("output directory already exists")
     try:
         result = asyncio.run(run(args, request_model, workflow_type))
+    except RagHandoffError as exc:
+        print(json.dumps({"error": "retrieval_gap", "gaps": exc.gaps}, ensure_ascii=False))
+        return 1
     except ContractError as exc:
         print(
             json.dumps(

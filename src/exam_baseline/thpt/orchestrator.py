@@ -68,7 +68,7 @@ class Orchestrator:
 
     def review_data(self, request, questions, drawings, solutions, source, sections):
         return dict(
-            matrix=request.model_dump(),
+            matrix=request.model_dump(exclude={"rag_evidence"}),
             questions=[q.model_dump() for q in questions],
             drawings=drawings.model_dump(),
             solver=solutions.model_dump(),
@@ -117,6 +117,11 @@ class Orchestrator:
             final_latex=None,
             calls=calls,
         )
+        if isinstance(request, Request) and request.rag_evidence:
+            report["rag_evidence"] = {
+                question_id: passage.model_dump(exclude={"text"})
+                for question_id, passage in request.rag_evidence.items()
+            }
 
         async def call(agent, data, revision):
             report["active_stage"] = agent.role
