@@ -39,6 +39,16 @@
   - Auto-switches active workspaces from `generating` → `complete` straight to **Xem trước PDF**, moved warnings into the `.paper-scroll` `notices` slot (eliminating duplicate `visualWarnings`), and added a **Xem dạng văn bản** fallback on PDF error states.
 - **Verified:** `npm.cmd test` (26/26 passed), `npm.cmd run lint` (`oxlint`, 0 warnings/errors), `npm.cmd run build` (`tsc -b && vite build`), and `pytest -q tests/test_agent_ui_service.py tests/api/test_ui_jobs.py` (50 passed).
 
+### 5. `e4626b8` — `feat(web): replace technical UI errors with friendly Vietnamese messages`
+- **Centralized UI message formatting (`astra-frontend/src/utils/userMessages.ts`):**
+  - Added `formatUserError()` at UI render boundaries (preserving raw store `session.error` / `previewErrorCode` for internal state and tests while displaying teacher-friendly Vietnamese copy for API/network/auth/spend-limit/PDF/JSON failures).
+  - Added `formatCapabilitySuccess()` and `formatVisualWarning()` so chat confirmations and visual alerts never expose internal capability IDs (`ui.exam.open_setup`), uppercase error codes (`EXAM_NOT_READY`), or snake_case warning codes (`missing_figure_code`).
+- **UI/UX cleanup across components (`App.tsx`, `ExamPaperView.tsx`, `QuickPresetModal.tsx`, `QuestionEditor.tsx`, `AgentNotes.tsx`, `agent/executor.ts`, `agent/client.ts`):**
+  - Removed duplicate error alert banners on draft/error workspaces (error stays once in the left workspace action card).
+  - Replaced technical PDF/LaTeX jargon (`artifact_changed`, `latex_compiler_unavailable`, `compile.log`) with clear guidance and translated `AgentNotes` status labels (`pending`/`approved`/etc.) to Vietnamese.
+  - Wrapped `AgentClient` `fetch` failures into friendly transport errors and replaced `Giao diện đã xác nhận: <capabilityId>` / `Mã: <CODE>` chat receipts with natural Vietnamese sentences (keeping `Giao diện đã thay đổi` for `STALE_CONTEXT`).
+- **Verified:** `npm.cmd test` (29/29 passed, including `tests/userMessages.test.mjs`), `npm.cmd run lint` (`oxlint`, 0 warnings/errors), `npm.cmd run build` (`tsc -b && vite build`).
+
 ## Notes for Next Teammate / Agent
 - **No secrets committed:** `.env` and `agent-service/.env.local` remain gitignored.
 - **V-ACT next step:** When backend adds a V-ACT UI job adapter in `src/exam_baseline/ui/contracts.py` and `jobs.py`, load `vact_dgnl_v1.json` in `format_catalog()` and set `"available": true`; the frontend setup modal will automatically enable V-ACT generation.
