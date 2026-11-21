@@ -1,7 +1,7 @@
 # ASTRA: A Multi-Agent System for Exam Generation and Verification
 **Team:** Trial and Success  
 **Course:** CSC10014 - Computational Thinking | HCMUS / APCS  
-**Report date:** 21 October 2026
+**Original report date:** 21 October 2026 | **Prototype and roadmap update:** 21 November 2026
 
 ## Team Members
 | Student ID | Full name |
@@ -22,11 +22,11 @@ A Multi-Agent System for Exam Generation and Verification | Computational Thinki
 
 ### Purpose
 
-This report reconstructs the project’s conceptual development, decision-making, computational-thinking analysis, proposed architecture, evaluation design, and documented contributions. It deliberately includes exploratory ideas and proposals that did not survive the narrowing of scope.
+This report is for course reviewers and project contributors. It records the October design decisions and computational thinking analysis, describes the working prototype, and sets out the next MVP milestones and evaluation plan.
 
 ### Evidence standard
 
-A recorded discussion is evidence of reasoning, not proof of a working feature. Numerical thresholds in the notes are treated as goals unless experimental records establish actual results. Source references at the end identify the materials used.
+The October notes document the team's reasoning. The repository and recorded runs support the implementation and evaluation claims in this update. Numerical thresholds from the planning notes remain targets. See the [evidence register](#evidence-register) for the sources.
 
 <!-- PAGE BREAK -->
 
@@ -34,23 +34,23 @@ A recorded discussion is evidence of reasoning, not proof of a working feature. 
 
 ## 01 | Executive Summary
 
-*The central problem is not how to make AI produce text; it is how to make an examination trustworthy and usable.*
+*ASTRA addresses the work of producing a trustworthy, usable examination.*
 
 ### Problem
 
 Traditional exam preparation requires collecting material, selecting learning objectives, drafting questions, reviewing answers, balancing difficulty and formatting printable documents. Generic AI accelerates drafting but can create incorrect answers, unsupported information and inconsistent blueprints.
 
-### Proposed response
+### Approach
 
-ASTRA is a controlled workflow: capture teacher intent, convert it into a blueprint, draft subject-aware questions, appraise their quality, independently solve them, revise failures and package teacher-reviewable outputs.
+ASTRA turns a structured exam blueprint into a draft and a review report. Its four-agent pipeline drafts questions, renders figures, solves the questions independently, and flags defects for review. The web backend retrieves THPT math evidence and passes it to generation. The general CLI accepts evidence through a separate intake step. The teacher decides whether to use the paper.
 
 ### CT contribution
 
-Decomposition defines separable tasks; pattern recognition finds reusable processes across subjects; abstraction creates common representations and subject profiles; algorithm design makes validation and revision explicit.
+Decomposition assigns each stage a clear job. Pattern recognition identifies a shared exam workflow across subjects. Abstraction captures common requirements in blueprints and profiles. Algorithm design governs validation, revision, and review.
 
 ### Status
 
-The source set establishes sustained planning and evolving presentations, but does not independently establish deployment or achievement of target accuracy and cost.
+On the integration branch, teachers can generate THPT math drafts in the browser, inspect the answers and PDF preview, and approve a revision for download. The repository also provides CLI workflows for THPT math and V-ACT, a general four-agent pipeline, and a single-agent baseline. Measured results cover fixture replay and retrieval. A matched live comparison with independently reviewed papers is the next step toward estimating quality, teacher effort, and cost. [Evaluation evidence](#measured-prototype-checks)
 
 <!-- PAGE BREAK -->
 
@@ -88,9 +88,9 @@ The team collected education and AI-adoption reading, including TALIS-related ma
 
 Given a teacher’s intent, syllabus, sample questions, blueprint and constraints, produce an exam package that is correct, appropriately balanced, traceable, formatted and ready for human approval.
 
-### Why one prompt is insufficient
+### Constraint handling
 
-The teacher’s request may omit item counts, cognitive levels, topics, scoring rules, duration and evidence requirements. A single unconstrained generation step has no reliable mechanism to enforce all these simultaneously.
+A teacher's request may omit item counts, cognitive levels, topics, scoring rules, duration, or evidence requirements. ASTRA expresses these constraints in a blueprint and checks them in code. The benchmark will measure how often a direct prompt satisfies the same constraints.
 
 ### Failure categories
 
@@ -152,6 +152,24 @@ Scope reduction was not the absence of ambition. It was an abstraction decision:
 
 ---
 
+## 06 | Prototype Status and Entry Points
+
+The integration branch connects the React teacher workspace to FastAPI, pinned THPT retrieval, and the native exam engine. The local setup supports the integrated app and standalone CLI demos. [Run the web app](../../README.md#run-the-web-app)
+
+| Component | Current behavior |
+| --- | --- |
+| Integrated web app | The browser starts a THPT math job with 22 questions and a 90-minute duration. It shows progress and retrieval warnings, supports editing or regenerating questions, and previews the PDF before revision approval. |
+| Exam generation | The single-agent baseline returns a Markdown report. The four-agent CLI pipeline returns a LaTeX draft with a review checklist and intermediate artifacts. |
+| Template workflows | Dedicated CLIs generate practice papers and answer material for THPT math and V-ACT using fixed templates and editable question matrices. |
+| Retrieval and intake | The web job resolves the matrix, retrieves per-question Topic Packs from the pinned corpus, and passes part-specific evidence into the THPT engine. The standalone intake command validates evidence for the general CLI pipeline. |
+| Teacher review and export | Web approval binds PDF, LaTeX, and answer JSON downloads to an exam revision. A separate exporter produces PDF and DOCX for supported Composer and Illustrator draft packages. |
+
+[Connected THPT UI](../integration/CONNECTED_THPT_UI.md) · [THPT math CLI](../guides/THPT_TOAN.md) · [V-ACT CLI](../guides/VACT.md) · [Reviewed PDF/DOCX export](../MAS_INTAKE_AND_EXPORT.md)
+
+<!-- PAGE BREAK -->
+
+---
+
 ## 07 | Chronology: 20–21 October
 
 *Feedback changed how the team explained its reasoning.*
@@ -190,7 +208,7 @@ A failure can be attributed to a stage rather than hidden inside one long AI ans
 
 ### Interface contracts
 
-Each stage should receive structured inputs and return structured outputs, including provenance, status and error messages. The design prevents downstream formatting from silently accepting invalid content.
+Each stage should receive structured inputs and return structured outputs, including provenance, status and error messages. Explicit contracts allow each stage to reject invalid input before continuing.
 
 ### Trade-off
 
@@ -272,29 +290,23 @@ Approval is not a decorative final screen. It is the explicit boundary between a
 
 ---
 
-## 12 | Proposed Multi-Agent Architecture
+## 12 | Multi-Agent Architecture
 
-*Specialization is justified by independent checks, not by the number of agents.*
+### Blueprint and intake
 
-### Planner / Blueprint Builder
+The October proposal called this responsibility the Planner. The web adapter evaluates the template request and resolves both the THPT and RAG matrices. General CLI requests take a caller-supplied blueprint, with an optional MAS intake step that checks resolved intent and source passages. The blueprint gives generation and validation a common specification.
 
-Translates teacher instructions and documents into an explicit specification. Flags missing or contradictory requirements before generation.
+### Composer and Illustrator
 
-### Writer
+The Composer implements the proposed Writer role. It drafts questions, provisional keys, and explanations under the blueprint constraints. The Illustrator produces the figure code for the LaTeX draft.
 
-Drafts candidate items and rationales constrained by the blueprint and retrieved context. Its own answer key is provisional.
+### Solver and Reviewer
 
-### Appraiser
-
-Checks relevance, clarity, difficulty, ambiguity, distractor quality and consistency with the syllabus. Reports item-level findings.
-
-### Blind Solver
-
-Attempts to answer without access to the Writer’s key. A disagreement triggers rechecking rather than automatic acceptance of either answer.
+The Solver answers from the questions and figures with the Composer's keys kept separate. The Reviewer implements the appraisal role by inspecting the draft and solver output for problems. The general pipeline supports one Reviewer feedback round. If it triggers a revision, the pipeline runs the Composer, Illustrator, and Solver again and passes the resulting draft to the teacher.
 
 ### Orchestrator and teacher
 
-The orchestrator manages states, tool calls, budgets and revision limits. The teacher reviews the final package and retains authority over approval and publication.
+The orchestrator controls call budgets, validation, and artifact recording. In the web app, question edits and regeneration invalidate the previous approval and PDF preview. A teacher approves the current revision before downloading the paper or teacher answers. [Pipeline design](../architecture/PIPELINE_PLAN_AND_BENCHMARK.md) · [Web approval contract](../integration/CONNECTED_THPT_UI.md#backend-contract)
 
 <!-- PAGE BREAK -->
 
@@ -306,7 +318,7 @@ The orchestrator manages states, tool calls, budgets and revision limits. The te
 
 ### Reference retrieval
 
-Syllabi, teacher-uploaded sources, sample papers and authorized external materials can anchor generation. Each item should retain a source reference when factual grounding is necessary.
+The workbench supports keyword, embedding, and hybrid retrieval. For THPT math, it retrieves Topic Packs for individual blueprint slots and records source locators, coverage gaps, and warnings. The integrated THPT job binds the retrieved context to question IDs and groups the evidence by section. Callers of the standalone CLI use an explicit evidence handoff. [Retrieval and handoff guide](../rag-workflow.md)
 
 ### Natural sciences
 
@@ -318,11 +330,11 @@ Passages, citations, historical facts and contextual claims require source integ
 
 ### Visual materials
 
-Graphs, geometry figures and diagrams require a standardized production and validation process. The 21 October notes identify figure generation as an unresolved design area.
+The Illustrator generates TikZ or PGFPlots source for graphs and diagrams in the LaTeX pipeline. Source checks can catch invalid code. Reviewers still inspect the rendered figure and its relationship to the question.
 
-### Open decision
+### Dataset scope
 
-Dataset selection and provenance were explicitly flagged for further clarification. No final validated dataset specification is established by the available notes.
+The measured retrieval run uses a versioned corpus snapshot and a held-out query set. Expanding to other subjects calls for approved references and benchmarks that reflect each subject's item types and evidence requirements.
 
 <!-- PAGE BREAK -->
 
@@ -358,15 +370,15 @@ A paper can be formally correct yet impossible to finish in the allocated time. 
 
 ### Inputs
 
-Natural-language teacher request; sample examination; question bank; syllabus; assessment matrix; constraints; reference files and, where applicable, multimodal material.
+The generation entry points take an exam blueprint in JSON. The general intake can also accept an original request, resolved intent, and source passages. The pipeline CLI supports optional LaTeX templates, question banks, and reference material.
 
 ### Outputs
 
-Editable examination paper, printable PDF/DOCX, answer key, explanations or marking guide, item-level review flags, references and a blueprint summary.
+The general pipeline produces a LaTeX draft and item-level review notes. The template workflows also write separate answers and worked solutions. The reviewed draft exporter supports PDF and DOCX for compatible draft content. [Review and export guide](../MAS_INTAKE_AND_EXPORT.md)
 
 ### Interaction model
 
-A low-friction web interface should let users state the educational objective, upload materials, inspect constraints, review flagged questions and approve export. Ease of use does not justify concealing uncertainty.
+The integrated THPT workspace provides template selection, job progress, question editing, answer inspection, PDF preview, and revision approval. The next UI work simplifies that path and makes failures and recovery clearer. [MVP roadmap](#mvp-roadmap)
 
 ### A central distinction
 
@@ -386,7 +398,7 @@ Mock examination and practice-with-hints modes were proposed as downstream uses 
 
 ### Single chatbot prompt
 
-Advantage: minimal implementation effort. Weakness: limited constraint enforcement, opaque checking and high revision burden. Retained as a baseline for comparison, not the target architecture.
+A single prompt has low setup cost and serves as the baseline. The comparison will measure how often it misses constraints and how much teacher revision it requires.
 
 ### One separate system per subject
 
@@ -410,27 +422,42 @@ Advantage: potential error discovery. Weakness: latency, cost and correlated mod
 
 ## 17 | Evaluation Design and Benchmark Plan
 
-*Proposed experiments to distinguish ambition from measured improvement.*
+### Measured prototype checks
 
-### Baselines
+At integration commit `8f12fbb`, the Python test suite passed 375 tests and seven subtests. The frontend passed 12 tests and its lint and production build commands. These checks cover job handling, preview and approval rules, and build compatibility.
 
-Compare manual authoring or teacher-edited outputs, a direct general-purpose LLM prompt, and the structured ASTRA workflow on matched tasks and reference materials.
+The benchmark results below were reproduced on integration branch commit `8f12fbb`. The generation pilot replayed 10 synthetic requests twice for each of two systems. Both systems completed all 20 scheduled attempts. The run produced `attempts.jsonl`, `attempts.csv`, and `metrics.json`. Human audit coverage was zero, so correctness and the other human-scored yields were unreported.
 
-### Metrics
+The THPT math handoff passed all eight acceptance cases and resolved all 22 slots in the sample matrix. The held-out retrieval benchmark used corpus snapshot `8b8fb7b09182b3d9d1eee0b95818027f52ab004d` and 18 queries, including two expected coverage gaps. The ranking metrics below use the 16 queries with relevant material. All three methods handled both expected gaps correctly.
 
-Answer correctness; blueprint/format compliance; syllabus and source validity; difficulty distribution; ambiguity rate; teacher revision minutes; cost per approved paper; and successful export rate.
+| Retrieval mode | Hit@5 | Recall@5 | Mean reciprocal rank |
+| --- | ---: | ---: | ---: |
+| Hybrid | 100% | 93.75% | 1.000 |
+| BM25 | 93.75% | 86.98% | 0.938 |
+| Embedding | 100% | 91.67% | 0.896 |
 
-### Targets in early notes
+On this split, hybrid retrieval had the highest recall at five. These metrics describe how the workbench ranks references. The generation replay tests how the pipeline stages work together. [Retrieval evaluation](../../eval/README.md) · [Generation benchmark](../architecture/PIPELINE_PLAN_AND_BENCHMARK.md#benchmark)
 
-The team proposed ≥95% answer accuracy, 100% format compliance and ≥95% scope validity. Earlier strategic notes also discuss a unit-cost target around VND 2,000 per exam. These are targets, not verified outcomes.
+From the repository root, use the environment installed in the README quickstart. The last two commands require the team corpus snapshot. Choose a fresh output directory for the generation pilot.
 
-### Protocol
+```powershell
+$astraPython = '.\.venv-win\Scripts\python.exe'
+& $astraPython -m exam_baseline.benchmarks.pipeline --manifest examples/pipeline/pilot.json --output runs/benchmark/pilot --mode replay
+& $astraPython -m rag_workflow.eval --existing --mode all --split heldout --out runs/benchmark/rag-heldout.json | Out-Null
+& $astraPython -m rag_workflow.eval --acceptance --out runs/benchmark/thpt-acceptance.json | Out-Null
+```
 
-Pre-register a test set by subject and question type; blind human reviewers to generation method; record raw errors and disagreements; use the same scoring rubric across methods; report denominators and confidence intervals.
+### Planned live comparison
 
-### Acceptance criterion
+The study asks whether ASTRA improves exam quality or reduces teacher revision time at an acceptable cost. Compare live ASTRA against a direct single-agent prompt on matched blueprints and reference material. Use teacher-authored papers as an additional reference where available. Pair the model and settings where feasible, and record differences so the results can be interpreted.
 
-A meaningful result would show fewer serious errors or less teacher correction at a measured, acceptable cost. Faster first drafts alone do not establish success.
+Version the cases before running the comparison. Include supported subjects and question types, with a separate track for figure-dependent tasks when the baseline lacks figure support. For cases both variants can run, compare fixed reference material with retrieved context and inspect drafts before and after independent checks. These comparisons help attribute gains to retrieval or review.
+
+Have reviewers score the outputs without seeing which system generated them. Use the same rubric for answer correctness, format, scope, source validity, and ambiguity. Record teacher revision time, export success, latency, model usage, and cost per approved paper. Keep failed attempts in the attempt totals, report the denominator and human audit coverage for each quality metric, and publish paired differences with uncertainty and examples of failures.
+
+### Targets from the October plan
+
+The early notes proposed at least 95% answer accuracy, 100% format compliance, at least 95% scope validity, and a unit cost around VND 2,000 per exam. The live study will report observed results against those targets when sufficient labels and cost data are available.
 
 <!-- PAGE BREAK -->
 
@@ -454,11 +481,11 @@ Uploaded exams and student information require access controls, appropriate perm
 
 ### Measurement gaps
 
-The supplied materials do not provide a reproducible benchmark dataset, complete run logs, cost ledger or independent teacher acceptance study. Claims of completed validation would therefore be premature.
+The current evidence covers fixture replay and a finite retrieval corpus. A live, independently labeled exam benchmark, teacher revision timings, and complete model usage records are needed to estimate educational quality and cost.
 
-### Operational priorities
+### Provider and connectivity failures
 
-Clarify dataset selection; standardize visual-question handling; establish scoring profiles; log item-level review; document all failure cases and keep a clear approval step.
+The THPT math and V-ACT CLIs can resume a saved run from valid checkpoints. The web app persists completed jobs and records interrupted jobs as failures after a backend restart. The mock UI and local replay provide demonstration options during an outage. The next reliability work extends bounded retry behavior across workflows, adds a configured fallback provider, and preserves progress when every model is unavailable. [MVP roadmap](#mvp-roadmap)
 
 <!-- PAGE BREAK -->
 
@@ -492,22 +519,31 @@ Critical feedback exposed weaknesses in the initial framing, shifted the story f
 
 ---
 
-## 20 | Conclusion, Evidence Register and Next Steps
-
-*ASTRA’s central contribution is a disciplined way of thinking about exam reliability.*
+## 20 | Conclusion, MVP Roadmap and Evidence Register
 
 ### Conclusion
 
-The team progressed from a broad AI education-assistant idea to a bounded, inspectable exam-generation workflow. The strongest CT insight is that exam production contains recurring stages that can be decomposed, abstracted and checked independently, while subject-specific rules remain configurable.
+The prototype shows how exam production can be decomposed into explicit generation, checking, and review stages. It gives the team concrete artifacts to test and teachers a draft to inspect. The proposed comparison will assess whether these stages improve exam quality or reduce teacher revision effort at an acceptable cost.
 
-### Immediate next steps
+### MVP roadmap
 
-Finalize scope and dataset; implement or instrument each stage; define versioned blueprints and scoring rules; construct subject-diverse benchmark cases; record failures and teacher edits; run baseline comparisons; report actual metrics separately from targets.
+The team proposed six workstreams for the next phase. The evidence column describes what to collect as each capability is built.
+
+| Workstream | Planned capability | Evidence to collect |
+| --- | --- | --- |
+| All target subjects | Generate a paper and separate answer key or marking guide for every subject in the agreed scope. Define a profile for each subject's item types, scoring, and sources. | Show one reviewed end-to-end example per subject with its blueprint, paper, and answer material. |
+| Custom exam formats | Let teachers configure sections, question counts, scoring, and layout through reusable format presets. Validate the settings and check that the rendered paper follows them. | Render the same fixture with the default format and a custom format, then compare both outputs with their requested rules. |
+| Model and network outages | Use a consistent retry budget for transient failures and try a configured alternate provider if available. When all providers fail, preserve available checkpoints and identify the blocked stage so the user can resume where supported. | Simulate a primary provider failure and a complete outage. Check recovery behavior and confirm that an interrupted run cannot appear approved or complete. |
+| Simpler teacher interface | Remove placeholder copy and redundant controls. Give teachers a clear path from blueprint to review and export, with visible progress, actionable errors, and recovery options. | Observe a teacher walkthrough on desktop and mobile. Record where they hesitate, miss a review step, or cannot recover. |
+| Paper-style evaluation | Compare live ASTRA output with matched baselines and study the contribution of retrieval and independent checking. Report quality, teacher effort, latency, and cost together. | Preserve versioned cases, run settings, independent labels, failure examples, and a reproducible results table. [Benchmark plan](#planned-live-comparison) |
+| Complete demo video | Record every implemented user-facing feature, including the RAG handoff, generation, review and export, and the path used during an outage. Keep a local copy and prepared artifacts for the presentation. | Check the video against the feature inventory, label live and replay segments, and confirm the local copy plays with the network disconnected. |
 
 ### Evidence register
 
-[S1] NOTE.txt and NOTE.pdf — dated team notes, 18–21 October. [S2] Note buổi họp hihi.pdf and 21_10 - Idea cua Tanh_Phat.docx — problem, scope and pattern proposals. [S3] Bản sao của ASTRA_ Computational Thinking for AI-Powered Exam Generation.pdf — presentation and framing iterations. [S4] ASTRA_Evidence_History_18-21_Oct_2026.pdf — chronology, traceability and limitations. [S5] Meeting 14-10.pdf — broad educational platform and strategy discussions.
+- [S1] `NOTE.txt` and `NOTE.pdf` record the team notes from 18–21 October.
+- [S2] `Note buổi họp hihi.pdf` and `21_10 - Idea cua Tanh_Phat.docx` record problem, scope, and pattern proposals.
+- [S3] `Bản sao của ASTRA_ Computational Thinking for AI-Powered Exam Generation.pdf` records presentation and framing revisions.
+- [S4] `ASTRA_Evidence_History_18-21_Oct_2026.pdf` records chronology, traceability, and limitations.
+- [S5] `Meeting 14-10.pdf` records broader platform and strategy discussions.
 
-### Reading note
-
-Sources contain working hypotheses, draft language and sometimes conflicting scope descriptions. This report preserves those distinctions and does not treat proposed functions, budget assumptions or aspirational performance as measured facts.
+The prototype update draws on the repository documentation and the reproducible runs in Section 17. The roadmap records the team's priorities for the next phase. [README](../../README.md) · [Connected THPT UI](../integration/CONNECTED_THPT_UI.md) · [RAG evaluation](../../eval/README.md) · [Measured prototype checks](#measured-prototype-checks)
