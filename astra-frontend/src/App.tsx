@@ -22,6 +22,7 @@ import { UiActionExecutor, actionFailureMessage } from './agent/executor';
 import { AgentTaskController, isExplicitConfirmation } from './agent/orchestrator';
 import { actionScope, confirmationBinding, confirmationValid } from './agent/confirmation';
 import type { PendingAgentConfirmation, UiActionProposal, UiContextSnapshot } from './agent/contracts';
+import { formatCapabilitySuccess, formatUserError, formatVisualWarning } from './utils/userMessages';
 import './styles/workspace.css';
 import './styles/classroom.css';
 import './styles/studio.css';
@@ -466,20 +467,21 @@ export const App: React.FC = () => {
       }
       if (!initialSessionId) store.sendMessage(messageSessionId, content);
       store.setAgentTask(messageSessionId, { ...execution.task, workspaceId: messageSessionId });
-      if (response.provider === 'offline') store.addAssistantMessage(messageSessionId, 'Chế độ offline/demo: lượt này không sử dụng Gemini.');
+      if (response.provider === 'offline') store.addAssistantMessage(messageSessionId, 'Trợ lý đang chạy ở chế độ ngoại tuyến (chưa kết nối AI trực tuyến).');
       if (!proposals.length) for (const decision of plain) store.addAssistantMessage(messageSessionId, decision.text);
       proposals.forEach((proposal, index) => {
         const receipt = receipts[index];
         if (!receipt) return;
         if (receipt.status === 'success') {
-          store.addAssistantMessage(messageSessionId!, `Giao diện đã xác nhận: ${proposal.capabilityId}.`);
+          store.addAssistantMessage(messageSessionId!, formatCapabilitySuccess(proposal.capabilityId));
         } else {
           const detail = receipt.errorCode === 'STALE_CONTEXT'
-            ? 'Trạng thái giao diện đã thay đổi nên tôi không thực hiện thao tác cũ.'
+            ? 'Giao diện đã thay đổi trong lúc xử lý nên thao tác cũ được bỏ qua.'
             : receipt.errorCode === 'DEPENDENCY_FAILED'
-              ? 'Bước trước không thành công nên bước phụ thuộc đã được bỏ qua.'
-              : 'Giao diện không xác nhận được kết quả nên thao tác đã dừng an toàn.';
-          store.addAssistantMessage(messageSessionId!, `${detail} ${actionFailureMessage(receipt.errorCode)} Mã: ${receipt.errorCode || 'UNKNOWN'}.`);
+              ? 'Bước trước chưa hoàn tất nên bước tiếp theo đã dừng lại.'
+              : '';
+          const explanation = actionFailureMessage(receipt.errorCode);
+          store.addAssistantMessage(messageSessionId!, detail ? `${detail} ${explanation}` : explanation);
         }
       });
     } catch (error) {
@@ -488,7 +490,9 @@ export const App: React.FC = () => {
         openSession(messageSessionId);
         store.sendMessage(messageSessionId, content);
       }
-      const text = error instanceof AgentTransportError ? error.message : 'Agent gặp lỗi cục bộ và chưa thực hiện thao tác nào.';
+      const text = error instanceof AgentTransportError
+        ? formatUserError(error, error.code)
+        : 'Trợ lý ASTRA tạm thời gặp trục trặc và chưa thực hiện thao tác nào.';
       store.addAssistantMessage(messageSessionId, text);
     } finally {
       turnBusy.current = false;
@@ -553,7 +557,7 @@ export const App: React.FC = () => {
                 <div className="session-context"><strong>{active.title}</strong></div>
                 {pendingConfirmation?.workspaceId === active.id && <div role="status" className="agent-notes"><p>{pendingConfirmation.summary}</p><p>Gửi “xác nhận” để tiếp tục hoặc “hủy” để dừng.</p></div>}
                 {(active.status === 'draft' || active.status === 'error') && <div className="session-create-action">
-                  {active.error && <p role="alert">{active.error}</p>}
+                  {active.error && <p role="alert">{formatUserError(active.error, active.errorCode)}</p>}
                   <button className="button-primary" onClick={() => { setConfigureId(active.id); setShowQuickModal(true); }}>{active.status === 'error' ? 'Thử tạo lại' : 'Tạo đề từ yêu cầu'}</button>
                 </div>}
                 <ChatHistory messages={messages} onSuggestion={value => store.setDraft(active.id, value)} onEditMessage={message => store.setDraft(active.id, message.content)} onRetractMessage={message => store.retractMessage(active.id, message.id)} onBranchMessage={message => { const branchId = store.branchAtMessage(active.id, message.id); if (branchId) setActiveId(branchId); }} />
@@ -591,7 +595,9 @@ export const App: React.FC = () => {
                 />}
                 notices={(
                   <>
-                    {active.error && <p className="canvas-alert-strip" role="alert">{active.error}</p>}
+                    {active.error && active.status !== 'draft' && active.status !== 'error' && (
+                      <p className="canvas-alert-strip" role="alert">{formatUserError(active.error, active.errorCode)}</p>
+                    )}
                     {isGenerating && active.progress && (
                       <p className="canvas-progress-strip" role="status">
                         {active.progress.statusMessage} ({active.progress.percent}%)
@@ -617,7 +623,7 @@ export const App: React.FC = () => {
                         <strong>Cảnh báo hình vẽ / bảng biểu ({active.package.visualWarnings.length})</strong>
                         <p>Các đề đã tạo không tự sinh hình vẽ còn thiếu trong PDF. Hãy sửa hoặc tạo lại câu hỏi bị ảnh hưởng.</p>
                         {active.package.visualWarnings.map((warning, i) => (
-                          <p key={`${warning.questionId}-${i}`}><code>{warning.questionId}</code>: {warning.code}</p>
+                          <p key={`${warning.questionId}-${i}`}>{formatVisualWarning(warning)}</p>
                         ))}
                       </div>
                     )}

@@ -4,11 +4,49 @@ import type { UiActionProposal, UiContextSnapshot, UiExecutionReceipt } from './
 export type UiActionHandler = (params: Record<string, unknown>) => Promise<Record<string, unknown> | void> | Record<string, unknown> | void;
 
 export function actionFailureMessage(code?: string): string {
-  if (code && /provider_|network|timeout|rate_limit|gemini_/i.test(code)) return 'Dịch vụ đang lỗi tạm thời hoặc quá tải. Chức năng vẫn được hỗ trợ; hãy kiểm tra trạng thái trước khi thử lại.';
-  if (code === 'CONFIRMATION_REQUIRED') return 'Thao tác cần xác nhận mới cho đúng dữ liệu và đối tượng hiện tại.';
-  if (code && /STALE|TARGET_CHANGED|WORKSPACE_CHANGED|stale_/i.test(code)) return 'Đối tượng hoặc phiên bản đã thay đổi; hãy tải lại và xem lại thao tác.';
-  if (code && /NOT_READY|REQUIRED|NOT_FOUND|NOT_OPEN|UNAVAILABLE/.test(code)) return `Chưa đủ điều kiện thực hiện (${code}).`;
-  return 'Giao diện chưa xác nhận được kết quả. Các bước phụ thuộc đã dừng.';
+  if (code && /provider_|network|timeout|rate_limit|gemini_/i.test(code)) {
+    return 'Dịch vụ đang lỗi tạm thời hoặc quá tải. Chức năng vẫn được hỗ trợ; bạn vui lòng thử lại sau ít phút.';
+  }
+  if (code === 'CONFIRMATION_REQUIRED') {
+    return 'Thao tác cần xác nhận mới cho đúng dữ liệu và đối tượng hiện tại.';
+  }
+  if (code && /STALE|TARGET_CHANGED|WORKSPACE_CHANGED|stale_/i.test(code)) {
+    return 'Đối tượng hoặc phiên bản đã thay đổi; bạn hãy kiểm tra lại trước khi thao tác.';
+  }
+  if (code === 'EXAM_NOT_READY' || code === 'NO_ACTIVE_EXAM' || code === 'QUESTION_NOT_READY') {
+    return 'Chưa có đề thi sẵn sàng để thực hiện thao tác này.';
+  }
+  if (code === 'PREVIEW_REVIEW_REQUIRED') {
+    return 'Vui lòng mở xem trước PDF của bản hiện tại trước khi phê duyệt.';
+  }
+  if (code === 'APPROVAL_REQUIRED') {
+    return 'Cần phê duyệt đề thi trước khi tải xuống.';
+  }
+  if (code === 'PREVIEW_NOT_READY') {
+    return 'Bản xem trước PDF chưa sẵn sàng để tải xuống.';
+  }
+  if (code === 'GENERATION_ALREADY_RUNNING') {
+    return 'Hệ thống đang soạn đề cho phiên này, vui lòng chờ hoàn tất.';
+  }
+  if (code === 'CATALOG_NOT_READY' || code === 'SETUP_NOT_OPEN' || code === 'SETUP_NOT_READY') {
+    return 'Hộp thiết lập đề chưa sẵn sàng, bạn hãy mở lại thiết lập.';
+  }
+  if (code === 'EDITOR_NOT_OPEN') {
+    return 'Trình chỉnh sửa câu hỏi hiện chưa mở.';
+  }
+  if (code === 'FORMAT_UNAVAILABLE') {
+    return 'Định dạng đề này hiện chưa khả dụng để tạo trực tiếp.';
+  }
+  if (code && /_NOT_FOUND$/.test(code)) {
+    return 'Không tìm thấy mục bạn yêu cầu trong phiên hiện tại.';
+  }
+  if (code === 'CAPABILITY_UNAVAILABLE') {
+    return 'Tính năng này hiện chưa được hỗ trợ trên giao diện.';
+  }
+  if (code && /NOT_READY|REQUIRED|NOT_FOUND|NOT_OPEN|UNAVAILABLE/.test(code)) {
+    return 'Chưa đủ điều kiện để thực hiện thao tác này ở trạng thái hiện tại.';
+  }
+  return 'Giao diện chưa xác nhận được kết quả nên thao tác đã dừng an toàn.';
 }
 
 export class UiActionExecutor {

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Clock, FileText, Layers, Sparkles, X } from 'lucide-react';
 import type { ExamFormat, ExamRequestParams } from '../types/exam';
 import { getExamFormats } from '../services/examService';
+import { formatUserError } from '../utils/userMessages';
 
 interface Props {
   title?: string;
@@ -83,7 +84,7 @@ export const QuickPresetModal: React.FC<Props> = ({
       onStateChange?.({ status: 'ready', formats: merged, selectedId: nextId });
     }).catch(reason => {
       if (!active) return;
-      const message = reason instanceof Error ? reason.message : 'Không tải được danh mục định dạng';
+      const message = formatUserError(reason);
       setError(message);
       onStateChange?.({ status: 'error', formats: [], selectedId: '', error: message });
     });

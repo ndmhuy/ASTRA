@@ -3,6 +3,7 @@ import { StationeryArt } from '../../StationeryArt';
 import { SchoolArt } from '../../SchoolArt';
 import { Eye, FileText, ListChecks } from 'lucide-react';
 import type { ExamPreviewState, QuestionItem, VisualWarning } from '../../../types/exam';
+import { formatUserError, formatVisualWarning } from '../../../utils/userMessages';
 import { QuestionCard } from './QuestionCard';
 
 export type ExamCanvasViewMode = 'paper' | 'review' | 'pdf';
@@ -156,7 +157,7 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
                 const target = questions.find(q => q.stableId === warning.questionId);
                 return (
                   <li key={`${warning.questionId}-${index}`}>
-                    <span><code>{warning.questionId}</code>: {warning.code}</span>
+                    <span>{formatVisualWarning(warning)}</span>
                     {target && onEditQuestion && (
                       <button
                         type="button"
@@ -175,16 +176,16 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
 
         {artifactChanged && (
           <div className="pdf-preview-error" role="alert">
-            <strong>Nguồn LaTeX đã thay đổi ngoài phiên làm việc (`artifact_changed`)</strong>
-            <p>Tệp nguồn đề thi đã bị sửa bên ngoài hệ thống, vì vậy không thể phê duyệt hoặc xuất bản hiện tại.</p>
+            <strong>Tệp đề thi đã bị thay đổi bên ngoài ứng dụng</strong>
+            <p>Vui lòng tạo lại bản xem trước hoặc khởi tạo lại đề để đảm bảo tính chính xác trước khi phê duyệt.</p>
           </div>
         )}
 
         {!artifactChanged && (previewErrorCode === 'latex_compiler_unavailable' || preview?.status === 'unavailable') && (
           <div className="pdf-preview-error" role="alert">
-            <strong>Trình biên dịch LaTeX chưa sẵn sàng (`latex_compiler_unavailable`)</strong>
+            <strong>Chưa bật tính năng tạo bản in PDF trên máy này</strong>
             <p>
-              {previewError || 'Máy chủ chưa tìm thấy Tectonic/XeLaTeX/LuaLaTeX. Chạy scripts/install_latex_compiler.py hoặc cấu hình EXAM_LATEX_COMPILER trên backend; không cần tạo lại đề thi.'}
+              Bạn vẫn có thể xem và chỉnh sửa toàn bộ nội dung ở tab Đề thi hoặc Xem đáp án.
             </p>
             <div className="pdf-preview-meta">
               <button type="button" className="button-secondary" onClick={() => setMode('paper')}>
@@ -198,31 +199,31 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
           <div className="pdf-preview-loading" role="status">
             <strong>
               {preview?.status === 'compiling'
-                ? 'Đang biên dịch PDF từ nguồn LaTeX...'
+                ? 'Đang tạo bản xem trước PDF...'
                 : preview?.status === 'queued'
-                  ? 'Đang xếp hàng biên dịch PDF...'
+                  ? 'Đang xếp hàng tạo bản xem trước PDF...'
                   : 'Đang chuẩn bị bản xem trước PDF cho phiên bản hiện tại...'}
             </strong>
             <p>
-              Lần biên dịch đầu tiên có thể mất thêm thời gian để tải gói TeX. Nếu quá thời gian, hệ thống sẽ cho phép thử biên dịch lại cùng nguồn đã lưu.
+              Bản in đang được định dạng; quá trình này có thể mất thêm ít giây ở lần chạy đầu tiên.
             </p>
-            {previewError && <p role="alert">{previewError}</p>}
+            {previewError && <p role="alert">{formatUserError(previewError, previewErrorCode)}</p>}
           </div>
         )}
 
         {!artifactChanged && bindingMatch && preview?.status === 'failed' && (
           <div className="pdf-preview-error" role="alert">
-            <strong>Biên dịch PDF không thành công ({preview.error || previewErrorCode || 'latex_compile_failed'})</strong>
-            <p>{previewError || 'Không thể biên dịch nguồn LaTeX hiện tại.'}</p>
+            <strong>Chưa thể tạo bản xem trước PDF</strong>
+            <p>{formatUserError(previewError, preview.error || previewErrorCode || 'latex_compile_failed')}</p>
             <div className="pdf-preview-meta">
               {onRetryPreview && (
                 <button type="button" className="button-primary" onClick={onRetryPreview}>
-                  Thử biên dịch lại PDF
+                  Thử tạo lại PDF
                 </button>
               )}
               {preview.logUrl && (
                 <a className="button-secondary" href={preview.logUrl} target="_blank" rel="noreferrer">
-                  Xem file nhật ký (`compile.log`)
+                  Xem nhật ký kỹ thuật
                 </a>
               )}
               <button type="button" className="button-secondary" onClick={() => setMode('paper')}>

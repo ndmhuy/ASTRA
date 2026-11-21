@@ -9,6 +9,15 @@ interface AgentNotesProps {
   onApply?: (noteId: string) => void;
 }
 
+const NOTE_STATUS_LABELS: Record<DeferredAgentNote['status'], string> = {
+  pending: 'Chờ duyệt',
+  approved: 'Đã duyệt',
+  applying: 'Đang áp dụng',
+  applied: 'Đã áp dụng',
+  failed: 'Chưa thành công',
+  cancelled: 'Đã hủy',
+};
+
 export function AgentNotes({ notes, onCancel, onPrepareEdit, onApprove, onApply }: AgentNotesProps) {
   const visible = notes.filter(note => note.status !== 'cancelled');
   if (!visible.length) return null;
@@ -16,7 +25,7 @@ export function AgentNotes({ notes, onCancel, onPrepareEdit, onApprove, onApply 
     <div className="agent-notes-heading"><MessageSquareText size={16} /><strong>Ghi chú chỉnh sửa ({visible.length})</strong></div>
     <p>Ghi chú chưa sửa đề và sẽ không tự động áp dụng.</p>
     <ul>{visible.map(note => <li key={note.id}>
-      <span>{note.targetQuestion ? `Câu ${note.targetQuestion}: ` : ''}{note.requestedChange} <em>({note.status})</em></span>
+      <span>{note.targetQuestion ? `Câu ${note.targetQuestion}: ` : ''}{note.requestedChange} <em>({NOTE_STATUS_LABELS[note.status]})</em></span>
       <div>
         {['pending', 'approved', 'failed'].includes(note.status) && <button type="button" onClick={() => onPrepareEdit(note)}><Pencil size={13} /> Sửa</button>}
         {note.status === 'pending' && onApprove && <button type="button" onClick={() => onApprove(note.id)}><Check size={13} /> Duyệt</button>}

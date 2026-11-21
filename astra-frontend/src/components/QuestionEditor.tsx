@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { QuestionItem } from '../types/exam';
+import { formatUserError } from '../utils/userMessages';
 
 interface Props {
   question: QuestionItem;
@@ -18,7 +19,7 @@ export const QuestionEditor: React.FC<Props> = ({ question, onSave, onRegenerate
   const [error, setError] = useState('');
   const action = async (operation: () => Promise<void>) => {
     setBusy(true); setError('');
-    try { await operation(); } catch (error) { setError(error instanceof Error ? error.message : 'Không lưu được câu hỏi'); }
+    try { await operation(); } catch (error) { setError(formatUserError(error)); }
     finally { setBusy(false); }
   };
   return <div className="integration-editor-backdrop">
