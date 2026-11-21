@@ -1,130 +1,159 @@
-# ASTRA
+# ASTRA — Cách chạy
 
-ASTRA là prototype tạo và kiểm tra đề luyện tập của nhóm **Trial and Success** cho môn Tư duy tính toán (CSC10014, HCMUS/APCS). Từ yêu cầu và ma trận đề, hệ thống tạo câu hỏi, hình minh họa và lời giải, rồi ghi lại các điểm cần kiểm tra để giáo viên duyệt. Kho mã có luồng đối chứng một agent, pipeline bốn agent, các template đề riêng và công cụ truy hồi tài liệu RAG.
+Chạy các lệnh trong PowerShell tại thư mục dự án. Dùng CPython chuẩn 3.10 trở lên.
 
-## Hệ thống hoạt động thế nào
+## Đề Toán THPT — template gốc cố định
 
-```mermaid
-flowchart LR
-    A["Yêu cầu và ma trận đề"] --> B["Kiểm tra đầu vào"]
-    R["RAG và Topic Pack"] -->|"Ngữ cảnh tùy chọn"| B
-    B --> P["Composer → Illustrator<br/>→ Solver → Reviewer"]
-    P --> H["Bản nháp và báo cáo<br/>để giáo viên duyệt"]
+Sau khi cấu hình `.env`, chạy:
+
+```powershell
+.\.venv-win\Scripts\python.exe -m exam_baseline.thpt.cli --request examples/thpt/request.json --output runs/thpt/de_01
 ```
 
-Trong pipeline bốn agent, Solver nhận đề và hình nhưng không nhận đáp án của Composer. Reviewer có thể yêu cầu Composer sửa tối đa một lần. Pipeline ghi bản LaTeX và báo cáo kiểm tra để giáo viên duyệt. Với bản nháp do luồng Composer → Illustrator tạo, công cụ xuất PDF/DOCX yêu cầu xác nhận duyệt riêng. [Thiết kế pipeline](docs/architecture/PIPELINE_PLAN_AND_BENCHMARK.md) · [Intake và xuất đề sau khi duyệt](docs/MAS_INTAKE_AND_EXPORT.md)
+Sửa ma trận từng câu trong `examples/thpt/request.json` (NB/TH/VD/VDC).
+Đây là ma trận luyện tập tham khảo, cần giáo viên duyệt.
+Kết quả: `de_thi.tex`, `loi_giai.md`, đáp án JSON và báo cáo trong `_internal/`.
+Đề mới mặc định dùng font Unicode tiếng Việt; compile bằng XeLaTeX hoặc LuaLaTeX.
+Composer mặc định tạo ba phần song song. Thêm `--composer-concurrency 1` để chạy
+tuần tự hoặc `2` nếu quota thấp. Thời gian/token/chi phí ước tính ở `_internal/result.json`.
+Chọn thư mục output mới mỗi lần. Luồng này dùng template THPT gốc được khóa bằng SHA-256.
+Đọc [quy ước template và ma trận THPT](docs/guides/THPT_TOAN.md).
 
-| Luồng | Dùng khi | Kết quả |
-| --- | --- | --- |
-| Baseline một agent | Cần mẫu chạy nhanh hoặc đối chứng cho benchmark | Báo cáo Markdown gồm đề, đáp án và kết quả kiểm tra |
-| Pipeline bốn agent | Cần tạo và kiểm tra đề LaTeX theo ma trận | `de_thi.tex` với hình TikZ/PGFPlots, `human_review.md` và dữ liệu từng bước trong `_internal/` |
-| [Toán THPT](docs/guides/THPT_TOAN.md) | Cần đề theo template gốc với 12 câu trắc nghiệm, 4 câu đúng/sai và 6 câu trả lời ngắn | Đề LaTeX, lời giải Markdown, đáp án JSON và báo cáo trong `_internal/` |
-| [V-ACT](docs/guides/VACT.md) | Cần đề 120 câu theo template riêng, có nhóm văn bản và bảng dữ liệu | Đề LaTeX, lời giải Markdown, đáp án JSON và báo cáo trong `_internal/` |
-| [Bản nháp Composer → Illustrator](docs/archive/MINI_COMPOSER_ILLUSTRATOR.md) | Cần bản nháp để bàn giao hoặc chuẩn bị duyệt xuất đề, ví dụ [khung ĐGNL HCM từ đề tham chiếu 11](docs/guides/HCM_DE11_FORMAT.md) | Gói JSON/PNG và LaTeX nháp. Gói đã duyệt có thể xuất PDF/DOCX nếu nội dung phù hợp với trình xuất |
-| [RAG workbench](docs/rag-workflow.md) | Cần tìm nguồn, so sánh BM25, embedding và hybrid, hoặc truy hồi theo ma trận Toán THPT | Đoạn tham chiếu, Topic Pack theo câu, nguồn trích dẫn và danh sách phần thiếu dữ liệu |
+## Đề V-ACT — 120 câu theo template riêng
 
-## Chạy thử trên máy
+```powershell
+.\.venv-win\Scripts\python.exe -m exam_baseline.vact.cli --request examples/vact/request.json --output runs/vact/de_01
+```
 
-Chạy từ thư mục gốc của repo trong PowerShell. Ví dụ dùng CPython 3.11. Nếu đã có môi trường `.venv-win` với các dependency cần thiết, dùng lại môi trường đó.
+Kết quả là `de_thi.tex`, `loi_giai.md`, đáp án JSON và `_internal/result.json`.
+Nếu lỗi API, thêm `--resume` với cùng request/output. Có thể giới hạn số batch đồng thời
+bằng `--composer-concurrency 1` và `--solver-concurrency 1` ngay từ lần chạy đầu.
+Đọc [quy ước VACT](docs/guides/VACT.md).
+
+## 1. Cài đặt lần đầu
+
+Nếu đã có môi trường `.venv-win` hoạt động thì bỏ qua bước tạo môi trường.
 
 ```powershell
 python -m venv .venv-win
-$astraPython = '.\.venv-win\Scripts\python.exe'
-& $astraPython -m pip install -e '.[dev]' -c requirements-tested.txt
+.\.venv-win\Scripts\python.exe -m pip install -e ".[dev]" -c requirements-tested.txt
 ```
 
-**Baseline và pipeline bốn agent** chạy được bằng dữ liệu mẫu, không cần API key hay trình biên dịch LaTeX.
+Nếu chưa có `.env`, sao chép `.env.example` thành `.env`. Không ghi đè file cấu hình đang dùng.
+
+## 2. Chạy mẫu không cần API key
 
 ```powershell
-& $astraPython -m exam_baseline.baseline.cli --offline
-& $astraPython -m exam_baseline.pipeline.cli --request examples/pipeline/text_01/input.json --fixture-dir examples/pipeline/text_01 --output runs/pipeline/demo
+.\.venv-win\Scripts\python.exe -m exam_baseline.baseline.cli --offline
 ```
 
-Mở `ket_qua.md` theo đường dẫn lệnh baseline in ra. Với pipeline, mở `runs/pipeline/demo/de_thi.tex` và `runs/pipeline/demo/_internal/human_review.md`. Chọn thư mục output mới khi chạy lại pipeline. Để biên dịch file `.tex`, cài XeLaTeX hoặc LuaLaTeX rồi thêm `--compile`.
+Mở `ket_qua.md` theo đường dẫn terminal in ra để xem đề, đáp án và báo cáo.
+Kết quả nằm trong `runs/offline/`. Đây là đề mẫu cố định, không gọi model thật.
 
-**RAG workbench** cũng có chế độ demo chạy bằng dữ liệu mẫu. Mở [workbench trên máy](http://127.0.0.1:8765) sau khi chạy lệnh và dừng bằng Ctrl+C.
+## 3. Chạy với model thật
+
+Điền provider, model, key và endpoint vào `.env`. Ví dụ cấu hình Gemini:
+
+```dotenv
+EXAM_PROVIDER=chat_completions
+EXAM_MODEL=gemini-3.5-flash-lite
+EXAM_API_KEY=DIEN_KEY_GOOGLE_CUA_BAN
+EXAM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai
+EXAM_TOKEN_LIMIT_FIELD=max_tokens
+EXAM_RESPONSE_FORMAT=json_object
+EXAM_MAX_OUTPUT_TOKENS=8192
+EXAM_TIMEOUT_SECONDS=120
+```
+
+Quyền truy cập và hạn mức phụ thuộc tài khoản. Khởi động lại server sau khi sửa `.env`.
+
+**Terminal 1:** chạy server và giữ terminal mở:
 
 ```powershell
-& $astraPython -m rag_workflow.app --demo
+.\.venv-win\Scripts\python.exe -m uvicorn exam_baseline.main:app --host 127.0.0.1 --port 8000
 ```
 
-<details>
-<summary>Ảnh giao diện RAG workbench</summary>
-
-![Giao diện web của RAG workbench](docs/assets/rag-workflow/astra-rag-desktop.png)
-
-</details>
-
-## Từ RAG đến đầu vào tạo đề
-
-Với quyền truy cập corpus của nhóm, tải snapshot `origin/staging/rag` và chạy truy hồi cho ma trận Toán THPT mẫu.
+**Terminal 2:** gửi yêu cầu mẫu và lưu kết quả:
 
 ```powershell
-git fetch origin staging/rag
-& $astraPython -m rag_workflow.cli --sample-matrix --out runs/sample-matrix-context.json | Out-Null
+.\.venv-win\Scripts\python.exe -m exam_baseline.baseline.cli --live
 ```
 
-Mở `runs/sample-matrix-context.json` để xem kết quả. File có Topic Pack và cảnh báo theo câu trong `question_contexts`, các đoạn tham chiếu để bàn giao trong `mas_intake_rag` và danh sách thiếu dữ liệu trong `gaps`. Với ma trận riêng, dùng `--matrix`. Máy làm việc offline có thể dùng gói corpus đã xuất qua `--pack-dir`. [Hướng dẫn truy hồi ma trận và Topic Pack](docs/rag-workflow.md#mas-exam-matrix--topic-pack-handoff-toán-thpt)
+Mở `ket_qua.md` trong thư mục `runs/live/` theo đường dẫn được in ra.
+`--live` sử dụng provider mà server đang chạy; kiểm tra model trong báo cáo.
 
-Để tạo đầu vào cho pipeline tổng quát, ghép yêu cầu người dùng và cấu hình đề đã xác định với các đoạn đã chọn từ `mas_intake_rag`. Chuyển các đoạn sang trường `rag` theo schema `mas-intake-v1` và kiểm tra môn, lớp, sách, năm xuất bản và mã chủ đề khớp với cấu hình đề. Lệnh dưới đây kiểm tra [gói intake mẫu](examples/mas_intake.json) và ghi một `PipelineRequest`.
+Hoặc mở [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs), chọn
+**POST /v1/exams/generate → Try it out → Execute**. Xem kết quả tại **Response body**.
+Dừng server bằng **Ctrl+C**.
+
+## 4. Dùng đầu vào riêng
+
+Xuất JSON mẫu ra một file mới:
 
 ```powershell
-& $astraPython -m exam_baseline.intake --input examples/mas_intake.json --pipeline --output runs/intake/pipeline_request.json
+.\.venv-win\Scripts\python.exe -m exam_baseline.baseline.cli --export-example inputs/request.json
 ```
 
-Các CLI theo template dùng schema riêng. Với Toán THPT, có thể chọn ngữ cảnh từ kết quả truy hồi để điền vào `reference_material` trong [request mẫu Toán THPT](examples/thpt/request.json).
-
-## Tạo đề với model thật
-
-Sao chép `.env.example` thành `.env` nếu chưa có file, rồi điền `EXAM_PROVIDER=chat_completions`, `EXAM_MODEL`, `EXAM_API_KEY` và `EXAM_BASE_URL` theo dịch vụ đang dùng. Chỉnh trường giới hạn token và định dạng phản hồi nếu nhà cung cấp yêu cầu. [Mẫu cấu hình](.env.example)
-
-**Chạy trực tiếp.** Với pipeline tổng quát, bỏ `--fixture-dir` ở lệnh chạy thử để dùng model đã cấu hình. Có thể trỏ `--request` tới file từ bước intake. Hai luồng dùng template riêng chạy bằng các lệnh sau.
+Sửa file đó rồi gửi đến server:
 
 ```powershell
-& $astraPython -m exam_baseline.thpt.cli --request examples/thpt/request.json --output runs/thpt/de_01
-& $astraPython -m exam_baseline.vact.cli --request examples/vact/request.json --output runs/vact/de_01
+.\.venv-win\Scripts\python.exe -m exam_baseline.baseline.cli --live --request inputs/request.json
 ```
 
-Sửa các file request mẫu để chọn chủ đề, mức nhận thức và ràng buộc của đề. Dùng `--composer-concurrency 1` nếu hạn mức thấp. Với V-ACT có thể thêm `--solver-concurrency 1` và tiếp tục một lần chạy bị gián đoạn bằng `--resume` với cùng request, output và mức concurrency. Dùng XeLaTeX hoặc LuaLaTeX cho font Unicode mặc định.
+## 5. Pipeline Composer → Illustrator → Solver → Reviewer
 
-**Qua HTTP.** Chạy FastAPI rồi mở [Swagger UI](http://127.0.0.1:8000/docs). `POST /v1/exams/generate` trả JSON của baseline. `POST /v2/exams/generate` trả bản LaTeX nếu pipeline vượt qua các bước kiểm tra kỹ thuật, kèm yêu cầu người dùng duyệt.
+Chạy thử offline, nhận một file đề `runs/pipeline/demo/de_thi.tex`:
 
 ```powershell
-& $astraPython -m uvicorn exam_baseline.main:app --host 127.0.0.1 --port 8000
+.\.venv-win\Scripts\python.exe -m exam_baseline.pipeline.cli --request examples/pipeline/text_01/input.json --fixture-dir examples/pipeline/text_01 --output runs/pipeline/demo
 ```
 
-Trong terminal khác, có thể chạy baseline qua HTTP với request mẫu hoặc xuất mẫu JSON để chỉnh trước.
+Để gọi model thật, bỏ `--fixture-dir` và dùng `.env` ở mục 3. Không cần khởi động server
+khi chạy CLI. Thư mục output phải chưa tồn tại. Cả bốn vai trò là agent riêng;
+Illustrator sinh code **TikZ/PGFPlots**, ghép trực tiếp với đề vào một file `.tex`.
+Reviewer gửi phản hồi về Composer tối đa **một lần**, sau đó dừng để bạn kiểm tra bằng mắt.
+Solver đọc LaTeX/code hình, không cần bật vision. Dùng **XeLaTeX hoặc LuaLaTeX**;
+thêm `--compile` nếu máy đã cài compiler. JSON/đáp án/review/trace nằm trong `_internal/`,
+cùng `human_review.md` liệt kê những điểm cần kiểm tra.
+Qua API, `POST /v2/exams/generate` trả trực tiếp file LaTeX khi đạt kiểm tra.
+
+[Điều phối, vòng sửa, cấu hình và benchmark](docs/architecture/PIPELINE_PLAN_AND_BENCHMARK.md).
+
+## 6. Chạy tests
 
 ```powershell
-$astraPython = '.\.venv-win\Scripts\python.exe'
-& $astraPython -m exam_baseline.baseline.cli --live
-& $astraPython -m exam_baseline.baseline.cli --export-example inputs/request.json
-& $astraPython -m exam_baseline.baseline.cli --live --request inputs/request.json
+.\.venv-win\Scripts\python.exe -m pytest -q
 ```
 
-## Kiểm tra và benchmark
+[Tác dụng của từng thư mục và vị trí sửa code](docs/CAU_TRUC_THU_MUC.md).
+
+Các lệnh cũ `exam_baseline.cli`, `exam_baseline.mini_cli`, `exam_baseline.pipeline_cli`
+vẫn chạy được qua launcher tương thích. Uvicorn vẫn dùng `exam_baseline.main:app`.
+
+[ASTRA mini draft-only Composer → Illustrator và contract bàn giao](docs/archive/MINI_COMPOSER_ILLUSTRATOR.md).
+
+[Khung đề ĐGNL HCM 120 câu theo đề tham chiếu 11](docs/guides/HCM_DE11_FORMAT.md).
+
+[Nhập mẫu LaTeX/kho đề và xuất đề, đáp án, phiếu tô LaTeX](docs/guides/LATEX_PIPELINE.md).
+
+[MAS intake và xuất PDF/DOCX sau khi duyệt](docs/MAS_INTAKE_AND_EXPORT.md).
+
+## RAG workflow và bàn giao MAS
+
+Chạy workbench truy hồi tại thư mục repo:
 
 ```powershell
-& $astraPython -m pytest -q
-& $astraPython scripts/check_repository.py
-& $astraPython scripts/smoke_server.py
-& $astraPython -m rag_workflow.eval --demo --mode all --out runs/eval-rag-demo.json | Out-Null
+python -m rag_workflow.app
 ```
 
-`pytest` chạy bộ test của repo. Hai script kiểm tra file trong repo và gọi thử API với model giả lập. CI còn chạy Ruff, kiểm tra dependency và build wheel. [Cấu hình CI](.github/workflows/ci.yml)
+Mở http://127.0.0.1:8765. Module `rag_workflow` hỗ trợ BM25, embedding và hybrid,
+truy xuất ma trận và Topic Pack qua `retrieve_exam_context()` và `get_topic_pack()`.
+Adapter `mas-intake-v1` cung cấp dữ liệu cho luồng tạo đề. Nguồn corpus được đọc
+từ snapshot `origin/staging/rag`; cần `git fetch origin staging/rag` trước khi chạy
+với corpus thật. Xem [hướng dẫn RAG](docs/rag-workflow.md) và
+[bộ đánh giá](eval/README.md).
 
-Báo cáo `runs/eval-rag-demo.json` cho biết kết quả truy hồi trên bộ truy vấn mẫu. `python -m rag_workflow.eval --acceptance` kiểm tra thêm việc bàn giao ma trận Toán THPT khi có corpus. Benchmark tạo đề dùng nhãn độc lập để đo độ chính xác, đúng định dạng, hợp lệ và phù hợp yêu cầu. Các lượt chạy bằng fixture kiểm tra cách các bước kết nối với nhau. [Đánh giá RAG](eval/README.md) · [Benchmark tạo đề](docs/architecture/PIPELINE_PLAN_AND_BENCHMARK.md#benchmark)
-
-## Tìm mã nguồn và tài liệu
-
-| Vị trí | Nội dung |
-| --- | --- |
-| [`src/exam_baseline/`](src/exam_baseline/) | Schema và kiểm tra ma trận, baseline, draft, pipeline, THPT, V-ACT, intake, exporter và API |
-| [`rag_workflow/`](rag_workflow/) | Nạp corpus, xếp hạng truy hồi, Topic Pack, bàn giao MAS, CLI và workbench web |
-| [`examples/`](examples/) và [`tests/`](tests/) | Request mẫu, dữ liệu replay và test |
-| [`docs/`](docs/) và [`eval/`](eval/) | Thiết kế, hướng dẫn theo định dạng, báo cáo môn học và dữ liệu đánh giá truy hồi |
-
-- [Cấu trúc mã nguồn và vị trí sửa code](docs/CAU_TRUC_THU_MUC.md)
-- [Nhập mẫu LaTeX, kho đề và xuất phiếu tô](docs/guides/LATEX_PIPELINE.md)
-- [Báo cáo dự án](docs/reports/ASTRA_Trial_and_Success_Report.md) · [Khai báo sử dụng AI](docs/reports/ASTRA_Trial_and_Success_AI_Usage_Declaration.md)
-- [Quy ước đóng góp](AGENTS.md) · [Kế hoạch MVP ban đầu](docs/mvp-plan.md)
+```powershell
+python scripts/verify.py
+python -m rag_workflow.eval --acceptance
+```
