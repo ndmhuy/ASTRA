@@ -426,6 +426,8 @@ Advantage: potential error discovery. Weakness: latency, cost and correlated mod
 
 At integration commit `8f12fbb`, the Python test suite passed 375 tests and seven subtests. The frontend passed 12 tests and its lint and production build commands. These checks cover job handling, preview and approval rules, and build compatibility.
 
+The browser replay used the pinned retrieval corpus, replayed model responses, and local Tectonic compilation. It produced a four-page student PDF with native TikZ, exercised revision approval and PDF/LaTeX download, and confirmed that an edit invalidated the previous preview.
+
 The benchmark results below were reproduced on integration branch commit `8f12fbb`. The generation pilot replayed 10 synthetic requests twice for each of two systems. Both systems completed all 20 scheduled attempts. The run produced `attempts.jsonl`, `attempts.csv`, and `metrics.json`. Human audit coverage was zero, so correctness and the other human-scored yields were unreported.
 
 The THPT math handoff passed all eight acceptance cases and resolved all 22 slots in the sample matrix. The held-out retrieval benchmark used corpus snapshot `8b8fb7b09182b3d9d1eee0b95818027f52ab004d` and 18 queries, including two expected coverage gaps. The ranking metrics below use the 16 queries with relevant material. All three methods handled both expected gaps correctly.
