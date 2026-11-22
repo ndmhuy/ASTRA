@@ -11,7 +11,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 from exam_baseline.ui.contracts import (
     ApprovalRequest,
     EditRequest,
-    GenerateRequest,
+    ExamGenerateRequest,
     PreviewRequest,
     RegenerateRequest,
     format_catalog,
@@ -27,6 +27,7 @@ async def health(request: Request):
     return {
         "status": "ok",
         "engine": "thpt_math_v2",
+        "demoMode": settings.demo_mode,
         "providerConfigured": settings.provider == "chat_completions",
         "corpusRef": settings.rag_corpus_ref,
         "latexCompilerAvailable": bool(request.app.state.ui_jobs.previews.compiler()),
@@ -39,7 +40,7 @@ async def formats():
 
 
 @router.post("/exam-formats/evaluate")
-async def evaluate(payload: GenerateRequest):
+async def evaluate(payload: ExamGenerateRequest):
     native, matrix = resolve_request(payload)
     return {
         "status": "validated",
@@ -53,7 +54,7 @@ async def evaluate(payload: GenerateRequest):
 @router.post("/exams/generate", status_code=202)
 async def generate(
     request: Request,
-    payload: GenerateRequest,
+    payload: ExamGenerateRequest,
     idempotency_key: Annotated[str, Header(min_length=1, max_length=128)],
 ):
     return await request.app.state.ui_jobs.start(payload, idempotency_key)

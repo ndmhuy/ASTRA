@@ -65,13 +65,18 @@ class PreviewService:
         if not compiler:
             raise UiError(
                 "latex_compiler_unavailable",
-                "Install XeLaTeX/LuaLaTeX/Tectonic or run scripts/install_latex_compiler.py",
+                "Máy chủ chưa cài đặt bộ tạo bản in PDF. "
+                "Vui lòng liên hệ người phụ trách kỹ thuật.",
                 503,
             )
         directory = self.directory(job)
         source = (self.root / job["jobId"] / "de_thi.tex").read_bytes()
         if sha256(source).hexdigest() != job["sourceHash"]:
-            raise UiError("artifact_changed", "Exam source changed outside the reviewed revision")
+            raise UiError(
+                "artifact_changed",
+                "Tệp đề thi đã bị thay đổi bên ngoài phiên làm việc "
+                "nên không thể tạo bản xem trước.",
+            )
         self._save(directory, {"status": "queued"})
         task = asyncio.create_task(self._compile(directory, source, compiler))
         self.tasks[directory] = task
@@ -136,11 +141,17 @@ class PreviewService:
         state = self.status(job)
         if not log and state["status"] != "ready":
             raise UiError(
-                "preview_not_ready", "Request preview and poll until ready", details=state
+                "preview_not_ready",
+                "Bản xem trước PDF đang được chuẩn bị hoặc chưa sẵn sàng.",
+                details=state,
             )
         path = self.directory(job) / ("compile.log" if log else "preview.pdf")
         if not path.is_file():
-            raise UiError("preview_log_unavailable", "No compiler diagnostics yet", 404)
+            raise UiError(
+                "preview_log_unavailable",
+                "Chưa có nhật ký chi tiết cho lần tạo bản xem trước này.",
+                404,
+            )
         return path
 
     async def close(self):

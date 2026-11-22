@@ -86,7 +86,10 @@ def create_app(
             content={
                 "error": {
                     "code": "invalid_contract",
-                    "message": "Invalid exam content",
+                    "message": (
+                        "Nội dung câu hỏi chưa đúng định dạng "
+                        "(thầy cô kiểm tra lại các ký hiệu công thức hoặc lựa chọn đáp án)."
+                    ),
                     "fields": [
                         {"location": list(e["loc"]), "type": e["type"]}
                         for e in exc.errors(include_input=False, include_url=False)

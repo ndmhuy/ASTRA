@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "exam-format-v1",
+  "id": "vact",
+  "version": "1",
+  "displayName": "ĐGNL ĐHQG-HCM (V-ACT)",
+  "examType": "DGNL_DHQG",
+  "engine": "vact_v1",
+  "subjects": ["Tổng hợp"],
+  "grades": [12],
+  "durationMinutes": 150,
+  "totalQuestions": 120,
+  "totalScore": null,
+  "sections": [
+    {
+      "id": "TV",
+      "title": "Phần 1.1: Tiếng Việt",
+      "type": "mcq",
+      "count": 30,
+      "questionRange": [1, 30],
+      "instructions": "Chọn một đáp án A, B, C hoặc D."
+    },
+    {
+      "id": "TA",
+      "title": "Phần 1.2: Tiếng Anh",
+      "type": "mcq",
+      "count": 30,
+      "questionRange": [31, 60],
+      "instructions": "Choose one option A, B, C, or D."
+    },
+    {
+      "id": "TO",
+      "title": "Phần 2: Toán học",
+      "type": "mcq",
+      "count": 30,
+      "questionRange": [61, 90],
+      "instructions": "Chọn một đáp án A, B, C hoặc D."
+    },
+    {
+      "id": "LOGIC",
+      "title": "Phần 3.1: Logic, phân tích số liệu",
+      "type": "mcq",
+      "count": 12,
+      "questionRange": [91, 102],
+      "instructions": "Chọn một đáp án A, B, C hoặc D."
+    },
+    {
+      "id": "SCIENCE",
+      "title": "Phần 3.2: Suy luận khoa học",
+      "type": "mcq",
+      "count": 18,
+      "questionRange": [103, 120],
+      "instructions": "Chọn một đáp án A, B, C hoặc D."
+    }
+  ],
+  "lockedFields": ["subject", "grade", "durationMinutes", "itemCount", "sections", "template"],
+  "editableFields": ["prompt", "slots"],
+  "exportFormats": ["tex", "json", "pdf"],
+  "preview": {"format": "pdf", "requires": "local_latex_compiler", "revisionBound": true},
+  "available": true,
+  "requires": ["chat_completions_provider"]
+}

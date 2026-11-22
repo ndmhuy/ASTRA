@@ -30,7 +30,7 @@ class JobStore:
             row = db.execute("SELECT request_hash, data FROM jobs WHERE idem=?", (key,)).fetchone()
             if row:
                 if row[0] != fingerprint:
-                    raise JobConflict("Idempotency key was already used for a different request")
+                    raise JobConflict("Yêu cầu tạo đề bị trùng mã phiên với một nội dung khác.")
                 return json.loads(row[1]), False
             data = {**data, "jobId": str(uuid4())}
             db.execute(
@@ -63,7 +63,10 @@ class JobStore:
                         status="failed",
                         error={
                             "code": "server_restarted",
-                            "message": "Generation was interrupted. Start a new attempt to retry.",
+                            "message": (
+                                "Quá trình tạo đề bị gián đoạn do máy chủ khởi động lại. "
+                                "Thầy cô vui lòng bấm thử tạo lại."
+                            ),
                         },
                     )
                     db.execute(
