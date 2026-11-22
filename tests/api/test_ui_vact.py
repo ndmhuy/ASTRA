@@ -242,6 +242,8 @@ def test_demo_mode_runs_thpt_and_vact_without_providers_or_english_jargon(tmp_pa
         thpt_pkg = client.get(f"/api/exams/{thpt_job}").json()
         assert len(thpt_pkg["questions"]) == 22
         assert "Human review" not in thpt_pkg["questions"][0]["auditNotes"]
+        assert "[Bản mẫu" not in thpt_pkg["questions"][0]["stem"]
+        assert "[Demo" not in thpt_pkg["questions"][0]["stem"]
 
         regen = client.post(
             f"/api/exams/{thpt_job}/questions/1/regenerate",
@@ -258,6 +260,8 @@ def test_demo_mode_runs_thpt_and_vact_without_providers_or_english_jargon(tmp_pa
         assert len(vact_pkg["questions"]) == 120
         assert len(vact_pkg["passages"]) == 21
         assert "Human review" not in vact_pkg["questions"][0]["auditNotes"]
+        assert "[Bản mẫu" not in vact_pkg["questions"][0]["stem"]
+        assert "[Demo" not in vact_pkg["passages"][0]["text"]
         assert (tmp_path / vact_job / "de_thi.tex").is_file()
 
     assert seen_statuses

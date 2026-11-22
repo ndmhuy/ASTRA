@@ -4,13 +4,42 @@ import { getBackendHealth, getExamFormats, type BackendHealth } from '../service
 
 interface Props { title?: string; onStart: (params: ExamRequestParams) => void; onClose: () => void; }
 
+const THPT_SECTION_TITLES: Record<string, string> = {
+  P1: 'Phần I · Trắc nghiệm nhiều lựa chọn',
+  P2: 'Phần II · Trắc nghiệm đúng/sai',
+  P3: 'Phần III · Trả lời ngắn',
+};
+
+function sectionTitle(section: ExamFormat['sections'][number]): string {
+  return THPT_SECTION_TITLES[section.id] || section.title || section.id;
+}
+
+function sectionTypeLabel(type: string): string {
+  if (type === 'mcq') return 'nhiều lựa chọn';
+  if (type === 'true_false') return 'đúng/sai';
+  if (type === 'short_answer') return 'trả lời ngắn';
+  return type;
+}
+
+function formatSummary(format: ExamFormat): string {
+  if (format.examType === 'DGNL_DHQG') {
+    return 'Tổng hợp 5 lĩnh vực · Cấu trúc chuẩn ĐHQG-HCM';
+  }
+  return `Môn ${format.subjects[0]} · Lớp ${format.grades[0]}`;
+}
+
 export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, title = 'Tạo đề từ mẫu' }) => {
   const [formats, setFormats] = useState<ExamFormat[]>([]);
   const [selectedId, setSelectedId] = useState('thpt-math');
+  const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
   const [health, setHealth] = useState<BackendHealth | null>(null);
   const [error, setError] = useState('');
   const modalRef = useRef<HTMLDivElement>(null);
   const selected = formats.find(format => format.id === selectedId);
+  const toggleExpand = (id: string) => {
+    setExpandedIds(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
   useEffect(() => {
     let active = true;
     void getBackendHealth().then(info => { if (active && info) setHealth(info); });
@@ -18,6 +47,7 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, title = 'T
       .catch(error => { if (active) setError(error instanceof Error ? error.message : 'Không tải được danh sách mẫu đề từ máy chủ.'); });
     return () => { active = false; };
   }, []);
+
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
     const modal = modalRef.current;
@@ -34,40 +64,106 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, title = 'T
     modal?.addEventListener('keydown', handleKey);
     return () => { modal?.removeEventListener('keydown', handleKey); previous?.focus(); };
   }, [onClose]);
+
   const start = () => {
     if (!selected?.available) return;
-    onStart({ formatId: selected.id, formatVersion: selected.version, subject: selected.subjects[0],
-      grade: selected.grades[0], examType: selected.examType, durationMinutes: selected.durationMinutes,
-      itemCount: selected.totalQuestions, prompt: `Tạo đề ${selected.displayName}`, uploadedFiles: [] });
+    onStart({
+      formatId: selected.id,
+      formatVersion: selected.version,
+      subject: selected.subjects[0],
+      grade: selected.grades[0],
+      examType: selected.examType,
+      durationMinutes: selected.durationMinutes,
+      itemCount: selected.totalQuestions,
+      prompt: `Tạo đề ${selected.displayName}`,
+      uploadedFiles: [],
+    });
   };
-  return <>
-    <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,.45)', zIndex: 999 }} />
-    <div ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="preset-title" style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', zIndex: 1000, background: 'white', border: '1px solid #e2e8f0', borderRadius: 8, width: 'calc(100% - 32px)', maxWidth: 600, padding: 28, maxHeight: '90dvh', overflowY: 'auto' }}>
-      <h2 id="preset-title">{title}</h2>
+
+  return (
+    <div className="preset-modal-backdrop" onClick={onClose}>
+      <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="preset-title"
+        className="preset-modal-card"
+        onClick={event => event.stopPropagation()}
+      >
+      <div className="preset-modal-header">
+        <h2 id="preset-title">{title}</h2>
+        {health && !error && (
+          <span
+            className={`preset-mode-pill ${health.demoMode ? 'is-demo' : 'is-ai'}`}
+            title={health.demoMode ? 'Tạo đề nhanh từ bộ dữ liệu cài sẵn, không gọi AI' : undefined}
+          >
+            {health.demoMode ? 'Không tốn phí AI' : health.providerConfigured ? 'Dùng AI thật' : 'Chưa kết nối AI'}
+          </span>
+        )}
+      </div>
+
       {error && (
-        <div role="alert">
+        <div role="alert" className="preset-error-box">
           <p>{error}</p>
         </div>
       )}
       {!error && !formats.length && <p role="status">Đang tải danh sách mẫu đề…</p>}
-      {health && !error && (
-        <p className="preset-mode-notice" role="status">
-          {health.demoMode
-            ? 'Đang ở chế độ chạy thử (Demo): dùng dữ liệu mẫu, không gọi AI và không tốn chi phí.'
-            : health.providerConfigured
-              ? 'Đang dùng AI thật (sẽ tính phí theo nhà cung cấp AI). Nếu chỉ muốn chạy thử không tốn phí, hãy mở bằng start-astra-demo.bat.'
-              : 'Chưa kết nối dịch vụ AI. Để dùng thử miễn phí ngay, thầy cô hãy mở bằng start-astra-demo.bat.'}
-        </p>
-      )}
-      {formats.map(format => <label key={format.id} style={{ display: 'block', padding: 16, border: '1px solid #e2e8f0', margin: '16px 0' }}>
-        <input type="radio" name="preset" checked={selectedId === format.id} disabled={!format.available} onChange={() => setSelectedId(format.id)} />
-        {' '}{format.displayName} · {format.totalQuestions} câu · {format.durationMinutes} phút
-        <p>{format.sections.map(section => `${section.title || section.id}: ${section.count} ${section.type === 'mcq' ? 'câu nhiều lựa chọn' : section.type === 'true_false' ? 'câu đúng/sai' : 'câu trả lời ngắn'}`).join(' · ')}</p>
-      </label>)}
-      {selected && <p>Môn {selected.subjects[0]} · Lớp {selected.grades[0]}. Số câu và thời gian theo định dạng đã chọn.</p>}
-      <p>Các định dạng khả dụng được tải từ máy chủ (hiện hỗ trợ Toán THPT và V-ACT). Tệp đính kèm chưa được hỗ trợ.</p>
-      <button className="button-primary" disabled={!selected?.available || !!error} onClick={start}>Tạo đề thi</button>
-      <button className="button-secondary" onClick={onClose}>Huỷ</button>
+
+      <div className="preset-options-list">
+        {formats.map(format => {
+          const isSelected = selectedId === format.id;
+          const isExpanded = Boolean(expandedIds[format.id]);
+          return (
+            <div key={format.id} className={`preset-option-card ${isSelected ? 'is-selected' : ''}`}>
+              <div className="preset-option-top">
+                <label className="preset-option-label">
+                  <input
+                    type="radio"
+                    name="preset"
+                    checked={isSelected}
+                    disabled={!format.available}
+                    onChange={() => setSelectedId(format.id)}
+                  />
+                  <span className="preset-option-copy">
+                    <strong>{format.displayName}</strong>
+                    <small>{format.totalQuestions} câu · {format.durationMinutes} phút</small>
+                  </span>
+                </label>
+                <button
+                  type="button"
+                  className="preset-expand-btn"
+                  aria-expanded={isExpanded}
+                  onClick={() => toggleExpand(format.id)}
+                >
+                  {isExpanded ? 'Thu gọn' : 'Xem thêm'}
+                </button>
+              </div>
+              {isExpanded && (
+                <div className="preset-details">
+                  <p className="preset-details-summary">{formatSummary(format)}</p>
+                  <ul className="preset-section-list">
+                    {format.sections.map(section => (
+                      <li key={section.id}>
+                        <span>{sectionTitle(section)}</span>
+                        <span className="preset-section-meta">
+                          {section.count} câu ({sectionTypeLabel(section.type)})
+                          {section.questionRange ? ` · Câu ${section.questionRange[0]}–${section.questionRange[1]}` : ''}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="preset-modal-actions">
+        <button type="button" className="button-secondary" onClick={onClose}>Huỷ</button>
+        <button type="button" className="button-primary" disabled={!selected?.available || !!error} onClick={start}>Tạo đề thi</button>
+      </div>
+      </div>
     </div>
-  </>;
+  );
 };

@@ -10,7 +10,8 @@ if not defined PYTHON set "PYTHON=python"
 set "EXAM_DEMO_MODE=1"
 echo Dang khoi dong ASTRA o CHE DO CHAY THU (Demo - 0 phi AI)...
 echo Using Python: %PYTHON%
-start "ASTRA Backend (8000 - Demo)" /D "%ROOT%" cmd /k ""%PYTHON%" -m uvicorn exam_baseline.main:app --host 127.0.0.1 --port 8000"
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr /R /C:":8000 .*LISTENING" /C:":5173 .*LISTENING"') do taskkill /F /PID %%a >nul 2>&1
+start "ASTRA Backend (8000 - Demo)" /D "%ROOT%" cmd /k ""%PYTHON%" -m uvicorn exam_baseline.main:app --host 127.0.0.1 --port 8000 --reload --reload-dir "%ROOT%src""
 start "ASTRA Frontend (Vite)" /D "%ROOT%astra-frontend" cmd /k "npm.cmd run dev -- --host 127.0.0.1"
 
 echo.
