@@ -20,7 +20,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, index, onE
   return (
     <section className={`exam-question-card ${visible ? 'visible' : 'appearing'}`} aria-label={`Câu ${index + 1}`}>
       <div className="question-stem"><strong>Câu {question.stableId?.split('-')[1] || index + 1}.</strong><MathRenderer content={question.stem} /></div>
-      {question.drawingLatex && <details><summary>Hình vẽ TikZ (xem khi biên dịch LaTeX)</summary><pre>{question.drawingLatex}</pre></details>}
+      {question.drawingLatex && <details><summary>Hình minh họa (xem trực quan ở mục Xem trước PDF)</summary><pre>{question.drawingLatex}</pre></details>}
       {(!question.questionType || question.questionType === 'mcq') && <div className="question-choices">
         {(['A', 'B', 'C', 'D'] as const).map(key => (
           <div key={key} className={`question-choice ${review && question.status === 'VERIFIED' && question.key === key ? 'correct' : ''}`}>

@@ -13,6 +13,7 @@ import type { ExamRequestParams, QuestionItem } from './types/exam';
 import { QuestionEditor } from './components/QuestionEditor';
 import { examService } from './services/examService';
 import { ExamSessions } from './state/examSessions';
+import { formatProgressStatus, formatVisualWarning } from './utils/userMessages.ts';
 import './styles/workspace.css';
 import './styles/classroom.css';
 import './styles/studio.css';
@@ -172,15 +173,25 @@ export const App: React.FC = () => {
             right: (
               <>
                 {active.error && <p role="alert">{active.error}</p>}
-                {isGenerating && active.progress && <p role="status">{active.progress.statusMessage} ({active.progress.percent}%)</p>}
+                {isGenerating && active.progress && (
+                  <p role="status">
+                    {formatProgressStatus(active.progress.statusMessage)} ({active.progress.percent}%)
+                  </p>
+                )}
                 {!!active.package?.warnings?.length && <details><summary>Cảnh báo nguồn ({active.package.warnings.length})</summary>{active.package.warnings.map((warning, i) => <p key={i}>{warning.questionId}: {warning.message}</p>)}</details>}
                 {!!active.package?.visualWarnings?.length && (
                   <div className="pdf-preview-warning" role="alert">
                     <strong>Cảnh báo hình vẽ / bảng biểu ({active.package.visualWarnings.length})</strong>
-                    <p>Các đề đã tạo không tự sinh hình vẽ còn thiếu trong PDF. Hãy sửa hoặc tạo lại câu hỏi bị ảnh hưởng.</p>
-                    {active.package.visualWarnings.map((warning, i) => (
-                      <p key={`${warning.questionId}-${i}`}><code>{warning.questionId}</code>: {warning.code}</p>
-                    ))}
+                    <p>Đề thi chưa tự sinh hình vẽ còn thiếu. Thầy cô hãy sửa câu hỏi bị ảnh hưởng.</p>
+                    {active.package.visualWarnings.map((warning, i) => {
+                      const target = active.questions.find(q => q.stableId === warning.questionId);
+                      const label = target ? `Câu ${target.id}` : warning.questionId;
+                      return (
+                        <p key={`${warning.questionId}-${i}`}>
+                          <strong>{label}:</strong> {formatVisualWarning(warning.code)}
+                        </p>
+                      );
+                    })}
                   </div>
                 )}
                 <ExamPaperView
@@ -205,6 +216,7 @@ export const App: React.FC = () => {
                     onExportAnswer={handleExportAnswer}
                   />}
                   questions={liveQuestions}
+                  passages={active.package?.passages}
                   examMeta={examMeta}
                   isGenerating={isGenerating}
                   latestQuestionCount={prevQuestionCount}

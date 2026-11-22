@@ -1,5 +1,6 @@
 import type { ChatMessage, ExamPackage, ExamPreviewState, ExamRequestParams, QuestionItem, GenerationProgress } from '../types/exam';
 import type { IExamService } from '../services/examService';
+import { formatProgressStatus, humanizeErrorMessage } from '../utils/userMessages.ts';
 
 export interface ExamSession {
   id: string;
@@ -34,15 +35,15 @@ function previewBindingKey(jobId: string, revision: number, contentHash: string)
 function formatPreviewError(code?: string): string {
   switch (code) {
     case 'latex_compile_timeout':
-      return 'Biên dịch PDF quá thời gian (có thể do lần đầu tải gói TeX). Hãy thử biên dịch lại.';
+      return 'Quá trình tạo bản in PDF mất nhiều thời gian hơn dự kiến. Thầy cô hãy bấm thử tạo lại bản xem trước.';
     case 'preview_interrupted':
-      return 'Quá trình biên dịch PDF bị gián đoạn. Hãy thử biên dịch lại từ nguồn đã lưu.';
+      return 'Quá trình tạo bản xem trước PDF bị gián đoạn. Thầy cô hãy bấm thử lại.';
     case 'preview_artifact_changed':
-      return 'Tệp PDF xem trước bị thay đổi ngoài luồng. Hãy thử biên dịch lại.';
+      return 'Tệp bản xem trước bị thay đổi ngoài luồng. Thầy cô hãy bấm tạo lại bản xem trước.';
     case 'latex_compiler_unavailable':
-      return 'Máy chủ chưa có trình biên dịch LaTeX (Tectonic/XeLaTeX/LuaLaTeX). Kiểm tra cài đặt backend; không cần tạo lại đề.';
+      return 'Máy chủ chưa cài đặt bộ tạo bản in PDF. Không cần tạo lại đề, hãy liên hệ người phụ trách kỹ thuật.';
     default:
-      return 'Biên dịch LaTeX thất bại. Kiểm tra nhật ký biên dịch hoặc sửa câu hỏi rồi thử lại.';
+      return 'Chưa tạo được bản xem trước PDF. Thầy cô hãy kiểm tra lại các câu hỏi hoặc thử tạo lại bản xem trước.';
   }
 }
 
@@ -50,8 +51,8 @@ function extractErrorDetails(error: unknown): { code?: string; message: string }
   const code = error && typeof error === 'object' && 'code' in error && typeof error.code === 'string'
     ? error.code
     : undefined;
-  const message = error instanceof Error ? error.message : 'Có lỗi xảy ra';
-  return { code, message };
+  const rawMessage = error instanceof Error ? error.message : 'Có lỗi xảy ra';
+  return { code, message: humanizeErrorMessage(rawMessage, code) };
 }
 
 // Every asynchronous result is addressed to its originating session, never the selected tab.
@@ -69,7 +70,20 @@ export class ExamSessions {
     if (typeof localStorage !== 'undefined') {
       try {
         const saved = JSON.parse(localStorage.getItem('astra.sessions.v1') || '[]');
-        if (Array.isArray(saved)) this.sessions = saved.filter(item => typeof item.id === 'string' && Array.isArray(item.messages));
+        if (Array.isArray(saved)) {
+          this.sessions = saved
+            .filter(item => typeof item.id === 'string' && Array.isArray(item.messages))
+            .map(item => ({
+              ...item,
+              error: item.error ? humanizeErrorMessage(item.error, item.errorCode) : item.error,
+              progress: item.progress
+                ? {
+                    ...item.progress,
+                    statusMessage: formatProgressStatus(item.progress.statusMessage),
+                  }
+                : item.progress,
+            }));
+        }
       } catch { console.warn('Could not restore local exam workspaces'); }
     }
   }
@@ -268,7 +282,11 @@ export class ExamSessions {
         if (this.disposed || finishing || !this.sessions.some(session => session.id === id && session.jobId === jobId)) return;
         if (progress.status === 'failed') {
           finishing = true;
-          const error = Object.assign(new Error(progress.error?.message || progress.statusMessage), { code: progress.error?.code });
+          const rawMessage = progress.error?.message || progress.statusMessage;
+          const error = Object.assign(
+            new Error(humanizeErrorMessage(rawMessage, progress.error?.code)),
+            { code: progress.error?.code }
+          );
           this.fail(id, error);
           this.subscriptions.get(id)?.(); this.subscriptions.delete(id);
           return;
@@ -501,9 +519,9 @@ export class ExamSessions {
         ...session,
         artifactChanged: true,
         errorCode: 'artifact_changed',
-        error: message || 'Nguồn LaTeX đã thay đổi bên ngoài phiên làm việc. Không thể phê duyệt hoặc xuất file.',
+        error: 'Tệp đề thi đã bị thay đổi bên ngoài phiên làm việc nên không thể duyệt hoặc tải xuống.',
         previewErrorCode: 'artifact_changed',
-        previewError: message || 'Nguồn LaTeX đã thay đổi ngoài luồng xử lý.',
+        previewError: 'Tệp đề thi đã bị thay đổi ngoài luồng xử lý.',
       }));
       return;
     }
@@ -595,7 +613,14 @@ export class ExamSessions {
   }
   private fail(id: string, error?: unknown) {
     this.stopPreviewPoll(id);
-    this.update(id, session => ({ ...session, status: 'error', error: error instanceof Error ? error.message : 'Chưa tạo được đề. Hãy kiểm tra kết nối và thử lại.', errorCode: error && typeof error === 'object' && 'code' in error ? String(error.code) : undefined }));
+    const code = error && typeof error === 'object' && 'code' in error ? String(error.code) : undefined;
+    const rawMessage = error instanceof Error ? error.message : undefined;
+    this.update(id, session => ({
+      ...session,
+      status: 'error',
+      error: rawMessage ? humanizeErrorMessage(rawMessage, code) : 'Chưa tạo được đề. Thầy cô hãy kiểm tra kết nối rồi thử lại.',
+      errorCode: code,
+    }));
   }
   dispose() {
     this.disposed = true;

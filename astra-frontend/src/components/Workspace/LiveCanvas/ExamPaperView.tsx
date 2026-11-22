@@ -1,15 +1,33 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { StationeryArt } from '../../StationeryArt';
 import { SchoolArt } from '../../SchoolArt';
 import { Eye, FileText, ListChecks } from 'lucide-react';
-import type { ExamPreviewState, QuestionItem, VisualWarning } from '../../../types/exam';
+import type { ExamPassage, ExamPreviewState, QuestionItem, VisualWarning } from '../../../types/exam';
+import { formatVisualWarning } from '../../../utils/userMessages.ts';
+import { MathRenderer } from '../../MathRenderer';
 import { QuestionCard } from './QuestionCard';
 
 export type ExamCanvasViewMode = 'paper' | 'review' | 'pdf';
 
+const SECTION_HEADINGS: Record<string, string> = {
+  P1: 'Phần I. Trắc nghiệm nhiều lựa chọn',
+  P2: 'Phần II. Trắc nghiệm đúng/sai',
+  P3: 'Phần III. Trả lời ngắn',
+  TV: 'Phần 1. Sử dụng ngôn ngữ · 1.1. Tiếng Việt',
+  TA: 'Phần 1. Sử dụng ngôn ngữ · 1.2. Tiếng Anh',
+  TO: 'Phần 2. Toán học',
+  LOGIC: 'Phần 3. Tư duy khoa học · 3.1. Logic, phân tích số liệu',
+  SCIENCE: 'Phần 3. Tư duy khoa học · 3.2. Suy luận khoa học',
+};
+
+function sectionHeading(part: string): string {
+  return SECTION_HEADINGS[part] || part;
+}
+
 interface ExamPaperViewProps {
   header?: React.ReactNode;
   questions: QuestionItem[];
+  passages?: ExamPassage[];
   examMeta: {
     title: string;
     subject: string;
@@ -39,6 +57,7 @@ interface ExamPaperViewProps {
 export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
   header,
   questions,
+  passages,
   examMeta,
   isGenerating,
   latestQuestionCount = 0,
@@ -67,6 +86,10 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
   const review = activeMode === 'review';
   const flaggedCount = questions.filter(q => q.status === 'FLAGGED').length;
   const lastAutoRequested = useRef<string>('');
+  const passageById = useMemo(
+    () => new Map((passages || []).map(passage => [passage.id, passage])),
+    [passages]
+  );
   const bindingMatch = Boolean(
     preview &&
     revision !== undefined &&
@@ -98,8 +121,8 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
           <StationeryArt kind="apple" className="preview-apple" />
           <span className="preview-label">02 / XEM TRƯỚC PDF</span>
           <SchoolArt kind="book" className="preview-art" />
-          <h2>Chưa có đề để biên dịch PDF.</h2>
-          <p>Tạo đề thi trước để xem bản PDF chuẩn mẫu LaTeX và hình vẽ TikZ.</p>
+          <h2>Chưa có đề để hiển thị bản in PDF.</h2>
+          <p>Thầy cô hãy tạo đề thi trước để xem bản in chuẩn theo mẫu.</p>
         </div>
       );
     }
@@ -108,7 +131,7 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
       return (
         <div className="pdf-preview-loading" role="status">
           <strong>Đang soạn đề thi...</strong>
-          <p>Bản xem trước PDF LaTeX sẽ tự động biên dịch sau khi quá trình tạo câu hỏi hoàn tất.</p>
+          <p>Bản xem trước PDF sẽ được tạo tự động sau khi quá trình soạn câu hỏi hoàn tất.</p>
         </div>
       );
     }
@@ -116,12 +139,12 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
     const isDraft = !approved || preview?.draft !== false;
 
     return (
-      <section className="pdf-preview-panel" aria-label="Bản xem trước PDF chuẩn mẫu LaTeX">
+      <section className="pdf-preview-panel" aria-label="Bản xem trước PDF theo mẫu chuẩn">
         <div className={`pdf-preview-banner ${isDraft ? 'is-draft' : 'is-approved'}`} role="status">
           <div>
             <strong>
               {isDraft
-                ? 'Draft — human review required (Bản nháp dành cho giáo viên kiểm tra)'
+                ? 'Bản nháp — thầy cô vui lòng kiểm tra kỹ trước khi duyệt'
                 : 'Đã phê duyệt bản xem trước hiện tại'}
             </strong>
             <span>
@@ -140,21 +163,22 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
           <div className="pdf-preview-warning" role="alert">
             <strong>Cảnh báo hình vẽ / bảng biểu ({visualWarnings.length})</strong>
             <p>
-              Các đề đã tạo trước đó không tự viết lại hoặc tự bịa hình vẽ trong PDF. Hãy sửa hoặc tạo lại từng câu bị ảnh hưởng kèm mô tả hình/bảng rõ ràng.
+              Một số câu hỏi có nhắc đến hình vẽ hoặc bảng số liệu nhưng chưa có hình minh họa kèm theo. Thầy cô hãy chỉnh sửa câu hỏi để bổ sung rõ ràng.
             </p>
             <ul>
               {visualWarnings.map((warning, index) => {
                 const target = questions.find(q => q.stableId === warning.questionId);
+                const label = target ? `Câu ${target.id}` : warning.questionId;
                 return (
                   <li key={`${warning.questionId}-${index}`}>
-                    <span><code>{warning.questionId}</code>: {warning.code}</span>
+                    <span><strong>{label}:</strong> {formatVisualWarning(warning.code)}</span>
                     {target && onEditQuestion && (
                       <button
                         type="button"
                         className="button-secondary"
                         onClick={() => onEditQuestion(target.id)}
                       >
-                        Sửa / tạo lại câu {warning.questionId}
+                        Sửa {label}
                       </button>
                     )}
                   </li>
@@ -166,16 +190,16 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
 
         {artifactChanged && (
           <div className="pdf-preview-error" role="alert">
-            <strong>Nguồn LaTeX đã thay đổi ngoài phiên làm việc (`artifact_changed`)</strong>
-            <p>Tệp nguồn đề thi đã bị sửa bên ngoài hệ thống, vì vậy không thể phê duyệt hoặc xuất bản hiện tại.</p>
+            <strong>Tệp đề thi đã thay đổi ngoài phiên làm việc</strong>
+            <p>Nội dung đề thi đã bị chỉnh sửa bên ngoài hệ thống nên không thể phê duyệt hoặc xuất tệp từ phiên bản này.</p>
           </div>
         )}
 
         {!artifactChanged && (previewErrorCode === 'latex_compiler_unavailable' || preview?.status === 'unavailable') && (
           <div className="pdf-preview-error" role="alert">
-            <strong>Trình biên dịch LaTeX chưa sẵn sàng (`latex_compiler_unavailable`)</strong>
+            <strong>Máy chủ chưa cài đặt bộ tạo bản in PDF</strong>
             <p>
-              {previewError || 'Máy chủ chưa tìm thấy Tectonic/XeLaTeX/LuaLaTeX. Chạy scripts/install_latex_compiler.py hoặc cấu hình EXAM_LATEX_COMPILER trên backend; không cần tạo lại đề thi.'}
+              {previewError || 'Thầy cô vẫn xem và chỉnh sửa câu hỏi bình thường ở mục Đề thi; liên hệ người phụ trách kỹ thuật nếu cần xuất file PDF.'}
             </p>
           </div>
         )}
@@ -184,13 +208,13 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
           <div className="pdf-preview-loading" role="status">
             <strong>
               {preview?.status === 'compiling'
-                ? 'Đang biên dịch PDF từ nguồn LaTeX...'
+                ? 'Đang tạo bản xem trước PDF...'
                 : preview?.status === 'queued'
-                  ? 'Đang xếp hàng biên dịch PDF...'
+                  ? 'Đang xếp hàng tạo bản xem trước PDF...'
                   : 'Đang chuẩn bị bản xem trước PDF cho phiên bản hiện tại...'}
             </strong>
             <p>
-              Lần biên dịch đầu tiên có thể mất thêm thời gian để tải gói TeX. Nếu quá thời gian, hệ thống sẽ cho phép thử biên dịch lại cùng nguồn đã lưu.
+              Lần tạo bản in đầu tiên có thể mất thêm vài chục giây. Nếu quá thời gian, thầy cô chỉ cần bấm thử lại.
             </p>
             {previewError && <p role="alert">{previewError}</p>}
           </div>
@@ -198,21 +222,26 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
 
         {!artifactChanged && bindingMatch && preview?.status === 'failed' && (
           <div className="pdf-preview-error" role="alert">
-            <strong>Biên dịch PDF không thành công ({preview.error || previewErrorCode || 'latex_compile_failed'})</strong>
-            <p>{previewError || 'Không thể biên dịch nguồn LaTeX hiện tại.'}</p>
+            <strong>Chưa tạo được bản xem trước PDF</strong>
+            <p>{previewError || 'Không thể tạo bản in PDF từ nội dung hiện tại.'}</p>
             <div className="pdf-preview-meta">
               {onRetryPreview && (
                 <button type="button" className="button-primary" onClick={onRetryPreview}>
-                  Thử biên dịch lại PDF
+                  Thử tạo lại bản xem trước
                 </button>
               )}
               {preview.logUrl && (
                 <a className="button-secondary" href={preview.logUrl} target="_blank" rel="noreferrer">
-                  Xem file nhật ký (`compile.log`)
+                  Mở nhật ký chi tiết
                 </a>
               )}
             </div>
-            {previewLog && <pre className="pdf-compile-log">{previewLog}</pre>}
+            {previewLog && (
+              <details>
+                <summary>Chi tiết kỹ thuật (khi cần hỗ trợ)</summary>
+                <pre className="pdf-compile-log">{previewLog}</pre>
+              </details>
+            )}
           </div>
         )}
 
@@ -254,10 +283,67 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
             <h2>Một trang mới,<br />chờ ý tưởng hay.</h2>
             <p>Trao đổi với ASTRA, chọn thiết lập đề, rồi xem từng câu hỏi xuất hiện tại đây.</p>
           </div>}
-          {questions.map((q, i) => <React.Fragment key={q.id}>
-            {q.part && q.part !== questions[i - 1]?.part && <h2>{q.part === 'P1' ? 'Phần I. Trắc nghiệm nhiều lựa chọn' : q.part === 'P2' ? 'Phần II. Trắc nghiệm đúng/sai' : 'Phần III. Trả lời ngắn'}</h2>}
-            <QuestionCard question={q} index={i} review={review} appearing={i >= latestQuestionCount} onEdit={onEditQuestion ? () => onEditQuestion(q.id) : undefined} />
-          </React.Fragment>)}
+          {questions.map((q, i) => {
+            const prev = questions[i - 1];
+            const showPart = Boolean(q.part && q.part !== prev?.part);
+            const showGroupInstruction = Boolean(
+              q.groupInstruction && q.groupInstruction !== prev?.groupInstruction
+            );
+            const passage =
+              q.passageId && q.passageId !== prev?.passageId
+                ? passageById.get(q.passageId)
+                : undefined;
+            return (
+              <React.Fragment key={q.id}>
+                {showPart && <h2>{sectionHeading(q.part!)}</h2>}
+                {showGroupInstruction && (
+                  <p className="vact-group-instruction"><strong>{q.groupInstruction}</strong></p>
+                )}
+                {passage && (
+                  <aside className="vact-passage-card" aria-label={passage.instruction}>
+                    <div className="vact-passage-instruction"><strong>{passage.instruction}</strong></div>
+                    {passage.heading && (
+                      <div className="vact-passage-heading">
+                        <MathRenderer content={passage.heading} />
+                      </div>
+                    )}
+                    <div className="vact-passage-body">
+                      <MathRenderer content={passage.text} />
+                    </div>
+                    {passage.table && (
+                      <div className="vact-passage-table-wrap">
+                        <table className="vact-passage-table">
+                          <thead>
+                            <tr>
+                              {passage.table.columns.map((column, columnIndex) => (
+                                <th key={columnIndex}><MathRenderer content={column} /></th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {passage.table.rows.map((row, rowIndex) => (
+                              <tr key={rowIndex}>
+                                {row.map((cell, cellIndex) => (
+                                  <td key={cellIndex}><MathRenderer content={cell} /></td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </aside>
+                )}
+                <QuestionCard
+                  question={q}
+                  index={i}
+                  review={review}
+                  appearing={i >= latestQuestionCount}
+                  onEdit={onEditQuestion ? () => onEditQuestion(q.id) : undefined}
+                />
+              </React.Fragment>
+            );
+          })}
           {isGenerating && <p className="paper-progress" role="status">Đang soạn câu hỏi tiếp theo…</p>}
           {questions.length > 0 && !isGenerating && <footer className="paper-end">— Hết —</footer>}
         </article>

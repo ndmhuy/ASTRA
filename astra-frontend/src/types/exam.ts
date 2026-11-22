@@ -10,8 +10,10 @@ export interface QuestionItem {
   id: number;
   stableId?: string;
   examRevision?: number;
-  part?: 'P1' | 'P2' | 'P3';
+  part?: string;
   questionType?: 'mcq' | 'true_false' | 'short_answer';
+  passageId?: string | null;
+  groupInstruction?: string;
   stem: string;
   choices: QuestionChoices;
   statements?: QuestionStatement[];
@@ -61,10 +63,33 @@ export interface VisualWarning {
   code: string;
 }
 
+export interface ExamPassageTable {
+  columns: string[];
+  rows: string[][];
+}
+
+export interface ExamPassage {
+  id: string;
+  section: 'TV' | 'TA' | 'TO' | 'LOGIC' | 'SCIENCE';
+  kind:
+    | 'passage'
+    | 'vact_passage_en'
+    | 'math_context'
+    | 'logic_puzzle'
+    | 'data_set'
+    | 'science';
+  questionRange: [number, number];
+  instruction: string;
+  heading?: string;
+  text: string;
+  table?: ExamPassageTable | null;
+}
+
 export interface ExamPackage {
   examId: string; title: string; subject: Subject; grade: number;
-  durationMinutes: number; totalScore: number; createdAt: string;
+  durationMinutes: number; totalScore: number | null; createdAt: string;
   blueprint: ExamBlueprint; questions: QuestionItem[];
+  passages?: ExamPassage[];
   revision?: number; contentHash?: string; approved?: boolean;
   approval?: { revision: number; contentHash: string; reviewer: string; approvedAt: string } | null;
   preview?: ExamPreviewState;
@@ -90,6 +115,13 @@ export interface ChatMessage { id: string; role: 'user' | 'assistant' | 'system'
 export interface ExamFormat {
   id: string; version: string; displayName: string; examType: ExamType;
   subjects: Subject[]; grades: number[]; durationMinutes: number; totalQuestions: number;
-  totalScore: number; available: boolean; exportFormats: ExportFormat[];
-  sections: { id: string; type: string; count: number; instructions: string }[];
+  totalScore: number | null; available: boolean; exportFormats: ExportFormat[];
+  sections: {
+    id: string;
+    title?: string;
+    type: string;
+    count: number;
+    questionRange?: [number, number];
+    instructions: string;
+  }[];
 }

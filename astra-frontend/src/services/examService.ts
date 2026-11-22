@@ -17,6 +17,7 @@ import type {
   QuestionItem
 } from '../types/exam';
 import type { ExamFormat, ExportFormat } from '../types/exam';
+import { humanizeErrorMessage } from '../utils/userMessages.ts';
 
 export interface IExamService {
   startGeneration(params: ExamRequestParams): Promise<{ jobId: string }>;
@@ -237,7 +238,7 @@ export class MockExamService implements IExamService {
   private jobs = new Map<string, ExamPackage>();
   private getJob(jobId: string): ExamPackage {
     const job = this.jobs.get(jobId);
-    if (!job) throw new Error(`Exam job ${jobId} not found`);
+    if (!job) throw new Error('Không tìm thấy phiên tạo đề này.');
     return job;
   }
 
@@ -287,11 +288,11 @@ export class MockExamService implements IExamService {
     const totalItems = this.getJob(jobId).questions.length;
 
     const stages = [
-      { name: 'Xây dựng & Khóa Ma Trận Đề (Blueprint Builder)', durationMs: 1200 },
-      { name: 'Truy xuất SGK & Ngân hàng tri thức (RAG Engine)', durationMs: 1600 },
-      { name: 'Soạn thảo & Giải độc lập (Writer + Blind Solver)', durationMs: 2500 },
-      { name: 'Thẩm định sư phạm & Bẫy sai (Appraiser)', durationMs: 1800 },
-      { name: 'Đóng gói hồ sơ & Barem chấm điểm (Assembler)', durationMs: 1000 }
+      { name: 'Khởi tạo cấu trúc đề thi', durationMs: 1200 },
+      { name: 'Tra cứu tài liệu tham khảo', durationMs: 1600 },
+      { name: 'Soạn câu hỏi và kiểm tra đáp án', durationMs: 2500 },
+      { name: 'Rà soát chất lượng câu hỏi', durationMs: 1800 },
+      { name: 'Hoàn thiện đề thi và đáp án', durationMs: 1000 }
     ];
 
     let timer: ReturnType<typeof setTimeout> | null = null;
@@ -366,7 +367,7 @@ export class MockExamService implements IExamService {
     const currentQuestions = pkg.questions;
     const index = currentQuestions.findIndex((q) => q.id === questionId);
     if (index === -1) {
-      throw new Error(`Question ${questionId} not found`);
+      throw new Error('Không tìm thấy câu hỏi cần thao tác.');
     }
 
     const current = currentQuestions[index];
@@ -374,7 +375,7 @@ export class MockExamService implements IExamService {
       ...current,
       status: 'VERIFIED',
       revisionCount: (current.revisionCount || 0) + 1,
-      auditNotes: `Đã tự động tái tạo thành công theo hướng dẫn giáo viên: "${instruction || 'Sửa bẫy sai và đồng bộ đáp án'}". Blind Solver và Appraiser đều đánh giá đạt.`,
+      auditNotes: `Đã tự động soạn lại theo yêu cầu: "${instruction || 'Sửa lại nội dung và đồng bộ đáp án'}". Đáp án đã được kiểm tra lại.`,
       writerKey: current.key,
       solverKey: current.key
     };
@@ -510,25 +511,45 @@ function normalizePreview(
 async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
   let response: Response;
   try { response = await fetch(url, init); }
-  catch { throw new ApiError('Không kết nối được máy chủ. Bạn có thể thử lại để nối lại job.', 'network_error'); }
+  catch { throw new ApiError('Không kết nối được máy chủ. Thầy cô vui lòng thử lại.', 'network_error'); }
   let body: Record<string, unknown> = {};
   try {
     body = await response.json() as Record<string, unknown>;
   } catch {
     if (!response.ok) {
-      throw new ApiError(response.statusText || 'Request failed', 'request_failed', response.status);
+      throw new ApiError(
+        humanizeErrorMessage(response.statusText || 'Request failed', 'request_failed'),
+        'request_failed',
+        response.status
+      );
     }
   }
   if (!response.ok) {
     const err = body.error as { code?: string; message?: string; details?: unknown } | undefined;
+    const code = err?.code || 'request_failed';
     throw new ApiError(
-      err?.message || JSON.stringify(body.detail || body),
-      err?.code || 'request_failed',
+      humanizeErrorMessage(err?.message || JSON.stringify(body.detail || body), code),
+      code,
       response.status,
       err?.details
     );
   }
   return body as T;
+}
+
+export interface BackendHealth {
+  status?: string;
+  demoMode?: boolean;
+  providerConfigured?: boolean;
+  latexCompilerAvailable?: boolean;
+}
+
+export async function getBackendHealth(): Promise<BackendHealth | null> {
+  try {
+    return await requestJson<BackendHealth>(`${apiBaseUrl}/health`);
+  } catch {
+    return null;
+  }
 }
 
 export async function getExamFormats(): Promise<ExamFormat[]> {
@@ -575,8 +596,8 @@ export class ApiExamService implements IExamService {
         deliver(data);
       } catch (error) {
         if (++failures >= 3) deliver({ stage: 0, stageName: 'connection', percent: 0, estimatedSecondsLeft: 0,
-          completedItems: 0, totalItems: 22, statusMessage: 'Mất kết nối', status: 'failed',
-          error: { code: 'network_error', message: error instanceof Error ? error.message : 'Connection lost' } });
+          completedItems: 0, totalItems: 22, statusMessage: 'Mất kết nối máy chủ', status: 'failed',
+          error: { code: 'network_error', message: humanizeErrorMessage(error instanceof Error ? error.message : 'Connection lost', 'network_error') } });
       } finally { polling = false; }
     };
     const timer = setInterval(() => { void poll(); }, 1500);
@@ -643,14 +664,14 @@ export class ApiExamService implements IExamService {
     try {
       response = await fetch(resolveApiUrl(logUrl, this.baseUrl));
     } catch {
-      return 'Không tải được nhật ký biên dịch LaTeX.';
+      return 'Không tải được thông tin chi tiết bản in PDF.';
     }
     if (!response.ok) {
       try {
         const body = await response.json() as { error?: { message?: string } };
-        return body.error?.message || `Không đọc được nhật ký biên dịch (HTTP ${response.status}).`;
+        return body.error?.message || `Không đọc được thông tin chi tiết bản in (mã ${response.status}).`;
       } catch {
-        return `Không đọc được nhật ký biên dịch (HTTP ${response.status}).`;
+        return `Không đọc được thông tin chi tiết bản in (mã ${response.status}).`;
       }
     }
     return response.text();
@@ -661,13 +682,13 @@ export class ApiExamService implements IExamService {
     try {
       response = await fetch(`${this.baseUrl}/exams/${jobId}/export?type=${type}&format=${format}`);
     } catch {
-      throw new ApiError('Không kết nối được máy chủ khi tải file.', 'network_error');
+      throw new ApiError('Không kết nối được máy chủ khi tải tệp.', 'network_error');
     }
     if (!response.ok) {
       let body: { error?: { code?: string; message?: string; details?: unknown } } = {};
       try { body = await response.json(); } catch { /* non-JSON error body */ }
       throw new ApiError(
-        body.error?.message || 'Export failed',
+        humanizeErrorMessage(body.error?.message || 'Export failed', body.error?.code),
         body.error?.code || 'export_failed',
         response.status,
         body.error?.details

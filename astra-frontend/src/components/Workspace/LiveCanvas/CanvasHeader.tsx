@@ -70,8 +70,8 @@ export const CanvasHeader: React.FC<CanvasHeaderProps> = ({
           >
             <Download size={15} aria-hidden="true" />Xuất PDF
           </button>
-          <button className="button-secondary" onClick={onExportWord}><Download size={15} aria-hidden="true" />Xuất LaTeX</button>
-          <button className="button-secondary" onClick={onExportAnswer}><FileCheck2 size={15} aria-hidden="true" />Tải đáp án JSON</button>
+          <button className="button-secondary" onClick={onExportWord}><Download size={15} aria-hidden="true" />Tải tệp nguồn (.tex)</button>
+          <button className="button-secondary" onClick={onExportAnswer}><FileCheck2 size={15} aria-hidden="true" />Tải tệp đáp án</button>
         </>}
       </div>}
     </header>
