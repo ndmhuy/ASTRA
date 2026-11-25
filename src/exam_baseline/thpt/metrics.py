@@ -3,8 +3,12 @@
 from collections import defaultdict
 
 # Google Developer API Standard, verified 2026-11-07. USD per million tokens.
-PRICES = {"gemini-3.1-flash-lite": (0.25, 1.50)}
+PRICES = {
+    "gemini-3.1-flash-lite": (0.25, 1.50),
+    "claude-haiku-4-5-20251001": (1.00, 5.00),
+}
 SOURCE = "https://ai.google.dev/gemini-api/docs/pricing"
+CLAUDE_SOURCE = "https://platform.claude.com/docs/en/about-claude/pricing"
 
 
 def summarize_calls(calls: list[dict]) -> dict:
@@ -25,6 +29,15 @@ def summarize_calls(calls: list[dict]) -> dict:
             incomplete = True
         else:
             cost += (incoming * prices[0] + outgoing * prices[1]) / 1_000_000
+    models = sorted({call.get("model") for call in calls if call.get("model") in PRICES})
+    sources = [
+        {
+            "model": model,
+            "source": CLAUDE_SOURCE if model.startswith("claude-") else SOURCE,
+            "verified_on": "2026-11-18" if model.startswith("claude-") else "2026-11-07",
+        }
+        for model in models
+    ]
     return {
         "input_tokens": input_tokens,
         "output_tokens": output_tokens,
@@ -35,8 +48,9 @@ def summarize_calls(calls: list[dict]) -> dict:
         "standard_price_estimate_usd": round(cost, 8),
         "estimate_complete": not incomplete,
         "billing_tier": "unknown",
-        "pricing_verified_on": "2026-11-07",
-        "pricing_source": SOURCE,
+        "pricing_verified_on": max((s["verified_on"] for s in sources), default="2026-11-07"),
+        "pricing_source": sources[0]["source"] if len(sources) == 1 else SOURCE,
+        "pricing_sources": sources,
         "note": "Estimate from reported tokens only; retries included when usage is available. "
         "Not an invoice. Free-tier eligible usage has no token charge within quota. "
         "API time sum may exceed elapsed time when calls overlap.",

@@ -8,6 +8,7 @@ import httpx
 from exam_baseline.config import Settings
 from exam_baseline.core.contracts import Completion, CompletionRequest, ProviderError
 from exam_baseline.core.models import TokenUsage
+from exam_baseline.providers.budget import SpendLedger
 
 
 class ChatCompletionsProvider:
@@ -22,6 +23,10 @@ class ChatCompletionsProvider:
         self.url = settings.base_url.rstrip("/") + "/chat/completions"
         self.timeout = settings.timeout_seconds
         self.api_key = settings.api_key.get_secret_value() if settings.api_key else ""
+        self.strict = settings.structured_output_strict
+        self.schema_as_tool = settings.schema_as_tool
+        self.max_output_tokens = settings.max_output_tokens
+        self.ledger = SpendLedger(settings) if settings.spend_limit_usd is not None else None
         self.parameters: dict[str, Any] = {
             settings.token_limit_field: settings.max_output_tokens,
             "response_format": {"type": settings.response_format},
@@ -59,6 +64,43 @@ class ChatCompletionsProvider:
                 "type": "json_schema",
                 "json_schema": {"name": "exam_response", "schema": request.output_schema},
             }
+            if self.strict:
+                payload["response_format"]["json_schema"]["strict"] = True
+        if self.schema_as_tool:
+            # Claude's strict JSON grammar cannot express arbitrary dictionaries
+            # or all Pydantic bounds. Forced tool arguments carry the full schema;
+            # agent boundary validation and bounded repair remain authoritative.
+            payload.pop("response_format", None)
+            payload["tools"] = [
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "astra_output",
+                        "description": "Return the requested structured result.",
+                        "parameters": request.output_schema,
+                    },
+                }
+            ]
+            payload["tool_choice"] = {"type": "function", "function": {"name": "astra_output"}}
+        reservation = self.ledger.reserve(payload, self.max_output_tokens) if self.ledger else None
+        try:
+            completion = await self._send(payload)
+        except ProviderError as exc:
+            if self.ledger:
+                self.ledger.settle(
+                    reservation,
+                    exc.completion.usage if exc.completion else None,
+                    unbilled=exc.completion is None
+                    and exc.http_status is not None
+                    and 400 <= exc.http_status < 500
+                    and exc.http_status != 408,
+                )
+            raise
+        if self.ledger:
+            self.ledger.settle(reservation, completion.usage)
+        return completion
+
+    async def _send(self, payload):
         try:
             response = await self.client.post(
                 self.url,
@@ -107,6 +149,13 @@ class ChatCompletionsProvider:
             model = data.get("model", self.model)
             response_id = data.get("id")
             content = message.get("content")
+            if self.schema_as_tool:
+                content = None
+                tools = message.get("tool_calls") or []
+                if len(tools) == 1:
+                    function = tools[0].get("function") or {}
+                    if function.get("name") == "astra_output":
+                        content = function.get("arguments")
             if not isinstance(model, str) or not model:
                 raise ValueError("invalid model")
             if response_id is not None and not isinstance(response_id, str):
@@ -121,7 +170,7 @@ class ChatCompletionsProvider:
                 raise ProviderError(
                     "provider_refusal", "LLM provider refused the request.", completion
                 )
-            if choice.get("finish_reason") != "stop":
+            if choice.get("finish_reason") != ("tool_calls" if self.schema_as_tool else "stop"):
                 raise ProviderError(
                     "provider_incomplete",
                     "LLM response was truncated or incomplete.",

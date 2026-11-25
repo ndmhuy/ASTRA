@@ -1,0 +1,165 @@
+{
+  "_meta": {
+    "status": "PROPOSED_PROTOCOL_FIXTURE",
+    "note": "Fictional backend validation, timestamps, hash, and approval for testing only. Requires backend provider, pending request store and trusted UI confirmation. The model cannot create approval objects. Actual required fields/defaults must come from backend schema, not this fixture."
+  },
+  "agentResponse": {
+    "schemaVersion": "0.1",
+    "requestId": "req-clarification-final-001",
+    "sessionId": "chat-example-01",
+    "kind": "confirmation",
+    "reply": "Đề Toán lớp 11, 20 câu về đạo hàm, 30 phút. Thầy cô xác nhận tạo đề với yêu cầu này nhé?",
+    "pendingGeneration": {
+      "pendingRequestId": "pending-example-01",
+      "sessionId": "chat-example-01",
+      "workspaceSessionId": "ws-example-01",
+      "requirementsSchemaVersion": "backend-example-schema-1",
+      "requestHash": "fixture-hash-do-not-use-as-real-approval",
+      "expiresAt": "2026-11-14T12:10:00+07:00",
+      "normalizedRequest": {
+        "subject": "Toán Học",
+        "grade": 11,
+        "examType": "CUSTOM",
+        "durationMinutes": 30,
+        "itemCount": 20,
+        "prompt": "Đạo hàm, mức độ nhận biết và thông hiểu.",
+        "uploadedFiles": []
+      },
+      "validation": {
+        "status": "valid",
+        "validatedBy": "backend"
+      }
+    }
+  },
+  "uiConfirmationEvent": {
+    "schemaVersion": "0.1",
+    "requestId": "req-confirm-001",
+    "sessionId": "chat-example-01",
+    "workspaceSessionId": "ws-example-01",
+    "pendingRequestId": "pending-example-01",
+    "requestHash": "fixture-hash-do-not-use-as-real-approval",
+    "decision": "approve",
+    "screenContext": {
+      "screenId": "workspace",
+      "stateVersion": 17,
+      "activeWorkspaceSessionId": "ws-example-01",
+      "visibleWorkspaceSessionId": "ws-example-01",
+      "activeExamId": null,
+      "activeSessionStatus": "draft",
+      "selectedQuestionId": null,
+      "focusedComponentId": null,
+      "openPanels": [
+        "generation-confirmation"
+      ],
+      "sidebarCollapsed": false,
+      "viewport": "desktop",
+      "canvasView": "exam",
+      "mobilePane": null,
+      "availableActions": [
+        "ui.navigate",
+        "ui.session.create",
+        "ui.exam.open_setup",
+        "ui.sidebar.set_collapsed"
+      ],
+      "activeJob": null
+    }
+  },
+  "trustedApprovalFromUiAndServer": {
+    "approvalId": "approval-example-01",
+    "approvedRequestId": "pending-example-01",
+    "sessionId": "chat-example-01",
+    "workspaceSessionId": "ws-example-01",
+    "requestHash": "fixture-hash-do-not-use-as-real-approval",
+    "requirementsSchemaVersion": "backend-example-schema-1",
+    "approvedAt": "2026-11-14T12:01:00+07:00",
+    "expiresAt": "2026-11-14T12:10:00+07:00"
+  },
+  "contextAfterApprovalRecorded": {
+    "screenId": "workspace",
+    "stateVersion": 18,
+    "activeWorkspaceSessionId": "ws-example-01",
+    "visibleWorkspaceSessionId": "ws-example-01",
+    "activeExamId": null,
+    "activeSessionStatus": "draft",
+    "selectedQuestionId": null,
+    "focusedComponentId": null,
+    "openPanels": [],
+    "sidebarCollapsed": false,
+    "viewport": "desktop",
+    "canvasView": "exam",
+    "mobilePane": null,
+    "availableActions": [
+      "ui.navigate",
+      "ui.session.create",
+      "ui.exam.open_setup",
+      "ui.sidebar.set_collapsed",
+      "exam.generate"
+    ],
+    "activeJob": null
+  },
+  "agentStartPlanAfterApprovalFeedback": {
+    "schemaVersion": "0.1",
+    "registryVersion": "astra-ui-0.1-proposal-1",
+    "requestId": "feedback-confirm-001",
+    "planId": "plan-generate-001",
+    "sessionId": "chat-example-01",
+    "expectedStateVersion": 18,
+    "actions": [
+      {
+        "id": "action-generate-001",
+        "capabilityId": "exam.generate",
+        "target": "exam-generation",
+        "params": {
+          "workspaceSessionId": "ws-example-01",
+          "approvedRequestId": "pending-example-01"
+        }
+      }
+    ],
+    "requiresUserConfirmation": true
+  },
+  "designatedUiGenerationAdapterCall": {
+    "method": "startApproved",
+    "approvalId": "approval-example-01",
+    "idempotencyKey": "generate:chat-example-01:pending-example-01"
+  },
+  "expectedStartReceipt": {
+    "workspaceSessionId": "ws-example-01",
+    "approvedRequestId": "pending-example-01",
+    "jobId": "job-example-01",
+    "acceptedAt": "2026-11-14T12:01:01+07:00"
+  },
+  "truthfulReplyAfterConfirmedStart": "Đã bắt đầu tạo đề. Các câu hỏi sẽ xuất hiện ở khung đề.",
+  "notAnExamCompletionReceipt": true,
+  "confirmationFeedbackToAgent": {
+    "schemaVersion": "0.1",
+    "feedbackId": "feedback-confirm-001",
+    "sessionId": "chat-example-01",
+    "originalRequestId": "req-confirm-001",
+    "pendingRequestId": "pending-example-01",
+    "decision": "approve",
+    "approvedRequestId": "pending-example-01",
+    "screenContext": {
+      "screenId": "workspace",
+      "stateVersion": 18,
+      "activeWorkspaceSessionId": "ws-example-01",
+      "visibleWorkspaceSessionId": "ws-example-01",
+      "activeExamId": null,
+      "activeSessionStatus": "draft",
+      "selectedQuestionId": null,
+      "focusedComponentId": null,
+      "openPanels": [],
+      "sidebarCollapsed": false,
+      "viewport": "desktop",
+      "canvasView": "exam",
+      "mobilePane": null,
+      "availableActions": [
+        "ui.navigate",
+        "ui.session.create",
+        "ui.exam.open_setup",
+        "ui.sidebar.set_collapsed",
+        "exam.generate"
+      ],
+      "activeJob": null
+    }
+  }
+}

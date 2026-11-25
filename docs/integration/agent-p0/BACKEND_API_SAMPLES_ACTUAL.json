@@ -1,0 +1,2789 @@
+{
+  "evidenceMode": "real FastAPI/validation/native engines; synthetic replay model + RAG evidence; real local TeX",
+  "liveProviderCalled": false,
+  "sourceBranch": "merge-mas-and-uiux",
+  "sourceCommit": "2acb95fbf6a55b7621c786248e10b10ca91a35ab",
+  "capturedAt": "2026-11-17T12:25:15.666651+00:00",
+  "examples": [
+    {
+      "label": "ui_health",
+      "method": "GET",
+      "route": "/api/health",
+      "request": {},
+      "httpStatus": 200,
+      "contentType": "application/json",
+      "responseBody": {
+        "status": "ok",
+        "engine": "thpt_math_v2",
+        "providerConfigured": false,
+        "corpusRef": "8b8fb7b09182b3d9d1eee0b95818027f52ab004d",
+        "latexCompilerAvailable": true
+      }
+    },
+    {
+      "label": "format_catalog",
+      "method": "GET",
+      "route": "/api/exam-formats",
+      "request": {},
+      "httpStatus": 200,
+      "contentType": "application/json",
+      "responseBody": {
+        "schemaVersion": "exam-format-catalog-v1",
+        "formats": [
+          {
+            "schemaVersion": "exam-format-v1",
+            "id": "thpt-math",
+            "version": "1",
+            "displayName": "Toán THPT",
+            "examType": "THPT_STANDARD",
+            "engine": "thpt_math_v2",
+            "subjects": [
+              "Toán Học"
+            ],
+            "grades": [
+              12
+            ],
+            "durationMinutes": 90,
+            "totalQuestions": 22,
+            "totalScore": 10,
+            "sections": [
+              {
+                "id": "P1",
+                "type": "mcq",
+                "count": 12,
+                "pointsPerQuestion": 0.25,
+                "instructions": "Chọn một đáp án A, B, C hoặc D."
+              },
+              {
+                "id": "P2",
+                "type": "true_false",
+                "count": 4,
+                "statementsPerQuestion": 4,
+                "scoreByCorrectStatements": [
+                  0,
+                  0.1,
+                  0.25,
+                  0.5,
+                  1
+                ],
+                "instructions": "Chọn đúng hoặc sai cho từng ý a, b, c, d."
+              },
+              {
+                "id": "P3",
+                "type": "short_answer",
+                "count": 6,
+                "pointsPerQuestion": 0.5,
+                "instructions": "Điền đáp án số vào ô trả lời."
+              }
+            ],
+            "lockedFields": [
+              "subject",
+              "grade",
+              "durationMinutes",
+              "itemCount",
+              "sections",
+              "template"
+            ],
+            "editableFields": [
+              "prompt",
+              "slots"
+            ],
+            "exportFormats": [
+              "tex",
+              "json",
+              "pdf"
+            ],
+            "preview": {
+              "format": "pdf",
+              "requires": "local_latex_compiler",
+              "revisionBound": true
+            },
+            "vdcPolicy": "fallback_with_warning",
+            "available": true,
+            "requires": [
+              "pinned_rag_release",
+              "chat_completions_provider"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "label": "evaluate_thpt",
+      "method": "POST",
+      "route": "/api/exam-formats/evaluate",
+      "request": {
+        "json": {
+          "formatId": "thpt-math",
+          "formatVersion": "1",
+          "subject": "Toán Học",
+          "grade": 12,
+          "examType": "THPT_STANDARD",
+          "durationMinutes": 90,
+          "itemCount": 22,
+          "prompt": "Đề luyện tập",
+          "uploadedFiles": []
+        }
+      },
+      "httpStatus": 200,
+      "contentType": "application/json",
+      "responseBody": {
+        "status": "validated",
+        "formatId": "thpt-math",
+        "formatVersion": "1",
+        "request": {
+          "template_id": "thpt_math_v2",
+          "font_profile": "unicode_times",
+          "composer_concurrency": 3,
+          "slots": [
+            {
+              "id": "P1-1",
+              "part": "P1",
+              "topic": "Nguyên hàm",
+              "objective": "Tìm họ nguyên hàm của hàm số lũy thừa và các hàm số cơ bản bằng quy tắc nguyên hàm",
+              "level": "TH",
+              "statement_levels": []
+            },
+            {
+              "id": "P1-2",
+              "part": "P1",
+              "topic": "Nguyên hàm",
+              "objective": "Nhận biết định nghĩa và công thức nguyên hàm cơ bản của hàm số lũy thừa, lượng giác",
+              "level": "NB",
+              "statement_levels": []
+            },
+            {
+              "id": "P1-3",
+              "part": "P1",
+              "topic": "Ứng dụng đạo hàm và khảo sát hàm số",
+              "objective": "Xác định khoảng đơn điệu, điểm cực trị hoặc tiệm cận của hàm số từ bảng biến thiên hoặc đồ thị",
+              "level": "TH",
+              "statement_levels": []
+            },
+            {
+              "id": "P1-4",
+              "part": "P1",
+              "topic": "Ứng dụng tích phân: tính diện tích và thể tích",
+              "objective": "Nhận biết công thức tính diện tích hình phẳng hoặc thể tích khối tròn xoay bằng tích phân",
+              "level": "NB",
+              "statement_levels": []
+            },
+            {
+              "id": "P1-5",
+              "part": "P1",
+              "topic": "Ứng dụng tích phân: tính diện tích và thể tích",
+              "objective": "Tính tích phân xác định hoặc diện tích hình phẳng giới hạn bởi các đồ thị hàm số",
+              "level": "TH",
+              "statement_levels": []
+            },
+            {
+              "id": "P1-6",
+              "part": "P1",
+              "topic": "Hình học không gian: góc, khoảng cách và thể tích",
+              "objective": "Nhận biết quan hệ vuông góc hoặc công thức thể tích khối chóp, khối lăng trụ",
+              "level": "NB",
+              "statement_levels": []
+            },
+            {
+              "id": "P1-7",
+              "part": "P1",
+              "topic": "Hình học không gian: góc, khoảng cách và thể tích",
+              "objective": "Tính thể tích khối chóp, lăng trụ hoặc góc, khoảng cách cơ bản trong không gian",
+              "level": "TH",
+              "statement_levels": []
+            },
+            {
+              "id": "P1-8",
+              "part": "P1",
+              "topic": "Vectơ và hệ trục tọa độ trong không gian",
+              "objective": "Xác định tọa độ điểm, tọa độ vectơ hoặc tích vô hướng trong hệ trục tọa độ Oxyz",
+              "level": "NB",
+              "statement_levels": []
+            },
+            {
+              "id": "P1-9",
+              "part": "P1",
+              "topic": "Phương pháp tọa độ trong không gian",
+              "objective": "Nhận biết vectơ pháp tuyến của mặt phẳng, vectơ chỉ phương của đường thẳng hoặc tâm, bán kính mặt cầu",
+              "level": "NB",
+              "statement_levels": []
+            },
+            {
+              "id": "P1-10",
+              "part": "P1",
+              "topic": "Mũ và lôgarit",
+              "objective": "Giải phương trình, bất phương trình mũ hoặc lôgarit cơ bản và xác định tập nghiệm",
+              "level": "TH",
+              "statement_levels": []
+            },
+            {
+              "id": "P1-11",
+              "part": "P1",
+              "topic": "Dãy số, cấp số cộng và cấp số nhân",
+              "objective": "Tìm số hạng tổng quát, công sai, công bội hoặc tổng n số hạng đầu của cấp số cộng, cấp số nhân",
+              "level": "NB",
+              "statement_levels": []
+            },
+            {
+              "id": "P1-12",
+              "part": "P1",
+              "topic": "Số đặc trưng của mẫu số liệu ghép nhóm",
+              "objective": "Xác định khoảng biến thiên, khoảng tứ phân vị hoặc phương sai, độ lệch chuẩn của mẫu số liệu ghép nhóm",
+              "level": "NB",
+              "statement_levels": []
+            },
+            {
+              "id": "P2-1",
+              "part": "P2",
+              "topic": "Ứng dụng đạo hàm và khảo sát hàm số",
+              "objective": "Xét tính đúng/sai của các mệnh đề về tính đơn điệu, cực trị, tiệm cận và đồ thị hàm số",
+              "level": "TH",
+              "statement_levels": [
+                "NB",
+                "TH",
+                "TH",
+                "VD"
+              ]
+            },
+            {
+              "id": "P2-2",
+              "part": "P2",
+              "topic": "Nguyên hàm và tích lũy",
+              "objective": "Khôi phục hàm đại lượng từ tốc độ biến thiên và tính tích phân trong bài toán chuyển động/tích lũy",
+              "level": "TH",
+              "statement_levels": [
+                "NB",
+                "TH",
+                "TH",
+                "VD"
+              ]
+            },
+            {
+              "id": "P2-3",
+              "part": "P2",
+              "topic": "Phương pháp tọa độ trong không gian",
+              "objective": "Xét phương trình mặt phẳng, đường thẳng, mặt cầu và vị trí tương đối trong không gian Oxyz",
+              "level": "TH",
+              "statement_levels": [
+                "NB",
+                "TH",
+                "TH",
+                "VD"
+              ]
+            },
+            {
+              "id": "P2-4",
+              "part": "P2",
+              "topic": "Xác suất có điều kiện",
+              "objective": "Tính xác suất có điều kiện, sử dụng sơ đồ hình cây, công thức xác suất toàn phần và công thức Bayes",
+              "level": "TH",
+              "statement_levels": [
+                "NB",
+                "TH",
+                "TH",
+                "VD"
+              ]
+            },
+            {
+              "id": "P3-1",
+              "part": "P3",
+              "topic": "Hình học không gian: góc, khoảng cách và thể tích",
+              "objective": "Tính khoảng cách hoặc thể tích trong bài toán hình học không gian gắn với mô hình thực tiễn",
+              "level": "VD",
+              "statement_levels": []
+            },
+            {
+              "id": "P3-2",
+              "part": "P3",
+              "topic": "Ứng dụng tích phân: tính diện tích và thể tích",
+              "objective": "Thiết lập hàm biên và dùng tích phân tính diện tích hoặc thể tích vật thể trong thực tế",
+              "level": "VD",
+              "statement_levels": []
+            },
+            {
+              "id": "P3-3",
+              "part": "P3",
+              "topic": "Phương pháp tọa độ trong không gian",
+              "objective": "Mô hình hóa bài toán vị trí, quỹ đạo hoặc khoảng cách thực tế trong hệ trục tọa độ Oxyz",
+              "level": "VD",
+              "statement_levels": []
+            },
+            {
+              "id": "P3-4",
+              "part": "P3",
+              "topic": "Tối ưu",
+              "objective": "Giải bài toán tối ưu thực tiễn (tối đa hóa lợi nhuận, tối thiểu hóa chi phí hoặc khoảng cách) bằng đạo hàm",
+              "level": "VD",
+              "statement_levels": []
+            },
+            {
+              "id": "P3-5",
+              "part": "P3",
+              "topic": "Quy hoạch tuyến tính",
+              "objective": "Lập hệ bất phương trình bậc nhất hai ẩn và tìm phương án tối ưu trên miền đa giác nghiệm",
+              "level": "VD",
+              "statement_levels": []
+            },
+            {
+              "id": "P3-6",
+              "part": "P3",
+              "topic": "Xác suất cổ điển và tổ hợp",
+              "objective": "Đếm cấu hình có ràng buộc và tính xác suất cổ điển hoặc xác suất có điều kiện trong bài toán nhiều bước",
+              "level": "VD",
+              "statement_levels": []
+            }
+          ],
+          "reference_material": [],
+          "requirements": [
+            "Đề luyện tập"
+          ]
+        },
+        "retrievalMatrix": {
+          "schema_version": "1.0",
+          "matrix_id": "toan-thpt-2026-default-22q",
+          "subject": "toan",
+          "vdc_policy": "fallback_with_warning",
+          "questions": [
+            {
+              "question_id": "P1-1",
+              "part": "P1",
+              "topic": "Nguyên hàm",
+              "learning_objective": "Tìm họ nguyên hàm của hàm số lũy thừa và các hàm số cơ bản bằng quy tắc nguyên hàm",
+              "level": "TH"
+            },
+            {
+              "question_id": "P1-2",
+              "part": "P1",
+              "topic": "Nguyên hàm",
+              "learning_objective": "Nhận biết định nghĩa và công thức nguyên hàm cơ bản của hàm số lũy thừa, lượng giác",
+              "level": "NB"
+            },
+            {
+              "question_id": "P1-3",
+              "part": "P1",
+              "topic": "Ứng dụng đạo hàm và khảo sát hàm số",
+              "learning_objective": "Xác định khoảng đơn điệu, điểm cực trị hoặc tiệm cận của hàm số từ bảng biến thiên hoặc đồ thị",
+              "level": "TH"
+            },
+            {
+              "question_id": "P1-4",
+              "part": "P1",
+              "topic": "Ứng dụng tích phân: tính diện tích và thể tích",
+              "learning_objective": "Nhận biết công thức tính diện tích hình phẳng hoặc thể tích khối tròn xoay bằng tích phân",
+              "level": "NB"
+            },
+            {
+              "question_id": "P1-5",
+              "part": "P1",
+              "topic": "Ứng dụng tích phân: tính diện tích và thể tích",
+              "learning_objective": "Tính tích phân xác định hoặc diện tích hình phẳng giới hạn bởi các đồ thị hàm số",
+              "level": "TH"
+            },
+            {
+              "question_id": "P1-6",
+              "part": "P1",
+              "topic": "Hình học không gian: góc, khoảng cách và thể tích",
+              "learning_objective": "Nhận biết quan hệ vuông góc hoặc công thức thể tích khối chóp, khối lăng trụ",
+              "level": "NB"
+            },
+            {
+              "question_id": "P1-7",
+              "part": "P1",
+              "topic": "Hình học không gian: góc, khoảng cách và thể tích",
+              "learning_objective": "Tính thể tích khối chóp, lăng trụ hoặc góc, khoảng cách cơ bản trong không gian",
+              "level": "TH"
+            },
+            {
+              "question_id": "P1-8",
+              "part": "P1",
+              "topic": "Vectơ và hệ trục tọa độ trong không gian",
+              "learning_objective": "Xác định tọa độ điểm, tọa độ vectơ hoặc tích vô hướng trong hệ trục tọa độ Oxyz",
+              "level": "NB"
+            },
+            {
+              "question_id": "P1-9",
+              "part": "P1",
+              "topic": "Phương pháp tọa độ trong không gian",
+              "learning_objective": "Nhận biết vectơ pháp tuyến của mặt phẳng, vectơ chỉ phương của đường thẳng hoặc tâm, bán kính mặt cầu",
+              "level": "NB"
+            },
+            {
+              "question_id": "P1-10",
+              "part": "P1",
+              "topic": "Mũ và lôgarit",
+              "learning_objective": "Giải phương trình, bất phương trình mũ hoặc lôgarit cơ bản và xác định tập nghiệm",
+              "level": "TH"
+            },
+            {
+              "question_id": "P1-11",
+              "part": "P1",
+              "topic": "Dãy số, cấp số cộng và cấp số nhân",
+              "learning_objective": "Tìm số hạng tổng quát, công sai, công bội hoặc tổng n số hạng đầu của cấp số cộng, cấp số nhân",
+              "level": "NB"
+            },
+            {
+              "question_id": "P1-12",
+              "part": "P1",
+              "topic": "Số đặc trưng của mẫu số liệu ghép nhóm",
+              "learning_objective": "Xác định khoảng biến thiên, khoảng tứ phân vị hoặc phương sai, độ lệch chuẩn của mẫu số liệu ghép nhóm",
+              "level": "NB"
+            },
+            {
+              "question_id": "P2-1",
+              "part": "P2",
+              "topic": "Ứng dụng đạo hàm và khảo sát hàm số",
+              "learning_objective": "Xét tính đúng/sai của các mệnh đề về tính đơn điệu, cực trị, tiệm cận và đồ thị hàm số",
+              "level": "TH",
+              "statement_levels": {
+                "a": "NB",
+                "b": "TH",
+                "c": "TH",
+                "d": "VD"
+              }
+            },
+            {
+              "question_id": "P2-2",
+              "part": "P2",
+              "topic": "Nguyên hàm và tích lũy",
+              "learning_objective": "Khôi phục hàm đại lượng từ tốc độ biến thiên và tính tích phân trong bài toán chuyển động/tích lũy",
+              "level": "TH",
+              "statement_levels": {
+                "a": "NB",
+                "b": "TH",
+                "c": "TH",
+                "d": "VD"
+              }
+            },
+            {
+              "question_id": "P2-3",
+              "part": "P2",
+              "topic": "Phương pháp tọa độ trong không gian",
+              "learning_objective": "Xét phương trình mặt phẳng, đường thẳng, mặt cầu và vị trí tương đối trong không gian Oxyz",
+              "level": "TH",
+              "statement_levels": {
+                "a": "NB",
+                "b": "TH",
+                "c": "TH",
+                "d": "VD"
+              }
+            },
+            {
+              "question_id": "P2-4",
+              "part": "P2",
+              "topic": "Xác suất có điều kiện",
+              "learning_objective": "Tính xác suất có điều kiện, sử dụng sơ đồ hình cây, công thức xác suất toàn phần và công thức Bayes",
+              "level": "TH",
+              "statement_levels": {
+                "a": "NB",
+                "b": "TH",
+                "c": "TH",
+                "d": "VD"
+              }
+            },
+            {
+              "question_id": "P3-1",
+              "part": "P3",
+              "topic": "Hình học không gian: góc, khoảng cách và thể tích",
+              "learning_objective": "Tính khoảng cách hoặc thể tích trong bài toán hình học không gian gắn với mô hình thực tiễn",
+              "level": "VD"
+            },
+            {
+              "question_id": "P3-2",
+              "part": "P3",
+              "topic": "Ứng dụng tích phân: tính diện tích và thể tích",
+              "learning_objective": "Thiết lập hàm biên và dùng tích phân tính diện tích hoặc thể tích vật thể trong thực tế",
+              "level": "VD"
+            },
+            {
+              "question_id": "P3-3",
+              "part": "P3",
+              "topic": "Phương pháp tọa độ trong không gian",
+              "learning_objective": "Mô hình hóa bài toán vị trí, quỹ đạo hoặc khoảng cách thực tế trong hệ trục tọa độ Oxyz",
+              "level": "VD"
+            },
+            {
+              "question_id": "P3-4",
+              "part": "P3",
+              "topic": "Tối ưu",
+              "learning_objective": "Giải bài toán tối ưu thực tiễn (tối đa hóa lợi nhuận, tối thiểu hóa chi phí hoặc khoảng cách) bằng đạo hàm",
+              "level": "VD"
+            },
+            {
+              "question_id": "P3-5",
+              "part": "P3",
+              "topic": "Quy hoạch tuyến tính",
+              "learning_objective": "Lập hệ bất phương trình bậc nhất hai ẩn và tìm phương án tối ưu trên miền đa giác nghiệm",
+              "level": "VD"
+            },
+            {
+              "question_id": "P3-6",
+              "part": "P3",
+              "topic": "Xác suất cổ điển và tổ hợp",
+              "learning_objective": "Đếm cấu hình có ràng buộc và tính xác suất cổ điển hoặc xác suất có điều kiện trong bài toán nhiều bước",
+              "level": "VD"
+            }
+          ],
+          "max_observations": 2,
+          "max_examples": 1,
+          "max_curriculum_units": 2
+        }
+      }
+    },
+    {
+      "label": "empty_draft",
+      "method": "POST",
+      "route": "/api/exam-formats/evaluate",
+      "request": {
+        "json": {}
+      },
+      "httpStatus": 422,
+      "contentType": "application/json",
+      "responseBody": {
+        "detail": [
+          {
+            "type": "missing",
+            "loc": [
+              "body",
+              "subject"
+            ],
+            "msg": "Field required",
+            "input": {}
+          },
+          {
+            "type": "missing",
+            "loc": [
+              "body",
+              "grade"
+            ],
+            "msg": "Field required",
+            "input": {}
+          },
+          {
+            "type": "missing",
+            "loc": [
+              "body",
+              "examType"
+            ],
+            "msg": "Field required",
+            "input": {}
+          },
+          {
+            "type": "missing",
+            "loc": [
+              "body",
+              "durationMinutes"
+            ],
+            "msg": "Field required",
+            "input": {}
+          },
+          {
+            "type": "missing",
+            "loc": [
+              "body",
+              "itemCount"
+            ],
+            "msg": "Field required",
+            "input": {}
+          }
+        ]
+      }
+    },
+    {
+      "label": "vact_not_ui_supported",
+      "method": "POST",
+      "route": "/api/exam-formats/evaluate",
+      "request": {
+        "json": {
+          "formatId": "thpt-math",
+          "formatVersion": "1",
+          "subject": "Toán Học",
+          "grade": 12,
+          "examType": "DGNL_DHQG",
+          "durationMinutes": 90,
+          "itemCount": 22,
+          "prompt": "Đề luyện tập",
+          "uploadedFiles": []
+        }
+      },
+      "httpStatus": 422,
+      "contentType": "application/json",
+      "responseBody": {
+        "detail": [
+          {
+            "type": "literal_error",
+            "loc": [
+              "body",
+              "examType"
+            ],
+            "msg": "Input should be 'THPT_STANDARD'",
+            "input": "DGNL_DHQG",
+            "ctx": {
+              "expected": "'THPT_STANDARD'"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "wrong_count",
+      "method": "POST",
+      "route": "/api/exam-formats/evaluate",
+      "request": {
+        "json": {
+          "formatId": "thpt-math",
+          "formatVersion": "1",
+          "subject": "Toán Học",
+          "grade": 12,
+          "examType": "THPT_STANDARD",
+          "durationMinutes": 90,
+          "itemCount": 15,
+          "prompt": "Đề luyện tập",
+          "uploadedFiles": []
+        }
+      },
+      "httpStatus": 422,
+      "contentType": "application/json",
+      "responseBody": {
+        "detail": [
+          {
+            "type": "literal_error",
+            "loc": [
+              "body",
+              "itemCount"
+            ],
+            "msg": "Input should be 22",
+            "input": 15,
+            "ctx": {
+              "expected": "22"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "upload_not_supported",
+      "method": "POST",
+      "route": "/api/exam-formats/evaluate",
+      "request": {
+        "json": {
+          "formatId": "thpt-math",
+          "formatVersion": "1",
+          "subject": "Toán Học",
+          "grade": 12,
+          "examType": "THPT_STANDARD",
+          "durationMinutes": 90,
+          "itemCount": 22,
+          "prompt": "Đề luyện tập",
+          "uploadedFiles": [
+            "file.pdf"
+          ]
+        }
+      },
+      "httpStatus": 422,
+      "contentType": "application/json",
+      "responseBody": {
+        "detail": [
+          {
+            "type": "too_long",
+            "loc": [
+              "body",
+              "uploadedFiles"
+            ],
+            "msg": "List should have at most 0 items after validation, not 1",
+            "input": [
+              "file.pdf"
+            ],
+            "ctx": {
+              "field_type": "List",
+              "max_length": 0,
+              "actual_length": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "prompt_too_long",
+      "method": "POST",
+      "route": "/api/exam-formats/evaluate",
+      "request": {
+        "json": {
+          "formatId": "thpt-math",
+          "formatVersion": "1",
+          "subject": "Toán Học",
+          "grade": 12,
+          "examType": "THPT_STANDARD",
+          "durationMinutes": 90,
+          "itemCount": 22,
+          "prompt": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "uploadedFiles": []
+        }
+      },
+      "httpStatus": 422,
+      "contentType": "application/json",
+      "responseBody": {
+        "detail": [
+          {
+            "type": "string_too_long",
+            "loc": [
+              "body",
+              "prompt"
+            ],
+            "msg": "String should have at most 10000 characters",
+            "input": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "ctx": {
+              "max_length": 10000
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "generation_missing_idempotency",
+      "method": "POST",
+      "route": "/api/exams/generate",
+      "request": {
+        "json": {
+          "formatId": "thpt-math",
+          "formatVersion": "1",
+          "subject": "Toán Học",
+          "grade": 12,
+          "examType": "THPT_STANDARD",
+          "durationMinutes": 90,
+          "itemCount": 22,
+          "prompt": "Đề luyện tập",
+          "uploadedFiles": []
+        }
+      },
+      "httpStatus": 422,
+      "contentType": "application/json",
+      "responseBody": {
+        "detail": [
+          {
+            "type": "missing",
+            "loc": [
+              "header",
+              "idempotency-key"
+            ],
+            "msg": "Field required",
+            "input": null
+          }
+        ]
+      }
+    },
+    {
+      "label": "start_thpt_job",
+      "method": "POST",
+      "route": "/api/exams/generate",
+      "request": {
+        "json": {
+          "formatId": "thpt-math",
+          "formatVersion": "1",
+          "subject": "Toán Học",
+          "grade": 12,
+          "examType": "THPT_STANDARD",
+          "durationMinutes": 90,
+          "itemCount": 22,
+          "prompt": "Đề luyện tập",
+          "uploadedFiles": []
+        },
+        "headers": {
+          "Idempotency-Key": "agent-audit"
+        }
+      },
+      "httpStatus": 202,
+      "contentType": "application/json",
+      "responseBody": {
+        "jobId": "3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c",
+        "status": "queued"
+      }
+    },
+    {
+      "label": "duplicate_start",
+      "method": "POST",
+      "route": "/api/exams/generate",
+      "request": {
+        "json": {
+          "formatId": "thpt-math",
+          "formatVersion": "1",
+          "subject": "Toán Học",
+          "grade": 12,
+          "examType": "THPT_STANDARD",
+          "durationMinutes": 90,
+          "itemCount": 22,
+          "prompt": "Đề luyện tập",
+          "uploadedFiles": []
+        },
+        "headers": {
+          "Idempotency-Key": "agent-audit"
+        }
+      },
+      "httpStatus": 202,
+      "contentType": "application/json",
+      "responseBody": {
+        "jobId": "3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c",
+        "status": "completed"
+      }
+    },
+    {
+      "label": "idempotency_conflict",
+      "method": "POST",
+      "route": "/api/exams/generate",
+      "request": {
+        "json": {
+          "formatId": "thpt-math",
+          "formatVersion": "1",
+          "subject": "Toán Học",
+          "grade": 12,
+          "examType": "THPT_STANDARD",
+          "durationMinutes": 90,
+          "itemCount": 22,
+          "prompt": "different",
+          "uploadedFiles": []
+        },
+        "headers": {
+          "Idempotency-Key": "agent-audit"
+        }
+      },
+      "httpStatus": 409,
+      "contentType": "application/json",
+      "responseBody": {
+        "error": {
+          "code": "idempotency_conflict",
+          "message": "Idempotency key was already used for a different request"
+        }
+      }
+    },
+    {
+      "label": "job_completed_snapshot",
+      "method": "GET",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/status",
+      "request": {},
+      "httpStatus": 200,
+      "contentType": "application/json",
+      "responseBody": {
+        "stage": 6,
+        "stageName": "completed",
+        "percent": 100,
+        "estimatedSecondsLeft": 0,
+        "completedItems": 22,
+        "totalItems": 22,
+        "statusMessage": "Đề đã sẵn sàng để kiểm tra",
+        "jobId": "3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c",
+        "status": "completed",
+        "error": null
+      }
+    },
+    {
+      "label": "terminal_sse_snapshot",
+      "method": "GET",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/events",
+      "request": {},
+      "httpStatus": 200,
+      "contentType": "text/event-stream; charset=utf-8",
+      "responseText": "data: {\"completedItems\": 22, \"error\": null, \"estimatedSecondsLeft\": 0, \"jobId\": \"3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c\", \"percent\": 100, \"stage\": 6, \"stageName\": \"completed\", \"status\": \"completed\", \"statusMessage\": \"Đề đã sẵn sàng để kiểm tra\", \"totalItems\": 22}\n\n"
+    },
+    {
+      "label": "open_exam",
+      "method": "GET",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c",
+      "request": {},
+      "httpStatus": 200,
+      "contentType": "application/json",
+      "responseExcerpt": {
+        "examId": "3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c",
+        "revision": 1,
+        "contentHash": "dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+        "approved": false,
+        "preview": {
+          "status": "not_requested",
+          "revision": 1,
+          "contentHash": "dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+          "sourceHash": "3c1d0039df77e1ef0437df67d6f62a0904ebd962c23278cc5a5a067d87b3a5b5",
+          "compilerAvailable": true,
+          "statusUrl": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview?revision=1&contentHash=dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+          "pdfUrl": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview.pdf?revision=1&contentHash=dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+          "logUrl": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview.log?revision=1&contentHash=dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+          "draft": true
+        },
+        "hasDrawings": false,
+        "visualWarnings": [],
+        "questions": [
+          {
+            "id": 1,
+            "stableId": "P1-1",
+            "examRevision": 1,
+            "part": "P1",
+            "questionType": "mcq",
+            "stem": "Tính $1+1$ (P1-1).",
+            "choices": {
+              "A": "$2$",
+              "B": "$3$",
+              "C": "$4$",
+              "D": "$5$"
+            },
+            "key": "A",
+            "statements": [],
+            "explanation": "Cộng được $2$.",
+            "level": "THONG_HIEU",
+            "topic": "Nguyên hàm",
+            "status": "PENDING",
+            "revisionCount": 0,
+            "drawingLatex": null,
+            "solverKey": "A",
+            "writerKey": "A",
+            "auditNotes": "Human review required before export",
+            "sourceReference": "synthetic-fixture"
+          }
+        ]
+      },
+      "omitted": "Other package fields and 21 questions; see JobManager.package"
+    },
+    {
+      "label": "unknown_job",
+      "method": "GET",
+      "route": "/api/exams/a4616f89-33a4-4451-8b68-39ae3c059130/status",
+      "request": {},
+      "httpStatus": 404,
+      "contentType": "application/json",
+      "responseBody": {
+        "error": {
+          "code": "job_not_found",
+          "message": "Exam job not found",
+          "details": null
+        }
+      }
+    },
+    {
+      "label": "invalid_job_id",
+      "method": "GET",
+      "route": "/api/exams/not-a-uuid/status",
+      "request": {},
+      "httpStatus": 422,
+      "contentType": "application/json",
+      "responseBody": {
+        "detail": [
+          {
+            "type": "uuid_parsing",
+            "loc": [
+              "path",
+              "job_id"
+            ],
+            "msg": "Input should be a valid UUID, invalid character: found `n` at 0",
+            "input": "not-a-uuid",
+            "ctx": {
+              "error": "invalid character: found `n` at 0"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "unapproved_export",
+      "method": "GET",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/export?type=STUDENT_EXAM&format=tex",
+      "request": {},
+      "httpStatus": 409,
+      "contentType": "application/json",
+      "responseBody": {
+        "error": {
+          "code": "approval_required",
+          "message": "Review and approve the current revision before export",
+          "details": null
+        }
+      }
+    },
+    {
+      "label": "preview_not_requested",
+      "method": "GET",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview",
+      "request": {
+        "params": {
+          "revision": 1,
+          "contentHash": "dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e"
+        }
+      },
+      "httpStatus": 200,
+      "contentType": "application/json",
+      "responseBody": {
+        "status": "not_requested",
+        "revision": 1,
+        "contentHash": "dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+        "sourceHash": "3c1d0039df77e1ef0437df67d6f62a0904ebd962c23278cc5a5a067d87b3a5b5",
+        "compilerAvailable": true,
+        "statusUrl": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview?revision=1&contentHash=dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+        "pdfUrl": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview.pdf?revision=1&contentHash=dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+        "logUrl": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview.log?revision=1&contentHash=dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+        "draft": true
+      }
+    },
+    {
+      "label": "preview_pdf_not_ready",
+      "method": "GET",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview.pdf",
+      "request": {
+        "params": {
+          "revision": 1,
+          "contentHash": "dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e"
+        }
+      },
+      "httpStatus": 409,
+      "contentType": "application/json",
+      "responseBody": {
+        "error": {
+          "code": "preview_not_ready",
+          "message": "Request preview and poll until ready",
+          "details": {
+            "status": "not_requested",
+            "revision": 1,
+            "contentHash": "dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+            "sourceHash": "3c1d0039df77e1ef0437df67d6f62a0904ebd962c23278cc5a5a067d87b3a5b5",
+            "compilerAvailable": true,
+            "statusUrl": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview?revision=1&contentHash=dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+            "pdfUrl": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview.pdf?revision=1&contentHash=dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+            "logUrl": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview.log?revision=1&contentHash=dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "label": "request_real_pdf_preview",
+      "method": "POST",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview",
+      "request": {
+        "json": {
+          "revision": 1,
+          "contentHash": "dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e"
+        }
+      },
+      "httpStatus": 202,
+      "contentType": "application/json",
+      "responseBody": {
+        "status": "queued",
+        "revision": 1,
+        "contentHash": "dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+        "sourceHash": "3c1d0039df77e1ef0437df67d6f62a0904ebd962c23278cc5a5a067d87b3a5b5",
+        "compilerAvailable": true,
+        "statusUrl": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview?revision=1&contentHash=dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+        "pdfUrl": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview.pdf?revision=1&contentHash=dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+        "logUrl": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview.log?revision=1&contentHash=dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+        "draft": true
+      }
+    },
+    {
+      "label": "preview_ready",
+      "method": "GET",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview?revision=1&contentHash=dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+      "request": {},
+      "httpStatus": 200,
+      "contentType": "application/json",
+      "responseBody": {
+        "status": "ready",
+        "pageCount": 4,
+        "pdfHash": "5ebc2b58e77edd61c5b8772431671c912528ea1db9f1c9e181801d71a089d8a6",
+        "revision": 1,
+        "contentHash": "dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+        "sourceHash": "3c1d0039df77e1ef0437df67d6f62a0904ebd962c23278cc5a5a067d87b3a5b5",
+        "compilerAvailable": true,
+        "statusUrl": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview?revision=1&contentHash=dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+        "pdfUrl": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview.pdf?revision=1&contentHash=dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+        "logUrl": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview.log?revision=1&contentHash=dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+        "draft": true
+      }
+    },
+    {
+      "label": "student_draft_pdf",
+      "method": "GET",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview.pdf?revision=1&contentHash=dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+      "request": {},
+      "httpStatus": 200,
+      "contentType": "application/pdf",
+      "responseArtifact": {
+        "bytes": 86502,
+        "sha256": "5ebc2b58e77edd61c5b8772431671c912528ea1db9f1c9e181801d71a089d8a6",
+        "contentDisposition": "inline; filename=\"de_thi.pdf\"",
+        "prefix": "%PDF-1.5\n%����\n12 0 obj\n<</Filter/FlateDecode/Length 1083>>\nstream\nx��Y;�\u001c7\f��+T�\u0010�,�\")\u0001�+\u0002$\u0001�\u0019�.Hq�"
+      }
+    },
+    {
+      "label": "compiler_diagnostics",
+      "method": "GET",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview.log?revision=1&contentHash=dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+      "request": {},
+      "httpStatus": 200,
+      "contentType": "text/plain; charset=utf-8",
+      "responseArtifact": {
+        "bytes": 6819,
+        "sha256": "ef09558237564861ddf62f2884fac1d669174d7f0cb7a75df0597cee87c8c941",
+        "contentDisposition": null,
+        "prefix": "note: Running TeX ...\nFontconfig error: Cannot load default config file: No such file: (null)\r\nwarni"
+      }
+    },
+    {
+      "label": "approve_current",
+      "method": "POST",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/approve",
+      "request": {
+        "json": {
+          "revision": 1,
+          "contentHash": "dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+          "reviewer": "synthetic-audit-teacher"
+        }
+      },
+      "httpStatus": 200,
+      "contentType": "application/json",
+      "responseExcerpt": {
+        "examId": "3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c",
+        "revision": 1,
+        "contentHash": "dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+        "approved": true,
+        "preview": {
+          "status": "ready",
+          "pageCount": 4,
+          "pdfHash": "5ebc2b58e77edd61c5b8772431671c912528ea1db9f1c9e181801d71a089d8a6",
+          "revision": 1,
+          "contentHash": "dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+          "sourceHash": "3c1d0039df77e1ef0437df67d6f62a0904ebd962c23278cc5a5a067d87b3a5b5",
+          "compilerAvailable": true,
+          "statusUrl": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview?revision=1&contentHash=dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+          "pdfUrl": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview.pdf?revision=1&contentHash=dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+          "logUrl": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview.log?revision=1&contentHash=dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+          "draft": false
+        },
+        "hasDrawings": false,
+        "visualWarnings": [],
+        "questions": [
+          {
+            "id": 1,
+            "stableId": "P1-1",
+            "examRevision": 1,
+            "part": "P1",
+            "questionType": "mcq",
+            "stem": "Tính $1+1$ (P1-1).",
+            "choices": {
+              "A": "$2$",
+              "B": "$3$",
+              "C": "$4$",
+              "D": "$5$"
+            },
+            "key": "A",
+            "statements": [],
+            "explanation": "Cộng được $2$.",
+            "level": "THONG_HIEU",
+            "topic": "Nguyên hàm",
+            "status": "VERIFIED",
+            "revisionCount": 0,
+            "drawingLatex": null,
+            "solverKey": "A",
+            "writerKey": "A",
+            "auditNotes": "Human review required before export",
+            "sourceReference": "synthetic-fixture"
+          }
+        ]
+      },
+      "omitted": "Other package fields and 21 questions; see JobManager.package"
+    },
+    {
+      "label": "approved_export_tex",
+      "method": "GET",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/export?type=STUDENT_EXAM&format=tex",
+      "request": {},
+      "httpStatus": 200,
+      "contentType": "application/x-tex",
+      "responseArtifact": {
+        "bytes": 5861,
+        "sha256": "3c1d0039df77e1ef0437df67d6f62a0904ebd962c23278cc5a5a067d87b3a5b5",
+        "contentDisposition": "attachment; filename=\"de_thi.tex\"",
+        "prefix": "\\documentclass[12pt,a4paper]{article}\n\\usepackage{fontspec}\n\\IfFontExistsTF{Times New Roman}{\\setmai"
+      }
+    },
+    {
+      "label": "approved_export_pdf",
+      "method": "GET",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/export?type=STUDENT_EXAM&format=pdf",
+      "request": {},
+      "httpStatus": 200,
+      "contentType": "application/pdf",
+      "responseArtifact": {
+        "bytes": 86502,
+        "sha256": "5ebc2b58e77edd61c5b8772431671c912528ea1db9f1c9e181801d71a089d8a6",
+        "contentDisposition": "attachment; filename=\"preview.pdf\"",
+        "prefix": "%PDF-1.5\n%����\n12 0 obj\n<</Filter/FlateDecode/Length 1083>>\nstream\nx��Y;�\u001c7\f��+T�\u0010�,�\")\u0001�+\u0002$\u0001�\u0019�.Hq�"
+      }
+    },
+    {
+      "label": "approved_export_json",
+      "method": "GET",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/export?type=TEACHER_KEY&format=json",
+      "request": {},
+      "httpStatus": 200,
+      "contentType": "application/json",
+      "responseBody": {
+        "revision": 1,
+        "approval": {
+          "revision": 1,
+          "contentHash": "dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+          "reviewer": "synthetic-audit-teacher",
+          "approvedAt": "2026-11-17T12:25:15.204075+00:00"
+        },
+        "questions": [
+          {
+            "id": "P1-1",
+            "stem": "Tính $1+1$ (P1-1).",
+            "choices": {
+              "A": "2",
+              "B": "3",
+              "C": "4",
+              "D": "5"
+            },
+            "statements": [],
+            "answer": "A",
+            "solution": "Cộng được $2$.",
+            "illustration_request": null
+          },
+          {
+            "id": "P1-2",
+            "stem": "Tính $2+1$ (P1-2).",
+            "choices": {
+              "A": "3",
+              "B": "4",
+              "C": "5",
+              "D": "6"
+            },
+            "statements": [],
+            "answer": "A",
+            "solution": "Cộng được $3$.",
+            "illustration_request": null
+          },
+          {
+            "id": "P1-3",
+            "stem": "Tính $3+1$ (P1-3).",
+            "choices": {
+              "A": "4",
+              "B": "5",
+              "C": "6",
+              "D": "7"
+            },
+            "statements": [],
+            "answer": "A",
+            "solution": "Cộng được $4$.",
+            "illustration_request": null
+          },
+          {
+            "id": "P1-4",
+            "stem": "Tính $4+1$ (P1-4).",
+            "choices": {
+              "A": "5",
+              "B": "6",
+              "C": "7",
+              "D": "8"
+            },
+            "statements": [],
+            "answer": "A",
+            "solution": "Cộng được $5$.",
+            "illustration_request": null
+          },
+          {
+            "id": "P1-5",
+            "stem": "Tính $5+1$ (P1-5).",
+            "choices": {
+              "A": "6",
+              "B": "7",
+              "C": "8",
+              "D": "9"
+            },
+            "statements": [],
+            "answer": "A",
+            "solution": "Cộng được $6$.",
+            "illustration_request": null
+          },
+          {
+            "id": "P1-6",
+            "stem": "Tính $6+1$ (P1-6).",
+            "choices": {
+              "A": "7",
+              "B": "8",
+              "C": "9",
+              "D": "10"
+            },
+            "statements": [],
+            "answer": "A",
+            "solution": "Cộng được $7$.",
+            "illustration_request": null
+          },
+          {
+            "id": "P1-7",
+            "stem": "Tính $7+1$ (P1-7).",
+            "choices": {
+              "A": "8",
+              "B": "9",
+              "C": "10",
+              "D": "11"
+            },
+            "statements": [],
+            "answer": "A",
+            "solution": "Cộng được $8$.",
+            "illustration_request": null
+          },
+          {
+            "id": "P1-8",
+            "stem": "Tính $8+1$ (P1-8).",
+            "choices": {
+              "A": "9",
+              "B": "10",
+              "C": "11",
+              "D": "12"
+            },
+            "statements": [],
+            "answer": "A",
+            "solution": "Cộng được $9$.",
+            "illustration_request": null
+          },
+          {
+            "id": "P1-9",
+            "stem": "Tính $9+1$ (P1-9).",
+            "choices": {
+              "A": "10",
+              "B": "11",
+              "C": "12",
+              "D": "13"
+            },
+            "statements": [],
+            "answer": "A",
+            "solution": "Cộng được $10$.",
+            "illustration_request": null
+          },
+          {
+            "id": "P1-10",
+            "stem": "Tính $10+1$ (P1-10).",
+            "choices": {
+              "A": "11",
+              "B": "12",
+              "C": "13",
+              "D": "14"
+            },
+            "statements": [],
+            "answer": "A",
+            "solution": "Cộng được $11$.",
+            "illustration_request": null
+          },
+          {
+            "id": "P1-11",
+            "stem": "Tính $11+1$ (P1-11).",
+            "choices": {
+              "A": "12",
+              "B": "13",
+              "C": "14",
+              "D": "15"
+            },
+            "statements": [],
+            "answer": "A",
+            "solution": "Cộng được $12$.",
+            "illustration_request": null
+          },
+          {
+            "id": "P1-12",
+            "stem": "Tính $12+1$ (P1-12).",
+            "choices": {
+              "A": "13",
+              "B": "14",
+              "C": "15",
+              "D": "16"
+            },
+            "statements": [],
+            "answer": "A",
+            "solution": "Cộng được $13$.",
+            "illustration_request": null
+          },
+          {
+            "id": "P2-1",
+            "stem": "Tính $1+1$ (P2-1).",
+            "choices": {},
+            "statements": [
+              {
+                "text": "$1+1=2$",
+                "answer": true,
+                "solution": "Cộng trực tiếp."
+              },
+              {
+                "text": "$1+2=3$",
+                "answer": true,
+                "solution": "Cộng trực tiếp."
+              },
+              {
+                "text": "$1+3=4$",
+                "answer": true,
+                "solution": "Cộng trực tiếp."
+              },
+              {
+                "text": "$1+4=5$",
+                "answer": true,
+                "solution": "Cộng trực tiếp."
+              }
+            ],
+            "answer": null,
+            "solution": "Cộng được $2$.",
+            "illustration_request": null
+          },
+          {
+            "id": "P2-2",
+            "stem": "Tính $2+1$ (P2-2).",
+            "choices": {},
+            "statements": [
+              {
+                "text": "$2+1=3$",
+                "answer": true,
+                "solution": "Cộng trực tiếp."
+              },
+              {
+                "text": "$2+2=4$",
+                "answer": true,
+                "solution": "Cộng trực tiếp."
+              },
+              {
+                "text": "$2+3=5$",
+                "answer": true,
+                "solution": "Cộng trực tiếp."
+              },
+              {
+                "text": "$2+4=6$",
+                "answer": true,
+                "solution": "Cộng trực tiếp."
+              }
+            ],
+            "answer": null,
+            "solution": "Cộng được $3$.",
+            "illustration_request": null
+          },
+          {
+            "id": "P2-3",
+            "stem": "Tính $3+1$ (P2-3).",
+            "choices": {},
+            "statements": [
+              {
+                "text": "$3+1=4$",
+                "answer": true,
+                "solution": "Cộng trực tiếp."
+              },
+              {
+                "text": "$3+2=5$",
+                "answer": true,
+                "solution": "Cộng trực tiếp."
+              },
+              {
+                "text": "$3+3=6$",
+                "answer": true,
+                "solution": "Cộng trực tiếp."
+              },
+              {
+                "text": "$3+4=7$",
+                "answer": true,
+                "solution": "Cộng trực tiếp."
+              }
+            ],
+            "answer": null,
+            "solution": "Cộng được $4$.",
+            "illustration_request": null
+          },
+          {
+            "id": "P2-4",
+            "stem": "Tính $4+1$ (P2-4).",
+            "choices": {},
+            "statements": [
+              {
+                "text": "$4+1=5$",
+                "answer": true,
+                "solution": "Cộng trực tiếp."
+              },
+              {
+                "text": "$4+2=6$",
+                "answer": true,
+                "solution": "Cộng trực tiếp."
+              },
+              {
+                "text": "$4+3=7$",
+                "answer": true,
+                "solution": "Cộng trực tiếp."
+              },
+              {
+                "text": "$4+4=8$",
+                "answer": true,
+                "solution": "Cộng trực tiếp."
+              }
+            ],
+            "answer": null,
+            "solution": "Cộng được $5$.",
+            "illustration_request": null
+          },
+          {
+            "id": "P3-1",
+            "stem": "Tính $1+1$ (P3-1).",
+            "choices": {},
+            "statements": [],
+            "answer": "2",
+            "solution": "Cộng được $2$.",
+            "illustration_request": null
+          },
+          {
+            "id": "P3-2",
+            "stem": "Tính $2+1$ (P3-2).",
+            "choices": {},
+            "statements": [],
+            "answer": "3",
+            "solution": "Cộng được $3$.",
+            "illustration_request": null
+          },
+          {
+            "id": "P3-3",
+            "stem": "Tính $3+1$ (P3-3).",
+            "choices": {},
+            "statements": [],
+            "answer": "4",
+            "solution": "Cộng được $4$.",
+            "illustration_request": null
+          },
+          {
+            "id": "P3-4",
+            "stem": "Tính $4+1$ (P3-4).",
+            "choices": {},
+            "statements": [],
+            "answer": "5",
+            "solution": "Cộng được $5$.",
+            "illustration_request": null
+          },
+          {
+            "id": "P3-5",
+            "stem": "Tính $5+1$ (P3-5).",
+            "choices": {},
+            "statements": [],
+            "answer": "6",
+            "solution": "Cộng được $6$.",
+            "illustration_request": null
+          },
+          {
+            "id": "P3-6",
+            "stem": "Tính $6+1$ (P3-6).",
+            "choices": {},
+            "statements": [],
+            "answer": "7",
+            "solution": "Cộng được $7$.",
+            "illustration_request": null
+          }
+        ]
+      }
+    },
+    {
+      "label": "unsupported_export_combination",
+      "method": "GET",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/export?type=TEACHER_KEY&format=pdf",
+      "request": {},
+      "httpStatus": 422,
+      "contentType": "application/json",
+      "responseBody": {
+        "error": {
+          "code": "unsupported_export",
+          "message": "Use student tex/pdf or teacher json",
+          "details": null
+        }
+      }
+    },
+    {
+      "label": "invalid_pdf_format",
+      "method": "GET",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/export?type=STUDENT_EXAM&format=docx",
+      "request": {},
+      "httpStatus": 422,
+      "contentType": "application/json",
+      "responseBody": {
+        "detail": [
+          {
+            "type": "literal_error",
+            "loc": [
+              "query",
+              "format"
+            ],
+            "msg": "Input should be 'tex', 'json' or 'pdf'",
+            "input": "docx",
+            "ctx": {
+              "expected": "'tex', 'json' or 'pdf'"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "unknown_question",
+      "method": "PUT",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/questions/999",
+      "request": {
+        "json": {
+          "revision": 1,
+          "question": {
+            "stem": "Tính $1+1$."
+          }
+        }
+      },
+      "httpStatus": 404,
+      "contentType": "application/json",
+      "responseBody": {
+        "error": {
+          "code": "question_not_found",
+          "message": "Question not found",
+          "details": null
+        }
+      }
+    },
+    {
+      "label": "edit_one_question",
+      "method": "PUT",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/questions/1",
+      "request": {
+        "json": {
+          "revision": 1,
+          "question": {
+            "stem": "Tính $2+2$."
+          }
+        }
+      },
+      "httpStatus": 200,
+      "contentType": "application/json",
+      "responseExcerpt": {
+        "examId": "3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c",
+        "revision": 2,
+        "contentHash": "ddfa152cedd225fc7820d99d7e096201e6056a9121df1963fc4f511eed4371b9",
+        "approved": false,
+        "preview": {
+          "status": "not_requested",
+          "revision": 2,
+          "contentHash": "ddfa152cedd225fc7820d99d7e096201e6056a9121df1963fc4f511eed4371b9",
+          "sourceHash": "e3dac1e4424a49ae867052893620e4be04b5d19c6876414a023bc835506fd36b",
+          "compilerAvailable": true,
+          "statusUrl": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview?revision=2&contentHash=ddfa152cedd225fc7820d99d7e096201e6056a9121df1963fc4f511eed4371b9",
+          "pdfUrl": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview.pdf?revision=2&contentHash=ddfa152cedd225fc7820d99d7e096201e6056a9121df1963fc4f511eed4371b9",
+          "logUrl": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview.log?revision=2&contentHash=ddfa152cedd225fc7820d99d7e096201e6056a9121df1963fc4f511eed4371b9",
+          "draft": true
+        },
+        "hasDrawings": false,
+        "visualWarnings": [],
+        "questions": [
+          {
+            "id": 1,
+            "stableId": "P1-1",
+            "examRevision": 2,
+            "part": "P1",
+            "questionType": "mcq",
+            "stem": "Tính $2+2$.",
+            "choices": {
+              "A": "$2$",
+              "B": "$3$",
+              "C": "$4$",
+              "D": "$5$"
+            },
+            "key": "A",
+            "statements": [],
+            "explanation": "Cộng được $2$.",
+            "level": "THONG_HIEU",
+            "topic": "Nguyên hàm",
+            "status": "PENDING",
+            "revisionCount": 1,
+            "drawingLatex": null,
+            "solverKey": "A",
+            "writerKey": "A",
+            "auditNotes": "Manual edit; human review required",
+            "sourceReference": "synthetic-fixture"
+          }
+        ]
+      },
+      "omitted": "Other package fields and 21 questions; see JobManager.package"
+    },
+    {
+      "label": "stale_approval",
+      "method": "POST",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/approve",
+      "request": {
+        "json": {
+          "revision": 1,
+          "contentHash": "dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+          "reviewer": "synthetic-audit-teacher"
+        }
+      },
+      "httpStatus": 409,
+      "contentType": "application/json",
+      "responseBody": {
+        "error": {
+          "code": "stale_revision",
+          "message": "Exam changed; reload before editing or approving",
+          "details": null
+        }
+      }
+    },
+    {
+      "label": "stale_preview",
+      "method": "GET",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview.pdf?revision=1&contentHash=dd2b78a199c6b22c1158aae85136e8c281d3139fa70723871091bf6f02a5828e",
+      "request": {},
+      "httpStatus": 409,
+      "contentType": "application/json",
+      "responseBody": {
+        "error": {
+          "code": "stale_revision",
+          "message": "Exam changed; reload before editing or approving",
+          "details": null
+        }
+      }
+    },
+    {
+      "label": "regenerate_one_question",
+      "method": "POST",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/questions/1/regenerate",
+      "request": {
+        "json": {
+          "revision": 2,
+          "instruction": "Tạo lại câu này."
+        }
+      },
+      "httpStatus": 200,
+      "contentType": "application/json",
+      "responseExcerpt": {
+        "examId": "3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c",
+        "revision": 3,
+        "contentHash": "d7fc593d09add00dfb4979103eece6247ba38c3797204bf84316c48cee7d4c7d",
+        "approved": false,
+        "preview": {
+          "status": "not_requested",
+          "revision": 3,
+          "contentHash": "d7fc593d09add00dfb4979103eece6247ba38c3797204bf84316c48cee7d4c7d",
+          "sourceHash": "6be4ffbf966b8d658f428f73630f08fb0d9a974620fc9f38437577eb337bd219",
+          "compilerAvailable": true,
+          "statusUrl": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview?revision=3&contentHash=d7fc593d09add00dfb4979103eece6247ba38c3797204bf84316c48cee7d4c7d",
+          "pdfUrl": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview.pdf?revision=3&contentHash=d7fc593d09add00dfb4979103eece6247ba38c3797204bf84316c48cee7d4c7d",
+          "logUrl": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview.log?revision=3&contentHash=d7fc593d09add00dfb4979103eece6247ba38c3797204bf84316c48cee7d4c7d",
+          "draft": true
+        },
+        "hasDrawings": false,
+        "visualWarnings": [],
+        "questions": [
+          {
+            "id": 1,
+            "stableId": "P1-1",
+            "examRevision": 3,
+            "part": "P1",
+            "questionType": "mcq",
+            "stem": "Tính $2+2$ (đã sửa).",
+            "choices": {
+              "A": "$2$",
+              "B": "$3$",
+              "C": "$4$",
+              "D": "$5$"
+            },
+            "key": "A",
+            "statements": [],
+            "explanation": "Cộng được $2$.",
+            "level": "THONG_HIEU",
+            "topic": "Nguyên hàm",
+            "status": "PENDING",
+            "revisionCount": 2,
+            "drawingLatex": null,
+            "solverKey": "A",
+            "writerKey": "A",
+            "auditNotes": "Manual edit; human review required",
+            "sourceReference": "synthetic-fixture"
+          }
+        ]
+      },
+      "omitted": "Other package fields and 21 questions; see JobManager.package"
+    },
+    {
+      "label": "missing_batch_revision_route",
+      "method": "POST",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/batch-revision",
+      "request": {
+        "json": {}
+      },
+      "httpStatus": 404,
+      "contentType": "application/json",
+      "responseBody": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "label": "invalid_uuid_package",
+      "method": "GET",
+      "route": "/api/exams/not-a-uuid",
+      "request": {},
+      "httpStatus": 422,
+      "contentType": "application/json",
+      "responseBody": {
+        "detail": [
+          {
+            "type": "uuid_parsing",
+            "loc": [
+              "path",
+              "job_id"
+            ],
+            "msg": "Input should be a valid UUID, invalid character: found `n` at 0",
+            "input": "not-a-uuid",
+            "ctx": {
+              "error": "invalid character: found `n` at 0"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "invalid_uuid_events",
+      "method": "GET",
+      "route": "/api/exams/not-a-uuid/events",
+      "request": {},
+      "httpStatus": 422,
+      "contentType": "application/json",
+      "responseBody": {
+        "detail": [
+          {
+            "type": "uuid_parsing",
+            "loc": [
+              "path",
+              "job_id"
+            ],
+            "msg": "Input should be a valid UUID, invalid character: found `n` at 0",
+            "input": "not-a-uuid",
+            "ctx": {
+              "error": "invalid character: found `n` at 0"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "missing_body__questions_1_regenerate",
+      "method": "POST",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/questions/1/regenerate",
+      "request": {},
+      "httpStatus": 422,
+      "contentType": "application/json",
+      "responseBody": {
+        "detail": [
+          {
+            "type": "missing",
+            "loc": [
+              "body"
+            ],
+            "msg": "Field required",
+            "input": null
+          }
+        ]
+      }
+    },
+    {
+      "label": "missing_body__approve",
+      "method": "POST",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/approve",
+      "request": {},
+      "httpStatus": 422,
+      "contentType": "application/json",
+      "responseBody": {
+        "detail": [
+          {
+            "type": "missing",
+            "loc": [
+              "body"
+            ],
+            "msg": "Field required",
+            "input": null
+          }
+        ]
+      }
+    },
+    {
+      "label": "missing_body__preview",
+      "method": "POST",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview",
+      "request": {},
+      "httpStatus": 422,
+      "contentType": "application/json",
+      "responseBody": {
+        "detail": [
+          {
+            "type": "missing",
+            "loc": [
+              "body"
+            ],
+            "msg": "Field required",
+            "input": null
+          }
+        ]
+      }
+    },
+    {
+      "label": "edit_missing_body",
+      "method": "PUT",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/questions/1",
+      "request": {},
+      "httpStatus": 422,
+      "contentType": "application/json",
+      "responseBody": {
+        "detail": [
+          {
+            "type": "missing",
+            "loc": [
+              "body"
+            ],
+            "msg": "Field required",
+            "input": null
+          }
+        ]
+      }
+    },
+    {
+      "label": "missing_query_preview",
+      "method": "GET",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview",
+      "request": {},
+      "httpStatus": 422,
+      "contentType": "application/json",
+      "responseBody": {
+        "detail": [
+          {
+            "type": "missing",
+            "loc": [
+              "query",
+              "revision"
+            ],
+            "msg": "Field required",
+            "input": null
+          },
+          {
+            "type": "missing",
+            "loc": [
+              "query",
+              "contentHash"
+            ],
+            "msg": "Field required",
+            "input": null
+          }
+        ]
+      }
+    },
+    {
+      "label": "missing_query_preview.pdf",
+      "method": "GET",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview.pdf",
+      "request": {},
+      "httpStatus": 422,
+      "contentType": "application/json",
+      "responseBody": {
+        "detail": [
+          {
+            "type": "missing",
+            "loc": [
+              "query",
+              "revision"
+            ],
+            "msg": "Field required",
+            "input": null
+          },
+          {
+            "type": "missing",
+            "loc": [
+              "query",
+              "contentHash"
+            ],
+            "msg": "Field required",
+            "input": null
+          }
+        ]
+      }
+    },
+    {
+      "label": "missing_query_preview.log",
+      "method": "GET",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/preview.log",
+      "request": {},
+      "httpStatus": 422,
+      "contentType": "application/json",
+      "responseBody": {
+        "detail": [
+          {
+            "type": "missing",
+            "loc": [
+              "query",
+              "revision"
+            ],
+            "msg": "Field required",
+            "input": null
+          },
+          {
+            "type": "missing",
+            "loc": [
+              "query",
+              "contentHash"
+            ],
+            "msg": "Field required",
+            "input": null
+          }
+        ]
+      }
+    },
+    {
+      "label": "missing_query_export",
+      "method": "GET",
+      "route": "/api/exams/3d3db0c4-6bbd-4964-88a1-c2fdfb29c08c/export",
+      "request": {},
+      "httpStatus": 422,
+      "contentType": "application/json",
+      "responseBody": {
+        "detail": [
+          {
+            "type": "missing",
+            "loc": [
+              "query",
+              "type"
+            ],
+            "msg": "Field required",
+            "input": null
+          },
+          {
+            "type": "missing",
+            "loc": [
+              "query",
+              "format"
+            ],
+            "msg": "Field required",
+            "input": null
+          }
+        ]
+      }
+    },
+    {
+      "label": "start_then_rag_gap",
+      "method": "POST",
+      "route": "/api/exams/generate",
+      "request": {
+        "json": {
+          "formatId": "thpt-math",
+          "formatVersion": "1",
+          "subject": "Toán Học",
+          "grade": 12,
+          "examType": "THPT_STANDARD",
+          "durationMinutes": 90,
+          "itemCount": 22,
+          "prompt": "Đề luyện tập",
+          "uploadedFiles": []
+        },
+        "headers": {
+          "Idempotency-Key": "gap"
+        }
+      },
+      "httpStatus": 202,
+      "contentType": "application/json",
+      "responseBody": {
+        "jobId": "772831f8-9651-4f10-bcf1-5ffb08c825a2",
+        "status": "queued"
+      }
+    },
+    {
+      "label": "failed_job_rag_gap_http_200",
+      "method": "GET",
+      "route": "/api/exams/772831f8-9651-4f10-bcf1-5ffb08c825a2/status",
+      "request": {},
+      "httpStatus": 200,
+      "contentType": "application/json",
+      "responseBody": {
+        "stage": 1,
+        "stageName": "rag",
+        "percent": 5,
+        "estimatedSecondsLeft": 0,
+        "completedItems": 0,
+        "totalItems": 22,
+        "statusMessage": "rag / revision 1",
+        "jobId": "772831f8-9651-4f10-bcf1-5ffb08c825a2",
+        "status": "failed",
+        "error": {
+          "code": "retrieval_gap",
+          "message": "RAG could not support every requested question",
+          "details": [
+            {
+              "code": "topic_not_found",
+              "message": "Synthetic gap"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "label": "legacy_health",
+      "method": "GET",
+      "route": "/health",
+      "request": {},
+      "httpStatus": 200,
+      "contentType": "application/json",
+      "responseBody": {
+        "status": "ok",
+        "provider": "mock",
+        "model": "mock-fixture-v1"
+      }
+    },
+    {
+      "label": "legacy_v1_baseline",
+      "method": "POST",
+      "route": "/v1/exams/generate",
+      "request": {
+        "json": {
+          "matrix": {
+            "subject": "Mathematics",
+            "title": "Algebra and Functions Quiz",
+            "topics": [
+              {
+                "id": "algebra",
+                "name": "Algebra",
+                "subtopics": [
+                  "linear_equations"
+                ],
+                "learning_objectives": [
+                  {
+                    "id": "solve_linear",
+                    "description": "Solve linear equations in one variable."
+                  }
+                ],
+                "question_count": 2,
+                "points": 5.0
+              },
+              {
+                "id": "functions",
+                "name": "Functions",
+                "subtopics": [
+                  "evaluation"
+                ],
+                "learning_objectives": [
+                  {
+                    "id": "evaluate_function",
+                    "description": "Evaluate and infer linear functions."
+                  }
+                ],
+                "question_count": 2,
+                "points": 5.0
+              }
+            ],
+            "question_count": 4,
+            "question_type_distribution": {
+              "multiple_choice": 2,
+              "short_answer": 1,
+              "true_false": 1
+            },
+            "difficulty_distribution": {
+              "easy": 2,
+              "medium": 1,
+              "hard": 1
+            },
+            "total_points": 10.0,
+            "points_by_type": {
+              "multiple_choice": 5.0,
+              "short_answer": 3.0,
+              "true_false": 2.0
+            },
+            "duration_minutes": 30,
+            "additional_constraints": [
+              "Use clear language suitable for introductory algebra."
+            ]
+          },
+          "question_bank": {
+            "questions": [
+              {
+                "stem": "Solve 2x + 3 = 7. What is x?",
+                "topic_id": "algebra",
+                "subtopic": "linear_equations",
+                "learning_objective_ids": [
+                  "solve_linear"
+                ],
+                "question_type": "multiple_choice",
+                "difficulty": "easy",
+                "choices": {
+                  "A": "1",
+                  "B": "2",
+                  "C": "3",
+                  "D": "5"
+                },
+                "answer": "B",
+                "solution": "Subtract 3 to obtain 2x = 4, then divide by 2: x = 2.",
+                "id": "bank-linear-001",
+                "points": 2.0,
+                "metadata": {
+                  "origin": "Hand-authored demonstration",
+                  "revision": "1"
+                }
+              },
+              {
+                "stem": "For f(x) = 2x + 1, f(3) = 7. True or false?",
+                "topic_id": "functions",
+                "subtopic": "evaluation",
+                "learning_objective_ids": [
+                  "evaluate_function"
+                ],
+                "question_type": "true_false",
+                "difficulty": "easy",
+                "choices": {},
+                "answer": "true",
+                "solution": "f(3) = 2(3) + 1 = 7, so the statement is true.",
+                "id": "bank-function-001",
+                "points": null,
+                "metadata": {
+                  "origin": "Hand-authored demonstration"
+                }
+              }
+            ]
+          },
+          "context": {
+            "course_materials": [
+              "A linear function has the form f(x) = ax + b."
+            ],
+            "instructions": [
+              "Show reasoning in solutions."
+            ],
+            "custom_requirements": []
+          },
+          "include_answers": true,
+          "include_solutions": true,
+          "format_profile": null
+        }
+      },
+      "httpStatus": 200,
+      "contentType": "application/json",
+      "responseBody": {
+        "status": "success",
+        "exam": {
+          "title": "Algebra and Functions Quiz",
+          "subject": "Mathematics",
+          "duration_minutes": 30,
+          "total_points": 10.0,
+          "instructions": "Answer all four questions. Show your reasoning for question 4.",
+          "questions": [
+            {
+              "stem": "Solve 2x + 3 = 7. What is x?",
+              "topic_id": "algebra",
+              "subtopic": "linear_equations",
+              "learning_objective_ids": [
+                "solve_linear"
+              ],
+              "question_type": "multiple_choice",
+              "difficulty": "easy",
+              "choices": {
+                "A": "1",
+                "B": "2",
+                "C": "3",
+                "D": "5"
+              },
+              "answer": "B",
+              "solution": "Subtract 3 to obtain 2x = 4, then divide by 2: x = 2.",
+              "id": "q1",
+              "points": 2.0,
+              "source_question_id": "bank-linear-001"
+            },
+            {
+              "stem": "Solve 3(x - 2) = 2x + 5.",
+              "topic_id": "algebra",
+              "subtopic": "linear_equations",
+              "learning_objective_ids": [
+                "solve_linear"
+              ],
+              "question_type": "short_answer",
+              "difficulty": "medium",
+              "choices": {},
+              "answer": "x = 11",
+              "solution": "Expand to 3x - 6 = 2x + 5. Subtract 2x and add 6: x = 11.",
+              "id": "q2",
+              "points": 3.0,
+              "source_question_id": null
+            },
+            {
+              "stem": "For f(x) = 2x + 1, f(3) = 7. True or false?",
+              "topic_id": "functions",
+              "subtopic": "evaluation",
+              "learning_objective_ids": [
+                "evaluate_function"
+              ],
+              "question_type": "true_false",
+              "difficulty": "easy",
+              "choices": {},
+              "answer": "true",
+              "solution": "f(3) = 2(3) + 1 = 7, so the statement is true.",
+              "id": "q3",
+              "points": 2.0,
+              "source_question_id": "bank-function-001"
+            },
+            {
+              "stem": "If f(x) = ax + b, f(1) = 5, and f(3) = 11, what is f(5)?",
+              "topic_id": "functions",
+              "subtopic": "evaluation",
+              "learning_objective_ids": [
+                "evaluate_function"
+              ],
+              "question_type": "multiple_choice",
+              "difficulty": "hard",
+              "choices": {
+                "A": "13",
+                "B": "15",
+                "C": "17",
+                "D": "19"
+              },
+              "answer": "C",
+              "solution": "The slope is (11 - 5)/(3 - 1) = 3. Then b = 2 and f(5) = 17.",
+              "id": "q4",
+              "points": 3.0,
+              "source_question_id": null
+            }
+          ],
+          "shared_passages": []
+        },
+        "validation": {
+          "passed": true,
+          "checks": [
+            {
+              "code": "schema_valid",
+              "passed": true,
+              "expected": true,
+              "actual": true,
+              "message": "Satisfied."
+            },
+            {
+              "code": "title",
+              "passed": true,
+              "expected": "Algebra and Functions Quiz",
+              "actual": "Algebra and Functions Quiz",
+              "message": "Satisfied."
+            },
+            {
+              "code": "subject",
+              "passed": true,
+              "expected": "Mathematics",
+              "actual": "Mathematics",
+              "message": "Satisfied."
+            },
+            {
+              "code": "duration_minutes",
+              "passed": true,
+              "expected": 30,
+              "actual": 30,
+              "message": "Satisfied."
+            },
+            {
+              "code": "question_count",
+              "passed": true,
+              "expected": 4,
+              "actual": 4,
+              "message": "Satisfied."
+            },
+            {
+              "code": "declared_total_points",
+              "passed": true,
+              "expected": 10.0,
+              "actual": 10.0,
+              "message": "Satisfied."
+            },
+            {
+              "code": "total_points",
+              "passed": true,
+              "expected": 10.0,
+              "actual": 10.0,
+              "message": "Satisfied."
+            },
+            {
+              "code": "unique_question_ids",
+              "passed": true,
+              "expected": [],
+              "actual": [],
+              "message": "Satisfied."
+            },
+            {
+              "code": "duplicate_stems",
+              "passed": true,
+              "expected": [],
+              "actual": [],
+              "message": "Satisfied."
+            },
+            {
+              "code": "known_topics",
+              "passed": true,
+              "expected": [],
+              "actual": [],
+              "message": "Satisfied."
+            },
+            {
+              "code": "topic_count:algebra",
+              "passed": true,
+              "expected": 2,
+              "actual": 2,
+              "message": "Satisfied."
+            },
+            {
+              "code": "topic_points:algebra",
+              "passed": true,
+              "expected": 5.0,
+              "actual": 5.0,
+              "message": "Satisfied."
+            },
+            {
+              "code": "subtopic_coverage:algebra:linear_equations",
+              "passed": true,
+              "expected": true,
+              "actual": true,
+              "message": "Satisfied."
+            },
+            {
+              "code": "objective_coverage:solve_linear",
+              "passed": true,
+              "expected": true,
+              "actual": true,
+              "message": "Satisfied."
+            },
+            {
+              "code": "topic_count:functions",
+              "passed": true,
+              "expected": 2,
+              "actual": 2,
+              "message": "Satisfied."
+            },
+            {
+              "code": "topic_points:functions",
+              "passed": true,
+              "expected": 5.0,
+              "actual": 5.0,
+              "message": "Satisfied."
+            },
+            {
+              "code": "subtopic_coverage:functions:evaluation",
+              "passed": true,
+              "expected": true,
+              "actual": true,
+              "message": "Satisfied."
+            },
+            {
+              "code": "objective_coverage:evaluate_function",
+              "passed": true,
+              "expected": true,
+              "actual": true,
+              "message": "Satisfied."
+            },
+            {
+              "code": "known_subtopics",
+              "passed": true,
+              "expected": [],
+              "actual": [],
+              "message": "Satisfied."
+            },
+            {
+              "code": "known_objectives",
+              "passed": true,
+              "expected": [],
+              "actual": [],
+              "message": "Satisfied."
+            },
+            {
+              "code": "type_count:multiple_choice",
+              "passed": true,
+              "expected": 2,
+              "actual": 2,
+              "message": "Satisfied."
+            },
+            {
+              "code": "type_count:short_answer",
+              "passed": true,
+              "expected": 1,
+              "actual": 1,
+              "message": "Satisfied."
+            },
+            {
+              "code": "type_count:essay",
+              "passed": true,
+              "expected": 0,
+              "actual": 0,
+              "message": "Satisfied."
+            },
+            {
+              "code": "type_count:true_false",
+              "passed": true,
+              "expected": 1,
+              "actual": 1,
+              "message": "Satisfied."
+            },
+            {
+              "code": "difficulty_count:easy",
+              "passed": true,
+              "expected": 2,
+              "actual": 2,
+              "message": "Satisfied."
+            },
+            {
+              "code": "difficulty_count:medium",
+              "passed": true,
+              "expected": 1,
+              "actual": 1,
+              "message": "Satisfied."
+            },
+            {
+              "code": "difficulty_count:hard",
+              "passed": true,
+              "expected": 1,
+              "actual": 1,
+              "message": "Satisfied."
+            },
+            {
+              "code": "type_points:multiple_choice",
+              "passed": true,
+              "expected": 5.0,
+              "actual": 5.0,
+              "message": "Satisfied."
+            },
+            {
+              "code": "type_points:short_answer",
+              "passed": true,
+              "expected": 3.0,
+              "actual": 3.0,
+              "message": "Satisfied."
+            },
+            {
+              "code": "type_points:true_false",
+              "passed": true,
+              "expected": 2.0,
+              "actual": 2.0,
+              "message": "Satisfied."
+            },
+            {
+              "code": "answers_policy",
+              "passed": true,
+              "expected": [],
+              "actual": [],
+              "message": "Satisfied."
+            },
+            {
+              "code": "solutions_policy",
+              "passed": true,
+              "expected": [],
+              "actual": [],
+              "message": "Satisfied."
+            },
+            {
+              "code": "valid_source_references",
+              "passed": true,
+              "expected": [],
+              "actual": [],
+              "message": "Satisfied."
+            },
+            {
+              "code": "faithful_source_reuse",
+              "passed": true,
+              "expected": [],
+              "actual": [],
+              "message": "Satisfied."
+            },
+            {
+              "code": "bank_copy_has_reference",
+              "passed": true,
+              "expected": [],
+              "actual": [],
+              "message": "Satisfied."
+            },
+            {
+              "code": "unique_source_references",
+              "passed": true,
+              "expected": [],
+              "actual": [],
+              "message": "Satisfied."
+            }
+          ],
+          "constraint_satisfaction_rate": 1.0,
+          "semantic_review_required": [
+            "Answer and solution correctness; clarity and ambiguity; curriculum appropriateness.",
+            "Topic/objective alignment and difficulty calibration; only labels were checked.",
+            "Semantic duplicate detection and realistic completion time (metadata only checked).",
+            "Matrix constraint: Use clear language suitable for introductory algebra.",
+            "Context instruction: Show reasoning in solutions."
+          ],
+          "warnings": []
+        },
+        "evaluation": {
+          "implementation_version": "0.1.0",
+          "run_id": "104ea54b-afdf-42f8-9df2-32338be9509d",
+          "created_at": "2026-11-17T12:25:15.622004Z",
+          "status": "success",
+          "provider": "mock",
+          "requested_model": "mock-fixture-v1",
+          "model": "mock-fixture-v1",
+          "prompt_version": "v1",
+          "prompt_sha256": "0d1d71df3b17a41e409ccd497df3db7bc1598f0866febf710b8aa54d38a8be91",
+          "request_sha256": "2e7feaf3a0388f606ca5548775f169f55d56693d648190e88408587dee9bbafa",
+          "response_sha256": "f4eb5b86dc9949f64a81adcb49cdfd80c32a7fa654e6b762875e0172e64a020b",
+          "provider_response_id": "offline-fixture",
+          "generation_latency_ms": 0.175,
+          "total_latency_ms": 0.82,
+          "usage": {
+            "input_tokens": null,
+            "output_tokens": null
+          },
+          "estimated_cost_usd": null,
+          "input_price_per_million": null,
+          "output_price_per_million": null,
+          "generation_parameters": {
+            "fixture": "algebra-v1"
+          },
+          "constraint_satisfaction_rate": 1.0,
+          "validation_passed": true,
+          "error_code": null
+        },
+        "error": null,
+        "warnings": []
+      }
+    },
+    {
+      "label": "legacy_v1_invalid",
+      "method": "POST",
+      "route": "/v1/exams/generate",
+      "request": {
+        "json": {}
+      },
+      "httpStatus": 422,
+      "contentType": "application/json",
+      "responseBody": {
+        "detail": [
+          {
+            "type": "missing",
+            "loc": [
+              "body",
+              "matrix"
+            ],
+            "msg": "Field required",
+            "input": {}
+          }
+        ]
+      }
+    },
+    {
+      "label": "legacy_v2_latex",
+      "method": "POST",
+      "route": "/v2/exams/generate",
+      "request": {
+        "json": {
+          "request": {
+            "matrix": {
+              "subject": "Toán",
+              "title": "Đề toán synthetic 01",
+              "topics": [
+                {
+                  "id": "math",
+                  "name": "Toán",
+                  "subtopics": [],
+                  "learning_objectives": [],
+                  "question_count": 4,
+                  "points": null
+                }
+              ],
+              "question_count": 4,
+              "question_type_distribution": {
+                "multiple_choice": 2,
+                "short_answer": 2
+              },
+              "difficulty_distribution": {
+                "easy": 2,
+                "medium": 2,
+                "hard": 0
+              },
+              "total_points": 4.0,
+              "points_by_type": null,
+              "duration_minutes": 20,
+              "additional_constraints": []
+            },
+            "question_bank": {
+              "questions": []
+            },
+            "context": {
+              "course_materials": [],
+              "instructions": [],
+              "custom_requirements": []
+            },
+            "include_answers": true,
+            "include_solutions": true,
+            "format_profile": null
+          },
+          "evidence": [],
+          "require_evidence": false,
+          "required_visual_question_ids": [],
+          "latex_template": null,
+          "user_prompt": null,
+          "exam_family": null,
+          "workflow_version": "cisr-v3",
+          "workflow": {
+            "composer": {
+              "model": null,
+              "supports_images": null,
+              "max_output_tokens": null,
+              "input_price_per_million": null,
+              "output_price_per_million": null
+            },
+            "illustrator": {
+              "model": null,
+              "supports_images": null,
+              "max_output_tokens": null,
+              "input_price_per_million": null,
+              "output_price_per_million": null
+            },
+            "solver": {
+              "model": null,
+              "supports_images": null,
+              "max_output_tokens": null,
+              "input_price_per_million": null,
+              "output_price_per_million": null
+            },
+            "reviewer": {
+              "model": null,
+              "supports_images": null,
+              "max_output_tokens": null,
+              "input_price_per_million": null,
+              "output_price_per_million": null
+            },
+            "max_repair_rounds": 1,
+            "max_schema_repairs": 1,
+            "max_provider_calls": 12,
+            "stage_timeout_seconds": 120.0,
+            "run_timeout_seconds": 600.0,
+            "max_total_tokens": 100000,
+            "max_prompt_chars": 200000,
+            "max_image_bytes": 5000000,
+            "max_questions": 120,
+            "max_figures": 12
+          }
+        }
+      },
+      "httpStatus": 200,
+      "contentType": "application/x-tex",
+      "responseArtifact": {
+        "bytes": 1142,
+        "sha256": "1897545c1cd2c14b665f1aea9b42a5bb931ec48cb5f2a47dd7b9c047b3c93d9e",
+        "contentDisposition": "attachment; filename=\"de_thi.tex\"",
+        "prefix": "\\documentclass[12pt,a4paper]{article}\r\n\\usepackage{fontspec}\r\n\\usepackage{amsmath,amssymb,graphicx}\r"
+      }
+    },
+    {
+      "label": "legacy_v2_invalid",
+      "method": "POST",
+      "route": "/v2/exams/generate",
+      "request": {
+        "json": {}
+      },
+      "httpStatus": 422,
+      "contentType": "application/json",
+      "responseBody": {
+        "detail": [
+          {
+            "type": "missing",
+            "loc": [
+              "body",
+              "request"
+            ],
+            "msg": "Field required",
+            "input": {}
+          }
+        ]
+      }
+    }
+  ]
+}

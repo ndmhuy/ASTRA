@@ -1,0 +1,146 @@
+{
+  "$defs": {
+    "Slot": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^P[123]-[1-9][0-9]?$",
+          "title": "Id",
+          "type": "string"
+        },
+        "part": {
+          "enum": [
+            "P1",
+            "P2",
+            "P3"
+          ],
+          "title": "Part",
+          "type": "string"
+        },
+        "topic": {
+          "maxLength": 30000,
+          "minLength": 1,
+          "title": "Topic",
+          "type": "string"
+        },
+        "objective": {
+          "maxLength": 30000,
+          "minLength": 1,
+          "title": "Objective",
+          "type": "string"
+        },
+        "level": {
+          "enum": [
+            "NB",
+            "TH",
+            "VD",
+            "VDC"
+          ],
+          "title": "Level",
+          "type": "string"
+        },
+        "statement_levels": {
+          "items": {
+            "enum": [
+              "NB",
+              "TH",
+              "VD",
+              "VDC"
+            ],
+            "type": "string"
+          },
+          "title": "Statement Levels",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "part",
+        "topic",
+        "objective",
+        "level"
+      ],
+      "title": "Slot",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "formatId": {
+      "const": "thpt-math",
+      "default": "thpt-math",
+      "title": "Formatid",
+      "type": "string"
+    },
+    "formatVersion": {
+      "const": "1",
+      "default": "1",
+      "title": "Formatversion",
+      "type": "string"
+    },
+    "subject": {
+      "const": "Toán Học",
+      "title": "Subject",
+      "type": "string"
+    },
+    "grade": {
+      "const": 12,
+      "title": "Grade",
+      "type": "integer"
+    },
+    "examType": {
+      "const": "THPT_STANDARD",
+      "title": "Examtype",
+      "type": "string"
+    },
+    "durationMinutes": {
+      "const": 90,
+      "title": "Durationminutes",
+      "type": "integer"
+    },
+    "itemCount": {
+      "const": 22,
+      "title": "Itemcount",
+      "type": "integer"
+    },
+    "prompt": {
+      "default": "",
+      "maxLength": 10000,
+      "title": "Prompt",
+      "type": "string"
+    },
+    "uploadedFiles": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 0,
+      "title": "Uploadedfiles",
+      "type": "array"
+    },
+    "slots": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/Slot"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Slots"
+    }
+  },
+  "required": [
+    "subject",
+    "grade",
+    "examType",
+    "durationMinutes",
+    "itemCount"
+  ],
+  "title": "GenerateRequest",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

@@ -1,0 +1,1369 @@
+{
+  "documentVersion": "backend-agent-capability-audit-v1",
+  "sourceBranch": "merge-mas-and-uiux",
+  "sourceCommit": "2acb95fbf6a55b7621c786248e10b10ca91a35ab",
+  "note": "Documentation descriptors, not a runtime capability registry or dispatcher. BLOCKED teacher intake remains unimplemented.",
+  "capabilities": [
+    {
+      "capabilityId": "backend.health",
+      "descriptionVi": "Đọc cấu hình và khả năng tìm thấy compiler, không probe provider.",
+      "status": "IMPLEMENTED",
+      "callableNow": true,
+      "owner": "Backend/MAS",
+      "sourceEvidence": [
+        "https://github.com/ndmhuy/ASTRA/blob/2acb95fbf6a55b7621c786248e10b10ca91a35ab/src/exam_baseline/api/routes_ui.py#L24"
+      ],
+      "methodAndRoute": "GET /api/health",
+      "requestSchemaVersion": "UNVERSIONED: pin source SHA; see wire models",
+      "requestSchema": null,
+      "parameters": [],
+      "responseSchema": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "responseSchemaNote": "OpenAPI declarations exactly as exported; many /api response schemas are empty/untyped. Do not infer a versioned response DTO.",
+      "preconditions": [
+        "Local/trusted server: chưa có auth/ACL/quota; không triển khai public multi-tenant."
+      ],
+      "confirmationRequired": false,
+      "confirmationPolicyNote": "Product/client requirement for mutations; only post-generation approve/export hash binding is enforced server-side.",
+      "idempotencyPolicy": "No Idempotency-Key contract; reads return current state, mutations use current exam revision where required",
+      "errorCodes": [],
+      "errorContractNote": "422 detail[] differs from error.code envelopes. Regenerate can also propagate uncaught provider/contract errors as generic HTTP500; do not assume every failure has a typed receipt.",
+      "validExample": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/0"
+      },
+      "invalidExampleAndError": {
+        "notApplicable": "Read-only route without request parameters/body; no invalid input contract."
+      },
+      "testEvidence": "tests/api/test_ui_preview.py + tests/api/test_ui_jobs.py; captured runtime examples"
+    },
+    {
+      "capabilityId": "backend.format_catalog",
+      "descriptionVi": "Lấy format THPT và cấu trúc khóa; chưa phải preset registry hay teacher form đầy đủ.",
+      "status": "PARTIAL",
+      "callableNow": true,
+      "owner": "Backend/MAS",
+      "sourceEvidence": [
+        "https://github.com/ndmhuy/ASTRA/blob/2acb95fbf6a55b7621c786248e10b10ca91a35ab/src/exam_baseline/api/routes_ui.py#L36"
+      ],
+      "methodAndRoute": "GET /api/exam-formats",
+      "requestSchemaVersion": "UNVERSIONED: pin source SHA; see wire models",
+      "requestSchema": null,
+      "parameters": [],
+      "responseSchema": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "responseSchemaNote": "OpenAPI declarations exactly as exported; many /api response schemas are empty/untyped. Do not infer a versioned response DTO.",
+      "preconditions": [
+        "Local/trusted server: chưa có auth/ACL/quota; không triển khai public multi-tenant."
+      ],
+      "confirmationRequired": false,
+      "confirmationPolicyNote": "Product/client requirement for mutations; only post-generation approve/export hash binding is enforced server-side.",
+      "idempotencyPolicy": "No Idempotency-Key contract; reads return current state, mutations use current exam revision where required",
+      "errorCodes": [],
+      "errorContractNote": "422 detail[] differs from error.code envelopes. Regenerate can also propagate uncaught provider/contract errors as generic HTTP500; do not assume every failure has a typed receipt.",
+      "validExample": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/1"
+      },
+      "invalidExampleAndError": {
+        "notApplicable": "Read-only route without request parameters/body; no invalid input contract."
+      },
+      "testEvidence": "tests/api/test_ui_preview.py + tests/api/test_ui_jobs.py; captured runtime examples"
+    },
+    {
+      "capabilityId": "backend.evaluate_thpt",
+      "descriptionVi": "Validate request THPT đầy đủ và suy ra native slots/RAG matrix; chưa retrieve evidence.",
+      "status": "IMPLEMENTED",
+      "callableNow": true,
+      "owner": "Backend/MAS",
+      "sourceEvidence": [
+        "https://github.com/ndmhuy/ASTRA/blob/2acb95fbf6a55b7621c786248e10b10ca91a35ab/src/exam_baseline/api/routes_ui.py#L41"
+      ],
+      "methodAndRoute": "POST /api/exam-formats/evaluate",
+      "requestSchemaVersion": "formatId=thpt-math; formatVersion=1",
+      "requestSchema": {
+        "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/GenerateRequest"
+      },
+      "parameters": [],
+      "responseSchema": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "responseSchemaNote": "OpenAPI declarations exactly as exported; many /api response schemas are empty/untyped. Do not infer a versioned response DTO.",
+      "preconditions": [
+        "Local/trusted server: chưa có auth/ACL/quota; không triển khai public multi-tenant."
+      ],
+      "confirmationRequired": false,
+      "confirmationPolicyNote": "Product/client requirement for mutations; only post-generation approve/export hash binding is enforced server-side.",
+      "idempotencyPolicy": "No Idempotency-Key contract; reads return current state, mutations use current exam revision where required",
+      "errorCodes": [
+        "request_validation(422)"
+      ],
+      "errorContractNote": "422 detail[] differs from error.code envelopes. Regenerate can also propagate uncaught provider/contract errors as generic HTTP500; do not assume every failure has a typed receipt.",
+      "validExample": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/2"
+      },
+      "invalidExampleAndError": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/3"
+      },
+      "testEvidence": "tests/api/test_ui_preview.py + tests/api/test_ui_jobs.py; captured runtime examples"
+    },
+    {
+      "capabilityId": "backend.start_generation",
+      "descriptionVi": "Xếp hàng job THPT thật; trả receipt, chưa phải đề hoàn tất.",
+      "status": "IMPLEMENTED",
+      "callableNow": true,
+      "owner": "Backend/MAS",
+      "sourceEvidence": [
+        "https://github.com/ndmhuy/ASTRA/blob/2acb95fbf6a55b7621c786248e10b10ca91a35ab/src/exam_baseline/api/routes_ui.py#L53"
+      ],
+      "methodAndRoute": "POST /api/exams/generate",
+      "requestSchemaVersion": "formatId=thpt-math; formatVersion=1",
+      "requestSchema": {
+        "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/GenerateRequest"
+      },
+      "parameters": [
+        {
+          "name": "idempotency-key",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "title": "Idempotency-Key"
+          }
+        }
+      ],
+      "responseSchema": {
+        "202": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "responseSchemaNote": "OpenAPI declarations exactly as exported; many /api response schemas are empty/untyped. Do not infer a versioned response DTO.",
+      "preconditions": [
+        "Local/trusted server: chưa có auth/ACL/quota; không triển khai public multi-tenant.",
+        "Client xác nhận request; server chưa kiểm approved request hash.",
+        "Provider và pinned RAG hoạt động; Idempotency-Key bắt buộc."
+      ],
+      "confirmationRequired": true,
+      "confirmationPolicyNote": "Product/client requirement for mutations; only post-generation approve/export hash binding is enforced server-side.",
+      "idempotencyPolicy": "Global persisted key + full request fingerprint; same key/body returns same job; mismatch409",
+      "errorCodes": [
+        "request_validation(422)",
+        "idempotency_conflict",
+        "retrieval_gap (job error)",
+        "provider_* (job error)",
+        "generation_failed (job error)"
+      ],
+      "errorContractNote": "422 detail[] differs from error.code envelopes. Regenerate can also propagate uncaught provider/contract errors as generic HTTP500; do not assume every failure has a typed receipt.",
+      "validExample": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/9"
+      },
+      "invalidExampleAndError": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/8"
+      },
+      "testEvidence": "tests/api/test_ui_preview.py + tests/api/test_ui_jobs.py; captured runtime examples"
+    },
+    {
+      "capabilityId": "backend.job_status",
+      "descriptionVi": "Lấy snapshot trạng thái và lỗi thật, không báo số câu tăng dần.",
+      "status": "IMPLEMENTED",
+      "callableNow": true,
+      "owner": "Backend/MAS",
+      "sourceEvidence": [
+        "https://github.com/ndmhuy/ASTRA/blob/2acb95fbf6a55b7621c786248e10b10ca91a35ab/src/exam_baseline/api/routes_ui.py#L62"
+      ],
+      "methodAndRoute": "GET /api/exams/{job_id}/status",
+      "requestSchemaVersion": "UNVERSIONED: pin source SHA; see wire models",
+      "requestSchema": null,
+      "parameters": [
+        {
+          "name": "job_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Job Id"
+          }
+        }
+      ],
+      "responseSchema": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "responseSchemaNote": "OpenAPI declarations exactly as exported; many /api response schemas are empty/untyped. Do not infer a versioned response DTO.",
+      "preconditions": [
+        "Local/trusted server: chưa có auth/ACL/quota; không triển khai public multi-tenant.",
+        "job_id UUID tồn tại; package/edit/preview/approve/export chỉ khi completed."
+      ],
+      "confirmationRequired": false,
+      "confirmationPolicyNote": "Product/client requirement for mutations; only post-generation approve/export hash binding is enforced server-side.",
+      "idempotencyPolicy": "No Idempotency-Key contract; reads return current state, mutations use current exam revision where required",
+      "errorCodes": [
+        "request_validation(422)",
+        "job_not_found"
+      ],
+      "errorContractNote": "422 detail[] differs from error.code envelopes. Regenerate can also propagate uncaught provider/contract errors as generic HTTP500; do not assume every failure has a typed receipt.",
+      "validExample": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/12"
+      },
+      "invalidExampleAndError": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/16"
+      },
+      "testEvidence": "tests/api/test_ui_preview.py + tests/api/test_ui_jobs.py; captured runtime examples"
+    },
+    {
+      "capabilityId": "backend.job_events",
+      "descriptionVi": "Theo dõi SSE snapshot từng stage, không có event ID hoặc replay.",
+      "status": "IMPLEMENTED",
+      "callableNow": true,
+      "owner": "Backend/MAS",
+      "sourceEvidence": [
+        "https://github.com/ndmhuy/ASTRA/blob/2acb95fbf6a55b7621c786248e10b10ca91a35ab/src/exam_baseline/api/routes_ui.py#L67"
+      ],
+      "methodAndRoute": "GET /api/exams/{job_id}/events",
+      "requestSchemaVersion": "UNVERSIONED: pin source SHA; see wire models",
+      "requestSchema": null,
+      "parameters": [
+        {
+          "name": "job_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Job Id"
+          }
+        }
+      ],
+      "responseSchema": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "responseSchemaNote": "OpenAPI declarations exactly as exported; many /api response schemas are empty/untyped. Do not infer a versioned response DTO.",
+      "preconditions": [
+        "Local/trusted server: chưa có auth/ACL/quota; không triển khai public multi-tenant.",
+        "job_id UUID tồn tại; package/edit/preview/approve/export chỉ khi completed."
+      ],
+      "confirmationRequired": false,
+      "confirmationPolicyNote": "Product/client requirement for mutations; only post-generation approve/export hash binding is enforced server-side.",
+      "idempotencyPolicy": "No Idempotency-Key contract; reads return current state, mutations use current exam revision where required",
+      "errorCodes": [
+        "request_validation(422)",
+        "job_not_found"
+      ],
+      "errorContractNote": "422 detail[] differs from error.code envelopes. Regenerate can also propagate uncaught provider/contract errors as generic HTTP500; do not assume every failure has a typed receipt.",
+      "validExample": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/13"
+      },
+      "invalidExampleAndError": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/37"
+      },
+      "testEvidence": "tests/api/test_ui_preview.py + tests/api/test_ui_jobs.py; captured runtime examples"
+    },
+    {
+      "capabilityId": "backend.open_exam",
+      "descriptionVi": "Lấy teacher package khi completed, gồm đáp án và thông tin source/revision.",
+      "status": "IMPLEMENTED",
+      "callableNow": true,
+      "owner": "Backend/MAS",
+      "sourceEvidence": [
+        "https://github.com/ndmhuy/ASTRA/blob/2acb95fbf6a55b7621c786248e10b10ca91a35ab/src/exam_baseline/api/routes_ui.py#L91"
+      ],
+      "methodAndRoute": "GET /api/exams/{job_id}",
+      "requestSchemaVersion": "UNVERSIONED: pin source SHA; see wire models",
+      "requestSchema": null,
+      "parameters": [
+        {
+          "name": "job_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Job Id"
+          }
+        }
+      ],
+      "responseSchema": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "responseSchemaNote": "OpenAPI declarations exactly as exported; many /api response schemas are empty/untyped. Do not infer a versioned response DTO.",
+      "preconditions": [
+        "Local/trusted server: chưa có auth/ACL/quota; không triển khai public multi-tenant.",
+        "job_id UUID tồn tại; package/edit/preview/approve/export chỉ khi completed."
+      ],
+      "confirmationRequired": false,
+      "confirmationPolicyNote": "Product/client requirement for mutations; only post-generation approve/export hash binding is enforced server-side.",
+      "idempotencyPolicy": "No Idempotency-Key contract; reads return current state, mutations use current exam revision where required",
+      "errorCodes": [
+        "request_validation(422)",
+        "job_not_found",
+        "exam_not_ready"
+      ],
+      "errorContractNote": "422 detail[] differs from error.code envelopes. Regenerate can also propagate uncaught provider/contract errors as generic HTTP500; do not assume every failure has a typed receipt.",
+      "validExample": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/14"
+      },
+      "invalidExampleAndError": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/36"
+      },
+      "testEvidence": "tests/api/test_ui_preview.py + tests/api/test_ui_jobs.py; captured runtime examples"
+    },
+    {
+      "capabilityId": "backend.edit_question",
+      "descriptionVi": "Sửa một câu và hủy phê duyệt cũ; chưa kiểm toán độc lập lại.",
+      "status": "IMPLEMENTED",
+      "callableNow": true,
+      "owner": "Backend/MAS",
+      "sourceEvidence": [
+        "https://github.com/ndmhuy/ASTRA/blob/2acb95fbf6a55b7621c786248e10b10ca91a35ab/src/exam_baseline/api/routes_ui.py#L96"
+      ],
+      "methodAndRoute": "PUT /api/exams/{job_id}/questions/{question_id}",
+      "requestSchemaVersion": "UNVERSIONED: pin source SHA; see wire models",
+      "requestSchema": {
+        "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/EditRequest"
+      },
+      "parameters": [
+        {
+          "name": "job_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Job Id"
+          }
+        },
+        {
+          "name": "question_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "title": "Question Id"
+          }
+        }
+      ],
+      "responseSchema": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "responseSchemaNote": "OpenAPI declarations exactly as exported; many /api response schemas are empty/untyped. Do not infer a versioned response DTO.",
+      "preconditions": [
+        "Local/trusted server: chưa có auth/ACL/quota; không triển khai public multi-tenant.",
+        "job_id UUID tồn tại; package/edit/preview/approve/export chỉ khi completed.",
+        "Revision phải hiện tại; approve/preview còn kiểm contentHash."
+      ],
+      "confirmationRequired": true,
+      "confirmationPolicyNote": "Product/client requirement for mutations; only post-generation approve/export hash binding is enforced server-side.",
+      "idempotencyPolicy": "No Idempotency-Key contract; reads return current state, mutations use current exam revision where required",
+      "errorCodes": [
+        "request_validation(422)",
+        "invalid_contract",
+        "job_not_found",
+        "exam_not_ready",
+        "question_not_found",
+        "stale_revision",
+        "invalid_question_id"
+      ],
+      "errorContractNote": "422 detail[] differs from error.code envelopes. Regenerate can also propagate uncaught provider/contract errors as generic HTTP500; do not assume every failure has a typed receipt.",
+      "validExample": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/31"
+      },
+      "invalidExampleAndError": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/41"
+      },
+      "testEvidence": "tests/api/test_ui_preview.py + tests/api/test_ui_jobs.py; captured runtime examples"
+    },
+    {
+      "capabilityId": "backend.regenerate_question",
+      "descriptionVi": "Tạo lại một câu theo slot, kiểm bằng Solver, chờ giáo viên duyệt.",
+      "status": "IMPLEMENTED",
+      "callableNow": true,
+      "owner": "Backend/MAS",
+      "sourceEvidence": [
+        "https://github.com/ndmhuy/ASTRA/blob/2acb95fbf6a55b7621c786248e10b10ca91a35ab/src/exam_baseline/api/routes_ui.py#L103"
+      ],
+      "methodAndRoute": "POST /api/exams/{job_id}/questions/{question_id}/regenerate",
+      "requestSchemaVersion": "UNVERSIONED: pin source SHA; see wire models",
+      "requestSchema": {
+        "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/RegenerateRequest"
+      },
+      "parameters": [
+        {
+          "name": "job_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Job Id"
+          }
+        },
+        {
+          "name": "question_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "title": "Question Id"
+          }
+        }
+      ],
+      "responseSchema": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "responseSchemaNote": "OpenAPI declarations exactly as exported; many /api response schemas are empty/untyped. Do not infer a versioned response DTO.",
+      "preconditions": [
+        "Local/trusted server: chưa có auth/ACL/quota; không triển khai public multi-tenant.",
+        "job_id UUID tồn tại; package/edit/preview/approve/export chỉ khi completed.",
+        "Revision phải hiện tại; approve/preview còn kiểm contentHash."
+      ],
+      "confirmationRequired": true,
+      "confirmationPolicyNote": "Product/client requirement for mutations; only post-generation approve/export hash binding is enforced server-side.",
+      "idempotencyPolicy": "No Idempotency-Key contract; reads return current state, mutations use current exam revision where required",
+      "errorCodes": [
+        "request_validation(422)",
+        "invalid_contract",
+        "job_not_found",
+        "exam_not_ready",
+        "question_not_found",
+        "stale_revision",
+        "invalid_repair",
+        "provider_not_configured"
+      ],
+      "errorContractNote": "422 detail[] differs from error.code envelopes. Regenerate can also propagate uncaught provider/contract errors as generic HTTP500; do not assume every failure has a typed receipt.",
+      "validExample": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/34"
+      },
+      "invalidExampleAndError": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/38"
+      },
+      "testEvidence": "tests/api/test_ui_preview.py + tests/api/test_ui_jobs.py; captured runtime examples"
+    },
+    {
+      "capabilityId": "backend.approve_exam",
+      "descriptionVi": "Ghi phê duyệt nội dung đề đúng revision/hash; reviewer chỉ là nhãn client.",
+      "status": "IMPLEMENTED",
+      "callableNow": true,
+      "owner": "Backend/MAS",
+      "sourceEvidence": [
+        "https://github.com/ndmhuy/ASTRA/blob/2acb95fbf6a55b7621c786248e10b10ca91a35ab/src/exam_baseline/api/routes_ui.py#L110"
+      ],
+      "methodAndRoute": "POST /api/exams/{job_id}/approve",
+      "requestSchemaVersion": "UNVERSIONED: pin source SHA; see wire models",
+      "requestSchema": {
+        "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/ApprovalRequest"
+      },
+      "parameters": [
+        {
+          "name": "job_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Job Id"
+          }
+        }
+      ],
+      "responseSchema": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "responseSchemaNote": "OpenAPI declarations exactly as exported; many /api response schemas are empty/untyped. Do not infer a versioned response DTO.",
+      "preconditions": [
+        "Local/trusted server: chưa có auth/ACL/quota; không triển khai public multi-tenant.",
+        "job_id UUID tồn tại; package/edit/preview/approve/export chỉ khi completed.",
+        "Revision phải hiện tại; approve/preview còn kiểm contentHash."
+      ],
+      "confirmationRequired": true,
+      "confirmationPolicyNote": "Product/client requirement for mutations; only post-generation approve/export hash binding is enforced server-side.",
+      "idempotencyPolicy": "No Idempotency-Key contract; reads return current state, mutations use current exam revision where required",
+      "errorCodes": [
+        "request_validation(422)",
+        "job_not_found",
+        "exam_not_ready",
+        "stale_revision",
+        "stale_hash",
+        "artifact_changed"
+      ],
+      "errorContractNote": "422 detail[] differs from error.code envelopes. Regenerate can also propagate uncaught provider/contract errors as generic HTTP500; do not assume every failure has a typed receipt.",
+      "validExample": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/24"
+      },
+      "invalidExampleAndError": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/32"
+      },
+      "testEvidence": "tests/api/test_ui_preview.py + tests/api/test_ui_jobs.py; captured runtime examples"
+    },
+    {
+      "capabilityId": "backend.request_pdf_preview",
+      "descriptionVi": "Biên dịch LaTeX đã lưu thành draft PDF; không gọi model.",
+      "status": "IMPLEMENTED",
+      "callableNow": true,
+      "owner": "Backend/MAS",
+      "sourceEvidence": [
+        "https://github.com/ndmhuy/ASTRA/blob/2acb95fbf6a55b7621c786248e10b10ca91a35ab/src/exam_baseline/api/routes_ui.py#L115"
+      ],
+      "methodAndRoute": "POST /api/exams/{job_id}/preview",
+      "requestSchemaVersion": "UNVERSIONED: pin source SHA; see wire models",
+      "requestSchema": {
+        "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/PreviewRequest"
+      },
+      "parameters": [
+        {
+          "name": "job_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Job Id"
+          }
+        }
+      ],
+      "responseSchema": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "responseSchemaNote": "OpenAPI declarations exactly as exported; many /api response schemas are empty/untyped. Do not infer a versioned response DTO.",
+      "preconditions": [
+        "Local/trusted server: chưa có auth/ACL/quota; không triển khai public multi-tenant.",
+        "job_id UUID tồn tại; package/edit/preview/approve/export chỉ khi completed.",
+        "Revision phải hiện tại; approve/preview còn kiểm contentHash.",
+        "Có compiler local; source hash khớp artifact đã lưu."
+      ],
+      "confirmationRequired": false,
+      "confirmationPolicyNote": "Product/client requirement for mutations; only post-generation approve/export hash binding is enforced server-side.",
+      "idempotencyPolicy": "Preview reuses active/cache compile",
+      "errorCodes": [
+        "request_validation(422)",
+        "job_not_found",
+        "exam_not_ready",
+        "stale_revision",
+        "stale_hash",
+        "artifact_changed",
+        "latex_compiler_unavailable"
+      ],
+      "errorContractNote": "422 detail[] differs from error.code envelopes. Regenerate can also propagate uncaught provider/contract errors as generic HTTP500; do not assume every failure has a typed receipt.",
+      "validExample": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/20"
+      },
+      "invalidExampleAndError": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/40"
+      },
+      "testEvidence": "tests/api/test_ui_preview.py + tests/api/test_ui_jobs.py; captured runtime examples"
+    },
+    {
+      "capabilityId": "backend.pdf_preview_status",
+      "descriptionVi": "Đọc trạng thái compiler/cache, ready hoặc failed đều có thể HTTP200.",
+      "status": "IMPLEMENTED",
+      "callableNow": true,
+      "owner": "Backend/MAS",
+      "sourceEvidence": [
+        "https://github.com/ndmhuy/ASTRA/blob/2acb95fbf6a55b7621c786248e10b10ca91a35ab/src/exam_baseline/api/routes_ui.py#L130"
+      ],
+      "methodAndRoute": "GET /api/exams/{job_id}/preview",
+      "requestSchemaVersion": "UNVERSIONED: pin source SHA; see wire models",
+      "requestSchema": null,
+      "parameters": [
+        {
+          "name": "job_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Job Id"
+          }
+        },
+        {
+          "name": "revision",
+          "in": "query",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "title": "Revision"
+          }
+        },
+        {
+          "name": "contentHash",
+          "in": "query",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Contenthash"
+          }
+        }
+      ],
+      "responseSchema": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "responseSchemaNote": "OpenAPI declarations exactly as exported; many /api response schemas are empty/untyped. Do not infer a versioned response DTO.",
+      "preconditions": [
+        "Local/trusted server: chưa có auth/ACL/quota; không triển khai public multi-tenant.",
+        "job_id UUID tồn tại; package/edit/preview/approve/export chỉ khi completed."
+      ],
+      "confirmationRequired": false,
+      "confirmationPolicyNote": "Product/client requirement for mutations; only post-generation approve/export hash binding is enforced server-side.",
+      "idempotencyPolicy": "No Idempotency-Key contract; reads return current state, mutations use current exam revision where required",
+      "errorCodes": [
+        "request_validation(422)",
+        "job_not_found",
+        "exam_not_ready",
+        "stale_revision",
+        "stale_hash",
+        "artifact_changed"
+      ],
+      "errorContractNote": "422 detail[] differs from error.code envelopes. Regenerate can also propagate uncaught provider/contract errors as generic HTTP500; do not assume every failure has a typed receipt.",
+      "validExample": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/21"
+      },
+      "invalidExampleAndError": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/42"
+      },
+      "testEvidence": "tests/api/test_ui_preview.py + tests/api/test_ui_jobs.py; captured runtime examples"
+    },
+    {
+      "capabilityId": "backend.pdf_preview",
+      "descriptionVi": "Xem student draft PDF inline của revision hiện tại trước phê duyệt.",
+      "status": "IMPLEMENTED",
+      "callableNow": true,
+      "owner": "Backend/MAS",
+      "sourceEvidence": [
+        "https://github.com/ndmhuy/ASTRA/blob/2acb95fbf6a55b7621c786248e10b10ca91a35ab/src/exam_baseline/api/routes_ui.py#L142"
+      ],
+      "methodAndRoute": "GET /api/exams/{job_id}/preview.pdf",
+      "requestSchemaVersion": "UNVERSIONED: pin source SHA; see wire models",
+      "requestSchema": null,
+      "parameters": [
+        {
+          "name": "job_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Job Id"
+          }
+        },
+        {
+          "name": "revision",
+          "in": "query",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "title": "Revision"
+          }
+        },
+        {
+          "name": "contentHash",
+          "in": "query",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Contenthash"
+          }
+        }
+      ],
+      "responseSchema": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "responseSchemaNote": "OpenAPI declarations exactly as exported; many /api response schemas are empty/untyped. Do not infer a versioned response DTO.",
+      "preconditions": [
+        "Local/trusted server: chưa có auth/ACL/quota; không triển khai public multi-tenant.",
+        "job_id UUID tồn tại; package/edit/preview/approve/export chỉ khi completed."
+      ],
+      "confirmationRequired": false,
+      "confirmationPolicyNote": "Product/client requirement for mutations; only post-generation approve/export hash binding is enforced server-side.",
+      "idempotencyPolicy": "No Idempotency-Key contract; reads return current state, mutations use current exam revision where required",
+      "errorCodes": [
+        "request_validation(422)",
+        "job_not_found",
+        "exam_not_ready",
+        "stale_revision",
+        "stale_hash",
+        "artifact_changed",
+        "preview_not_ready"
+      ],
+      "errorContractNote": "422 detail[] differs from error.code envelopes. Regenerate can also propagate uncaught provider/contract errors as generic HTTP500; do not assume every failure has a typed receipt.",
+      "validExample": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/22"
+      },
+      "invalidExampleAndError": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/43"
+      },
+      "testEvidence": "tests/api/test_ui_preview.py + tests/api/test_ui_jobs.py; captured runtime examples"
+    },
+    {
+      "capabilityId": "backend.pdf_preview_log",
+      "descriptionVi": "Đọc chẩn đoán biên dịch khi log tồn tại.",
+      "status": "IMPLEMENTED",
+      "callableNow": true,
+      "owner": "Backend/MAS",
+      "sourceEvidence": [
+        "https://github.com/ndmhuy/ASTRA/blob/2acb95fbf6a55b7621c786248e10b10ca91a35ab/src/exam_baseline/api/routes_ui.py#L159"
+      ],
+      "methodAndRoute": "GET /api/exams/{job_id}/preview.log",
+      "requestSchemaVersion": "UNVERSIONED: pin source SHA; see wire models",
+      "requestSchema": null,
+      "parameters": [
+        {
+          "name": "job_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Job Id"
+          }
+        },
+        {
+          "name": "revision",
+          "in": "query",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "title": "Revision"
+          }
+        },
+        {
+          "name": "contentHash",
+          "in": "query",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Contenthash"
+          }
+        }
+      ],
+      "responseSchema": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "responseSchemaNote": "OpenAPI declarations exactly as exported; many /api response schemas are empty/untyped. Do not infer a versioned response DTO.",
+      "preconditions": [
+        "Local/trusted server: chưa có auth/ACL/quota; không triển khai public multi-tenant.",
+        "job_id UUID tồn tại; package/edit/preview/approve/export chỉ khi completed."
+      ],
+      "confirmationRequired": false,
+      "confirmationPolicyNote": "Product/client requirement for mutations; only post-generation approve/export hash binding is enforced server-side.",
+      "idempotencyPolicy": "No Idempotency-Key contract; reads return current state, mutations use current exam revision where required",
+      "errorCodes": [
+        "request_validation(422)",
+        "job_not_found",
+        "exam_not_ready",
+        "stale_revision",
+        "stale_hash",
+        "artifact_changed",
+        "preview_log_unavailable"
+      ],
+      "errorContractNote": "422 detail[] differs from error.code envelopes. Regenerate can also propagate uncaught provider/contract errors as generic HTTP500; do not assume every failure has a typed receipt.",
+      "validExample": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/23"
+      },
+      "invalidExampleAndError": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/44"
+      },
+      "testEvidence": "tests/api/test_ui_preview.py + tests/api/test_ui_jobs.py; captured runtime examples"
+    },
+    {
+      "capabilityId": "backend.export_exam",
+      "descriptionVi": "Xuất student tex/pdf hoặc teacher JSON sau phê duyệt hiện tại.",
+      "status": "IMPLEMENTED",
+      "callableNow": true,
+      "owner": "Backend/MAS",
+      "sourceEvidence": [
+        "https://github.com/ndmhuy/ASTRA/blob/2acb95fbf6a55b7621c786248e10b10ca91a35ab/src/exam_baseline/api/routes_ui.py#L170"
+      ],
+      "methodAndRoute": "GET /api/exams/{job_id}/export",
+      "requestSchemaVersion": "UNVERSIONED: pin source SHA; see wire models",
+      "requestSchema": null,
+      "parameters": [
+        {
+          "name": "job_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Job Id"
+          }
+        },
+        {
+          "name": "type",
+          "in": "query",
+          "required": true,
+          "schema": {
+            "enum": [
+              "STUDENT_EXAM",
+              "TEACHER_KEY"
+            ],
+            "type": "string",
+            "title": "Type"
+          }
+        },
+        {
+          "name": "format",
+          "in": "query",
+          "required": true,
+          "schema": {
+            "enum": [
+              "tex",
+              "json",
+              "pdf"
+            ],
+            "type": "string",
+            "title": "Format"
+          }
+        }
+      ],
+      "responseSchema": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "responseSchemaNote": "OpenAPI declarations exactly as exported; many /api response schemas are empty/untyped. Do not infer a versioned response DTO.",
+      "preconditions": [
+        "Local/trusted server: chưa có auth/ACL/quota; không triển khai public multi-tenant.",
+        "job_id UUID tồn tại; package/edit/preview/approve/export chỉ khi completed.",
+        "Approval đúng exam revision/contentHash; PDF cần preview ready."
+      ],
+      "confirmationRequired": false,
+      "confirmationPolicyNote": "Product/client requirement for mutations; only post-generation approve/export hash binding is enforced server-side.",
+      "idempotencyPolicy": "No Idempotency-Key contract; reads return current state, mutations use current exam revision where required",
+      "errorCodes": [
+        "request_validation(422)",
+        "job_not_found",
+        "exam_not_ready",
+        "approval_required",
+        "artifact_changed",
+        "preview_not_ready",
+        "unsupported_export"
+      ],
+      "errorContractNote": "422 detail[] differs from error.code envelopes. Regenerate can also propagate uncaught provider/contract errors as generic HTTP500; do not assume every failure has a typed receipt.",
+      "validExample": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/26"
+      },
+      "invalidExampleAndError": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/17"
+      },
+      "testEvidence": "tests/api/test_ui_preview.py + tests/api/test_ui_jobs.py; captured runtime examples"
+    },
+    {
+      "capabilityId": "backend.legacy_health",
+      "descriptionVi": "Lấy model/provider metadata của baseline, không kiểm API key/quota.",
+      "status": "IMPLEMENTED",
+      "callableNow": true,
+      "owner": "Backend/MAS",
+      "sourceEvidence": [
+        "https://github.com/ndmhuy/ASTRA/blob/2acb95fbf6a55b7621c786248e10b10ca91a35ab/src/exam_baseline/api/routes_baseline.py#L28"
+      ],
+      "methodAndRoute": "GET /health",
+      "requestSchemaVersion": "UNVERSIONED: pin source SHA; see wire models",
+      "requestSchema": null,
+      "parameters": [],
+      "responseSchema": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object",
+                "title": "Response Health Health Get"
+              }
+            }
+          }
+        }
+      },
+      "responseSchemaNote": "OpenAPI declarations exactly as exported; many /api response schemas are empty/untyped. Do not infer a versioned response DTO.",
+      "preconditions": [
+        "Local/trusted server: chưa có auth/ACL/quota; không triển khai public multi-tenant."
+      ],
+      "confirmationRequired": false,
+      "confirmationPolicyNote": "Product/client requirement for mutations; only post-generation approve/export hash binding is enforced server-side.",
+      "idempotencyPolicy": "No Idempotency-Key contract; reads return current state, mutations use current exam revision where required",
+      "errorCodes": [],
+      "errorContractNote": "422 detail[] differs from error.code envelopes. Regenerate can also propagate uncaught provider/contract errors as generic HTTP500; do not assume every failure has a typed receipt.",
+      "validExample": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/48"
+      },
+      "invalidExampleAndError": {
+        "notApplicable": "Read-only route without request parameters/body; no invalid input contract."
+      },
+      "testEvidence": "tests/api/test_baseline.py"
+    },
+    {
+      "capabilityId": "backend.legacy_baseline",
+      "descriptionVi": "Sinh generic JSON đồng bộ từ full ExamMatrix; phải kiểm status nội dung.",
+      "status": "IMPLEMENTED",
+      "callableNow": true,
+      "owner": "Backend/MAS",
+      "sourceEvidence": [
+        "https://github.com/ndmhuy/ASTRA/blob/2acb95fbf6a55b7621c786248e10b10ca91a35ab/src/exam_baseline/api/routes_baseline.py#L34"
+      ],
+      "methodAndRoute": "POST /v1/exams/generate",
+      "requestSchemaVersion": "UNVERSIONED: pin source SHA; see wire models",
+      "requestSchema": {
+        "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/GenerationRequest"
+      },
+      "parameters": [],
+      "responseSchema": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/GenerationResponse"
+              }
+            }
+          }
+        },
+        "413": {
+          "description": "Content Too Large",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/GenerationResponse"
+              }
+            }
+          }
+        },
+        "502": {
+          "description": "Bad Gateway",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/GenerationResponse"
+              }
+            }
+          }
+        },
+        "503": {
+          "description": "Service Unavailable",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/GenerationResponse"
+              }
+            }
+          }
+        },
+        "504": {
+          "description": "Gateway Timeout",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/GenerationResponse"
+              }
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "responseSchemaNote": "OpenAPI declarations exactly as exported; many /api response schemas are empty/untyped. Do not infer a versioned response DTO.",
+      "preconditions": [
+        "Local/trusted server: chưa có auth/ACL/quota; không triển khai public multi-tenant."
+      ],
+      "confirmationRequired": false,
+      "confirmationPolicyNote": "Product/client requirement for mutations; only post-generation approve/export hash binding is enforced server-side.",
+      "idempotencyPolicy": "No Idempotency-Key contract; reads return current state, mutations use current exam revision where required",
+      "errorCodes": [
+        "request_validation(422)",
+        "provider_failure",
+        "schema_failure",
+        "context_failure",
+        "constraint_failure (HTTP200)"
+      ],
+      "errorContractNote": "422 detail[] differs from error.code envelopes. Regenerate can also propagate uncaught provider/contract errors as generic HTTP500; do not assume every failure has a typed receipt.",
+      "validExample": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/49"
+      },
+      "invalidExampleAndError": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/50"
+      },
+      "testEvidence": "tests/api/test_baseline.py"
+    },
+    {
+      "capabilityId": "backend.legacy_pipeline",
+      "descriptionVi": "Sinh generic MAS LaTeX draft đồng bộ; không phải native THPT/V-ACT UI job.",
+      "status": "IMPLEMENTED",
+      "callableNow": true,
+      "owner": "Backend/MAS",
+      "sourceEvidence": [
+        "https://github.com/ndmhuy/ASTRA/blob/2acb95fbf6a55b7621c786248e10b10ca91a35ab/src/exam_baseline/api/routes_pipeline.py#L20"
+      ],
+      "methodAndRoute": "POST /v2/exams/generate",
+      "requestSchemaVersion": "UNVERSIONED: pin source SHA; see wire models",
+      "requestSchema": {
+        "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/PipelineRequest"
+      },
+      "parameters": [],
+      "responseSchema": {
+        "200": {
+          "description": "Native LaTeX exam awaiting user visual inspection",
+          "content": {
+            "application/x-tex": {}
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "BACKEND_AGENT_API_OPENAPI.json#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "responseSchemaNote": "OpenAPI declarations exactly as exported; many /api response schemas are empty/untyped. Do not infer a versioned response DTO.",
+      "preconditions": [
+        "Local/trusted server: chưa có auth/ACL/quota; không triển khai public multi-tenant."
+      ],
+      "confirmationRequired": false,
+      "confirmationPolicyNote": "Product/client requirement for mutations; only post-generation approve/export hash binding is enforced server-side.",
+      "idempotencyPolicy": "No Idempotency-Key contract; reads return current state, mutations use current exam revision where required",
+      "errorCodes": [
+        "request_validation(422)",
+        "invalid_configuration",
+        "pipeline errors: inspect non-2xx result"
+      ],
+      "errorContractNote": "422 detail[] differs from error.code envelopes. Regenerate can also propagate uncaught provider/contract errors as generic HTTP500; do not assume every failure has a typed receipt.",
+      "validExample": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/51"
+      },
+      "invalidExampleAndError": {
+        "$ref": "BACKEND_API_SAMPLES_ACTUAL.json#/examples/52"
+      },
+      "testEvidence": "tests/api/test_pipeline.py"
+    },
+    {
+      "capabilityId": "backend.teacher_draft_validate_normalize",
+      "descriptionVi": "Validate draft thiếu trường và chuyển thành ma trận; hiện BLOCKED schema.",
+      "status": "PROPOSED",
+      "callableNow": false,
+      "owner": "Backend + Agent",
+      "assigneeAndETA": "UNDECIDED",
+      "methodAndRoute": null
+    },
+    {
+      "capabilityId": "backend.preset_registry",
+      "descriptionVi": "Liệt kê preset được quản lý theo ID/version; hiện chưa có.",
+      "status": "PROPOSED",
+      "callableNow": false,
+      "owner": "Backend + RAG",
+      "assigneeAndETA": "UNDECIDED",
+      "methodAndRoute": null
+    },
+    {
+      "capabilityId": "backend.vact_http_generation",
+      "descriptionVi": "Sinh V-ACT qua teacher HTTP API; hiện chỉ có CLI/engine.",
+      "status": "PROPOSED",
+      "callableNow": false,
+      "owner": "Backend + RAG",
+      "assigneeAndETA": "UNDECIDED",
+      "methodAndRoute": null
+    },
+    {
+      "capabilityId": "backend.batch_revision",
+      "descriptionVi": "Áp dụng các note đã xác nhận theo batch; hiện chưa có transaction/API.",
+      "status": "PROPOSED",
+      "callableNow": false,
+      "owner": "Backend",
+      "assigneeAndETA": "UNDECIDED",
+      "methodAndRoute": null
+    },
+    {
+      "capabilityId": "backend.question_add_delete_reorder",
+      "descriptionVi": "Thay đổi số câu hoặc thứ tự và giữ ma trận; chưa được hỗ trợ.",
+      "status": "UNAVAILABLE",
+      "callableNow": false,
+      "owner": "Backend + RAG",
+      "assigneeAndETA": "UNDECIDED",
+      "methodAndRoute": null
+    },
+    {
+      "capabilityId": "backend.per_question_progress",
+      "descriptionVi": "Hiển thị từng câu khi sinh và trạng thái kiểm tra; chưa có event/preview.",
+      "status": "PROPOSED",
+      "callableNow": false,
+      "owner": "Backend + UI",
+      "assigneeAndETA": "UNDECIDED",
+      "methodAndRoute": null
+    },
+    {
+      "capabilityId": "backend.cancel_retry_job",
+      "descriptionVi": "Hủy hoặc retry/resume job UI; hiện chưa có API.",
+      "status": "PROPOSED",
+      "callableNow": false,
+      "owner": "Backend",
+      "assigneeAndETA": "UNDECIDED",
+      "methodAndRoute": null
+    },
+    {
+      "capabilityId": "backend.upload_reference_files",
+      "descriptionVi": "Upload và xử lý tài liệu tham chiếu theo file ID; chưa có API/policy.",
+      "status": "PROPOSED",
+      "callableNow": false,
+      "owner": "Backend + RAG",
+      "assigneeAndETA": "UNDECIDED",
+      "methodAndRoute": null
+    },
+    {
+      "capabilityId": "backend.workspace_auth_quota",
+      "descriptionVi": "Kiểm user/workspace, quota và một job active/workspace; chưa enforce.",
+      "status": "PROPOSED",
+      "callableNow": false,
+      "owner": "Backend + UI",
+      "assigneeAndETA": "UNDECIDED",
+      "methodAndRoute": null
+    }
+  ]
+}
