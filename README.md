@@ -66,7 +66,8 @@ Restart the backend after changing `.env`. Keep credentials in the backend envir
 Run one backend worker from the repository root. The local job runner stores results under `runs/ui/`. [Health endpoint](http://127.0.0.1:8000/api/health) · [Interactive API docs](http://127.0.0.1:8000/docs)
 
 ```powershell
-.\.venv-win\Scripts\python.exe -m uvicorn exam_baseline.main:app --host 127.0.0.1 --port 8000
+git fetch origin staging/rag
+& $astraPython -m rag_workflow.cli --sample-matrix --out runs/quickstart/matrix-context.json | Out-Null
 ```
 
 Start the frontend from the repository root in a second terminal. Vite forwards `/api` to port 8000. Open the URL Vite prints. [Default local web app](http://127.0.0.1:5173)
