@@ -412,10 +412,7 @@ class JobManager:
                         vact_models.Passage.model_validate(p) for p in answers.get("passages", [])
                     ]
                     expected_pids = {
-                        g.id
-                        for batch in vact_template.batches()
-                        for g in batch.groups
-                        if g.shared
+                        g.id for batch in vact_template.batches() for g in batch.groups if g.shared
                     }
                     if {p.id for p in passages} != expected_pids:
                         raise UiError(
@@ -514,9 +511,7 @@ class JobManager:
     def _completed(self, job_id):
         job = self.get(job_id)
         if job["status"] != "completed":
-            raise UiError(
-                "exam_not_ready", "Đề thi vẫn đang được soạn, chưa sẵn sàng để xem."
-            )
+            raise UiError("exam_not_ready", "Đề thi vẫn đang được soạn, chưa sẵn sàng để xem.")
         return job
 
     def _package_vact(self, job):

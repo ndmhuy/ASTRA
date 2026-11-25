@@ -288,4 +288,3 @@ def test_unconfigured_provider_error_uses_friendly_vietnamese(tmp_path):
         assert terminal["error"]["code"] == "provider_not_configured"
         assert "EXAM_PROVIDER" not in terminal["error"]["message"]
         assert "Demo" in terminal["error"]["message"]
-
