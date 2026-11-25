@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useSyncExternalStore, useCallback, useLayoutEffect, useRef } from 'react';
+import { AlertCircle, AlertTriangle, LoaderCircle, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { WorkspaceStart } from './components/WorkspaceStart';
 import { AstraWelcome } from './components/AstraWelcome';
 import { SidebarExamLibrary } from './components/SidebarExamLibrary';
@@ -20,10 +21,16 @@ import './styles/studio.css';
 import './styles/createVision.css';
 import './styles/integratedWorkspace.css';
 import './styles/integration.css';
+import './styles/atelier.css';
 
 export const App: React.FC = () => {
-  const [showWelcome, setShowWelcome] = useState(true);
-  const finishWelcome = useCallback(() => setShowWelcome(false), []);
+  const [showWelcome, setShowWelcome] = useState(() => {
+    try { return sessionStorage.getItem('astra.welcomed.v1') !== '1'; } catch { return true; }
+  });
+  const finishWelcome = useCallback(() => {
+    try { sessionStorage.setItem('astra.welcomed.v1', '1'); } catch { /* ignore storage restrictions */ }
+    setShowWelcome(false);
+  }, []);
   const [landingDraft, setLandingDraft] = useState('');
   const [leavingStart, setLeavingStart] = useState(false);
   const [revealingWorkspace, setRevealingWorkspace] = useState(false);
@@ -135,19 +142,21 @@ export const App: React.FC = () => {
 
 
   const sidebarLabel = controlsCollapsed ? 'Mở rộng thanh điều hướng' : 'Thu gọn thanh điều hướng';
-  const handleLogoClick = () => {
-    if (window.matchMedia('(min-width: 801px)').matches) setControlsCollapsed(value => !value);
-    else newExam();
-  };
 
   if (showWelcome) return <AstraWelcome onComplete={finishWelcome} />;
 
   return (
     <div className={`app-shell create-mode workspace-active integrated-shell ${revealingWorkspace ? 'workspace-revealing' : ''} ${controlsCollapsed ? 'controls-collapsed' : ''}`}>
       <header className="app-header">
-        <button className="app-brand rail-logo-toggle" aria-label={`ASTRA — ${sidebarLabel}`} aria-expanded={!controlsCollapsed} title={sidebarLabel} onClick={handleLogoClick}>
-          <AstraLogo className="app-brand-logo" /><span>ASTRA</span>
-        </button>
+        <div className="sidebar-brand-row">
+          <button type="button" className="app-brand" aria-label="ASTRA — Về màn hình bắt đầu" title="Về màn hình bắt đầu" onClick={newExam}>
+            <span className="brand-emblem"><AstraLogo className="app-brand-logo" /></span>
+            <span className="brand-wordmark">ASTRA</span>
+          </button>
+          <button type="button" className="sidebar-collapse-btn" onClick={() => setControlsCollapsed(value => !value)} aria-label={sidebarLabel} aria-expanded={!controlsCollapsed} title={sidebarLabel}>
+            {controlsCollapsed ? <PanelLeftOpen size={16} aria-hidden="true" /> : <PanelLeftClose size={16} aria-hidden="true" />}
+          </button>
+        </div>
         <SidebarExamLibrary sessions={sessions} activeId={screen === 'workspace' ? activeId : null} onNew={newExam} onOpen={openSession} onDelete={id => { store.remove(id); if (activeId === id) newExam(); if (configureId === id) { setConfigureId(null); setShowQuickModal(false); } }} />
         <button className="side-rail-edge" type="button" onClick={() => setControlsCollapsed(value => !value)} aria-label={sidebarLabel} aria-expanded={!controlsCollapsed} title={sidebarLabel} />
         <div className="header-right"><span className="header-avatar" aria-label="Người dùng: Cùng thầy cô" title="Cùng thầy cô">GV</span><span className="header-session">Cùng thầy cô</span></div>
@@ -164,21 +173,45 @@ export const App: React.FC = () => {
                 <div className="studio-chat-heading"><div><span className="studio-kicker">KHÔNG GIAN SOẠN ĐỀ</span><h2>Cùng soạn đề</h2></div></div>
                 <div className="session-context"><strong>{active.title}</strong></div>
                 {(active.status === 'draft' || active.status === 'error') && <div className="session-create-action">
-                  {active.error && <p role="alert">{active.error}</p>}
-                  <button className="button-primary" onClick={() => { setConfigureId(active.id); setShowQuickModal(true); }}>{active.status === 'error' ? 'Thử tạo lại' : 'Tạo đề từ yêu cầu'}</button>
+                  {active.error && <p className="session-error-note">{active.error}</p>}
+                  <button type="button" className="button-primary" onClick={() => { setConfigureId(active.id); setShowQuickModal(true); }}>{active.status === 'error' ? 'Thử tạo lại' : 'Tạo đề từ yêu cầu'}</button>
                 </div>}
                 <ChatHistory messages={messages} onSuggestion={value => store.setDraft(active.id, value)} onEditMessage={message => store.setDraft(active.id, message.content)} onRetractMessage={message => store.retractMessage(active.id, message.id)} onBranchMessage={message => { const branchId = store.branchAtMessage(active.id, message.id); if (branchId) setActiveId(branchId); }} />
               </>
             ),
             right: (
               <>
-                {active.error && <p role="alert">{active.error}</p>}
-                {isGenerating && active.progress && (
-                  <p role="status">
-                    {formatProgressStatus(active.progress.statusMessage)} ({active.progress.percent}%)
-                  </p>
+                {active.error && (
+                  <div className="canvas-alert-banner is-error" role="alert">
+                    <AlertCircle size={17} aria-hidden="true" />
+                    <span>{active.error}</span>
+                  </div>
                 )}
-                {!!active.package?.warnings?.length && <details><summary>Cảnh báo nguồn ({active.package.warnings.length})</summary>{active.package.warnings.map((warning, i) => <p key={i}>{warning.questionId}: {warning.message}</p>)}</details>}
+                {isGenerating && active.progress && (
+                  <div className="canvas-progress-banner" role="status" aria-live="polite">
+                    <div className="canvas-progress-top">
+                      <span className="canvas-progress-label">
+                        <LoaderCircle className="exam-status-spinner" size={15} aria-hidden="true" />
+                        <span>{formatProgressStatus(active.progress.statusMessage)}</span>
+                      </span>
+                      <strong className="canvas-progress-pct">{active.progress.percent}%</strong>
+                    </div>
+                    <div className="canvas-progress-track" aria-hidden="true">
+                      <div className="canvas-progress-fill" style={{ width: `${Math.max(4, Math.min(100, active.progress.percent))}%` }} />
+                    </div>
+                  </div>
+                )}
+                {!!active.package?.warnings?.length && (
+                  <details className="canvas-source-warnings">
+                    <summary>
+                      <AlertTriangle size={14} aria-hidden="true" />
+                      <span>Cảnh báo nguồn ({active.package.warnings.length})</span>
+                    </summary>
+                    <div className="canvas-source-warnings-body">
+                      {active.package.warnings.map((warning, i) => <p key={i}><strong>{warning.questionId}:</strong> {warning.message}</p>)}
+                    </div>
+                  </details>
+                )}
                 {!!active.package?.visualWarnings?.length && (
                   <div className="pdf-preview-warning" role="alert">
                     <strong>Cảnh báo hình vẽ / bảng biểu ({active.package.visualWarnings.length})</strong>

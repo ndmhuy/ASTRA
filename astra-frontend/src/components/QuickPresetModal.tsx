@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { ChevronDown, ChevronUp, X } from 'lucide-react';
 import type { ExamFormat, ExamRequestParams } from '../types/exam';
 import { getBackendHealth, getExamFormats, type BackendHealth } from '../services/examService';
 
@@ -91,15 +92,25 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, title = 'T
         onClick={event => event.stopPropagation()}
       >
       <div className="preset-modal-header">
-        <h2 id="preset-title">{title}</h2>
-        {health && !error && (
-          <span
-            className={`preset-mode-pill ${health.demoMode ? 'is-demo' : 'is-ai'}`}
-            title={health.demoMode ? 'Tạo đề nhanh từ bộ dữ liệu cài sẵn, không gọi AI' : undefined}
-          >
-            {health.demoMode ? 'Không tốn phí AI' : health.providerConfigured ? 'Dùng AI thật' : 'Chưa kết nối AI'}
-          </span>
-        )}
+        <div className="preset-modal-title-group">
+          <h2 id="preset-title">{title}</h2>
+          {health && !error && (
+            <span
+              className={`preset-mode-pill ${health.demoMode ? 'is-demo' : 'is-ai'}`}
+              title={health.demoMode ? 'Tạo đề nhanh từ bộ dữ liệu cài sẵn, không gọi AI' : undefined}
+            >
+              {health.demoMode ? 'Không tốn phí AI' : health.providerConfigured ? 'Dùng AI thật' : 'Chưa kết nối AI'}
+            </span>
+          )}
+        </div>
+        <button
+          type="button"
+          className="modal-icon-close"
+          aria-label="Đóng hộp thoại mẫu đề"
+          onClick={onClose}
+        >
+          <X size={17} aria-hidden="true" />
+        </button>
       </div>
 
       {error && (
@@ -107,7 +118,13 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, title = 'T
           <p>{error}</p>
         </div>
       )}
-      {!error && !formats.length && <p role="status">Đang tải danh sách mẫu đề…</p>}
+      {!error && !formats.length && (
+        <div className="preset-loading-wrap">
+          <p role="status" className="preset-loading-text">Đang tải danh sách mẫu đề…</p>
+          <div className="preset-skeleton-card" aria-hidden="true" />
+          <div className="preset-skeleton-card" aria-hidden="true" />
+        </div>
+      )}
 
       <div className="preset-options-list">
         {formats.map(format => {
@@ -135,7 +152,8 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, title = 'T
                   aria-expanded={isExpanded}
                   onClick={() => toggleExpand(format.id)}
                 >
-                  {isExpanded ? 'Thu gọn' : 'Xem thêm'}
+                  <span>{isExpanded ? 'Thu gọn' : 'Xem thêm'}</span>
+                  {isExpanded ? <ChevronUp size={14} aria-hidden="true" /> : <ChevronDown size={14} aria-hidden="true" />}
                 </button>
               </div>
               {isExpanded && (

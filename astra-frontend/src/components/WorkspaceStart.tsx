@@ -20,10 +20,14 @@ export function WorkspaceStart({ exiting, draft, onDraftChange, onTemplate, onDe
   }, []);
   return <main className={`integrated-start ${ready ? 'is-ready' : ''} ${exiting ? 'is-exiting' : ''}`} aria-labelledby="workspace-greeting" inert={exiting}>
     <div className="integrated-start-content">
-      <div className="integrated-greeting"><AstraLogo className="integrated-greeting-logo" /><h1 id="workspace-greeting">Chào thầy cô!</h1><p>Cùng ASTRA mở trang đề tiếp theo.</p></div>
+      <div className="integrated-greeting">
+        <AstraLogo className="integrated-greeting-logo" />
+        <h1 id="workspace-greeting">Chào thầy cô!</h1>
+        <p>Cùng ASTRA mở trang đề tiếp theo.</p>
+      </div>
       <div className="integrated-start-actions">
-        <button className="button-secondary" onClick={onTemplate}><BookOpenCheck size={18} aria-hidden="true" />Soạn từ mẫu</button>
-        <button className="button-primary" onClick={onDetailed}><PenLine size={18} aria-hidden="true" />Soạn chi tiết</button>
+        <button type="button" className="button-primary start-action-btn" onClick={onTemplate}><BookOpenCheck size={17} aria-hidden="true" />Soạn từ mẫu</button>
+        <button type="button" className="button-secondary start-action-btn" onClick={onDetailed}><PenLine size={17} aria-hidden="true" />Soạn chi tiết</button>
       </div>
       <div className="integrated-start-composer"><ModernChatBar onSend={onSend} draft={draft} onDraftChange={onDraftChange} disabled={exiting} /></div>
       <p className="integrated-start-help">Chọn một cách bắt đầu, hoặc nhập ý tưởng ngay bên trên.</p>

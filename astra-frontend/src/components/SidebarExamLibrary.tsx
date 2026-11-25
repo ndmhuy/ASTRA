@@ -31,19 +31,37 @@ interface Props {
 export function SidebarExamLibrary({ sessions, activeId, onNew, onOpen, onDelete }: Props) {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   return <nav className="sidebar-library" aria-label="Đề thi của thầy cô">
-    <button className="sidebar-new-exam" onClick={onNew} title="Tạo đề mới"><Plus size={16} aria-hidden="true" /><span className="sidebar-label">Tạo đề mới</span></button>
+    <button type="button" className="sidebar-new-exam" onClick={onNew} title="Tạo đề mới"><Plus size={16} aria-hidden="true" /><span className="sidebar-label">Tạo đề mới</span></button>
     <h2 className="sidebar-library-heading sidebar-label">Tủ đề</h2>
-    {sessions.length === 0 && <p className="sidebar-library-empty sidebar-label">Đề thi sẽ xuất hiện ở đây.</p>}
+    {sessions.length === 0 && (
+      <div className="sidebar-library-empty sidebar-label">
+        <FileText size={15} aria-hidden="true" />
+        <span>Đề thi đã soạn sẽ lưu tại đây.</span>
+      </div>
+    )}
     <ul className="sidebar-exams">{sessions.map(session => <li key={session.id}>
       <div className="sidebar-exam-row">
-        <button className="sidebar-exam" onClick={() => onOpen(session.id)} aria-current={session.id === activeId ? 'page' : undefined} title={session.title}>
+        <button type="button" className="sidebar-exam" onClick={() => onOpen(session.id)} aria-current={session.id === activeId ? 'page' : undefined} title={session.title}>
           <FileText className="sidebar-exam-document" size={14} aria-hidden="true" />
-          <span className="sidebar-exam-title sidebar-label">{session.title}</span>
+          <span className="sidebar-exam-copy sidebar-label">
+            <span className="sidebar-exam-title">{session.title}</span>
+            {session.meta && (
+              <span className="sidebar-exam-meta">
+                {session.meta.totalCount} câu · {session.meta.duration} phút
+              </span>
+            )}
+          </span>
           <span className="sidebar-exam-status" role="status"><ExamStatus session={session} /></span>
         </button>
-        <button className="sidebar-exam-delete" onClick={() => setDeleteId(deleteId === session.id ? null : session.id)} title={`Xóa ${session.title}`} aria-label={`Xóa ${session.title}`}><Trash2 size={12} /></button>
+        <button type="button" className="sidebar-exam-delete" onClick={() => setDeleteId(deleteId === session.id ? null : session.id)} title={`Xóa ${session.title}`} aria-label={`Xóa ${session.title}`}><Trash2 size={13} aria-hidden="true" /></button>
       </div>
-      {deleteId === session.id && <div className="sidebar-delete-confirm"><span>Xóa đề này?</span><button onClick={() => { onDelete(session.id); setDeleteId(null); }}>Xóa</button><button onClick={() => setDeleteId(null)}>Hủy</button></div>}
+      {deleteId === session.id && (
+        <div className="sidebar-delete-confirm">
+          <span>Xóa đề này?</span>
+          <button type="button" className="is-danger" onClick={() => { onDelete(session.id); setDeleteId(null); }}>Xóa</button>
+          <button type="button" className="is-cancel" onClick={() => setDeleteId(null)}>Hủy</button>
+        </div>
+      )}
     </li>)}</ul>
   </nav>;
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { StationeryArt } from '../../StationeryArt';
 import { SchoolArt } from '../../SchoolArt';
-import { Eye, FileText, ListChecks } from 'lucide-react';
+import { Eye, FileText, ListChecks, LoaderCircle } from 'lucide-react';
 import type { ExamPassage, ExamPreviewState, QuestionItem, VisualWarning } from '../../../types/exam';
 import { formatVisualWarning } from '../../../utils/userMessages.ts';
 import { MathRenderer } from '../../MathRenderer';
@@ -130,7 +130,10 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
     if (isGenerating) {
       return (
         <div className="pdf-preview-loading" role="status">
-          <strong>Đang soạn đề thi...</strong>
+          <div className="pdf-preview-loading-row">
+            <LoaderCircle className="exam-status-spinner" size={16} aria-hidden="true" />
+            <strong>Đang soạn đề thi...</strong>
+          </div>
           <p>Bản xem trước PDF sẽ được tạo tự động sau khi quá trình soạn câu hỏi hoàn tất.</p>
         </div>
       );
@@ -206,13 +209,16 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
 
         {!artifactChanged && previewErrorCode !== 'latex_compiler_unavailable' && (!preview || !bindingMatch || preview.status === 'not_requested' || preview.status === 'queued' || preview.status === 'compiling') && (
           <div className="pdf-preview-loading" role="status">
-            <strong>
-              {preview?.status === 'compiling'
-                ? 'Đang tạo bản xem trước PDF...'
-                : preview?.status === 'queued'
-                  ? 'Đang xếp hàng tạo bản xem trước PDF...'
-                  : 'Đang chuẩn bị bản xem trước PDF cho phiên bản hiện tại...'}
-            </strong>
+            <div className="pdf-preview-loading-row">
+              <LoaderCircle className="exam-status-spinner" size={16} aria-hidden="true" />
+              <strong>
+                {preview?.status === 'compiling'
+                  ? 'Đang tạo bản xem trước PDF...'
+                  : preview?.status === 'queued'
+                    ? 'Đang xếp hàng tạo bản xem trước PDF...'
+                    : 'Đang chuẩn bị bản xem trước PDF cho phiên bản hiện tại...'}
+              </strong>
+            </div>
             <p>
               Lần tạo bản in đầu tiên có thể mất thêm vài chục giây. Nếu quá thời gian, thầy cô chỉ cần bấm thử lại.
             </p>
@@ -263,11 +269,11 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
     <div className="canvas-topbar">{header}
     <div className="paper-toolbar">
       <div className="view-switch" role="group" aria-label="Chế độ xem đề thi">
-        <button aria-pressed={activeMode === 'paper'} onClick={() => setMode('paper')}><FileText size={14} aria-hidden="true" />Đề thi</button>
-        <button aria-pressed={activeMode === 'review'} onClick={() => setMode('review')}><ListChecks size={14} aria-hidden="true" />Xem đáp án</button>
-        <button aria-pressed={activeMode === 'pdf'} onClick={() => setMode('pdf')}><Eye size={14} aria-hidden="true" />Xem trước PDF</button>
+        <button type="button" aria-pressed={activeMode === 'paper'} onClick={() => setMode('paper')}><FileText size={14} aria-hidden="true" />Đề thi</button>
+        <button type="button" aria-pressed={activeMode === 'review'} onClick={() => setMode('review')}><ListChecks size={14} aria-hidden="true" />Xem đáp án</button>
+        <button type="button" aria-pressed={activeMode === 'pdf'} onClick={() => setMode('pdf')}><Eye size={14} aria-hidden="true" />Xem trước PDF</button>
       </div>
-      {flaggedCount > 0 && <button className="review-count" onClick={() => setMode('review')}>{flaggedCount} câu cần xem xét</button>}
+      {flaggedCount > 0 && <button type="button" className="review-count" onClick={() => setMode('review')}>{flaggedCount} câu cần xem xét</button>}
     </div>
     </div>
     <div className="paper-scroll">
@@ -295,7 +301,7 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
                 : undefined;
             return (
               <React.Fragment key={q.id}>
-                {showPart && <h2>{sectionHeading(q.part!)}</h2>}
+                {showPart && <h2 className="exam-section-heading">{sectionHeading(q.part!)}</h2>}
                 {showGroupInstruction && (
                   <p className="vact-group-instruction"><strong>{q.groupInstruction}</strong></p>
                 )}
@@ -344,7 +350,12 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
               </React.Fragment>
             );
           })}
-          {isGenerating && <p className="paper-progress" role="status">Đang soạn câu hỏi tiếp theo…</p>}
+          {isGenerating && (
+            <p className="paper-progress" role="status">
+              <LoaderCircle className="exam-status-spinner" size={14} aria-hidden="true" />
+              <span>Đang soạn câu hỏi tiếp theo…</span>
+            </p>
+          )}
           {questions.length > 0 && !isGenerating && <footer className="paper-end">— Hết —</footer>}
         </article>
       )}

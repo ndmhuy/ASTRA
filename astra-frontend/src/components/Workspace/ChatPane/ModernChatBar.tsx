@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { Paperclip, Globe, ArrowUp } from 'lucide-react';
+import { Paperclip, Globe, ArrowUp, X } from 'lucide-react';
 
 interface ModernChatBarProps {
   onSend: (message: string, options: { searchWeb: boolean; attachedFiles: File[] }) => void;
@@ -21,8 +21,7 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
     const el = textareaRef.current;
     if (!el) return;
     el.style.height = 'auto';
-    // Max ~5 lines at 22px line-height + padding
-    el.style.height = Math.min(el.scrollHeight, 130) + 'px';
+    el.style.height = Math.min(el.scrollHeight, 140) + 'px';
   }, []);
 
   useEffect(adjustHeight, [text, adjustHeight]);
@@ -57,49 +56,32 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
     e.target.value = '';
   };
 
+  const canSend = Boolean(text.trim()) && !disabled;
+
   return (
-    <div className="studio-composer"
-      style={{
-        padding: '10px 12px',
-        borderTop: '1px solid #e2e8f0',
-        background: '#ffffff',
-        flexShrink: 0,
-      }}
-    >
-      {/* Attached files indicator */}
+    <div className="studio-composer">
       {attachedFiles.length > 0 && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
+        <div className="composer-attachments">
           {attachedFiles.map((f, i) => (
-            <span
-              key={i}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 4,
-                fontSize: 12,
-                color: '#334155',
-                background: '#f1f5f9',
-                border: '1px solid #e2e8f0',
-                borderRadius: 4,
-                padding: '2px 8px',
-              }}
-            >
-              {f.name}
+            <span key={`${f.name}-${i}`} className="composer-file-chip">
+              <span>{f.name}</span>
               <button
+                type="button"
+                className="composer-file-remove"
+                aria-label={`Bỏ đính kèm ${f.name}`}
                 onClick={() => setAttachedFiles((prev) => prev.filter((_, j) => j !== i))}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', padding: 0, lineHeight: 1 }}
               >
-                ×
+                <X size={13} aria-hidden="true" />
               </button>
             </span>
           ))}
         </div>
       )}
 
-      {/* Main input container */}
       <div className="composer-box">
         <textarea
           ref={textareaRef}
+          className="composer-textarea"
           aria-label="Yêu cầu soạn đề"
           value={text}
           onChange={handleChange}
@@ -107,108 +89,52 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
           disabled={disabled}
           placeholder="Mô tả yêu cầu cho đề thi thầy cô muốn soạn..."
           rows={1}
-          style={{
-            width: '100%',
-            resize: 'none',
-            border: 'none',
-            outline: 'none',
-            padding: '10px 12px 6px',
-            fontSize: 16,
-            color: '#0f172a',
-            background: 'transparent',
-            lineHeight: '22px',
-            fontFamily: 'inherit',
-            boxSizing: 'border-box',
-            overflowY: 'auto',
-          }}
         />
 
-        {/* Toolbar */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            padding: '4px 8px 6px',
-            gap: 4,
-          }}
-        >
-          {/* Attach */}
+        <div className="composer-toolbar">
           <button
+            type="button"
+            className="composer-tool-btn"
             onClick={() => fileInputRef.current?.click()}
             title="Đính kèm tài liệu"
             aria-label="Đính kèm tài liệu"
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              fontSize: 15,
-              color: '#64748b',
-              padding: '4px 6px',
-              borderRadius: 4,
-              lineHeight: 1,
-            }}
           >
-            <Paperclip size={18} />
+            <Paperclip size={16} aria-hidden="true" />
           </button>
           <input
             ref={fileInputRef}
             type="file"
             multiple
-            style={{ display: 'none' }}
+            className="composer-file-input"
             onChange={handleFileChange}
           />
 
-          {/* Search web toggle */}
           <button
+            type="button"
+            className={`composer-tool-btn ${searchWeb ? 'is-active' : ''}`}
             onClick={() => setSearchWeb((v) => !v)}
             title="Tìm trên mạng"
             aria-pressed={searchWeb}
-            style={{
-              background: searchWeb ? '#edf4ef' : 'none',
-              border: searchWeb ? '1px solid #059669' : '1px solid transparent',
-              cursor: 'pointer',
-              fontSize: 13,
-              color: searchWeb ? '#24634b' : '#64748b',
-              padding: '3px 8px',
-              borderRadius: 4,
-              lineHeight: 1.5,
-              fontWeight: searchWeb ? 600 : 400,
-              transition: 'all 150ms ease',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 4,
-            }}
           >
-            <Globe size={16} />
-            <span style={{ fontSize: 12 }}>Tìm mạng</span>
+            <Globe size={15} aria-hidden="true" />
+            <span>Tìm mạng</span>
           </button>
 
-          {/* Spacer */}
-          <div style={{ flex: 1 }} />
+          <div className="composer-toolbar-spacer" />
 
-          {/* Send button */}
+          <span className="composer-hint" aria-hidden="true">
+            Enter gửi · Shift+Enter xuống dòng
+          </span>
+
           <button
+            type="button"
+            className={`composer-send-btn ${canSend ? 'is-ready' : ''}`}
             onClick={handleSend}
-            disabled={!text.trim() || disabled}
-            style={{
-              background: !text.trim() || disabled ? '#e2e8f0' : '#24634b',
-              color: !text.trim() || disabled ? '#94a3b8' : '#ffffff',
-              border: 'none',
-              borderRadius: 5,
-              width: 44,
-              height: 44,
-              cursor: !text.trim() || disabled ? 'not-allowed' : 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: 18,
-              transition: 'background 150ms ease',
-              flexShrink: 0,
-            }}
+            disabled={!canSend}
             title="Gửi"
             aria-label="Gửi yêu cầu"
           >
-            <ArrowUp size={18} />
+            <ArrowUp size={17} aria-hidden="true" />
           </button>
         </div>
       </div>

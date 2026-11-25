@@ -44,8 +44,8 @@ export const DotGrid: React.FC<DotGridProps> = ({ rotationDegrees }) => {
           key: `${column}:${row}`,
           x: screenX,
           y: screenY,
-          radius: 0.25 + 7.25 * fade,
-          opacity: 0.42 * fade,
+          radius: 0.35 + 3.8 * fade,
+          opacity: 0.14 * fade,
         });
       }
     }
@@ -65,7 +65,7 @@ export const DotGrid: React.FC<DotGridProps> = ({ rotationDegrees }) => {
           cx={dot.x}
           cy={dot.y}
           r={dot.radius}
-          fill={`rgba(64,112,57,${dot.opacity})`}
+          fill={`rgba(24, 58, 44, ${dot.opacity})`}
         />
       ))}
     </svg>
