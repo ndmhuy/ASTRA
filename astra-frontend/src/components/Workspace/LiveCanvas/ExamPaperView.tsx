@@ -1,9 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { StationeryArt } from '../../StationeryArt';
-import { SchoolArt } from '../../SchoolArt';
-import { Eye, FileText, ListChecks, LoaderCircle } from 'lucide-react';
+import { ArrowUp, Eye, FileText, ListChecks, LoaderCircle } from 'lucide-react';
 import type { ExamPassage, ExamPreviewState, QuestionItem, VisualWarning } from '../../../types/exam';
 import { formatVisualWarning } from '../../../utils/userMessages.ts';
+import { AstraLogo } from '../../AstraLogo';
 import { MathRenderer } from '../../MathRenderer';
 import { QuestionCard } from './QuestionCard';
 
@@ -18,6 +17,17 @@ const SECTION_HEADINGS: Record<string, string> = {
   TO: 'Phần 2. Toán học',
   LOGIC: 'Phần 3. Tư duy khoa học · 3.1. Logic, phân tích số liệu',
   SCIENCE: 'Phần 3. Tư duy khoa học · 3.2. Suy luận khoa học',
+};
+
+const SECTION_SHORT_LABELS: Record<string, string> = {
+  P1: 'Phần I · Trắc nghiệm',
+  P2: 'Phần II · Đúng/Sai',
+  P3: 'Phần III · Trả lời ngắn',
+  TV: 'Tiếng Việt',
+  TA: 'Tiếng Anh',
+  TO: 'Toán học',
+  LOGIC: 'Logic & Số liệu',
+  SCIENCE: 'Suy luận KH',
 };
 
 function sectionHeading(part: string): string {
@@ -86,10 +96,30 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
   const review = activeMode === 'review';
   const flaggedCount = questions.filter(q => q.status === 'FLAGGED').length;
   const lastAutoRequested = useRef<string>('');
+  const paperScrollRef = useRef<HTMLDivElement>(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
   const passageById = useMemo(
     () => new Map((passages || []).map(passage => [passage.id, passage])),
     [passages]
   );
+
+  const sectionSummaries = useMemo(() => {
+    const order: Array<{ part: string; label: string; count: number }> = [];
+    const byPart = new Map<string, { part: string; label: string; count: number }>();
+    for (const q of questions) {
+      if (!q.part) continue;
+      let entry = byPart.get(q.part);
+      if (!entry) {
+        entry = { part: q.part, label: SECTION_SHORT_LABELS[q.part] || q.part, count: 0 };
+        byPart.set(q.part, entry);
+        order.push(entry);
+      }
+      entry.count += 1;
+    }
+    return order;
+  }, [questions]);
+
   const bindingMatch = Boolean(
     preview &&
     revision !== undefined &&
@@ -113,16 +143,34 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
     }
   }, [activeMode, isGenerating, artifactChanged, examId, revision, contentHash, bindingMatch, preview?.status, onPreviewOpened, onRetryPreview]);
 
+  const scrollBehavior = (): ScrollBehavior =>
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+
+  const jumpToSection = (part: string) => {
+    const target = document.getElementById(`exam-section-${part}`);
+    target?.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
+  };
+
+  const scrollToTop = () => {
+    paperScrollRef.current?.scrollTo({ top: 0, behavior: scrollBehavior() });
+  };
+
+  const renderEmptySteps = () => (
+    <div className="paper-empty-steps" aria-label="Quy trình 3 bước">
+      <span><strong>01</strong> Mô tả yêu cầu</span>
+      <span><strong>02</strong> Chọn mẫu &amp; tạo đề</span>
+      <span><strong>03</strong> Xem PDF &amp; phê duyệt</span>
+    </div>
+  );
+
   const renderPdfPanel = () => {
     if (!examMeta) {
       return (
         <div className="paper-empty">
-          <StationeryArt kind="pencil" className="preview-pencil" />
-          <StationeryArt kind="apple" className="preview-apple" />
-          <span className="preview-label">02 / XEM TRƯỚC PDF</span>
-          <SchoolArt kind="book" className="preview-art" />
+          <AstraLogo className="paper-empty-logo" />
           <h2>Chưa có đề để hiển thị bản in PDF.</h2>
           <p>Thầy cô hãy tạo đề thi trước để xem bản in chuẩn theo mẫu.</p>
+          {renderEmptySteps()}
         </div>
       );
     }
@@ -276,18 +324,40 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
       {flaggedCount > 0 && <button type="button" className="review-count" onClick={() => setMode('review')}>{flaggedCount} câu cần xem xét</button>}
     </div>
     </div>
-    <div className="paper-scroll">
+    <div
+      ref={paperScrollRef}
+      className="paper-scroll"
+      onScroll={e => setShowScrollTop(e.currentTarget.scrollTop > 360)}
+    >
       {activeMode === 'pdf' ? renderPdfPanel() : (
         <article className={`exam-paper ${!examMeta ? 'is-empty' : ''}`}>
-          {examMeta ? <header className="exam-paper-heading">
-            <div className="eyebrow">Đề kiểm tra · {examMeta.subject}</div>
-            <h1>{examMeta.title || `Đề thi ${examMeta.subject}`}</h1>
-            <p>Thời gian: {examMeta.duration} phút <span>·</span> {examMeta.totalCount} câu hỏi</p>
-            {!review && <div className="student-line">Họ và tên: ................................................ <span>Lớp: ................</span></div>}
-          </header> : <div className="paper-empty">
-            <StationeryArt kind="pencil" className="preview-pencil" /><StationeryArt kind="apple" className="preview-apple" /><span className="preview-label">02 / TRANG ĐỀ</span><SchoolArt kind="book" className="preview-art" />
+          {examMeta ? <>
+            <header className="exam-paper-heading">
+              <div className="eyebrow">Đề kiểm tra · {examMeta.subject}</div>
+              <h1>{examMeta.title || `Đề thi ${examMeta.subject}`}</h1>
+              <p>Thời gian: {examMeta.duration} phút <span>·</span> {examMeta.totalCount} câu hỏi</p>
+              {!review && <div className="student-line">Họ và tên: ................................................ <span>Lớp: ................</span></div>}
+            </header>
+            {sectionSummaries.length >= 2 && (
+              <nav className="exam-section-index" aria-label="Chuyển nhanh đến phần thi">
+                {sectionSummaries.map(section => (
+                  <button
+                    key={section.part}
+                    type="button"
+                    className="exam-section-jump"
+                    onClick={() => jumpToSection(section.part)}
+                  >
+                    <span>{section.label}</span>
+                    <span className="exam-section-jump-count">{section.count}</span>
+                  </button>
+                ))}
+              </nav>
+            )}
+          </> : <div className="paper-empty">
+            <AstraLogo className="paper-empty-logo" />
             <h2>Một trang mới,<br />chờ ý tưởng hay.</h2>
             <p>Trao đổi với ASTRA, chọn thiết lập đề, rồi xem từng câu hỏi xuất hiện tại đây.</p>
+            {renderEmptySteps()}
           </div>}
           {questions.map((q, i) => {
             const prev = questions[i - 1];
@@ -301,7 +371,7 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
                 : undefined;
             return (
               <React.Fragment key={q.id}>
-                {showPart && <h2 className="exam-section-heading">{sectionHeading(q.part!)}</h2>}
+                {showPart && <h2 id={`exam-section-${q.part}`} className="exam-section-heading">{sectionHeading(q.part!)}</h2>}
                 {showGroupInstruction && (
                   <p className="vact-group-instruction"><strong>{q.groupInstruction}</strong></p>
                 )}
@@ -360,5 +430,17 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
         </article>
       )}
     </div>
+    {activeMode !== 'pdf' && showScrollTop && (
+      <button
+        type="button"
+        className="paper-scroll-top"
+        aria-label="Cuộn lên đầu đề thi"
+        title="Cuộn lên đầu đề thi"
+        onClick={scrollToTop}
+      >
+        <ArrowUp size={15} aria-hidden="true" />
+        <span>Đầu trang</span>
+      </button>
+    )}
   </>;
 };

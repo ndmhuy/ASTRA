@@ -16,21 +16,60 @@ export const QuestionEditor: React.FC<Props> = ({ question, onSave, onRegenerate
   const [busyAction, setBusyAction] = useState<'save' | 'regen' | null>(null);
   const [error, setError] = useState('');
   const dialogRef = useRef<HTMLElement>(null);
+  const draftRef = useRef(draft);
   const busy = busyAction !== null;
+
+  useEffect(() => {
+    draftRef.current = draft;
+  }, [draft]);
 
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
     const stemInput = dialogRef.current?.querySelector<HTMLTextAreaElement>('textarea[aria-label="Đề bài"]');
     stemInput?.focus();
+    return () => {
+      previous?.focus();
+    };
+  }, []);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    const controls = () => Array.from(
+      dialog?.querySelectorAll<HTMLElement>('button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled)') || []
+    );
     const handleKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && !busy) onClose();
+      if (event.key === 'Escape' && !busy) {
+        onClose();
+        return;
+      }
+      if ((event.ctrlKey || event.metaKey) && event.key === 'Enter' && !busy) {
+        event.preventDefault();
+        setBusyAction('save');
+        setError('');
+        void onSave(draftRef.current)
+          .catch(err => setError(err instanceof Error ? err.message : 'Không lưu được câu hỏi'))
+          .finally(() => setBusyAction(null));
+        return;
+      }
+      if (event.key === 'Tab' && dialog) {
+        const items = controls();
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (!first || !last) return;
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
     };
     window.addEventListener('keydown', handleKey);
     return () => {
       window.removeEventListener('keydown', handleKey);
-      previous?.focus();
     };
-  }, [busy, onClose]);
+  }, [busy, onClose, onSave]);
 
   const action = async (kind: 'save' | 'regen', operation: () => Promise<void>) => {
     setBusyAction(kind);
@@ -194,6 +233,7 @@ export const QuestionEditor: React.FC<Props> = ({ question, onSave, onRegenerate
             type="button"
             className="button-primary"
             disabled={busy}
+            title="Lưu thay đổi (Ctrl+Enter)"
             onClick={() => { void action('save', () => onSave(draft)); }}
           >
             {busyAction === 'save' && <LoaderCircle className="exam-status-spinner" size={14} aria-hidden="true" />}

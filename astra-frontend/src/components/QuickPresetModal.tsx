@@ -81,6 +81,13 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, title = 'T
     });
   };
 
+  const handleOptionKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter' && selected?.available && !error) {
+      event.preventDefault();
+      start();
+    }
+  };
+
   return (
     <div className="preset-modal-backdrop" onClick={onClose}>
       <div
@@ -140,6 +147,7 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, title = 'T
                     checked={isSelected}
                     disabled={!format.available}
                     onChange={() => setSelectedId(format.id)}
+                    onKeyDown={handleOptionKeyDown}
                   />
                   <span className="preset-option-copy">
                     <strong>{format.displayName}</strong>

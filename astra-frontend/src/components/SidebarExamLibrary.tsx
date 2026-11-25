@@ -30,6 +30,14 @@ interface Props {
 }
 export function SidebarExamLibrary({ sessions, activeId, onNew, onOpen, onDelete }: Props) {
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  useEffect(() => {
+    if (!deleteId) return;
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setDeleteId(null);
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [deleteId]);
   return <nav className="sidebar-library" aria-label="Đề thi của thầy cô">
     <button type="button" className="sidebar-new-exam" onClick={onNew} title="Tạo đề mới"><Plus size={16} aria-hidden="true" /><span className="sidebar-label">Tạo đề mới</span></button>
     <h2 className="sidebar-library-heading sidebar-label">Tủ đề</h2>

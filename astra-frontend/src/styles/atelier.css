@@ -102,6 +102,7 @@
   background: var(--atelier-forest-2);
   border: 1px solid var(--atelier-forest-2);
   color: #fffdf8;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 
 .app-shell.create-mode .button-primary:hover:not(:disabled) {
@@ -707,6 +708,7 @@
 }
 
 .workspace-active.create-mode .astra-canvas-pane {
+  position: relative;
   display: flex;
   flex-direction: column;
   padding: 5px 6px 6px;
@@ -714,6 +716,38 @@
   border-radius: 10px;
   background: var(--atelier-mat);
   box-shadow: none !important;
+}
+
+.workspace-active.create-mode .workspace-divider {
+  position: relative;
+  width: 8px;
+  background: transparent;
+  border: 0;
+  cursor: col-resize;
+}
+
+.workspace-active.create-mode .workspace-divider::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 3px;
+  height: 36px;
+  border-radius: 999px;
+  background: rgba(22, 34, 28, 0.22);
+  transform: translate(-50%, -50%);
+  transition: background-color 140ms ease, height 140ms ease;
+}
+
+.workspace-active.create-mode .workspace-divider:hover,
+.workspace-active.create-mode .workspace-divider:focus-visible {
+  background: transparent;
+}
+
+.workspace-active.create-mode .workspace-divider:hover::after,
+.workspace-active.create-mode .workspace-divider:focus-visible::after {
+  height: 48px;
+  background: var(--atelier-forest-2);
 }
 
 .workspace-active.create-mode .canvas-topbar {
@@ -953,10 +987,131 @@
   border: 1px solid rgba(22, 34, 28, 0.14) !important;
   border-radius: 9px !important;
   background: var(--atelier-paper) !important;
-  box-shadow: 0 2px 12px rgba(18, 38, 30, 0.04) !important;
+  box-shadow: 0 1px 2px rgba(18, 38, 30, 0.04), 0 10px 28px -10px rgba(18, 38, 30, 0.08) !important;
   font-family: var(--font-paper) !important;
   color: var(--atelier-ink);
   overflow: visible !important;
+}
+
+/* Inline section jump index & floating scroll-to-top */
+.exam-section-index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 8px 0 4px;
+  padding: 6px 0 8px;
+  border-bottom: 1px solid rgba(22, 34, 28, 0.1);
+}
+
+.exam-section-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border: 1px solid var(--atelier-edge);
+  border-radius: 6px;
+  background: var(--atelier-surface);
+  color: var(--atelier-ink-soft);
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.exam-section-jump:hover {
+  border-color: var(--atelier-forest-2);
+  background: #e6f0ea;
+  color: var(--atelier-forest-2);
+}
+
+.exam-section-jump-count {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--atelier-muted);
+}
+
+.paper-scroll-top {
+  position: absolute;
+  right: 22px;
+  bottom: 16px;
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 32px;
+  padding: 5px 11px;
+  border: 1px solid var(--atelier-edge-strong);
+  border-radius: 7px;
+  background: rgba(255, 253, 248, 0.94);
+  color: var(--atelier-forest);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(18, 38, 30, 0.12);
+  backdrop-filter: blur(4px);
+}
+
+.paper-scroll-top:hover {
+  background: var(--atelier-forest-2);
+  border-color: var(--atelier-forest-2);
+  color: #fffdf8;
+}
+
+/* Clean Editorial Empty State (Paper & PDF) */
+.workspace-active.create-mode .paper-empty {
+  padding: 28px 16px;
+  text-align: center;
+}
+
+.paper-empty-logo {
+  display: block;
+  width: 96px;
+  height: 84px;
+  margin: 0 auto 12px;
+}
+
+.workspace-active.create-mode .paper-empty h2 {
+  font-family: var(--font-editorial);
+  font-size: clamp(24px, 2.5vw, 30px);
+  font-weight: 600;
+  color: var(--atelier-forest);
+  margin: 0 0 8px;
+}
+
+.workspace-active.create-mode .paper-empty p {
+  margin: 0 auto;
+  max-width: 400px;
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--atelier-muted);
+}
+
+.paper-empty-steps {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.paper-empty-steps span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid var(--atelier-edge);
+  border-radius: 7px;
+  background: var(--atelier-surface);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--atelier-ink-soft);
+}
+
+.paper-empty-steps strong {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--atelier-forest-2);
 }
 
 .workspace-active.create-mode .exam-paper.is-empty {
@@ -1242,6 +1397,62 @@
   gap: 8px;
 }
 
+.workspace-active.create-mode .pdf-preview-banner {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--atelier-edge);
+  background: var(--atelier-paper);
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+}
+
+.workspace-active.create-mode .pdf-preview-banner.is-draft {
+  border-color: rgba(180, 83, 9, 0.35);
+  background: #fff8eb;
+  color: #7c2d12;
+}
+
+.workspace-active.create-mode .pdf-preview-banner.is-approved {
+  border-color: rgba(24, 58, 44, 0.28);
+  background: #eaf4ee;
+  color: #14442e;
+}
+
+.workspace-active.create-mode .pdf-preview-warning {
+  padding: 9px 12px;
+  border-radius: 8px;
+  border-color: rgba(217, 119, 6, 0.4);
+  background: #fffbeb;
+  color: #78350f;
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+}
+
+.workspace-active.create-mode .pdf-preview-error {
+  padding: 12px 14px;
+  border-radius: 8px;
+  border-color: #fca5a5;
+  background: #fef2f2;
+  color: #991b1b;
+  font-family: var(--font-ui);
+  font-size: 13px;
+}
+
+.workspace-active.create-mode .pdf-preview-loading {
+  padding: 14px 16px;
+  border-radius: 8px;
+  border-color: var(--atelier-edge);
+  background: var(--atelier-paper);
+  color: var(--atelier-ink);
+  font-family: var(--font-ui);
+  font-size: 13px;
+}
+
+.workspace-active.create-mode .pdf-preview-frame-wrap {
+  border-color: var(--atelier-edge-strong);
+  border-radius: 8px;
+}
+
 .workspace-active.create-mode .pdf-preview-frame-wrap iframe {
   height: calc(100dvh - 180px) !important;
   min-height: 460px;
@@ -1329,10 +1540,25 @@
   font-size: 13.5px;
 }
 
+.workspace-active.create-mode .chat-message-actions {
+  opacity: 0.42;
+  transition: opacity 140ms ease;
+}
+
+.workspace-active.create-mode .chat-message-row:hover .chat-message-actions,
+.workspace-active.create-mode .chat-message-row:focus-within .chat-message-actions {
+  opacity: 1;
+}
+
 .workspace-active.create-mode .chat-message-actions button {
   min-height: 26px;
   padding: 3px 7px;
   color: var(--atelier-muted);
+}
+
+.workspace-active.create-mode .chat-message-actions button.is-copied {
+  color: var(--atelier-forest-2);
+  font-weight: 600;
 }
 
 .workspace-active.create-mode .prompt-suggestions button {
@@ -1649,6 +1875,27 @@
   .question-quick-edit-btn {
     opacity: 1;
     pointer-events: auto;
+  }
+}
+
+@media (pointer: coarse) {
+  .app-shell.create-mode .button-primary,
+  .app-shell.create-mode .button-secondary,
+  .workspace-active.create-mode .canvas-actions button,
+  .workspace-active.create-mode .view-switch button,
+  .integrated-shell .sidebar-exam-delete,
+  .modal-icon-close {
+    min-height: 42px;
+  }
+
+  .integrated-shell .sidebar-exam-delete,
+  .modal-icon-close {
+    width: 42px;
+    flex-basis: 42px;
+  }
+
+  .workspace-active.create-mode .chat-message-actions {
+    opacity: 1;
   }
 }
 
