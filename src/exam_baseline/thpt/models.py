@@ -8,6 +8,7 @@ from pydantic import Field, field_validator, model_validator
 from exam_baseline.core.models import Model, Text
 from exam_baseline.thpt.content import choice_latex, content_latex
 from exam_baseline.thpt.fonts import DEFAULT_FONT_PROFILE, FontProfile
+from exam_baseline.thpt.visuals import validate_table_source, visual_issues
 
 Level = Literal["NB", "TH", "VD", "VDC"]
 Part = Literal["P1", "P2", "P3"]
@@ -68,11 +69,15 @@ class Question(Model):
     @field_validator("stem", "solution")
     @classmethod
     def validate_math_text(cls, value, info):
+        if info.field_name == "stem":
+            validate_table_source(value)
         content_latex(value, check_equations=info.field_name != "solution")
         return value
 
     @model_validator(mode="after")
     def shape(self):
+        if issues := visual_issues(self.stem, self.illustration_request):
+            raise ValueError("; ".join(issues))
         for choice in self.choices.values():
             choice_latex(choice)
         if self.id.startswith("P1-"):

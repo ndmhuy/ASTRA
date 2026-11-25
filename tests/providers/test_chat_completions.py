@@ -67,6 +67,51 @@ def test_structured_output_sends_request_schema_without_mutating_defaults():
     assert invoke(handler, settings(response_format="json_schema")).text == "{}"
 
 
+def test_tool_schema_mode_round_trips_full_schema_as_json_arguments():
+    def handler(request):
+        data = json.loads(request.content)
+        assert "response_format" not in data
+        assert data["tools"][0]["function"]["parameters"] == {}
+        assert data["tool_choice"]["function"]["name"] == "astra_output"
+        return httpx.Response(
+            200,
+            json=envelope(
+                choices=[
+                    {
+                        "finish_reason": "tool_calls",
+                        "message": {
+                            "content": None,
+                            "tool_calls": [
+                                {
+                                    "type": "function",
+                                    "function": {"name": "astra_output", "arguments": "{}"},
+                                }
+                            ],
+                        },
+                    }
+                ]
+            ),
+        )
+
+    assert invoke(handler, settings(schema_as_tool=True)).text == "{}"
+
+
+@pytest.mark.parametrize("calls", [[], [{"function": {"name": "other", "arguments": "{}"}}]])
+def test_tool_schema_mode_rejects_missing_or_unexpected_function(calls):
+    body = envelope(
+        choices=[
+            {
+                "finish_reason": "tool_calls",
+                "message": {"content": "{}", "tool_calls": calls},
+            }
+        ]
+    )
+    with pytest.raises(ProviderError) as caught:
+        invoke(lambda _: httpx.Response(200, json=body), settings(schema_as_tool=True))
+    assert caught.value.code == "provider_protocol_error"
+    assert caught.value.completion.usage.input_tokens == 12
+
+
 def test_compatible_provider_options():
     def handler(request):
         assert str(request.url) == "http://localhost:9000/v1/chat/completions"

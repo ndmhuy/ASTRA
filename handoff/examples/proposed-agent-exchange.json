@@ -1,0 +1,141 @@
+{
+  "_meta": {
+    "status": "PROPOSED_PROTOCOL_FIXTURE",
+    "note": "Not a recorded run. All IDs are deterministic fixtures. Requires executor, context exporter, and agent transport not currently installed. Final reply is recorded in originating conversation even when navigation hides current workspace chat."
+  },
+  "turnRequest": {
+    "schemaVersion": "0.1",
+    "requestId": "req-nav-001",
+    "sessionId": "chat-example-01",
+    "workspaceSessionId": "ws-example-01",
+    "message": "Mở Tủ đề giúp tôi",
+    "screenContext": {
+      "screenId": "workspace",
+      "stateVersion": 12,
+      "activeWorkspaceSessionId": "ws-example-01",
+      "visibleWorkspaceSessionId": "ws-example-01",
+      "activeExamId": null,
+      "activeSessionStatus": "draft",
+      "selectedQuestionId": null,
+      "focusedComponentId": null,
+      "openPanels": [],
+      "sidebarCollapsed": false,
+      "viewport": "desktop",
+      "canvasView": "exam",
+      "mobilePane": null,
+      "availableActions": [
+        "ui.navigate",
+        "ui.session.create",
+        "ui.exam.open_setup",
+        "ui.sidebar.set_collapsed"
+      ],
+      "activeJob": null
+    },
+    "options": {
+      "searchWeb": false,
+      "uploadedFileIds": []
+    }
+  },
+  "turnResponse": {
+    "schemaVersion": "0.1",
+    "requestId": "req-nav-001",
+    "sessionId": "chat-example-01",
+    "kind": "action_plan",
+    "reply": "Mình sẽ mở Tủ đề cho thầy cô.",
+    "plan": {
+      "schemaVersion": "0.1",
+      "registryVersion": "astra-ui-0.1-proposal-1",
+      "requestId": "req-nav-001",
+      "planId": "plan-nav-001",
+      "sessionId": "chat-example-01",
+      "expectedStateVersion": 12,
+      "actions": [
+        {
+          "id": "action-nav-001",
+          "capabilityId": "ui.navigate",
+          "target": "application",
+          "params": {
+            "screenId": "library"
+          }
+        }
+      ],
+      "requiresUserConfirmation": false
+    }
+  },
+  "executionFeedback": {
+    "schemaVersion": "0.1",
+    "feedbackId": "feedback-nav-001",
+    "sessionId": "chat-example-01",
+    "originalRequestId": "req-nav-001",
+    "report": {
+      "schemaVersion": "0.1",
+      "requestId": "req-nav-001",
+      "sessionId": "chat-example-01",
+      "planId": "plan-nav-001",
+      "status": "success",
+      "results": [
+        {
+          "schemaVersion": "0.1",
+          "sessionId": "chat-example-01",
+          "requestId": "req-nav-001",
+          "planId": "plan-nav-001",
+          "actionId": "action-nav-001",
+          "status": "success",
+          "updatedScreenContext": {
+            "screenId": "library",
+            "stateVersion": 13,
+            "activeWorkspaceSessionId": "ws-example-01",
+            "visibleWorkspaceSessionId": null,
+            "activeExamId": null,
+            "activeSessionStatus": "draft",
+            "selectedQuestionId": null,
+            "focusedComponentId": null,
+            "openPanels": [],
+            "sidebarCollapsed": false,
+            "viewport": "desktop",
+            "canvasView": null,
+            "mobilePane": null,
+            "availableActions": [
+              "ui.navigate",
+              "ui.session.create",
+              "ui.exam.open_setup",
+              "ui.sidebar.set_collapsed"
+            ],
+            "activeJob": null
+          },
+          "data": {},
+          "error": null
+        }
+      ],
+      "finalScreenContext": {
+        "screenId": "library",
+        "stateVersion": 13,
+        "activeWorkspaceSessionId": "ws-example-01",
+        "visibleWorkspaceSessionId": null,
+        "activeExamId": null,
+        "activeSessionStatus": "draft",
+        "selectedQuestionId": null,
+        "focusedComponentId": null,
+        "openPanels": [],
+        "sidebarCollapsed": false,
+        "viewport": "desktop",
+        "canvasView": null,
+        "mobilePane": null,
+        "availableActions": [
+          "ui.navigate",
+          "ui.session.create",
+          "ui.exam.open_setup",
+          "ui.sidebar.set_collapsed"
+        ],
+        "activeJob": null
+      }
+    }
+  },
+  "finalAgentResponse": {
+    "schemaVersion": "0.1",
+    "requestId": "feedback-nav-001",
+    "sessionId": "chat-example-01",
+    "kind": "reply",
+    "reply": "Đã mở Tủ đề cho thầy cô."
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "exam-format-catalog-v1",
+  "formats": [
+    {
+      "schemaVersion": "exam-format-v1",
+      "id": "thpt-math",
+      "version": "1",
+      "displayName": "Toán THPT",
+      "examType": "THPT_STANDARD",
+      "engine": "thpt_math_v2",
+      "subjects": [
+        "Toán Học"
+      ],
+      "grades": [
+        12
+      ],
+      "durationMinutes": 90,
+      "totalQuestions": 22,
+      "totalScore": 10,
+      "sections": [
+        {
+          "id": "P1",
+          "type": "mcq",
+          "count": 12,
+          "pointsPerQuestion": 0.25,
+          "instructions": "Chọn một đáp án A, B, C hoặc D."
+        },
+        {
+          "id": "P2",
+          "type": "true_false",
+          "count": 4,
+          "statementsPerQuestion": 4,
+          "scoreByCorrectStatements": [
+            0,
+            0.1,
+            0.25,
+            0.5,
+            1
+          ],
+          "instructions": "Chọn đúng hoặc sai cho từng ý a, b, c, d."
+        },
+        {
+          "id": "P3",
+          "type": "short_answer",
+          "count": 6,
+          "pointsPerQuestion": 0.5,
+          "instructions": "Điền đáp án số vào ô trả lời."
+        }
+      ],
+      "lockedFields": [
+        "subject",
+        "grade",
+        "durationMinutes",
+        "itemCount",
+        "sections",
+        "template"
+      ],
+      "editableFields": [
+        "prompt",
+        "slots"
+      ],
+      "exportFormats": [
+        "tex",
+        "json",
+        "pdf"
+      ],
+      "preview": {
+        "format": "pdf",
+        "requires": "local_latex_compiler",
+        "revisionBound": true
+      },
+      "vdcPolicy": "fallback_with_warning",
+      "available": true,
+      "requires": [
+        "pinned_rag_release",
+        "chat_completions_provider"
+      ]
+    }
+  ]
+}

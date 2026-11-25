@@ -1,0 +1,2626 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ASTRA Exam Generation",
+    "description": "V1: JSON baseline. V2: four agents, one feedback, human visual review.",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Health Health Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/exams/generate": {
+      "post": {
+        "summary": "Generate",
+        "operationId": "generate_v1_exams_generate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerationRequest"
+              },
+              "examples": {
+                "algebra": {
+                  "summary": "Valid four-question algebra example",
+                  "value": {
+                    "matrix": {
+                      "subject": "Mathematics",
+                      "title": "Algebra and Functions Quiz",
+                      "topics": [
+                        {
+                          "id": "algebra",
+                          "name": "Algebra",
+                          "subtopics": [
+                            "linear_equations"
+                          ],
+                          "learning_objectives": [
+                            {
+                              "id": "solve_linear",
+                              "description": "Solve linear equations in one variable."
+                            }
+                          ],
+                          "question_count": 2,
+                          "points": 5.0
+                        },
+                        {
+                          "id": "functions",
+                          "name": "Functions",
+                          "subtopics": [
+                            "evaluation"
+                          ],
+                          "learning_objectives": [
+                            {
+                              "id": "evaluate_function",
+                              "description": "Evaluate and infer linear functions."
+                            }
+                          ],
+                          "question_count": 2,
+                          "points": 5.0
+                        }
+                      ],
+                      "question_count": 4,
+                      "question_type_distribution": {
+                        "multiple_choice": 2,
+                        "short_answer": 1,
+                        "true_false": 1
+                      },
+                      "difficulty_distribution": {
+                        "easy": 2,
+                        "medium": 1,
+                        "hard": 1
+                      },
+                      "total_points": 10.0,
+                      "points_by_type": {
+                        "multiple_choice": 5.0,
+                        "short_answer": 3.0,
+                        "true_false": 2.0
+                      },
+                      "duration_minutes": 30,
+                      "additional_constraints": [
+                        "Use clear language suitable for introductory algebra."
+                      ]
+                    },
+                    "question_bank": {
+                      "questions": [
+                        {
+                          "stem": "Solve 2x + 3 = 7. What is x?",
+                          "topic_id": "algebra",
+                          "subtopic": "linear_equations",
+                          "learning_objective_ids": [
+                            "solve_linear"
+                          ],
+                          "question_type": "multiple_choice",
+                          "difficulty": "easy",
+                          "choices": {
+                            "A": "1",
+                            "B": "2",
+                            "C": "3",
+                            "D": "5"
+                          },
+                          "answer": "B",
+                          "solution": "Subtract 3 to obtain 2x = 4, then divide by 2: x = 2.",
+                          "id": "bank-linear-001",
+                          "points": 2.0,
+                          "metadata": {
+                            "origin": "Hand-authored demonstration",
+                            "revision": "1"
+                          }
+                        },
+                        {
+                          "stem": "For f(x) = 2x + 1, f(3) = 7. True or false?",
+                          "topic_id": "functions",
+                          "subtopic": "evaluation",
+                          "learning_objective_ids": [
+                            "evaluate_function"
+                          ],
+                          "question_type": "true_false",
+                          "difficulty": "easy",
+                          "choices": {},
+                          "answer": "true",
+                          "solution": "f(3) = 2(3) + 1 = 7, so the statement is true.",
+                          "id": "bank-function-001",
+                          "metadata": {
+                            "origin": "Hand-authored demonstration"
+                          }
+                        }
+                      ]
+                    },
+                    "context": {
+                      "course_materials": [
+                        "A linear function has the form f(x) = ax + b."
+                      ],
+                      "instructions": [
+                        "Show reasoning in solutions."
+                      ],
+                      "custom_requirements": []
+                    },
+                    "include_answers": true,
+                    "include_solutions": true
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerationResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Content Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerationResponse"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerationResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerationResponse"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/exams/generate": {
+      "post": {
+        "summary": "Generate Pipeline",
+        "operationId": "generate_pipeline_v2_exams_generate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PipelineRequest"
+              },
+              "examples": {
+                "algebra": {
+                  "summary": "Four agents and one feedback before human review",
+                  "value": {
+                    "request": {
+                      "matrix": {
+                        "subject": "Mathematics",
+                        "title": "Algebra and Functions Quiz",
+                        "topics": [
+                          {
+                            "id": "algebra",
+                            "name": "Algebra",
+                            "subtopics": [
+                              "linear_equations"
+                            ],
+                            "learning_objectives": [
+                              {
+                                "id": "solve_linear",
+                                "description": "Solve linear equations in one variable."
+                              }
+                            ],
+                            "question_count": 2,
+                            "points": 5.0
+                          },
+                          {
+                            "id": "functions",
+                            "name": "Functions",
+                            "subtopics": [
+                              "evaluation"
+                            ],
+                            "learning_objectives": [
+                              {
+                                "id": "evaluate_function",
+                                "description": "Evaluate and infer linear functions."
+                              }
+                            ],
+                            "question_count": 2,
+                            "points": 5.0
+                          }
+                        ],
+                        "question_count": 4,
+                        "question_type_distribution": {
+                          "multiple_choice": 2,
+                          "short_answer": 1,
+                          "true_false": 1
+                        },
+                        "difficulty_distribution": {
+                          "easy": 2,
+                          "medium": 1,
+                          "hard": 1
+                        },
+                        "total_points": 10.0,
+                        "points_by_type": {
+                          "multiple_choice": 5.0,
+                          "short_answer": 3.0,
+                          "true_false": 2.0
+                        },
+                        "duration_minutes": 30,
+                        "additional_constraints": [
+                          "Use clear language suitable for introductory algebra."
+                        ]
+                      },
+                      "question_bank": {
+                        "questions": [
+                          {
+                            "stem": "Solve 2x + 3 = 7. What is x?",
+                            "topic_id": "algebra",
+                            "subtopic": "linear_equations",
+                            "learning_objective_ids": [
+                              "solve_linear"
+                            ],
+                            "question_type": "multiple_choice",
+                            "difficulty": "easy",
+                            "choices": {
+                              "A": "1",
+                              "B": "2",
+                              "C": "3",
+                              "D": "5"
+                            },
+                            "answer": "B",
+                            "solution": "Subtract 3 to obtain 2x = 4, then divide by 2: x = 2.",
+                            "id": "bank-linear-001",
+                            "points": 2.0,
+                            "metadata": {
+                              "origin": "Hand-authored demonstration",
+                              "revision": "1"
+                            }
+                          },
+                          {
+                            "stem": "For f(x) = 2x + 1, f(3) = 7. True or false?",
+                            "topic_id": "functions",
+                            "subtopic": "evaluation",
+                            "learning_objective_ids": [
+                              "evaluate_function"
+                            ],
+                            "question_type": "true_false",
+                            "difficulty": "easy",
+                            "choices": {},
+                            "answer": "true",
+                            "solution": "f(3) = 2(3) + 1 = 7, so the statement is true.",
+                            "id": "bank-function-001",
+                            "metadata": {
+                              "origin": "Hand-authored demonstration"
+                            }
+                          }
+                        ]
+                      },
+                      "context": {
+                        "course_materials": [
+                          "A linear function has the form f(x) = ax + b."
+                        ],
+                        "instructions": [
+                          "Show reasoning in solutions."
+                        ],
+                        "custom_requirements": []
+                      },
+                      "include_answers": true,
+                      "include_solutions": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Native LaTeX exam awaiting user visual inspection",
+            "content": {
+              "application/x-tex": {}
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_api_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/exam-formats": {
+      "get": {
+        "summary": "Formats",
+        "operationId": "formats_api_exam_formats_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/exam-formats/evaluate": {
+      "post": {
+        "summary": "Evaluate",
+        "operationId": "evaluate_api_exam_formats_evaluate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/exams/generate": {
+      "post": {
+        "summary": "Generate",
+        "operationId": "generate_api_exams_generate_post",
+        "parameters": [
+          {
+            "name": "idempotency-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/exams/{job_id}/status": {
+      "get": {
+        "summary": "Status",
+        "operationId": "status_api_exams__job_id__status_get",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/exams/{job_id}/events": {
+      "get": {
+        "summary": "Events",
+        "operationId": "events_api_exams__job_id__events_get",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/exams/{job_id}": {
+      "get": {
+        "summary": "Package",
+        "operationId": "package_api_exams__job_id__get",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/exams/{job_id}/questions/{question_id}": {
+      "put": {
+        "summary": "Edit",
+        "operationId": "edit_api_exams__job_id__questions__question_id__put",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Job Id"
+            }
+          },
+          {
+            "name": "question_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Question Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/exams/{job_id}/questions/{question_id}/regenerate": {
+      "post": {
+        "summary": "Regenerate",
+        "operationId": "regenerate_api_exams__job_id__questions__question_id__regenerate_post",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Job Id"
+            }
+          },
+          {
+            "name": "question_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Question Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegenerateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/exams/{job_id}/approve": {
+      "post": {
+        "summary": "Approve",
+        "operationId": "approve_api_exams__job_id__approve_post",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApprovalRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/exams/{job_id}/preview": {
+      "post": {
+        "summary": "Create Preview",
+        "operationId": "create_preview_api_exams__job_id__preview_post",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreviewRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Preview Status",
+        "operationId": "preview_status_api_exams__job_id__preview_get",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Job Id"
+            }
+          },
+          {
+            "name": "revision",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "title": "Revision"
+            }
+          },
+          {
+            "name": "contentHash",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Contenthash"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/exams/{job_id}/preview.pdf": {
+      "get": {
+        "summary": "Preview Pdf",
+        "operationId": "preview_pdf_api_exams__job_id__preview_pdf_get",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Job Id"
+            }
+          },
+          {
+            "name": "revision",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "title": "Revision"
+            }
+          },
+          {
+            "name": "contentHash",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Contenthash"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/exams/{job_id}/preview.log": {
+      "get": {
+        "summary": "Preview Log",
+        "operationId": "preview_log_api_exams__job_id__preview_log_get",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Job Id"
+            }
+          },
+          {
+            "name": "revision",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "title": "Revision"
+            }
+          },
+          {
+            "name": "contentHash",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Contenthash"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/exams/{job_id}/export": {
+      "get": {
+        "summary": "Export",
+        "operationId": "export_api_exams__job_id__export_get",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Job Id"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "enum": [
+                "STUDENT_EXAM",
+                "TEACHER_KEY"
+              ],
+              "type": "string",
+              "title": "Type"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "enum": [
+                "tex",
+                "json",
+                "pdf"
+              ],
+              "type": "string",
+              "title": "Format"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AdditionalContext": {
+        "properties": {
+          "course_materials": {
+            "items": {
+              "type": "string",
+              "maxLength": 30000,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Course Materials"
+          },
+          "instructions": {
+            "items": {
+              "type": "string",
+              "maxLength": 30000,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Instructions"
+          },
+          "custom_requirements": {
+            "items": {
+              "type": "string",
+              "maxLength": 30000,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Custom Requirements"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "AdditionalContext"
+      },
+      "ApprovalRequest": {
+        "properties": {
+          "revision": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Revision"
+          },
+          "contentHash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Contenthash"
+          },
+          "reviewer": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Reviewer"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "revision",
+          "contentHash",
+          "reviewer"
+        ],
+        "title": "ApprovalRequest"
+      },
+      "BankQuestion": {
+        "properties": {
+          "stem": {
+            "type": "string",
+            "maxLength": 30000,
+            "minLength": 1,
+            "title": "Stem"
+          },
+          "topic_id": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Topic Id"
+          },
+          "subtopic": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subtopic"
+          },
+          "learning_objective_ids": {
+            "items": {
+              "type": "string",
+              "maxLength": 100,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Learning Objective Ids"
+          },
+          "question_type": {
+            "$ref": "#/components/schemas/QuestionType"
+          },
+          "difficulty": {
+            "$ref": "#/components/schemas/Difficulty"
+          },
+          "choices": {
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 30000,
+              "minLength": 1
+            },
+            "propertyNames": {
+              "maxLength": 100,
+              "minLength": 1
+            },
+            "type": "object",
+            "maxProperties": 10,
+            "title": "Choices"
+          },
+          "answer": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 30000,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Answer"
+          },
+          "solution": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 30000,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Solution"
+          },
+          "id": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Id"
+          },
+          "points": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Points"
+          },
+          "metadata": {
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 30000,
+              "minLength": 1
+            },
+            "propertyNames": {
+              "maxLength": 100,
+              "minLength": 1
+            },
+            "type": "object",
+            "title": "Metadata"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "stem",
+          "topic_id",
+          "question_type",
+          "difficulty",
+          "id"
+        ],
+        "title": "BankQuestion"
+      },
+      "ConstraintCheck": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "passed": {
+            "type": "boolean",
+            "title": "Passed"
+          },
+          "expected": {
+            "title": "Expected"
+          },
+          "actual": {
+            "title": "Actual"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "code",
+          "passed",
+          "message"
+        ],
+        "title": "ConstraintCheck"
+      },
+      "Difficulty": {
+        "type": "string",
+        "enum": [
+          "easy",
+          "medium",
+          "hard"
+        ],
+        "title": "Difficulty"
+      },
+      "EditRequest": {
+        "properties": {
+          "revision": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Revision"
+          },
+          "question": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Question"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "revision",
+          "question"
+        ],
+        "title": "EditRequest"
+      },
+      "Evaluation": {
+        "properties": {
+          "implementation_version": {
+            "type": "string",
+            "title": "Implementation Version",
+            "default": "0.1.0"
+          },
+          "run_id": {
+            "type": "string",
+            "title": "Run Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "constraint_failure",
+              "schema_failure",
+              "provider_failure",
+              "context_failure"
+            ],
+            "title": "Status"
+          },
+          "provider": {
+            "type": "string",
+            "title": "Provider"
+          },
+          "requested_model": {
+            "type": "string",
+            "title": "Requested Model"
+          },
+          "model": {
+            "type": "string",
+            "title": "Model"
+          },
+          "prompt_version": {
+            "type": "string",
+            "title": "Prompt Version"
+          },
+          "prompt_sha256": {
+            "type": "string",
+            "title": "Prompt Sha256"
+          },
+          "request_sha256": {
+            "type": "string",
+            "title": "Request Sha256"
+          },
+          "response_sha256": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Response Sha256"
+          },
+          "provider_response_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provider Response Id"
+          },
+          "generation_latency_ms": {
+            "type": "number",
+            "title": "Generation Latency Ms"
+          },
+          "total_latency_ms": {
+            "type": "number",
+            "title": "Total Latency Ms"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/TokenUsage"
+          },
+          "estimated_cost_usd": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Estimated Cost Usd"
+          },
+          "input_price_per_million": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Input Price Per Million"
+          },
+          "output_price_per_million": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Output Price Per Million"
+          },
+          "generation_parameters": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Generation Parameters"
+          },
+          "constraint_satisfaction_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Constraint Satisfaction Rate"
+          },
+          "validation_passed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Validation Passed"
+          },
+          "error_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Code"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "run_id",
+          "created_at",
+          "status",
+          "provider",
+          "requested_model",
+          "model",
+          "prompt_version",
+          "prompt_sha256",
+          "request_sha256",
+          "generation_latency_ms",
+          "total_latency_ms",
+          "usage",
+          "generation_parameters"
+        ],
+        "title": "Evaluation"
+      },
+      "Evidence": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Id"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Text"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "content_support",
+              "form_example"
+            ],
+            "title": "Role"
+          },
+          "locator": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Locator"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "text",
+          "role"
+        ],
+        "title": "Evidence"
+      },
+      "ExamMatrix": {
+        "properties": {
+          "subject": {
+            "type": "string",
+            "maxLength": 30000,
+            "minLength": 1,
+            "title": "Subject"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 30000,
+            "minLength": 1,
+            "title": "Title"
+          },
+          "topics": {
+            "items": {
+              "$ref": "#/components/schemas/Topic"
+            },
+            "type": "array",
+            "maxItems": 200,
+            "minItems": 1,
+            "title": "Topics"
+          },
+          "question_count": {
+            "type": "integer",
+            "maximum": 500.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Question Count"
+          },
+          "question_type_distribution": {
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 0.0
+            },
+            "propertyNames": {
+              "$ref": "#/components/schemas/QuestionType"
+            },
+            "type": "object",
+            "title": "Question Type Distribution"
+          },
+          "difficulty_distribution": {
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 0.0
+            },
+            "propertyNames": {
+              "$ref": "#/components/schemas/Difficulty"
+            },
+            "type": "object",
+            "title": "Difficulty Distribution"
+          },
+          "total_points": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Total Points"
+          },
+          "points_by_type": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "number",
+                  "minimum": 0.0
+                },
+                "propertyNames": {
+                  "$ref": "#/components/schemas/QuestionType"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Points By Type"
+          },
+          "duration_minutes": {
+            "type": "integer",
+            "maximum": 1440.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Duration Minutes"
+          },
+          "additional_constraints": {
+            "items": {
+              "type": "string",
+              "maxLength": 30000,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Additional Constraints"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "subject",
+          "title",
+          "topics",
+          "question_count",
+          "question_type_distribution",
+          "difficulty_distribution",
+          "total_points",
+          "duration_minutes"
+        ],
+        "title": "ExamMatrix"
+      },
+      "GenerateRequest": {
+        "properties": {
+          "formatId": {
+            "type": "string",
+            "const": "thpt-math",
+            "title": "Formatid",
+            "default": "thpt-math"
+          },
+          "formatVersion": {
+            "type": "string",
+            "const": "1",
+            "title": "Formatversion",
+            "default": "1"
+          },
+          "subject": {
+            "type": "string",
+            "const": "Toán Học",
+            "title": "Subject"
+          },
+          "grade": {
+            "type": "integer",
+            "const": 12,
+            "title": "Grade"
+          },
+          "examType": {
+            "type": "string",
+            "const": "THPT_STANDARD",
+            "title": "Examtype"
+          },
+          "durationMinutes": {
+            "type": "integer",
+            "const": 90,
+            "title": "Durationminutes"
+          },
+          "itemCount": {
+            "type": "integer",
+            "const": 22,
+            "title": "Itemcount"
+          },
+          "prompt": {
+            "type": "string",
+            "maxLength": 10000,
+            "title": "Prompt",
+            "default": ""
+          },
+          "uploadedFiles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 0,
+            "title": "Uploadedfiles"
+          },
+          "slots": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/Slot"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slots"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "subject",
+          "grade",
+          "examType",
+          "durationMinutes",
+          "itemCount"
+        ],
+        "title": "GenerateRequest"
+      },
+      "GeneratedExam": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 30000,
+            "minLength": 1,
+            "title": "Title"
+          },
+          "subject": {
+            "type": "string",
+            "maxLength": 30000,
+            "minLength": 1,
+            "title": "Subject"
+          },
+          "duration_minutes": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Duration Minutes"
+          },
+          "total_points": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Total Points"
+          },
+          "instructions": {
+            "type": "string",
+            "maxLength": 30000,
+            "minLength": 1,
+            "title": "Instructions"
+          },
+          "questions": {
+            "items": {
+              "$ref": "#/components/schemas/Question"
+            },
+            "type": "array",
+            "maxItems": 500,
+            "minItems": 1,
+            "title": "Questions"
+          },
+          "shared_passages": {
+            "items": {
+              "$ref": "#/components/schemas/SharedPassage"
+            },
+            "type": "array",
+            "title": "Shared Passages"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "title",
+          "subject",
+          "duration_minutes",
+          "total_points",
+          "instructions",
+          "questions"
+        ],
+        "title": "GeneratedExam"
+      },
+      "GenerationError": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "details": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Details"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "GenerationError"
+      },
+      "GenerationRequest": {
+        "properties": {
+          "matrix": {
+            "$ref": "#/components/schemas/ExamMatrix"
+          },
+          "question_bank": {
+            "$ref": "#/components/schemas/QuestionBank"
+          },
+          "context": {
+            "$ref": "#/components/schemas/AdditionalContext"
+          },
+          "include_answers": {
+            "type": "boolean",
+            "title": "Include Answers",
+            "default": true
+          },
+          "include_solutions": {
+            "type": "boolean",
+            "title": "Include Solutions",
+            "default": true
+          },
+          "format_profile": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "hcm_dgnl_de11"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Format Profile"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "matrix"
+        ],
+        "title": "GenerationRequest"
+      },
+      "GenerationResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "constraint_failure",
+              "schema_failure",
+              "provider_failure",
+              "context_failure"
+            ],
+            "title": "Status"
+          },
+          "exam": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GeneratedExam"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "validation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ValidationReport"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evaluation": {
+            "$ref": "#/components/schemas/Evaluation"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GenerationError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "status",
+          "evaluation"
+        ],
+        "title": "GenerationResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "LearningObjective": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Id"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 30000,
+            "minLength": 1,
+            "title": "Description"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "description"
+        ],
+        "title": "LearningObjective"
+      },
+      "PipelineRequest": {
+        "properties": {
+          "request": {
+            "$ref": "#/components/schemas/GenerationRequest"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/Evidence"
+            },
+            "type": "array",
+            "title": "Evidence"
+          },
+          "require_evidence": {
+            "type": "boolean",
+            "title": "Require Evidence",
+            "default": false
+          },
+          "required_visual_question_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Required Visual Question Ids"
+          },
+          "latex_template": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latex Template"
+          },
+          "user_prompt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 10000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Prompt"
+          },
+          "exam_family": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "hcm_dgnl",
+                  "thpt"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exam Family"
+          },
+          "workflow_version": {
+            "type": "string",
+            "const": "cisr-v3",
+            "title": "Workflow Version",
+            "default": "cisr-v3"
+          },
+          "workflow": {
+            "$ref": "#/components/schemas/WorkflowConfig"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "request"
+        ],
+        "title": "PipelineRequest"
+      },
+      "PreviewRequest": {
+        "properties": {
+          "revision": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Revision"
+          },
+          "contentHash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Contenthash"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "revision",
+          "contentHash"
+        ],
+        "title": "PreviewRequest"
+      },
+      "Question": {
+        "properties": {
+          "stem": {
+            "type": "string",
+            "maxLength": 30000,
+            "minLength": 1,
+            "title": "Stem"
+          },
+          "topic_id": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Topic Id"
+          },
+          "subtopic": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subtopic"
+          },
+          "learning_objective_ids": {
+            "items": {
+              "type": "string",
+              "maxLength": 100,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Learning Objective Ids"
+          },
+          "question_type": {
+            "$ref": "#/components/schemas/QuestionType"
+          },
+          "difficulty": {
+            "$ref": "#/components/schemas/Difficulty"
+          },
+          "choices": {
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 30000,
+              "minLength": 1
+            },
+            "propertyNames": {
+              "maxLength": 100,
+              "minLength": 1
+            },
+            "type": "object",
+            "maxProperties": 10,
+            "title": "Choices"
+          },
+          "answer": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 30000,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Answer"
+          },
+          "solution": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 30000,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Solution"
+          },
+          "id": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Id"
+          },
+          "points": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Points"
+          },
+          "source_question_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Question Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "stem",
+          "topic_id",
+          "question_type",
+          "difficulty",
+          "id",
+          "points"
+        ],
+        "title": "Question"
+      },
+      "QuestionBank": {
+        "properties": {
+          "questions": {
+            "items": {
+              "$ref": "#/components/schemas/BankQuestion"
+            },
+            "type": "array",
+            "maxItems": 2000,
+            "title": "Questions"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "QuestionBank"
+      },
+      "QuestionType": {
+        "type": "string",
+        "enum": [
+          "multiple_choice",
+          "short_answer",
+          "essay",
+          "true_false"
+        ],
+        "title": "QuestionType"
+      },
+      "RegenerateRequest": {
+        "properties": {
+          "revision": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Revision"
+          },
+          "instruction": {
+            "type": "string",
+            "maxLength": 4000,
+            "title": "Instruction",
+            "default": "Sửa câu hỏi và kiểm tra lại lời giải."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "revision"
+        ],
+        "title": "RegenerateRequest"
+      },
+      "SharedPassage": {
+        "properties": {
+          "start_question": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Start Question"
+          },
+          "end_question": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "End Question"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 30000,
+            "minLength": 1,
+            "title": "Text"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "start_question",
+          "end_question",
+          "text"
+        ],
+        "title": "SharedPassage"
+      },
+      "Slot": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^P[123]-[1-9][0-9]?$",
+            "title": "Id"
+          },
+          "part": {
+            "type": "string",
+            "enum": [
+              "P1",
+              "P2",
+              "P3"
+            ],
+            "title": "Part"
+          },
+          "topic": {
+            "type": "string",
+            "maxLength": 30000,
+            "minLength": 1,
+            "title": "Topic"
+          },
+          "objective": {
+            "type": "string",
+            "maxLength": 30000,
+            "minLength": 1,
+            "title": "Objective"
+          },
+          "level": {
+            "type": "string",
+            "enum": [
+              "NB",
+              "TH",
+              "VD",
+              "VDC"
+            ],
+            "title": "Level"
+          },
+          "statement_levels": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "NB",
+                "TH",
+                "VD",
+                "VDC"
+              ]
+            },
+            "type": "array",
+            "title": "Statement Levels"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "part",
+          "topic",
+          "objective",
+          "level"
+        ],
+        "title": "Slot"
+      },
+      "StageConfig": {
+        "properties": {
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model"
+          },
+          "supports_images": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supports Images"
+          },
+          "max_output_tokens": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 100000.0,
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Output Tokens"
+          },
+          "input_price_per_million": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Input Price Per Million"
+          },
+          "output_price_per_million": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Output Price Per Million"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "StageConfig"
+      },
+      "TokenUsage": {
+        "properties": {
+          "input_tokens": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Input Tokens"
+          },
+          "output_tokens": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Output Tokens"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "TokenUsage"
+      },
+      "Topic": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 30000,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "subtopics": {
+            "items": {
+              "type": "string",
+              "maxLength": 100,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Subtopics"
+          },
+          "learning_objectives": {
+            "items": {
+              "$ref": "#/components/schemas/LearningObjective"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Learning Objectives"
+          },
+          "question_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Question Count"
+          },
+          "points": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Points"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "question_count"
+        ],
+        "title": "Topic"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "ValidationReport": {
+        "properties": {
+          "passed": {
+            "type": "boolean",
+            "title": "Passed"
+          },
+          "checks": {
+            "items": {
+              "$ref": "#/components/schemas/ConstraintCheck"
+            },
+            "type": "array",
+            "title": "Checks"
+          },
+          "constraint_satisfaction_rate": {
+            "type": "number",
+            "title": "Constraint Satisfaction Rate"
+          },
+          "semantic_review_required": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Semantic Review Required"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "passed",
+          "checks",
+          "constraint_satisfaction_rate",
+          "semantic_review_required"
+        ],
+        "title": "ValidationReport"
+      },
+      "WorkflowConfig": {
+        "properties": {
+          "composer": {
+            "$ref": "#/components/schemas/StageConfig"
+          },
+          "illustrator": {
+            "$ref": "#/components/schemas/StageConfig"
+          },
+          "solver": {
+            "$ref": "#/components/schemas/StageConfig"
+          },
+          "reviewer": {
+            "$ref": "#/components/schemas/StageConfig"
+          },
+          "max_repair_rounds": {
+            "type": "integer",
+            "const": 1,
+            "title": "Max Repair Rounds",
+            "default": 1
+          },
+          "max_schema_repairs": {
+            "type": "integer",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Max Schema Repairs",
+            "default": 1
+          },
+          "max_provider_calls": {
+            "type": "integer",
+            "maximum": 30.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Max Provider Calls",
+            "default": 12
+          },
+          "stage_timeout_seconds": {
+            "type": "number",
+            "maximum": 600.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Stage Timeout Seconds",
+            "default": 120
+          },
+          "run_timeout_seconds": {
+            "type": "number",
+            "maximum": 1800.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Run Timeout Seconds",
+            "default": 600
+          },
+          "max_total_tokens": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Max Total Tokens",
+            "default": 100000
+          },
+          "max_prompt_chars": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Max Prompt Chars",
+            "default": 200000
+          },
+          "max_image_bytes": {
+            "type": "integer",
+            "maximum": 20000000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Max Image Bytes",
+            "default": 5000000
+          },
+          "max_questions": {
+            "type": "integer",
+            "maximum": 500.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Max Questions",
+            "default": 120
+          },
+          "max_figures": {
+            "type": "integer",
+            "maximum": 40.0,
+            "minimum": 0.0,
+            "title": "Max Figures",
+            "default": 12
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "WorkflowConfig"
+      }
+    }
+  }
+}

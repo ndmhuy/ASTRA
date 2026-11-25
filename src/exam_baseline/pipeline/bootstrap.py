@@ -79,6 +79,11 @@ async def provider_scope(payload: PipelineRequest, settings: Settings | None = N
 
 
 def stage_settings(settings: Settings, options: StageConfig) -> Settings:
+    if settings.spend_limit_usd is not None and any(
+        getattr(options, name) is not None and getattr(options, name) != getattr(settings, name)
+        for name in ("model", "input_price_per_million", "output_price_per_million")
+    ):
+        raise ValueError("spend-limited mode locks the server's model and token prices")
     values = settings.model_dump()
     for name in (
         "model",
