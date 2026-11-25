@@ -461,14 +461,60 @@
 }
 
 /* ==========================================================================
-   START SCREEN — CLEAN EDITORIAL ENTRY
+   START SCREEN — CLEAN EDITORIAL ENTRY & ARCHIVAL ENGRAVINGS
    ========================================================================== */
 
 .integrated-shell .integrated-start {
+  position: relative;
+  overflow-x: hidden;
   padding: 36px clamp(20px, 5vw, 64px);
 }
 
+.start-atelier-decor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.start-decor-astrolabe {
+  position: absolute;
+  right: -64px;
+  top: -48px;
+  width: clamp(240px, 28vw, 370px);
+  color: rgba(24, 58, 44, 0.18);
+}
+
+.start-decor-math {
+  position: absolute;
+  left: -18px;
+  bottom: -14px;
+  width: clamp(220px, 24vw, 320px);
+  color: rgba(24, 58, 44, 0.17);
+}
+
+.start-decor-constellation {
+  position: absolute;
+  left: clamp(14px, 3vw, 48px);
+  top: clamp(14px, 4vh, 40px);
+  width: clamp(160px, 18vw, 230px);
+  color: rgba(143, 104, 20, 0.22);
+}
+
+.start-decor-corner {
+  position: absolute;
+  width: 38px;
+  height: 38px;
+  color: rgba(143, 104, 20, 0.24);
+}
+
+.start-decor-corner.is-tl { left: 16px; top: 16px; }
+.start-decor-corner.is-br { right: 16px; bottom: 16px; transform: scale(-1); }
+
 .integrated-start-content {
+  position: relative;
+  z-index: 1;
   width: min(700px, 100%);
 }
 
@@ -494,9 +540,17 @@
   color: var(--atelier-muted);
 }
 
+.start-compass-divider {
+  display: block;
+  width: min(320px, 76%);
+  height: 22px;
+  margin: 18px auto 2px;
+  color: rgba(24, 58, 44, 0.52);
+}
+
 .integrated-start-actions {
   gap: 10px;
-  margin: 26px 0 18px;
+  margin: 18px 0 18px;
 }
 
 .integrated-shell .integrated-start-actions .start-action-btn {
@@ -510,6 +564,17 @@
   margin-top: 12px;
   font-size: 12.5px;
   color: var(--atelier-muted);
+}
+
+.start-capabilities {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 10px;
+  margin: 18px auto 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: rgba(78, 95, 86, 0.84);
 }
 
 /* ==========================================================================
@@ -2026,6 +2091,20 @@
   .editor-choices-grid,
   .editor-tf-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 960px) {
+  .start-decor-astrolabe,
+  .start-decor-math,
+  .start-decor-constellation {
+    opacity: 0.45;
+  }
+}
+
+@media (max-width: 640px) {
+  .start-atelier-decor {
+    display: none;
   }
 }
 

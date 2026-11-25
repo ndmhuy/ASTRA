@@ -24,13 +24,8 @@ import './styles/integration.css';
 import './styles/atelier.css';
 
 export const App: React.FC = () => {
-  const [showWelcome, setShowWelcome] = useState(() => {
-    try { return sessionStorage.getItem('astra.welcomed.v1') !== '1'; } catch { return true; }
-  });
-  const finishWelcome = useCallback(() => {
-    try { sessionStorage.setItem('astra.welcomed.v1', '1'); } catch { /* ignore storage restrictions */ }
-    setShowWelcome(false);
-  }, []);
+  const [showWelcome, setShowWelcome] = useState(true);
+  const finishWelcome = useCallback(() => setShowWelcome(false), []);
   const [landingDraft, setLandingDraft] = useState('');
   const [leavingStart, setLeavingStart] = useState(false);
   const [revealingWorkspace, setRevealingWorkspace] = useState(false);
