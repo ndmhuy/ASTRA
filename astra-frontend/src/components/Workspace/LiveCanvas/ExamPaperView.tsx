@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowUp, Eye, FileText, ListChecks, LoaderCircle } from 'lucide-react';
 import type { ExamPassage, ExamPreviewState, QuestionItem, VisualWarning } from '../../../types/exam';
 import { formatVisualWarning } from '../../../utils/userMessages.ts';
-import { AstraLogo } from '../../AstraLogo';
+import { StationeryArt } from '../../StationeryArt';
+import { SchoolArt } from '../../SchoolArt';
 import { MathRenderer } from '../../MathRenderer';
 import { QuestionCard } from './QuestionCard';
 
@@ -167,7 +168,10 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
     if (!examMeta) {
       return (
         <div className="paper-empty">
-          <AstraLogo className="paper-empty-logo" />
+          <StationeryArt kind="pencil" className="preview-pencil" />
+          <StationeryArt kind="apple" className="preview-apple" />
+          <span className="preview-label">02 / XEM TRƯỚC PDF</span>
+          <SchoolArt kind="book" className="preview-art" />
           <h2>Chưa có đề để hiển thị bản in PDF.</h2>
           <p>Thầy cô hãy tạo đề thi trước để xem bản in chuẩn theo mẫu.</p>
           {renderEmptySteps()}
@@ -354,7 +358,10 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
               </nav>
             )}
           </> : <div className="paper-empty">
-            <AstraLogo className="paper-empty-logo" />
+            <StationeryArt kind="pencil" className="preview-pencil" />
+            <StationeryArt kind="apple" className="preview-apple" />
+            <span className="preview-label">02 / TRANG ĐỀ</span>
+            <SchoolArt kind="book" className="preview-art" />
             <h2>Một trang mới,<br />chờ ý tưởng hay.</h2>
             <p>Trao đổi với ASTRA, chọn thiết lập đề, rồi xem từng câu hỏi xuất hiện tại đây.</p>
             {renderEmptySteps()}

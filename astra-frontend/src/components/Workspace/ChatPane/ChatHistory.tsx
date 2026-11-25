@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Check, Copy, GitBranch, Pencil, RotateCcw, Calculator, FileCheck2, GraduationCap, ArrowUpRight } from 'lucide-react';
 import type { ChatMessage } from '../../../types/exam';
+import { SchoolArt } from '../../SchoolArt';
 
 interface ChatHistoryProps {
   messages: ChatMessage[];
@@ -21,6 +22,7 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({ messages, onSuggestion
   if (messages.length === 0) {
     return (
       <div className="chat-empty">
+        <SchoolArt kind="globe" />
         <h3>Mình bắt đầu từ đâu?</h3>
         <p>Mô tả một chút về đề thi thầy cô muốn soạn, hoặc chọn nhanh một gợi ý:</p>
         <div className="prompt-suggestions">
