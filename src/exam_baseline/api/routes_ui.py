@@ -36,8 +36,11 @@ async def health(request: Request):
 
 
 @router.get("/exam-formats")
-async def formats():
-    return {"schemaVersion": "exam-format-catalog-v1", "formats": format_catalog()}
+async def formats(request: Request):
+    return {
+        "schemaVersion": "exam-format-catalog-v1",
+        "formats": format_catalog(demo_mode=request.app.state.settings.demo_mode),
+    }
 
 
 @router.post("/exam-formats/evaluate")

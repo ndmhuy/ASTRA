@@ -200,10 +200,12 @@ export const App: React.FC = () => {
                   <details className="canvas-source-warnings">
                     <summary>
                       <AlertTriangle size={14} aria-hidden="true" />
-                      <span>Cảnh báo nguồn ({active.package.warnings.length})</span>
+                      <span>Cảnh báo cần kiểm tra ({active.package.warnings.length})</span>
                     </summary>
                     <div className="canvas-source-warnings-body">
-                      {active.package.warnings.map((warning, i) => <p key={i}><strong>{warning.questionId}:</strong> {warning.message}</p>)}
+                      {active.package.warnings.map((warning, i) => (
+                        <p key={i}>{warning.questionId && <strong>{warning.questionId} · </strong>}{warning.message}</p>
+                      ))}
                     </div>
                   </details>
                 )}

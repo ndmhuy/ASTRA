@@ -19,7 +19,7 @@ The browser workflow generates **THPT math** practice papers with 22 questions a
 
 | Entry point | What it provides |
 | --- | --- |
-| Web app | THPT math generation, progress and source warnings, question editing or regeneration, PDF preview, and approved PDF/LaTeX and answer JSON downloads |
+| Web app | THPT practice papers and V-ACT, question editing, answer review, PDF preview, and approved PDF/LaTeX and answer JSON downloads |
 | Exam CLIs | THPT math and V-ACT template workflows, a general four-agent LaTeX pipeline, and a single-agent baseline |
 | RAG workbench | Reference search, retrieval comparisons, Topic Packs, and coverage gaps |
 | Reviewed draft exporter | PDF and DOCX student papers and answer keys from supported Composer and Illustrator draft packages |
@@ -63,10 +63,16 @@ Restart the backend after changing `.env`. Keep credentials in the backend envir
 
 ### Start the backend and frontend
 
-On Windows, run `.\start-astra.bat` from the repository root after Python setup.
-It builds the frontend and serves the teacher workspace, API, and integrated retrieval
-in one terminal at [localhost:8000](http://127.0.0.1:8000/). Press Ctrl+C to stop.
-Use `.\start-astra-demo.bat` for offline demo mode. Set `ASTRA_PORT` to use a different port.
+From the repository root, run the same launcher for every subject.
+
+```powershell
+.\start-astra.bat
+```
+
+Open [localhost:8000](http://127.0.0.1:8000/) and choose **Soạn từ mẫu**.
+The six new THPT formats require a configured live model. The launcher starts the
+web app and API in one terminal. Press Ctrl+C to stop. Set `ASTRA_PORT` for another port.
+Use `.\start-astra-demo.bat` to try the bundled Math and V-ACT demos offline.
 
 For frontend development with Vite hot reload, use the two-terminal setup below.
 
@@ -86,10 +92,25 @@ npm.cmd run dev -- --host 127.0.0.1
 
 ## Generate, preview, and approve
 
-1. Open the template-based composer, select THPT math, and start generation. For a focused paper, enter a line starting with `Chuyên đề:` in the request field before confirming the template. For example, `Chuyên đề: đạo hàm và tích phân lớp 11-12`.
-2. Review the questions, proposed answers, and retrieval warnings. Edit or regenerate individual questions as needed.
+1. Select a subject in **Soạn từ mẫu** and start generation. For targeted Math retrieval, enter a line starting with `Chuyên đề:` before confirming the template.
+2. Check the questions, proposed answers, and review warnings. Edit or regenerate individual THPT questions as needed.
 3. Open the PDF preview to check the actual LaTeX layout, formulas, and figures. When ready, approve the current revision.
 4. Download the student PDF or LaTeX and the separate teacher answer JSON. After an edit, preview and approve the new revision before downloading.
+
+The six THPT formats use the following 50-minute blueprints. Each true/false
+question has four statements. English uses passage groups modeled on the
+Ministry's sample, including cloze, ordering, and reading. The new formats use
+subject rules and independent solving. Only Math uses the pinned RAG corpus.
+The six subject drafts keep the Reviewer findings visible for teacher correction.
+Teacher review is required before export.
+
+| Subject | Multiple choice | True/false | Short answer |
+| --- | ---: | ---: | ---: |
+| Physics, Chemistry, Biology, Geography | 18 | 4 | 6 |
+| History | 24 | 4 | 0 |
+| English | 40 | 0 | 0 |
+
+[Ministry Decision 764 and scoring appendix](https://locthanhbaoloc.lamdong.edu.vn/home/uploads/news/2024_09/quyet-dinh-so-764_qd-bgddt.pdf) · [Ministry sample announcement](https://vqa.moet.gov.vn/vi/news/thong-bao/cau-truc-dinh-dang-de-thi-tot-nghiep-thpt-tu-nam-2025-74.html)
 
 The job directory `runs/ui/<job-id>/` contains the LaTeX source and `_internal/result.json`. PDF compilation uses the saved source and runs locally. [PDF preview and export contract](docs/integration/FRONTEND_PDF_PREVIEW_HANDOFF.md)
 
