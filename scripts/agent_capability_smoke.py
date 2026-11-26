@@ -137,6 +137,25 @@ def observe(base):
 
         def semantic(route):
             turn = route.request.post_data_json
+            if turn["message"] == "Đáp án câu 1 là gì fixture":
+                route.fulfill(
+                    json={
+                        "schemaVersion": "astra-semantic-v1",
+                        "clientMessageId": turn["clientMessageId"],
+                        "frame": {
+                            "schemaVersion": "astra-semantic-v1",
+                            "dialogueAct": "QUESTION",
+                            "goals": [
+                                {
+                                    "goal": "INSPECT_QUESTION",
+                                    "parameters": {"number": 1, "part": "P1", "view": "review"},
+                                }
+                            ],
+                            "constraints": [],
+                        },
+                    }
+                )
+                return
             if turn["message"] == "Kiểm tra câu vừa xem fixture":
                 assert turn["context"]["recentQuestion"] == {"number": 1, "part": "P1"}
                 route.fulfill(
@@ -226,6 +245,12 @@ def observe(base):
         composer.fill("Xác nhận")
         composer.press("Enter")
         expect(page.get_by_text("hai đáp án khớp nhau", exact=False)).to_be_visible()
+        composer.fill("Đáp án câu 1 là gì fixture")
+        composer.press("Enter")
+        expect(page.get_by_text("Đáp án đang lưu: A.", exact=False)).to_be_visible()
+        expect(page.get_by_role("button", name="Đề thi", exact=True)).to_have_attribute(
+            "aria-pressed", "true"
+        )
         composer.fill("Xác nhận")
         composer.press("Enter")
         expect(

@@ -118,7 +118,7 @@ export function fastRoute(message: string): Local | undefined {
   if (/\b(ignore (previous|all)|bo qua.*(xac nhan|quyen)|export all)\b/.test(text)) {
     return { text: 'Thầy cô hãy gửi trực tiếp yêu cầu thao tác trong ASTRA.' };
   }
-  if (/^(neu\b|lam sao\b|huong dan\b)|\b(phai lam sao|la gi|nhu the nao)\b/.test(text)) {
+  if (/^(neu\b|lam sao\b|huong dan\b)|\bphai lam sao\b/.test(text)) {
     return { text: 'Thầy cô có thể chọn mẫu Toán THPT hoặc V-ACT, xác nhận tạo đề, kiểm tra đề và bản PDF, rồi duyệt để tải tệp.' };
   }
   if (/\b(thoi tiet|du bao thoi tiet)\b/.test(text)) {

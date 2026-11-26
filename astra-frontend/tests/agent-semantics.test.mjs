@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { parseFrame, resolveSemantic, contextualSubject } from '../src/agent/semantics.ts';
 import { resolveIntake } from '../src/agent/knowledge.ts';
 import { execute } from '../src/agent/recipes.ts';
+import { inspectQuestion } from '../src/agent/examActions.ts';
 
 const math = { id: 'thpt-math', version: '1', displayName: 'Toán THPT', subjects: ['Toán Học'],
   available: true, grades: [12], examType: 'THPT_STANDARD', durationMinutes: 90, totalQuestions: 22, sections: [] };
@@ -101,4 +102,14 @@ test('intake field bounds cannot create dialogue facts rejected on the following
   for (const [key, value] of [['subject', 'x'.repeat(81)], ['topic', 'x'.repeat(251)], ['grade', 13]]) {
     assert.throws(() => frame([{ goal: 'PREPARE_EXAM', parameters: { [key]: value } }]));
   }
+});
+
+test('questions about a stored answer read fresh state without navigating or asserting correctness', () => {
+  const result = resolveSemantic(frame([{ goal: 'INSPECT_QUESTION', parameters: { number: 1, part: 'P1', view: 'review' } }], { dialogueAct: 'QUESTION' }));
+  assert.equal(result.decision, undefined);
+  const state = { status: 'complete', package: { revision: 2 }, questions: [{ id: 1, stableId: 'P1-01', examRevision: 2,
+    part: 'P1', stem: 'Tính 1+1.', key: 'A', explanation: 'Cộng.' }] };
+  assert.match(inspectQuestion(state, result.inspections[0]).text, /Đáp án đang lưu: A/);
+  assert.equal(inspectQuestion({ ...state, package: { revision: 3 } }, result.inspections[0]).status, 'failed');
+  assert.equal(inspectQuestion({ ...state, status: 'generating' }, result.inspections[0]).status, 'failed');
 });

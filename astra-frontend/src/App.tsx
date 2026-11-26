@@ -3,7 +3,7 @@ import { flushSync } from 'react-dom';
 import { meaningful, recentQuestion, redact, retrievedContext, searchSessions } from './agent/memory';
 import { interpretationUnavailable, interpret } from './agent/client';
 import { admit, execute, fastRoute, fold, mayDispatch, type Effect, type Runtime } from './agent/recipes';
-import { displayNumber, failure, previewText, resolveQuestion, sectionId, statusText, success } from './agent/examActions';
+import { displayNumber, failure, inspectQuestion, previewText, resolveQuestion, sectionId, statusText, success } from './agent/examActions';
 import type { Decision, Intent } from './agent/contracts';
 import { contextualSubject, resolveSemantic } from './agent/semantics';
 import { familyFor, formatOverview, guidanceFor, mentionedFamilies, resolveIntake } from './agent/knowledge';
@@ -215,6 +215,21 @@ export const App: React.FC = () => {
         return;
       }
       if (workflow?.text) { answer(workflow.text); return; }
+      if (workflow?.inspections) {
+        const stated = [...fold(content).matchAll(/\bcau\s+(\d+)\b/g)].map(match => Number(match[1]));
+        const parts = [...fold(content).matchAll(/\bcau\s+(\d+)\s+(?:o\s+)?phan\s+(i{1,3}|[123]|p[123]|tv|ta|to|logic|science)\b/g)];
+        const inspections = workflow.inspections.map(args => {
+          const named = parts.filter(match => Number(match[1]) === args.number);
+          return args.part === undefined && named.length === 1 ? { ...args, part: sectionId(named[0][2]) } : args;
+        });
+        if (inspections.some(args => typeof args.number !== 'number' ||
+            (!stated.includes(args.number) && workflow.referenceTarget?.number !== args.number) ||
+            (parts.some(match => Number(match[1]) === args.number) && !parts.some(match => Number(match[1]) === args.number && sectionId(match[2]) === sectionId(String(args.part ?? '')))))) {
+          answer('Thầy cô hãy ghi rõ số câu và phần thi cần xem.'); return;
+        }
+        answer(inspections.map(args => redact(inspectQuestion(origin, args).text)).join('\n'));
+        return;
+      }
       if (workflow?.setupOnly && 'constraints' in interpreted && interpreted.constraints.includes('NO_GENERATION')) canAct = true;
       const decision = workflow?.decision ?? interpreted as Decision;
       if (import.meta.env.VITE_AGENT_TRACE === '1') {

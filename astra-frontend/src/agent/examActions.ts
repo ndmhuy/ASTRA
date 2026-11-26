@@ -30,6 +30,18 @@ export function resolveQuestion(session: ExamSession, args: Intent['args'], sele
   return matches.length === 1 ? matches[0] : undefined;
 }
 
+export function inspectQuestion(session: ExamSession | undefined, args: Intent['args']): Effect {
+  if (!session?.package || session.status !== 'complete') return failure('Đề chưa có dữ liệu hoàn chỉnh để đọc câu hỏi.');
+  const question = resolveQuestion(session, args);
+  if (!question) return failure('Chưa xác định được câu hỏi hiện tại. Thầy cô hãy ghi số câu và phần thi.');
+  const label = `Câu ${displayNumber(question)}${question.part ? ` (${question.part})` : ''}`;
+  return success([`${label}: ${question.stem}`,
+    ...(args.view === 'paper' ? [] : [`Đáp án đang lưu: ${question.key || 'chưa có'}.`,
+      ...(question.answerCheck === 'mismatched' ? ['Đáp án đang khác kết quả bộ giải đã lưu.'] : []),
+      ...(question.explanation ? [`Giải thích đang lưu: ${question.explanation}`] : [])]),
+  ].join('\n'));
+}
+
 export function statusText(session?: ExamSession) {
   if (!session) return 'Thầy cô hãy mở một không gian soạn đề để xem trạng thái.';
   if (session.status === 'generating') {

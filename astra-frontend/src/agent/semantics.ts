@@ -61,8 +61,9 @@ export type WorkflowResolution = {
   requestGeneration?: boolean;
   setupOnly?: boolean;
   referenceTarget?: { number: number; part?: string };
+  inspections?: Intent['args'][];
 };
-const readOnly = new Set(['READ_PROGRESS', 'READ_WARNINGS', 'LIST_EXAM_FORMATS', 'RECALL_REQUIREMENTS', 'FIND_CONVERSATIONS']);
+const readOnly = new Set(['READ_PROGRESS', 'READ_WARNINGS', 'LIST_EXAM_FORMATS', 'RECALL_REQUIREMENTS', 'FIND_CONVERSATIONS', 'INSPECT_QUESTION']);
 
 export function resolveSemantic(frame: SemanticFrame, recent?: { number: number; part?: string }): WorkflowResolution {
   const invalidateConfirmation = frame.dialogueAct === 'CORRECT' || frame.dialogueAct === 'CANCEL';
@@ -87,6 +88,11 @@ export function resolveSemantic(frame: SemanticFrame, recent?: { number: number;
   const goals = frame.goals.map(goal => usesReference && recent
     ? { ...goal, parameters: { ...goal.parameters, number: recent.number, ...(recent.part ? { part: recent.part } : {}) } } : goal);
   const definitions = goals.map(goal => catalog.goals[goal.goal]);
+  if (frame.dialogueAct === 'QUESTION' && goals.some(goal => goal.goal === 'INSPECT_QUESTION')) {
+    if (!goals.every(goal => goal.goal === 'INSPECT_QUESTION')) return stop('Thầy cô hãy hỏi rõ câu và phần thi cần xem trước.');
+    return { invalidateConfirmation, inspections: goals.map(goal => goal.parameters),
+      ...(usesReference && recent ? { referenceTarget: recent } : {}) };
+  }
   if (frame.goals.some((goal, index) => !definitions[index].dialogueActs.includes(frame.dialogueAct) &&
       !(frame.dialogueAct === 'QUESTION' && (readOnly.has(goal.goal) || ['intake', 'format_info'].includes(definitions[index].resolver))))) {
     return stop('Thầy cô đang hỏi thông tin hay muốn thực hiện thao tác? Em chưa thay đổi đề.');
