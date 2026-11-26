@@ -14,12 +14,12 @@ def student_view(questions: list[Question]) -> list[dict]:
     ]
 
 
-def render(
+def render_parts(
     questions: list[Question],
     illustrations: Illustrations,
     *,
-    font_profile: FontProfile = DEFAULT_FONT_PROFILE,
-) -> bytes:
+    before: dict[str, str] | None = None,
+) -> dict[str, str]:
     figures = {d.question_id: d.latex for d in illustrations.drawings}
     expected = {q.id for q in questions if q.illustration_request}
     if len(figures) != len(illustrations.drawings) or set(figures) != expected:
@@ -45,6 +45,15 @@ def render(
         for letter, statement in zip("abcd", q.statements, strict=False):
             content_latex(statement.solution, check_equations=False)
             body.append(r"\noindent " + letter + ") " + content_latex(statement.text) + r"\\")
-        parts[part].append("\n".join(body))
-    source = assemble({p: "\n\n".join(body) + "\n\n" for p, body in parts.items()})
+        parts[part].append((before or {}).get(q.id, "") + "\n".join(body))
+    return {p: "\n\n".join(body) + "\n\n" for p, body in parts.items()}
+
+
+def render(
+    questions: list[Question],
+    illustrations: Illustrations,
+    *,
+    font_profile: FontProfile = DEFAULT_FONT_PROFILE,
+) -> bytes:
+    source = assemble(render_parts(questions, illustrations))
     return apply_font_profile(source, font_profile)

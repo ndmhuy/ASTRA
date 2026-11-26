@@ -75,6 +75,7 @@ def _replace_questions(text, original, indices, stage):
 
 
 class Agent:
+    normalize_response = staticmethod(normalize_json)
     common = COMMON
     role: str
     instruction: str
@@ -116,7 +117,7 @@ class Agent:
                     output_schema=output_schema,
                 )
             )
-            text, normalized = normalize_json(completion.text)
+            text, normalized = self.normalize_response(completion.text)
             try:
                 if targeted:
                     text = _replace_questions(text, original, indices, self.role)

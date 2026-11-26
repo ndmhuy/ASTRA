@@ -139,6 +139,13 @@ class Orchestrator:
     illustrator_type = IllustratorAgent
     solver_type = SolverAgent
     reviewer_type = ReviewerAgent
+    max_revisions = 2
+
+    def references(self, request):
+        return self.template.reference_parts()
+
+    def composer_data(self, composer, request, part, reference, feedback, previous_stems):
+        return composer.data(request, part, reference, feedback)
 
     def parts(self, request):
         return ("P1", "P2", "P3")
@@ -205,7 +212,7 @@ class Orchestrator:
     async def run(self, request: Request, output: Path, *, resume: bool = False) -> dict:
         started = perf_counter()
         self.template.original()  # Verify before spending provider calls.
-        references = self.template.reference_parts()
+        references = self.references(request)
         internal = output / "_internal"
         calls = []
         previous_elapsed = 0.0
@@ -293,10 +300,11 @@ class Orchestrator:
 
         try:
             feedback = None
-            for revision in (1, 2):
+            for revision in range(1, self.max_revisions + 1):
                 folder = internal / f"revision_{revision}"
                 folder.mkdir(exist_ok=resume)
                 questions = []
+                previous_stems = []
                 composer = self.composer_type()
                 semaphore = asyncio.Semaphore(request.composer_concurrency)
 
@@ -308,14 +316,19 @@ class Orchestrator:
                     feedback=feedback,
                     revision=revision,
                     folder=folder,
+                    previous_stems=previous_stems,
                 ):
                     async with semaphore:
                         section = await call(
                             composer,
-                            composer.data(request, part, references[part], feedback),
+                            self.composer_data(
+                                composer, request, part, references[part], feedback, previous_stems
+                            ),
                             revision,
                         )
                     self.validate_section(section, request, part)
+                    if request.composer_concurrency == 1:
+                        previous_stems.extend(q.stem for q in section.questions)
                     save(folder / f"{part}.json", section.model_dump())
                     return section
 
@@ -368,11 +381,12 @@ class Orchestrator:
                             f"disagrees with independent Solver ({mismatch['solver']})."
                         )
                     save(folder / "review.json", review.model_dump())
-                    if review.decision == "needs_revision":
+                    report["review_issues"] = review.issues
+                    if revision < self.max_revisions and review.decision == "needs_revision":
                         feedback = self.feedback_data(review, questions, sections)
                         report["reviewer_feedback_sent"] = True
                         continue
-                # No second Reviewer. The final revision always requires human inspection.
+                # A final revision always requires human inspection.
                 (output / "de_thi.tex").write_bytes(source)
                 save(
                     output / "dap_an_va_loi_giai.json",
@@ -419,8 +433,12 @@ class Orchestrator:
                 )
                 (output / "KIEM_TRA.txt").write_text(
                     "Cần kiểm tra bằng mắt de_thi.tex/PDF, hình vẽ, đáp án và mức độ từng câu.\n"
-                    "Reviewer đã chạy một lần; bản sửa chưa được Reviewer duyệt lại.\n"
-                    "Lời giải nằm trong dap_an_va_loi_giai.json. Chưa tự động biên dịch LaTeX.\n",
+                    + (
+                        "Xem nhận xét của Reviewer trong _internal/result.json.\n"
+                        if self.max_revisions == 1
+                        else "Reviewer đã chạy một lần; bản sửa chưa được Reviewer duyệt lại.\n"
+                    )
+                    + "Lời giải nằm trong dap_an_va_loi_giai.json. Chưa tự động biên dịch LaTeX.\n",
                     encoding="utf-8",
                 )
                 break
