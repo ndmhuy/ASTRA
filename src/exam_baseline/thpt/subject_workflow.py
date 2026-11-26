@@ -18,7 +18,6 @@ from exam_baseline.thpt.subjects import (
     DURATION,
     ENGLISH_GROUPS,
     PROFILES,
-    SECTION_SPEC,
     SubjectRequest,
     batches,
 )
@@ -198,19 +197,11 @@ def render_subject(questions, drawings, request, passages):
             before[f"P1-{first}"] += content_latex(passage) + r"\par" + "\n"
     parts = render_parts(questions, drawings, before=before)
     profile = PROFILES[request.format_id]
-    header = template.original().decode("utf-8").split("% LECTURING-PART: P1", 1)[0]
-    header = header.replace("Môn thi: TOÁN", f"Môn thi: {profile.subject.upper()}")
-    header = header.replace("90 phút", f"{DURATION} phút").replace(" NĂM 2026", "")
-    sections = []
-    for part, count in profile.sections.items():
-        _, title, instruction = SECTION_SPEC[part]
-        sections.append(
-            rf"\noindent\textbf{{{title}}}\par"
-            + f"\nCâu 1–{count}. {instruction}\n\n"
-            + parts[part]
-        )
-    source = header + "\n".join(sections) + r"\begin{center}\textbf{HẾT}\end{center}\end{document}"
-    return apply_font_profile(source.encode(), request.font_profile)
+    sections = profile.sections
+    source = template.assemble_subject(
+        profile.subject, DURATION, sections, {part: parts[part] for part in sections}
+    )
+    return apply_font_profile(source, request.font_profile)
 
 
 class SubjectOrchestrator(Orchestrator):

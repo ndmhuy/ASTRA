@@ -6,6 +6,7 @@ from typing import Literal
 from pydantic import Field, model_validator
 
 from exam_baseline.thpt.models import Request, Slot
+from exam_baseline.thpt.template import SHORT_ANSWER_INSTRUCTION
 
 FormatId = Literal[
     "thpt-physics",
@@ -22,7 +23,7 @@ DURATION = 50
 SECTION_SPEC = {
     "P1": ("mcq", "Trắc nghiệm nhiều lựa chọn", "Chọn một đáp án A, B, C hoặc D."),
     "P2": ("true_false", "Trắc nghiệm đúng/sai", "Chọn đúng hoặc sai cho từng ý a, b, c, d."),
-    "P3": ("short_answer", "Trả lời ngắn", "Điền đáp án số vào ô trả lời."),
+    "P3": ("short_answer", "Trả lời ngắn", SHORT_ANSWER_INSTRUCTION),
 }
 
 

@@ -187,6 +187,17 @@ def test_subject_review_preview_and_export(tmp_path, format_id, subject, counts)
         raw_tex = (tmp_path / job / "de_thi.tex").read_text("utf-8")
         assert f"Môn thi: {subject.upper()}" in raw_tex
         assert "50 phút" in raw_tex
+        assert "NĂM 2026" in raw_tex
+        assert "Thí sinh không được sử dụng tài liệu." in raw_tex
+        for index, count in enumerate(counts, 1):
+            marker = f"% LECTURING-PART: P{index}"
+            assert (marker in raw_tex) == bool(count)
+            if count:
+                heading = raw_tex.split(marker + "\n", 1)[1].splitlines()[0]
+                assert f"đến câu {count}." in heading
+                if index == 3:
+                    assert "Phiếu trả lời trắc nghiệm" in heading
+        assert "Trả lời:" not in raw_tex
         assert "PRIVATE_REPLAY_KEY" not in raw_tex
         export_url = f"/api/exams/{job}/export"
         export_params = {"type": "STUDENT_EXAM", "format": "tex"}
