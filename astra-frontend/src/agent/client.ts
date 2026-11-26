@@ -34,7 +34,7 @@ export async function interpret(
     cache: 'no-store',
     headers: { 'Content-Type': 'application/json', 'X-Astra-Agent': VERSION },
     body: JSON.stringify({ schemaVersion: VERSION, workspaceId, clientMessageId, message, context }),
-    signal: AbortSignal.any([signal, AbortSignal.timeout(35000)]),
+    signal: AbortSignal.any([signal, AbortSignal.timeout(38000)]),
   });
   if (!response.ok) throw new Error(response.status === 429 ? 'agent_rate' : 'agent_unavailable');
   return parseDecision(await response.json(), clientMessageId);

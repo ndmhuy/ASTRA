@@ -28,7 +28,8 @@ class AgentSettings(BaseSettings):
         env_file=".env", env_prefix="ASTRA_AGENT_", extra="ignore", hide_input_in_errors=True
     )
     enabled: bool = False
-    transport: Literal["gateway", "direct", "codex", "offline"] = "gateway"
+    transport: Literal["gateway", "direct", "codex", "offline", "worker"] = "worker"
+    worker_url: str = "https://astra-ai-proxy.letranhoanglong2227.workers.dev"
     api_key: SecretStr | None = None
     gateway_account_id: str = ""
     gateway_id: str = ""
@@ -170,6 +171,15 @@ async def configured_interpreter(settings: AgentSettings | None = None):
         return
     async with httpx.AsyncClient(follow_redirects=False, trust_env=False) as client:
         try:
+            if settings.transport == "worker":
+                from .worker import WorkerInterpretationProvider
+
+                yield ProviderRouter(
+                    WorkerInterpretationProvider(client, settings.worker_url),
+                    reserve=lambda: True,
+                    timing=Timing(primary=33, total=33),
+                )
+                return
             if settings.transport == "codex":
                 from .codex_cli import CodexCliInterpretationProvider
 

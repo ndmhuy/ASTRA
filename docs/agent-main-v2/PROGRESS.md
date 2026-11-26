@@ -65,3 +65,7 @@ Current phase / exact next action: R5 / owner fills the private account ID, Run 
 
 ## Follow main
 P8 refreshed origin with prune. Main remained at the audited SHA with 0/0 local divergence. No merge was required.
+
+- 2026-11-26 W0. Resumed at 52a21be on the existing feature worktree. Fetched origin, main divergence 0/0. Integration uses Turn/Decision with generated Python prompt/schema resources. Worker deployment and live inference await authorization. MAS remains demo.
+
+- 2026-11-26 W1-W3. Added TypeScript Worker, generated authoritative contract, SQLite Durable Object admission, fail-closed validation and one-attempt BYOK transport. Added public Worker Python provider and explicit keyless launcher with 30/33/38-second Worker/local/browser deadlines. Direct diagnostic settings preserved. Verification in progress; forwarding disabled.

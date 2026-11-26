@@ -1,0 +1,19 @@
+{
+  "name": "astra-ai-proxy",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "check": "tsc --noEmit",
+    "dryrun": "wrangler deploy --dry-run"
+  },
+  "dependencies": {
+    "ajv": "8.20.0"
+  },
+  "devDependencies": {
+    "wrangler": "4.168.0",
+    "typescript": "5.9.3",
+    "@cloudflare/workers-types": "4.20261126.0"
+  }
+}
