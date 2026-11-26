@@ -5,6 +5,7 @@ from typing import Literal
 
 from pydantic import Field, model_validator
 
+from exam_baseline.thpt.contract_artifacts import profile as contract_profile
 from exam_baseline.thpt.models import Request, Slot
 from exam_baseline.thpt.template import SHORT_ANSWER_INSTRUCTION
 
@@ -120,7 +121,7 @@ PROFILES = {
     ),
 }
 
-ENGLISH_GROUPS = (
+LEGACY_ENGLISH_GROUPS = (
     ("E1", 1, 6, "cloze", "Complete the numbered blanks in the advertisement."),
     ("E2", 7, 12, "cloze", "Complete the numbered blanks in the leaflet."),
     ("E3", 13, 17, "ordering", "Choose the best order of the sentences or lines."),
@@ -128,6 +129,31 @@ ENGLISH_GROUPS = (
     ("E5", 23, 30, "reading", "Read the passage and answer the following questions."),
     ("E6", 31, 40, "reading", "Read the passage and answer the following questions."),
 )
+
+
+_ENGLISH_INSTRUCTIONS = {
+    "ordering": "Choose the best order of the sentences or lines.",
+    "cloze": "Choose the best option for each numbered blank.",
+    "reading": "Read the passage and answer the questions.",
+}
+ENGLISH_GROUPS = tuple(
+    (
+        f"E{index}",
+        *group["questionRange"],
+        group["kind"],
+        _ENGLISH_INSTRUCTIONS[group["kind"]],
+    )
+    for index, group in enumerate(
+        contract_profile("thpt-english")["reference"]["observedGroups"], 1
+    )
+)
+
+
+def english_groups_for_passages(passages):
+    # Old jobs predate the contract layout and retain their original group positions.
+    if any(p["questionRange"] == [1, 6] for p in passages):
+        return LEGACY_ENGLISH_GROUPS
+    return ENGLISH_GROUPS
 
 
 def batches(format_id):

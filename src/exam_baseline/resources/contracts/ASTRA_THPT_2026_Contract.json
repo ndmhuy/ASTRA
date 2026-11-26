@@ -1,0 +1,2710 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ASTRA · Contract đề luyện thi tốt nghiệp THPT 2026",
+  "description": "Handoff v1 cho Backend/MAS và UI/UX. Schema gốc kiểm tra đề học sinh. Các schema request, đáp án và preview dùng $defs trong tài liệu này. Giá trị x-* là hướng dẫn tích hợp và dữ liệu profile.",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "astra-thpt-paper-v1"
+    },
+    "examId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "contentHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "examType": {
+      "const": "THPT_STANDARD"
+    },
+    "formatId": {
+      "enum": [
+        "thpt_literature_2026",
+        "thpt_english_2026",
+        "thpt_history_2026",
+        "thpt_geography_2026",
+        "thpt_chemistry_2026",
+        "thpt_biology_2026"
+      ]
+    },
+    "formatVersion": {
+      "const": "1"
+    },
+    "subject": {
+      "enum": [
+        "literature",
+        "english",
+        "history",
+        "geography",
+        "chemistry",
+        "biology"
+      ]
+    },
+    "grade": {
+      "const": 12
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 180
+    },
+    "examCode": {
+      "type": "string",
+      "pattern": "^[0-9]{4}$",
+      "description": "Mã đề dạng chuỗi giữ số 0 đầu; đề luyện có thể bỏ mã."
+    },
+    "durationMinutes": {
+      "enum": [
+        50,
+        120
+      ]
+    },
+    "totalScore": {
+      "const": 10
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/section"
+      },
+      "minItems": 1,
+      "maxItems": 3
+    },
+    "passages": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/group"
+      },
+      "minItems": 0,
+      "maxItems": 40
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/asset"
+      },
+      "minItems": 0,
+      "maxItems": 60
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidence"
+      },
+      "minItems": 1,
+      "maxItems": 120
+    },
+    "frontMatter": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/block"
+      },
+      "minItems": 0,
+      "maxItems": 15
+    },
+    "endNotes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/rich"
+      },
+      "minItems": 0,
+      "maxItems": 12
+    },
+    "footnotes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/note"
+      },
+      "minItems": 0,
+      "maxItems": 40
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "examId",
+    "revision",
+    "contentHash",
+    "examType",
+    "formatId",
+    "formatVersion",
+    "subject",
+    "grade",
+    "title",
+    "durationMinutes",
+    "totalScore",
+    "sections",
+    "passages",
+    "assets",
+    "sources"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "subject": {
+            "const": "literature"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "formatId": {
+            "const": "thpt_literature_2026"
+          },
+          "durationMinutes": {
+            "const": 120
+          },
+          "sections": {
+            "minItems": 2,
+            "maxItems": 2,
+            "prefixItems": [
+              {
+                "properties": {
+                  "id": {
+                    "const": "P1"
+                  },
+                  "items": {
+                    "minItems": 5,
+                    "maxItems": 5,
+                    "items": {
+                      "$ref": "#/$defs/written"
+                    },
+                    "prefixItems": [
+                      {
+                        "properties": {
+                          "task": {
+                            "const": "reading_response"
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "task": {
+                            "const": "reading_response"
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "task": {
+                            "const": "reading_response"
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "task": {
+                            "const": "reading_response"
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "task": {
+                            "const": "reading_response"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "id": {
+                    "const": "P2"
+                  },
+                  "items": {
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "items": {
+                      "$ref": "#/$defs/written"
+                    },
+                    "prefixItems": [
+                      {
+                        "properties": {
+                          "task": {
+                            "const": "paragraph"
+                          },
+                          "wordCountTarget": {
+                            "const": 200
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "task": {
+                            "const": "essay"
+                          },
+                          "wordCountTarget": {
+                            "const": 600
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          "passages": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "subject": {
+            "const": "english"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "formatId": {
+            "const": "thpt_english_2026"
+          },
+          "durationMinutes": {
+            "const": 50
+          },
+          "sections": {
+            "minItems": 1,
+            "maxItems": 1,
+            "prefixItems": [
+              {
+                "properties": {
+                  "id": {
+                    "const": "P1"
+                  },
+                  "items": {
+                    "minItems": 40,
+                    "maxItems": 40,
+                    "items": {
+                      "$ref": "#/$defs/mcq"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "passages": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "subject": {
+            "const": "history"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "formatId": {
+            "const": "thpt_history_2026"
+          },
+          "durationMinutes": {
+            "const": 50
+          },
+          "sections": {
+            "minItems": 2,
+            "maxItems": 2,
+            "prefixItems": [
+              {
+                "properties": {
+                  "id": {
+                    "const": "P1"
+                  },
+                  "items": {
+                    "minItems": 24,
+                    "maxItems": 24,
+                    "items": {
+                      "$ref": "#/$defs/mcq"
+                    }
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "id": {
+                    "const": "P2"
+                  },
+                  "items": {
+                    "minItems": 4,
+                    "maxItems": 4,
+                    "items": {
+                      "$ref": "#/$defs/trueFalse"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "subject": {
+            "const": "geography"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "formatId": {
+            "const": "thpt_geography_2026"
+          },
+          "durationMinutes": {
+            "const": 50
+          },
+          "sections": {
+            "minItems": 3,
+            "maxItems": 3,
+            "prefixItems": [
+              {
+                "properties": {
+                  "id": {
+                    "const": "P1"
+                  },
+                  "items": {
+                    "minItems": 18,
+                    "maxItems": 18,
+                    "items": {
+                      "$ref": "#/$defs/mcq"
+                    }
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "id": {
+                    "const": "P2"
+                  },
+                  "items": {
+                    "minItems": 4,
+                    "maxItems": 4,
+                    "items": {
+                      "$ref": "#/$defs/trueFalse"
+                    }
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "id": {
+                    "const": "P3"
+                  },
+                  "items": {
+                    "minItems": 6,
+                    "maxItems": 6,
+                    "items": {
+                      "$ref": "#/$defs/shortAnswer"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "subject": {
+            "const": "chemistry"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "formatId": {
+            "const": "thpt_chemistry_2026"
+          },
+          "durationMinutes": {
+            "const": 50
+          },
+          "sections": {
+            "minItems": 3,
+            "maxItems": 3,
+            "prefixItems": [
+              {
+                "properties": {
+                  "id": {
+                    "const": "P1"
+                  },
+                  "items": {
+                    "minItems": 18,
+                    "maxItems": 18,
+                    "items": {
+                      "$ref": "#/$defs/mcq"
+                    }
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "id": {
+                    "const": "P2"
+                  },
+                  "items": {
+                    "minItems": 4,
+                    "maxItems": 4,
+                    "items": {
+                      "$ref": "#/$defs/trueFalse"
+                    }
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "id": {
+                    "const": "P3"
+                  },
+                  "items": {
+                    "minItems": 6,
+                    "maxItems": 6,
+                    "items": {
+                      "$ref": "#/$defs/shortAnswer"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "subject": {
+            "const": "biology"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "formatId": {
+            "const": "thpt_biology_2026"
+          },
+          "durationMinutes": {
+            "const": 50
+          },
+          "sections": {
+            "minItems": 3,
+            "maxItems": 3,
+            "prefixItems": [
+              {
+                "properties": {
+                  "id": {
+                    "const": "P1"
+                  },
+                  "items": {
+                    "minItems": 18,
+                    "maxItems": 18,
+                    "items": {
+                      "$ref": "#/$defs/mcq"
+                    }
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "id": {
+                    "const": "P2"
+                  },
+                  "items": {
+                    "minItems": 4,
+                    "maxItems": 4,
+                    "items": {
+                      "$ref": "#/$defs/trueFalse"
+                    }
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "id": {
+                    "const": "P3"
+                  },
+                  "items": {
+                    "minItems": 6,
+                    "maxItems": 6,
+                    "items": {
+                      "$ref": "#/$defs/shortAnswer"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "inline": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "text"
+            },
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 5000
+            },
+            "style": {
+              "enum": [
+                "normal",
+                "italic",
+                "bold",
+                "underline",
+                "bold_italic",
+                "bold_underline"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "text"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "math"
+            },
+            "latex": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1200,
+              "description": "Thân biểu thức math LaTeX, không kèm dấu phân cách. Renderer parse tập lệnh cho phép."
+            }
+          },
+          "required": [
+            "type",
+            "latex"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "chem"
+            },
+            "notation": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1200,
+              "description": "Đối số mhchem (ví dụ H2 + Cl2 -> 2HCl), không gồm lệnh ce."
+            }
+          },
+          "required": [
+            "type",
+            "notation"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "blank"
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 12
+            }
+          },
+          "required": [
+            "type",
+            "label"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "marker"
+            },
+            "label": {
+              "enum": [
+                "I",
+                "II",
+                "III",
+                "IV"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "label"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "line_break"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "footnote_ref"
+            },
+            "noteId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+            }
+          },
+          "required": [
+            "type",
+            "noteId"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "rich": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/inline"
+      },
+      "minItems": 1,
+      "maxItems": 120
+    },
+    "block": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "paragraph"
+            },
+            "runs": {
+              "$ref": "#/$defs/rich"
+            }
+          },
+          "required": [
+            "type",
+            "runs"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "display_math"
+            },
+            "latex": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1500
+            }
+          },
+          "required": [
+            "type",
+            "latex"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "table"
+            },
+            "caption": {
+              "$ref": "#/$defs/rich"
+            },
+            "unit": {
+              "$ref": "#/$defs/rich"
+            },
+            "columnCount": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20
+            },
+            "headerRowCount": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 8
+            },
+            "rows": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/cell"
+                },
+                "minItems": 1,
+                "maxItems": 20
+              },
+              "minItems": 1,
+              "maxItems": 60
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            }
+          },
+          "required": [
+            "type",
+            "columnCount",
+            "headerRowCount",
+            "rows"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "figure"
+            },
+            "assetId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+            },
+            "alt": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500
+            },
+            "caption": {
+              "$ref": "#/$defs/rich"
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            "widthPercent": {
+              "type": "integer",
+              "minimum": 10,
+              "maximum": 100
+            },
+            "placement": {
+              "enum": [
+                "block",
+                "wrap_right"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "assetId",
+            "alt"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "source"
+            },
+            "runs": {
+              "$ref": "#/$defs/rich"
+            }
+          },
+          "required": [
+            "type",
+            "runs"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "heading"
+            },
+            "runs": {
+              "$ref": "#/$defs/rich"
+            },
+            "align": {
+              "enum": [
+                "left",
+                "center",
+                "right"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "runs"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "list"
+            },
+            "style": {
+              "enum": [
+                "bullet",
+                "numeric",
+                "lower_alpha"
+              ]
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/rich"
+              },
+              "minItems": 1,
+              "maxItems": 20
+            }
+          },
+          "required": [
+            "type",
+            "style",
+            "items"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "display_chem"
+            },
+            "notation": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1500
+            }
+          },
+          "required": [
+            "type",
+            "notation"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "blocks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/block"
+      },
+      "minItems": 1,
+      "maxItems": 40
+    },
+    "asset": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^assets/[a-z][a-z0-9_-]{0,63}\\.(pdf|png|jpg)$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "mimeType": {
+          "enum": [
+            "application/pdf",
+            "image/png",
+            "image/jpeg"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "path",
+        "sha256",
+        "mimeType"
+      ],
+      "additionalProperties": false
+    },
+    "evidence": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "locator": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "locator"
+      ],
+      "additionalProperties": false
+    },
+    "rounding": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "const": "half_up"
+        },
+        "decimalPlaces": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        }
+      },
+      "required": [
+        "mode",
+        "decimalPlaces"
+      ],
+      "additionalProperties": false
+    },
+    "mcq": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+        },
+        "number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 40
+        },
+        "stem": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/block"
+          },
+          "minItems": 0,
+          "maxItems": 40,
+          "description": "Chỉ cho phép rỗng với MCQ điền khuyết có ô trống tương ứng trong ngữ liệu dùng chung."
+        },
+        "passageIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+          },
+          "minItems": 0,
+          "maxItems": 8,
+          "uniqueItems": true
+        },
+        "sourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+          },
+          "minItems": 1,
+          "maxItems": 12,
+          "uniqueItems": true
+        },
+        "verificationStatus": {
+          "enum": [
+            "PENDING",
+            "VERIFIED",
+            "FLAGGED"
+          ]
+        },
+        "type": {
+          "const": "mcq"
+        },
+        "choices": {
+          "type": "object",
+          "properties": {
+            "A": {
+              "$ref": "#/$defs/rich"
+            },
+            "B": {
+              "$ref": "#/$defs/rich"
+            },
+            "C": {
+              "$ref": "#/$defs/rich"
+            },
+            "D": {
+              "$ref": "#/$defs/rich"
+            }
+          },
+          "required": [
+            "A",
+            "B",
+            "C",
+            "D"
+          ],
+          "additionalProperties": false
+        },
+        "layout": {
+          "enum": [
+            "auto",
+            "stacked",
+            "two_columns",
+            "four_columns"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "number",
+        "stem",
+        "passageIds",
+        "sourceIds",
+        "verificationStatus",
+        "type",
+        "choices"
+      ],
+      "additionalProperties": false
+    },
+    "trueFalse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+        },
+        "number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 40
+        },
+        "stem": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/block"
+          },
+          "minItems": 0,
+          "maxItems": 40,
+          "description": "Chỉ cho phép rỗng với MCQ điền khuyết có ô trống tương ứng trong ngữ liệu dùng chung."
+        },
+        "passageIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+          },
+          "minItems": 0,
+          "maxItems": 8,
+          "uniqueItems": true
+        },
+        "sourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+          },
+          "minItems": 1,
+          "maxItems": 12,
+          "uniqueItems": true
+        },
+        "verificationStatus": {
+          "enum": [
+            "PENDING",
+            "VERIFIED",
+            "FLAGGED"
+          ]
+        },
+        "type": {
+          "const": "true_false"
+        },
+        "statements": {
+          "type": "object",
+          "properties": {
+            "a": {
+              "$ref": "#/$defs/rich"
+            },
+            "b": {
+              "$ref": "#/$defs/rich"
+            },
+            "c": {
+              "$ref": "#/$defs/rich"
+            },
+            "d": {
+              "$ref": "#/$defs/rich"
+            }
+          },
+          "required": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "id",
+        "number",
+        "stem",
+        "passageIds",
+        "sourceIds",
+        "verificationStatus",
+        "type",
+        "statements"
+      ],
+      "additionalProperties": false
+    },
+    "shortAnswer": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+        },
+        "number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 40
+        },
+        "stem": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/block"
+          },
+          "minItems": 0,
+          "maxItems": 40,
+          "description": "Chỉ cho phép rỗng với MCQ điền khuyết có ô trống tương ứng trong ngữ liệu dùng chung."
+        },
+        "passageIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+          },
+          "minItems": 0,
+          "maxItems": 8,
+          "uniqueItems": true
+        },
+        "sourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+          },
+          "minItems": 1,
+          "maxItems": 12,
+          "uniqueItems": true
+        },
+        "verificationStatus": {
+          "enum": [
+            "PENDING",
+            "VERIFIED",
+            "FLAGGED"
+          ]
+        },
+        "type": {
+          "const": "short_answer"
+        },
+        "rounding": {
+          "$ref": "#/$defs/rounding"
+        },
+        "responseUnit": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
+        },
+        "responseKind": {
+          "enum": [
+            "numeric",
+            "digit_sequence"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "number",
+        "stem",
+        "passageIds",
+        "sourceIds",
+        "verificationStatus",
+        "type",
+        "responseKind"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "responseKind": {
+                "const": "digit_sequence"
+              }
+            }
+          },
+          "then": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "rounding"
+                  ]
+                },
+                {
+                  "required": [
+                    "responseUnit"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "written": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+        },
+        "number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 40
+        },
+        "stem": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/block"
+          },
+          "minItems": 0,
+          "maxItems": 40,
+          "description": "Chỉ cho phép rỗng với MCQ điền khuyết có ô trống tương ứng trong ngữ liệu dùng chung."
+        },
+        "passageIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+          },
+          "minItems": 0,
+          "maxItems": 8,
+          "uniqueItems": true
+        },
+        "sourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+          },
+          "minItems": 1,
+          "maxItems": 12,
+          "uniqueItems": true
+        },
+        "verificationStatus": {
+          "enum": [
+            "PENDING",
+            "VERIFIED",
+            "FLAGGED"
+          ]
+        },
+        "type": {
+          "const": "written"
+        },
+        "task": {
+          "enum": [
+            "reading_response",
+            "paragraph",
+            "essay"
+          ]
+        },
+        "wordCountTarget": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2000
+        }
+      },
+      "required": [
+        "id",
+        "number",
+        "stem",
+        "passageIds",
+        "sourceIds",
+        "verificationStatus",
+        "type",
+        "task"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "task": {
+                "enum": [
+                  "paragraph",
+                  "essay"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "wordCountTarget"
+            ]
+          }
+        }
+      ]
+    },
+    "question": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/mcq"
+        },
+        {
+          "$ref": "#/$defs/trueFalse"
+        },
+        {
+          "$ref": "#/$defs/shortAnswer"
+        },
+        {
+          "$ref": "#/$defs/written"
+        }
+      ]
+    },
+    "group": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+        },
+        "sectionId": {
+          "enum": [
+            "P1",
+            "P2",
+            "P3"
+          ]
+        },
+        "questionRange": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 40
+            },
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 40
+            }
+          ],
+          "items": false,
+          "minItems": 2
+        },
+        "kind": {
+          "enum": [
+            "reading",
+            "cloze",
+            "ordering",
+            "context",
+            "data_set"
+          ]
+        },
+        "instructions": {
+          "$ref": "#/$defs/rich"
+        },
+        "blocks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/block"
+          },
+          "minItems": 0,
+          "maxItems": 40,
+          "description": "Cho phép rỗng ở nhóm sắp xếp khi từng câu có ngữ liệu riêng."
+        },
+        "title": {
+          "$ref": "#/$defs/rich"
+        },
+        "followupInstructions": {
+          "$ref": "#/$defs/rich"
+        }
+      },
+      "required": [
+        "id",
+        "sectionId",
+        "questionRange",
+        "kind",
+        "instructions",
+        "blocks"
+      ],
+      "additionalProperties": false
+    },
+    "section": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "enum": [
+            "P1",
+            "P2",
+            "P3"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 180
+        },
+        "instructions": {
+          "$ref": "#/$defs/rich"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/question"
+          },
+          "minItems": 1,
+          "maxItems": 40
+        }
+      },
+      "required": [
+        "id",
+        "items"
+      ],
+      "additionalProperties": false
+    },
+    "generationRequest": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "astra-thpt-generate-v1"
+        },
+        "examType": {
+          "const": "THPT_STANDARD"
+        },
+        "formatId": {
+          "enum": [
+            "thpt_literature_2026",
+            "thpt_english_2026",
+            "thpt_history_2026",
+            "thpt_geography_2026",
+            "thpt_chemistry_2026",
+            "thpt_biology_2026"
+          ]
+        },
+        "formatVersion": {
+          "const": "1"
+        },
+        "grade": {
+          "const": 12
+        },
+        "prompt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8000,
+          "description": "Yêu cầu nội dung và độ khó. Server lấy số câu và thời lượng theo formatId."
+        },
+        "uploadedFiles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+          },
+          "minItems": 0,
+          "maxItems": 12
+        },
+        "clientRequestId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "examType",
+        "formatId",
+        "formatVersion",
+        "grade",
+        "prompt"
+      ],
+      "additionalProperties": false
+    },
+    "keyEntry": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "questionId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+            },
+            "type": {
+              "const": "mcq"
+            },
+            "answer": {
+              "enum": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ]
+            },
+            "explanation": {
+              "$ref": "#/$defs/blocks"
+            }
+          },
+          "required": [
+            "questionId",
+            "type",
+            "answer"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "questionId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+            },
+            "type": {
+              "const": "true_false"
+            },
+            "answers": {
+              "type": "object",
+              "properties": {
+                "a": {
+                  "type": "boolean"
+                },
+                "b": {
+                  "type": "boolean"
+                },
+                "c": {
+                  "type": "boolean"
+                },
+                "d": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "a",
+                "b",
+                "c",
+                "d"
+              ],
+              "additionalProperties": false
+            },
+            "explanation": {
+              "$ref": "#/$defs/blocks"
+            }
+          },
+          "required": [
+            "questionId",
+            "type",
+            "answers"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "questionId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+            },
+            "type": {
+              "const": "short_answer"
+            },
+            "answer": {
+              "type": "string",
+              "maxLength": 4,
+              "pattern": "^(?:[0-9]{1,4}|-?[0-9]+(?:,[0-9]+)?)$",
+              "description": "Chuỗi trên phiếu, tối đa 4 ô tính cả dấu trừ/dấu phẩy. Chấm số hoặc chuỗi chữ số theo responseKind của câu."
+            },
+            "explanation": {
+              "$ref": "#/$defs/blocks"
+            }
+          },
+          "required": [
+            "questionId",
+            "type",
+            "answer"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "questionId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+            },
+            "type": {
+              "const": "written"
+            },
+            "rubric": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "criterion": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 800
+                  },
+                  "maxPoints": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "maximum": 4
+                  },
+                  "guidance": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 3000
+                  },
+                  "performanceLevels": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "points": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 4
+                        },
+                        "descriptor": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 1200
+                        }
+                      },
+                      "required": [
+                        "points",
+                        "descriptor"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "minItems": 1,
+                    "maxItems": 12
+                  }
+                },
+                "required": [
+                  "criterion",
+                  "maxPoints"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "maxItems": 30
+            },
+            "explanation": {
+              "$ref": "#/$defs/blocks"
+            }
+          },
+          "required": [
+            "questionId",
+            "type",
+            "rubric"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "teacherKey": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "astra-thpt-teacher-key-v1"
+        },
+        "examId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "contentHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/keyEntry"
+          },
+          "minItems": 1,
+          "maxItems": 40
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "examId",
+        "revision",
+        "contentHash",
+        "entries"
+      ],
+      "additionalProperties": false
+    },
+    "preview": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": [
+            "queued",
+            "compiling",
+            "ready",
+            "failed",
+            "unavailable",
+            "not_requested"
+          ]
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "contentHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "sourceHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "compilerAvailable": {
+          "type": "boolean"
+        },
+        "draft": {
+          "type": "boolean"
+        },
+        "statusUrl": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "pdfUrl": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "logUrl": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "pageCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "error": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 800
+        }
+      },
+      "required": [
+        "status",
+        "revision",
+        "contentHash",
+        "sourceHash",
+        "compilerAvailable",
+        "draft",
+        "statusUrl",
+        "pdfUrl",
+        "logUrl"
+      ],
+      "additionalProperties": false
+    },
+    "note": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+        },
+        "runs": {
+          "$ref": "#/$defs/rich"
+        }
+      },
+      "required": [
+        "id",
+        "runs"
+      ],
+      "additionalProperties": false
+    },
+    "cell": {
+      "type": "object",
+      "properties": {
+        "runs": {
+          "$ref": "#/$defs/rich"
+        },
+        "colSpan": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20
+        },
+        "rowSpan": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 60
+        },
+        "align": {
+          "enum": [
+            "left",
+            "center",
+            "right"
+          ]
+        }
+      },
+      "required": [
+        "runs"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "x-profiles": {
+    "literature": {
+      "formatId": "thpt_literature_2026",
+      "formatVersion": "1",
+      "displayName": "Ngữ văn",
+      "durationMinutes": 120,
+      "totalQuestions": 7,
+      "numbering": "per_section",
+      "language": "vi",
+      "sections": [
+        {
+          "id": "P1",
+          "type": "written",
+          "count": 5,
+          "sectionPoints": 4,
+          "tasks": [
+            "reading_response",
+            "reading_response",
+            "reading_response",
+            "reading_response",
+            "reading_response"
+          ],
+          "pointsByItem": [
+            0.5,
+            0.5,
+            1,
+            1,
+            1
+          ],
+          "title": "I. ĐỌC HIỂU"
+        },
+        {
+          "id": "P2",
+          "type": "written",
+          "count": 2,
+          "pointsByItem": [
+            2,
+            4
+          ],
+          "tasks": [
+            "paragraph",
+            "essay"
+          ],
+          "wordCountTargets": [
+            200,
+            600
+          ],
+          "title": "II. VIẾT"
+        }
+      ],
+      "reference": {
+        "year": 2026,
+        "sampleCode": null,
+        "samplePages": 2,
+        "sourceUrl": "https://xaydungchinhsach.chinhphu.vn/thi-tot-nghiep-thpt-2026-de-thi-mon-ngu-van-11926061110312488.htm",
+        "observedLayout": [
+          "Trang 1 có bài đọc, trích dẫn và chú thích chân trang.",
+          "Trang 2 có 5 câu đọc hiểu, đoạn nghị luận khoảng 200 chữ và bài nghị luận văn học khoảng 600 chữ với ngữ liệu riêng."
+        ]
+      }
+    },
+    "english": {
+      "formatId": "thpt_english_2026",
+      "formatVersion": "1",
+      "displayName": "Tiếng Anh",
+      "durationMinutes": 50,
+      "totalQuestions": 40,
+      "numbering": "per_section",
+      "language": "en",
+      "sections": [
+        {
+          "id": "P1",
+          "type": "mcq",
+          "count": 40,
+          "pointsPerItem": 0.25,
+          "title": null
+        }
+      ],
+      "reference": {
+        "year": 2026,
+        "sampleCode": "1116",
+        "samplePages": 4,
+        "sourceUrl": "https://xaydungchinhsach.chinhphu.vn/thi-tot-nghiep-thpt-2026-de-thi-tieng-anh-va-goi-y-dap-an-119260612132828853.htm",
+        "observedGroups": [
+          {
+            "kind": "ordering",
+            "questionRange": [
+              1,
+              5
+            ]
+          },
+          {
+            "kind": "cloze",
+            "questionRange": [
+              6,
+              10
+            ]
+          },
+          {
+            "kind": "reading",
+            "questionRange": [
+              11,
+              20
+            ]
+          },
+          {
+            "kind": "reading",
+            "questionRange": [
+              21,
+              28
+            ]
+          },
+          {
+            "kind": "cloze",
+            "questionRange": [
+              29,
+              34
+            ]
+          },
+          {
+            "kind": "cloze",
+            "questionRange": [
+              35,
+              40
+            ]
+          }
+        ],
+        "observedLayout": [
+          "Thứ tự nhóm lấy từ mã 1116. Đề có thư/hội thoại sắp xếp, bài đọc có từ gạch chân và vị trí chèn, tờ rơi và tờ thông tin có chỗ trống đánh số."
+        ]
+      }
+    },
+    "history": {
+      "formatId": "thpt_history_2026",
+      "formatVersion": "1",
+      "displayName": "Lịch sử",
+      "durationMinutes": 50,
+      "totalQuestions": 28,
+      "numbering": "per_section",
+      "language": "vi",
+      "sections": [
+        {
+          "id": "P1",
+          "type": "mcq",
+          "count": 24,
+          "pointsPerItem": 0.25,
+          "title": "PHẦN I"
+        },
+        {
+          "id": "P2",
+          "type": "true_false",
+          "count": 4,
+          "pointsByCorrectStatements": [
+            0,
+            0.1,
+            0.25,
+            0.5,
+            1
+          ],
+          "title": "PHẦN II"
+        }
+      ],
+      "reference": {
+        "year": 2026,
+        "sampleCode": "0841",
+        "samplePages": 4,
+        "sourceUrl": "https://xaydungchinhsach.chinhphu.vn/thi-tot-nghiep-thpt-2026-de-thi-mon-lich-su-va-goi-y-dap-an-119260612112703181.htm",
+        "observedLayout": [
+          "Bắt đầu Phần II ở trang 3. Mỗi câu đúng/sai dùng tư liệu có dẫn nguồn và 4 nhận định a–d."
+        ]
+      }
+    },
+    "geography": {
+      "formatId": "thpt_geography_2026",
+      "formatVersion": "1",
+      "displayName": "Địa lí",
+      "durationMinutes": 50,
+      "totalQuestions": 28,
+      "numbering": "per_section",
+      "language": "vi",
+      "sections": [
+        {
+          "id": "P1",
+          "type": "mcq",
+          "count": 18,
+          "pointsPerItem": 0.25,
+          "title": "PHẦN I"
+        },
+        {
+          "id": "P2",
+          "type": "true_false",
+          "count": 4,
+          "pointsByCorrectStatements": [
+            0,
+            0.1,
+            0.25,
+            0.5,
+            1
+          ],
+          "title": "PHẦN II"
+        },
+        {
+          "id": "P3",
+          "type": "short_answer",
+          "count": 6,
+          "pointsPerItem": 0.25,
+          "title": "PHẦN III"
+        }
+      ],
+      "reference": {
+        "year": 2026,
+        "sampleCode": "0921",
+        "samplePages": 4,
+        "sourceUrl": "https://xaydungchinhsach.chinhphu.vn/thi-tot-nghiep-thpt-2026-de-thi-mon-dia-li-va-goi-y-dap-an-119260612141919076.htm",
+        "observedLayout": [
+          "Biểu đồ cột và bảng số liệu có đơn vị, chú giải, nguồn; có biểu đồ hai trục; Phần III có yêu cầu làm tròn riêng từng câu."
+        ]
+      }
+    },
+    "chemistry": {
+      "formatId": "thpt_chemistry_2026",
+      "formatVersion": "1",
+      "displayName": "Hóa học",
+      "durationMinutes": 50,
+      "totalQuestions": 28,
+      "numbering": "per_section",
+      "language": "vi",
+      "sections": [
+        {
+          "id": "P1",
+          "type": "mcq",
+          "count": 18,
+          "pointsPerItem": 0.25,
+          "title": "PHẦN I"
+        },
+        {
+          "id": "P2",
+          "type": "true_false",
+          "count": 4,
+          "pointsByCorrectStatements": [
+            0,
+            0.1,
+            0.25,
+            0.5,
+            1
+          ],
+          "title": "PHẦN II"
+        },
+        {
+          "id": "P3",
+          "type": "short_answer",
+          "count": 6,
+          "pointsPerItem": 0.25,
+          "title": "PHẦN III"
+        }
+      ],
+      "reference": {
+        "year": 2026,
+        "sampleCode": "0330",
+        "samplePages": 4,
+        "sourceUrl": "https://xaydungchinhsach.chinhphu.vn/thi-tot-nghiep-thpt-2026-de-thi-mon-hoa-hoc-goi-y-dap-an-11926061210550049.htm",
+        "observedLayout": [
+          "Đầu đề quy định nguyên tử khối và ký hiệu. Phần I có ngữ liệu chung câu 7–8. Có phương trình, công thức cấu tạo, hình dụng cụ, bảng gộp ô và câu trả lời ngắn dạng dãy chữ số."
+        ]
+      }
+    },
+    "biology": {
+      "formatId": "thpt_biology_2026",
+      "formatVersion": "1",
+      "displayName": "Sinh học",
+      "durationMinutes": 50,
+      "totalQuestions": 28,
+      "numbering": "per_section",
+      "language": "vi",
+      "sections": [
+        {
+          "id": "P1",
+          "type": "mcq",
+          "count": 18,
+          "pointsPerItem": 0.25,
+          "title": "PHẦN I"
+        },
+        {
+          "id": "P2",
+          "type": "true_false",
+          "count": 4,
+          "pointsByCorrectStatements": [
+            0,
+            0.1,
+            0.25,
+            0.5,
+            1
+          ],
+          "title": "PHẦN II"
+        },
+        {
+          "id": "P3",
+          "type": "short_answer",
+          "count": 6,
+          "pointsPerItem": 0.25,
+          "title": "PHẦN III"
+        }
+      ],
+      "reference": {
+        "year": 2026,
+        "sampleCode": "0426",
+        "samplePages": 4,
+        "sourceUrl": "https://xaydungchinhsach.chinhphu.vn/thi-tot-nghiep-thpt-2026-de-thi-mon-sinh-hoc-va-goi-y-dap-an-119260612144308789.htm",
+        "observedLayout": [
+          "Hình cạnh câu hỏi, biểu đồ, sơ đồ và bảng có gộp ô; có câu ngắn trả lời bằng mã số hoặc thứ tự chữ số."
+        ]
+      }
+    }
+  },
+  "x-sources": {
+    "format": "https://vqa.moet.gov.vn/vi/news/thong-bao/cau-truc-dinh-dang-de-thi-tot-nghiep-thpt-tu-nam-2025-74.html",
+    "examIndex": "https://xaydungchinhsach.chinhphu.vn/lich-thi-tot-nghiep-thpt-nam-2026-119260319121525172.htm",
+    "officialAnswerKeys": "https://baochinhphu.vn/cong-bo-dap-an-chinh-thuc-cac-mon-thi-tot-nghiep-thpt-2026-102260619180653891.htm",
+    "englishTextPdf": "https://ieltsdatio.edu.vn/wp-content/uploads/DE-TIENG-ANH-THPT-2026-MD1116.pdf",
+    "officialLiteratureMarking": "https://bcp.cdnchinhphu.vn/334894974524682240/2026/6/19/1-huong-dan-cham-ngu-van-1-1781867078581937326965.pdf",
+    "extraction": "Đối chiếu cấu trúc từ 22 trang scan đề chính thức, PDF đánh máy mã Anh 1116 và hướng dẫn chấm. Các dấu bút trên bản scan không dùng làm đáp án."
+  },
+  "x-integration": {
+    "status": "Đề xuất handoff. ASTRA hiện có API job/preview và engine THPT Toán. Sáu profile này cần nối generator, adapter UI và template.",
+    "flow": [
+      "Đăng ký profile trong GET /api/exam-formats. Frontend chọn formatId và formatVersion; POST /api/exams/generate vẫn trả jobId. Profile Tiếng Anh trong v1 dùng trình tự nhóm của mã 1116.",
+      "Backend tạo student paper và teacher key cùng examId/revision/contentHash, validate cả schema và các luật x-validation, rồi lưu ở hai quyền truy cập riêng.",
+      "Mở rộng ExamPackage bằng trường studentPaper chứa payload schema gốc trên nhánh sáu profile. Giữ luồng GET /api/exams/{jobId} và request preview hiện có. Route teacher key yêu cầu quyền giáo viên.",
+      "UI dùng studentPaper cho bản tương tác và preview.pdfUrl cho bản in A4. Duyệt đúng revision và contentHash trước khi xuất đề chính thức."
+    ],
+    "currentPaths": [
+      "src/exam_baseline/api/routes_ui.py",
+      "src/exam_baseline/thpt/rendering.py",
+      "astra-frontend/src/types/exam.ts",
+      "astra-frontend/src/services/examService.ts",
+      "astra-frontend/src/components/Workspace/LiveCanvas/ExamPaperView.tsx"
+    ],
+    "definitionEntryPoints": {
+      "studentPaper": "#",
+      "generationRequest": "#/$defs/generationRequest",
+      "teacherKey": "#/$defs/teacherKey",
+      "preview": "#/$defs/preview"
+    },
+    "requestAdapter": "UI hiện gửi subject/durationMinutes/itemCount; adapter mới ánh xạ subject hiển thị từ formatId và suy số câu, thời gian từ profile. POST vẫn nằm dưới /api/exams/generate."
+  },
+  "x-validation": [
+    "Số hiển thị chạy từ 1 theo từng section. Question ID duy nhất trong toàn đề, phản ánh định danh bền qua các chỉnh sửa. Mã đề là chuỗi riêng. Mảng items xác định thứ tự.",
+    "Mỗi sourceId, assetId và noteId phải tồn tại trong danh mục tương ứng. ID duy nhất trong từng danh mục. Ô bảng theo thứ tự đọc, bỏ vị trí đã chiếm bởi ô gộp; lưới sau mở rộng phải lấp đúng columnCount, không có ô chồng nhau và headerRowCount không vượt số hàng. Asset phải khớp MIME, phần mở rộng và SHA-256.",
+    "passageIds phải tồn tại. Với mỗi passage, các câu trong sectionId có số trong questionRange phải tham chiếu block đó. Nếu tái dùng đoạn đọc ở phần Viết, tham chiếu lại ID để dẫn chiếu; chỉ in block ở vị trí sectionId/questionRange đã khai báo. Các nhóm trong cùng phần không được chồng lên nhau.",
+    "Ngữ văn P1 có một nhóm đọc hiểu chứa đủ câu 1–5; P2 có một đoạn và một bài. Rubric cộng đúng điểm từng câu theo profile. Ngữ liệu riêng sau lời hỏi có thể đặt trong stem theo thứ tự in.",
+    "Tiếng Anh dùng thứ tự và số câu trong x-profiles.english.reference.observedGroups. Mỗi blank mang số câu tương ứng trong nhóm cloze. Phần sắp xếp giữ thứ tự các mẩu a, b, c... trong stem. Marker I–IV thuộc đoạn đọc để trỏ vị trí chèn câu.",
+    "Teacher key có đúng một entry cho mỗi questionId, cùng type với câu hỏi. Với true_false, chấm theo số ý trả lời đúng trong chính câu đó. Với short_answer numeric, chuẩn hóa dấu thập phân về dấu phẩy sau bước làm tròn theo câu rồi so dạng số. Với digit_sequence, so đúng ký tự [0–9] theo thứ tự, giữ số 0 đầu. Đơn vị và quy tắc làm tròn phải hiển thị trong đề. Mỗi mức điểm rubric nằm trong 0 đến maxPoints của tiêu chí.",
+    "contentHash là SHA-256 của JSON canonical RFC 8785 của student paper bỏ trường contentHash; asset hash đã nằm trong payload. Khi thay nội dung in hoặc đáp án phải tăng revision và cập nhật binding; dùng cả revision lẫn contentHash để kiểm preview và approval.",
+    "Blind Solver và bản học sinh chỉ lấy student paper. Từ chối mọi trường khóa đáp án ngoài schema và kiểm duyệt nội dung hiển thị trước khi xuất."
+  ],
+  "x-rendering": {
+    "latex": "XeLaTeX với template tin cậy, giấy A4, font Unicode hỗ trợ tiếng Việt, amsmath và mhchem v4. Header lấy tên môn/thời lượng/mã đề và số trang từ lần biên dịch; đề luyện dùng nhãn ĐỀ LUYỆN TẬP. Footer có số trang và mã đề nếu có.",
+    "content": "Escape text ở mọi chỗ, gồm caption và ô bảng. Renderer tự chèn các dấu math và lệnh ce cho cả chem và display_chem. Parse math/chem theo allowlist, từ chối lệnh đọc/ghi file, macro tùy ý và document/preamble từ model. Compile với -no-shell-escape, timeout và thư mục artifact cô lập.",
+    "layout": "In ngữ liệu, hướng dẫn và nguồn ở đầu nhóm; giữ đoạn/vị trí chèn/gạch chân/khoảng trống. Câu lựa chọn dùng 4/2/1 cột theo chiều rộng, tự xuống hàng khi phương án dài. Giữ tiêu đề phần với câu đầu, caption với hình/bảng, và tránh mồ côi dòng ở cuối trang. Dùng frontMatter trước phần I cho ghi chú chung như nguyên tử khối, endNotes ở cuối đề. Footnote hiển thị sát chân trang chứa marker khi xuất PDF; stem của câu Viết có thể in thơ theo dòng và theo khổ. Render followupInstructions sau block ngữ liệu, trước câu đầu của nhóm.",
+    "figures": "Ưu tiên PDF vector đã chuẩn hóa do backend sinh cho biểu đồ, cấu trúc phân tử và sơ đồ. Dùng PNG/JPEG đủ độ phân giải cho hình raster. Bản web lấy bản preview ảnh từ cùng asset. CSS giữ tỷ lệ, LaTeX đọc asset qua manifest theo đường dẫn tương đối. Wrap phải khi có chỗ, rơi về block nếu cột chữ quá hẹp. Alt mô tả dữ liệu hình mà thí sinh thấy, tránh tiết lộ lời giải.",
+    "preview": "Tái sử dụng POST/GET /api/exams/{jobId}/preview. Khi status=ready và revision/contentHash khớp, UI hiển thị PDF trực tiếp, giữ chữ vector và zoom nét. Với trạng thái khác, hiển thị bản HTML có cùng cấu trúc hoặc lý do lỗi."
+  },
+  "x-examples": {
+    "description": "Ví dụ tự soạn theo từng môn, gồm mảnh item/passage/key. src_demo và cell_diagram là ID minh họa để thêm vào danh mục tương ứng. Các mảnh chỉ minh họa một câu hoặc một phần ngữ liệu của nhóm.",
+    "subjects": {
+      "literature": {
+        "passage": {
+          "id": "reading_1",
+          "sectionId": "P1",
+          "kind": "reading",
+          "questionRange": [
+            1,
+            5
+          ],
+          "instructions": [
+            {
+              "type": "text",
+              "text": "Đọc văn bản và trả lời câu hỏi."
+            }
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "runs": [
+                {
+                  "type": "text",
+                  "text": "Ánh đèn xưởng nhỏ vẫn sáng khi phố đã ngủ."
+                }
+              ]
+            },
+            {
+              "type": "source",
+              "runs": [
+                {
+                  "type": "text",
+                  "text": "Ngữ liệu minh họa do ASTRA soạn."
+                }
+              ]
+            }
+          ]
+        },
+        "item": {
+          "id": "p1-1",
+          "number": 1,
+          "stem": [
+            {
+              "type": "paragraph",
+              "runs": [
+                {
+                  "type": "text",
+                  "text": "Hình ảnh nào xuất hiện trong văn bản?"
+                }
+              ]
+            }
+          ],
+          "passageIds": [
+            "reading_1"
+          ],
+          "sourceIds": [
+            "src_demo"
+          ],
+          "verificationStatus": "PENDING",
+          "type": "written",
+          "task": "reading_response"
+        },
+        "key": {
+          "questionId": "p1-1",
+          "type": "written",
+          "rubric": [
+            {
+              "criterion": "Chỉ ra hình ảnh ánh đèn xưởng.",
+              "maxPoints": 0.5
+            }
+          ]
+        }
+      },
+      "english": {
+        "passage": {
+          "id": "cloze_1",
+          "sectionId": "P1",
+          "kind": "cloze",
+          "questionRange": [
+            6,
+            10
+          ],
+          "instructions": [
+            {
+              "type": "text",
+              "text": "Choose the best option for the blank."
+            }
+          ],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "runs": [
+                {
+                  "type": "text",
+                  "text": "The library is easy to reach "
+                },
+                {
+                  "type": "blank",
+                  "label": "6"
+                },
+                {
+                  "type": "text",
+                  "text": " bus."
+                }
+              ]
+            }
+          ]
+        },
+        "item": {
+          "id": "p1-6",
+          "number": 6,
+          "stem": [],
+          "passageIds": [
+            "cloze_1"
+          ],
+          "sourceIds": [
+            "src_demo"
+          ],
+          "verificationStatus": "PENDING",
+          "type": "mcq",
+          "choices": {
+            "A": [
+              {
+                "type": "text",
+                "text": "by"
+              }
+            ],
+            "B": [
+              {
+                "type": "text",
+                "text": "at"
+              }
+            ],
+            "C": [
+              {
+                "type": "text",
+                "text": "to"
+              }
+            ],
+            "D": [
+              {
+                "type": "text",
+                "text": "on"
+              }
+            ]
+          },
+          "layout": "four_columns"
+        },
+        "key": {
+          "questionId": "p1-6",
+          "type": "mcq",
+          "answer": "A"
+        }
+      },
+      "history": {
+        "item": {
+          "id": "p2-1",
+          "number": 1,
+          "stem": [
+            {
+              "type": "paragraph",
+              "runs": [
+                {
+                  "type": "text",
+                  "text": "Dựa vào tư liệu sau để đánh giá từng nhận định."
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "runs": [
+                {
+                  "type": "text",
+                  "text": "Hiến chương Liên hợp quốc có hiệu lực vào năm 1945."
+                }
+              ]
+            },
+            {
+              "type": "source",
+              "runs": [
+                {
+                  "type": "text",
+                  "text": "Dữ kiện tóm tắt từ Hiến chương Liên hợp quốc."
+                }
+              ]
+            }
+          ],
+          "passageIds": [],
+          "sourceIds": [
+            "src_demo"
+          ],
+          "verificationStatus": "PENDING",
+          "type": "true_false",
+          "statements": {
+            "a": [
+              {
+                "type": "text",
+                "text": "Sự kiện diễn ra năm 1945."
+              }
+            ],
+            "b": [
+              {
+                "type": "text",
+                "text": "Sự kiện diễn ra trong thế kỷ XIX."
+              }
+            ],
+            "c": [
+              {
+                "type": "text",
+                "text": "Tư liệu nhắc đến một hiến chương."
+              }
+            ],
+            "d": [
+              {
+                "type": "text",
+                "text": "Tư liệu cho biết trụ sở đặt tại Paris."
+              }
+            ]
+          }
+        },
+        "key": {
+          "questionId": "p2-1",
+          "type": "true_false",
+          "answers": {
+            "a": true,
+            "b": false,
+            "c": true,
+            "d": false
+          }
+        }
+      },
+      "geography": {
+        "item": {
+          "id": "p3-1",
+          "number": 1,
+          "stem": [
+            {
+              "type": "table",
+              "columnCount": 2,
+              "headerRowCount": 1,
+              "rows": [
+                [
+                  {
+                    "runs": [
+                      {
+                        "type": "text",
+                        "text": "Năm"
+                      }
+                    ]
+                  },
+                  {
+                    "runs": [
+                      {
+                        "type": "text",
+                        "text": "Sản lượng (tấn)"
+                      }
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "runs": [
+                      {
+                        "type": "text",
+                        "text": "2024"
+                      }
+                    ]
+                  },
+                  {
+                    "runs": [
+                      {
+                        "type": "text",
+                        "text": "50"
+                      }
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "runs": [
+                      {
+                        "type": "text",
+                        "text": "2025"
+                      }
+                    ]
+                  },
+                  {
+                    "runs": [
+                      {
+                        "type": "text",
+                        "text": "75"
+                      }
+                    ]
+                  }
+                ]
+              ]
+            },
+            {
+              "type": "paragraph",
+              "runs": [
+                {
+                  "type": "text",
+                  "text": "Sản lượng năm 2025 tăng bao nhiêu phần trăm so với năm 2024?"
+                }
+              ]
+            }
+          ],
+          "passageIds": [],
+          "sourceIds": [
+            "src_demo"
+          ],
+          "verificationStatus": "PENDING",
+          "type": "short_answer",
+          "responseUnit": "%",
+          "rounding": {
+            "mode": "half_up",
+            "decimalPlaces": 0
+          },
+          "responseKind": "numeric"
+        },
+        "key": {
+          "questionId": "p3-1",
+          "type": "short_answer",
+          "answer": "50"
+        }
+      },
+      "chemistry": {
+        "item": {
+          "id": "p1-1",
+          "number": 1,
+          "stem": [
+            {
+              "type": "paragraph",
+              "runs": [
+                {
+                  "type": "chem",
+                  "notation": "CaCO3 -> CaO + CO2"
+                },
+                {
+                  "type": "text",
+                  "text": ". Tổng hệ số tối giản là bao nhiêu?"
+                }
+              ]
+            }
+          ],
+          "passageIds": [],
+          "sourceIds": [
+            "src_demo"
+          ],
+          "verificationStatus": "PENDING",
+          "type": "mcq",
+          "choices": {
+            "A": [
+              {
+                "type": "text",
+                "text": "2"
+              }
+            ],
+            "B": [
+              {
+                "type": "text",
+                "text": "3"
+              }
+            ],
+            "C": [
+              {
+                "type": "text",
+                "text": "4"
+              }
+            ],
+            "D": [
+              {
+                "type": "text",
+                "text": "5"
+              }
+            ]
+          }
+        },
+        "key": {
+          "questionId": "p1-1",
+          "type": "mcq",
+          "answer": "B"
+        }
+      },
+      "biology": {
+        "item": {
+          "id": "p1-1",
+          "number": 1,
+          "stem": [
+            {
+              "type": "figure",
+              "assetId": "cell_diagram",
+              "alt": "A là vị trí mũi tên bên trong tế bào, B là vị trí mũi tên ở rìa tế bào.",
+              "widthPercent": 55
+            },
+            {
+              "type": "paragraph",
+              "runs": [
+                {
+                  "type": "text",
+                  "text": "Mũi tên A chỉ bộ phận nào của tế bào?"
+                }
+              ]
+            }
+          ],
+          "passageIds": [],
+          "sourceIds": [
+            "src_demo"
+          ],
+          "verificationStatus": "PENDING",
+          "type": "mcq",
+          "choices": {
+            "A": [
+              {
+                "type": "text",
+                "text": "Màng sinh chất"
+              }
+            ],
+            "B": [
+              {
+                "type": "text",
+                "text": "Nhân"
+              }
+            ],
+            "C": [
+              {
+                "type": "text",
+                "text": "Thành tế bào"
+              }
+            ],
+            "D": [
+              {
+                "type": "text",
+                "text": "Lục lạp"
+              }
+            ]
+          }
+        },
+        "key": {
+          "questionId": "p1-1",
+          "type": "mcq",
+          "answer": "B"
+        }
+      }
+    }
+  }
+}

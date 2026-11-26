@@ -9,9 +9,11 @@ from hashlib import sha256
 from pathlib import Path
 
 import httpx
+from jsonschema import ValidationError
 
 from exam_baseline.core.contracts import ProviderError
 from exam_baseline.providers.chat_completions import ChatCompletionsProvider
+from exam_baseline.thpt import contract_artifacts
 from exam_baseline.thpt.agents import QUESTION_FORMAT, Agent, IllustratorAgent, SolverAgent
 from exam_baseline.thpt.content import choice_latex
 from exam_baseline.thpt.models import Illustrations, Question, Request
@@ -36,8 +38,10 @@ from exam_baseline.thpt.subject_workflow import (
 from exam_baseline.thpt.subjects import (
     ENGLISH_GROUPS,
     PROFILES,
+    SECTION_SPEC,
     SOURCE,
     SubjectRequest,
+    english_groups_for_passages,
     subject_request,
 )
 from exam_baseline.thpt.visuals import visual_issues
@@ -527,9 +531,10 @@ class JobManager:
                     revision=report["revision"],
                     manualEdits=[],
                     report=report,
+                    contractExport=bool(contract_artifacts.profile(job["request"]["formatId"])),
                     **extra_fields,
                 )
-                self._refresh(job)
+                await self._refresh(job)
                 job["progress"].update(
                     stage=6,
                     stageName="completed",
@@ -590,7 +595,7 @@ class JobManager:
         job.update(status="failed", error=error.payload())
         self.store.save(job)
 
-    def _refresh(self, job):
+    async def _refresh(self, job):
         if _is_vact(job):
             sections = _vact_sections(job["rawQuestions"], job.get("rawPassages", []))
             source = vact_render(
@@ -617,12 +622,88 @@ class JobManager:
         else:
             passages = []
             source = render(questions, drawings)
-        (self.root / job["jobId"] / "de_thi.tex").write_bytes(source)
         job["sourceHash"] = sha256(source).hexdigest()
         binding = {"questions": job["rawQuestions"], "sourceHash": job["sourceHash"]}
         if passages:
             binding["passages"] = passages
-        job["contentHash"] = fingerprint(binding)
+        if job.get("contractExport"):
+            job["contentHash"] = await self._publish_contract(job)
+        else:
+            job["contentHash"] = fingerprint(binding)
+        (self.root / job["jobId"] / "de_thi.tex").write_bytes(source)
+
+    async def _publish_contract(self, job):
+        format_id = job["request"]["formatId"]
+        spec = contract_artifacts.profile(format_id)
+        directory = self.root / job["jobId"]
+        solutions = _current_solutions(job)
+        states = {
+            q["id"].lower(): _question_verification(q, solutions.get(q["id"]), False)["status"]
+            for q in job["rawQuestions"]
+        }
+        try:
+            figures = await asyncio.to_thread(
+                contract_artifacts.render_assets,
+                directory,
+                job["drawings"]["drawings"],
+                font_profile=job["nativeRequest"].get("font_profile", "unicode_times"),
+                compiler=self.previews.compiler(),
+                timeout=self.settings.latex_timeout_seconds,
+                cache_directory=self.settings.latex_cache_dir,
+            )
+            paper, key = contract_artifacts.build_bundle(
+                job,
+                spec,
+                ENGLISH_GROUPS if format_id == "thpt-english" else (),
+                states,
+                figures,
+                {part: values[2] for part, values in SECTION_SPEC.items()}
+                if format_id != "thpt-english"
+                else {},
+            )
+            await asyncio.to_thread(contract_artifacts.write_bundle, directory, paper, key)
+        except (OSError, ValueError, ValidationError) as exc:
+            raise UiError(
+                "thpt_contract_export_failed",
+                "Không thể xuất bộ JSON đề và đáp án theo chuẩn. "
+                "Kiểm tra dữ liệu đề và trình biên dịch nếu đề có hình.",
+                details={"errorType": type(exc).__name__},
+            ) from exc
+        return paper["contentHash"]
+
+    def _contract_file(self, job, filename):
+        path = (
+            contract_artifacts.snapshot_path(
+                self.root / job["jobId"], job["revision"], job["contentHash"]
+            )
+            / filename
+        )
+        try:
+            item = json.loads(path.read_text(encoding="utf-8"))
+            if (item["examId"], item["revision"], item["contentHash"]) != (
+                f"exam-{job['jobId']}",
+                job["revision"],
+                job["contentHash"],
+            ):
+                raise ValueError("Saved artifact is from another revision")
+        except (OSError, ValueError, KeyError) as exc:
+            raise UiError(
+                "artifact_changed", "Tệp JSON không khớp với phiên bản đề đã lưu.", 409
+            ) from exc
+        return path, item
+
+    def contract_asset(self, job_id, asset_id):
+        job = self._completed(job_id)
+        if not job.get("contractExport"):
+            raise UiError("asset_not_found", "Không tìm thấy hình của đề.", 404)
+        _, paper = self._contract_file(job, contract_artifacts.STUDENT)
+        asset = next((a for a in paper["assets"] if a["id"] == asset_id), None)
+        if asset is None:
+            raise UiError("asset_not_found", "Không tìm thấy hình của đề.", 404)
+        path = self.root / job_id / asset["path"]
+        if not path.is_file() or sha256(path.read_bytes()).hexdigest() != asset["sha256"]:
+            raise UiError("artifact_changed", "Hình minh họa đã thay đổi.", 409)
+        return path, asset["mimeType"]
 
     def _completed(self, job_id):
         job = self.get(job_id)
@@ -751,7 +832,9 @@ class JobManager:
         }
         english_instructions = {
             first: instruction
-            for _, first, _, kind, instruction in ENGLISH_GROUPS
+            for _, first, _, kind, instruction in english_groups_for_passages(
+                job.get("rawPassages", [])
+            )
             if kind == "ordering" and format_id == "thpt-english"
         }
         levels = {"NB": "NHAN_BIET", "TH": "THONG_HIEU", "VD": "VAN_DUNG", "VDC": "VAN_DUNG_CAO"}
@@ -839,6 +922,11 @@ class JobManager:
             "provenance": {"formatSource": SOURCE}
             if format_id
             else retrieval.get("release_info", {}),
+            **(
+                {"studentPaper": self._contract_file(job, contract_artifacts.STUDENT)[1]}
+                if job.get("contractExport")
+                else {}
+            ),
             "blueprint": {
                 "subject": subject,
                 "grade": 12,
@@ -915,7 +1003,7 @@ class JobManager:
             solutions = _current_solutions(job)
             solutions.pop(raw["id"], None)
             job.update(solutions={"entries": list(solutions.values())}, solverResultsVersion=1)
-            self._refresh(job)
+            await self._refresh(job)
             self.store.save(job)
             return self.package(job_id)
 
@@ -1115,7 +1203,7 @@ class JobManager:
                 approval=None,
             )
             job["manualEdits"] = list(set(job["manualEdits"]) | {repaired.id})
-            self._refresh(job)
+            await self._refresh(job)
             self.store.save(job)
             # Teacher-initiated regeneration never adds another Reviewer pass.
             return self.package(job_id)
@@ -1155,6 +1243,13 @@ class JobManager:
                 return root / "de_thi.tex", "application/x-tex"
             if kind == "STUDENT_EXAM" and file_format == "pdf":
                 return self.previews.file(job), "application/pdf"
+            if job.get("contractExport") and file_format == "json":
+                filename = (
+                    contract_artifacts.STUDENT
+                    if kind == "STUDENT_EXAM"
+                    else contract_artifacts.TEACHER
+                )
+                return self._contract_file(job, filename)[0], "application/json"
             if kind == "TEACHER_KEY" and file_format == "json":
                 path = root / "reviewed_answers.json"
                 exported = {

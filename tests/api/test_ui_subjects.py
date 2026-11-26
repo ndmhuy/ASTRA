@@ -10,6 +10,13 @@ from exam_baseline.api.app import create_app
 from exam_baseline.config import Settings
 from exam_baseline.core.contracts import Completion
 from exam_baseline.thpt.content import choice_latex, content_latex, normalize_subject_content
+from exam_baseline.thpt.contract_artifacts import (
+    STUDENT,
+    TEACHER,
+    content_hash,
+    profile,
+    validators,
+)
 from tests.api.test_ui_jobs import wait
 
 FORMATS = [
@@ -157,27 +164,45 @@ def test_subject_review_preview_and_export(tmp_path, format_id, subject, counts)
             f"P{i}": count for i, count in enumerate(counts, 1) if count
         }
         assert not package["approved"]
+        spec = profile(format_id)
+        if spec:
+            paper = package["studentPaper"]
+            key = json.loads((tmp_path / job / TEACHER).read_text(encoding="utf-8"))
+            assert paper == json.loads((tmp_path / job / STUDENT).read_text(encoding="utf-8"))
+            for validator, artifact in zip(validators(), (paper, key), strict=True):
+                validator.validate(artifact)
+            assert paper["formatId"] == spec["formatId"]
+            assert "PRIVATE_REPLAY_KEY" not in json.dumps(paper)
+            assert paper["contentHash"] == content_hash(paper) == package["contentHash"]
+            assert all(paper[name] == key[name] for name in ("examId", "revision", "contentHash"))
+            assert len(key["entries"]) == sum(counts)
+            assert any(e.get("explanation") for e in key["entries"])
+        else:
+            assert "studentPaper" not in package
+            assert not (tmp_path / job / STUDENT).exists()
+
         if format_id == "thpt-history":
             assert len(providers["reviewer"].calls) == 1
             assert "subject_review_issue" in {w["code"] for w in package["warnings"]}
         if format_id == "thpt-english":
             assert [p["questionRange"] for p in package["passages"]] == [
-                [1, 6],
-                [7, 12],
-                [18, 22],
-                [23, 30],
-                [31, 40],
+                [6, 10],
+                [11, 20],
+                [21, 28],
+                [29, 34],
+                [35, 40],
             ]
-            assert package["questions"][0]["passageId"] == "E1"
-            assert "passageId" not in package["questions"][12]
+            assert package["questions"][5]["passageId"] == "E2"
+            assert "passageId" not in package["questions"][0]
+            assert package["studentPaper"]["passages"][0]["questionRange"] == [1, 5]
             revision = package["revision"]
             checked = client.post(
-                f"/api/exams/{job}/questions/1/verify", json={"revision": revision}
+                f"/api/exams/{job}/questions/6/verify", json={"revision": revision}
             )
             assert checked.status_code == 200
             assert providers["solver"].calls[-1]["passage"] == package["passages"][0]["text"]
             changed = client.post(
-                f"/api/exams/{job}/questions/1/regenerate", json={"revision": revision}
+                f"/api/exams/{job}/questions/6/regenerate", json={"revision": revision}
             )
             assert changed.status_code == 200, changed.text
             package = changed.json()
@@ -212,3 +237,22 @@ def test_subject_review_preview_and_export(tmp_path, format_id, subject, counts)
         )
         assert approval.status_code == 200, approval.text
         assert client.get(export_url, params=export_params).text == raw_tex
+        if spec:
+            for kind, name in (("STUDENT_EXAM", STUDENT), ("TEACHER_KEY", TEACHER)):
+                downloaded = client.get(export_url, params={"type": kind, "format": "json"})
+                assert downloaded.status_code == 200
+                assert name in downloaded.headers["content-disposition"]
+                assert downloaded.json() == json.loads((tmp_path / job / name).read_text("utf-8"))
+            old_hash = package["contentHash"]
+            edited = client.put(
+                f"/api/exams/{job}/questions/1",
+                json={"revision": package["revision"], "question": {"stem": "Revised test stem."}},
+            )
+            assert edited.status_code == 200, edited.text
+            updated = edited.json()
+            assert updated["revision"] == package["revision"] + 1
+            assert updated["contentHash"] != old_hash
+            assert updated["studentPaper"]["contentHash"] == updated["contentHash"]
+            updated_key = json.loads((tmp_path / job / TEACHER).read_text("utf-8"))
+            assert updated_key["contentHash"] == updated["contentHash"]
+            assert not updated["approved"]

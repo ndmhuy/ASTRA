@@ -18,6 +18,9 @@ dependencies = [
   "python-docx>=1.1,<2",
   "reportlab>=4,<5",
   "pypdf>=5,<7",
+  "jsonschema>=4.23,<5",
+  "rfc8785>=0.1.4,<1",
+  "pypdfium2>=4.30,<6",
 ]
 
 [project.optional-dependencies]
@@ -37,7 +40,7 @@ where = ["src", "."]
 include = ["exam_baseline*", "rag_workflow*"]
 
 [tool.setuptools.package-data]
-exam_baseline = ["resources/prompts/*.txt", "resources/fixtures/*.json", "resources/templates/*.tex", "resources/exam_formats/*.json"]
+exam_baseline = ["resources/prompts/*.txt", "resources/fixtures/*.json", "resources/templates/*.tex", "resources/exam_formats/*.json", "resources/contracts/*.json"]
 rag_workflow = ["config.json", "web/*.html", "web/*.css", "web/*.js"]
 
 [tool.pytest.ini_options]

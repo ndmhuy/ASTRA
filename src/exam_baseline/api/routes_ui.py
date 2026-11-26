@@ -181,6 +181,12 @@ async def preview_log(
     return FileResponse(path, media_type="text/plain", headers={"Cache-Control": "no-store"})
 
 
+@router.get("/exams/{job_id}/assets/{asset_id}")
+async def asset(request: Request, job_id: UUID, asset_id: str):
+    path, media_type = request.app.state.ui_jobs.contract_asset(str(job_id), asset_id)
+    return FileResponse(path, media_type=media_type, headers={"Cache-Control": "no-store"})
+
+
 @router.get("/exams/{job_id}/export")
 async def export(
     request: Request,
