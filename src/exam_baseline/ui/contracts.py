@@ -86,6 +86,11 @@ class SubjectGenerateRequest(Model):
 ExamGenerateRequest = GenerateRequest | VactGenerateRequest | SubjectGenerateRequest
 
 
+class ExamVersionRef(Model):
+    jobId: UUID
+    revision: int = Field(ge=1)
+
+
 class WorkspaceMessage(Model):
     model_config = ConfigDict(str_strip_whitespace=False)
 
@@ -93,6 +98,8 @@ class WorkspaceMessage(Model):
     role: Literal["user", "assistant", "system"]
     content: str
     timestamp: datetime
+    examVersion: ExamVersionRef | None = None
+    recorded: bool = False
 
 
 class WorkspaceContent(Model):
@@ -104,6 +111,13 @@ class WorkspaceContent(Model):
     draft: str
     messages: list[WorkspaceMessage]
 
+    def storage_content(self, *exclude: str) -> dict:
+        content = self.model_dump(mode="json", exclude={"messages", *exclude})
+        content["messages"] = [
+            item.model_dump(mode="json", exclude_unset=True) for item in self.messages
+        ]
+        return content
+
 
 class WorkspaceDraft(WorkspaceContent):
     revision: int = Field(ge=0, strict=True)
@@ -112,6 +126,12 @@ class WorkspaceDraft(WorkspaceContent):
 class WorkspaceImport(WorkspaceContent):
     createdAt: AwareDatetime
     jobId: UUID | None
+
+
+class WorkspaceBranchRequest(Model):
+    destinationId: UUID
+    messageId: str = Field(min_length=1, max_length=256)
+    copyCurrent: bool = False
 
 
 class PreviewRequest(Model):

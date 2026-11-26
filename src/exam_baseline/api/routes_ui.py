@@ -16,13 +16,13 @@ from exam_baseline.ui.contracts import (
     PreviewRequest,
     RegenerateRequest,
     RevisionRequest,
+    WorkspaceBranchRequest,
     WorkspaceDraft,
     WorkspaceImport,
     WorkspaceRestoreRequest,
     format_catalog,
 )
 from exam_baseline.ui.jobs import resolve_request
-from exam_baseline.ui.timeline import workspace_change_messages
 
 router = APIRouter(prefix="/api")
 
@@ -36,7 +36,7 @@ def workspaces(request: Request, response: Response):
 @router.put("/workspaces/{workspace_id}")
 def save_workspace(request: Request, workspace_id: UUID, payload: WorkspaceDraft):
     revision = request.app.state.ui_jobs.store.save_workspace(
-        str(workspace_id), payload.revision, payload.model_dump(mode="json", exclude={"revision"})
+        str(workspace_id), payload.revision, payload.storage_content("revision")
     )
     return {"revision": revision}
 
@@ -50,8 +50,14 @@ async def workspace_versions(request: Request, workspace_id: UUID, response: Res
 @router.get("/workspaces/{workspace_id}/changes")
 def workspace_changes(request: Request, workspace_id: UUID, response: Response):
     response.headers["Cache-Control"] = "no-store"
-    changes = request.app.state.ui_jobs.store.workspace_changes(str(workspace_id))
-    return {"messages": workspace_change_messages(changes)}
+    return request.app.state.ui_jobs.workspace_timeline(str(workspace_id))
+
+
+@router.post("/workspaces/{workspace_id}/branch")
+def branch_workspace(request: Request, workspace_id: UUID, payload: WorkspaceBranchRequest):
+    return request.app.state.ui_jobs.branch_workspace(
+        str(workspace_id), str(payload.destinationId), payload.messageId, payload.copyCurrent
+    )
 
 
 @router.post("/workspaces/{workspace_id}/changes/{job_id}/{change_id}/undo")
@@ -92,7 +98,7 @@ def import_workspace(request: Request, workspace_id: UUID, payload: WorkspaceImp
         str(workspace_id),
         created_at.replace("+00:00", "Z"),
         str(payload.jobId) if payload.jobId else None,
-        payload.model_dump(mode="json", exclude={"createdAt", "jobId"}),
+        payload.storage_content("createdAt", "jobId"),
     )
     return {"status": status}
 

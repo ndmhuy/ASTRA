@@ -24,6 +24,7 @@ function changeLabel(version: ExamVersionSummary) {
     case 'regenerated': return `Tạo lại câu ${version.questionId}`;
     case 'restored': return `Khôi phục phiên bản ${version.restoredFrom}`;
     case 'undone': return `Hoàn tác câu ${version.questionId}`;
+    case 'branched': return 'Tạo nhánh đề thi';
   }
 }
 

@@ -48,6 +48,7 @@ from exam_baseline.ui.errors import UiError
 from exam_baseline.ui.exam_source import SOURCE_NAME
 from exam_baseline.ui.preview import PreviewService
 from exam_baseline.ui.storage import EXAM_VERSION_FIELDS, JobStore
+from exam_baseline.ui.timeline import workspace_change_messages
 from exam_baseline.vact import models as vact_models
 from exam_baseline.vact import template as vact_template
 from exam_baseline.vact.agents import SolverAgent as VactSolverAgent
@@ -896,6 +897,73 @@ class JobManager:
             "currentRevision": job["revision"] if job else None,
             "versions": self.store.workspace_versions(workspace_id),
         }
+
+    def workspace_timeline(self, workspace_id):
+        return {
+            "messages": workspace_change_messages(self.store.workspace_changes(workspace_id)),
+            "milestones": self.store.workspace_milestones(workspace_id),
+        }
+
+    def branch_workspace(self, parent_id, destination_id, message_id, copy_current):
+        signature = fingerprint([message_id, copy_current])
+        if self.store.fork_exists(parent_id, destination_id, signature):
+            return {"workspaceId": destination_id}
+        draft, current = self.store.workspace_content(parent_id)
+        events = self.workspace_timeline(parent_id)
+        messages = {
+            message["id"]: message
+            for message in [*draft["messages"], *events["messages"], *events["milestones"]]
+        }
+        if message_id not in messages:
+            raise UiError(
+                "workspace_message_not_found", "Không tìm thấy tin nhắn để tạo nhánh.", 404
+            )
+        selected = messages[message_id]
+        ref = selected.get("examVersion")
+        if "examVersion" not in selected and current is not None:
+            if not copy_current:
+                raise UiError(
+                    "branch_version_unknown",
+                    "Tin nhắn này không có phiên bản đã lưu. "
+                    "Thầy cô có thể tạo nhánh từ đề đang dùng.",
+                )
+            job = self._completed(current)
+            ref = {"jobId": current, "revision": job["revision"]}
+
+        def message_time(item):
+            timestamp = datetime.fromisoformat(item["timestamp"])
+            return timestamp.replace(tzinfo=timestamp.tzinfo or timezone.utc)
+
+        chat = []
+        for message in sorted(messages.values(), key=message_time):
+            chat.append({key: value for key, value in message.items() if key != "changeId"})
+            if message["id"] == message_id:
+                break
+        branch_draft = {
+            **draft,
+            "mode": "custom",
+            "draft": "",
+            "messages": chat,
+            "title": f"Nhánh · {draft['title']}",
+        }
+        fork, source = None, None
+        if ref:
+            original = self._completed(ref["jobId"])
+            snapshot, source = self.store.get_version(ref["jobId"], ref["revision"])
+            if source is None or sha256(source).hexdigest() != snapshot["sourceHash"]:
+                raise UiError(
+                    "version_source_missing", "Không tìm thấy tệp nguồn của phiên bản này."
+                )
+            fork = self._version_job(original, snapshot, 1)
+            fork.update(
+                jobId=str(uuid4()),
+                workspaceId=destination_id,
+                createdAt=now(),
+                approval=None,
+                branchOrigin=ref,
+            )
+        self.store.create_fork(parent_id, destination_id, signature, branch_draft, fork, source)
+        return {"workspaceId": destination_id}
 
     @staticmethod
     def _version_job(job, snapshot, revision):

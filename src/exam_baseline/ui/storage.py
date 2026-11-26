@@ -76,6 +76,13 @@ class JobStore:
                 )"""
             )
             db.execute(
+                """CREATE TABLE IF NOT EXISTS workspace_forks (
+                    id TEXT PRIMARY KEY REFERENCES workspaces(id),
+                    parent_id TEXT NOT NULL REFERENCES workspaces(id),
+                    fingerprint TEXT NOT NULL
+                )"""
+            )
+            db.execute(
                 """INSERT OR IGNORE INTO workspace_jobs
                    SELECT w.id, j.id FROM workspaces w JOIN jobs j ON w.job_id=j.id"""
             )
@@ -189,21 +196,23 @@ class JobStore:
         return {key: request[key] for key in ("subject", "durationMinutes", "itemCount")}
 
     def save_workspace(self, workspace_id: str, revision: int, draft: dict) -> int:
-        encoded = json.dumps(draft, ensure_ascii=False)
         with self.connect() as db:
             db.execute("BEGIN IMMEDIATE")
             row = db.execute(
                 "SELECT revision, draft, archived FROM workspaces WHERE id=?", (workspace_id,)
             ).fetchone()
             if row is None and revision == 0:
+                self._validate_message_refs(db, workspace_id, draft, {})
                 db.execute(
                     "INSERT INTO workspaces (id, revision, draft) VALUES (?, 1, ?)",
-                    (workspace_id, encoded),
+                    (workspace_id, json.dumps(draft, ensure_ascii=False)),
                 )
                 return 1
             if row is None or row[2]:
                 raise UiError("workspace_not_found", "Đề này không còn trong tủ đề.", 404)
             current, saved, _ = row
+            self._validate_message_refs(db, workspace_id, draft, json.loads(saved))
+            encoded = json.dumps(draft, ensure_ascii=False)
             if saved == encoded:
                 return current
             if current != revision:
@@ -213,6 +222,30 @@ class JobStore:
                 (encoded, revision + 1, workspace_id),
             )
             return revision + 1
+
+    @staticmethod
+    def _validate_message_refs(db, workspace_id, draft, previous):
+        saved = {message["id"]: message for message in previous.get("messages", [])}
+        for message in draft["messages"]:
+            existing = saved.get(message["id"])
+            if existing is not None:
+                if "examVersion" in existing:
+                    message["examVersion"] = existing["examVersion"]
+                else:
+                    message.pop("examVersion", None)
+                continue
+            ref = message.get("examVersion")
+            if (
+                ref
+                and not db.execute(
+                    """SELECT 1 FROM workspace_jobs l JOIN exam_versions v ON v.job_id=l.job_id
+                   WHERE l.workspace_id=? AND v.job_id=? AND v.revision=?""",
+                    (workspace_id, ref["jobId"], ref["revision"]),
+                ).fetchone()
+            ):
+                raise UiError(
+                    "exam_version_not_found", "Không tìm thấy phiên bản gắn với tin nhắn.", 404
+                )
 
     def archive_workspace(self, workspace_id: str) -> None:
         with self.connect() as db:
@@ -256,6 +289,19 @@ class JobStore:
                     raise UiError(
                         "workspace_import_conflict",
                         "Phiên tạo đề này đã thuộc một mục trong tủ đề.",
+                    )
+
+            for message in draft["messages"]:
+                ref = message.get("examVersion")
+                if ref and (
+                    ref["jobId"] != job_id
+                    or not db.execute(
+                        "SELECT 1 FROM exam_versions WHERE job_id=? AND revision=?",
+                        (job_id, ref["revision"]),
+                    ).fetchone()
+                ):
+                    raise UiError(
+                        "exam_version_not_found", "Không tìm thấy phiên bản tin nhắn.", 404
                     )
 
             db.execute(
@@ -403,6 +449,99 @@ class JobStore:
         if row is None:
             raise UiError("workspace_not_found", "Không tìm thấy đề đã lưu.", 404)
         return row[0]
+
+    def workspace_content(self, workspace_id):
+        with self.connect() as db:
+            row = db.execute(
+                "SELECT draft, job_id FROM workspaces WHERE id=? AND archived=0", (workspace_id,)
+            ).fetchone()
+        if row is None:
+            raise UiError("workspace_not_found", "Không tìm thấy đề đã lưu.", 404)
+        return json.loads(row[0]), row[1]
+
+    def workspace_milestones(self, workspace_id):
+        with self.connect() as db:
+            rows = db.execute(
+                """SELECT v.job_id, v.revision, v.created_at, v.change,
+                          json_array_length(v.data, '$.rawQuestions')
+                   FROM workspace_jobs l JOIN exam_versions v ON l.job_id=v.job_id
+                   WHERE l.workspace_id=? AND v.change IN ('generated', 'branched')""",
+                (workspace_id,),
+            ).fetchall()
+        return [
+            {
+                "id": f"exam-ready:{job_id}",
+                "role": "assistant",
+                "timestamp": time,
+                "content": (
+                    f"Đã soạn xong {count} câu. Hãy kiểm tra bản xem trước PDF "
+                    "và phê duyệt bản hiện tại trước khi xuất file."
+                    if kind == "generated"
+                    else "Đã tạo nhánh từ phiên bản đề đã lưu."
+                ),
+                "examVersion": {"jobId": job_id, "revision": revision},
+                "recorded": True,
+            }
+            for job_id, revision, time, kind, count in rows
+        ]
+
+    def create_fork(self, parent_id, destination_id, signature, draft, job, source):
+        with self.connect() as db:
+            db.execute("BEGIN IMMEDIATE")
+            existing = db.execute(
+                "SELECT parent_id, fingerprint FROM workspace_forks WHERE id=?", (destination_id,)
+            ).fetchone()
+            if existing is not None:
+                if existing != (parent_id, signature):
+                    raise JobConflict("Mã tạo nhánh đã được dùng cho yêu cầu khác.")
+                return
+            if not db.execute(
+                "SELECT 1 FROM workspaces WHERE id=? AND archived=0", (parent_id,)
+            ).fetchone():
+                raise UiError("workspace_not_found", "Không tìm thấy đề đã lưu.", 404)
+            if db.execute("SELECT 1 FROM workspaces WHERE id=?", (destination_id,)).fetchone():
+                raise JobConflict("Mã tạo nhánh đã được dùng cho yêu cầu khác.")
+            job_id = job["jobId"] if job is not None else None
+            db.execute(
+                "INSERT INTO workspaces (id, revision, draft, job_id) VALUES (?, 1, ?, ?)",
+                (destination_id, json.dumps(draft, ensure_ascii=False), job_id),
+            )
+            db.execute(
+                "INSERT INTO workspace_forks VALUES (?, ?, ?)",
+                (destination_id, parent_id, signature),
+            )
+            if job_id is None:
+                return
+            db.execute(
+                "INSERT INTO jobs VALUES (?, ?, ?, ?)",
+                (job_id, f"fork:{destination_id}", signature, json.dumps(job, ensure_ascii=False)),
+            )
+            db.execute("INSERT INTO workspace_jobs VALUES (?, ?)", (destination_id, job_id))
+            db.execute(
+                """INSERT INTO exam_versions (job_id, revision, change, data, source)
+                   VALUES (?, 1, 'branched', ?, ?)""",
+                (job_id, self._snapshot(job), source),
+            )
+            root = self.path.parent / job_id
+            root.mkdir()
+            committed_hash = None
+            try:
+                publish_source(root, source)
+                db.commit()
+                committed_hash = job["sourceHash"]
+            finally:
+                if committed_hash is None:
+                    db.rollback()
+                settle_source(root, committed_hash)
+
+    def fork_exists(self, parent_id, destination_id, signature):
+        with self.connect() as db:
+            existing = db.execute(
+                "SELECT parent_id, fingerprint FROM workspace_forks WHERE id=?", (destination_id,)
+            ).fetchone()
+        if existing is not None and existing != (parent_id, signature):
+            raise JobConflict("Mã tạo nhánh đã được dùng cho yêu cầu khác.")
+        return existing is not None
 
     def begin_change(self, job_id: str, change_id: str, signature: str, data: dict):
         with self.connect() as db:

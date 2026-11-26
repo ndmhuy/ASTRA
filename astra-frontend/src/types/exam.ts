@@ -106,7 +106,7 @@ export interface ExamVersionSummary {
   jobId?: string;
   revision: number;
   createdAt: string;
-  change: 'generated' | 'baseline' | 'edited' | 'regenerated' | 'restored' | 'undone';
+  change: 'generated' | 'baseline' | 'edited' | 'regenerated' | 'restored' | 'undone' | 'branched';
   questionId: number | null;
   restoredFrom: number | null;
   restorable: boolean;

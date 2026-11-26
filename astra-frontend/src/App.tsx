@@ -67,7 +67,8 @@ export const App: React.FC = () => {
     active.package?.revision === undo.revision;
   const messages = useMemo(() => {
     const recorded = recordedChat?.id === sharedId ? recordedChat.messages : [];
-    return [...(active?.messages ?? []), ...recorded].sort(
+    const byId = new Map([...(active?.messages ?? []), ...recorded].map(message => [message.id, message]));
+    return [...byId.values()].sort(
       (first, second) => Date.parse(first.timestamp) - Date.parse(second.timestamp)
     );
   }, [active?.messages, recordedChat, sharedId]);
@@ -96,11 +97,12 @@ export const App: React.FC = () => {
       if (pending) return;
       pending = true;
       try {
-        const { messages } = await library.changes(sharedId);
+        const { messages, milestones } = await library.changes(sharedId);
         if (current) {
-          const signature = JSON.stringify(messages);
+          const timeline = [...messages, ...milestones];
+          const signature = JSON.stringify(timeline);
           setRecordedChat(previous => previous?.id === sharedId && previous.signature === signature
-            ? previous : { id: sharedId, messages, signature });
+            ? previous : { id: sharedId, messages: timeline, signature });
         }
       } catch {
         // Leave the last server-confirmed messages visible during a disconnect.
@@ -245,6 +247,21 @@ export const App: React.FC = () => {
     } finally { setUndoing(false); }
   };
 
+  const branchFromMessage = async (id: string, message: ChatMessage) => {
+    try {
+      let branchId: string | null;
+      try { branchId = await store.branchAtMessage(id, message.id); }
+      catch (error) {
+        if (!(error instanceof ApiError) || error.code !== 'branch_version_unknown') throw error;
+        if (!window.confirm('Tin nhắn này chưa có phiên bản đã lưu. Tạo nhánh từ đề đang dùng?')) return;
+        branchId = await store.branchAtMessage(id, message.id, true);
+      }
+      if (branchId) openSession(branchId);
+    } catch (error) {
+      await store.handleActionError(id, error);
+    }
+  };
+
   const sidebarLabel = controlsCollapsed ? 'Mở rộng thanh điều hướng' : 'Thu gọn thanh điều hướng';
 
   if (showWelcome) return <AstraWelcome onComplete={finishWelcome} />;
@@ -297,7 +314,7 @@ export const App: React.FC = () => {
                   </details>
                   <button type="button" className="button-secondary" onClick={() => setUndoConflict(undefined)}>Đóng</button>
                 </div>}
-                <ChatHistory messages={messages} onSuggestion={value => store.setDraft(active.id, value)} onEditMessage={message => store.setDraft(active.id, message.content)} onRetractMessage={message => store.retractMessage(active.id, message.id)} onBranchMessage={message => { const branchId = store.branchAtMessage(active.id, message.id); if (branchId) setActiveId(branchId); }}
+                <ChatHistory messages={messages} onSuggestion={value => store.setDraft(active.id, value)} onEditMessage={message => store.setDraft(active.id, message.content)} onRetractMessage={message => store.retractMessage(active.id, message.id)} onBranchMessage={message => void branchFromMessage(active.id, message)}
                   currentJobId={active.jobId} undoing={undoing} onUndoChange={sharedId && active.package?.revision ? message => void undoRecordedChange(message) : undefined} />
               </>
             ),

@@ -55,7 +55,8 @@ function newestFirst(first: ExamSession, second: ExamSession) {
 }
 
 function workspaceDraft({ mode, title, draft, messages }: ExamSession): WorkspaceDraft {
-  return { schema_version: 1, mode, title, draft, messages: messages.filter(message => !message.id.startsWith('exam-ready:')) };
+  return { schema_version: 1, mode, title, draft,
+    messages: messages.filter(message => message.recorded || !message.id.startsWith('exam-ready:')) };
 }
 
 function sharedSession(entry: SavedWorkspace, previous?: ExamSession): ExamSession {
@@ -499,8 +500,31 @@ export class ExamSessions {
       return index < 0 ? session : { ...session, messages: session.messages.slice(0, index) };
     }, true);
   }
-  branchAtMessage(id: string, messageId: string) {
+  private branchRequests = new Map<string, string>();
+
+  async branchAtMessage(id: string, messageId: string, copyCurrent = false) {
     const source = this.sessions.find(session => session.id === id);
+    if (!source) return null;
+    const library = this.service.workspaceLibrary;
+    if (library && this.workspaceSaves.has(id)) {
+      if (!await this.saveWorkspace(id)) throw new Error('Hãy lưu hội thoại trước khi tạo nhánh.');
+      const key = JSON.stringify([id, messageId, copyCurrent]);
+      const destinationId = this.branchRequests.get(key) ?? crypto.randomUUID();
+      this.branchRequests.set(key, destinationId);
+      try {
+        const { workspaceId } = await library.branch(id, destinationId, messageId, copyCurrent);
+        await this.loadLibrary();
+        if (!this.sessions.some(item => item.id === workspaceId)) {
+          throw Object.assign(new Error('Nhánh đã lưu. Hãy thử tải lại tủ đề.'), { code: 'network_error' });
+        }
+        this.branchRequests.delete(key);
+        return workspaceId;
+      } catch (error) {
+        if (extractErrorDetails(error).code !== 'network_error') this.branchRequests.delete(key);
+        throw error;
+      }
+    }
+    if (source.browserOnly && source.jobId) throw new Error('Hãy nhập đề vào tủ đề chung trước khi tạo nhánh.');
     const index = source?.messages.findIndex(message => message.id === messageId) ?? -1;
     if (!source || index < 0) return null;
     const branch: ExamSession = {
@@ -522,8 +546,18 @@ export class ExamSessions {
     return branch.id;
   }
   sendMessage(id: string, content: string) {
-    const message = (role: ChatMessage['role'], text: string): ChatMessage => ({ id: crypto.randomUUID(), role, content: text, timestamp: new Date().toISOString() });
-    this.update(id, session => ({ ...session, title: session.mode === 'custom' && !session.meta && session.messages.length === 0 ? content.slice(0, 72) : session.title, draft: '', messages: [...session.messages, message('user', content), message('assistant', session.status === 'complete' ? 'Đã ghi nhận yêu cầu chỉnh sửa cho đề này. Chỉnh sửa bằng hội thoại sẽ khả dụng khi kết nối dịch vụ AI.' : 'Đã ghi nhận yêu cầu cho đề này. Chọn “Tạo đề từ yêu cầu” để chọn môn học, cấu trúc và bắt đầu tạo đề.')] }), true);
+    this.update(id, session => {
+      const examVersion = session.jobId && session.package?.revision
+        ? { jobId: session.jobId, revision: session.package.revision }
+        : session.status === 'complete' ? undefined : null;
+      const message = (role: ChatMessage['role'], text: string): ChatMessage => ({
+        id: crypto.randomUUID(), role, content: text, timestamp: new Date().toISOString(), examVersion,
+      });
+      return { ...session,
+        title: session.mode === 'custom' && !session.meta && session.messages.length === 0 ? content.slice(0, 72) : session.title,
+        draft: '', messages: [...session.messages, message('user', content), message('assistant', session.status === 'complete' ? 'Đã ghi nhận yêu cầu chỉnh sửa cho đề này. Chỉnh sửa bằng hội thoại sẽ khả dụng khi kết nối dịch vụ AI.' : 'Đã ghi nhận yêu cầu cho đề này. Chọn “Tạo đề từ yêu cầu” để chọn môn học, cấu trúc và bắt đầu tạo đề.')],
+      };
+    }, true);
   }
   async generate(id: string, params: ExamRequestParams) {
     const existing = this.sessions.find(session => session.id === id);

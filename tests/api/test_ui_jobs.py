@@ -370,6 +370,79 @@ def test_restore_returns_previous_exam_as_new_unapproved_revision(tmp_path):
         )
 
 
+def test_branch_uses_the_exam_version_at_the_selected_message(tmp_path):
+    app, _ = fixture_app(tmp_path)
+    workspace_id = str(uuid4())
+    url = f"/api/workspaces/{workspace_id}"
+    message = {"role": "user", "content": "Xin soạn một đề.", "timestamp": "2020-01-01T09:00:00Z"}
+    draft = {
+        "revision": 0,
+        "mode": "custom",
+        "title": "Đề gốc",
+        "draft": "",
+        "messages": [
+            {**message, "id": "legacy"},
+            {**message, "id": "before-exam", "examVersion": None},
+        ],
+    }
+    with TestClient(app) as client:
+        assert client.put(url, json=draft).status_code == 200
+        job_id = client.post(
+            f"/api/exams/generate?workspace_id={workspace_id}",
+            json=PAYLOAD,
+            headers={"Idempotency-Key": "branch-history"},
+        ).json()["jobId"]
+        assert wait(client, job_id)["status"] == "completed"
+        original = client.get(f"/api/exams/{job_id}").json()
+        edit = client.put(
+            f"/api/exams/{job_id}/questions/1",
+            json={"revision": original["revision"], "question": {"stem": "Đã sửa ở đề gốc."}},
+        )
+        assert edit.status_code == 200
+        timeline = client.get(f"{url}/changes").json()
+        before_change = timeline["messages"][0]["id"]
+        destination = str(uuid4())
+        payload = {"destinationId": destination, "messageId": before_change}
+        assert client.post(f"{url}/branch", json=payload).json()["workspaceId"] == destination
+        assert client.post(f"{url}/branch", json=payload).json()["workspaceId"] == destination
+        workspaces = client.get("/api/workspaces").json()["workspaces"]
+        assert len(workspaces) == 2
+        branch = next(item for item in workspaces if item["id"] == destination)
+        assert branch["jobId"] != job_id
+        assert [item["id"] for item in branch["messages"]][-1] == before_change
+        fork = client.get(f"/api/exams/{branch['jobId']}").json()
+        assert fork["contentHash"] == original["contentHash"] and not fork["approved"]
+        assert (tmp_path / branch["jobId"] / "de_thi.tex").read_bytes() == (
+            app.state.ui_jobs.store.get_version(job_id, original["revision"])[1]
+        )
+        assert client.get(f"/api/exams/{job_id}").json() == edit.json()
+        chat_only = str(uuid4())
+        assert (
+            client.post(
+                f"{url}/branch",
+                json={
+                    "destinationId": chat_only,
+                    "messageId": "before-exam",
+                },
+            ).status_code
+            == 200
+        )
+        assert (
+            next(
+                item
+                for item in client.get("/api/workspaces").json()["workspaces"]
+                if item["id"] == chat_only
+            )["jobId"]
+            is None
+        )
+        fallback = {"destinationId": str(uuid4()), "messageId": "legacy"}
+        bad = client.post(f"{url}/branch", json=fallback)
+        assert bad.json()["error"]["code"] == "branch_version_unknown"
+        assert (
+            client.post(f"{url}/branch", json={**fallback, "copyCurrent": True}).status_code == 200
+        )
+
+
 def test_retrieval_agents_teacher_approval_export_edit_and_reconnect(tmp_path):
     app, providers = fixture_app(tmp_path)
     with TestClient(app) as client:
