@@ -5,8 +5,10 @@ export { Admission } from "./admission";
 
 const ajv = new Ajv({ strict: false, validateFormats: false });
 const validateTurn = ajv.compile(resources.turnSchema);
-const validateDecision: (data: unknown) => boolean = ajv.compile(resources.decisionSchema);
-const validateOutput: (data: unknown) => boolean = ajv.compile(resources.outputSchema);
+const decisionValidator = ajv.compile(resources.decisionSchema);
+const outputValidator = ajv.compile(resources.outputSchema);
+const validateDecision = (data: unknown): boolean => decisionValidator(data);
+const validateOutput = (data: unknown): boolean => outputValidator(data);
 const MAX_BODY = 32768;
 const MAX_RESPONSE = 65536;
 const VERSION = "astra-intent-v1";
@@ -62,6 +64,8 @@ export default {
     let upstreamStatus: number | undefined;
     let attempts = 0;
     let category = "valid";
+    let stage = "admission";
+    let outputMetadata: Record<string, unknown> = {};
     let controller: AbortController | undefined;
     const disconnect = () => controller?.abort();
     let timer: ReturnType<typeof setTimeout> | undefined;
@@ -111,6 +115,7 @@ export default {
       const upstreamUrl = "https://gateway.ai.cloudflare.com/v1/" + account + "/" + gateway +
         "/google-ai-studio/v1/models/" + model + ":generateContent";
       attempts = 1;
+      stage = "upstream_fetch";
       const upstream = await fetch(upstreamUrl, {
         method: "POST", redirect: "manual", signal: controller.signal,
         headers: {
@@ -143,15 +148,30 @@ export default {
           upstream.status >= 500 ? "transient" : "rejected";
         throw new Failure(category, 502);
       }
+      stage = "upstream_json";
       const payload = JSON.parse(await readBounded(upstream, MAX_RESPONSE));
       const candidates = payload.candidates;
+      const reason = candidates?.[0]?.finishReason;
+      outputMetadata = {
+        candidateCount: Array.isArray(candidates) ? candidates.length : null,
+        finishReason: typeof reason === "string" && /^[A-Z_]{1,40}$/.test(reason) ? reason : "missing",
+        outputTokens: typeof payload.usageMetadata?.candidatesTokenCount === "number"
+          ? payload.usageMetadata.candidatesTokenCount : null,
+        thoughtTokens: typeof payload.usageMetadata?.thoughtsTokenCount === "number"
+          ? payload.usageMetadata.thoughtsTokenCount : null,
+      };
+      stage = "candidate_completion";
       if (!Array.isArray(candidates) || candidates.length !== 1 || candidates[0].finishReason !== "STOP") {
         throw new Failure("schema", 502);
       }
       const parts = candidates[0].content?.parts;
+      stage = "response_parts";
       if (!Array.isArray(parts)) throw new Failure("schema", 502);
       const text = parts.filter(part => !part.thought).map(part => part.text).join("");
+      outputMetadata.textBytes = new TextEncoder().encode(text).length;
+      stage = "semantic_json";
       const decision: any = JSON.parse(text);
+      stage = "semantic_validation";
       const semanticValid = validateDecision(decision) && validateOutput(decision);
       if (!semanticValid ||
           (decision.kind === "task") !== Boolean(decision.intents.length) ||
@@ -168,6 +188,15 @@ export default {
         error instanceof SyntaxError ? new Failure(reserved ? "schema" : "rejected", reserved ? 502 : 400) :
         new Failure("transient", 503);
       category = failure.category;
+      if (category === "schema") {
+        const errors = stage === "semantic_validation"
+          ? decisionValidator.errors ?? outputValidator.errors ?? [] : [];
+        console.log(JSON.stringify({ requestId: id, schemaStage: stage, ...outputMetadata,
+          validationKeywords: [...new Set(errors.map(error => error.keyword))],
+          validationPaths: [...new Set(errors.map(error => error.instancePath))]
+            .filter(path => /^\/(?:intents|intake|guidance|title|kind)(?:\/[A-Za-z0-9_]+)*$/.test(path))
+            .slice(0, 8) }));
+      }
       return response({ error: failure.category, requestId: id }, failure.status);
     } finally {
       if (timer !== undefined) clearTimeout(timer);

@@ -204,3 +204,19 @@ test("quota status is read-only and reflects the persisted remaining allowance",
     assert.equal(after.quota.remainingAttempts,2);
   } finally { await mf.dispose(); }
 });
+
+test("incomplete and invalid semantic results retain diagnostic stages and fail closed", async () => {
+  for (const candidate of [
+    {finishReason:"MAX_TOKENS",content:{parts:[{text:"{"}]}},
+    {finishReason:"STOP",content:{parts:[{text:"not JSON"}]}},
+    {finishReason:"STOP",content:{parts:[{text:JSON.stringify({kind:"clarify",intents:[],guidance:null})}]}},
+  ]) {
+    const {mf,mock}=runtime();
+    mock.get().intercept().reply(200,JSON.stringify({candidates:[candidate]}));
+    try {
+      const result=await post(mf);
+      assert.equal((await result.json()).error,"schema");
+      mock.assertNoPendingInterceptors();
+    } finally { await mf.dispose(); }
+  }
+});
