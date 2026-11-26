@@ -2,7 +2,14 @@
 
 ASTRA generates and verifies THPT and V-ACT practice exams. This guide runs the teacher workspace, FastAPI backend, retrieval and four-agent pipeline together on Windows with a live model.
 
-The [MAS input-to-plan bundle](docs/mas/) includes the wheel, install instructions, and workflow diagrams.
+The [MAS input-to-plan bundle](docs/mas/) is an optional backend. The
+[compiled package](src/astra_mas/) exposes `astra_mas.prepare_plan`. From the repo
+root, install it and run the synthetic CSV-to-plan example with CPython 3.11.
+
+```sh
+python -m pip install -r requirements-mas.txt
+python scripts/smoke_mas.py
+```
 
 ## 1. Install
 

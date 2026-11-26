@@ -26,45 +26,59 @@ wheel CPython 3.11 cho macOS và Windows.
 
 ## Cài và tích hợp
 
-Dùng CPython 3.11 trong môi trường ASTRA. Chạy lệnh từ `docs/mas` trong
-checkout GitHub hoặc từ thư mục giải nén ZIP. Nếu tải từng tệp, đặt
+Dùng CPython 3.11. Chạy hai lệnh sau từ thư mục gốc của checkout ASTRA.
+
+```sh
+python -m pip install -r requirements-mas.txt
+python scripts/smoke_mas.py
+```
+
+[Package đã biên dịch](../../src/astra_mas/) có ba mô-đun `.pyc` cho
+điểm import và lớp adapter. `mas_core.zip` chứa 116 mô-đun bytecode của lõi
+và dữ liệu lập kế hoạch. Wheel dùng chính các byte này. Smoke test dùng
+ma trận CSV mẫu và callback giả lập để in kế hoạch JSON 34 ô, không gọi mạng.
+
+Nếu chỉ có ZIP hoặc tải từng tệp, đặt
 [wheel](astra_mas-0.1.1-cp311-none-any.whl) và
-[`requirements-mas-tested.txt`](requirements-mas-tested.txt) cùng thư mục.
+[`requirements-mas-tested.txt`](requirements-mas-tested.txt) cùng thư mục,
+rồi cài từ đó.
 
 ```sh
 python -m pip install --upgrade ./astra_mas-0.1.1-cp311-none-any.whl -c requirements-mas-tested.txt
 ```
 
-Tích hợp tại điểm backend chọn, truyền một hàm async nhận `MasPrompt` và trả
-văn bản JSON từ model. `MasPrompt` có `recipe`, `system`, `user` và `images`
-(PNG bytes). Adapter LLM của ASTRA tự chuyển sang định dạng nhà cung cấp.
+ASTRA gọi `prepare_plan()` và truyền callback LLM async. Với provider có sẵn
+của ASTRA, dùng chế độ JSON object để MAS kiểm tra lược đồ riêng của từng
+recipe. Truyền ảnh bằng `ImageInput`. Caller cấp provider đã cấu hình.
 
 ```python
 from pathlib import Path
 
 from astra_mas import MasFile, MasInput, MasLimits, MasPrompt, prepare_plan
+from exam_baseline.core.contracts import CompletionRequest, ImageInput, LLMProvider
 
 
-async def complete(prompt: MasPrompt) -> str:
-    return await astra_llm.complete_text(  # Thay bằng adapter LLM của ASTRA.
-        system=prompt.system,
-        user=prompt.user,
-        images=prompt.images,
+async def plan_exam(provider: LLMProvider, matrix: Path):
+    async def complete(prompt: MasPrompt) -> str:
+        request = CompletionRequest(
+            system=prompt.system,
+            user=prompt.user,
+            output_schema={"type": "object"},
+            images=tuple(ImageInput(data) for data in prompt.images),
+        )
+        return (await provider.complete(request)).text
+
+    return await prepare_plan(
+        MasInput(
+            exam_type="THPTQG",
+            subject="Toán",
+            grade=12,
+            instruction="Chỉ dùng nội dung đạo hàm.",
+            matrix=MasFile(filename=matrix.name, data=matrix.read_bytes()),
+        ),
+        complete,
+        limits=MasLimits(max_file_bytes=4 * 1024**2, max_plan_bytes=2 * 1024**2),
     )
-
-
-matrix = Path("ma-tran.csv")
-result = await prepare_plan(
-    MasInput(
-        exam_type="THPTQG",
-        subject="Toán",
-        grade=12,
-        instruction="Chỉ dùng nội dung đạo hàm.",
-        matrix=MasFile(filename=matrix.name, data=matrix.read_bytes()),
-    ),
-    complete,
-    limits=MasLimits(max_file_bytes=4 * 1024**2, max_plan_bytes=2 * 1024**2),
-)
 ```
 
 `result["plan"]` là envelope MAS nguyên vẹn, gồm scope, inputs.shape, cells, revisions
