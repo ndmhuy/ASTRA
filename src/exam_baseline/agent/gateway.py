@@ -28,7 +28,7 @@ class AgentSettings(BaseSettings):
         env_file=".env", env_prefix="ASTRA_AGENT_", extra="ignore", hide_input_in_errors=True
     )
     enabled: bool = False
-    transport: Literal["gateway", "direct"] = "gateway"
+    transport: Literal["gateway", "direct", "codex"] = "gateway"
     api_key: SecretStr | None = None
     gateway_account_id: str = ""
     gateway_id: str = ""
@@ -39,8 +39,8 @@ class AgentSettings(BaseSettings):
     fallback_enabled: bool = False
     daily_attempts: int = Field(default=0, ge=0, le=20_000)
     budget_path: Path = Path("runs/agent-budget.sqlite3")
-    primary_seconds: float = Field(default=1.8, ge=0.2, le=3.5)
-    total_seconds: float = Field(default=4.0, ge=0.5, le=4.5)
+    primary_seconds: float = Field(default=1.8, ge=0.2, le=30)
+    total_seconds: float = Field(default=4.0, ge=0.5, le=30)
     max_output_tokens: int = Field(default=512, ge=128, le=1024)
 
 
@@ -158,6 +158,17 @@ async def configured_interpreter(settings: AgentSettings | None = None):
         return
     async with httpx.AsyncClient(follow_redirects=False, trust_env=False) as client:
         try:
+            if settings.transport == "codex":
+                from .codex_cli import CodexCliInterpretationProvider
+
+                primary = CodexCliInterpretationProvider()
+                budget = DailyBudget(settings.budget_path, settings.daily_attempts)
+                yield ProviderRouter(
+                    primary,
+                    reserve=budget.reserve,
+                    timing=Timing(primary=settings.primary_seconds, total=settings.total_seconds),
+                )
+                return
             if settings.transport == "direct":
                 if not settings.api_key:
                     raise ValueError("missing Gemini key")

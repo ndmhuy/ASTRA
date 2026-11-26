@@ -5,7 +5,7 @@ export function interpretationUnavailable(reason?: string): string {
     case 'disabled':
       return 'AI cho chat đang tắt. Thầy cô vẫn có thể nhắn “Mở cấu hình”, “Xem các mẫu đề” hoặc “Tới đâu rồi?”.';
     case 'configuration':
-      return 'Kết nối AI cho chat chưa dùng được. Người quản trị cần kiểm tra cấu hình Gemini và Cloudflare AI Gateway.';
+      return 'Kết nối AI cho chat chưa dùng được. Người quản trị cần kiểm tra cấu hình dịch vụ AI.';
     case 'budget':
       return 'Agent đã hết ngân sách gọi AI. Các lệnh trực tiếp như “Mở cấu hình” vẫn dùng được.';
     case 'quota':
@@ -26,7 +26,7 @@ export async function interpret(
     cache: 'no-store',
     headers: { 'Content-Type': 'application/json', 'X-Astra-Agent': VERSION },
     body: JSON.stringify({ schemaVersion: VERSION, workspaceId, clientMessageId, message, context }),
-    signal: AbortSignal.any([signal, AbortSignal.timeout(5500)]),
+    signal: AbortSignal.any([signal, AbortSignal.timeout(35000)]),
   });
   if (!response.ok) throw new Error(response.status === 429 ? 'agent_rate' : 'agent_unavailable');
   return parseDecision(await response.json(), clientMessageId);
