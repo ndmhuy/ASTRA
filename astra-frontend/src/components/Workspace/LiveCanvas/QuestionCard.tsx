@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { AlertTriangle, CheckCircle2, Pencil } from 'lucide-react';
 import type { QuestionItem } from '../../../types/exam';
+import { getChoiceGridClass } from '../../../utils/choiceLayout.ts';
 import { MathRenderer } from '../../MathRenderer';
 
 interface QuestionCardProps {
@@ -43,19 +44,21 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, index, onE
         </p>
       )}
       {question.drawingLatex && <details className="question-drawing-details"><summary>Hình minh họa (xem trực quan ở mục Xem trước PDF)</summary><pre>{question.drawingLatex}</pre></details>}
-      {(!question.questionType || question.questionType === 'mcq') && <div className="question-choices">
-        {(['A', 'B', 'C', 'D'] as const).map(key => (
-          <div key={key} className={`question-choice ${review && matched && question.key === key ? 'correct' : ''}`}>
-            <strong className="choice-key-badge">{key}.</strong><MathRenderer content={question.choices[key]} />
-            {review && matched && question.key === key && (
-              <span className="answer-label">
-                <CheckCircle2 size={12} aria-hidden="true" />
-                Đáp án
-              </span>
-            )}
-          </div>
-        ))}
-      </div>}
+      {(!question.questionType || question.questionType === 'mcq') && (
+        <div className={`question-choices ${getChoiceGridClass(question.choices)}`}>
+          {(['A', 'B', 'C', 'D'] as const).map(key => (
+            <div key={key} className={`question-choice ${review && matched && question.key === key ? 'correct' : ''}`}>
+              <strong className="choice-key-badge">{key}.</strong><MathRenderer content={question.choices[key]} />
+              {review && matched && question.key === key && (
+                <span className="answer-label">
+                  <CheckCircle2 size={12} aria-hidden="true" />
+                  Đáp án
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
       {question.questionType === 'true_false' && (
         <div className="question-tf-list">
           {question.statements?.map((statement, i) => (
@@ -77,8 +80,11 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, index, onE
           {review ? (
             <strong className="short-answer-value">{question.key}</strong>
           ) : (
-            <span className="short-answer-boxes" aria-label="Ô điền đáp án">
-              <span>□</span><span>□</span><span>□</span><span>□</span>
+            <span className="short-answer-boxes" aria-label="4 ô điền đáp án">
+              <span className="short-answer-cell" aria-hidden="true" />
+              <span className="short-answer-cell" aria-hidden="true" />
+              <span className="short-answer-cell" aria-hidden="true" />
+              <span className="short-answer-cell" aria-hidden="true" />
             </span>
           )}
         </div>

@@ -1,7 +1,7 @@
 .integration-editor-backdrop,
 .app-shell > .integration-editor-backdrop,
 .app-shell.create-mode.workspace-active > .integration-editor-backdrop { position: fixed; inset: 0; z-index: 1100; display: grid; place-items: center; background: rgb(15 23 42 / 45%); padding: 16px; }
-.integration-editor { background: white; border-radius: 8px; padding: 24px; width: min(700px, 100%); max-height: 90dvh; overflow-y: auto; }
+.integration-editor { background: white; border-radius: var(--radius-lg, 10px); padding: 24px; width: min(700px, 100%); max-height: 90dvh; overflow-y: auto; }
 .integration-editor label { display: grid; gap: 6px; margin: 12px 0; }
 .integration-editor textarea { min-height: 75px; width: 100%; padding: 8px; }
 .integration-editor input, .integration-editor select { padding: 8px; }
@@ -15,19 +15,21 @@
   flex-wrap: wrap;
   gap: 12px;
   padding: 12px 16px;
-  border-radius: 8px;
-  border: 1px solid #bdb5a8;
+  border-radius: var(--radius-md, 6px);
+  border: 0;
+  border-left: 3px solid #94a3b8;
   background: #fffefa;
 }
-.pdf-preview-banner.is-draft { border-color: #b45309; background: #fff7ed; color: #7c2d12; }
-.pdf-preview-banner.is-approved { border-color: #166534; background: #f0fdf4; color: #14532d; }
+.pdf-preview-banner.is-draft { border-left-color: #b45309; background: #fff7ed; color: #7c2d12; }
+.pdf-preview-banner.is-approved { border-left-color: #166534; background: #f0fdf4; color: #14532d; }
 .pdf-preview-warning {
   display: grid;
   gap: 8px;
   padding: 12px 16px;
   margin-bottom: 10px;
-  border-radius: 8px;
-  border: 1px solid #d97706;
+  border-radius: var(--radius-md, 6px);
+  border: 0;
+  border-left: 3px solid #d97706;
   background: #fffbeb;
   color: #78350f;
 }
@@ -37,8 +39,9 @@
   display: grid;
   gap: 10px;
   padding: 16px;
-  border-radius: 8px;
-  border: 1px solid #dc2626;
+  border-radius: var(--radius-md, 6px);
+  border: 0;
+  border-left: 3px solid #dc2626;
   background: #fef2f2;
   color: #7f1d1d;
 }
@@ -46,8 +49,8 @@
   display: grid;
   gap: 8px;
   padding: 20px;
-  border-radius: 8px;
-  border: 1px solid #bdb5a8;
+  border-radius: var(--radius-md, 6px);
+  border: 0;
   background: #fffefa;
   color: #292522;
 }
@@ -57,7 +60,7 @@
   overflow: auto;
   margin: 0;
   padding: 12px;
-  border-radius: 6px;
+  border-radius: var(--radius-md, 6px);
   background: #18181b;
   color: #f4f4f5;
   font-size: 12px;
@@ -67,7 +70,7 @@
 }
 .pdf-preview-frame-wrap {
   border: 1px solid #bdb5a8;
-  border-radius: 8px;
+  border-radius: var(--radius-md, 6px);
   overflow: hidden;
   background: #fff;
 }
@@ -78,9 +81,9 @@
 .vact-passage-card {
   margin: 14px 0;
   padding: 14px 16px;
-  border: 1px solid #cbd5e1;
-  border-left: 4px solid #334155;
-  border-radius: 6px;
+  border: 0;
+  border-left: 3px solid #334155;
+  border-radius: var(--radius-md, 6px);
   background: #f8fafc;
   display: grid;
   gap: 8px;
@@ -96,8 +99,8 @@
 .preset-mode-notice {
   margin: 10px 0 0;
   padding: 10px 12px;
-  border-radius: 6px;
-  border: 1px solid #cbd5e1;
+  border-radius: var(--radius-md, 6px);
+  border: 0;
   background: #f8fafc;
   color: #1e293b;
   font-size: 14px;
@@ -119,7 +122,7 @@
   position: relative;
   background: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 10px;
+  border-radius: var(--radius-lg, 10px);
   width: min(560px, 100%);
   padding: 24px;
   max-height: 90dvh;
@@ -139,29 +142,71 @@
   font-size: 12px;
   font-weight: 600;
   padding: 4px 10px;
-  border-radius: 999px;
+  border: 0;
+  border-radius: var(--radius-pill, 999px);
 }
-.preset-mode-pill.is-demo { background: #ecfdf5; color: #166534; border: 1px solid #bbf7d0; }
-.preset-mode-pill.is-ai { background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa; }
+.preset-mode-pill.is-demo { background: #ecfdf5; color: #166534; }
+.preset-mode-pill.is-ai { background: #fff7ed; color: #9a3412; }
 .preset-error-box {
   padding: 10px 12px;
-  border-radius: 6px;
+  border-radius: var(--radius-md, 6px);
   background: #fef2f2;
-  border: 1px solid #fecaca;
+  border: 0;
+  border-left: 3px solid #dc2626;
   color: #991b1b;
 }
 .preset-error-box p { margin: 0; }
 .preset-options-list { display: grid; gap: 10px; }
 .preset-option-card {
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md, 6px);
   padding: 14px 16px;
-  background: #ffffff;
+  background: rgba(22, 34, 28, 0.035);
   transition: border-color 140ms ease, background 140ms ease;
 }
+.preset-option-card:hover {
+  background: rgba(22, 34, 28, 0.055);
+}
 .preset-option-card.is-selected {
-  border-color: #24634b;
-  background: #f6faf7;
+  border-color: rgba(36, 99, 75, 0.35);
+  background: #edf4ef;
+}
+.preset-subject-panel {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(22, 34, 28, 0.1);
+  display: grid;
+  gap: 10px;
+}
+.preset-subject-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.preset-subject-pill {
+  background: rgba(22, 34, 28, 0.06);
+  border: 0;
+  border-radius: var(--radius-md, 6px);
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #334155;
+  cursor: pointer;
+}
+.preset-subject-pill:hover { background: rgba(22, 34, 28, 0.11); }
+.preset-subject-pill.is-active {
+  background: #183a2c;
+  color: #fffdf8;
+  font-weight: 600;
+}
+.preset-subject-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: #475569;
 }
 .preset-option-top {
   display: flex;
@@ -194,20 +239,20 @@
 .preset-option-copy small { color: #475569; font-size: 13px; }
 .preset-expand-btn {
   background: transparent;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  padding: 4px 10px;
+  border: 0;
+  border-radius: var(--radius-sm, 4px);
+  padding: 5px 10px;
   font-size: 12px;
-  font-weight: 500;
-  color: #334155;
+  font-weight: 600;
+  color: #183a2c;
   cursor: pointer;
   flex-shrink: 0;
 }
-.preset-expand-btn:hover { background: #f1f5f9; }
+.preset-expand-btn:hover { background: rgba(24, 58, 44, 0.08); }
 .preset-details {
   margin-top: 12px;
   padding-top: 10px;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid rgba(22, 34, 28, 0.1);
   display: grid;
   gap: 8px;
 }
