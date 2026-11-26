@@ -9,11 +9,11 @@ import pytest
 from fastapi.testclient import TestClient
 from pydantic import SecretStr, ValidationError
 
-from exam_baseline.agent.contracts import Turn
+from exam_baseline.agent.contracts import ExamIntake, Turn
 from exam_baseline.agent.gateway import DirectGeminiProvider
 from exam_baseline.agent.native import parse_native
 from exam_baseline.agent.provider import ProviderFailure, ProviderRouter
-from exam_baseline.agent.semantics import SemanticTurn, legacy_decision, normalize_frame
+from exam_baseline.agent.semantics import CATALOG, SemanticTurn, legacy_decision, normalize_frame
 from exam_baseline.agent.worker import SEMANTIC_HASH, WorkerInterpretationProvider
 from exam_baseline.api.app import create_app
 from exam_baseline.config import Settings
@@ -132,6 +132,22 @@ def test_structured_question_context_is_versioned_and_forbids_application_ids():
         SemanticTurn.model_validate(body)
 
 
+def test_canonical_intake_limits_remain_compatible_with_existing_execution_intake():
+    properties = ExamIntake.model_json_schema()["properties"]
+    for name, bounds in CATALOG["parameterBounds"].items():
+        field = next(item for item in properties[name]["anyOf"] if item["type"] != "null")
+        for key, limit in bounds.items():
+            assert field[key] == limit
+    for name, value in [("subject", "x" * 81), ("topic", "x" * 251), ("grade", 13)]:
+        with pytest.raises(ValueError):
+            normalize_frame(
+                {
+                    "dialogueAct": "REQUEST",
+                    "goals": [{"goal": "PREPARE_EXAM", "parameters": {name: value}}],
+                }
+            )
+
+
 def test_bad_provider_json_and_incomplete_output_fail_without_fallback():
     for finish, text in [("MAX_TOKENS", json.dumps(FRAME)), ("STOP", "{")]:
         with pytest.raises(ProviderFailure, match="schema"):
@@ -139,6 +155,25 @@ def test_bad_provider_json_and_incomplete_output_fail_without_fallback():
                 "gemini",
                 {"candidates": [{"finishReason": finish, "content": {"parts": [{"text": text}]}}]},
             )
+
+
+def test_parameter_failure_logs_exact_safe_path_and_invariant_without_private_value(caplog):
+    output = {
+        "dialogueAct": "REQUEST",
+        "goals": [{"goal": "PREPARE_EXAM", "parameters": {"family": "PRIVATE_TEACHER_VALUE"}}],
+    }
+    with pytest.raises(ProviderFailure):
+        parse_native(
+            "gemini",
+            {
+                "candidates": [
+                    {"finishReason": "STOP", "content": {"parts": [{"text": json.dumps(output)}]}}
+                ]
+            },
+        )
+    assert "goals/0/parameters/family" in caplog.text
+    assert "semantic_parameter_enum" in caplog.text
+    assert "PRIVATE_TEACHER_VALUE" not in caplog.text
 
 
 def test_versioned_worker_transport_and_local_response_negotiation(tmp_path):

@@ -7,7 +7,13 @@ from pydantic import ValidationError
 
 from .contracts import Turn
 from .provider import ProviderFailure
-from .semantics import GOALS, SemanticFrame, normalize_frame, semantic_schema
+from .semantics import (
+    GOALS,
+    SemanticFrame,
+    SemanticParameterError,
+    normalize_frame,
+    semantic_schema,
+)
 
 logger = logging.getLogger(__name__)
 SYSTEM = (
@@ -114,16 +120,17 @@ def parse_native(provider: str, payload: dict) -> SemanticFrame:
                 "title",
             }
             allowed.update(key for definition in GOALS.values() for key in definition["parameters"])
-            paths = [
-                {
-                    "path": "/".join(
-                        str(part) if type(part) is int or part in allowed else "unknown"
-                        for part in item["loc"]
-                    ),
-                    "type": item["type"],
-                }
-                for item in error.errors(include_input=False, include_context=False)
-            ][:8]
+            for item in error.errors(include_input=False, include_context=True)[:8]:
+                path = [
+                    str(part) if type(part) is int or part in allowed else "unknown"
+                    for part in item["loc"]
+                ]
+                cause = item.get("ctx", {}).get("error")
+                invariant = None
+                if isinstance(cause, SemanticParameterError) and cause.field in allowed:
+                    path.extend(["parameters", cause.field])
+                    invariant = cause.invariant
+                paths.append({"path": "/".join(path), "type": item["type"], "invariant": invariant})
         logger.warning(
             "agent_native_failure contract=astra-semantic-v1 stage=%s fields=%s finish=%s bytes=%s",
             stage,

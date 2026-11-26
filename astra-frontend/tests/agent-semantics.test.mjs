@@ -96,3 +96,9 @@ test('a previous-question reference requires trusted observed state and rejects 
   assert.equal(request.goals[0].parameters.number, undefined);
   assert.equal(resolveSemantic(frame([{ goal: 'VERIFY_ANSWER', reference: 'previous', parameters: { number: 5 } }]), { number: 3, part: 'P2' }).decision, undefined);
 });
+
+test('intake field bounds cannot create dialogue facts rejected on the following turn', () => {
+  for (const [key, value] of [['subject', 'x'.repeat(81)], ['topic', 'x'.repeat(251)], ['grade', 13]]) {
+    assert.throws(() => frame([{ goal: 'PREPARE_EXAM', parameters: { [key]: value } }]));
+  }
+});

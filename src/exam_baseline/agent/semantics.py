@@ -16,6 +16,17 @@ GOALS = CATALOG["goals"]
 LIMITS = CATALOG["limits"]
 
 
+def parameter_schema(name: str, rule: str) -> dict:
+    return {**arg_schema(rule), **CATALOG["parameterBounds"].get(name, {})}
+
+
+class SemanticParameterError(ValueError):
+    def __init__(self, field: str, invariant: str):
+        super().__init__(invariant)
+        self.field = field
+        self.invariant = invariant
+
+
 class Dialogue(Contract):
     family: Literal["thpt", "vact", "custom"] | None = None
     subject: Annotated[str, StringConstraints(min_length=1, max_length=80)] | None = None
@@ -51,16 +62,16 @@ class Goal(Contract):
             raise ValueError("unknown_semantic_parameter")
         # Missing information belongs to the workflow, not provider validation.
         for name, value in self.parameters.items():
-            rule = arg_schema(rules[name])
+            rule = parameter_schema(name, rules[name])
             expected = {"string": str, "integer": int, "boolean": bool}[rule["type"]]
             if type(value) is not expected:
-                raise ValueError("semantic_parameter_type")
+                raise SemanticParameterError(name, "semantic_parameter_type")
             if "enum" in rule and value not in rule["enum"]:
-                raise ValueError("semantic_parameter_enum")
-            if type(value) is str and not 1 <= len(value) <= 600:
-                raise ValueError("semantic_parameter_length")
-            if type(value) is int and not 1 <= value <= 999:
-                raise ValueError("semantic_parameter_range")
+                raise SemanticParameterError(name, "semantic_parameter_enum")
+            if type(value) is str and not 1 <= len(value) <= rule.get("maxLength", 600):
+                raise SemanticParameterError(name, "semantic_parameter_length")
+            if type(value) is int and not 1 <= value <= rule.get("maximum", 999):
+                raise SemanticParameterError(name, "semantic_parameter_range")
         return self
 
 
@@ -121,7 +132,9 @@ def semantic_schema(*, compact: bool = False) -> dict:
     slots: dict = {}
     variants = []
     for name, definition in GOALS.items():
-        properties = {key: arg_schema(rule) for key, rule in definition["parameters"].items()}
+        properties = {
+            key: parameter_schema(key, rule) for key, rule in definition["parameters"].items()
+        }
         for key, rule in properties.items():
             previous = slots.get(key)
             if previous and previous != rule:

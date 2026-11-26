@@ -9,6 +9,17 @@
       "workflowRetries": 0,
       "executionMs": 15000
     },
+    "parameterBounds": {
+      "subject": {
+        "maxLength": 80
+      },
+      "topic": {
+        "maxLength": 250
+      },
+      "grade": {
+        "maximum": 12
+      }
+    },
     "goals": {
       "OPEN_CONFIGURATION": {
         "meaning": "Mở phần cấu hình mẫu đề",
@@ -2513,17 +2524,17 @@
                     "subject": {
                       "type": "string",
                       "minLength": 1,
-                      "maxLength": 600
+                      "maxLength": 80
                     },
                     "topic": {
                       "type": "string",
                       "minLength": 1,
-                      "maxLength": 600
+                      "maxLength": 250
                     },
                     "grade": {
                       "type": "integer",
                       "minimum": 1,
-                      "maximum": 999
+                      "maximum": 12
                     },
                     "count": {
                       "type": "integer",
@@ -2578,7 +2589,7 @@
                     "subject": {
                       "type": "string",
                       "minLength": 1,
-                      "maxLength": 600
+                      "maxLength": 80
                     }
                   }
                 },
@@ -2620,17 +2631,17 @@
                     "subject": {
                       "type": "string",
                       "minLength": 1,
-                      "maxLength": 600
+                      "maxLength": 80
                     },
                     "topic": {
                       "type": "string",
                       "minLength": 1,
-                      "maxLength": 600
+                      "maxLength": 250
                     },
                     "grade": {
                       "type": "integer",
                       "minimum": 1,
-                      "maximum": 999
+                      "maximum": 12
                     },
                     "count": {
                       "type": "integer",
@@ -3229,17 +3240,17 @@
                 "subject": {
                   "type": "string",
                   "minLength": 1,
-                  "maxLength": 600
+                  "maxLength": 80
                 },
                 "topic": {
                   "type": "string",
                   "minLength": 1,
-                  "maxLength": 600
+                  "maxLength": 250
                 },
                 "grade": {
                   "type": "integer",
                   "minimum": 1,
-                  "maximum": 999
+                  "maximum": 12
                 },
                 "count": {
                   "type": "integer",
@@ -3353,5 +3364,5 @@
     "title": "SemanticFrame",
     "type": "object"
   },
-  "contractHash": "d19d26024ed8669c7eda0f0ce21a93d31d2186f2577e900b9b3cf07b99b4d3b2"
+  "contractHash": "4fc1bc9bfb87b6d8515cf13cec155d4c0eef78511f712d68d94911cd99b4bee9"
 }

@@ -39,10 +39,11 @@ export function parseFrame(value: unknown): SemanticFrame {
     const rules: Record<string, string> = catalog.goals[goal].parameters;
     if (!record(parameters) || Object.entries(parameters).some(([key, value]) => {
       const rule = rules[key]?.replace(/\?$/, '');
+      const bounds: Record<string, { maxLength?: number; maximum?: number }> = catalog.parameterBounds;
       if (!rule) return true;
       if (rule.includes('|')) return typeof value !== 'string' || !rule.split('|').includes(value);
-      if (rule === 'string') return typeof value !== 'string' || [...value].length < 1 || [...value].length > 600;
-      if (rule === 'integer') return typeof value !== 'number' || !Number.isInteger(value) || value < 1 || value > 999;
+      if (rule === 'string') return typeof value !== 'string' || [...value].length < 1 || [...value].length > (bounds[key]?.maxLength ?? 600);
+      if (rule === 'integer') return typeof value !== 'number' || !Number.isInteger(value) || value < 1 || value > (bounds[key]?.maximum ?? 999);
       return typeof value !== 'boolean';
     })) throw new Error('agent_semantic_parameter');
     return { goal, parameters: parameters as Intent['args'], ...(item.reference ? { reference: item.reference as SemanticGoal['reference'] } : {}) };
