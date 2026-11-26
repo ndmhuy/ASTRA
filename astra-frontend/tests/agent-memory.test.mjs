@@ -14,7 +14,9 @@ test('legacy migration, meaningful title, bounded facts, branch and retract', ()
     store.appendMessage('old', 'user', 'Chào em', 'hello');
     assert.equal(store.getSnapshot()[0].conversation.titleOrigin, 'default');
     store.appendMessage('old', 'user', 'Ôn THPT Toán đạo hàm', 'goal', true);
-    assert.equal(store.getSnapshot()[0].title, 'Ôn THPT Toán đạo hàm');
+    assert.equal(store.getSnapshot()[0].conversation.titleOrigin, 'default');
+    store.suggestTitle('old', 'Đề ôn tập đạo hàm', 'goal', 3);
+    assert.equal(store.getSnapshot()[0].title, 'Đề ôn tập đạo hàm');
     store.rename('old', 'Ôn Toán tháng 12');
     store.setIntake('old', { sourceId: 'goal', formatId: 'thpt-math', version: '1', phase: 'confirmed' });
     for (let i = 0; i < 12; i++) store.appendMessage('old', 'user', `Nội dung ${i}`, `msg-${i}`);

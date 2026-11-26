@@ -7,6 +7,8 @@ export type Conversation = {
   revision: number;
   updatedAt: string;
   titleOrigin: 'default' | 'auto' | 'manual' | 'legacy';
+  titleSourceId?: string;
+  titleQuality?: number;
 };
 
 export function conversationFor(session: ExamSession): Conversation {
@@ -30,6 +32,14 @@ export const redact = (value: string) => value.replace(sensitive, '[ẩn thông 
 export const scrub = (value: string) => clean(redact(value));
 export const titleFrom = (value: string) => [...scrub(value)].slice(0, 60).join('').trim();
 
+export function suggestedTitle(value: string, source: string) {
+  if (redact(value) !== value || /\d{5,}|\b(sinh vien|hoc sinh|ma so|ho va ten|sdt|dien thoai)\b/.test(fold(value))) return '';
+  const title = titleFrom(value);
+  const words = title.split(/\s+/);
+  const objective = fold(source).replace(/[.!?]+$/, '');
+  return words.length >= 3 && words.length <= 10 && fold(title) !== objective ? title : '';
+}
+
 export function meaningful(message: ChatMessage) {
   if (message.role !== 'user') return false;
   const text = fold(message.content);
@@ -41,18 +51,21 @@ export function meaningful(message: ChatMessage) {
 export function retrievedContext(session: ExamSession, messageId: string, query: string) {
   const messages = session.messages.filter(message => message.id !== messageId && message.role === 'user');
   const terms = new Set(fold(query).match(/[a-z0-9]{3,}/g) ?? []);
-  const latest = messages.slice(-6);
-  const relevant = messages.slice(0, -6).map(message => ({
+  const latest = session.messages.filter(message => message.id !== messageId && message.role !== 'system').slice(-6);
+  const recentIds = new Set(latest.map(message => message.id));
+  const relevant = messages.filter(message => !recentIds.has(message.id)).map(message => ({
     message, score: [...new Set(fold(message.content).match(/[a-z0-9]{3,}/g) ?? [])]
       .filter(term => terms.has(term)).length,
   })).filter(item => item.score > 0).sort((a, b) => b.score - a.score).slice(0, 2);
   const format = session.intake;
   const source = format && session.messages.find(message => message.id === format.sourceId);
   return {
-    history: [...relevant.map(item => item.message), ...latest].map(message => scrub(message.content).slice(0, 400)).filter(Boolean),
+    history: [...relevant.map(item => item.message), ...latest].map(message => (message.role === 'assistant' ? 'Trợ lý: ' : '') + scrub(message.content).slice(0, 390)).filter(Boolean),
     facts: source && format ? [
-      `Mẫu: ${format.formatId} phiên bản ${format.version} (${format.phase})`,
-      ...(format.topic ? [`Chuyên đề: ${scrub(format.topic).slice(0, 400)}`] : []),
+      [format.family && 'Dạng ' + format.family, format.subject && 'môn ' + scrub(format.subject),
+        format.formatId && 'mẫu ' + format.formatId + ' v' + format.version, format.phase,
+        format.missing && 'đang thiếu ' + format.missing].filter(Boolean).join(', '),
+      ...(format.topic ? ['Chuyên đề: ' + scrub(format.topic).slice(0, 390)] : []),
     ] : [],
   };
 }

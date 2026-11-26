@@ -4,10 +4,18 @@ import { fold } from './recipes.ts';
 
 export type Intake = {
   sourceId: string;
-  formatId: string;
-  version: string;
+  formatId?: string;
+  version?: string;
+  family?: 'thpt' | 'vact' | 'custom';
+  subject?: string;
+  sourceIds?: string[];
+  grade?: number;
+  count?: number;
+  minutes?: number;
+  missing?: 'family' | 'subject';
+  validation?: 'passed' | 'failed';
   topic?: string;
-  phase: 'selected' | 'evaluated' | 'confirmed';
+  phase: 'collecting' | 'selected' | 'evaluated' | 'confirmed';
 };
 
 export function presetParams(format: ExamFormat, topic?: string): ExamRequestParams {
@@ -19,7 +27,7 @@ export function presetParams(format: ExamFormat, topic?: string): ExamRequestPar
   };
 }
 
-export function prepareParams(format: ExamFormat, args: Intent['args'], message: string) {
+export function prepareParams(format: ExamFormat, args: Intent['args'], message: string, groundedTopic?: string) {
   const text = fold(message);
   const statedCount = /\b(\d+)\s*cau\b/.exec(text)?.[1];
   const statedMinutes = /\b(\d+)\s*phut\b/.exec(text)?.[1];
@@ -28,7 +36,7 @@ export function prepareParams(format: ExamFormat, args: Intent['args'], message:
     return { error: `Mẫu ${format.displayName} cố định ${format.totalQuestions} câu, ${format.durationMinutes} phút. Thầy cô muốn dùng cấu trúc này hay chọn mẫu khác?` };
   }
   const topic = typeof args.topic === 'string' ? args.topic.trim() : undefined;
-  if (topic && (!text.includes(fold(topic)) || /\p{Cc}/u.test(topic))) {
+  if (topic && ((topic !== groundedTopic && !text.includes(fold(topic))) || /\p{Cc}/u.test(topic))) {
     return { error: 'Thầy cô hãy ghi rõ tên chuyên đề theo nội dung muốn ra đề.' };
   }
   if (format.id === 'vact' && topic) {

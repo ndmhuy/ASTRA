@@ -4,7 +4,8 @@ import { meaningful, redact, retrievedContext, searchSessions } from './agent/me
 import { interpretationUnavailable, interpret } from './agent/client';
 import { admit, execute, fastRoute, fold, mayDispatch, type Effect, type Runtime } from './agent/recipes';
 import { displayNumber, failure, previewText, resolveQuestion, sectionId, statusText, success } from './agent/examActions';
-import type { Intent } from './agent/contracts';
+import type { Decision, Intent } from './agent/contracts';
+import { familyFor, formatOverview, guidanceFor, resolveIntake } from './agent/knowledge';
 import { AlertCircle, AlertTriangle, LoaderCircle, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { WorkspaceStart } from './components/WorkspaceStart';
 import { AstraWelcome } from './components/AstraWelcome';
@@ -19,7 +20,7 @@ import { ExamPaperView, type ExamCanvasViewMode, type ExamPaperControls } from '
 import type { ExamFormat, ExamRequestParams, QuestionItem } from './types/exam';
 import { QuestionEditor, type QuestionEditorControls } from './components/QuestionEditor';
 import { evaluateExamFormat, examService, getExamFormats } from './services/examService';
-import { prepareParams } from './agent/intake';
+import { prepareParams, type Intake } from './agent/intake';
 import { noteLabel, type Note } from './agent/notes';
 import { ExamSessions } from './state/examSessions';
 import { formatProgressStatus, formatVisualWarning } from './utils/userMessages.ts';
@@ -148,9 +149,10 @@ export const App: React.FC = () => {
       else setAdmissionError(text);
     };
     flushSync(() => store.appendMessage(id, 'user', content, messageId, true));
+    let resolvedIntake: Intake | undefined;
     const runtime: Runtime = {
       binding: () => runtimeRef.current!.binding(),
-      dispatch: (intent, expected, message, source) => runtimeRef.current!.dispatch(intent, expected, message, source),
+      dispatch: (intent, expected, message, source) => runtimeRef.current!.dispatch(intent, expected, message, source, resolvedIntake),
     };
     const binding = runtime.binding();
     const origin = store.getSnapshot().find(s => s.id === id);
@@ -179,50 +181,87 @@ export const App: React.FC = () => {
         }
         return;
       }
-      if (!local && !mayDispatch(content)) {
-        answer('Thầy cô muốn em thực hiện thao tác cụ thể nào? Em chưa thao tác.');
-        return;
-      }
+      const canAct = !!local || mayDispatch(content);
       const started = performance.now();
-      const decision = local && 'intents' in local ? { kind: 'task', intents: local.intents }
+      const decision: Decision = local && 'intents' in local ? { kind: 'task', intents: local.intents }
+        : local && 'intake' in local ? { kind: 'clarify', intents: [], intake: local.intake }
         : await interpret(id, messageId, redact(content), {
           screen, setup: showQuickModal, status: origin?.status ?? 'draft', view: viewMode,
           ...(origin ? retrievedContext(origin, messageId, content) : {}),
           questionRefs: origin ? [...new Set(origin.questions.map(q => q.part ?? '').filter(Boolean))].slice(0, 8) : [],
           editor: Boolean(editor),
           approved: Boolean(origin?.package?.approved),
+          confirmationPending: pending.current?.workspaceId === id && pending.current.binding === binding,
           preview: origin?.preview?.status ?? null,
         }, controller.signal);
       if (import.meta.env.VITE_AGENT_TRACE === '1') {
         console.info('[ASTRA Agent]', { route: local ? 'local' : 'model', kind: decision.kind,
           intents: decision.intents.map(intent => intent.id), latencyMs: Math.round(performance.now() - started) });
       }
-      if (!alive()) return;
-      if (decision.kind !== 'task') {
-        answer(decision.kind === 'temporarily_unavailable'
-          ? interpretationUnavailable('reasonCode' in decision ? decision.reasonCode : undefined)
-          : decision.kind === 'unsupported'
-            ? 'Tính năng này chưa có trong ASTRA.'
+      if (!alive() || runtime.binding() !== binding) return;
+      let intents = decision.intents;
+      let suggestedTitle = decision.title;
+      let titleQuality = 1;
+      if (decision.intake || decision.guidance || decision.kind === 'answer') {
+        if (!canAct && decision.intake?.mode === 'request') {
+          answer('Thầy cô muốn xem thông tin hay chuẩn bị đề? Em chưa thực hiện thao tác.');
+          return;
+        }
+        if (decision.intake?.mode === 'request') pending.current = null;
+        const formats = decision.guidance === 'remark' ? [] : await getExamFormats();
+        if (!alive() || runtime.binding() !== binding) return;
+        if (decision.intake) {
+          const resolution = resolveIntake(decision.intake, content, origin?.intake, formats, messageId);
+          suggestedTitle = resolution.title && resolution.title !== 'Chọn mẫu đề thi'
+            ? resolution.title : decision.title ?? resolution.title;
+          titleQuality = resolution.draft?.formatId ? 3 : resolution.draft?.family ? 2 : 1;
+          if ('text' in resolution) {
+            if (resolution.draft) store.setIntake(id, resolution.draft);
+            if (suggestedTitle) store.suggestTitle(id, suggestedTitle, messageId, titleQuality);
+            answer(resolution.text);
+            return;
+          }
+          resolvedIntake = resolution.draft;
+          if (resolvedIntake.topic) suggestedTitle = decision.title ?? suggestedTitle;
+          intents = [resolution.intent];
+        } else {
+          if (decision.guidance !== 'remark') store.suggestTitle(
+            id, decision.guidance === 'capabilities' ? 'Tìm hiểu khả năng ASTRA' : 'Hướng dẫn soạn đề', messageId,
+          );
+          answer(guidanceFor(decision.guidance, formats));
+          return;
+        }
+      } else if (decision.kind !== 'task') {
+        answer(decision.kind === 'temporarily_unavailable' ? interpretationUnavailable(decision.reasonCode)
+          : decision.kind === 'unsupported' ? 'Tính năng này chưa có trong ASTRA.'
             : 'Thầy cô muốn thao tác nào trong ASTRA? Em cần thêm thông tin để thực hiện.');
         return;
       }
-      if (decision.intents.some(intent => !['STATUS', 'WARNINGS', 'LIST_SESSIONS'].includes(intent.id))) {
+      if (!canAct) {
+        answer('Em chưa thực hiện thao tác. Thầy cô hãy cho biết phần muốn xem hoặc thao tác cần thực hiện.');
+        return;
+      }
+      if (intents.some(intent => !['STATUS', 'WARNINGS', 'LIST_SESSIONS'].includes(intent.id))) {
         pending.current = null;
       }
       const literalNumbers = [...fold(content).matchAll(/\b(?:cau|question|tin nhan|message)\s+(\d+)\b/g)].map(match => Number(match[1]));
-      if (decision.intents.some(intent => typeof intent.args.number === 'number' && !literalNumbers.includes(intent.args.number))) {
+      if (intents.some(intent => typeof intent.args.number === 'number' && !literalNumbers.includes(intent.args.number))) {
         answer('Thầy cô hãy ghi rõ số câu và phần thi để em xác định đúng câu.');
         return;
       }
       const literalPart = fold(content).match(/\bcau\s+(\d+)\s+(?:o\s+)?phan\s+(i{1,3}|[123]|p[123]|tv|ta|to|logic|science)\b/);
-      if (literalPart && decision.intents.some(intent => intent.args.number === Number(literalPart[1]) &&
+      if (literalPart && intents.some(intent => intent.args.number === Number(literalPart[1]) &&
           typeof intent.args.part === 'string' && sectionId(intent.args.part) !== sectionId(literalPart[2]))) {
         answer('Phần thi trong thao tác chưa khớp yêu cầu. Thầy cô hãy ghi rõ phần và số câu.');
         return;
       }
-      const receipts = await execute(decision.intents, runtime, binding, alive, content, messageId);
+      const receipts = await execute(intents, runtime, binding, alive, content, messageId);
       if (!alive()) return;
-      const stopped = receipts.length < decision.intents.length;
+      // A sidebar title change can affect runtime bindings. Keep a pending confirmation tied to its original state.
+      if (suggestedTitle && !pending.current && receipts.some(receipt => receipt.status === 'succeeded')) {
+        store.suggestTitle(id, suggestedTitle, messageId, titleQuality);
+      }
+      const stopped = receipts.length < intents.length;
       answer([...receipts.map(receipt => receipt.text),
         ...(stopped ? ['Các bước tiếp theo chưa được thực hiện. Thầy cô hãy kiểm tra trạng thái hiện tại.'] : []),
       ].join('\n'));
@@ -350,7 +389,7 @@ export const App: React.FC = () => {
       current?.intake, current?.notes,
       store.getSnapshot().map(item => [item.id, item.title])]);
   };
-  const dispatch = (intent: Intent, expected?: string, message = '', messageId = ''): Effect | Promise<Effect> => {
+  const dispatch = (intent: Intent, expected?: string, message = '', messageId = '', resolved?: Intake): Effect | Promise<Effect> => {
     const failed = failure;
     const succeeded = success;
     const current = store.getSnapshot().find(session => session.id === activeId);
@@ -417,7 +456,11 @@ export const App: React.FC = () => {
         if (intent.args.what === 'format') {
           const source = current.messages.find(item => item.id === current.intake?.sourceId);
           if (!current.intake || !source) return failed('Cuộc trò chuyện này chưa lưu lựa chọn mẫu đề.');
-          const label = current.intake.formatId === 'vact' ? 'V-ACT' : 'Toán THPT';
+          if (!current.intake.formatId) {
+            const family = current.intake.family === 'thpt' ? 'THPT' : current.intake.family === 'vact' ? 'V-ACT' : undefined;
+            return succeeded(family ? 'Thầy cô đang xem xét dạng ' + family + '. Chưa chọn mẫu cụ thể.' : 'Thầy cô chưa chọn dạng đề.');
+          }
+          const label = current.intake.formatId === 'vact' ? 'V-ACT' : current.intake.subject && current.intake.subject !== 'Toán Học' ? current.intake.subject + ' THPT' : 'Toán THPT';
           return succeeded(`Mẫu gần nhất là ${label}. Yêu cầu gốc: “${source.content}”.`);
         }
         const first = current.messages.find(item => item.id !== messageId && meaningful(item)) ??
@@ -494,31 +537,46 @@ export const App: React.FC = () => {
               : 'Chưa tải được mẫu đề khả dụng.');
             const format = available.find(item => item.id === selected);
             if (!format || !current) return failed('Mẫu yêu cầu hiện không khả dụng.');
-            const intake = { sourceId: messageId, formatId: format.id, version: format.version };
+            const family = familyFor(format);
+            const compatibility = resolveIntake({ mode: 'structure', family }, message, undefined, formats, messageId);
+            if ('text' in compatibility && !compatibility.title) return failed(compatibility.text);
+            const intake = { ...resolved, sourceId: messageId, formatId: format.id, version: format.version,
+              family, subject: resolved?.subject ?? format.subjects[0] };
+            const automaticTitle = family === 'vact' ? 'Soạn đề V-ACT' : 'Đề thi thử ' + format.displayName;
             const expanded = intent.args.details === true || intent.id === 'FORMAT_DETAILS';
             if (intent.id !== 'PREPARE_GENERATION') {
               flushSync(() => {
                 store.setIntake(current.id, { ...intake, phase: 'selected' });
+                store.suggestTitle(current.id, automaticTitle, messageId, 3);
                 setAgentSelection({ formats, id: format.id, expanded });
                 setConfigureId(current.id);
                 setShowQuickModal(true);
               });
-              return { ...succeeded(`Đã chọn ${format.displayName}: ${format.totalQuestions} câu, ${format.durationMinutes} phút.`), expectedAfter: runtimeRef.current?.binding() };
+              return { ...succeeded('Đã chọn mẫu. ' + formatOverview(format)), expectedAfter: runtimeRef.current?.binding() };
             }
-            const proposal = prepareParams(format, intent.args, message);
+            const proposal = prepareParams(format, intent.args, message, resolved?.topic);
             if (!proposal.params) return failed(proposal.error);
             const payload = proposal.params;
             if (current.errorCode === 'network_error' && current.requestSignature &&
                 current.requestSignature !== JSON.stringify(payload)) {
               return failed('Lần gửi trước chưa rõ kết quả. Hãy thử lại với thông số cũ trước khi đổi yêu cầu.');
             }
-            await evaluateExamFormat(payload);
+            try {
+              await evaluateExamFormat(payload);
+            } catch (error) {
+              if (runtimeRef.current?.binding() === expected && !turn.current?.signal.aborted && turn.current) {
+                store.setIntake(current.id, { ...intake, topic: proposal.topic, phase: 'selected', validation: 'failed' });
+              }
+              return failed(error instanceof Error ? error.message : 'Chưa kiểm tra được chuyên đề theo mẫu đề.');
+            }
             if (runtimeRef.current?.binding() !== expected || !turn.current || turn.current.signal.aborted) {
               return failed('Màn hình đã thay đổi trong lúc kiểm tra mẫu đề.');
             }
             const summary = `${format.displayName} · ${format.totalQuestions} câu · ${format.durationMinutes} phút.${proposal.topic ? ` Chuyên đề: ${proposal.topic}.` : ''} Bấm “Tạo đề thi” để xác nhận gửi yêu cầu.`;
             flushSync(() => {
-              store.setIntake(current.id, { ...intake, topic: proposal.topic, phase: 'evaluated' });
+              store.setIntake(current.id, { ...intake, topic: proposal.topic, phase: 'evaluated', validation: 'passed' });
+              store.suggestTitle(current.id, proposal.topic ? 'Đề ôn tập ' + proposal.topic.replace(' và ', ' – ') : automaticTitle,
+                messageId, proposal.topic ? 4 : 3);
               setAgentSelection({ formats, id: format.id, expanded: true, summary });
               setConfigureId(current.id);
               setShowQuickModal(true);
@@ -529,7 +587,7 @@ export const App: React.FC = () => {
               expires: Date.now() + 5 * 60_000,
               run: async () => {
                 flushSync(() => { setShowQuickModal(false); setAgentSelection(undefined); });
-                store.setIntake(current.id, { ...intake, topic: proposal.topic, phase: 'confirmed' });
+                store.setIntake(current.id, { ...intake, topic: proposal.topic, phase: 'confirmed', validation: 'passed' });
                 const job = await store.generate(current.id, payload);
                 if (job) return { status: 'accepted', text: 'Máy chủ đã nhận công việc tạo đề. Thầy cô có thể trao đổi tiếp trong khi đợi.' };
                 const actual = store.getSnapshot().find(item => item.id === current.id);
@@ -722,7 +780,7 @@ export const App: React.FC = () => {
     activeRef.current = activeId;
     runtimeRef.current = {
       binding,
-      dispatch: (intent, expected, message, source) => binding() === expected ? dispatch(intent, expected, message, source)
+      dispatch: (intent, expected, message, source, intake) => binding() === expected ? dispatch(intent, expected, message, source, intake)
         : { status: 'failed', text: 'Trạng thái đã thay đổi. Thầy cô hãy gửi lại yêu cầu.' },
     };
   });

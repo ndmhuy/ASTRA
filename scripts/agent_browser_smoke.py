@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def serve(port: int, runs: str):
     import uvicorn
 
-    from exam_baseline.agent.contracts import Decision, Intent
+    from exam_baseline.agent.contracts import Decision, ExamIntake, Intent
     from exam_baseline.api.app import create_app
     from exam_baseline.config import Settings
 
@@ -42,6 +42,16 @@ def serve(port: int, runs: str):
                     )
                 ],
             )
+        if turn.message == "Cô chưa biết bắt đầu soạn đề từ đâu.":
+            return Decision(kind="answer", guidance="start")
+        if turn.message == "Tạo đề thi thử tốt nghiệp":
+            return Decision(kind="clarify", intake=ExamIntake(mode="request", family="thpt"))
+        if turn.message == "Toán":
+            assert any("dạng thpt" in fact.lower() for fact in turn.context.facts)
+            assert any("môn nào" in entry for entry in turn.context.history)
+            return Decision(kind="answer", intake=ExamIntake(mode="request", subject="Toán"))
+        if turn.message == "Đừng tạo đề, chỉ xem cấu trúc":
+            return Decision(kind="answer", intake=ExamIntake(mode="structure"))
         return Decision(kind="clarify")
 
     app = create_app(
@@ -94,6 +104,32 @@ def observe(base_url: str):
         expect(page.get_by_text("Đề vẫn ở bản nháp", exact=False)).to_be_visible()
         assert len(agent_calls) == 2 and not business_writes
         run_workflows(page, composer, business_writes)
+        # Keep the second browser flow outside the shared loopback burst window.
+        page.wait_for_timeout(2100)
+        product = browser.new_page(reduced_motion="reduce")
+        product.on("request", record)
+        product.goto(base_url)
+        product.locator("textarea").first.wait_for(timeout=12000)
+        before = len(business_writes)
+        for text, expected in [
+            ("Cô chưa biết bắt đầu soạn đề từ đâu.", "Thầy cô có thể bắt đầu"),
+            ("Tạo đề thi thử tốt nghiệp", "Thầy cô muốn ôn thi tốt nghiệp môn nào?"),
+            ("Toán", "Đã chọn mẫu. Toán THPT có 22 câu"),
+        ]:
+            editor = product.locator("textarea").first
+            editor.fill(text)
+            editor.press("Enter")
+            expect(product.get_by_text(expected, exact=False).first).to_be_visible()
+        expect(product.get_by_role("dialog")).to_be_visible()
+        expect(product.locator(".sidebar-exam-title").first).to_have_text("Đề thi thử Toán THPT")
+        product.keyboard.press("Escape")
+        expect(product.get_by_role("dialog")).to_have_count(0)
+        editor = product.locator("textarea").first
+        editor.fill("Đừng tạo đề, chỉ xem cấu trúc")
+        editor.press("Enter")
+        expect(product.get_by_role("dialog")).to_have_count(0)
+        expect(product.get_by_text("Toán THPT có 22 câu", exact=False)).to_have_count(2)
+        assert len(business_writes) == before
         browser.close()
     print(
         "Mounted React: greeting and same-origin fixture navigation, catalog intake, "
@@ -215,7 +251,8 @@ def run_workflows(page, composer, business_writes):
     page.keyboard.press("Escape")
 
     say("Tạo đề THPT 15 câu, 45 phút")
-    expect(page.get_by_text("cố định 22 câu, 90 phút", exact=False)).to_be_visible()
+    locked = page.get_by_text("Toán THPT có 22 câu, 90 phút.", exact=False)
+    expect(locked).to_contain_text("cố định")
     assert not starts
     say("Đổi tên đoạn chat thành Ôn Toán tháng 12")
     expect(page.get_by_text("Đã đổi tên cuộc trò chuyện", exact=False)).to_be_visible()

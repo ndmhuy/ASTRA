@@ -4,7 +4,6 @@ import asyncio
 import json
 import logging
 import os
-import re
 import shutil
 import tempfile
 import time
@@ -19,45 +18,44 @@ from .provider import ProviderFailure
 logger = logging.getLogger("exam_baseline.agent.provider")
 
 
-def sanitized_stderr(data: bytes) -> str:
-    for line in reversed(data.decode("utf-8", errors="replace").splitlines()):
-        if "ERROR:" not in line:
-            continue
-        raw = line.split("ERROR:", 1)[1].strip()
-        try:
-            message = str(json.loads(raw)["error"]["message"])
-        except (ValueError, KeyError, TypeError):
-            message = raw
-        message = re.sub(
-            r"(?i)(bearer\s+|(?:api[_-]?key|token)\s*[:=]\s*)\S+", r"\1[redacted]", message
-        )
-        message = re.sub(r"(?i)\b(?:sk-|AIza)[A-Za-z0-9_-]{10,}", "[redacted]", message)
-        return message[:1000]
-    return "(no diagnostic error text)"
+def stderr_category(data: bytes) -> str:
+    # CLI stderr can include both the prompt and the provider response.
+    errors = [
+        line.split("ERROR:", 1)[1].lower()
+        for line in data.decode("utf-8", errors="replace").splitlines()
+        if "ERROR:" in line
+    ]
+    for line in reversed(errors):
+        if "invalid schema" in line or "response_format" in line:
+            return "schema"
+        if any(word in line for word in ("unauthorized", "not logged in", "authentication")):
+            return "auth"
+        if any(word in line for word in ("rate limit", "usage limit", "quota")):
+            return "quota"
+    return "configuration"
 
 
 def codex_output_schema() -> dict:
-    result = schema()
-    for item in result["properties"]["intents"]["items"]["anyOf"]:
-        intent_id = item["properties"]["id"]["enum"][0]
-        args = item["properties"]["args"]
-        for name, rule in INTENTS[intent_id]["args"].items():
-            if rule.endswith("?"):
-                args["properties"][name] = {"anyOf": [args["properties"][name], {"type": "null"}]}
-        args["required"] = list(args["properties"])
-
-    def strip_unsupported(value):
-        if isinstance(value, dict):
-            return {
-                key: strip_unsupported(item)
-                for key, item in value.items()
-                if key not in {"minLength", "maxLength", "minimum", "maximum", "maxItems"}
-            }
+    # Codex uses strict Structured Outputs. Optional fields must be required and nullable.
+    def strict(value):
         if isinstance(value, list):
-            return [strip_unsupported(item) for item in value]
-        return value
+            return [strict(item) for item in value]
+        if not isinstance(value, dict):
+            return value
+        cleaned = {
+            key: strict(item)
+            for key, item in value.items()
+            if key not in {"minLength", "maxLength", "minimum", "maximum", "maxItems", "default"}
+        }
+        if value.get("type") == "object":
+            required = set(value.get("required", []))
+            for name, field in cleaned["properties"].items():
+                if name not in required and {"type": "null"} not in field.get("anyOf", []):
+                    cleaned["properties"][name] = {"anyOf": [field, {"type": "null"}]}
+            cleaned["required"] = list(cleaned["properties"])
+        return cleaned
 
-    return strip_unsupported(result)
+    return strict(schema())
 
 
 def resolve_codex() -> str:
@@ -162,18 +160,24 @@ class CodexCliInterpretationProvider:
                     exists,
                 )
                 if process.returncode:
-                    logger.error("codex_process_failure stderr=%s", sanitized_stderr(stderr))
-                    raise ProviderFailure("configuration")
+                    reason = stderr_category(stderr)
+                    logger.error("codex_process_failure category=%s", reason)
+                    raise ProviderFailure(reason)
                 if not exists or result_path.stat().st_size > 32768:
                     logger.error("codex_output_invalid category=missing_or_oversize")
                     raise ProviderFailure("schema")
                 data = json.loads(result_path.read_text(encoding="utf-8"))
-                if not isinstance(data, dict) or set(data) != {"kind", "intents"}:
+                if not isinstance(data, dict) or not {"kind", "intents"} <= data.keys():
                     raise ProviderFailure("schema")
-                for intent in data.get("intents", []):
+                if not isinstance(data.get("intents"), list):
+                    raise ProviderFailure("schema")
+                for intent in data["intents"]:
                     if isinstance(intent, dict) and isinstance(intent.get("args"), dict):
+                        rules = INTENTS.get(str(intent.get("id")), {}).get("args", {})
                         intent["args"] = {
-                            key: value for key, value in intent["args"].items() if value is not None
+                            key: value
+                            for key, value in intent["args"].items()
+                            if value is not None or not rules.get(key, "").endswith("?")
                         }
                 decision = Decision.model_validate(data)
                 logger.info(
@@ -184,7 +188,7 @@ class CodexCliInterpretationProvider:
                 return decision
             except asyncio.TimeoutError:
                 logger.error("codex_timeout elapsed_ms=%.1f", (time.monotonic() - started) * 1000)
-                raise ProviderFailure("transient") from None
+                raise ProviderFailure("timeout") from None
             except (OSError, ValueError, ValidationError) as error:
                 logger.error("codex_parse_failed category=%s", type(error).__name__)
                 raise ProviderFailure("schema") from None

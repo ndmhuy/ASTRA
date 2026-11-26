@@ -2,7 +2,10 @@
 
 import json
 
-from .contracts import INTENTS, MAX_ACTIONS, Context, Turn, arg_schema
+from exam_baseline.ui.contracts import format_catalog
+
+from .contracts import INTENTS, MAX_ACTIONS, Context, ExamIntake, Turn, arg_schema
+from .knowledge import DOMAIN
 
 SYSTEM = (
     "Bạn diễn giải ý định của giáo viên trong ASTRA. Trả JSON theo schema. "
@@ -13,7 +16,18 @@ SYSTEM = (
     "giữ nguyên giá trị giáo viên đã nói, không tạo ID, không tự xác nhận hoặc kể kết quả. "
     "Đọc nhánh hoặc màn hình đích nếu giáo viên yêu cầu chuyển tới đó trước. "
     "Các bước phụ thuộc theo thứ tự, tối đa bốn. Trong args giữ nguyên chữ gốc của chuyên đề "
-    "và yêu cầu sửa. Dạng đề hiện có: thpt-math và vact."
+    "và yêu cầu sửa. Ưu tiên intake với kind=answer hoặc clarify cho yêu cầu tạo đề, "
+    "bổ sung hoặc sửa môn, dạng, lớp, số câu, thời lượng, hay chuyên đề. "
+    "Intake mode=request cho chuẩn bị đề, structure cho xem cấu trúc hoặc hỏi số câu, "
+    "capability cho hỏi có hỗ trợ hay không. Dùng vocabulary để hiểu thuật ngữ. "
+    "Chỉ điền dữ kiện mới trong lời nhắn, giữ nguyên môn/chuyên đề được nêu, "
+    "không đoán môn hoặc dạng khi thiếu. Dùng useDefaults=true chỉ khi thầy cô đồng ý "
+    "dùng cấu trúc mặc định thay cho số câu, lớp hoặc thời lượng đã nêu. "
+    "Không tự coi chọn mẫu là đồng ý tạo đề. "
+    "Khi chỉ xin xem cấu trúc kèm phủ định tạo đề, trả intake mode=structure và không có intent. "
+    "Dùng guidance=start khi chưa biết bắt đầu, capabilities khi hỏi ASTRA làm được gì, "
+    "remark khi chỉ nhận xét về câu hỏi. Với mục tiêu mới, gợi ý title tiếng Việt 3–10 từ, "
+    "không chứa thông tin cá nhân, không sao chép lời nhắn. Lời chào không cần title."
 )
 
 
@@ -67,6 +81,13 @@ def schema() -> dict:
         "properties": {
             "kind": {"type": "string", "enum": ["task", "answer", "clarify", "unsupported"]},
             "intents": {"type": "array", "maxItems": MAX_ACTIONS, "items": {"anyOf": intents}},
+            "guidance": {"type": "string", "enum": ["start", "capabilities", "remark"]},
+            "title": {"type": "string", "maxLength": 60},
+            "intake": {
+                key: value
+                for key, value in ExamIntake.model_json_schema().items()
+                if key in {"type", "properties", "required", "additionalProperties"}
+            },
         },
         "required": ["kind", "intents"],
         "additionalProperties": False,
@@ -77,6 +98,8 @@ def turn_text(turn: Turn) -> str:
     return json.dumps(
         {
             "catalog": {name: value["purpose"] for name, value in INTENTS.items()},
+            "vocabulary": DOMAIN,
+            "formats": format_catalog(),
             "availableHints": available_now(turn.context),
             "context": turn.context.model_dump(exclude_defaults=True),
             "message": turn.message,

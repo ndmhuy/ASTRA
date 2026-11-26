@@ -33,6 +33,7 @@ class Context(Contract):
     questionRefs: list[Text] = Field(default_factory=list, max_length=8)
     editor: bool = False
     approved: bool = False
+    confirmationPending: bool = False
     preview: (
         Literal["not_requested", "unavailable", "queued", "compiling", "ready", "failed"] | None
     ) = None
@@ -83,17 +84,47 @@ class Intent(Contract):
         return self
 
 
+class ExamIntake(Contract):
+    mode: Literal["request", "structure", "capability"]
+    family: Literal["thpt", "vact", "custom"] | None = None
+    subject: Annotated[str, StringConstraints(min_length=1, max_length=80)] | None = None
+    topic: Annotated[str, StringConstraints(min_length=1, max_length=250)] | None = None
+    grade: Annotated[int, Field(ge=1, le=12)] | None = None
+    count: Annotated[int, Field(ge=1, le=999)] | None = None
+    minutes: Annotated[int, Field(ge=1, le=999)] | None = None
+    useDefaults: bool | None = None
+
+
 class Decision(Contract):
     kind: Literal["task", "answer", "clarify", "unsupported", "temporarily_unavailable"]
     intents: list[Intent] = Field(default_factory=list, max_length=MAX_ACTIONS)
+    guidance: Literal["start", "capabilities", "remark"] | None = None
+    title: Annotated[str, StringConstraints(min_length=1, max_length=60)] | None = None
+    intake: ExamIntake | None = None
     reasonCode: (
-        Literal["disabled", "configuration", "transient", "quota", "schema", "budget"] | None
+        Literal[
+            "disabled",
+            "configuration",
+            "transient",
+            "quota",
+            "schema",
+            "budget",
+            "auth",
+            "model",
+            "timeout",
+            "rejected",
+        ]
+        | None
     ) = None
 
     @model_validator(mode="after")
     def validate_kind(self):
         if self.reasonCode and self.kind != "temporarily_unavailable":
             raise ValueError("reason code requires unavailable decision")
+        if (self.intake or self.guidance) and self.kind not in {"answer", "clarify"}:
+            raise ValueError("guidance and intake are non-executable proposals")
+        if self.intake and self.guidance:
+            raise ValueError("choose either intake or guidance")
         if (self.kind == "task") != bool(self.intents):
             raise ValueError("task must contain actions")
         return self

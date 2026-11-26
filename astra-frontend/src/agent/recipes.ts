@@ -1,4 +1,5 @@
-﻿import { MAX_ACTIONS, validIntent, type Intent, type IntentId } from './contracts.ts';
+import type { Intake } from './intake.ts';
+import { MAX_ACTIONS, validIntent, type ExamIntake, type Intent, type IntentId } from './contracts.ts';
 
 // Adapted from the legacy Agent's accent folding. Preserve the original text for data fields.
 export const fold = (value: string) => value.toLocaleLowerCase('vi').replace(/đ/g, 'd')
@@ -21,7 +22,7 @@ export function admit(value: string): { text: string; error?: string } {
   return { text };
 }
 
-type Local = { text: string } | { intents: Intent[] } | { confirm: boolean };
+type Local = { text: string } | { intents: Intent[] } | { intake: ExamIntake } | { confirm: boolean };
 const action = (id: IntentId, args: Intent['args'] = {}): Local => ({ intents: [{ id, args }] });
 
 export function fastRoute(message: string): Local | undefined {
@@ -59,10 +60,13 @@ export function fastRoute(message: string): Local | undefined {
   if (format && /^(tao|soan) de (toan )?(thpt|v-act|vact)(?: chuyen de:? [\p{Letter}\p{Number} ,_-]+)?(?: \d+ cau)?(?:,? \d+ phut)?$/u.test(text)) {
     const topic = message.match(/(?:chuyên đề|chuyen de):?\s+(.+?)(?=\s+\d+\s+câu|$)/iu)?.[1];
     if (text.includes('chuyen de') && !topic) return { text: 'Thầy cô muốn tập trung vào chuyên đề nào?' };
+    if (format === 'thpt-math' && !/^(tao|soan) de toan thpt\b/.test(text)) {
+      return { intake: { mode: 'request', family: 'thpt', ...(topic ? { topic: topic.replace(/[.!]$/, '') } : {}) } };
+    }
     return action('PREPARE_GENERATION', { format, ...(topic ? { topic: topic.replace(/[.!]$/, '') } : {}) });
   }
   if (format && /^(thpt|v-act|vact) \d+ cau(,? \d+ phut)?$/.test(text)) {
-    return action('PREPARE_GENERATION', { format });
+    return { intake: { mode: 'request', family: format === 'thpt-math' ? 'thpt' : 'vact' } };
   }
   if (/^(tao de|soan de|tao de toan 12|tao lai de)$/.test(text)) return action('PREPARE_GENERATION');
   const note = message.match(/^(?:ghi chú sửa|sửa) câu (\d{1,3})(?: phần ([a-z0-9]+))?\s+(.{2,300})$/iu);
@@ -122,14 +126,14 @@ export function fastRoute(message: string): Local | undefined {
 export function mayDispatch(message: string): boolean {
   const text = fold(message);
   // A correction with negation, a hypothetical, or quoted instructions needs clarification.
-  return !/["“”«»`]|\b(dung|khong|chua)\s+(mo|tao|sinh|xoa|sua|xuat|tai|duyet|chon|kiem tra)\b|^(neu|gia su)\b|\bnhi[?.!]*$/.test(text);
+  return !/["“”«»`]|\b(dung|khong|chua)\s+(mo|tao|sinh|xoa|sua|xuat|tai|duyet|chon|kiem tra)\b|^(neu|gia su)\b|\bnhi[?.!]*$|\bco (?:the|ho tro|tao duoc)\b.*\bkhong[?.!]*$|\bbao nhieu\b/.test(text);
 }
 
 export type Effect = { expectedAfter?: string; status: 'succeeded' | 'accepted' | 'failed' | 'pending' | 'unknown'; text: string };
 export type Receipt = Effect & { actionId: string; capability: IntentId; before: string; after: string };
 export type Runtime = {
   binding(): string;
-  dispatch(intent: Intent, expected: string, message?: string, messageId?: string): Promise<Effect> | Effect;
+  dispatch(intent: Intent, expected: string, message?: string, messageId?: string, intake?: Intake): Promise<Effect> | Effect;
 };
 
 export async function execute(

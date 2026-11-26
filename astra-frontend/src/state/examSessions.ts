@@ -1,6 +1,6 @@
 import type { ChatMessage, ExamPackage, ExamPreviewState, ExamRequestParams, QuestionItem, GenerationProgress } from '../types/exam';
 import type { IExamService } from '../services/examService';
-import { conversationFor, meaningful, titleFrom, touched, type Conversation } from '../agent/memory.ts';
+import { conversationFor, suggestedTitle, titleFrom, touched, type Conversation } from '../agent/memory.ts';
 import type { Intake } from '../agent/intake.ts';
 import { reconcileNotes, type Note } from '../agent/notes.ts';
 import { formatProgressStatus, humanizeErrorMessage } from '../utils/userMessages.ts';
@@ -266,6 +266,21 @@ export class ExamSessions {
     this.update(id, session => ({ ...session, title, conversation: { ...touched(session), titleOrigin: 'manual' } }));
     return this.sessions.find(session => session.id === id)?.title === title;
   }
+  suggestTitle(id: string, value: string, sourceId: string, quality = 1) {
+    this.update(id, session => {
+      const conversation = conversationFor(session);
+      if (conversation.titleOrigin === 'manual' || conversation.titleOrigin === 'legacy' ||
+          (conversation.titleQuality ?? 0) >= quality ||
+          session.messages.filter(message => message.role === 'user' && !/^(chào(?: em)?|xin chào|hello|hi)[ !.]*$/iu.test(message.content)).length > 3) return session;
+      const source = session.messages.find(message => message.id === sourceId && message.role === 'user');
+      const title = source && suggestedTitle(value, source.content);
+      if (!title) return session;
+      return { ...session, title, conversation: {
+        ...conversation, titleOrigin: 'auto', titleSourceId: sourceId, titleQuality: quality,
+      } };
+    });
+  }
+
   setIntake(id: string, intake: Intake | undefined) { this.update(id, session => ({ ...session, intake })); }
   setNotes(id: string, notes: Note[]) { this.update(id, session => ({ ...session, notes })); }
   retractMessage(id: string, messageId: string) {
@@ -274,9 +289,14 @@ export class ExamSessions {
       if (index < 0) return session;
       const messages = session.messages.slice(0, index);
       const ids = new Set(messages.map(message => message.id));
+      const conversation = touched(session);
+      const titleLost = conversation.titleOrigin === 'auto' && conversation.titleSourceId && !ids.has(conversation.titleSourceId);
       return {
-        ...session, messages, conversation: touched(session),
-        intake: session.intake && ids.has(session.intake.sourceId) ? session.intake : undefined,
+        ...session, messages,
+        title: titleLost ? 'Cuộc trò chuyện mới' : session.title,
+        conversation: titleLost ? { ...conversation, titleOrigin: 'default', titleSourceId: undefined, titleQuality: undefined } : conversation,
+        intake: session.intake && (session.intake.sourceIds ?? [session.intake.sourceId]).every(source => ids.has(source))
+          ? session.intake : undefined,
         notes: session.notes?.filter(note => note.status === 'applied' || ids.has(note.sourceId)),
       };
     });
@@ -286,15 +306,20 @@ export class ExamSessions {
     const index = source?.messages.findIndex(message => message.id === messageId) ?? -1;
     if (!source || index < 0) return null;
     const prefix = source.messages.slice(0, index + 1);
+    const ids = new Set(prefix.map(message => message.id));
+    const conversation = touched(source);
+    const titleLost = conversation.titleOrigin === 'auto' && conversation.titleSourceId && !ids.has(conversation.titleSourceId);
     const branch: ExamSession = {
       ...source,
-      conversation: { ...touched(source), titleOrigin: 'auto', revision: 0 },
-      intake: source.intake && prefix.some(message => message.id === source.intake?.sourceId)
-        ? { ...source.intake, phase: 'selected' } : undefined,
+      conversation: { ...conversation, titleOrigin: titleLost ? 'default' : conversation.titleOrigin,
+        titleSourceId: titleLost ? undefined : conversation.titleSourceId,
+        titleQuality: titleLost ? undefined : conversation.titleQuality, revision: 0 },
+      intake: source.intake && (source.intake.sourceIds ?? [source.intake.sourceId]).every(sourceId => ids.has(sourceId))
+        ? { ...source.intake, phase: source.intake.formatId ? 'selected' : 'collecting' } : undefined,
       notes: undefined, progress: undefined, previousCount: 0, requestId: undefined,
       requestSignature: undefined, error: undefined, errorCode: undefined,
       id: crypto.randomUUID(),
-      title: `Nhánh · ${source.title}`,
+      title: titleLost ? 'Cuộc trò chuyện mới' : 'Nhánh · ' + source.title,
       createdAt: new Date().toISOString(),
       messages: prefix,
       draft: '',
@@ -311,10 +336,8 @@ export class ExamSessions {
       if (session.messages.some(message => message.id === messageId)) return session;
       const conversation = touched(session);
       const message: ChatMessage = { id: messageId, role, content, agentTurn, timestamp: conversation.updatedAt };
-      const auto = conversation.titleOrigin === 'default' && meaningful(message) && titleFrom(content);
       return {
-        ...session, title: auto || session.title,
-        conversation: { ...conversation, titleOrigin: auto ? 'auto' : conversation.titleOrigin },
+        ...session, conversation,
         draft: role === 'user' ? '' : session.draft,
         messages: [...session.messages, message],
       };
@@ -367,7 +390,6 @@ export class ExamSessions {
       artifactChanged: false,
       questions: [],
       previousCount: 0,
-      title: session.mode === 'template' && !['manual', 'auto'].includes(conversationFor(session).titleOrigin) ? `Đề thi ${params.subject}` : session.title,
       meta: { title: `Đề thi ${params.subject}`, subject: params.subject, duration: params.durationMinutes, completedCount: 0, totalCount: params.itemCount }
     }));
     try {
@@ -686,7 +708,6 @@ export class ExamSessions {
       error: undefined,
       errorCode: undefined,
       status: 'complete',
-      title: session.mode === 'custom' || ['manual', 'auto'].includes(conversationFor(session).titleOrigin) ? session.title : pkg.title,
       questions: pkg.questions,
       meta: { title: pkg.title, subject: pkg.subject, duration: pkg.durationMinutes, completedCount: pkg.questions.length, totalCount: pkg.questions.length },
       preview: pkg.preview,
