@@ -610,7 +610,15 @@ export class ExamSessions {
   }
   private watch(id: string, jobId: string) {
     let finishing = false;
-    const unsubscribe = this.service.onProgress(jobId, progress => {
+    let detach: (() => void) | undefined;
+    const unsubscribe = () => detach?.();
+    const stop = () => {
+      if (this.subscriptions.get(id) !== unsubscribe) return;
+      unsubscribe();
+      this.subscriptions.delete(id);
+    };
+    this.subscriptions.set(id, unsubscribe);
+    detach = this.service.onProgress(jobId, progress => {
         const session = this.sessions.find(item => item.id === id);
         if (this.disposed || finishing || !session || (session.generationId ?? session.jobId) !== jobId) return;
         if (progress.status === 'failed') {
@@ -621,7 +629,7 @@ export class ExamSessions {
             { code: progress.error?.code }
           );
           this.fail(id, error);
-          this.subscriptions.get(id)?.(); this.subscriptions.delete(id);
+          stop();
           return;
         }
         this.update(id, session => {
@@ -640,10 +648,12 @@ export class ExamSessions {
               }
               this.complete(id, pkg);
             }
-          }).catch(error => this.fail(id, error)).finally(() => { this.subscriptions.get(id)?.(); this.subscriptions.delete(id); });
+          }).catch(error => {
+            if (this.subscriptions.get(id) === unsubscribe) this.fail(id, error);
+          }).finally(stop);
         }
       });
-      this.subscriptions.set(id, unsubscribe);
+    if (this.subscriptions.get(id) !== unsubscribe) detach();
   }
   async refresh(id: string) {
     const session = this.sessions.find(item => item.id === id);
@@ -841,6 +851,7 @@ export class ExamSessions {
     const { code, message } = extractErrorDetails(error);
     if (code === 'stale_revision' || code === 'stale_hash') {
       try {
+        if (this.workspaceSaves.has(id)) await this.loadLibrary();
         await this.refresh(id);
         this.update(id, session => ({
           ...session,

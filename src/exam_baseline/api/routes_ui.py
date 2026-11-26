@@ -214,6 +214,7 @@ async def edit(
     question_id: int,
     payload: EditRequest,
     idempotency_key: Annotated[UUID | None, Header()] = None,
+    workspace_id: UUID | None = None,
 ):
     return await request.app.state.ui_jobs.question_change(
         str(job_id),
@@ -222,6 +223,7 @@ async def edit(
         "edited",
         payload.question,
         str(idempotency_key) if idempotency_key else None,
+        workspace_id=str(workspace_id) if workspace_id else None,
     )
 
 
@@ -232,6 +234,7 @@ async def regenerate(
     question_id: int,
     payload: RegenerateRequest,
     idempotency_key: Annotated[UUID | None, Header()] = None,
+    workspace_id: UUID | None = None,
 ):
     return await request.app.state.ui_jobs.question_change(
         str(job_id),
@@ -240,6 +243,7 @@ async def regenerate(
         "regenerated",
         payload.instruction,
         str(idempotency_key) if idempotency_key else None,
+        workspace_id=str(workspace_id) if workspace_id else None,
     )
 
 

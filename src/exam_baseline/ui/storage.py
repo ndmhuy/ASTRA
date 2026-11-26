@@ -374,6 +374,7 @@ class JobStore:
         restored_from: int | None = None,
         promotion: tuple[str, str] | None = None,
         change_id: str | None = None,
+        summary: str | None = None,
     ) -> None:
         job_id, revision = job["jobId"], job["revision"]
         root = self.path.parent / job_id
@@ -420,7 +421,7 @@ class JobStore:
                         (job_id, job_id),
                     )
                 if change_id is not None:
-                    self._finish_change(db, job_id, change_id, "completed", revision, None)
+                    self._finish_change(db, job_id, change_id, "completed", revision, None, summary)
                 publish_source(root, source)
                 db.commit()
                 committed_hash = job["sourceHash"]
@@ -453,7 +454,10 @@ class JobStore:
     def workspace_content(self, workspace_id):
         with self.connect() as db:
             row = db.execute(
-                "SELECT draft, job_id FROM workspaces WHERE id=? AND archived=0", (workspace_id,)
+                """SELECT w.draft, j.id FROM workspaces w LEFT JOIN jobs j ON w.job_id=j.id
+                   AND json_extract(j.data, '$.status')='completed'
+                   WHERE w.id=? AND w.archived=0""",
+                (workspace_id,),
             ).fetchone()
         if row is None:
             raise UiError("workspace_not_found", "Không tìm thấy đề đã lưu.", 404)
@@ -561,12 +565,13 @@ class JobStore:
         return None
 
     @staticmethod
-    def _finish_change(db, job_id, change_id, status, revision, error):
+    def _finish_change(db, job_id, change_id, status, revision, error, summary=None):
         db.execute(
             """UPDATE exam_changes SET data=json_set(data, '$.status', ?, '$.afterRevision', ?,
-                      '$.finishedAt', strftime('%Y-%m-%dT%H:%M:%fZ', 'now'), '$.error', json(?))
+                      '$.finishedAt', strftime('%Y-%m-%dT%H:%M:%fZ', 'now'),
+                      '$.error', json(?), '$.summary', ?)
                WHERE job_id=? AND id=? AND json_extract(data, '$.status')='pending'""",
-            (status, revision, json.dumps(error, ensure_ascii=False), job_id, change_id),
+            (status, revision, json.dumps(error, ensure_ascii=False), summary, job_id, change_id),
         )
 
     def fail_change(self, job_id, change_id, error):

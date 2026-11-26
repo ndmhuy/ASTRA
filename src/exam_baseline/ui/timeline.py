@@ -26,7 +26,7 @@ def change_messages(change: dict, *, undone=False) -> list[dict]:
     elif change["kind"] == "undone":
         content = "Đã hoàn tác thay đổi."
     else:
-        content = "Đã lưu chỉnh sửa câu hỏi."
+        content = change.get("summary") or "Đã lưu chỉnh sửa câu hỏi."
     messages.append(
         {
             "id": f"change:{job_id}:{change_id}:result",

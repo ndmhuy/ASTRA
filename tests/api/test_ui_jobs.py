@@ -135,16 +135,31 @@ def test_workspaces_share_drafts_link_existing_jobs_and_reject_stale_saves(tmp_p
         (saved,) = client.get("/api/workspaces").json()["workspaces"]
         assert saved["id"] == workspace_id and saved["jobId"] == job
         assert saved["jobStatus"] == "completed" and saved["draft"] == update["draft"]
-        assert client.get(f"/api/exams/{job}").json()["questions"]
+        current = client.get(f"/api/exams/{job}").json()
+        assert current["questions"]
+        assert (
+            client.post(
+                f"/api/exams/{job}/approve",
+                json={
+                    "revision": current["revision"],
+                    "contentHash": current["contentHash"],
+                    "reviewer": "teacher",
+                },
+            ).status_code
+            == 200
+        )
+        export_url = f"/api/exams/{job}/export?type=STUDENT_EXAM&format=tex"
         store = restarted.state.ui_jobs.store
         attempt, _ = store.create(
             "attempt", "attempt", {"status": "queued", "request": PAYLOAD}, workspace_id
         )
         (during,) = client.get("/api/workspaces").json()["workspaces"]
         assert during["jobId"] == job and during["generationId"] == attempt["jobId"]
+        assert client.get(export_url).status_code == 200
         store.save({**attempt, "status": "failed", "error": {"code": "test_failure"}})
         (failed,) = client.get("/api/workspaces").json()["workspaces"]
         assert failed["jobId"] == job and failed["generationStatus"] == "failed"
+        assert client.get(export_url).status_code == 200
         replaced = client.post(
             f"/api/exams/generate?workspace_id={workspace_id}",
             json=PAYLOAD,
@@ -153,6 +168,11 @@ def test_workspaces_share_drafts_link_existing_jobs_and_reject_stale_saves(tmp_p
         assert wait(client, replaced)["status"] == "completed"
         history = client.get(f"{workspace_url}/versions").json()
         assert history["currentJobId"] == replaced
+        stale_job = client.put(
+            f"/api/exams/{job}/questions/1?workspace_id={workspace_id}",
+            json={"revision": current["revision"], "question": {"stem": "Yêu cầu đã cũ."}},
+        )
+        assert stale_job.status_code == 409
         assert {entry["jobId"] for entry in history["versions"]} == {job, replaced}
         previous = next(entry["revision"] for entry in history["versions"] if entry["jobId"] == job)
         restored = client.post(
@@ -172,10 +192,11 @@ def test_workspaces_share_drafts_link_existing_jobs_and_reject_stale_saves(tmp_p
         assert client.put(edit_url, json=edit, headers=key).status_code == 200
         assert client.put(edit_url, json=edit, headers=key).json()["revision"] == revision + 1
         assert client.put(edit_url, json=edit).status_code == 409
-        messages = client.get(f"{workspace_url}/changes").json()["messages"]
+        messages = client.get(f"{workspace_url}/changes").json()["messages"][-4:]
         assert len(messages) == 4
         assert messages[1]["examVersion"]["revision"] == revision + 1
         assert messages[1]["changeId"] == key["Idempotency-Key"]
+        assert messages[1]["content"] == "[Câu 1] Đã cập nhật đề bài."
         assert "cập nhật mới hơn" in messages[3]["content"]
         assert client.get(f"/api/exams/{job}").json()["revision"] == revision + 1
         second_key = str(uuid4())

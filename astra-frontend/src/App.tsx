@@ -51,7 +51,7 @@ export const App: React.FC = () => {
   const [controlsCollapsed, setControlsCollapsed] = useState(false);
   const [showQuickModal, setShowQuickModal] = useState(false);
   const [configureId, setConfigureId] = useState<string | null>(null);
-  const [editor, setEditor] = useState<{ sessionId: string; jobId: string; question: QuestionItem } | null>(null);
+  const [editor, setEditor] = useState<{ sessionId: string; jobId: string; question: QuestionItem; workspaceId?: string } | null>(null);
   const [approving, setApproving] = useState(false);
   const [historySession, setHistorySession] = useState<string | null>(null);
   const [undo, setUndo] = useState<RegenerationUndo>();
@@ -414,7 +414,9 @@ export const App: React.FC = () => {
                   onPreviewOpened={handlePreviewOpened}
                   onEditQuestion={id => {
                     const question = active.questions.find(item => item.id === id);
-                    if (active.jobId && question) setEditor({ sessionId: active.id, jobId: active.jobId, question });
+                    if (active.jobId && question) setEditor({
+                      sessionId: active.id, jobId: active.jobId, question, workspaceId: sharedId ?? undefined,
+                    });
                   }}
                 />
               </>
@@ -454,7 +456,7 @@ export const App: React.FC = () => {
         } : undefined}
         onSave={async question => {
           try {
-            await examService.updateQuestion(editor.jobId, question);
+            await examService.updateQuestion(editor.jobId, question, editor.workspaceId);
             store.invalidatePreview(editor.sessionId);
             await store.refresh(editor.sessionId);
             setEditor(null);
@@ -466,7 +468,9 @@ export const App: React.FC = () => {
         onRegenerate={async instruction => {
           try {
             const previousRevision = editor.question.examRevision;
-            const regenerated = await examService.regenerateQuestion(editor.jobId, editor.question.id, instruction, previousRevision);
+            const regenerated = await examService.regenerateQuestion(
+              editor.jobId, editor.question.id, instruction, previousRevision, editor.workspaceId,
+            );
             if (previousRevision !== undefined && regenerated.examRevision === previousRevision + 1) {
               setUndo({ sessionId: editor.sessionId, jobId: editor.jobId, previousRevision, revision: regenerated.examRevision });
             }

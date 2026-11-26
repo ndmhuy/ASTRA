@@ -593,10 +593,25 @@ class JobManager:
         job.update(status="failed", error=error.payload())
         self.store.save(job)
 
-    def _save_version(self, job, change, *, question_id=None, change_id=None, promotion=None):
+    def _save_version(
+        self,
+        job,
+        change,
+        *,
+        question_id=None,
+        change_id=None,
+        promotion=None,
+        summary=None,
+    ):
         source = self._render_source(job)
         self.store.save_version(
-            job, source, change, question_id=question_id, change_id=change_id, promotion=promotion
+            job,
+            source,
+            change,
+            question_id=question_id,
+            change_id=change_id,
+            promotion=promotion,
+            summary=summary,
         )
 
     def _render_source(self, job):
@@ -1053,8 +1068,18 @@ class JobManager:
         try:
             if kind == "undone":
                 return await self._undo_question(workspace_id, job_id, revision, value, change_id)
+            if workspace_id and self.store.workspace_job(workspace_id) != job_id:
+                raise UiError("stale_revision", "Đề đang dùng đã thay đổi.")
             operation = self.edit if kind == "edited" else self.regenerate
-            return await operation(job_id, question_id, revision, value, change_id=change_id)
+            promotion = (workspace_id, job_id) if workspace_id else None
+            return await operation(
+                job_id,
+                question_id,
+                revision,
+                value,
+                change_id=change_id,
+                promotion=promotion,
+            )
         except (Exception, asyncio.CancelledError) as exc:
             error = {"code": "exam_change_failed", "message": "Chưa lưu được thay đổi câu hỏi."}
             if isinstance(exc, UiError):
@@ -1160,13 +1185,14 @@ class JobManager:
             )
             return self._package(job)
 
-    async def edit(self, job_id, question_id, revision, value, *, change_id=None):
+    async def edit(self, job_id, question_id, revision, value, *, change_id=None, promotion=None):
         async with self.lock(job_id):
             job = self._completed(job_id)
             self._check_revision(job, revision)
             if not 1 <= question_id <= len(job["rawQuestions"]):
                 raise UiError("question_not_found", "Không tìm thấy câu hỏi cần thao tác.", 404)
-            raw = dict(job["rawQuestions"][question_id - 1])
+            original = job["rawQuestions"][question_id - 1]
+            raw = dict(original)
             if value.get("stableId", raw["id"]) != raw["id"]:
                 raise UiError(
                     "invalid_question_id",
@@ -1200,7 +1226,24 @@ class JobManager:
             solutions = _current_solutions(job)
             solutions.pop(raw["id"], None)
             job.update(solutions={"entries": list(solutions.values())}, solverResultsVersion=1)
-            self._save_version(job, "edited", question_id=question_id, change_id=change_id)
+            updated = job["rawQuestions"][question_id - 1]
+            fields = (
+                ("stem", "đề bài"),
+                ("choices", "lựa chọn"),
+                ("answer", "đáp án"),
+                ("statements", "mệnh đề đúng/sai"),
+                ("solution", "lời giải"),
+            )
+            changes = [label for key, label in fields if original.get(key) != updated.get(key)]
+            summary = f"Đã cập nhật {', '.join(changes)}." if changes else "Đã lưu câu hỏi."
+            self._save_version(
+                job,
+                "edited",
+                question_id=question_id,
+                change_id=change_id,
+                promotion=promotion,
+                summary=summary,
+            )
             return self.package(job_id)
 
     async def approve(self, job_id, payload):
@@ -1286,7 +1329,16 @@ class JobManager:
             self.store.save(job)
             return self.package(job_id)
 
-    async def regenerate(self, job_id, question_id, revision, instruction, *, change_id=None):
+    async def regenerate(
+        self,
+        job_id,
+        question_id,
+        revision,
+        instruction,
+        *,
+        change_id=None,
+        promotion=None,
+    ):
         async with self.lock(job_id):
             job = self._completed(job_id)
             self._check_revision(job, revision)
@@ -1399,7 +1451,13 @@ class JobManager:
                 approval=None,
             )
             job["manualEdits"] = list(set(job["manualEdits"]) | {repaired.id})
-            self._save_version(job, "regenerated", question_id=question_id, change_id=change_id)
+            self._save_version(
+                job,
+                "regenerated",
+                question_id=question_id,
+                change_id=change_id,
+                promotion=promotion,
+            )
             # Teacher-initiated regeneration never adds another Reviewer pass.
             return self.package(job_id)
 
