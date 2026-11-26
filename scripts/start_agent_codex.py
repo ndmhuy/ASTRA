@@ -21,6 +21,10 @@ os.environ.update(
     ASTRA_AGENT_TOTAL_SECONDS="30",
 )
 os.environ.setdefault("ASTRA_AGENT_DAILY_ATTEMPTS", "30")
-logging.getLogger("exam_baseline.agent.provider").setLevel(logging.INFO)
+agent_logger = logging.getLogger("exam_baseline.agent.provider")
+agent_logger.setLevel(logging.INFO)
+if not agent_logger.handlers:
+    agent_logger.addHandler(logging.StreamHandler())
+agent_logger.propagate = False
 os.chdir(ROOT)
 uvicorn.run("exam_baseline.api.app:create_web_app", factory=True, host="127.0.0.1", port=8000)

@@ -43,7 +43,9 @@ Current phase / exact next action: P8 / see final report
 
 - 2026-11-26 · Follow-up · Direct Gemini local transport uses the existing credential and model. Model metadata returned HTTP 200 with generateContent support. Native app started with demo MAS, a 30-attempt daily limit and sanitized traces. No inference or generation sent. Live response remains to be manually verified.
 
-- 2026-11-26 · Codex CLI manual test · Added tool-disabled ephemeral Codex exec with the shared intent schema, 30-second deadline and no fallback. Tested subprocess using a fake process and ran 19 focused Python tests. Native app started with demo MAS and the frontend timeout expanded to 35 seconds. Live inference remains for the user to test.\n\n## Release gates
+- 2026-11-26 · Codex CLI manual test · Added tool-disabled ephemeral Codex exec with the shared intent schema, 30-second deadline and no fallback. Tested subprocess using a fake process and ran 19 focused Python tests. Native app started with demo MAS and the frontend timeout expanded to 35 seconds. Live inference remains for the user to test.\n\n- 2026-11-26 · Real Codex diagnostic · One authorized endpoint request returned HTTP 200, configuration failure, CLI exit 1 in 6.6 seconds. CLI stderr reported invalid structured-output schema. The detailed error text was truncated by the initial sanitizer. Corrected the schema to require every property, permit null on optional values, remove unsupported constraints, and validate the decoded result. Verified offline for all 34 intent shapes and restarted the app. No second live attempt was made.
+
+## Release gates
 - LOCAL_APP_READY: VERIFIED_OFFLINE
 - ORCHESTRATION_OFFLINE_VERIFIED: PARTIAL
 - LIVE_AGENT_VERIFIED: BLOCKED_EXTERNAL
