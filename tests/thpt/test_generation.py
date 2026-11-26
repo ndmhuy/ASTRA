@@ -125,8 +125,10 @@ class Scripted:
             )
             result = dict(
                 entries=[
-                    dict(question_id=i, answer="A", reasoning="Test fixture.", status="solved")
-                    for i in ids
+                    dict(
+                        question_id=q["id"], answer="A", reasoning="Test fixture.", status="solved"
+                    )
+                    for q in data["questions"]
                 ]
             )
         else:

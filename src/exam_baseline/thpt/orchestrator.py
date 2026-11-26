@@ -7,6 +7,7 @@ from decimal import Decimal, InvalidOperation
 from hashlib import sha256
 from pathlib import Path
 from time import perf_counter
+from typing import Literal
 
 from exam_baseline.core.contracts import LLMProvider
 from exam_baseline.thpt import template
@@ -69,59 +70,61 @@ def _parse_p3_decimal(answer: str) -> Decimal | None:
         return None
 
 
+AnswerCheck = Literal["matched", "mismatched", "needs_recheck"]
+
+
+def compare_answer(question: dict, entry: dict | None) -> tuple[AnswerCheck, dict | None]:
+    """Compare a question with its current independent solve, using its answer format."""
+    if entry is None or entry["status"] != "solved":
+        return "needs_recheck", None
+    composer_key, solver_key = question.get("answer"), entry["answer"]
+    if question.get("choices") and composer_key:
+        actual = _parse_p1_letter(solver_key)
+        if actual is None:
+            return "needs_recheck", None
+        expected = composer_key.strip().upper()
+        solver_key = actual
+    elif question.get("statements"):
+        actual = _parse_p2_booleans(solver_key)
+        expected = [statement["answer"] for statement in question["statements"]]
+        if actual is None or len(actual) != len(expected):
+            return "needs_recheck", None
+        composer_key = "".join("Đ" if flag else "S" for flag in expected)
+        solver_key = "".join("Đ" if flag else "S" for flag in actual)
+    elif composer_key:
+        actual = _parse_p3_decimal(solver_key)
+        expected = _parse_p3_decimal(composer_key)
+        if actual is None or expected is None:
+            return "needs_recheck", None
+        solver_key = solver_key.strip()
+    else:
+        return "needs_recheck", None
+    if expected == actual:
+        return "matched", None
+    return "mismatched", {
+        "question_id": question["id"],
+        "composer": composer_key,
+        "solver": solver_key,
+    }
+
+
 def compare_answers(questions, solutions) -> dict:
     """Deterministically compare Composer keys against Blind Solver answers."""
-    by_id = {entry.question_id: entry for entry in solutions.entries}
-    agreed: list[str] = []
+    by_id = {entry.question_id: entry.model_dump() for entry in solutions.entries}
+    agreed = 0
     mismatched: list[dict] = []
     unparsed: list[str] = []
-
-    for q in questions:
-        entry = by_id.get(q.id)
-        if entry is None or entry.status != "solved":
-            unparsed.append(q.id)
-            continue
-        if getattr(q, "choices", None) and getattr(q, "answer", None):
-            solver_letter = _parse_p1_letter(entry.answer)
-            if solver_letter is None:
-                unparsed.append(q.id)
-            elif solver_letter == q.answer.strip().upper():
-                agreed.append(q.id)
-            else:
-                mismatched.append(
-                    {"question_id": q.id, "composer": q.answer, "solver": solver_letter}
-                )
-        elif getattr(q, "statements", None):
-            solver_bools = _parse_p2_booleans(entry.answer)
-            composer_bools = [st.answer for st in q.statements]
-            if solver_bools is None or len(solver_bools) != len(composer_bools):
-                unparsed.append(q.id)
-            elif solver_bools == composer_bools:
-                agreed.append(q.id)
-            else:
-                mismatched.append(
-                    {
-                        "question_id": q.id,
-                        "composer": "".join("Đ" if b else "S" for b in composer_bools),
-                        "solver": "".join("Đ" if b else "S" for b in solver_bools),
-                    }
-                )
-        elif getattr(q, "answer", None):
-            solver_num = _parse_p3_decimal(entry.answer)
-            composer_num = _parse_p3_decimal(q.answer)
-            if solver_num is None or composer_num is None:
-                unparsed.append(q.id)
-            elif solver_num == composer_num:
-                agreed.append(q.id)
-            else:
-                mismatched.append(
-                    {"question_id": q.id, "composer": q.answer, "solver": entry.answer.strip()}
-                )
+    for question in questions:
+        check, mismatch = compare_answer(question.model_dump(), by_id.get(question.id))
+        if check == "matched":
+            agreed += 1
+        elif mismatch is not None:
+            mismatched.append(mismatch)
         else:
-            unparsed.append(q.id)
+            unparsed.append(question.id)
 
     return {
-        "agreed_count": len(agreed),
+        "agreed_count": agreed,
         "mismatched_count": len(mismatched),
         "unparsed_count": len(unparsed),
         "mismatched": mismatched,

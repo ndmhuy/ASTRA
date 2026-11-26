@@ -166,6 +166,10 @@ class Solutions(Model):
     entries: list[Solution] = Field(min_length=22, max_length=22)
 
 
+class SingleQuestionSolutions(Solutions):
+    entries: list[Solution] = Field(min_length=1, max_length=1)
+
+
 class Review(Model):
     decision: Literal["approved", "needs_revision"]
     checked_ids: list[str] = Field(min_length=22, max_length=22)

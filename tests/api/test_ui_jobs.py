@@ -114,6 +114,8 @@ def test_retrieval_agents_teacher_approval_export_edit_and_reconnect(tmp_path):
         assert len(package["questions"]) == 22
         assert package["questions"][12]["questionType"] == "true_false"
         assert package["questions"][16]["questionType"] == "short_answer"
+        assert package["questions"][0]["answerCheck"] == "matched"
+        assert package["questions"][12]["answerCheck"] == "needs_recheck"
         assert package["warnings"] and package["provenance"]["corpus_snapshot"] == "test-fixture"
         assert not package["approved"]
         assert len(providers["reviewer"].calls) == 1
@@ -135,11 +137,20 @@ def test_retrieval_agents_teacher_approval_export_edit_and_reconnect(tmp_path):
         assert student.text.count(r"\textbf{Câu ") == 22
         revised = client.put(
             f"/api/exams/{job}/questions/1",
-            json={"revision": package["revision"], "question": {"stem": "Tính $1+1$ (đã sửa)."}},
+            json={
+                "revision": package["revision"],
+                "question": {"stem": "Tính $1+1$ (đã sửa).", "key": "B"},
+            },
         )
         assert revised.status_code == 200
-        assert not revised.json()["approved"]
-        assert revised.json()["questions"][0]["stableId"] == "P1-1"
+        new_package = revised.json()
+        assert not new_package["approved"]
+        first, second = new_package["questions"][:2]
+        assert first["stableId"] == "P1-1"
+        assert first["answerCheck"] == "needs_recheck"
+        assert first["solverKey"] is None
+        assert second["answerCheck"] == "matched"
+        assert len(providers["solver"].calls) == 1
         assert client.get(export_url).status_code == 409
         assert client.post(f"/api/exams/{job}/approve", json=approval).status_code == 409
         assert (
@@ -149,11 +160,63 @@ def test_retrieval_agents_teacher_approval_export_edit_and_reconnect(tmp_path):
             ).status_code
             == 409
         )
+        approved = client.post(
+            f"/api/exams/{job}/approve",
+            json={
+                **approval,
+                "revision": new_package["revision"],
+                "contentHash": new_package["contentHash"],
+            },
+        )
+        assert approved.status_code == 200
+        assert approved.json()["questions"][0]["answerCheck"] == "needs_recheck"
+
+        verify_url = f"/api/exams/{job}/questions/1/verify"
+        assert client.post(verify_url, json={"revision": package["revision"]}).status_code == 409
+        checked = client.post(verify_url, json={"revision": new_package["revision"]})
+        assert checked.status_code == 200, checked.text
+        verified_package = checked.json()
+        assert verified_package["revision"] == new_package["revision"]
+        assert verified_package["approved"]
+        assert verified_package["questions"][0]["answerCheck"] == "mismatched"
+        assert verified_package["questions"][0]["status"] == "FLAGGED"
+        assert verified_package["questions"][0]["solverKey"] == "A"
+        assert verified_package["questions"][0]["writerKey"] == "B"
+        assert verified_package["questions"][1] == second
+        assert len(providers["solver"].calls) == 2 and len(providers["reviewer"].calls) == 1
+        solver_input = providers["solver"].calls[-1]["questions"]
+        assert len(solver_input) == 1 and solver_input[0]["id"] == "P1-1"
+        assert solver_input[0]["stem"] == first["stem"]
     # A new app process recovers the exact job and current revision without regeneration.
     restarted, _ = fixture_app(tmp_path)
     with TestClient(restarted) as client:
-        assert client.get(f"/api/exams/{job}").json()["revision"] == package["revision"] + 1
+        loaded = client.get(f"/api/exams/{job}").json()
+        assert loaded["revision"] == package["revision"] + 1
+        assert loaded["questions"][0]["answerCheck"] == "mismatched"
         assert '"status": "completed"' in client.get(f"/api/exams/{job}/events").text
+
+
+def test_legacy_edits_ignore_old_solver_answers(tmp_path):
+    app, _ = fixture_app(tmp_path)
+    with TestClient(app) as client:
+        job = client.post(
+            "/api/exams/generate", json=PAYLOAD, headers={"Idempotency-Key": "legacy-edits"}
+        ).json()["jobId"]
+        assert wait(client, job)["status"] == "completed"
+        raw = app.state.ui_jobs.get(job)
+        raw.pop("solverResultsVersion")
+        raw["manualEdits"] = ["P1-1", "P1-2"]
+        app.state.ui_jobs.store.save(raw)
+
+        package = client.get(f"/api/exams/{job}").json()
+        assert [q["solverKey"] for q in package["questions"][:3]] == [None, None, "A"]
+        checked = client.post(
+            f"/api/exams/{job}/questions/1/verify", json={"revision": package["revision"]}
+        )
+        assert checked.status_code == 200, checked.text
+        questions = checked.json()["questions"]
+        assert [q["answerCheck"] for q in questions[:3]] == ["matched", "needs_recheck", "matched"]
+        assert questions[1]["solverKey"] is None
 
 
 def test_topic_prompt_uses_pinned_slot_evidence_in_web_job(tmp_path, monkeypatch):

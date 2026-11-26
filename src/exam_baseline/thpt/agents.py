@@ -14,6 +14,7 @@ from exam_baseline.thpt.models import (
     Review,
     Section,
     ShortAnswerSection,
+    SingleQuestionSolutions,
     Solutions,
     TrueFalseSection,
 )
@@ -287,6 +288,9 @@ with detailed reasoning.
 For P3 return only the final numeric answer using a decimal comma (e.g. "10,7" or "-2").
 Check domains, units, rounding, uniqueness and diagrams.
 Mark ambiguous/unsolvable explicitly; never guess a missing condition."""
+
+    def contract(self, data):
+        return SingleQuestionSolutions if len(data["questions"]) == 1 else self.response
 
 
 class ReviewerAgent(Agent):
