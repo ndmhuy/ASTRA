@@ -20,6 +20,7 @@ class Settings(BaseSettings):
 
     provider: Literal["mock", "chat_completions"] = "mock"
     demo_mode: bool = False
+    fallback_on_provider_error: bool = True
     model: str = Field(default="mock-fixture-v1", min_length=1)
     prompt_version: Literal["v1"] = "v1"
     api_key: SecretStr | None = None

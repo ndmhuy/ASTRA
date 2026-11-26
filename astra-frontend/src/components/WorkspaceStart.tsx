@@ -47,7 +47,7 @@ export function WorkspaceStart({ exiting, draft, onDraftChange, onTemplate, onDe
       <div className="integrated-start-composer"><ModernChatBar onSend={onSend} draft={draft} onDraftChange={onDraftChange} disabled={exiting} /></div>
       <p className="integrated-start-help">Chọn một cách bắt đầu, hoặc nhập ý tưởng ngay bên trên.</p>
       <p className="start-capabilities">
-        <span>Toán THPT · 22 câu / 90 phút</span>
+        <span>THPT 2026 · 7 môn chuẩn Bộ GD&amp;ĐT</span>
         <span aria-hidden="true">·</span>
         <span>ĐGNL V-ACT · 120 câu / 5 lĩnh vực</span>
         <span aria-hidden="true">·</span>

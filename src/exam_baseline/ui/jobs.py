@@ -10,7 +10,8 @@ from pathlib import Path
 
 import httpx
 
-from exam_baseline.core.contracts import ProviderError
+from exam_baseline.core.contracts import CompletionRequest, ProviderError
+from exam_baseline.core.models import Model
 from exam_baseline.providers.chat_completions import ChatCompletionsProvider
 from exam_baseline.thpt.agents import QUESTION_FORMAT, Agent, IllustratorAgent, SolverAgent
 from exam_baseline.thpt.content import choice_latex
@@ -26,7 +27,21 @@ from exam_baseline.thpt.rag import (
 from exam_baseline.thpt.rendering import render, student_view
 from exam_baseline.thpt.runtime import ContractError
 from exam_baseline.thpt.visuals import visual_issues
-from exam_baseline.ui.contracts import ExamGenerateRequest
+from exam_baseline.thpt2026 import (
+    build_student_paper,
+    profile_by_format_id,
+    render_contract_exam_tex,
+    run_thpt2026_fallback_job,
+    run_thpt2026_live_job,
+    validate_contract_exam,
+)
+from exam_baseline.thpt2026.contract import question_type_map
+from exam_baseline.thpt2026.generator import (
+    _SOLVER_SCHEMA,
+    _blind_student_items,
+    _parse_json_object,
+)
+from exam_baseline.ui.contracts import ContractThptGenerateRequest, ExamGenerateRequest
 from exam_baseline.ui.demo import regenerate_demo_question, run_demo_job
 from exam_baseline.ui.errors import UiError
 from exam_baseline.ui.preview import PreviewService
@@ -165,7 +180,7 @@ def _question_verification(raw, solved, edited):
             check
         ],
         "solverKey": solved["answer"] if solved and solved["status"] == "solved" else None,
-        "writerKey": raw["answer"],
+        "writerKey": raw.get("answer"),
         "auditNotes": notes[check],
     }
 
@@ -180,6 +195,36 @@ def fingerprint(value):
 
 def _is_vact(job: dict) -> bool:
     return job.get("request", {}).get("formatId") == "vact"
+
+
+def _is_thpt2026(job: dict) -> bool:
+    return profile_by_format_id(job.get("request", {}).get("formatId", "")) is not None
+
+
+def _fallback_reason_message(reason_code: str) -> str:
+    if reason_code in {"provider_rate_limited", "provider_quota_exhausted"}:
+        return (
+            "Dịch vụ AI tạm thời quá tải hoặc hết hạn mức, hệ thống đã tự động tạo bộ đề "
+            "dự phòng đạt chuẩn để thầy cô sử dụng ngay."
+        )
+    if reason_code == "invalid_contract":
+        return (
+            "Kết quả trả về từ AI chưa đúng cấu trúc chuẩn, hệ thống đã tự động tạo bộ đề "
+            "dự phòng đạt chuẩn."
+        )
+    return (
+        "Kết nối dịch vụ AI gặp sự cố tạm thời, hệ thống đã tự động tạo bộ đề dự phòng "
+        "đạt chuẩn để không gián đoạn công việc."
+    )
+
+
+class ContractNativeRequest(Model):
+    formatId: str
+    subject: str
+    durationMinutes: int
+    totalQuestions: int
+    requirements: list[str] = []
+    font_profile: str = "unicode_times"
 
 
 def _vact_passage_instruction(group) -> str:
@@ -227,7 +272,21 @@ def resolve_request(
     payload: ExamGenerateRequest,
     *,
     settings=None,
-) -> tuple[Request | vact_models.Request, dict | None]:
+) -> tuple[Request | vact_models.Request | ContractNativeRequest, dict | None]:
+    if isinstance(payload, ContractThptGenerateRequest):
+        profile = profile_by_format_id(payload.formatId)
+        if profile is None:
+            raise UiError("invalid_format", "Định dạng đề thi chưa được hỗ trợ.", 422)
+        return (
+            ContractNativeRequest(
+                formatId=payload.formatId,
+                subject=profile["displayName"],
+                durationMinutes=profile["durationMinutes"],
+                totalQuestions=profile["totalQuestions"],
+                requirements=[payload.prompt] if payload.prompt else [],
+            ),
+            None,
+        )
     if payload.formatId == "vact":
         request = vact_models.Request(
             slots=payload.slots or default_vact_slots(),
@@ -364,13 +423,21 @@ class JobManager:
             async with self.capacity:
                 job = self.get(job_id)
                 is_vact = _is_vact(job)
+                is_thpt2026 = _is_thpt2026(job)
                 demo_active = self.runner is None and self.settings.demo_mode
+                profile = profile_by_format_id(job["request"]["formatId"]) if is_thpt2026 else None
                 if is_vact:
                     job["retrieval"] = None
                     self.store.save(job)
                     request = vact_models.Request.model_validate(job["nativeRequest"])
                     orchestrator_type = VactOrchestrator
                     question_model = vact_models.Question
+                elif is_thpt2026:
+                    job["retrieval"] = None
+                    self.store.save(job)
+                    request = ContractNativeRequest.model_validate(job["nativeRequest"])
+                    orchestrator_type = None
+                    question_model = None
                 elif demo_active:
                     self.progress(job_id, "rag")
                     job = self.get(job_id)
@@ -412,15 +479,68 @@ class JobManager:
                 def progress(role, part=None, revision=1):
                     self.progress(job_id, role, part, revision)
 
+                prompt_text = job["request"].get("prompt", "")
+                font_profile = getattr(request, "font_profile", "unicode_times")
                 if self.runner:
                     report = await self.runner(request, output, progress)
                 elif demo_active:
-                    report = await run_demo_job(request, output, progress, is_vact=is_vact)
-                else:
-                    async with self.provider_scope() as providers:
-                        report = await orchestrator_type(providers, on_progress=progress).run(
-                            request, output
+                    if is_thpt2026:
+                        report = await run_thpt2026_fallback_job(
+                            profile,
+                            output,
+                            progress,
+                            prompt=prompt_text,
+                            font_profile=font_profile,
                         )
+                    else:
+                        report = await run_demo_job(request, output, progress, is_vact=is_vact)
+                else:
+                    try:
+                        async with self.provider_scope() as providers:
+                            if is_thpt2026:
+                                report = await run_thpt2026_live_job(
+                                    profile,
+                                    providers,
+                                    output,
+                                    progress,
+                                    prompt=prompt_text,
+                                    font_profile=font_profile,
+                                )
+                            else:
+                                report = await orchestrator_type(
+                                    providers, on_progress=progress
+                                ).run(request, output)
+                    except (ProviderError, ContractError, httpx.HTTPError) as exc:
+                        if isinstance(exc, ProviderError) and exc.code == "spend_limit_exceeded":
+                            raise
+                        if not self.settings.fallback_on_provider_error:
+                            raise
+                        reason_code = (
+                            exc.code
+                            if isinstance(exc, ProviderError)
+                            else (
+                                "invalid_contract"
+                                if isinstance(exc, ContractError)
+                                else type(exc).__name__
+                            )
+                        )
+                        fallback_info = {
+                            "used": True,
+                            "reasonCode": reason_code,
+                            "reasonMessage": _fallback_reason_message(reason_code),
+                        }
+                        if is_thpt2026:
+                            report = await run_thpt2026_fallback_job(
+                                profile,
+                                output,
+                                progress,
+                                prompt=prompt_text,
+                                fallback_reason=fallback_info,
+                                font_profile=font_profile,
+                            )
+                        else:
+                            report = await run_demo_job(request, output, progress, is_vact=is_vact)
+                            report["fallback"] = fallback_info
                 if report.get("execution_status") != "completed":
                     raise UiError(
                         "generation_failed",
@@ -435,34 +555,55 @@ class JobManager:
                         / "illustrations.json"
                     ).read_text("utf-8")
                 )
-                questions = [question_model.model_validate(q) for q in answers["composer"]]
-                if [q.id for q in questions] != [s.id for s in request.slots]:
-                    raise UiError(
-                        "invalid_result",
-                        "Dữ liệu đề thi tạo ra chưa khớp cấu trúc chuẩn. Thầy cô vui lòng thử lại.",
-                    )
                 extra_fields = {}
-                if is_vact:
-                    passages = [
-                        vact_models.Passage.model_validate(p) for p in answers.get("passages", [])
-                    ]
-                    expected_pids = {
-                        g.id for batch in vact_template.batches() for g in batch.groups if g.shared
-                    }
-                    if {p.id for p in passages} != expected_pids:
+                if is_thpt2026:
+                    raw_questions = answers["composer"]
+                    raw_passages = answers.get("passages", [])
+                    errors = validate_contract_exam(profile, raw_questions, raw_passages)
+                    if errors:
                         raise UiError(
                             "invalid_result",
-                            "Ngữ liệu đọc hiểu tạo ra chưa khớp cấu trúc chuẩn. "
+                            "Dữ liệu đề thi tạo ra chưa khớp cấu trúc chuẩn. "
                             "Thầy cô vui lòng thử lại.",
                         )
-                    extra_fields["rawPassages"] = [p.model_dump() for p in passages]
+                    extra_fields["rawPassages"] = raw_passages
+                    extra_fields["frontMatter"] = answers.get("front_matter", [])
+                else:
+                    questions = [question_model.model_validate(q) for q in answers["composer"]]
+                    if [q.id for q in questions] != [s.id for s in request.slots]:
+                        raise UiError(
+                            "invalid_result",
+                            "Dữ liệu đề thi tạo ra chưa khớp cấu trúc chuẩn. "
+                            "Thầy cô vui lòng thử lại.",
+                        )
+                    raw_questions = [q.model_dump() for q in questions]
+                    if is_vact:
+                        passages = [
+                            vact_models.Passage.model_validate(p)
+                            for p in answers.get("passages", [])
+                        ]
+                        expected_pids = {
+                            g.id
+                            for batch in vact_template.batches()
+                            for g in batch.groups
+                            if g.shared
+                        }
+                        if {p.id for p in passages} != expected_pids:
+                            raise UiError(
+                                "invalid_result",
+                                "Ngữ liệu đọc hiểu tạo ra chưa khớp cấu trúc chuẩn. "
+                                "Thầy cô vui lòng thử lại.",
+                            )
+                        extra_fields["rawPassages"] = [p.model_dump() for p in passages]
+                if report.get("fallback"):
+                    extra_fields["fallback"] = report["fallback"]
                 job = self.get(job_id)
                 job.update(
                     status="completed",
-                    rawQuestions=[q.model_dump() for q in questions],
+                    rawQuestions=raw_questions,
                     drawings=drawings,
                     solutions={"entries": []}
-                    if report.get("demo_mode")
+                    if (report.get("demo_mode") or report.get("fallback"))
                     else answers["independent_solver"],
                     solverResultsVersion=1,
                     revision=report["revision"],
@@ -475,7 +616,7 @@ class JobManager:
                     stage=6,
                     stageName="completed",
                     percent=100,
-                    completedItems=len(questions),
+                    completedItems=len(raw_questions),
                     statusMessage="Đề đã sẵn sàng để kiểm tra",
                 )
                 self.store.save(job)
@@ -531,6 +672,12 @@ class JobManager:
         job.update(status="failed", error=error.payload())
         self.store.save(job)
 
+    def _fallback_warnings(self, job) -> list[dict]:
+        fb = job.get("fallback")
+        if fb and fb.get("used"):
+            return [{"code": "fallback_used", "message": fb["reasonMessage"]}]
+        return []
+
     def _refresh(self, job):
         if _is_vact(job):
             sections = _vact_sections(job["rawQuestions"], job.get("rawPassages", []))
@@ -545,6 +692,26 @@ class JobManager:
                 {
                     "questions": job["rawQuestions"],
                     "passages": job.get("rawPassages", []),
+                    "sourceHash": job["sourceHash"],
+                }
+            )
+            return
+        if _is_thpt2026(job):
+            profile = profile_by_format_id(job["request"]["formatId"])
+            source = render_contract_exam_tex(
+                profile,
+                job["rawQuestions"],
+                job.get("rawPassages", []),
+                front_matter=job.get("frontMatter", []),
+                font_profile=job["nativeRequest"].get("font_profile", "unicode_times"),
+            )
+            (self.root / job["jobId"] / "de_thi.tex").write_bytes(source)
+            job["sourceHash"] = sha256(source).hexdigest()
+            job["contentHash"] = fingerprint(
+                {
+                    "questions": job["rawQuestions"],
+                    "passages": job.get("rawPassages", []),
+                    "frontMatter": job.get("frontMatter", []),
                     "sourceHash": job["sourceHash"],
                 }
             )
@@ -641,10 +808,11 @@ class JobManager:
             "preview": self.previews.status(job),
             "visualWarnings": visual_warnings,
             "hasDrawings": bool(drawings),
-            "warnings": [],
+            "warnings": self._fallback_warnings(job),
             "gaps": [],
             "provenance": {},
             "passages": passages,
+            **({"fallback": job["fallback"]} if job.get("fallback") else {}),
             "blueprint": {
                 "subject": "Tổng hợp",
                 "grade": 12,
@@ -664,10 +832,149 @@ class JobManager:
             "questions": questions,
         }
 
+    def _package_thpt2026(self, job):
+        profile = profile_by_format_id(job["request"]["formatId"])
+        spec_map = question_type_map(profile)
+        solutions = _current_solutions(job)
+        raw_passages = job.get("rawPassages", [])
+        passages = [
+            {
+                "id": p["id"],
+                "section": p.get("section", "P1"),
+                "kind": p.get("kind", "reading"),
+                "questionRange": p.get("questionRange", [1, 1]),
+                "instruction": p.get("instruction", "Đọc ngữ liệu sau và trả lời câu hỏi."),
+                "heading": p.get("heading", ""),
+                "text": p.get("text", ""),
+                "table": p.get("table"),
+            }
+            for p in raw_passages
+        ]
+
+        def safe_choice(val: str) -> str:
+            try:
+                return choice_latex(val)
+            except ValueError:
+                return str(val)
+
+        questions = []
+        for index, raw in enumerate(job["rawQuestions"], 1):
+            sec, pos = spec_map[raw["id"]]
+            q_type = sec["type"]
+            if q_type == "written":
+                pts = raw.get("points")
+                if pts is None and pos < len(sec.get("pointsByItem") or []):
+                    pts = sec["pointsByItem"][pos]
+                wc = raw.get("word_count_target")
+                if wc is None and pos < len(sec.get("wordCountTargets") or []):
+                    wc = sec["wordCountTargets"][pos]
+                key_label = (
+                    f"Thang điểm {float(pts):g}".replace(".", ",") + " điểm"
+                    if pts is not None
+                    else "Tự luận"
+                )
+                verification = {
+                    "answerCheck": "matched" if job["approval"] else "needs_recheck",
+                    "status": "VERIFIED" if job["approval"] else "PENDING",
+                    "solverKey": None,
+                    "writerKey": None,
+                    "auditNotes": (
+                        "Câu tự luận cần thầy cô kiểm tra hướng dẫn chấm trước khi duyệt."
+                    ),
+                }
+            else:
+                pts, wc = None, None
+                if q_type == "true_false":
+                    key_label = " / ".join(
+                        "Đúng" if s.get("answer") else "Sai" for s in raw.get("statements") or []
+                    )
+                else:
+                    key_label = str(raw.get("answer") or "")
+                verification = _question_verification(
+                    raw, solutions.get(raw["id"]), raw["id"] in job["manualEdits"]
+                )
+
+            item = {
+                "id": index,
+                "stableId": raw["id"],
+                "examRevision": job["revision"],
+                "part": sec["id"],
+                "questionType": q_type,
+                "passageId": raw.get("passage_id"),
+                "stem": raw.get("stem", ""),
+                "choices": {
+                    **dict.fromkeys("ABCD", ""),
+                    **{k: safe_choice(str(v)) for k, v in (raw.get("choices") or {}).items()},
+                },
+                "key": key_label,
+                "statements": raw.get("statements") or [],
+                "explanation": raw.get("solution", ""),
+                "level": "THONG_HIEU",
+                "topic": profile["displayName"],
+                "revisionCount": job["revision"] - 1,
+                **verification,
+            }
+            if pts is not None:
+                item["points"] = pts
+            if wc is not None:
+                item["wordCountTarget"] = int(wc)
+            if raw.get("task"):
+                item["task"] = raw["task"]
+            questions.append(item)
+
+        student_paper = build_student_paper(
+            job["jobId"],
+            job["revision"],
+            profile,
+            job["rawQuestions"],
+            raw_passages,
+            front_matter=job.get("frontMatter", []),
+        )
+        return {
+            "examId": job["jobId"],
+            "title": f"Đề luyện tập {profile['displayName']} THPT 2026",
+            "subject": profile["displayName"],
+            "grade": 12,
+            "durationMinutes": profile["durationMinutes"],
+            "totalScore": 10,
+            "createdAt": job["createdAt"],
+            "revision": job["revision"],
+            "contentHash": job["contentHash"],
+            "approved": bool(job["approval"]),
+            "approval": job["approval"],
+            "preview": self.previews.status(job),
+            "visualWarnings": [],
+            "hasDrawings": False,
+            "warnings": self._fallback_warnings(job),
+            "gaps": [],
+            "provenance": {},
+            "passages": passages,
+            "studentPaper": student_paper,
+            **({"fallback": job["fallback"]} if job.get("fallback") else {}),
+            "blueprint": {
+                "subject": profile["displayName"],
+                "grade": 12,
+                "examType": "THPT_STANDARD",
+                "title": f"{profile['displayName']} THPT 2026",
+                "totalQuestions": len(questions),
+                "durationMinutes": profile["durationMinutes"],
+                "topics": [profile["displayName"]],
+                "levelDistribution": {
+                    "nhanBiet": 0,
+                    "thongHieu": 0,
+                    "vanDung": 0,
+                    "vanDungCao": 0,
+                },
+            },
+            "questions": questions,
+        }
+
     def package(self, job_id):
         job = self._completed(job_id)
         if _is_vact(job):
             return self._package_vact(job)
+        if _is_thpt2026(job):
+            return self._package_thpt2026(job)
         slots = job["nativeRequest"]["slots"]
         drawings = {d["question_id"]: d["latex"] for d in job["drawings"]["drawings"]}
         solutions = _current_solutions(job)
@@ -727,12 +1034,16 @@ class JobManager:
             ],
             "hasDrawings": bool(drawings),
             "warnings": [
-                dict(warning, questionId=c["question_id"])
-                for c in retrieval["question_contexts"]
-                for warning in c.get("warnings", [])
+                *[
+                    dict(warning, questionId=c["question_id"])
+                    for c in retrieval["question_contexts"]
+                    for warning in c.get("warnings", [])
+                ],
+                *self._fallback_warnings(job),
             ],
             "gaps": retrieval.get("gaps", []),
             "provenance": retrieval.get("release_info", {}),
+            **({"fallback": job["fallback"]} if job.get("fallback") else {}),
             "blueprint": {
                 "subject": "Toán Học",
                 "grade": 12,
@@ -792,6 +1103,31 @@ class JobManager:
                 job["rawQuestions"][question_id - 1] = vact_models.Question.model_validate(
                     raw
                 ).model_dump()
+            elif _is_thpt2026(job):
+                profile = profile_by_format_id(job["request"]["formatId"])
+                sec, _ = question_type_map(profile)[raw["id"]]
+                q_type = sec["type"]
+                if q_type == "mcq":
+                    raw.update(
+                        choices=value.get("choices", raw.get("choices", {})),
+                        answer=value.get("key", raw.get("answer")),
+                    )
+                elif q_type == "true_false":
+                    raw["statements"] = value.get("statements", raw.get("statements", []))
+                elif q_type == "short_answer":
+                    raw["answer"] = value.get("key", raw.get("answer"))
+                updated_questions = list(job["rawQuestions"])
+                updated_questions[question_id - 1] = raw
+                errors = validate_contract_exam(
+                    profile, updated_questions, job.get("rawPassages", [])
+                )
+                if errors:
+                    raise UiError(
+                        "invalid_edit",
+                        "Nội dung câu hỏi chỉnh sửa chưa hợp lệ: " + "; ".join(errors),
+                        422,
+                    )
+                job["rawQuestions"][question_id - 1] = raw
             else:
                 if raw["id"].startswith("P1-"):
                     raw.update(
@@ -841,6 +1177,72 @@ class JobManager:
             raw = job["rawQuestions"][question_id - 1]
             stable_id = raw["id"]
             drawings = job["drawings"]["drawings"]
+            if _is_thpt2026(job):
+                if raw.get("type") == "written":
+                    raise UiError(
+                        "unsupported_for_format",
+                        "Câu tự luận không dùng kiểm tra đáp án tự động.",
+                        422,
+                    )
+                passage = raw.get("passage_id")
+                solver_payload = {
+                    "subject": profile_by_format_id(job["request"]["formatId"])["displayName"],
+                    "passages": [
+                        {
+                            "id": p["id"],
+                            "heading": p.get("heading", ""),
+                            "text": p.get("text", ""),
+                            "table": p.get("table"),
+                        }
+                        for p in job.get("rawPassages", [])
+                        if p.get("id") == passage
+                    ],
+                    "questions": _blind_student_items([raw]),
+                }
+                try:
+                    async with self.provider_scope() as providers:
+                        completion = await providers["solver"].complete(
+                            CompletionRequest(
+                                system=(
+                                    "Independently solve the supplied question and return valid "
+                                    "JSON matching output_schema without Markdown fences."
+                                ),
+                                user=json.dumps(solver_payload, ensure_ascii=False),
+                                output_schema=_SOLVER_SCHEMA,
+                            )
+                        )
+                    solved_data = _parse_json_object(completion.text, "solver")
+                    entry_dict = (solved_data.get("entries") or [{}])[0]
+                except ProviderError as exc:
+                    unavailable = (
+                        {"retryAfterSeconds": exc.retry_after_seconds}
+                        if exc.retry_after_seconds is not None
+                        else None
+                    )
+                    raise UiError(
+                        exc.code,
+                        "Solver chưa thể kiểm tra câu này. Vui lòng thử lại.",
+                        503,
+                        details=unavailable,
+                    ) from exc
+                except (ContractError, ValueError, KeyError, IndexError) as exc:
+                    raise UiError(
+                        "invalid_solver_response",
+                        "Kết quả Solver sai định dạng. Vui lòng thử lại.",
+                        502,
+                    ) from exc
+                if entry_dict.get("question_id") != stable_id:
+                    raise UiError(
+                        "invalid_solver_response",
+                        "Kết quả Solver chưa đúng câu cần kiểm tra.",
+                        502,
+                    )
+                solutions = _current_solutions(job)
+                solutions[stable_id] = entry_dict
+                job.update(solutions={"entries": list(solutions.values())}, solverResultsVersion=1)
+                self.store.save(job)
+                return self.package(job_id)
+
             if _is_vact(job):
                 passage = raw.get("passage_id")
                 section = vact_models.Section.model_validate(
@@ -896,10 +1298,10 @@ class JobManager:
         async with self.lock(job_id):
             job = self._completed(job_id)
             self._check_revision(job, revision)
-            if _is_vact(job):
+            if _is_vact(job) or _is_thpt2026(job):
                 raise UiError(
                     "unsupported_for_format",
-                    "Tạo lại từng câu cho V-ACT chưa được hỗ trợ; "
+                    "Tạo lại từng câu cho cấu trúc này chưa được hỗ trợ; "
                     "hãy sửa trực tiếp hoặc tạo đề mới.",
                     422,
                 )

@@ -196,6 +196,12 @@ export const App: React.FC = () => {
                     </div>
                   </div>
                 )}
+                {active.package?.fallback?.used && (
+                  <div className="canvas-alert-banner" role="status">
+                    <AlertTriangle size={17} aria-hidden="true" />
+                    <span>{active.package.fallback.reasonMessage}</span>
+                  </div>
+                )}
                 {!!active.package?.warnings?.length && (
                   <details className="canvas-source-warnings">
                     <summary>
@@ -203,7 +209,12 @@ export const App: React.FC = () => {
                       <span>Cảnh báo nguồn ({active.package.warnings.length})</span>
                     </summary>
                     <div className="canvas-source-warnings-body">
-                      {active.package.warnings.map((warning, i) => <p key={i}><strong>{warning.questionId}:</strong> {warning.message}</p>)}
+                      {active.package.warnings.map((warning, i) => (
+                        <p key={i}>
+                          {warning.questionId ? <><strong>{warning.questionId}:</strong> </> : null}
+                          {warning.message}
+                        </p>
+                      ))}
                     </div>
                   </details>
                 )}

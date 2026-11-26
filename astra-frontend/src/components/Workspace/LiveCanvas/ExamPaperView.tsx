@@ -31,7 +31,11 @@ const SECTION_SHORT_LABELS: Record<string, string> = {
   SCIENCE: 'Suy luận KH',
 };
 
-function sectionHeading(part: string): string {
+function sectionHeading(part: string, sample?: QuestionItem): string {
+  if (sample?.questionType === 'written') {
+    if (part === 'P1') return 'Phần I. Đọc hiểu';
+    if (part === 'P2') return 'Phần II. Viết';
+  }
   return SECTION_HEADINGS[part] || part;
 }
 
@@ -112,7 +116,11 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
       if (!q.part) continue;
       let entry = byPart.get(q.part);
       if (!entry) {
-        entry = { part: q.part, label: SECTION_SHORT_LABELS[q.part] || q.part, count: 0 };
+        const label =
+          q.questionType === 'written'
+            ? (q.part === 'P1' ? 'Phần I · Đọc hiểu' : q.part === 'P2' ? 'Phần II · Viết' : q.part)
+            : (SECTION_SHORT_LABELS[q.part] || q.part);
+        entry = { part: q.part, label, count: 0 };
         byPart.set(q.part, entry);
         order.push(entry);
       }
@@ -378,7 +386,7 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
                 : undefined;
             return (
               <React.Fragment key={q.id}>
-                {showPart && <h2 id={`exam-section-${q.part}`} className="exam-section-heading">{sectionHeading(q.part!)}</h2>}
+                {showPart && <h2 id={`exam-section-${q.part}`} className="exam-section-heading">{sectionHeading(q.part!, q)}</h2>}
                 {showGroupInstruction && (
                   <p className="vact-group-instruction"><strong>{q.groupInstruction}</strong></p>
                 )}

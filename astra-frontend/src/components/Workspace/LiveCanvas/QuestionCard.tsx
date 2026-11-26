@@ -83,6 +83,17 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, index, onE
           )}
         </div>
       )}
+      {question.questionType === 'written' && (
+        <div className="question-short-answer">
+          <span>Tự luận</span>
+          {question.points !== undefined && (
+            <strong className="short-answer-value">{String(question.points).replace('.', ',')} điểm</strong>
+          )}
+          {question.wordCountTarget !== undefined && (
+            <span>· Khoảng {question.wordCountTarget} chữ</span>
+          )}
+        </div>
+      )}
       {review && (
         <details className={`question-review ${flagged ? 'flagged' : ''}`}>
           <summary>

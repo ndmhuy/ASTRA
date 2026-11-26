@@ -9,6 +9,7 @@ from fastapi.testclient import TestClient
 from exam_baseline.api.app import create_app
 from exam_baseline.config import Settings
 from exam_baseline.core.contracts import Completion
+from exam_baseline.thpt2026 import CONTRACT_FORMAT_IDS
 from exam_baseline.vact import template
 
 VACT_PAYLOAD = {
@@ -147,7 +148,7 @@ def test_vact_catalog_evaluate_generate_package_edit_approve_and_export(tmp_path
     )
     with TestClient(app) as client:
         catalog = client.get("/api/exam-formats").json()["formats"]
-        assert [item["id"] for item in catalog] == ["thpt-math", "vact"]
+        assert [item["id"] for item in catalog] == ["thpt-math", "vact", *CONTRACT_FORMAT_IDS]
         vact = catalog[1]
         assert vact["examType"] == "DGNL_DHQG"
         assert vact["durationMinutes"] == 150

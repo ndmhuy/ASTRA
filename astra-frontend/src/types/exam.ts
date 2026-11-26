@@ -1,5 +1,19 @@
 /** Backend-adapted UI contracts. Display numbers are separate from stable MAS IDs. */
-export type Subject = 'Tổng hợp' | 'Vật Lý' | 'Toán Học' | 'Hóa Học' | 'Sinh Học' | 'Tiếng Anh' | 'Lịch Sử' | 'Địa Lý' | 'GDCD / KTPL';
+export type Subject =
+  | 'Tổng hợp'
+  | 'Vật Lý'
+  | 'Toán Học'
+  | 'Hóa Học'
+  | 'Hóa học'
+  | 'Sinh Học'
+  | 'Sinh học'
+  | 'Tiếng Anh'
+  | 'Ngữ văn'
+  | 'Lịch Sử'
+  | 'Lịch sử'
+  | 'Địa Lý'
+  | 'Địa lí'
+  | 'GDCD / KTPL';
 export type ExamType = 'THPT_STANDARD' | 'DGNL_DHQG' | 'MID_TERM' | 'CUSTOM';
 export type CognitiveLevel = 'NHAN_BIET' | 'THONG_HIEU' | 'VAN_DUNG' | 'VAN_DUNG_CAO';
 export type VerificationStatus = 'PENDING' | 'VERIFIED' | 'FLAGGED';
@@ -12,7 +26,10 @@ export interface QuestionItem {
   stableId?: string;
   examRevision?: number;
   part?: string;
-  questionType?: 'mcq' | 'true_false' | 'short_answer';
+  questionType?: 'mcq' | 'true_false' | 'short_answer' | 'written';
+  points?: number;
+  wordCountTarget?: number;
+  task?: string;
   passageId?: string | null;
   groupInstruction?: string;
   stem: string;
@@ -72,14 +89,8 @@ export interface ExamPassageTable {
 
 export interface ExamPassage {
   id: string;
-  section: 'TV' | 'TA' | 'TO' | 'LOGIC' | 'SCIENCE';
-  kind:
-    | 'passage'
-    | 'vact_passage_en'
-    | 'math_context'
-    | 'logic_puzzle'
-    | 'data_set'
-    | 'science';
+  section: string;
+  kind: string;
   questionRange: [number, number];
   instruction: string;
   heading?: string;
@@ -92,6 +103,8 @@ export interface ExamPackage {
   durationMinutes: number; totalScore: number | null; createdAt: string;
   blueprint: ExamBlueprint; questions: QuestionItem[];
   passages?: ExamPassage[];
+  studentPaper?: Record<string, unknown>;
+  fallback?: { used: boolean; reasonCode: string; reasonMessage: string };
   revision?: number; contentHash?: string; approved?: boolean;
   approval?: { revision: number; contentHash: string; reviewer: string; approvedAt: string } | null;
   preview?: ExamPreviewState;
