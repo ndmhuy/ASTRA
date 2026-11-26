@@ -125,6 +125,13 @@ def _format_progress_message(role: str, part: str | None, revision: int) -> str:
     return message
 
 
+def _thpt_solver_input(question, drawings):
+    return {
+        "questions": student_view([question]),
+        "drawings": {"drawings": [d for d in drawings if d["question_id"] == question.id]},
+    }
+
+
 def _current_solutions(job):
     current_format = job.get("solverResultsVersion") == 1
     if not current_format and job.get("report", {}).get("demo_mode"):
@@ -833,7 +840,7 @@ class JobManager:
             self._verify_source(job)
             raw = job["rawQuestions"][question_id - 1]
             stable_id = raw["id"]
-            drawings = [d for d in job["drawings"]["drawings"] if d["question_id"] == stable_id]
+            drawings = job["drawings"]["drawings"]
             if _is_vact(job):
                 passage = raw.get("passage_id")
                 section = vact_models.Section.model_validate(
@@ -847,14 +854,11 @@ class JobManager:
                     "part": "verification",
                     "question_ids": [stable_id],
                     **vact_student_view(section),
-                    "drawings": drawings,
+                    "drawings": [d for d in drawings if d["question_id"] == stable_id],
                 }
             else:
                 solver = SolverAgent()
-                data = {
-                    "questions": student_view([Question.model_validate(raw)]),
-                    "drawings": {"drawings": drawings},
-                }
+                data = _thpt_solver_input(Question.model_validate(raw), drawings)
 
             try:
                 async with self.provider_scope() as providers:
@@ -965,16 +969,19 @@ class JobManager:
                         repaired if position == index else Question.model_validate(q)
                         for position, q in enumerate(job["rawQuestions"])
                     ]
-                    solutions, _ = await SolverAgent().run(
+                    checked, _ = await SolverAgent().run(
                         providers["solver"],
-                        {"questions": student_view(questions), "drawings": drawings.model_dump()},
+                        _thpt_solver_input(repaired, drawings.model_dump()["drawings"]),
                     )
-                    if [s.question_id for s in solutions.entries] != [q.id for q in questions]:
+                    entry = checked.entries[0]
+                    if entry.question_id != repaired.id:
                         raise UiError(
                             "invalid_repair",
-                            "Phần giải kiểm tra chưa bao phủ đủ các câu sau khi sửa.",
+                            "Kết quả Solver chưa khớp với câu vừa tạo lại.",
                         )
-                    solutions_data = solutions.model_dump()
+                    solutions = _current_solutions(job)
+                    solutions[repaired.id] = entry.model_dump()
+                    solutions_data = {"entries": list(solutions.values())}
             job.update(
                 rawQuestions=[q.model_dump() for q in questions],
                 drawings=drawings.model_dump(),
