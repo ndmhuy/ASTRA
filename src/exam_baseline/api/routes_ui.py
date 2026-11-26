@@ -22,6 +22,7 @@ from exam_baseline.ui.contracts import (
     format_catalog,
 )
 from exam_baseline.ui.jobs import resolve_request
+from exam_baseline.ui.timeline import change_messages
 
 router = APIRouter(prefix="/api")
 
@@ -44,6 +45,13 @@ def save_workspace(request: Request, workspace_id: UUID, payload: WorkspaceDraft
 async def workspace_versions(request: Request, workspace_id: UUID, response: Response):
     response.headers["Cache-Control"] = "no-store"
     return request.app.state.ui_jobs.workspace_history(str(workspace_id))
+
+
+@router.get("/workspaces/{workspace_id}/changes")
+def workspace_changes(request: Request, workspace_id: UUID, response: Response):
+    response.headers["Cache-Control"] = "no-store"
+    changes = request.app.state.ui_jobs.store.workspace_changes(str(workspace_id))
+    return {"messages": [message for change in changes for message in change_messages(change)]}
 
 
 @router.post("/workspaces/{workspace_id}/versions/restore")
@@ -176,16 +184,38 @@ async def restore_version(
 
 
 @router.put("/exams/{job_id}/questions/{question_id}")
-async def edit(request: Request, job_id: UUID, question_id: int, payload: EditRequest):
-    return await request.app.state.ui_jobs.edit(
-        str(job_id), question_id, payload.revision, payload.question
+async def edit(
+    request: Request,
+    job_id: UUID,
+    question_id: int,
+    payload: EditRequest,
+    idempotency_key: Annotated[UUID | None, Header()] = None,
+):
+    return await request.app.state.ui_jobs.question_change(
+        str(job_id),
+        question_id,
+        payload.revision,
+        "edited",
+        payload.question,
+        str(idempotency_key) if idempotency_key else None,
     )
 
 
 @router.post("/exams/{job_id}/questions/{question_id}/regenerate")
-async def regenerate(request: Request, job_id: UUID, question_id: int, payload: RegenerateRequest):
-    return await request.app.state.ui_jobs.regenerate(
-        str(job_id), question_id, payload.revision, payload.instruction
+async def regenerate(
+    request: Request,
+    job_id: UUID,
+    question_id: int,
+    payload: RegenerateRequest,
+    idempotency_key: Annotated[UUID | None, Header()] = None,
+):
+    return await request.app.state.ui_jobs.question_change(
+        str(job_id),
+        question_id,
+        payload.revision,
+        "regenerated",
+        payload.instruction,
+        str(idempotency_key) if idempotency_key else None,
     )
 
 

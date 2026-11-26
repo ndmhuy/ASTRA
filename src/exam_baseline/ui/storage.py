@@ -67,6 +67,15 @@ class JobStore:
                 )"""
             )
             db.execute(
+                """CREATE TABLE IF NOT EXISTS exam_changes (
+                    job_id TEXT NOT NULL REFERENCES jobs(id),
+                    id TEXT NOT NULL,
+                    fingerprint TEXT NOT NULL,
+                    data TEXT NOT NULL,
+                    PRIMARY KEY (job_id, id)
+                )"""
+            )
+            db.execute(
                 """INSERT OR IGNORE INTO workspace_jobs
                    SELECT w.id, j.id FROM workspaces w JOIN jobs j ON w.job_id=j.id"""
             )
@@ -318,6 +327,7 @@ class JobStore:
         question_id: int | None = None,
         restored_from: int | None = None,
         promotion: tuple[str, str] | None = None,
+        change_id: str | None = None,
     ) -> None:
         job_id, revision = job["jobId"], job["revision"]
         root = self.path.parent / job_id
@@ -363,6 +373,8 @@ class JobStore:
                            WHERE id=(SELECT workspace_id FROM workspace_jobs WHERE job_id=?)""",
                         (job_id, job_id),
                     )
+                if change_id is not None:
+                    self._finish_change(db, job_id, change_id, "completed", revision, None)
                 publish_source(root, source)
                 db.commit()
                 committed_hash = job["sourceHash"]
@@ -391,6 +403,55 @@ class JobStore:
         if row is None:
             raise UiError("workspace_not_found", "Không tìm thấy đề đã lưu.", 404)
         return row[0]
+
+    def begin_change(self, job_id: str, change_id: str, signature: str, data: dict):
+        with self.connect() as db:
+            db.execute("BEGIN IMMEDIATE")
+            row = db.execute(
+                "SELECT fingerprint, data FROM exam_changes WHERE job_id=? AND id=?",
+                (job_id, change_id),
+            ).fetchone()
+            if row is not None:
+                if row[0] != signature:
+                    raise JobConflict("Mã yêu cầu chỉnh sửa đã được dùng cho nội dung khác.")
+                return json.loads(row[1])
+            db.execute(
+                "INSERT INTO exam_changes VALUES (?, ?, ?, ?)",
+                (job_id, change_id, signature, json.dumps(data, ensure_ascii=False)),
+            )
+        return None
+
+    @staticmethod
+    def _finish_change(db, job_id, change_id, status, revision, error):
+        db.execute(
+            """UPDATE exam_changes SET data=json_set(data, '$.status', ?, '$.afterRevision', ?,
+                      '$.finishedAt', strftime('%Y-%m-%dT%H:%M:%fZ', 'now'), '$.error', json(?))
+               WHERE job_id=? AND id=? AND json_extract(data, '$.status')='pending'""",
+            (status, revision, json.dumps(error, ensure_ascii=False), job_id, change_id),
+        )
+
+    def fail_change(self, job_id, change_id, error):
+        with self.connect() as db:
+            self._finish_change(db, job_id, change_id, "failed", None, error)
+
+    def get_change(self, job_id, change_id):
+        with self.connect() as db:
+            row = db.execute(
+                "SELECT data FROM exam_changes WHERE job_id=? AND id=?", (job_id, change_id)
+            ).fetchone()
+        if row is None:
+            raise UiError("exam_change_not_found", "Không tìm thấy thay đổi này.", 404)
+        return json.loads(row[0])
+
+    def workspace_changes(self, workspace_id):
+        self.workspace_job(workspace_id)
+        with self.connect() as db:
+            rows = db.execute(
+                """SELECT c.data FROM exam_changes c JOIN workspace_jobs l ON l.job_id=c.job_id
+                   WHERE l.workspace_id=? ORDER BY c.rowid""",
+                (workspace_id,),
+            ).fetchall()
+        return [json.loads(raw) for (raw,) in rows]
 
     def owns_job(self, workspace_id: str, job_id: str) -> bool:
         with self.connect() as db:
@@ -427,6 +488,21 @@ class JobStore:
 
     def interrupt_unfinished(self) -> None:
         with self.connect() as db:
+            rows = db.execute(
+                "SELECT job_id, id FROM exam_changes WHERE json_extract(data, '$.status')='pending'"
+            ).fetchall()
+            for job_id, change_id in rows:
+                self._finish_change(
+                    db,
+                    job_id,
+                    change_id,
+                    "failed",
+                    None,
+                    {
+                        "code": "server_restarted",
+                        "message": "Thay đổi bị gián đoạn khi máy chủ khởi động lại.",
+                    },
+                )
             rows = db.execute("SELECT data FROM jobs").fetchall()
             for (raw,) in rows:
                 job = json.loads(raw)

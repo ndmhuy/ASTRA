@@ -165,6 +165,19 @@ def test_workspaces_share_drafts_link_existing_jobs_and_reject_stale_saves(tmp_p
             },
         ).json()
         assert restored["examId"] == job and not restored["approved"]
+        revision = restored["revision"]
+        edit_url = f"/api/exams/{job}/questions/1"
+        key = {"Idempotency-Key": str(uuid4())}
+        edit = {"revision": revision, "question": {"stem": "Sửa trong tủ đề."}}
+        assert client.put(edit_url, json=edit, headers=key).status_code == 200
+        assert client.put(edit_url, json=edit, headers=key).json()["revision"] == revision + 1
+        assert client.put(edit_url, json=edit).status_code == 409
+        messages = client.get(f"{workspace_url}/changes").json()["messages"]
+        assert len(messages) == 4
+        assert messages[1]["examVersion"]["revision"] == revision + 1
+        assert messages[1]["changeId"] == key["Idempotency-Key"]
+        assert "cập nhật mới hơn" in messages[3]["content"]
+        assert client.get(f"/api/exams/{job}").json()["revision"] == revision + 1
         assert client.delete(workspace_url).status_code == 204
         assert client.get("/api/workspaces").json()["workspaces"] == []
         assert client.put(workspace_url, json=draft).status_code == 404

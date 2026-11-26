@@ -44,6 +44,7 @@ export interface SavedWorkspace extends WorkspaceDraft {
 
 interface WorkspaceLibrary {
   list(): Promise<{ workspaces: SavedWorkspace[] }>;
+  changes(id: string): Promise<{ messages: ChatMessage[] }>;
   save(id: string, draft: WorkspaceDraft, revision: number): Promise<{ revision: number }>;
   archive(id: string): Promise<unknown>;
   importLegacy(id: string, workspace: WorkspaceDraft & Pick<SavedWorkspace, 'createdAt' | 'jobId'>):
@@ -603,6 +604,7 @@ export async function getExamFormats(): Promise<ExamFormat[]> {
 
 export class ApiExamService implements IExamService {
   private baseUrl: string;
+  private pendingChanges = new Map<string, string>();
   readonly history: ExamHistory = {
     list: (jobId, workspaceId) => requestJson(workspaceId
       ? `${this.baseUrl}/workspaces/${workspaceId}/versions` : `${this.baseUrl}/exams/${jobId}/versions`),
@@ -620,6 +622,7 @@ export class ApiExamService implements IExamService {
   };
   readonly workspaceLibrary: WorkspaceLibrary = {
     list: () => requestJson(`${this.baseUrl}/workspaces`),
+    changes: id => requestJson(`${this.baseUrl}/workspaces/${id}/changes`),
     save: (id, draft, revision) => requestJson(`${this.baseUrl}/workspaces/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -688,21 +691,36 @@ export class ApiExamService implements IExamService {
   }
 
   async regenerateQuestion(jobId: string, questionId: number, instruction?: string, revision?: number): Promise<QuestionItem> {
-    const pkg = await this.getExamPackage(jobId);
-    const updated = await requestJson<ExamPackage>(`${this.baseUrl}/exams/${jobId}/questions/${questionId}/regenerate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ instruction: instruction || 'Sửa câu hỏi và kiểm tra lại lời giải.', revision: revision ?? pkg.revision })
+    const targetRevision = revision ?? (await this.getExamPackage(jobId)).revision;
+    const updated = await this.changeQuestion(`exams/${jobId}/questions/${questionId}/regenerate`, 'POST', {
+      instruction: instruction || 'Sửa câu hỏi và kiểm tra lại lời giải.', revision: targetRevision,
     });
     return updated.questions.find(question => question.id === questionId)!;
   }
 
   async updateQuestion(jobId: string, updatedQuestion: QuestionItem): Promise<void> {
-    await requestJson(`${this.baseUrl}/exams/${jobId}/questions/${updatedQuestion.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question: updatedQuestion, revision: updatedQuestion.examRevision })
+    await this.changeQuestion(`exams/${jobId}/questions/${updatedQuestion.id}`, 'PUT', {
+      question: updatedQuestion, revision: updatedQuestion.examRevision,
     });
+  }
+
+  private async changeQuestion(path: string, method: string, payload: object): Promise<ExamPackage> {
+    const body = JSON.stringify(payload);
+    const signature = JSON.stringify([path, method, body]);
+    const key = this.pendingChanges.get(signature) ?? crypto.randomUUID();
+    this.pendingChanges.set(signature, key);
+    try {
+      const result = await requestJson<ExamPackage>(`${this.baseUrl}/${path}`, {
+        method, headers: { 'Content-Type': 'application/json', 'Idempotency-Key': key }, body,
+      });
+      this.pendingChanges.delete(signature);
+      return result;
+    } catch (error) {
+      if (!(error instanceof ApiError) || !['network_error', 'exam_change_pending'].includes(error.code)) {
+        this.pendingChanges.delete(signature);
+      }
+      throw error;
+    }
   }
 
   async verifyQuestion(jobId: string, questionId: number, revision: number): Promise<void> {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useSyncExternalStore, useCallback, useLayoutEffect, useRef } from 'react';
+import React, { useState, useEffect, useSyncExternalStore, useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import { AlertCircle, AlertTriangle, LoaderCircle, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { WorkspaceStart } from './components/WorkspaceStart';
 import { AstraWelcome } from './components/AstraWelcome';
@@ -10,7 +10,7 @@ import { ChatHistory } from './components/Workspace/ChatPane/ChatHistory';
 import { ModernChatBar } from './components/Workspace/ChatPane/ModernChatBar';
 import { CanvasHeader } from './components/Workspace/LiveCanvas/CanvasHeader';
 import { ExamPaperView, type ExamCanvasViewMode } from './components/Workspace/LiveCanvas/ExamPaperView';
-import type { ExamRequestParams, QuestionItem } from './types/exam';
+import type { ChatMessage, ExamRequestParams, QuestionItem } from './types/exam';
 import { QuestionEditor } from './components/QuestionEditor';
 import { ExamVersionHistory } from './components/ExamVersionHistory';
 import { examService } from './services/examService';
@@ -57,11 +57,18 @@ export const App: React.FC = () => {
   const [undoing, setUndoing] = useState(false);
   const closeQuickModal = useCallback(() => setShowQuickModal(false), []);
   const active = sessions.find(session => session.id === activeId);
+  const sharedId = active && !active.browserOnly && examService.workspaceLibrary ? active.id : null;
+  const [recordedChat, setRecordedChat] = useState<{ id: string; messages: ChatMessage[]; signature: string }>();
   const history = examService.history;
   const canOpenHistory = Boolean(history && active?.jobId && active.package?.revision && active.status === 'complete');
   const canUndo = history && undo && active?.id === undo.sessionId && active.jobId === undo.jobId &&
     active.package?.revision === undo.revision;
-  const messages = active?.messages || [];
+  const messages = useMemo(() => {
+    const recorded = recordedChat?.id === sharedId ? recordedChat.messages : [];
+    return [...(active?.messages ?? []), ...recorded].sort(
+      (first, second) => Date.parse(first.timestamp) - Date.parse(second.timestamp)
+    );
+  }, [active?.messages, recordedChat, sharedId]);
   const liveQuestions = active?.questions || [];
   const examMeta = active?.meta || null;
   const isGenerating = active?.status === 'generating';
@@ -74,6 +81,29 @@ export const App: React.FC = () => {
       store.dispose();
     };
   }, [store]);
+  useEffect(() => {
+    const library = examService.workspaceLibrary;
+    if (!library || !sharedId || screen !== 'workspace') return;
+    let current = true;
+    let pending = false;
+    const refresh = async () => {
+      if (pending) return;
+      pending = true;
+      try {
+        const { messages } = await library.changes(sharedId);
+        if (current) {
+          const signature = JSON.stringify(messages);
+          setRecordedChat(previous => previous?.id === sharedId && previous.signature === signature
+            ? previous : { id: sharedId, messages, signature });
+        }
+      } catch {
+        // Leave the last server-confirmed messages visible during a disconnect.
+      } finally { pending = false; }
+    };
+    void refresh();
+    const timer = window.setInterval(() => void refresh(), 1500);
+    return () => { current = false; window.clearInterval(timer); };
+  }, [screen, sharedId]);
   useEffect(() => {
     if (activeId && !active) {
       const importedId = store.importedWorkspaceId(activeId);

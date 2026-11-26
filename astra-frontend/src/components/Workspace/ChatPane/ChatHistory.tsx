@@ -73,8 +73,8 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({ messages, onSuggestion
               {isCopied ? <Check size={14} aria-hidden="true" /> : <Copy size={14} aria-hidden="true" />}
               <span>{isCopied ? 'Đã chép' : 'Sao chép'}</span>
             </button>
-            {isUser && <button type="button" title="Chỉnh sửa tin nhắn" aria-label="Chỉnh sửa tin nhắn" onClick={() => onEditMessage?.(msg)}><Pencil size={14} aria-hidden="true" /><span>Sửa</span></button>}
-            {isUser && <button type="button" title="Thu hồi tin nhắn này và các tin sau" aria-label="Thu hồi tin nhắn" onClick={() => onRetractMessage?.(msg)}><RotateCcw size={14} aria-hidden="true" /><span>Thu hồi</span></button>}
+            {isUser && !msg.recorded && <button type="button" title="Chỉnh sửa tin nhắn" aria-label="Chỉnh sửa tin nhắn" onClick={() => onEditMessage?.(msg)}><Pencil size={14} aria-hidden="true" /><span>Sửa</span></button>}
+            {isUser && !msg.recorded && <button type="button" title="Thu hồi tin nhắn này và các tin sau" aria-label="Thu hồi tin nhắn" onClick={() => onRetractMessage?.(msg)}><RotateCcw size={14} aria-hidden="true" /><span>Thu hồi</span></button>}
             <button type="button" title="Tạo nhánh hội thoại tại đây" aria-label="Tạo nhánh hội thoại" onClick={() => onBranchMessage?.(msg)}><GitBranch size={14} aria-hidden="true" /><span>Tạo nhánh</span></button>
           </div>
         </article>;

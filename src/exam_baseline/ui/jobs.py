@@ -7,6 +7,7 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from hashlib import sha256
 from pathlib import Path
+from uuid import uuid4
 
 import httpx
 
@@ -591,9 +592,9 @@ class JobManager:
         job.update(status="failed", error=error.payload())
         self.store.save(job)
 
-    def _save_version(self, job, change, *, question_id=None):
+    def _save_version(self, job, change, *, question_id=None, change_id=None):
         source = self._render_source(job)
-        self.store.save_version(job, source, change, question_id=question_id)
+        self.store.save_version(job, source, change, question_id=question_id, change_id=change_id)
 
     def _render_source(self, job):
         if _is_vact(job):
@@ -938,7 +939,45 @@ class JobManager:
                 self._completed(target_job), target, promotion=(workspace_id, job_id)
             )
 
-    async def edit(self, job_id, question_id, revision, value):
+    async def question_change(self, job_id, question_id, revision, kind, value, change_id=None):
+        self._completed(job_id)
+        change_id = change_id or str(uuid4())
+        signature = fingerprint([kind, question_id, revision, value])
+        existing = self.store.begin_change(
+            job_id,
+            change_id,
+            signature,
+            {
+                "id": change_id,
+                "jobId": job_id,
+                "questionId": question_id,
+                "kind": kind,
+                "request": value if kind == "regenerated" else "Sửa câu hỏi.",
+                "beforeRevision": revision,
+                "startedAt": now(),
+                "status": "pending",
+            },
+        )
+        if existing is not None:
+            if existing["status"] == "completed":
+                if self._completed(job_id)["revision"] == existing["afterRevision"]:
+                    return self.package(job_id)
+                return self.version(job_id, existing["afterRevision"])
+            if existing["status"] == "failed":
+                error = existing["error"]
+                raise UiError(error["code"], error["message"], error.get("status", 409))
+            raise UiError("exam_change_pending", "Yêu cầu chỉnh sửa đang được xử lý.")
+        try:
+            operation = self.edit if kind == "edited" else self.regenerate
+            return await operation(job_id, question_id, revision, value, change_id=change_id)
+        except (Exception, asyncio.CancelledError) as exc:
+            error = {"code": "exam_change_failed", "message": "Chưa lưu được thay đổi câu hỏi."}
+            if isinstance(exc, UiError):
+                error = {"code": exc.code, "message": str(exc), "status": exc.status}
+            self.store.fail_change(job_id, change_id, error)
+            raise
+
+    async def edit(self, job_id, question_id, revision, value, *, change_id=None):
         async with self.lock(job_id):
             job = self._completed(job_id)
             self._check_revision(job, revision)
@@ -978,7 +1017,7 @@ class JobManager:
             solutions = _current_solutions(job)
             solutions.pop(raw["id"], None)
             job.update(solutions={"entries": list(solutions.values())}, solverResultsVersion=1)
-            self._save_version(job, "edited", question_id=question_id)
+            self._save_version(job, "edited", question_id=question_id, change_id=change_id)
             return self.package(job_id)
 
     async def approve(self, job_id, payload):
@@ -1064,7 +1103,7 @@ class JobManager:
             self.store.save(job)
             return self.package(job_id)
 
-    async def regenerate(self, job_id, question_id, revision, instruction):
+    async def regenerate(self, job_id, question_id, revision, instruction, *, change_id=None):
         async with self.lock(job_id):
             job = self._completed(job_id)
             self._check_revision(job, revision)
@@ -1177,7 +1216,7 @@ class JobManager:
                 approval=None,
             )
             job["manualEdits"] = list(set(job["manualEdits"]) | {repaired.id})
-            self._save_version(job, "regenerated", question_id=question_id)
+            self._save_version(job, "regenerated", question_id=question_id, change_id=change_id)
             # Teacher-initiated regeneration never adds another Reviewer pass.
             return self.package(job_id)
 
