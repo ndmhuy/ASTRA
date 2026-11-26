@@ -113,7 +113,7 @@ export interface GenerationProgress {
   status?: 'queued' | 'running' | 'completed' | 'failed';
   error?: { code: string; message: string; details?: unknown };
 }
-export interface ChatMessage { id: string; role: 'user' | 'assistant' | 'system'; content: string; timestamp: string; }
+export interface ChatMessage { agentTurn?: boolean; id: string; role: 'user' | 'assistant' | 'system'; content: string; timestamp: string; }
 export interface ExamFormat {
   id: string; version: string; displayName: string; examType: ExamType;
   subjects: Subject[]; grades: number[]; durationMinutes: number; totalQuestions: number;

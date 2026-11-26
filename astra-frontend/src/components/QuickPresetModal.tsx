@@ -1,9 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ChevronDown, ChevronUp, X } from 'lucide-react';
 import type { ExamFormat, ExamRequestParams } from '../types/exam';
+import { presetParams } from '../agent/intake';
 import { getBackendHealth, getExamFormats, type BackendHealth } from '../services/examService';
 
-interface Props { dialogRef?: React.Ref<HTMLDivElement>; title?: string; onStart: (params: ExamRequestParams) => void; onClose: () => void; }
+interface Props {
+  dialogRef?: React.Ref<HTMLDivElement>;
+  title?: string;
+  onStart: (params: ExamRequestParams) => void;
+  onClose: () => void;
+  agentSelection?: { formats: ExamFormat[]; id: string; expanded: boolean; summary?: string };
+  onManualSelect?: () => void;
+}
 
 const THPT_SECTION_TITLES: Record<string, string> = {
   P1: 'Phần I · Trắc nghiệm nhiều lựa chọn',
@@ -29,25 +37,27 @@ function formatSummary(format: ExamFormat): string {
   return `Môn ${format.subjects[0]} · Lớp ${format.grades[0]}`;
 }
 
-export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, dialogRef, title = 'Tạo đề từ mẫu' }) => {
+export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, dialogRef, agentSelection, onManualSelect, title = 'Tạo đề từ mẫu' }) => {
   const [formats, setFormats] = useState<ExamFormat[]>([]);
   const [selectedId, setSelectedId] = useState('thpt-math');
   const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
   const [health, setHealth] = useState<BackendHealth | null>(null);
   const [error, setError] = useState('');
   const modalRef = useRef<HTMLDivElement>(null);
-  const selected = formats.find(format => format.id === selectedId);
+  const catalog = agentSelection?.formats ?? formats;
+  const selected = catalog.find(format => format.id === (agentSelection?.id ?? selectedId));
   const toggleExpand = (id: string) => {
-    setExpandedIds(prev => ({ ...prev, [id]: !prev[id] }));
+    const expanded = expandedIds[id] ?? (agentSelection?.id === id && agentSelection.expanded);
+    setExpandedIds(prev => ({ ...prev, [id]: !expanded }));
   };
 
   useEffect(() => {
     let active = true;
     void getBackendHealth().then(info => { if (active && info) setHealth(info); });
-    getExamFormats().then(items => { if (active) { setFormats(items); setSelectedId(items.find(item => item.available)?.id || ''); } })
+    if (!agentSelection) getExamFormats().then(items => { if (active) { setFormats(items); setSelectedId(items.find(item => item.available)?.id || ''); } })
       .catch(error => { if (active) setError(error instanceof Error ? error.message : 'Không tải được danh sách mẫu đề từ máy chủ.'); });
     return () => { active = false; };
-  }, []);
+  }, [agentSelection]);
 
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
@@ -68,17 +78,7 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, dialogRef,
 
   const start = () => {
     if (!selected?.available) return;
-    onStart({
-      formatId: selected.id,
-      formatVersion: selected.version,
-      subject: selected.subjects[0],
-      grade: selected.grades[0],
-      examType: selected.examType,
-      durationMinutes: selected.durationMinutes,
-      itemCount: selected.totalQuestions,
-      prompt: `Tạo đề ${selected.displayName}`,
-      uploadedFiles: [],
-    });
+    onStart(presetParams(selected));
   };
 
   const handleOptionKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -129,7 +129,7 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, dialogRef,
           <p>{error}</p>
         </div>
       )}
-      {!error && !formats.length && (
+      {!error && !catalog.length && (
         <div className="preset-loading-wrap">
           <p role="status" className="preset-loading-text">Đang tải danh sách mẫu đề…</p>
           <div className="preset-skeleton-card" aria-hidden="true" />
@@ -138,9 +138,9 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, dialogRef,
       )}
 
       <div className="preset-options-list">
-        {formats.map(format => {
-          const isSelected = selectedId === format.id;
-          const isExpanded = Boolean(expandedIds[format.id]);
+        {catalog.map(format => {
+          const isSelected = selected?.id === format.id;
+          const isExpanded = expandedIds[format.id] ?? (agentSelection?.id === format.id && agentSelection.expanded);
           return (
             <div key={format.id} className={`preset-option-card ${isSelected ? 'is-selected' : ''}`}>
               <div className="preset-option-top">
@@ -150,7 +150,11 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, dialogRef,
                     name="preset"
                     checked={isSelected}
                     disabled={!format.available}
-                    onChange={() => setSelectedId(format.id)}
+                    onChange={() => {
+                      setFormats(catalog);
+                      setSelectedId(format.id);
+                      onManualSelect?.();
+                    }}
                     onKeyDown={handleOptionKeyDown}
                   />
                   <span className="preset-option-copy">
@@ -189,6 +193,7 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, dialogRef,
         })}
       </div>
 
+      {agentSelection?.summary && <p className="preset-details-summary">{agentSelection.summary}</p>}
       <div className="preset-modal-actions">
         <button type="button" className="button-secondary" onClick={onClose}>Huỷ</button>
         <button type="button" className="button-primary" disabled={!selected?.available || !!error} onClick={start}>Tạo đề thi</button>

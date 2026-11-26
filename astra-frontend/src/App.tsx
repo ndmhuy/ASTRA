@@ -15,9 +15,11 @@ import { ChatHistory } from './components/Workspace/ChatPane/ChatHistory';
 import { ModernChatBar } from './components/Workspace/ChatPane/ModernChatBar';
 import { CanvasHeader } from './components/Workspace/LiveCanvas/CanvasHeader';
 import { ExamPaperView, type ExamCanvasViewMode, type ExamPaperControls } from './components/Workspace/LiveCanvas/ExamPaperView';
-import type { ExamRequestParams, QuestionItem } from './types/exam';
+import type { ExamFormat, ExamRequestParams, QuestionItem } from './types/exam';
 import { QuestionEditor } from './components/QuestionEditor';
-import { examService } from './services/examService';
+import { evaluateExamFormat, examService, getExamFormats } from './services/examService';
+import { prepareParams } from './agent/intake';
+import { noteLabel, type Note } from './agent/notes';
 import { ExamSessions } from './state/examSessions';
 import { formatProgressStatus, formatVisualWarning } from './utils/userMessages.ts';
 import './styles/workspace.css';
@@ -44,7 +46,6 @@ export const App: React.FC = () => {
   const [revealingWorkspace, setRevealingWorkspace] = useState(false);
   const transitionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const composerOrigin = useRef<DOMRect | null>(null);
-  const attachedFiles = useRef<File[]>([]);
   const [store] = useState(() => new ExamSessions(examService));
   const sessions = useSyncExternalStore(store.subscribe, store.getSnapshot);
   const turn = useRef<AbortController | null>(null);
@@ -65,6 +66,7 @@ export const App: React.FC = () => {
   const [viewMode, setViewMode] = useState<ExamCanvasViewMode>('paper');
   const [controlsCollapsed, setControlsCollapsed] = useState(false);
   const [showQuickModal, setShowQuickModal] = useState(false);
+  const [agentSelection, setAgentSelection] = useState<{ formats: ExamFormat[]; id: string; expanded: boolean; summary?: string }>();
   const [configureId, setConfigureId] = useState<string | null>(null);
   const [editor, setEditor] = useState<EditorTarget | null>(null);
   const [approving, setApproving] = useState(false);
@@ -74,6 +76,7 @@ export const App: React.FC = () => {
     pending.current = null;
     setChatPending(false);
     setShowQuickModal(false);
+    setAgentSelection(undefined);
   }, []);
   const active = sessions.find(session => session.id === activeId);
   const messages = active?.messages || [];
@@ -88,8 +91,8 @@ export const App: React.FC = () => {
   useEffect(() => () => { if (transitionTimer.current) clearTimeout(transitionTimer.current); }, []);
   const cancelTransition = () => { composerOrigin.current = null; if (transitionTimer.current) clearTimeout(transitionTimer.current); setLeavingStart(false); setRevealingWorkspace(false); };
   const openSession = (id: string) => { cancelTransition(); setAgentOpenedPdf(false); setViewMode('paper'); setActiveId(id); setScreen('workspace'); };
-  const openManually = (id: string) => { cancelTurn(); setShowQuickModal(false); setConfigureId(null); setEditor(null); openSession(id); };
-  const newExam = () => { cancelTurn(); cancelTransition(); setActiveId(null); setConfigureId(null); setLandingDraft(''); attachedFiles.current = []; setShowQuickModal(false); setScreen('start'); };
+  const openManually = (id: string) => { cancelTurn(); setAgentSelection(undefined); setShowQuickModal(false); setConfigureId(null); setEditor(null); openSession(id); };
+  const newExam = () => { cancelTurn(); cancelTransition(); setActiveId(null); setConfigureId(null); setLandingDraft(''); setAgentSelection(undefined); setShowQuickModal(false); setScreen('start'); };
   const revealSession = (id: string) => {
     if (screen === 'workspace') { openSession(id); return; }
     composerOrigin.current = document.querySelector('.integrated-start .composer-box')?.getBoundingClientRect() || null;
@@ -142,10 +145,10 @@ export const App: React.FC = () => {
       if (store.getSnapshot().some(session => session.id === id)) store.appendMessage(id, 'assistant', text);
       else setAdmissionError(text);
     };
-    store.appendMessage(id, 'user', content, messageId);
+    store.appendMessage(id, 'user', content, messageId, true);
     const runtime: Runtime = {
       binding: () => runtimeRef.current!.binding(),
-      dispatch: (intent, expected) => runtimeRef.current!.dispatch(intent, expected),
+      dispatch: (intent, expected, message, source) => runtimeRef.current!.dispatch(intent, expected, message, source),
     };
     const binding = runtime.binding();
     const alive = () => !controller.signal.aborted && !!store.getSnapshot().find(s => s.id === id)?.messages.some(m => m.id === messageId);
@@ -196,7 +199,7 @@ export const App: React.FC = () => {
         answer('Thầy cô hãy ghi rõ số câu và phần thi để em xác định đúng câu.');
         return;
       }
-      const receipts = await execute(decision.intents, runtime, binding, alive);
+      const receipts = await execute(decision.intents, runtime, binding, alive, content, messageId);
       if (!alive()) return;
       const stopped = receipts.length < decision.intents.length;
       answer([...receipts.map(receipt => receipt.text),
@@ -232,12 +235,26 @@ export const App: React.FC = () => {
     void sendTurn(id, content, options);
   };
   const handleQuickStart = (params: ExamRequestParams) => {
+    if (agentSelection?.summary) {
+      const prepared = pending.current;
+      pending.current = null;
+      if (prepared?.workspaceId && prepared.workspaceId === configureId &&
+          prepared.expires >= Date.now() && prepared.binding === runtimeRef.current?.binding() &&
+          params.formatId === agentSelection.id) {
+        void Promise.resolve(prepared.run()).then(effect => store.appendMessage(prepared.workspaceId, 'assistant', effect.text));
+      } else {
+        setAdmissionError('Xác nhận đã hết hiệu lực. Thầy cô hãy đóng cấu hình và gửi lại yêu cầu.');
+      }
+      return;
+    }
+    pending.current = null;
     const id = configureId || store.create('template');
     const session = store.getSnapshot().find(item => item.id === id);
-    const instructions = session?.messages.filter(message => message.role === 'user').map(message => message.content).join('\n');
+    const instructions = session?.messages.filter(message => message.role === 'user' && !message.agentTurn).map(message => message.content).join('\n');
     setShowQuickModal(false);
     revealSession(id);
-    void store.generate(id, { ...params, uploadedFiles: [...params.uploadedFiles, ...attachedFiles.current.map(file => file.name)], prompt: instructions ? `${params.prompt}\n${instructions}` : params.prompt });
+    setAgentSelection(undefined);
+    void store.generate(id, { ...params, uploadedFiles: [], prompt: instructions ? `${params.prompt}\n${instructions}` : params.prompt });
   };
   const handleSendMessage = (content: string, options: { searchWeb: boolean; attachedFiles: File[] }) => {
     if (activeId) void sendTurn(activeId, content, options);
@@ -303,9 +320,11 @@ export const App: React.FC = () => {
       editor?.question.stableId, current?.status, current?.jobId, current?.package?.revision,
       current?.package?.contentHash, current?.package?.approved, current?.previewOpenedRevision,
       current?.preview?.status, current?.artifactChanged,
+      agentSelection?.id, agentSelection?.formats.find(format => format.id === agentSelection?.id)?.version,
+      current?.intake, current?.notes,
       store.getSnapshot().map(item => [item.id, item.title])]);
   };
-  const dispatch = (intent: Intent): Effect | Promise<Effect> => {
+  const dispatch = (intent: Intent, expected?: string, message = '', messageId = ''): Effect | Promise<Effect> => {
     const failed = failure;
     const succeeded = success;
     const current = store.getSnapshot().find(session => session.id === activeId);
@@ -317,7 +336,7 @@ export const App: React.FC = () => {
     switch (intent.id) {
       case 'OPEN_SETUP':
         if (!current || !['draft', 'error'].includes(current.status) || editor) return failed('Chỉ có thể mở cấu hình cho đề nháp hoặc lần tạo bị lỗi.');
-        flushSync(() => { setConfigureId(current.id); setShowQuickModal(true); });
+        flushSync(() => { setAgentSelection(undefined); setConfigureId(current.id); setShowQuickModal(true); });
         return presetDialog.current
           ? succeeded('Đã mở phần cấu hình mẫu đề.')
           : failed('Chưa mở được phần cấu hình mẫu đề.');
@@ -326,7 +345,7 @@ export const App: React.FC = () => {
         return succeeded('Đã về màn hình bắt đầu.');
       case 'CREATE_SESSION': {
         const id = store.create('custom');
-        flushSync(() => { setShowQuickModal(false); setConfigureId(null); setEditor(null); openSession(id); });
+        flushSync(() => { setAgentSelection(undefined); setShowQuickModal(false); setConfigureId(null); setEditor(null); openSession(id); });
         return succeeded('Đã mở một không gian soạn đề mới.');
       }
       case 'OPEN_SESSION': {
@@ -349,7 +368,7 @@ export const App: React.FC = () => {
         return succeeded(intent.args.collapsed ? 'Đã thu gọn thanh điều hướng.' : 'Đã mở rộng thanh điều hướng.');
       case 'CLOSE_SETUP':
         if (!showQuickModal) return failed('Phần cấu hình đang đóng.');
-        flushSync(() => setShowQuickModal(false));
+        flushSync(() => { setShowQuickModal(false); setAgentSelection(undefined); });
         return succeeded('Đã đóng phần cấu hình.');
       case 'LIST_SESSIONS': {
         const title = typeof intent.args.title === 'string' ? fold(intent.args.title) : '';
@@ -369,6 +388,78 @@ export const App: React.FC = () => {
           if (current?.id === target.id) flushSync(() => { setEditor(null); setShowQuickModal(false); setConfigureId(null); setActiveId(null); setScreen('start'); });
           return succeeded(`Đã xóa “${target.title}” khỏi tủ đề.`);
         });
+      }
+      case 'SHOW_FORMATS':
+      case 'SELECT_FORMAT':
+      case 'FORMAT_DETAILS':
+      case 'PREPARE_GENERATION': {
+        if (intent.id !== 'SHOW_FORMATS' && (!current || !['draft', 'error'].includes(current.status) || editor)) {
+          return failed('Đề phải ở trạng thái nháp hoặc lần tạo bị lỗi mới có thể thiết lập.');
+        }
+        return (async () => {
+          try {
+            const formats = await getExamFormats();
+            if (runtimeRef.current?.binding() !== expected || turn.current?.signal.aborted || !turn.current) {
+              return failed('Màn hình đã thay đổi trong lúc tải các mẫu đề.');
+            }
+            const available = formats.filter(format => format.available);
+            const list = available.map(format => `${format.displayName}: ${format.totalQuestions} câu, ${format.durationMinutes} phút`).join('; ');
+            if (intent.id === 'SHOW_FORMATS') return succeeded(list || 'Chưa có mẫu đề khả dụng.');
+            const selected = intent.args.format ?? agentSelection?.id ?? current?.intake?.formatId;
+            if (!selected) return failed(list
+              ? `Thầy cô muốn dùng mẫu nào? ${list}. Với Toán THPT, thầy cô có thể nêu thêm chuyên đề.`
+              : 'Chưa tải được mẫu đề khả dụng.');
+            const format = available.find(item => item.id === selected);
+            if (!format || !current) return failed('Mẫu yêu cầu hiện không khả dụng.');
+            const intake = { sourceId: messageId, formatId: format.id, version: format.version };
+            const expanded = intent.args.details === true || intent.id === 'FORMAT_DETAILS';
+            if (intent.id !== 'PREPARE_GENERATION') {
+              flushSync(() => {
+                store.setIntake(current.id, { ...intake, phase: 'selected' });
+                setAgentSelection({ formats, id: format.id, expanded });
+                setConfigureId(current.id);
+                setShowQuickModal(true);
+              });
+              return { ...succeeded(`Đã chọn ${format.displayName}: ${format.totalQuestions} câu, ${format.durationMinutes} phút.`), expectedAfter: runtimeRef.current?.binding() };
+            }
+            const proposal = prepareParams(format, intent.args, message);
+            if (!proposal.params) return failed(proposal.error);
+            const payload = proposal.params;
+            if (current.errorCode === 'network_error' && current.requestSignature &&
+                current.requestSignature !== JSON.stringify(payload)) {
+              return failed('Lần gửi trước chưa rõ kết quả. Hãy thử lại với thông số cũ trước khi đổi yêu cầu.');
+            }
+            await evaluateExamFormat(payload);
+            if (runtimeRef.current?.binding() !== expected || !turn.current || turn.current.signal.aborted) {
+              return failed('Màn hình đã thay đổi trong lúc kiểm tra mẫu đề.');
+            }
+            const summary = `${format.displayName} · ${format.totalQuestions} câu · ${format.durationMinutes} phút.${proposal.topic ? ` Chuyên đề: ${proposal.topic}.` : ''} Bấm “Tạo đề thi” để xác nhận gửi yêu cầu.`;
+            flushSync(() => {
+              store.setIntake(current.id, { ...intake, topic: proposal.topic, phase: 'evaluated' });
+              setAgentSelection({ formats, id: format.id, expanded: true, summary });
+              setConfigureId(current.id);
+              setShowQuickModal(true);
+            });
+            pending.current = {
+              workspaceId: current.id,
+              binding: runtimeRef.current!.binding(),
+              expires: Date.now() + 5 * 60_000,
+              run: async () => {
+                flushSync(() => { setShowQuickModal(false); setAgentSelection(undefined); });
+                store.setIntake(current.id, { ...intake, topic: proposal.topic, phase: 'confirmed' });
+                const job = await store.generate(current.id, payload);
+                if (job) return { status: 'accepted', text: 'Máy chủ đã nhận công việc tạo đề. Thầy cô có thể trao đổi tiếp trong khi đợi.' };
+                const actual = store.getSnapshot().find(item => item.id === current.id);
+                return actual?.errorCode === 'network_error'
+                  ? { status: 'unknown', text: 'Chưa rõ máy chủ đã nhận yêu cầu hay chưa. Chỉ thử lại với cùng thông số.' }
+                  : failed(actual?.error || 'Chưa nhận được mã công việc tạo đề.');
+              },
+            };
+            return { status: 'pending', text: summary };
+          } catch (error) {
+            return failed(error instanceof Error ? error.message : 'Chưa kiểm tra được mẫu đề với máy chủ.');
+          }
+        })();
       }
       case 'STATUS': return succeeded(statusText(current));
       case 'WARNINGS': {
@@ -412,6 +503,7 @@ export const App: React.FC = () => {
         }
         if (intent.id === 'VERIFY_QUESTION' && !examService.verifyQuestion) return failed('Kiểm tra lại đáp án chưa khả dụng trong chế độ hiện tại.');
         const verify = intent.id === 'VERIFY_QUESTION';
+        if (!verify && current.package.blueprint.examType === 'DGNL_DHQG') return failed('V-ACT hỗ trợ sửa trực tiếp và kiểm tra đáp án. Tạo lại từng câu hiện chỉ có cho Toán THPT.');
         return prepare(verify
           ? `Kiểm tra lại đáp án ${label} bằng bộ giải. Thao tác dùng lượt gọi AI.`
           : `Sinh lại ${label} bằng AI theo yêu cầu “${intent.args.instruction}”.`, async () => {
@@ -442,6 +534,71 @@ export const App: React.FC = () => {
               ? { status: 'accepted', text: 'Máy chủ đã nhận yêu cầu dựng lại PDF.' }
               : failed(latest?.previewError || 'Chưa dựng lại được bản xem trước.');
         });
+      case 'ADD_NOTE':
+      case 'CANCEL_NOTE': {
+        if (intent.id === 'ADD_NOTE' && current?.status === 'complete') {
+          return dispatch({ id: 'REGENERATE_QUESTION', args: intent.args }, expected, message, messageId);
+        }
+        if (!current?.jobId) return failed('Chưa có công việc tạo đề để gắn ghi chú.');
+        const notes = current.notes ?? [];
+        const number = Number(intent.args.number);
+        const part = typeof intent.args.part === 'string' ? sectionId(intent.args.part) : undefined;
+        const matches = notes.filter(note => note.jobId === current.jobId && note.number === number &&
+          (!part || note.part === part) && ['recorded', 'awaiting_review', 'unresolved', 'failed'].includes(note.status));
+        if (matches.length > 1) return failed('Có nhiều ghi chú cùng số câu. Thầy cô hãy nêu rõ phần thi.');
+        if (intent.id === 'CANCEL_NOTE') {
+          if (!matches.length) return failed('Chưa tìm thấy ghi chú của câu này.');
+          store.setNotes(current.id, notes.map(note => note.id === matches[0].id ? { ...note, status: 'cancelled' } : note));
+          return succeeded(`Đã bỏ ghi chú cho ${noteLabel(matches[0])}.`);
+        }
+        if (current.status !== 'generating') return failed('Chưa thể ghi chú chỉnh sửa cho công việc hiện tại.');
+        const instruction = String(intent.args.instruction);
+        if (!fold(message).includes(fold(instruction))) return failed('Thầy cô hãy nêu rõ nội dung muốn chỉnh.');
+        if (!matches.length && notes.length >= 32) return failed('Phiên này đã có 32 ghi chú. Thầy cô hãy xử lý các ghi chú trước khi thêm.');
+        const note: Note = { id: matches[0]?.id ?? crypto.randomUUID(), sourceId: messageId, jobId: current.jobId,
+          number, part: part ?? matches[0]?.part, instruction, status: 'recorded' };
+        store.setNotes(current.id, [...notes.filter(item => item.id !== note.id), note]);
+        return succeeded(`Đã lưu ghi chú cho ${noteLabel(note)}. Đề đang chạy theo yêu cầu đã gửi.`);
+      }
+      case 'REVIEW_NOTES':
+      case 'APPLY_NOTES': {
+        const notes = current?.notes?.filter(note => note.jobId === current.jobId && note.status !== 'cancelled') ?? [];
+        if (!notes.length) return failed('Chưa có ghi chú cho công việc hiện tại.');
+        const summary = notes.slice(0, 12).map(note => `${noteLabel(note)}: ${note.instruction} (${{
+          recorded: 'đã lưu', awaiting_review: 'chờ duyệt', unresolved: 'chưa xác định được câu', applied: 'đã áp dụng',
+          failed: 'chưa xác nhận kết quả', cancelled: 'đã hủy',
+        }[note.status]})`).join('\n');
+        if (intent.id === 'REVIEW_NOTES') return succeeded(summary);
+        if (!current?.package || current.status !== 'complete') return failed('Hãy đợi máy chủ tạo xong đề trước khi áp dụng ghi chú.');
+        if (current.package.blueprint.examType === 'DGNL_DHQG') return failed('Thầy cô hãy mở từng câu V-ACT để sửa trực tiếp. Mẫu này chưa hỗ trợ sinh lại từng câu.');
+        const ready = notes.filter(note => note.status === 'awaiting_review' && note.stableId).slice(0, 4);
+        if (!ready.length) return failed('Chưa có ghi chú đã xác định đúng câu và đang chờ duyệt.');
+        return prepare(`Áp dụng ${ready.length} ghi chú dưới đây với AI:\n${ready.map(note => `${noteLabel(note)}: ${note.instruction}`).join('\n')}`, async () => {
+          const controller = turn.current;
+          let revision = current.package?.revision;
+          let applied = 0;
+          for (const note of ready) {
+            const latest = store.getSnapshot().find(session => session.id === current.id);
+            const question = latest?.questions.find(item => item.stableId === note.stableId && item.examRevision === revision);
+            if (!latest?.jobId || latest.jobId !== current.jobId || latest.package?.revision !== revision ||
+                !question || controller?.signal.aborted || activeRef.current !== current.id) break;
+            try {
+              const after = await editQuestion({ sessionId: latest.id, jobId: latest.jobId, question }, 'regen', note.instruction);
+              if (!after?.package || after.package.revision === revision) throw new Error('Chưa nhận được phiên bản mới.');
+              revision = after.package.revision;
+              store.setNotes(latest.id, (after.notes ?? []).map(item => item.id === note.id
+                ? { ...item, status: 'applied', appliedRevision: revision } : item));
+              applied++;
+            } catch {
+              const actual = store.getSnapshot().find(session => session.id === current.id);
+              store.setNotes(latest.id, (actual?.notes ?? []).map(item => item.id === note.id ? { ...item, status: 'failed' } : item));
+              return { status: 'unknown', text: `Đã áp dụng ${applied} ghi chú. Kết quả cho ${noteLabel(note)} chưa được xác nhận. Các bước sau vẫn chờ.` };
+            }
+          }
+          return applied === ready.length ? succeeded(`Đã áp dụng ${applied} ghi chú. Hãy xem lại phiên bản mới.`)
+            : failed(`Đã áp dụng ${applied} ghi chú. Các bước còn lại đang chờ kiểm tra.`);
+        });
+      }
       case 'APPROVE':
         if (!current || editor || !store.canApprove(current.id)) return failed('Thầy cô hãy tự mở và kiểm tra PDF của phiên bản hiện tại trước khi phê duyệt.');
         return prepare(`Phê duyệt phiên bản ${current.package?.revision}. Hãy xác nhận sau khi đã xem kỹ PDF và các cảnh báo.`, async () =>
@@ -464,7 +621,7 @@ export const App: React.FC = () => {
     activeRef.current = activeId;
     runtimeRef.current = {
       binding,
-      dispatch: (intent, expected) => binding() === expected ? dispatch(intent)
+      dispatch: (intent, expected, message, source) => binding() === expected ? dispatch(intent, expected, message, source)
         : { status: 'failed', text: 'Trạng thái đã thay đổi. Thầy cô hãy gửi lại yêu cầu.' },
     };
   });
@@ -492,7 +649,7 @@ export const App: React.FC = () => {
 
       {admissionError && <div className="canvas-alert-banner is-error" role="alert">{admissionError}</div>}
       {/* Main content */}
-      {screen === 'start' && <WorkspaceStart exiting={leavingStart} draft={landingDraft} onDraftChange={setLandingDraft} onTemplate={() => { setConfigureId(null); attachedFiles.current = []; setShowQuickModal(true); }} onDetailed={handleDetailedStart} onSend={handleLandingSend} />}
+      {screen === 'start' && <WorkspaceStart exiting={leavingStart} draft={landingDraft} onDraftChange={setLandingDraft} onTemplate={() => { setConfigureId(null); setAgentSelection(undefined); setShowQuickModal(true); }} onDetailed={handleDetailedStart} onSend={handleLandingSend} />}
 
       {screen === 'workspace' && active && (
         <WorkspaceLayout key={active.id}>
@@ -503,7 +660,7 @@ export const App: React.FC = () => {
                 <div className="session-context"><strong>{active.title}</strong></div>
                 {(active.status === 'draft' || active.status === 'error') && <div className="session-create-action">
                   {active.error && <p className="session-error-note">{active.error}</p>}
-                  <button type="button" className="button-primary" onClick={() => { setConfigureId(active.id); setShowQuickModal(true); }}>{active.status === 'error' ? 'Thử tạo lại' : 'Tạo đề từ yêu cầu'}</button>
+                  <button type="button" className="button-primary" onClick={() => { cancelTurn(); setAgentSelection(undefined); setConfigureId(active.id); setShowQuickModal(true); }}>{active.status === 'error' ? 'Thử tạo lại' : 'Tạo đề từ yêu cầu'}</button>
                 </div>}
                 <ChatHistory messages={messages} onSuggestion={value => store.setDraft(active.id, value)} onEditMessage={message => store.setDraft(active.id, message.content)} onRetractMessage={message => { cancelTurn(); store.retractMessage(active.id, message.id); }} onBranchMessage={message => { const branchId = store.branchAtMessage(active.id, message.id); if (branchId) openManually(branchId); }} />
               </>
@@ -615,6 +772,8 @@ export const App: React.FC = () => {
         <QuickPresetModal
           title={configureId ? 'Thiết lập đề theo yêu cầu' : 'Tạo đề từ mẫu'}
           dialogRef={presetDialog}
+          agentSelection={agentSelection}
+          onManualSelect={() => { pending.current = null; setAgentSelection(undefined); }}
           onStart={handleQuickStart}
           onClose={closeQuickModal}
         />

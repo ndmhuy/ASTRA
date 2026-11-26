@@ -568,6 +568,16 @@ export async function getExamFormats(): Promise<ExamFormat[]> {
   return catalog.formats;
 }
 
+export async function evaluateExamFormat(params: ExamRequestParams): Promise<void> {
+  const result = await requestJson<{ status: string; formatId: string; formatVersion: string }>(`${apiBaseUrl}/exam-formats/evaluate`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(params),
+  });
+  if (result.status !== 'validated' || result.formatId !== params.formatId ||
+      result.formatVersion !== params.formatVersion) throw new Error('Máy chủ trả về mẫu đề khác yêu cầu.');
+}
+
 export class ApiExamService implements IExamService {
   private baseUrl: string;
 

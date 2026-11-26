@@ -113,6 +113,55 @@
       "args": {
         "format": "pdf|tex|json"
       }
+    },
+    "SHOW_FORMATS": {
+      "purpose": "Đọc các mẫu đề hiện có",
+      "args": {}
+    },
+    "SELECT_FORMAT": {
+      "purpose": "Chọn mẫu trong cấu hình; có thể yêu cầu mở chi tiết",
+      "args": {
+        "format": "thpt-math|vact",
+        "details": "boolean?"
+      }
+    },
+    "FORMAT_DETAILS": {
+      "purpose": "Mở chi tiết mẫu đã chọn hoặc mẫu nêu rõ",
+      "args": {
+        "format": "thpt-math|vact?"
+      }
+    },
+    "PREPARE_GENERATION": {
+      "purpose": "Chuẩn bị tạo đề theo định dạng và các ràng buộc đã nói rõ; không bắt đầu tự động",
+      "args": {
+        "format": "thpt-math|vact?",
+        "topic": "string?",
+        "count": "integer?",
+        "minutes": "integer?"
+      }
+    },
+    "ADD_NOTE": {
+      "purpose": "Ghi yêu cầu chỉnh câu khi đề đang được tạo",
+      "args": {
+        "number": "integer",
+        "part": "string?",
+        "instruction": "string"
+      }
+    },
+    "CANCEL_NOTE": {
+      "purpose": "Bỏ ghi chú sửa một câu",
+      "args": {
+        "number": "integer",
+        "part": "string?"
+      }
+    },
+    "REVIEW_NOTES": {
+      "purpose": "Đọc ghi chú chỉnh sửa của công việc hiện tại",
+      "args": {}
+    },
+    "APPLY_NOTES": {
+      "purpose": "Chuẩn bị áp dụng các ghi chú đã xác định câu hỏi",
+      "args": {}
     }
   }
 }

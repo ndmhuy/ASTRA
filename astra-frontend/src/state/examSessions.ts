@@ -1,5 +1,7 @@
 import type { ChatMessage, ExamPackage, ExamPreviewState, ExamRequestParams, QuestionItem, GenerationProgress } from '../types/exam';
 import type { IExamService } from '../services/examService';
+import type { Intake } from '../agent/intake.ts';
+import { reconcileNotes, type Note } from '../agent/notes.ts';
 import { formatProgressStatus, humanizeErrorMessage } from '../utils/userMessages.ts';
 
 export interface ExamSession {
@@ -26,6 +28,8 @@ export interface ExamSession {
   requestId?: string;
   requestSignature?: string;
   progress?: GenerationProgress;
+  intake?: Intake;
+  notes?: Note[];
 }
 
 function previewBindingKey(jobId: string, revision: number, contentHash: string): string {
@@ -218,6 +222,8 @@ export class ExamSessions {
     this.emit();
   }
   setDraft(id: string, draft: string) { this.update(id, session => ({ ...session, draft })); }
+  setIntake(id: string, intake: Intake | undefined) { this.update(id, session => ({ ...session, intake })); }
+  setNotes(id: string, notes: Note[]) { this.update(id, session => ({ ...session, notes })); }
   retractMessage(id: string, messageId: string) {
     this.update(id, session => {
       const index = session.messages.findIndex(message => message.id === messageId);
@@ -243,11 +249,11 @@ export class ExamSessions {
     this.emit();
     return branch.id;
   }
-  appendMessage(id: string, role: ChatMessage['role'], content: string, messageId = crypto.randomUUID()) {
+  appendMessage(id: string, role: ChatMessage['role'], content: string, messageId = crypto.randomUUID(), agentTurn = false) {
     this.update(id, session => session.messages.some(message => message.id === messageId) ? session : ({
       ...session,
       draft: role === 'user' ? '' : session.draft,
-      messages: [...session.messages, { id: messageId, role, content, timestamp: new Date().toISOString() }],
+      messages: [...session.messages, { id: messageId, role, content, agentTurn, timestamp: new Date().toISOString() }],
     }));
   }
   sendMessage(id: string, content: string) { this.appendMessage(id, 'user', content); }
@@ -263,6 +269,8 @@ export class ExamSessions {
       ...session,
       requestId,
       requestSignature,
+      jobId: null,
+      progress: undefined,
       status: 'generating',
       error: undefined,
       errorCode: undefined,
@@ -283,6 +291,7 @@ export class ExamSessions {
       if (this.disposed || !this.sessions.some(session => session.id === id)) return;
       this.update(id, session => ({ ...session, jobId }));
       this.watch(id, jobId);
+      return jobId;
     } catch (error) { this.fail(id, error); }
   }
   private watch(id: string, jobId: string) {
@@ -301,6 +310,7 @@ export class ExamSessions {
           return;
         }
         this.update(id, session => {
+          if (session.progress && (progress.percent < session.progress.percent || progress.stage < session.progress.stage)) return session;
           const item = progress.latestItemPreview;
           const append = item && !session.questions.some(question => question.id === item.id);
           return { ...session, progress, meta: session.meta ? { ...session.meta, completedCount: progress.completedItems, totalCount: progress.totalItems || session.meta.totalCount } : null, previousCount: append ? session.questions.length : session.previousCount, questions: append ? [...session.questions, item] : session.questions };
@@ -582,6 +592,7 @@ export class ExamSessions {
     }
     this.update(id, session => ({
       ...session,
+      notes: reconcileNotes(session.notes, pkg.examId, pkg.questions),
       package: pkg,
       error: undefined,
       errorCode: undefined,
@@ -601,7 +612,7 @@ export class ExamSessions {
         : {}),
       messages: session.status === 'complete'
         ? session.messages
-        : [...session.messages, { id: crypto.randomUUID(), role: 'assistant', content: `Đã soạn xong ${pkg.questions.length} câu. Hãy kiểm tra bản xem trước PDF và phê duyệt bản hiện tại trước khi xuất file.`, timestamp: new Date().toISOString() }],
+        : [...session.messages, { id: crypto.randomUUID(), role: 'assistant', content: `Đã soạn xong ${pkg.questions.length} câu. Hãy kiểm tra bản xem trước PDF và phê duyệt bản hiện tại trước khi xuất file.${session.notes?.some(note => note.jobId === pkg.examId && note.status === 'recorded') ? ' Có ghi chú chỉnh sửa; thầy cô có thể nhắn “Xem ghi chú” để xem và điều chỉnh trước khi áp dụng.' : ''}`, timestamp: new Date().toISOString() }],
     }));
     if (this.service.requestPreview && pkg.revision && pkg.contentHash) {
       const status = pkg.preview?.status;
@@ -627,6 +638,8 @@ export class ExamSessions {
     this.update(id, session => ({
       ...session,
       status: 'error',
+      notes: session.notes?.map(note => note.jobId === session.jobId && note.status === 'recorded'
+        ? { ...note, status: 'unresolved' } : note),
       error: rawMessage ? humanizeErrorMessage(rawMessage, code) : 'Chưa tạo được đề. Thầy cô hãy kiểm tra kết nối rồi thử lại.',
       errorCode: code,
     }));

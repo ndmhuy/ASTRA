@@ -7,6 +7,7 @@ import sys
 import tempfile
 import time
 from pathlib import Path
+from uuid import uuid4
 
 import httpx
 
@@ -82,8 +83,158 @@ def observe(base_url: str):
         composer.press("Enter")
         expect(page.get_by_text("Đề vẫn ở bản nháp", exact=False)).to_be_visible()
         assert len(agent_calls) == 2 and not business_writes
+        run_workflows(page, composer, business_writes)
         browser.close()
-    print("Mounted React: greeting and same-origin fixture navigation observed; no exam writes.")
+    print(
+        "Mounted React: greeting and same-origin fixture navigation, catalog intake, "
+        "fixture lifecycle, notes and approval/export gates observed."
+    )
+
+
+def run_workflows(page, composer, business_writes):
+    import re
+
+    from playwright.sync_api import expect
+
+    def say(text):
+        composer.fill(text)
+        composer.press("Enter")
+
+    starts = []
+    job = str(uuid4())
+    finished = False
+    approved = False
+    digest = "a" * 64
+    pkg = {
+        "examId": job,
+        "title": "Đề thử fixture",
+        "subject": "Toán Học",
+        "grade": 12,
+        "revision": 1,
+        "contentHash": digest,
+        "durationMinutes": 90,
+        "approved": False,
+        "blueprint": {"examType": "THPT_STANDARD"},
+        "warnings": [],
+        "questions": [
+            {
+                "id": 1,
+                "stableId": "P1-01",
+                "examRevision": 1,
+                "part": "P1",
+                "stem": "Tính 1+1.",
+                "choices": {"A": "2", "B": "3", "C": "4", "D": "5"},
+                "key": "A",
+                "explanation": "Cộng.",
+                "topic": "Phép cộng",
+                "level": "NHAN_BIET",
+                "status": "VERIFIED",
+                "answerCheck": "matched",
+            }
+        ],
+        "preview": {
+            "status": "ready",
+            "revision": 1,
+            "contentHash": digest,
+            "sourceHash": digest,
+            "compilerAvailable": True,
+            "draft": True,
+            "statusUrl": "",
+            "pdfUrl": f"/api/exams/{job}/fixture.pdf",
+            "logUrl": "",
+        },
+    }
+
+    def exam_http(route):
+        nonlocal approved
+        url = route.request.url
+        if url.endswith("/generate"):
+            starts.append(route.request.post_data_json)
+            route.fulfill(status=202, json={"jobId": job, "status": "queued"})
+        elif url.endswith("/status"):
+            route.fulfill(
+                json={
+                    "stage": 5 if finished else 2,
+                    "stageName": "composer",
+                    "percent": 100 if finished else 25,
+                    "estimatedSecondsLeft": 0,
+                    "completedItems": int(finished),
+                    "totalItems": 1,
+                    "statusMessage": "Đang soạn thử",
+                    "status": "completed" if finished else "running",
+                }
+            )
+        elif url.endswith("/events"):
+            route.abort()
+        elif url.endswith("/" + job):
+            route.fulfill(json={**pkg, "approved": approved})
+        elif url.endswith("/fixture.pdf"):
+            route.fulfill(content_type="application/pdf", body="%PDF-1.4")
+        elif url.endswith("/approve"):
+            approved = True
+            route.fulfill(json={**pkg, "approved": True})
+        elif "/export?" in url:
+            route.fulfill(content_type="application/json", body="{}")
+        else:
+            route.abort()
+
+    page.route("**/api/exams/**", exam_http)
+    say("Chọn V-ACT và xem chi tiết")
+    dialog = page.get_by_role("dialog")
+    expect(dialog.get_by_text("120 câu · 150 phút")).to_be_visible()
+    expect(dialog.locator("input:checked")).to_have_count(1)
+    expect(dialog.locator(".is-selected")).to_contain_text("V-ACT")
+    page.keyboard.press("Escape")
+
+    say("Tạo đề THPT 15 câu, 45 phút")
+    expect(page.get_by_text("cố định 22 câu, 90 phút", exact=False)).to_be_visible()
+    assert not starts
+    say("Tạo đề Toán THPT")
+    expect(
+        dialog.get_by_text("Bấm “Tạo đề thi” để xác nhận gửi yêu cầu.", exact=False)
+    ).to_be_visible()
+    assert not starts
+    dialog.get_by_role("button", name="Tạo đề thi").click()
+    expect(page.get_by_text("Máy chủ đã nhận công việc tạo đề", exact=False)).to_be_visible()
+    assert len(starts) == 1 and starts[0]["formatId"] == "thpt-math"
+    assert starts[0]["uploadedFiles"] == []
+    assert "Chào em" not in starts[0]["prompt"] and "15 câu" not in starts[0]["prompt"]
+    say("Tới đâu rồi?")
+    expect(page.get_by_text("Cập nhật gần nhất", exact=False)).to_be_visible()
+    say("Sửa câu 1 dễ hơn")
+    expect(page.get_by_text("Đã lưu ghi chú cho Câu 1", exact=False)).to_be_visible()
+    say("À thôi câu 1 giữ nguyên")
+    expect(page.get_by_text("Đã bỏ ghi chú", exact=False)).to_be_visible()
+    say("Sửa câu 1 rõ hơn")
+    expect(page.get_by_text("Đã lưu ghi chú cho Câu 1", exact=False)).to_have_count(2)
+    finished = True
+    expect(page.get_by_text("Có ghi chú chỉnh sửa", exact=False)).to_be_visible()
+    say("Xem ghi chú")
+    expect(page.get_by_text("rõ hơn (chờ duyệt)", exact=False)).to_be_visible()
+    say("Xem đáp án câu 1")
+    expect(page.get_by_role("button", name="Xem đáp án")).to_have_attribute("aria-pressed", "true")
+    say("Mở chỉnh sửa câu 1")
+    expect(dialog.get_by_role("textbox", name="Đề bài")).to_be_visible()
+    page.keyboard.press("Escape")
+    say("Xem trước PDF")
+    expect(page.frame_locator("iframe").locator("body")).to_have_count(1)
+    say("Phê duyệt")
+    expect(page.get_by_text("Thầy cô hãy tự mở và kiểm tra PDF", exact=False)).to_be_visible()
+    assert not approved
+    page.get_by_role("button", name="Mở xem trước PDF để duyệt").click()
+    expect(page.get_by_role("button", name="Đã kiểm tra, phê duyệt bản này")).to_be_enabled()
+    say("Phê duyệt")
+    expect(page.get_by_text("Phê duyệt phiên bản 1", exact=False)).to_be_visible()
+    say("Xác nhận")
+    expect(page.get_by_text("Đã phê duyệt phiên bản hiện tại.")).to_be_visible()
+    assert approved
+    say("Xuất JSON")
+    expect(page.get_by_text("Tải tệp JSON của phiên bản 1", exact=False)).to_be_visible()
+    with page.expect_download() as download:
+        say("Xác nhận")
+    assert download.value.suggested_filename == "dap_an.json"
+    assert len(starts) == 1 and len(business_writes) == 2
+    expect(page.get_by_text(re.compile("Đã yêu cầu trình duyệt tải tệp"))).to_be_visible()
 
 
 def main():

@@ -42,6 +42,28 @@ export function fastRoute(message: string): Local | undefined {
     if (question[1] === 'kiem tra lai dap an') return action('VERIFY_QUESTION', target);
     return action('FOCUS_QUESTION', { ...target, ...(question[1] === 'xem dap an' ? { view: 'review' } : {}) });
   }
+  if (/^(xem (cac )?mau de|co nhung mau nao|co khong biet chon de gi)[?]?$/.test(text)) return action('SHOW_FORMATS');
+  const format = /\b(v-act|vact|dgnl)\b/.test(text) ? 'vact' : /\bthpt\b/.test(text) ? 'thpt-math' : null;
+  if (format && /^(chon|doi sang|a doi tu thpt sang) (mau )?(thpt|toan thpt|v-act|vact)( va xem chi tiet)?$/.test(text)) {
+    return action('SELECT_FORMAT', { format, details: text.endsWith('chi tiet') });
+  }
+  if (/^(xem chi tiet mau|mo chi tiet mau)$/.test(text)) return action('FORMAT_DETAILS');
+  if (format && /^(tao|soan) de (toan )?(thpt|v-act|vact)(?: chuyen de:? [\p{Letter}\p{Number} ,_-]+)?(?: \d+ cau)?(?:,? \d+ phut)?$/u.test(text)) {
+    const topic = message.match(/(?:chuyên đề|chuyen de):?\s+(.+?)(?=\s+\d+\s+câu|$)/iu)?.[1];
+    if (text.includes('chuyen de') && !topic) return { text: 'Thầy cô muốn tập trung vào chuyên đề nào?' };
+    return action('PREPARE_GENERATION', { format, ...(topic ? { topic: topic.replace(/[.!]$/, '') } : {}) });
+  }
+  if (/^(tao de|soan de|tao de toan 12|tao lai de)$/.test(text)) return action('PREPARE_GENERATION');
+  const note = message.match(/^(?:ghi chú sửa|sửa) câu (\d{1,3})(?: phần ([a-z0-9]+))?\s+(.{2,300})$/iu);
+  if (note) return action('ADD_NOTE', { number: Number(note[1]), ...(note[2] ? { part: note[2] } : {}), instruction: note[3] });
+  const cancel = text.match(/^(?:a )?(?:thoi cau|bo ghi chu cau) (\d{1,3})(?: phan ([a-z0-9]+))?(?: giu nguyen)?$/);
+  if (cancel) return action('CANCEL_NOTE', { number: Number(cancel[1]), ...(cancel[2] ? { part: cancel[2] } : {}) });
+  if (/^(phe duyet|duyet de|phe duyet ban nay)$/.test(text)) return action('APPROVE');
+  const exportFormat = text.match(/^(?:xuat|tai) (pdf|tex|json)$/)?.[1];
+  if (exportFormat) return action('EXPORT', { format: exportFormat });
+  if (/^(thu lai|tao lai) (ban )?xem truoc( pdf)?$/.test(text)) return action('RETRY_PREVIEW');
+  if (/^(xem|liet ke) ghi chu$/.test(text)) return action('REVIEW_NOTES');
+  if (/^(ap dung|sua theo) ghi chu$/.test(text)) return action('APPLY_NOTES');
   if (/^(dong (cau hinh|thiet lap)|dong mau de)$/.test(text)) return action('CLOSE_SETUP');
   if (/^(mo|liet ke|xem) (tu de|danh sach de)$/.test(text)) return action('LIST_SESSIONS');
   if (/^(ve (trang chu|man hinh bat dau)|home)$/.test(text)) return action('HOME');
@@ -70,15 +92,15 @@ export function mayDispatch(message: string): boolean {
   return !/["“”«»`]|\b(dung|khong|chua)\s+(mo|tao|sinh|xoa|sua|xuat|tai|duyet|chon|kiem tra)\b|^(neu|gia su)\b|\bnhi[?.!]*$/.test(text);
 }
 
-export type Effect = { status: 'succeeded' | 'accepted' | 'failed' | 'pending' | 'unknown'; text: string };
+export type Effect = { expectedAfter?: string; status: 'succeeded' | 'accepted' | 'failed' | 'pending' | 'unknown'; text: string };
 export type Receipt = Effect & { actionId: string; capability: IntentId; before: string; after: string };
 export type Runtime = {
   binding(): string;
-  dispatch(intent: Intent, expected: string): Promise<Effect> | Effect;
+  dispatch(intent: Intent, expected: string, message?: string, messageId?: string): Promise<Effect> | Effect;
 };
 
 export async function execute(
-  intents: Intent[], runtime: Runtime, binding: string, alive: () => boolean,
+  intents: Intent[], runtime: Runtime, binding: string, alive: () => boolean, message?: string, messageId?: string,
 ): Promise<Receipt[]> {
   if (!intents.length || intents.length > MAX_ACTIONS || !intents.every(validIntent)) return [];
   const signatures = intents.map(({ id, args }) => JSON.stringify([id, Object.entries(args).sort()]));
@@ -88,12 +110,12 @@ export async function execute(
   for (const intent of intents) {
     if (!alive() || runtime.binding() !== expected) break;
     const actionId = crypto.randomUUID();
-    const operation = runtime.dispatch(intent, expected);
+    const operation = runtime.dispatch(intent, expected, message, messageId);
     const beforeAwait = runtime.binding();
     const effect = operation instanceof Promise ? await operation : operation;
     if (!alive()) break;
     const after = runtime.binding();
-    if (operation instanceof Promise && effect.status === 'succeeded' && beforeAwait !== after) {
+    if (operation instanceof Promise && effect.status === 'succeeded' && (effect.expectedAfter ?? beforeAwait) !== after) {
       receipts.push({ ...effect, status: 'pending', actionId, capability: intent.id, before: expected, after });
       break;
     }
