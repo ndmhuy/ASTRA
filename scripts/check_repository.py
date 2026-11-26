@@ -1,8 +1,11 @@
 """Check Git candidates for local artifacts and likely credentials; never print secret values."""
 
+import hashlib
 import re
 import subprocess
+from io import BytesIO
 from pathlib import Path
+from zipfile import ZipFile
 
 ROOT = Path(__file__).resolve().parents[1]
 KEY_PATTERNS = (
@@ -20,6 +23,29 @@ LOCAL_DIRECTORIES = {
     ".pytest_cache",
     ".ruff_cache",
 }
+
+
+MAS_WHEEL = "docs/mas/astra_mas-0.1.1-cp311-none-any.whl"
+MAS_WHEEL_SHA256 = "66fe85d7fd231c7f54dff5c29c1e6707d5d5e5c18adfbc378dec0c1210ef9205"
+MAS_RUNTIME_FILES = frozenset({"__init__.pyc", "contracts.pyc", "runtime.pyc", "mas_core.zip"})
+
+
+def _approved_mas_files(root: Path, staged: dict[str, str]) -> dict[str, bytes]:
+    wheel = root / MAS_WHEEL
+    if MAS_WHEEL not in staged or not wheel.is_file():
+        return {}
+    data = wheel.read_bytes()
+    if hashlib.sha256(data).hexdigest() != MAS_WHEEL_SHA256:
+        return {}
+    if (
+        subprocess.check_output(["git", "-C", str(root), "cat-file", "blob", staged[MAS_WHEEL]])
+        != data
+    ):
+        return {}
+    with ZipFile(BytesIO(data)) as archive:
+        return {
+            f"src/astra_mas/{name}": archive.read(f"astra_mas/{name}") for name in MAS_RUNTIME_FILES
+        }
 
 
 def check_repository(root: Path = ROOT) -> list[str]:
@@ -62,8 +88,24 @@ def check_repository(root: Path = ROOT) -> list[str]:
                 if len(value) >= 16:
                     local_keys.append(value)
     issues: list[str] = []
+    # The release contains intentional BLA decoys. Accept only the exact reviewed bytes.
+    approved_mas = _approved_mas_files(root, staged)
     for relative in sorted(set(listed) - {""}):
         path = root / relative
+        if path.parent == root / "src" / "astra_mas" and path.name in MAS_RUNTIME_FILES:
+            expected = approved_mas.get(relative)
+            if (
+                expected is None
+                or not path.is_file()
+                or path.read_bytes() != expected
+                or relative not in staged
+                or subprocess.check_output(
+                    ["git", "-C", str(root), "cat-file", "blob", staged[relative]]
+                )
+                != expected
+            ):
+                issues.append(f"Invalid MAS release payload: {relative}")
+            continue
         parts = Path(relative).parts
         forbidden = (
             any(
