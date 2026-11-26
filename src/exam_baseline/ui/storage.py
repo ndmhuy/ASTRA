@@ -60,6 +60,32 @@ class JobStore:
                     PRIMARY KEY (job_id, revision)
                 )"""
             )
+            db.execute(
+                """CREATE TABLE IF NOT EXISTS workspace_jobs (
+                    workspace_id TEXT NOT NULL REFERENCES workspaces(id),
+                    job_id TEXT PRIMARY KEY REFERENCES jobs(id)
+                )"""
+            )
+            db.execute(
+                """INSERT OR IGNORE INTO workspace_jobs
+                   SELECT w.id, j.id FROM workspaces w JOIN jobs j ON w.job_id=j.id"""
+            )
+            db.execute(
+                """INSERT OR IGNORE INTO workspace_jobs
+                   SELECT w.id, j.id FROM workspaces w
+                   JOIN jobs j ON w.id=json_extract(j.data, '$.workspaceId')"""
+            )
+            db.execute(
+                """UPDATE workspaces SET job_id=(
+                       SELECT j.id FROM workspace_jobs l JOIN jobs j ON j.id=l.job_id
+                       WHERE l.workspace_id=workspaces.id
+                         AND json_extract(j.data, '$.status')='completed'
+                       ORDER BY json_extract(j.data, '$.createdAt') DESC, j.rowid DESC LIMIT 1
+                   ) WHERE job_id IS NOT NULL AND NOT EXISTS (
+                       SELECT 1 FROM jobs j WHERE j.id=workspaces.job_id
+                       AND json_extract(j.data, '$.status')='completed'
+                   )"""
+            )
         self._seed_versions()
 
     def connect(self):
@@ -78,13 +104,17 @@ class JobStore:
                 return job, False
             if workspace_id is not None:
                 current = db.execute(
-                    """SELECT json_extract(j.data, '$.status') FROM workspaces w
-                    LEFT JOIN jobs j ON j.id=w.job_id WHERE w.id=? AND w.archived=0""",
+                    "SELECT 1 FROM workspaces WHERE id=? AND archived=0",
                     (workspace_id,),
                 ).fetchone()
                 if current is None:
                     raise UiError("workspace_not_found", "Không tìm thấy đề đã lưu.", 404)
-                if current[0] in {"queued", "running"}:
+                if db.execute(
+                    """SELECT 1 FROM workspace_jobs l JOIN jobs j ON j.id=l.job_id
+                       WHERE l.workspace_id=? AND json_extract(j.data, '$.status') IN
+                       ('queued', 'running') LIMIT 1""",
+                    (workspace_id,),
+                ).fetchone():
                     raise UiError("workspace_generating", "Đề này đang được soạn.")
                 data = {**data, "workspaceId": workspace_id}
             data = {**data, "jobId": str(uuid4())}
@@ -94,17 +124,25 @@ class JobStore:
             )
             if workspace_id is not None:
                 db.execute(
-                    "UPDATE workspaces SET job_id=? WHERE id=?", (data["jobId"], workspace_id)
+                    "INSERT INTO workspace_jobs VALUES (?, ?)", (workspace_id, data["jobId"])
                 )
             return data, True
 
     def list_workspaces(self) -> list[dict]:
         with self.connect() as db:
             rows = db.execute(
-                """SELECT w.id, w.created_at, w.revision, w.draft, w.job_id,
+                """SELECT w.id, w.created_at, w.revision, w.draft, j.id,
                           json_extract(j.data, '$.status'), json_extract(j.data, '$.request'),
-                          json_extract(j.data, '$.error')
-                   FROM workspaces w LEFT JOIN jobs j ON j.id=w.job_id
+                          json_extract(j.data, '$.error'), g.id,
+                          json_extract(g.data, '$.status'), json_extract(g.data, '$.error')
+                   FROM workspaces w LEFT JOIN jobs g ON g.id=(
+                       SELECT attempt.id FROM workspace_jobs l
+                       JOIN jobs attempt ON attempt.id=l.job_id
+                       WHERE l.workspace_id=w.id
+                       ORDER BY attempt.rowid DESC LIMIT 1)
+                   LEFT JOIN jobs j ON j.id=coalesce(
+                       (SELECT id FROM jobs WHERE id=w.job_id
+                        AND json_extract(data, '$.status')='completed'), g.id)
                    WHERE w.archived=0 ORDER BY w.created_at DESC, w.id"""
             ).fetchall()
         return [
@@ -117,8 +155,23 @@ class JobStore:
                 "jobStatus": status,
                 "jobMeta": self.workspace_job_meta(request) if request else None,
                 "jobError": json.loads(error) if error else None,
+                "generationId": attempt,
+                "generationStatus": attempt_status,
+                "generationError": json.loads(attempt_error) if attempt_error else None,
             }
-            for id_, created_at, revision, draft, job_id, status, request, error in rows
+            for (
+                id_,
+                created_at,
+                revision,
+                draft,
+                job_id,
+                status,
+                request,
+                error,
+                attempt,
+                attempt_status,
+                attempt_error,
+            ) in rows
         ]
 
     @staticmethod
@@ -190,7 +243,7 @@ class JobStore:
                         "workspace_import_missing_job",
                         "Không tìm thấy phiên tạo đề hoặc tệp đề thi trên máy chủ này.",
                     )
-                if db.execute("SELECT 1 FROM workspaces WHERE job_id=?", (job_id,)).fetchone():
+                if db.execute("SELECT 1 FROM workspace_jobs WHERE job_id=?", (job_id,)).fetchone():
                     raise UiError(
                         "workspace_import_conflict",
                         "Phiên tạo đề này đã thuộc một mục trong tủ đề.",
@@ -201,6 +254,8 @@ class JobStore:
                    VALUES (?, ?, 1, ?, ?)""",
                 (workspace_id, created_at, encoded, job_id),
             )
+            if job_id is not None:
+                db.execute("INSERT INTO workspace_jobs VALUES (?, ?)", (workspace_id, job_id))
             return "imported"
 
     def get(self, job_id: str) -> dict:
@@ -262,6 +317,7 @@ class JobStore:
         *,
         question_id: int | None = None,
         restored_from: int | None = None,
+        promotion: tuple[str, str] | None = None,
     ) -> None:
         job_id, revision = job["jobId"], job["revision"]
         root = self.path.parent / job_id
@@ -275,6 +331,14 @@ class JobStore:
             committed_hash = previous.get("sourceHash")
             settle_source(root, committed_hash)
             try:
+                if promotion is not None:
+                    workspace_id, expected = promotion
+                    changed = db.execute(
+                        "UPDATE workspaces SET job_id=? WHERE id=? AND job_id=? AND archived=0",
+                        (job_id, workspace_id, expected),
+                    )
+                    if changed.rowcount != 1:
+                        raise UiError("stale_revision", "Đề đang dùng đã thay đổi.")
                 db.execute(
                     """INSERT INTO exam_versions
                        (job_id, revision, change, question_id, restored_from, data, source)
@@ -293,6 +357,12 @@ class JobStore:
                     "UPDATE jobs SET data=? WHERE id=?",
                     (json.dumps(job, ensure_ascii=False), job_id),
                 )
+                if change == "generated":
+                    db.execute(
+                        """UPDATE workspaces SET job_id=?
+                           WHERE id=(SELECT workspace_id FROM workspace_jobs WHERE job_id=?)""",
+                        (job_id, job_id),
+                    )
                 publish_source(root, source)
                 db.commit()
                 committed_hash = job["sourceHash"]
@@ -310,6 +380,38 @@ class JobStore:
                           restored_from AS restoredFrom, source IS NOT NULL AS restorable
                    FROM exam_versions WHERE job_id=? ORDER BY revision DESC""",
                 (job_id,),
+            ).fetchall()
+        return [{**row, "restorable": bool(row["restorable"])} for row in rows]
+
+    def workspace_job(self, workspace_id: str) -> str | None:
+        with self.connect() as db:
+            row = db.execute(
+                "SELECT job_id FROM workspaces WHERE id=? AND archived=0", (workspace_id,)
+            ).fetchone()
+        if row is None:
+            raise UiError("workspace_not_found", "Không tìm thấy đề đã lưu.", 404)
+        return row[0]
+
+    def owns_job(self, workspace_id: str, job_id: str) -> bool:
+        with self.connect() as db:
+            return (
+                db.execute(
+                    "SELECT 1 FROM workspace_jobs WHERE workspace_id=? AND job_id=?",
+                    (workspace_id, job_id),
+                ).fetchone()
+                is not None
+            )
+
+    def workspace_versions(self, workspace_id: str) -> list[dict]:
+        with self.connect() as db:
+            db.row_factory = sqlite3.Row
+            rows = db.execute(
+                """SELECT v.job_id AS jobId, v.revision, v.created_at AS createdAt, v.change,
+                          v.question_id AS questionId, v.restored_from AS restoredFrom,
+                          v.source IS NOT NULL AS restorable
+                   FROM workspace_jobs l JOIN exam_versions v ON v.job_id=l.job_id
+                   WHERE l.workspace_id=? ORDER BY v.created_at DESC, v.revision DESC""",
+                (workspace_id,),
             ).fetchall()
         return [{**row, "restorable": bool(row["restorable"])} for row in rows]
 

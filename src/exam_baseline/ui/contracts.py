@@ -127,6 +127,12 @@ class RevisionRequest(Model):
     revision: int = Field(ge=1)
 
 
+class WorkspaceRestoreRequest(RevisionRequest):
+    jobId: UUID
+    targetJobId: UUID
+    targetRevision: int = Field(ge=1)
+
+
 class EditRequest(RevisionRequest):
     question: dict
 

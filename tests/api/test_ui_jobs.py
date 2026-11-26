@@ -136,6 +136,35 @@ def test_workspaces_share_drafts_link_existing_jobs_and_reject_stale_saves(tmp_p
         assert saved["id"] == workspace_id and saved["jobId"] == job
         assert saved["jobStatus"] == "completed" and saved["draft"] == update["draft"]
         assert client.get(f"/api/exams/{job}").json()["questions"]
+        store = restarted.state.ui_jobs.store
+        attempt, _ = store.create(
+            "attempt", "attempt", {"status": "queued", "request": PAYLOAD}, workspace_id
+        )
+        (during,) = client.get("/api/workspaces").json()["workspaces"]
+        assert during["jobId"] == job and during["generationId"] == attempt["jobId"]
+        store.save({**attempt, "status": "failed", "error": {"code": "test_failure"}})
+        (failed,) = client.get("/api/workspaces").json()["workspaces"]
+        assert failed["jobId"] == job and failed["generationStatus"] == "failed"
+        replaced = client.post(
+            f"/api/exams/generate?workspace_id={workspace_id}",
+            json=PAYLOAD,
+            headers={"Idempotency-Key": "workspace-second-success"},
+        ).json()["jobId"]
+        assert wait(client, replaced)["status"] == "completed"
+        history = client.get(f"{workspace_url}/versions").json()
+        assert history["currentJobId"] == replaced
+        assert {entry["jobId"] for entry in history["versions"]} == {job, replaced}
+        previous = next(entry["revision"] for entry in history["versions"] if entry["jobId"] == job)
+        restored = client.post(
+            f"{workspace_url}/versions/restore",
+            json={
+                "revision": history["currentRevision"],
+                "jobId": replaced,
+                "targetJobId": job,
+                "targetRevision": previous,
+            },
+        ).json()
+        assert restored["examId"] == job and not restored["approved"]
         assert client.delete(workspace_url).status_code == 204
         assert client.get("/api/workspaces").json()["workspaces"] == []
         assert client.put(workspace_url, json=draft).status_code == 404

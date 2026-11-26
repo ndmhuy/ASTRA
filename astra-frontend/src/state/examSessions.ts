@@ -12,6 +12,8 @@ export interface ExamSession {
   questions: QuestionItem[];
   draft: string;
   jobId: string | null;
+  generationId?: string;
+  generationError?: string;
   meta: { title: string; subject: string; duration: number; completedCount: number; totalCount: number } | null;
   previousCount: number;
   error?: string;
@@ -57,7 +59,8 @@ function workspaceDraft({ mode, title, draft, messages }: ExamSession): Workspac
 }
 
 function sharedSession(entry: SavedWorkspace, previous?: ExamSession): ExamSession {
-  const { id, mode, createdAt, title, draft, messages, jobId, jobMeta, jobStatus, jobError } = entry;
+  const { id, mode, createdAt, title, draft, messages, jobId, jobMeta, jobStatus } = entry;
+  const jobError = entry.jobError;
   const status = jobStatus === 'completed' ? 'complete' : jobStatus === 'failed' ? 'error' : jobId ? 'generating' : 'draft';
   const sameJob = previous?.jobId === jobId;
   const notice = sameJob && previous?.messages.find(message => message.id === `exam-ready:${jobId}`);
@@ -65,6 +68,10 @@ function sharedSession(entry: SavedWorkspace, previous?: ExamSession): ExamSessi
     questions: [], previousCount: 0,
     ...(sameJob ? previous : undefined),
     id, mode, createdAt, title, draft, messages: notice ? [...messages, notice] : messages, jobId, status,
+    generationId: entry.generationStatus === 'queued' || entry.generationStatus === 'running'
+      ? entry.generationId ?? undefined : undefined,
+    generationError: status === 'complete' && entry.generationError
+      ? humanizeErrorMessage(entry.generationError.message, entry.generationError.code) : undefined,
     meta: sameJob && previous?.meta ? previous.meta : jobMeta && {
       title: `Đề thi ${jobMeta.subject}`, subject: jobMeta.subject, duration: jobMeta.durationMinutes,
       completedCount: status === 'complete' ? jobMeta.itemCount : 0, totalCount: jobMeta.itemCount,
@@ -176,10 +183,7 @@ export class ExamSessions {
   }
   resume() {
     this.disposed = false;
-    this.sessions.filter(session => session.status === 'generating' && session.jobId).forEach(session => {
-      this.subscriptions.get(session.id)?.();
-      this.watch(session.id, session.jobId!);
-    });
+    this.resumeGeneration();
     void this.loadLibrary();
   }
 
@@ -203,8 +207,8 @@ export class ExamSessions {
           return [];
         }
         if (entry.revision < state.revision) return [session];
-        if (entry.jobId !== session.jobId || entry.jobStatus === 'failed') this.stopWatching(session.id);
         const loaded = sharedSession(entry, session);
+        if (entry.jobId !== session.jobId || loaded.generationId !== session.generationId) this.stopWatching(session.id);
         state.revision = entry.revision;
         state.saved = JSON.stringify(workspaceDraft(loaded));
         return [loaded];
@@ -219,11 +223,7 @@ export class ExamSessions {
       this.sessions = sessions.sort(newestFirst);
       this.libraryError = '';
       this.emit();
-      for (const session of this.sessions) {
-        if (session.status === 'generating' && session.jobId && !this.subscriptions.has(session.id) && !this.starting.has(session.id)) {
-          this.watch(session.id, session.jobId);
-        }
-      }
+      this.resumeGeneration();
       if (this.activeSessionId) this.refreshSavedExam(this.activeSessionId);
       return entries;
     } catch {
@@ -232,6 +232,13 @@ export class ExamSessions {
       this.emit();
     }
   };
+
+  private resumeGeneration() {
+    for (const session of this.sessions) {
+      const jobId = session.generationId ?? (session.status === 'generating' ? session.jobId : null);
+      if (jobId && !this.subscriptions.has(session.id) && !this.starting.has(session.id)) this.watch(session.id, jobId);
+    }
+  }
 
   importBrowserLibrary = async () => {
     const library = this.service.workspaceLibrary;
@@ -520,7 +527,7 @@ export class ExamSessions {
   }
   async generate(id: string, params: ExamRequestParams) {
     const existing = this.sessions.find(session => session.id === id);
-    if (!existing || existing.status === 'generating' || this.starting.has(id)) return;
+    if (!existing || existing.status === 'generating' || existing.generationId || this.starting.has(id)) return;
     const shared = this.workspaceSaves.has(id);
     if (shared) {
       this.starting.add(id);
@@ -535,13 +542,17 @@ export class ExamSessions {
     const requestSignature = JSON.stringify(params);
     const requestId = existing.errorCode === 'network_error' && existing.requestSignature === requestSignature
       ? existing.requestId || crypto.randomUUID() : crypto.randomUUID();
+    const keepExam = shared && existing.status === 'complete';
     this.update(id, session => ({
       ...session,
       requestId,
       requestSignature,
-      status: 'generating',
       error: undefined,
       errorCode: undefined,
+      progress: undefined,
+      generationError: undefined,
+      ...(keepExam ? {} : {
+      status: 'generating',
       package: undefined,
       preview: undefined,
       previewOpenedRevision: null,
@@ -552,12 +563,13 @@ export class ExamSessions {
       questions: [],
       previousCount: 0,
       title: !shared && session.mode === 'template' ? `Đề thi ${params.subject}` : session.title,
-      meta: { title: `Đề thi ${params.subject}`, subject: params.subject, duration: params.durationMinutes, completedCount: 0, totalCount: params.itemCount }
+      meta: { title: `Đề thi ${params.subject}`, subject: params.subject, duration: params.durationMinutes, completedCount: 0, totalCount: params.itemCount },
+      }),
     }));
     try {
       const { jobId } = await this.service.startGeneration({ ...params, clientRequestId: requestId }, shared ? id : undefined);
       if (this.disposed || !this.sessions.some(session => session.id === id)) return;
-      this.update(id, session => ({ ...session, jobId }));
+      this.update(id, session => ({ ...session, ...(keepExam ? { generationId: jobId } : { jobId }) }));
       this.watch(id, jobId);
     } catch (error) { this.fail(id, error); }
     finally { this.starting.delete(id); }
@@ -565,7 +577,8 @@ export class ExamSessions {
   private watch(id: string, jobId: string) {
     let finishing = false;
     const unsubscribe = this.service.onProgress(jobId, progress => {
-        if (this.disposed || finishing || !this.sessions.some(session => session.id === id && session.jobId === jobId)) return;
+        const session = this.sessions.find(item => item.id === id);
+        if (this.disposed || finishing || !session || (session.generationId ?? session.jobId) !== jobId) return;
         if (progress.status === 'failed') {
           finishing = true;
           const rawMessage = progress.error?.message || progress.statusMessage;
@@ -578,6 +591,7 @@ export class ExamSessions {
           return;
         }
         this.update(id, session => {
+          if (session.generationId && session.generationId !== session.jobId) return { ...session, progress };
           const item = progress.latestItemPreview;
           const append = item && !session.questions.some(question => question.id === item.id);
           return { ...session, progress, meta: session.meta ? { ...session.meta, completedCount: progress.completedItems, totalCount: progress.totalItems || session.meta.totalCount } : null, previousCount: append ? session.questions.length : session.previousCount, questions: append ? [...session.questions, item] : session.questions };
@@ -585,7 +599,13 @@ export class ExamSessions {
         if (progress.status === 'completed' || progress.stage >= 5 && progress.percent >= 100) {
           finishing = true;
           void this.service.getExamPackage(jobId).then(pkg => {
-            if (this.sessions.some(session => session.id === id && session.jobId === jobId)) this.complete(id, pkg);
+            if (this.sessions.some(session => session.id === id && (session.generationId ?? session.jobId) === jobId)) {
+              if (session.jobId !== jobId) {
+                this.update(id, current => ({ ...current, jobId, status: 'generating', generationId: undefined,
+                  previewOpenedRevision: null, package: undefined }));
+              }
+              this.complete(id, pkg);
+            }
           }).catch(error => this.fail(id, error)).finally(() => { this.subscriptions.get(id)?.(); this.subscriptions.delete(id); });
         }
       });
@@ -867,6 +887,7 @@ export class ExamSessions {
     this.update(id, session => ({
       ...session,
       package: pkg,
+      generationId: session.generationId === session.jobId ? undefined : session.generationId,
       error: undefined,
       errorCode: undefined,
       status: 'complete',
@@ -912,8 +933,10 @@ export class ExamSessions {
     const rawMessage = error instanceof Error ? error.message : undefined;
     this.update(id, session => ({
       ...session,
-      status: 'error',
-      error: rawMessage ? humanizeErrorMessage(rawMessage, code) : 'Chưa tạo được đề. Thầy cô hãy kiểm tra kết nối rồi thử lại.',
+      status: session.status === 'complete' ? 'complete' : 'error',
+      generationId: undefined,
+      [session.status === 'complete' ? 'generationError' : 'error']:
+        rawMessage ? humanizeErrorMessage(rawMessage, code) : 'Chưa tạo được đề. Thầy cô hãy kiểm tra kết nối rồi thử lại.',
       errorCode: code,
     }));
   }

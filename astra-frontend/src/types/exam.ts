@@ -103,6 +103,7 @@ export interface ExamPackage {
 }
 
 export interface ExamVersionSummary {
+  jobId?: string;
   revision: number;
   createdAt: string;
   change: 'generated' | 'baseline' | 'edited' | 'regenerated' | 'restored';
@@ -112,9 +113,9 @@ export interface ExamVersionSummary {
 }
 
 export interface ExamHistory {
-  list(jobId: string): Promise<{ currentRevision: number; versions: ExamVersionSummary[] }>;
+  list(jobId: string, workspaceId?: string): Promise<{ currentJobId?: string; currentRevision: number; versions: ExamVersionSummary[] }>;
   read(jobId: string, version: number): Promise<ExamPackage>;
-  restore(jobId: string, version: number, revision: number): Promise<ExamPackage>;
+  restore(jobId: string, version: number, revision: number, workspaceId?: string, targetJobId?: string): Promise<ExamPackage>;
 }
 
 export interface ExamRequestParams {

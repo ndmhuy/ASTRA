@@ -885,6 +885,15 @@ class JobManager:
         job = self._completed(job_id)
         return {"currentRevision": job["revision"], "versions": self.store.list_versions(job_id)}
 
+    def workspace_history(self, workspace_id):
+        job_id = self.store.workspace_job(workspace_id)
+        job = self._completed(job_id) if job_id else None
+        return {
+            "currentJobId": job_id,
+            "currentRevision": job["revision"] if job else None,
+            "versions": self.store.workspace_versions(workspace_id),
+        }
+
     @staticmethod
     def _version_job(job, snapshot, revision):
         base = {key: value for key, value in job.items() if key not in EXAM_VERSION_FIELDS}
@@ -901,15 +910,33 @@ class JobManager:
             self._check_revision(job, revision)
             if target_revision == revision:
                 return self._package(job)
-            snapshot, source = self.store.get_version(job_id, target_revision)
-            if source is None or sha256(source).hexdigest() != snapshot["sourceHash"]:
-                raise UiError(
-                    "version_source_missing", "Không tìm thấy tệp nguồn hợp lệ của phiên bản này."
-                )
-            restored = self._version_job(job, snapshot, revision + 1)
-            restored["approval"] = None
-            self.store.save_version(restored, source, "restored", restored_from=target_revision)
-            return self._package(restored)
+            return self._restore(job, target_revision)
+
+    def _restore(self, job, target, *, promotion=None):
+        snapshot, source = self.store.get_version(job["jobId"], target)
+        if source is None or sha256(source).hexdigest() != snapshot["sourceHash"]:
+            raise UiError(
+                "version_source_missing", "Không tìm thấy tệp nguồn hợp lệ của phiên bản này."
+            )
+        restored = self._version_job(job, snapshot, job["revision"] + 1)
+        restored["approval"] = None
+        self.store.save_version(
+            restored, source, "restored", restored_from=target, promotion=promotion
+        )
+        return self._package(restored)
+
+    async def restore_workspace_version(self, workspace_id, job_id, revision, target_job, target):
+        async with self.lock(target_job):
+            if self.store.workspace_job(workspace_id) != job_id:
+                raise UiError("stale_revision", "Đề đang dùng đã thay đổi.")
+            self._check_revision(self._completed(job_id), revision)
+            if not self.store.owns_job(workspace_id, target_job):
+                raise UiError("exam_version_not_found", "Không tìm thấy phiên bản đề này.", 404)
+            if target_job == job_id and target == revision:
+                return self.package(job_id)
+            return self._restore(
+                self._completed(target_job), target, promotion=(workspace_id, job_id)
+            )
 
     async def edit(self, job_id, question_id, revision, value):
         async with self.lock(job_id):

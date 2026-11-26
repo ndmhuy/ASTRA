@@ -6,9 +6,10 @@ import { ExamPaperView } from './Workspace/LiveCanvas/ExamPaperView';
 interface Props {
   history: ExamHistory;
   jobId: string;
+  workspaceId?: string;
   revision: number;
   onClose: () => void;
-  onRestore: (version: number, currentRevision: number) => Promise<void>;
+  onRestore: (version: number, currentRevision: number, jobId: string, targetJobId: string) => Promise<void>;
 }
 
 type HistoryResult = Awaited<ReturnType<ExamHistory['list']>>;
@@ -25,21 +26,26 @@ function changeLabel(version: ExamVersionSummary) {
   }
 }
 
-export function ExamVersionHistory({ history, jobId, revision, onClose, onRestore }: Props) {
+export function ExamVersionHistory({ history, jobId, workspaceId, revision, onClose, onRestore }: Props) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [listResult, setListResult] = useState<{ revision: number; data?: HistoryResult; error?: string }>();
-  const [choice, setChoice] = useState<number>();
-  const [previewResult, setPreviewResult] = useState<{ revision: number; data?: ExamPackage; error?: string }>();
+  const [choice, setChoice] = useState<string>();
+  const [previewResult, setPreviewResult] = useState<{ key: string; data?: ExamPackage; error?: string }>();
   const [restoreError, setRestoreError] = useState('');
   const [restoring, setRestoring] = useState(false);
   const list = listResult?.revision === revision ? listResult : undefined;
   const entries = list?.data;
-  const version = entries?.versions.find(item => item.revision === choice) ??
-    entries?.versions.find(item => item.revision !== entries.currentRevision) ?? entries?.versions[0];
+  const currentJobId = entries?.currentJobId ?? jobId;
+  const keyFor = (item: ExamVersionSummary) => `${item.jobId ?? jobId}:${item.revision}`;
+  const currentKey = `${currentJobId}:${entries?.currentRevision}`;
+  const version = entries?.versions.find(item => keyFor(item) === choice) ??
+    entries?.versions.find(item => keyFor(item) !== currentKey) ?? entries?.versions[0];
   const selected = version?.revision;
-  const viewed = previewResult?.revision === selected ? previewResult : undefined;
+  const selectedJob = version?.jobId ?? jobId;
+  const selectedKey = `${selectedJob}:${selected}`;
+  const viewed = previewResult?.key === selectedKey ? previewResult : undefined;
   const preview = viewed?.data;
-  const canRestore = version?.restorable && selected !== entries?.currentRevision && preview?.revision === selected;
+  const canRestore = version?.restorable && selectedKey !== currentKey && preview?.revision === selected;
 
   useEffect(() => {
     const element = dialog.current;
@@ -49,28 +55,28 @@ export function ExamVersionHistory({ history, jobId, revision, onClose, onRestor
 
   useEffect(() => {
     let current = true;
-    void history.list(jobId).then(result => {
+    void history.list(jobId, workspaceId).then(result => {
       if (current) setListResult({ revision, data: result });
     }).catch(error => {
       if (current) setListResult({ revision, error: error.message });
     });
     return () => { current = false; };
-  }, [history, jobId, revision]);
+  }, [history, jobId, workspaceId, revision]);
 
   useEffect(() => {
     if (selected === undefined) return;
     let current = true;
-    void history.read(jobId, selected)
-      .then(pkg => { if (current) setPreviewResult({ revision: selected, data: pkg }); })
-      .catch(error => { if (current) setPreviewResult({ revision: selected, error: error.message }); });
+    void history.read(selectedJob, selected)
+      .then(pkg => { if (current) setPreviewResult({ key: selectedKey, data: pkg }); })
+      .catch(error => { if (current) setPreviewResult({ key: selectedKey, error: error.message }); });
     return () => { current = false; };
-  }, [history, jobId, selected]);
+  }, [history, selectedJob, selected, selectedKey]);
 
   const restore = async () => {
     if (!canRestore || !entries || selected === undefined || restoring) return;
     setRestoring(true);
     setRestoreError('');
-    try { await onRestore(selected, entries.currentRevision); }
+    try { await onRestore(selected, entries.currentRevision, currentJobId, selectedJob); }
     catch (error) { setRestoreError(error instanceof Error ? error.message : 'Chưa khôi phục được bản đề.'); }
     finally { setRestoring(false); }
   };
@@ -88,11 +94,11 @@ export function ExamVersionHistory({ history, jobId, revision, onClose, onRestor
       {!list && <p role="status">Đang tải lịch sử…</p>}
       {entries && <>
         <ol className="version-history-list" aria-label="Các phiên bản đề thi">
-          {entries.versions.map(item => <li key={item.revision}>
+          {entries.versions.map(item => <li key={keyFor(item)}>
             <button type="button" className="button-secondary" disabled={restoring}
-              aria-pressed={selected === item.revision} onClick={() => { setChoice(item.revision); setRestoreError(''); }}>
+              aria-pressed={selectedKey === keyFor(item)} onClick={() => { setChoice(keyFor(item)); setRestoreError(''); }}>
               <strong>Phiên bản {item.revision}</strong>
-              <span>{changeLabel(item)}{item.revision === entries.currentRevision ? ' · Đang dùng' : ''}</span>
+              <span>{changeLabel(item)}{keyFor(item) === currentKey ? ' · Đang dùng' : item.jobId && item.jobId !== currentJobId ? ' · Lần tạo trước' : ''}</span>
               <time dateTime={item.createdAt}>{timestamp.format(new Date(item.createdAt))}</time>
             </button>
           </li>)}
@@ -100,7 +106,7 @@ export function ExamVersionHistory({ history, jobId, revision, onClose, onRestor
         <section className="version-history-preview" aria-label="Xem phiên bản đã lưu">
           {viewed?.error && <p className="editor-error-box" role="alert">{viewed.error}</p>}
           {!viewed && <p role="status">Đang tải nội dung đề…</p>}
-          {preview && <ExamPaperView key={selected} showPdf={false}
+          {preview && <ExamPaperView key={selectedKey} showPdf={false}
             questions={preview.questions} passages={preview.passages} isGenerating={false}
             examMeta={{ title: preview.title, subject: preview.subject, duration: preview.durationMinutes,
               completedCount: preview.questions.length, totalCount: preview.questions.length }} />}

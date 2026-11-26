@@ -37,6 +37,9 @@ export interface SavedWorkspace extends WorkspaceDraft {
   jobStatus: GenerationProgress['status'] | null;
   jobMeta: { subject: string; durationMinutes: number; itemCount: number } | null;
   jobError: GenerationProgress['error'] | null;
+  generationId?: string | null;
+  generationStatus?: GenerationProgress['status'] | null;
+  generationError?: GenerationProgress['error'] | null;
 }
 
 interface WorkspaceLibrary {
@@ -601,13 +604,16 @@ export async function getExamFormats(): Promise<ExamFormat[]> {
 export class ApiExamService implements IExamService {
   private baseUrl: string;
   readonly history: ExamHistory = {
-    list: jobId => requestJson(`${this.baseUrl}/exams/${jobId}/versions`),
+    list: (jobId, workspaceId) => requestJson(workspaceId
+      ? `${this.baseUrl}/workspaces/${workspaceId}/versions` : `${this.baseUrl}/exams/${jobId}/versions`),
     read: (jobId, version) => requestJson(`${this.baseUrl}/exams/${jobId}/versions/${version}`),
-    restore: async (jobId, version, revision) => {
-      const pkg = await requestJson<ExamPackage>(`${this.baseUrl}/exams/${jobId}/versions/${version}/restore`, {
+    restore: async (jobId, version, revision, workspaceId, targetJobId) => {
+      const path = workspaceId ? `workspaces/${workspaceId}/versions/restore` : `exams/${jobId}/versions/${version}/restore`;
+      const pkg = await requestJson<ExamPackage>(`${this.baseUrl}/${path}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ revision }),
+        body: JSON.stringify(workspaceId
+          ? { revision, jobId, targetJobId: targetJobId ?? jobId, targetRevision: version } : { revision }),
       });
       return { ...pkg, preview: normalizePreview(pkg.preview, this.baseUrl) };
     },

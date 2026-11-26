@@ -166,11 +166,13 @@ export const App: React.FC = () => {
     if (activeId) void store.requestPreview(activeId, true);
   }, [store, activeId]);
 
-  const restoreVersion = async (sessionId: string, jobId: string, version: number, revision: number) => {
+  const restoreVersion = async (sessionId: string, jobId: string, version: number, revision: number,
+    workspaceId?: string, targetJobId?: string) => {
     if (!history) return;
     try {
-      const pkg = await history.restore(jobId, version, revision);
-      store.acceptPackage(sessionId, jobId, pkg);
+      const pkg = await history.restore(jobId, version, revision, workspaceId, targetJobId);
+      if (pkg.examId !== jobId) await store.loadLibrary();
+      store.acceptPackage(sessionId, pkg.examId, pkg);
       setViewMode('paper');
       setUndo(previous => previous?.sessionId === sessionId ? undefined : previous);
     } catch (error) {
@@ -223,22 +225,25 @@ export const App: React.FC = () => {
               <>
                 <div className="studio-chat-heading"><div><span className="studio-kicker">KHÔNG GIAN SOẠN ĐỀ</span><h2>Cùng soạn đề</h2></div></div>
                 <div className="session-context"><strong>{active.mode === 'template' ? active.meta?.title ?? active.title : active.title}</strong></div>
-                {(active.status === 'draft' || active.status === 'error') && <div className="session-create-action">
+                {(!active.generationId && (active.status === 'draft' || active.status === 'error' ||
+                  (!active.browserOnly && active.status === 'complete'))) && <div className="session-create-action">
                   {active.error && <p className="session-error-note">{active.error}</p>}
-                  <button type="button" className="button-primary" onClick={() => { setConfigureId(active.id); setShowQuickModal(true); }}>{active.status === 'error' ? 'Thử tạo lại' : 'Tạo đề từ yêu cầu'}</button>
+                  <button type="button" className="button-primary" onClick={() => { setConfigureId(active.id); setShowQuickModal(true); }}>
+                    {active.status === 'complete' ? 'Tạo đề mới trong phiên này' : active.status === 'error' ? 'Thử tạo lại' : 'Tạo đề từ yêu cầu'}
+                  </button>
                 </div>}
                 <ChatHistory messages={messages} onSuggestion={value => store.setDraft(active.id, value)} onEditMessage={message => store.setDraft(active.id, message.content)} onRetractMessage={message => store.retractMessage(active.id, message.id)} onBranchMessage={message => { const branchId = store.branchAtMessage(active.id, message.id); if (branchId) setActiveId(branchId); }} />
               </>
             ),
             right: (
               <>
-                {active.error && (
+                {(active.error || active.generationError) && (
                   <div className="canvas-alert-banner is-error" role="alert">
                     <AlertCircle size={17} aria-hidden="true" />
-                    <span>{active.error}</span>
+                    <span>{active.error || active.generationError}</span>
                   </div>
                 )}
-                {isGenerating && active.progress && (
+                {(isGenerating || active.generationId) && active.progress && (
                   <div className="canvas-progress-banner" role="status" aria-live="polite">
                     <div className="canvas-progress-top">
                       <span className="canvas-progress-label">
@@ -345,8 +350,9 @@ export const App: React.FC = () => {
       )}
       {history && active?.jobId && active.package?.revision && historySession === active.id && (
         <ExamVersionHistory key={active.jobId} history={history} jobId={active.jobId} revision={active.package.revision}
-          onClose={() => setHistorySession(null)} onRestore={async (version, revision) => {
-            await restoreVersion(active.id, active.jobId!, version, revision);
+          workspaceId={active.browserOnly ? undefined : active.id}
+          onClose={() => setHistorySession(null)} onRestore={async (version, revision, jobId, targetJobId) => {
+            await restoreVersion(active.id, jobId, version, revision, active.browserOnly ? undefined : active.id, targetJobId);
             setHistorySession(null);
           }} />
       )}

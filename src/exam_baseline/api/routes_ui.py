@@ -18,6 +18,7 @@ from exam_baseline.ui.contracts import (
     RevisionRequest,
     WorkspaceDraft,
     WorkspaceImport,
+    WorkspaceRestoreRequest,
     format_catalog,
 )
 from exam_baseline.ui.jobs import resolve_request
@@ -37,6 +38,25 @@ def save_workspace(request: Request, workspace_id: UUID, payload: WorkspaceDraft
         str(workspace_id), payload.revision, payload.model_dump(mode="json", exclude={"revision"})
     )
     return {"revision": revision}
+
+
+@router.get("/workspaces/{workspace_id}/versions")
+async def workspace_versions(request: Request, workspace_id: UUID, response: Response):
+    response.headers["Cache-Control"] = "no-store"
+    return request.app.state.ui_jobs.workspace_history(str(workspace_id))
+
+
+@router.post("/workspaces/{workspace_id}/versions/restore")
+async def restore_workspace_version(
+    request: Request, workspace_id: UUID, payload: WorkspaceRestoreRequest
+):
+    return await request.app.state.ui_jobs.restore_workspace_version(
+        str(workspace_id),
+        str(payload.jobId),
+        payload.revision,
+        str(payload.targetJobId),
+        payload.targetRevision,
+    )
 
 
 @router.post("/workspaces/{workspace_id}/import")
