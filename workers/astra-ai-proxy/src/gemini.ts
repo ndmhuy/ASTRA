@@ -67,21 +67,25 @@ export function parseGemini(raw: string, mimeType: string | null) {
     diagnostics.jsonParsing = "invalid";
     const proposal = JSON.parse(text);
     diagnostics.jsonParsing = "valid";
-    diagnostics.schemaStage = "provider_schema";
-    validate(providerValidator, proposal, diagnostics);
     const decision = { intents: [], ...proposal };
     // Null optional prose/proposal fields have the same meaning as omission.
     for (const name of ["guidance", "title", "intake"]) {
       if (decision[name] === null) delete decision[name];
     }
+    diagnostics.schemaStage = "provider_schema";
+    validate(providerValidator, decision, diagnostics);
     diagnostics.schemaStage = "application_contract";
+    diagnostics.kind = decision.kind;
+    diagnostics.intents = decision.intents.map((intent: { id: string }) => intent.id);
+    diagnostics.hasIntake = Boolean(decision.intake);
+    diagnostics.hasGuidance = Boolean(decision.guidance);
     validate(decisionValidator, decision, diagnostics);
     validate(outputValidator, decision, diagnostics);
-    if ((decision.kind === "task") !== Boolean(decision.intents.length) ||
-        (decision.intake && decision.guidance) ||
-        ((decision.intake || decision.guidance) && !["answer", "clarify"].includes(decision.kind))) {
-      throw new GeminiOutputFailure({ ...diagnostics, validationKeywords: ["semantic_invariant"] });
-    }
+    const invariant = (decision.kind === "task") !== Boolean(decision.intents.length)
+      ? "task_action_mismatch" : decision.intake && decision.guidance ? "intake_guidance_conflict"
+      : (decision.intake || decision.guidance) && !["answer", "clarify"].includes(decision.kind)
+        ? "executable_kind_with_proposal" : null;
+    if (invariant) throw new GeminiOutputFailure({ ...diagnostics, validationKeywords: [invariant] });
     diagnostics.schemaStage = "validated";
     diagnostics.kind = decision.kind;
     diagnostics.intents = decision.intents.map((intent: { id: string }) => intent.id);

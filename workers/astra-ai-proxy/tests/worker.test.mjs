@@ -293,3 +293,16 @@ test("all 34 existing intent contracts survive the common provider argument sche
     mock.assertNoPendingInterceptors();
   } finally {await mf.dispose();}
 });
+
+test("provider schema excludes cross-field combinations rejected by the application", async()=>{
+  for(const proposal of [
+    {kind:"task",intents:[],intake:{mode:"request",family:"thpt"}},
+    {kind:"clarify",intents:[],intake:{mode:"request",family:"thpt"},guidance:"start"},
+    {kind:"task",intents:[{id:"OPEN_SETUP",args:{}}],intake:{mode:"request",family:"thpt"}},
+  ]) {
+    const {mf,mock}=runtime();
+    mock.get().intercept().reply(200,JSON.stringify({candidates:[{finishReason:"STOP",content:{parts:[{text:JSON.stringify(proposal)}]}}]}));
+    try {assert.equal((await (await post(mf)).json()).error,"schema");}
+    finally {await mf.dispose();}
+  }
+});

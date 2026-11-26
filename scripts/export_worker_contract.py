@@ -2,6 +2,7 @@
 
 import argparse
 import json
+from copy import deepcopy
 from hashlib import sha256
 from pathlib import Path
 
@@ -34,10 +35,36 @@ def provider_schema():
         "required": ["id", "args"],
         "additionalProperties": False,
     }
-    full["required"] = ["kind"]
     for name in ("guidance", "title", "intake"):
         full["properties"][name] = {"anyOf": [full["properties"][name], {"type": "null"}]}
-    return full
+    properties = full["properties"]
+
+    def variant(kinds, required, fields):
+        selected = {name: deepcopy(properties[name]) for name in fields}
+        selected["kind"] = {"type": "string", "enum": kinds}
+        if kinds == ["task"]:
+            selected["intents"]["minItems"] = 1
+        elif "intents" in selected:
+            selected["intents"] = {"type": "array", "maxItems": 0, "items": {"type": "object"}}
+        for name in required:
+            if name in ("intake", "guidance"):
+                selected[name] = selected[name]["anyOf"][0]
+        return {
+            "type": "object",
+            "properties": selected,
+            "required": ["kind", *required],
+            "additionalProperties": False,
+        }
+
+    return {
+        "type": "object",
+        "anyOf": [
+            variant(["task"], ["intents"], ["intents", "title"]),
+            variant(["answer", "clarify"], ["intake"], ["intake", "intents", "title"]),
+            variant(["answer", "clarify"], ["guidance"], ["guidance", "intents", "title"]),
+            variant(["answer", "clarify", "unsupported"], [], ["intents", "title"]),
+        ],
+    }
 
 
 def export():
