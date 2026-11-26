@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { ArrowUp, Eye, FileText, ListChecks, LoaderCircle } from 'lucide-react';
 import type { ExamPassage, ExamPreviewState, QuestionItem, VisualWarning } from '../../../types/exam';
 import { formatVisualWarning } from '../../../utils/userMessages.ts';
@@ -63,6 +63,7 @@ interface ExamPaperViewProps {
   artifactChanged?: boolean;
   onRetryPreview?: () => void;
   onPreviewOpened?: () => void;
+  showPdf?: boolean;
 }
 
 export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
@@ -87,7 +88,9 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
   artifactChanged = false,
   onRetryPreview,
   onPreviewOpened,
+  showPdf = true,
 }) => {
+  const sectionId = useId();
   const [internalMode, setInternalMode] = useState<ExamCanvasViewMode>('paper');
   const activeMode = viewMode ?? internalMode;
   const setMode = (nextMode: ExamCanvasViewMode) => {
@@ -148,7 +151,7 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
     window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
 
   const jumpToSection = (part: string) => {
-    const target = document.getElementById(`exam-section-${part}`);
+    const target = document.getElementById(`${sectionId}-${part}`);
     target?.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
   };
 
@@ -323,7 +326,7 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
       <div className="view-switch" role="group" aria-label="Chế độ xem đề thi">
         <button type="button" aria-pressed={activeMode === 'paper'} onClick={() => setMode('paper')}><FileText size={14} aria-hidden="true" />Đề thi</button>
         <button type="button" aria-pressed={activeMode === 'review'} onClick={() => setMode('review')}><ListChecks size={14} aria-hidden="true" />Xem đáp án</button>
-        <button type="button" aria-pressed={activeMode === 'pdf'} onClick={() => setMode('pdf')}><Eye size={14} aria-hidden="true" />Xem trước PDF</button>
+        {showPdf && <button type="button" aria-pressed={activeMode === 'pdf'} onClick={() => setMode('pdf')}><Eye size={14} aria-hidden="true" />Xem trước PDF</button>}
       </div>
       {flaggedCount > 0 && <button type="button" className="review-count" onClick={() => setMode('review')}>{flaggedCount} câu cần xem xét</button>}
     </div>
@@ -378,7 +381,7 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
                 : undefined;
             return (
               <React.Fragment key={q.id}>
-                {showPart && <h2 id={`exam-section-${q.part}`} className="exam-section-heading">{sectionHeading(q.part!)}</h2>}
+                {showPart && <h2 id={`${sectionId}-${q.part}`} className="exam-section-heading">{sectionHeading(q.part!)}</h2>}
                 {showGroupInstruction && (
                   <p className="vact-group-instruction"><strong>{q.groupInstruction}</strong></p>
                 )}

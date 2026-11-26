@@ -6,7 +6,7 @@ from datetime import UTC
 from typing import Annotated, Literal
 from uuid import UUID
 
-from fastapi import APIRouter, Header, Query, Request, Response
+from fastapi import APIRouter, Header, Path, Query, Request, Response
 from fastapi.responses import FileResponse, StreamingResponse
 
 from exam_baseline.ui.contracts import (
@@ -137,6 +137,24 @@ async def package(request: Request, job_id: UUID):
     return request.app.state.ui_jobs.package(str(job_id))
 
 
+@router.get("/exams/{job_id}/versions")
+async def versions(request: Request, job_id: UUID, response: Response):
+    response.headers["Cache-Control"] = "no-store"
+    return request.app.state.ui_jobs.versions(str(job_id))
+
+
+@router.get("/exams/{job_id}/versions/{version}")
+async def exam_version(request: Request, job_id: UUID, version: Annotated[int, Path(ge=1)]):
+    return request.app.state.ui_jobs.version(str(job_id), version)
+
+
+@router.post("/exams/{job_id}/versions/{version}/restore")
+async def restore_version(
+    request: Request, job_id: UUID, version: Annotated[int, Path(ge=1)], payload: RevisionRequest
+):
+    return await request.app.state.ui_jobs.restore_version(str(job_id), payload.revision, version)
+
+
 @router.put("/exams/{job_id}/questions/{question_id}")
 async def edit(request: Request, job_id: UUID, question_id: int, payload: EditRequest):
     return await request.app.state.ui_jobs.edit(
@@ -225,5 +243,11 @@ async def export(
     type: Literal["STUDENT_EXAM", "TEACHER_KEY"],
     format: Literal["tex", "json", "pdf"],
 ):
-    path, media_type = await request.app.state.ui_jobs.export(str(job_id), type, format)
+    path, media_type, content = await request.app.state.ui_jobs.export(str(job_id), type, format)
+    if content is not None:
+        return Response(
+            content,
+            media_type=media_type,
+            headers={"Content-Disposition": f'attachment; filename="{path.name}"'},
+        )
     return FileResponse(path, media_type=media_type, filename=path.name)

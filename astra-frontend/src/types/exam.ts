@@ -101,6 +101,22 @@ export interface ExamPackage {
   gaps?: { code: string; message: string }[];
   provenance?: Record<string, unknown>;
 }
+
+export interface ExamVersionSummary {
+  revision: number;
+  createdAt: string;
+  change: 'generated' | 'baseline' | 'edited' | 'regenerated' | 'restored';
+  questionId: number | null;
+  restoredFrom: number | null;
+  restorable: boolean;
+}
+
+export interface ExamHistory {
+  list(jobId: string): Promise<{ currentRevision: number; versions: ExamVersionSummary[] }>;
+  read(jobId: string, version: number): Promise<ExamPackage>;
+  restore(jobId: string, version: number, revision: number): Promise<ExamPackage>;
+}
+
 export interface ExamRequestParams {
   subject: Subject; grade: number; examType: ExamType; durationMinutes: number;
   itemCount: number; prompt: string; uploadedFiles: string[];

@@ -239,6 +239,66 @@ def test_exam_version_persists_legacy_baseline_and_recovers_interrupted_source(t
         assert store.list_versions(job)[0]["change"] == "edited"
 
 
+def test_restore_returns_previous_exam_as_new_unapproved_revision(tmp_path):
+    app, _ = fixture_app(tmp_path)
+    with TestClient(app) as client:
+        job = client.post(
+            "/api/exams/generate", json=PAYLOAD, headers={"Idempotency-Key": "restorable-exam"}
+        ).json()["jobId"]
+        assert wait(client, job)["status"] == "completed"
+        exam_url = f"/api/exams/{job}"
+        version_url = f"{exam_url}/versions"
+        original = client.get(exam_url).json()
+        initial = original["revision"]
+        source_path = tmp_path / job / "de_thi.tex"
+        source_before = source_path.read_bytes()
+        approval = {
+            "revision": initial,
+            "contentHash": original["contentHash"],
+            "reviewer": "teacher",
+        }
+        assert client.post(f"{exam_url}/approve", json=approval).status_code == 200
+        edited = client.put(
+            f"{exam_url}/questions/1",
+            json={"revision": initial, "question": {"stem": "Tính $2+2$ (đã chỉnh sửa)."}},
+        ).json()
+        last_edit = edited["revision"]
+
+        history = client.get(version_url).json()
+        assert history["currentRevision"] == last_edit
+        assert [version["revision"] for version in history["versions"]] == [last_edit, initial]
+        saved = client.get(f"{version_url}/{initial}").json()
+        assert saved["questions"] == original["questions"]
+        assert saved["approved"] and "preview" not in saved
+        assert (
+            client.post(f"{version_url}/{initial}/restore", json={"revision": initial}).status_code
+            == 409
+        )
+        assert client.get(f"{version_url}/{last_edit + 10}").status_code == 404
+
+        restored = client.post(f"{version_url}/{initial}/restore", json={"revision": last_edit})
+        assert restored.status_code == 200
+        restored = restored.json()
+        assert restored["examId"] == job and restored["revision"] == last_edit + 1
+        assert restored["contentHash"] == original["contentHash"]
+        assert restored["questions"][0]["stem"] == original["questions"][0]["stem"]
+        assert restored["approval"] is None and not restored["approved"]
+        assert source_path.read_bytes() == source_before
+        assert client.get(f"{exam_url}/export?type=STUDENT_EXAM&format=tex").status_code == 409
+        history = client.get(version_url).json()
+        assert history["versions"][0]["restoredFrom"] == initial
+        assert client.get(f"{version_url}/{last_edit}").json()["questions"] == edited["questions"]
+        assert (
+            client.post(
+                f"{exam_url}/approve", json={**approval, "revision": restored["revision"]}
+            ).status_code
+            == 200
+        )
+        assert (
+            client.get(f"{exam_url}/export?type=STUDENT_EXAM&format=tex").content == source_before
+        )
+
+
 def test_retrieval_agents_teacher_approval_export_edit_and_reconnect(tmp_path):
     app, providers = fixture_app(tmp_path)
     with TestClient(app) as client:

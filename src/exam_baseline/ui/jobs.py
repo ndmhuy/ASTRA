@@ -46,7 +46,7 @@ from exam_baseline.ui.demo import regenerate_demo_question, run_demo_job
 from exam_baseline.ui.errors import UiError
 from exam_baseline.ui.exam_source import SOURCE_NAME
 from exam_baseline.ui.preview import PreviewService
-from exam_baseline.ui.storage import JobStore
+from exam_baseline.ui.storage import EXAM_VERSION_FIELDS, JobStore
 from exam_baseline.vact import models as vact_models
 from exam_baseline.vact import template as vact_template
 from exam_baseline.vact.agents import SolverAgent as VactSolverAgent
@@ -634,7 +634,7 @@ class JobManager:
             raise UiError("exam_not_ready", "Đề thi vẫn đang được soạn, chưa sẵn sàng để xem.")
         return job
 
-    def _package_vact(self, job):
+    def _package_vact(self, job, *, include_preview=True):
         slots = job["nativeRequest"]["slots"]
         drawings = {d["question_id"]: d["latex"] for d in job["drawings"]["drawings"]}
         solutions = _current_solutions(job)
@@ -709,7 +709,7 @@ class JobManager:
             "contentHash": job["contentHash"],
             "approved": bool(job["approval"]),
             "approval": job["approval"],
-            "preview": self.previews.status(job),
+            **({"preview": self.previews.status(job)} if include_preview else {}),
             "visualWarnings": visual_warnings,
             "hasDrawings": bool(drawings),
             "warnings": [],
@@ -736,9 +736,11 @@ class JobManager:
         }
 
     def package(self, job_id):
-        job = self._completed(job_id)
+        return self._package(self._completed(job_id))
+
+    def _package(self, job, *, include_preview=True):
         if _is_vact(job):
-            return self._package_vact(job)
+            return self._package_vact(job, include_preview=include_preview)
         slots = job["nativeRequest"]["slots"]
         drawings = {d["question_id"]: d["latex"] for d in job["drawings"]["drawings"]}
         solutions = _current_solutions(job)
@@ -820,7 +822,7 @@ class JobManager:
                     for issue in report.get("review_issues", [])
                 )
         return {
-            "examId": job_id,
+            "examId": job["jobId"],
             "title": f"Đề {profile_title}",
             "subject": subject,
             "grade": 12,
@@ -831,7 +833,7 @@ class JobManager:
             "contentHash": job["contentHash"],
             "approved": bool(job["approval"]),
             "approval": job["approval"],
-            "preview": self.previews.status(job),
+            **({"preview": self.previews.status(job)} if include_preview else {}),
             "visualWarnings": [
                 {"questionId": raw["id"], "code": issue}
                 for raw in job["rawQuestions"]
@@ -878,6 +880,36 @@ class JobManager:
                 "stale_revision",
                 "Đề thi đã có bản cập nhật mới hơn. Vui lòng tải lại trước khi sửa hoặc duyệt.",
             )
+
+    def versions(self, job_id):
+        job = self._completed(job_id)
+        return {"currentRevision": job["revision"], "versions": self.store.list_versions(job_id)}
+
+    @staticmethod
+    def _version_job(job, snapshot, revision):
+        base = {key: value for key, value in job.items() if key not in EXAM_VERSION_FIELDS}
+        return {**base, **snapshot, "revision": revision}
+
+    def version(self, job_id, revision):
+        job = self._completed(job_id)
+        snapshot, _ = self.store.get_version(job_id, revision)
+        return self._package(self._version_job(job, snapshot, revision), include_preview=False)
+
+    async def restore_version(self, job_id, revision, target_revision):
+        async with self.lock(job_id):
+            job = self._completed(job_id)
+            self._check_revision(job, revision)
+            if target_revision == revision:
+                return self._package(job)
+            snapshot, source = self.store.get_version(job_id, target_revision)
+            if source is None or sha256(source).hexdigest() != snapshot["sourceHash"]:
+                raise UiError(
+                    "version_source_missing", "Không tìm thấy tệp nguồn hợp lệ của phiên bản này."
+                )
+            restored = self._version_job(job, snapshot, revision + 1)
+            restored["approval"] = None
+            self.store.save_version(restored, source, "restored", restored_from=target_revision)
+            return self._package(restored)
 
     async def edit(self, job_id, question_id, revision, value):
         async with self.lock(job_id):
@@ -1136,6 +1168,7 @@ class JobManager:
                 "Tệp đề thi đã bị thay đổi bên ngoài phiên làm việc nên không thể duyệt "
                 "hoặc xuất tệp.",
             )
+        return source
 
     async def export(self, job_id, kind, file_format):
         async with self.lock(job_id):
@@ -1151,12 +1184,12 @@ class JobManager:
                     "Thầy cô vui lòng xem trước PDF và phê duyệt phiên bản hiện tại "
                     "trước khi xuất tệp.",
                 )
-            self._verify_source(job)
+            source = self._verify_source(job)
             root = self.root / job_id
             if kind == "STUDENT_EXAM" and file_format == "tex":
-                return root / SOURCE_NAME, "application/x-tex"
+                return root / SOURCE_NAME, "application/x-tex", source
             if kind == "STUDENT_EXAM" and file_format == "pdf":
-                return self.previews.file(job), "application/pdf"
+                return self.previews.file(job), "application/pdf", None
             if kind == "TEACHER_KEY" and file_format == "json":
                 path = root / "reviewed_answers.json"
                 exported = {
@@ -1166,15 +1199,9 @@ class JobManager:
                 }
                 if "rawPassages" in job:
                     exported["passages"] = job["rawPassages"]
-                path.write_text(
-                    json.dumps(
-                        exported,
-                        ensure_ascii=False,
-                        indent=2,
-                    ),
-                    "utf-8",
-                )
-                return path, "application/json"
+                data = json.dumps(exported, ensure_ascii=False, indent=2).encode("utf-8")
+                path.write_bytes(data)
+                return path, "application/json", data
             raise UiError("unsupported_export", "Định dạng xuất tệp chưa được hỗ trợ.", 422)
 
     async def preview(self, job_id, revision, content_hash, *, start=False, file=False, log=False):

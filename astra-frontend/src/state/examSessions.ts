@@ -595,8 +595,12 @@ export class ExamSessions {
     const session = this.sessions.find(item => item.id === id);
     if (!session?.jobId) return;
     const pkg = await this.service.getExamPackage(session.jobId);
+    this.acceptPackage(id, session.jobId, pkg);
+  }
+
+  acceptPackage(id: string, jobId: string, pkg: ExamPackage) {
     const current = this.sessions.find(item => item.id === id);
-    if (current?.jobId === session.jobId && (current.package?.revision || 0) <= (pkg.revision || 0)) this.complete(id, pkg);
+    if (current?.jobId === jobId && (current.package?.revision || 0) <= (pkg.revision || 0)) this.complete(id, pkg);
   }
   async requestPreview(id: string, force = false, allowReloadOnStale = true): Promise<void> {
     const session = this.sessions.find(item => item.id === id);

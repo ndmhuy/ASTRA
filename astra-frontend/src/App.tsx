@@ -12,6 +12,7 @@ import { CanvasHeader } from './components/Workspace/LiveCanvas/CanvasHeader';
 import { ExamPaperView, type ExamCanvasViewMode } from './components/Workspace/LiveCanvas/ExamPaperView';
 import type { ExamRequestParams, QuestionItem } from './types/exam';
 import { QuestionEditor } from './components/QuestionEditor';
+import { ExamVersionHistory } from './components/ExamVersionHistory';
 import { examService } from './services/examService';
 import { ExamSessions } from './state/examSessions';
 import { formatProgressStatus, formatVisualWarning } from './utils/userMessages.ts';
@@ -22,6 +23,13 @@ import './styles/createVision.css';
 import './styles/integratedWorkspace.css';
 import './styles/integration.css';
 import './styles/atelier.css';
+
+interface RegenerationUndo {
+  sessionId: string;
+  jobId: string;
+  previousRevision: number;
+  revision: number;
+}
 
 export const App: React.FC = () => {
   const [showWelcome, setShowWelcome] = useState(true);
@@ -44,8 +52,15 @@ export const App: React.FC = () => {
   const [configureId, setConfigureId] = useState<string | null>(null);
   const [editor, setEditor] = useState<{ sessionId: string; jobId: string; question: QuestionItem } | null>(null);
   const [approving, setApproving] = useState(false);
+  const [historySession, setHistorySession] = useState<string | null>(null);
+  const [undo, setUndo] = useState<RegenerationUndo>();
+  const [undoing, setUndoing] = useState(false);
   const closeQuickModal = useCallback(() => setShowQuickModal(false), []);
   const active = sessions.find(session => session.id === activeId);
+  const history = examService.history;
+  const canOpenHistory = Boolean(history && active?.jobId && active.package?.revision && active.status === 'complete');
+  const canUndo = history && undo && active?.id === undo.sessionId && active.jobId === undo.jobId &&
+    active.package?.revision === undo.revision;
   const messages = active?.messages || [];
   const liveQuestions = active?.questions || [];
   const examMeta = active?.meta || null;
@@ -151,6 +166,26 @@ export const App: React.FC = () => {
     if (activeId) void store.requestPreview(activeId, true);
   }, [store, activeId]);
 
+  const restoreVersion = async (sessionId: string, jobId: string, version: number, revision: number) => {
+    if (!history) return;
+    try {
+      const pkg = await history.restore(jobId, version, revision);
+      store.acceptPackage(sessionId, jobId, pkg);
+      setViewMode('paper');
+      setUndo(previous => previous?.sessionId === sessionId ? undefined : previous);
+    } catch (error) {
+      await store.handleActionError(sessionId, error);
+      throw error;
+    }
+  };
+
+  const undoRegeneration = async () => {
+    if (!canUndo || !undo || undoing) return;
+    setUndoing(true);
+    try { await restoreVersion(undo.sessionId, undo.jobId, undo.previousRevision, undo.revision); }
+    catch { /* The workspace shows the restore error. */ }
+    finally { setUndoing(false); }
+  };
 
   const sidebarLabel = controlsCollapsed ? 'Mở rộng thanh điều hướng' : 'Thu gọn thanh điều hướng';
 
@@ -265,6 +300,9 @@ export const App: React.FC = () => {
                     onExportPdf={handleExportPdf}
                     onExportWord={handleExportWord}
                     onExportAnswer={handleExportAnswer}
+                    onShowHistory={canOpenHistory ? () => setHistorySession(active.id) : undefined}
+                    onUndoRegeneration={canUndo ? () => { void undoRegeneration(); } : undefined}
+                    undoing={undoing}
                   />}
                   questions={liveQuestions}
                   passages={active.package?.passages}
@@ -305,6 +343,13 @@ export const App: React.FC = () => {
           onClose={closeQuickModal}
         />
       )}
+      {history && active?.jobId && active.package?.revision && historySession === active.id && (
+        <ExamVersionHistory key={active.jobId} history={history} jobId={active.jobId} revision={active.package.revision}
+          onClose={() => setHistorySession(null)} onRestore={async (version, revision) => {
+            await restoreVersion(active.id, active.jobId!, version, revision);
+            setHistorySession(null);
+          }} />
+      )}
       {editor && <QuestionEditor question={editor.question} onClose={() => setEditor(null)}
         onVerify={examService.verifyQuestion && editor.question.examRevision !== undefined ? async () => {
           try {
@@ -330,7 +375,11 @@ export const App: React.FC = () => {
         }}
         onRegenerate={async instruction => {
           try {
-            await examService.regenerateQuestion(editor.jobId, editor.question.id, instruction, editor.question.examRevision);
+            const previousRevision = editor.question.examRevision;
+            const regenerated = await examService.regenerateQuestion(editor.jobId, editor.question.id, instruction, previousRevision);
+            if (previousRevision !== undefined && regenerated.examRevision === previousRevision + 1) {
+              setUndo({ sessionId: editor.sessionId, jobId: editor.jobId, previousRevision, revision: regenerated.examRevision });
+            }
             store.invalidatePreview(editor.sessionId);
             await store.refresh(editor.sessionId);
             setEditor(null);

@@ -11,6 +11,7 @@
 
 import type {
   ChatMessage,
+  ExamHistory,
   ExamPackage,
   ExamPreviewState,
   ExamRequestParams,
@@ -48,6 +49,7 @@ interface WorkspaceLibrary {
 
 export interface IExamService {
   workspaceLibrary?: WorkspaceLibrary;
+  history?: ExamHistory;
   startGeneration(params: ExamRequestParams, workspaceId?: string): Promise<{ jobId: string }>;
   onProgress(jobId: string, callback: (progress: GenerationProgress) => void): () => void;
   getExamPackage(jobId: string): Promise<ExamPackage>;
@@ -598,6 +600,18 @@ export async function getExamFormats(): Promise<ExamFormat[]> {
 
 export class ApiExamService implements IExamService {
   private baseUrl: string;
+  readonly history: ExamHistory = {
+    list: jobId => requestJson(`${this.baseUrl}/exams/${jobId}/versions`),
+    read: (jobId, version) => requestJson(`${this.baseUrl}/exams/${jobId}/versions/${version}`),
+    restore: async (jobId, version, revision) => {
+      const pkg = await requestJson<ExamPackage>(`${this.baseUrl}/exams/${jobId}/versions/${version}/restore`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ revision }),
+      });
+      return { ...pkg, preview: normalizePreview(pkg.preview, this.baseUrl) };
+    },
+  };
   readonly workspaceLibrary: WorkspaceLibrary = {
     list: () => requestJson(`${this.baseUrl}/workspaces`),
     save: (id, draft, revision) => requestJson(`${this.baseUrl}/workspaces/${id}`, {
