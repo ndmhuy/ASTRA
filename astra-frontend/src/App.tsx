@@ -298,12 +298,9 @@ export const App: React.FC = () => {
               <>
                 <div className="studio-chat-heading"><div><span className="studio-kicker">KHÔNG GIAN SOẠN ĐỀ</span><h2>Cùng soạn đề</h2></div></div>
                 <div className="session-context"><strong>{active.mode === 'template' ? active.meta?.title ?? active.title : active.title}</strong></div>
-                {(!active.generationId && (active.status === 'draft' || active.status === 'error' ||
-                  (!active.browserOnly && active.status === 'complete'))) && <div className="session-create-action">
+                {(!active.generationId && (active.status === 'draft' || active.status === 'error')) && <div className="session-create-action">
                   {active.error && <p className="session-error-note">{active.error}</p>}
-                  <button type="button" className="button-primary" onClick={() => { setConfigureId(active.id); setShowQuickModal(true); }}>
-                    {active.status === 'complete' ? 'Tạo đề mới trong phiên này' : active.status === 'error' ? 'Thử tạo lại' : 'Tạo đề từ yêu cầu'}
-                  </button>
+                  <button type="button" className="button-primary" onClick={() => { setConfigureId(active.id); setShowQuickModal(true); }}>{active.status === 'error' ? 'Thử tạo lại' : 'Tạo đề từ yêu cầu'}</button>
                 </div>}
                 {undoConflict?.id === active.id && <div className="editor-error-box" role="alert">
                   <strong>Có xung đột khi hoàn tác. Hãy kiểm tra câu hỏi và ngữ liệu chung.</strong>
