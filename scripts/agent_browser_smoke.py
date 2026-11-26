@@ -17,42 +17,48 @@ ROOT = Path(__file__).resolve().parents[1]
 def serve(port: int, runs: str):
     import uvicorn
 
-    from exam_baseline.agent.contracts import Decision, ExamIntake, Intent
+    from exam_baseline.agent.semantics import normalize_frame
     from exam_baseline.api.app import create_app
     from exam_baseline.config import Settings
 
     async def interpret(turn):
-        if turn.message == "Cho cô vào nơi thiết lập mẫu":
-            return Decision(kind="task", intents=[Intent(id="OPEN_SETUP", args={})])
-        if turn.message == "Mở danh sách rồi thu gọn thanh điều hướng giúp cô":
-            return Decision(
-                kind="task",
-                intents=[
-                    Intent(id="LIST_SESSIONS", args={}),
-                    Intent(id="SET_SIDEBAR", args={"collapsed": True}),
+        # Synthetic provider fixture: these strings are test inputs, never runtime routing.
+        fixtures = {
+            "Cho cô vào nơi thiết lập mẫu": {
+                "dialogueAct": "REQUEST",
+                "goals": [{"goal": "OPEN_CONFIGURATION"}],
+            },
+            "Mở danh sách rồi thu gọn thanh điều hướng giúp cô": {
+                "dialogueAct": "REQUEST",
+                "goals": [
+                    {"goal": "FIND_CONVERSATIONS"},
+                    {"goal": "SET_NAVIGATION", "parameters": {"collapsed": True}},
                 ],
-            )
-        if turn.message == "Điền đề bài câu 1 là Tính 2+2.":
-            return Decision(
-                kind="task",
-                intents=[
-                    Intent(
-                        id="PATCH_EDITOR",
-                        args={"number": 1, "field": "stem", "value": "Tính 2+2."},
-                    )
+            },
+            "Điền đề bài câu 1 là Tính 2+2.": {
+                "dialogueAct": "REQUEST",
+                "goals": [
+                    {
+                        "goal": "FILL_EDITOR",
+                        "parameters": {"number": 1, "field": "stem", "value": "Tính 2+2."},
+                    }
                 ],
-            )
-        if turn.message == "Cô chưa biết bắt đầu soạn đề từ đâu.":
-            return Decision(kind="answer", guidance="start")
-        if turn.message == "Tạo đề thi thử tốt nghiệp":
-            return Decision(kind="clarify", intake=ExamIntake(mode="request", family="thpt"))
-        if turn.message == "Toán":
-            assert any("dạng thpt" in fact.lower() for fact in turn.context.facts)
-            assert any("môn nào" in entry for entry in turn.context.history)
-            return Decision(kind="answer", intake=ExamIntake(mode="request", subject="Toán"))
-        if turn.message == "Đừng tạo đề, chỉ xem cấu trúc":
-            return Decision(kind="answer", intake=ExamIntake(mode="structure"))
-        return Decision(kind="clarify")
+            },
+            "Cô chưa biết bắt đầu soạn đề từ đâu.": {
+                "dialogueAct": "GUIDANCE",
+                "goals": [{"goal": "APPLICATION_GUIDANCE"}],
+            },
+            "Tạo đề thi thử tốt nghiệp": {
+                "dialogueAct": "REQUEST",
+                "goals": [{"goal": "PREPARE_EXAM", "parameters": {"family": "thpt"}}],
+            },
+            "Đừng tạo đề, chỉ xem cấu trúc": {
+                "dialogueAct": "QUESTION",
+                "goals": [{"goal": "INSPECT_FORMAT"}],
+                "constraints": ["NO_GENERATION"],
+            },
+        }
+        return normalize_frame(fixtures.get(turn.message, {"dialogueAct": "AMBIGUOUS"}))
 
     app = create_app(
         Settings(_env_file=None, provider="mock", model="mock-fixture-v1"),
@@ -111,6 +117,7 @@ def observe(base_url: str):
         product.goto(base_url)
         product.locator("textarea").first.wait_for(timeout=12000)
         before = len(business_writes)
+        calls_before_intake = len(agent_calls)
         for text, expected in [
             ("Cô chưa biết bắt đầu soạn đề từ đâu.", "Thầy cô có thể bắt đầu"),
             ("Tạo đề thi thử tốt nghiệp", "Thầy cô muốn ôn thi tốt nghiệp môn nào?"),
@@ -121,6 +128,9 @@ def observe(base_url: str):
             editor.press("Enter")
             expect(product.get_by_text(expected, exact=False).first).to_be_visible()
         expect(product.get_by_role("dialog")).to_be_visible()
+        assert (
+            len(agent_calls) == calls_before_intake + 2
+        )  # Subject answer is contextual, zero inference.
         expect(product.locator(".sidebar-exam-title").first).to_have_text("Đề thi thử Toán THPT")
         product.keyboard.press("Escape")
         expect(product.get_by_role("dialog")).to_have_count(0)

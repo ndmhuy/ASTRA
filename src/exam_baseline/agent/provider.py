@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from typing import Protocol
 
 from .contracts import Decision, Turn
+from .semantics import SemanticFrame
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +21,7 @@ class ProviderFailure(Exception):
 
 
 class InterpretationProvider(Protocol):
-    async def interpret(self, turn: Turn, timeout: float) -> Decision: ...
+    async def interpret(self, turn: Turn, timeout: float) -> Decision | SemanticFrame: ...
 
 
 @dataclass(frozen=True)
@@ -59,7 +60,7 @@ class ProviderRouter:
         self.timing = timing or Timing()
         self.clock = clock
 
-    async def __call__(self, turn: Turn) -> Decision:
+    async def __call__(self, turn: Turn) -> Decision | SemanticFrame:
         started = self.clock()
         reason = "transient"
         attempts = 0
@@ -89,16 +90,23 @@ class ProviderRouter:
             else:
                 route.failures = 0
                 route.until = 0
-                logger.info(
-                    "agent_decision kind=%s intents=%s",
-                    result.kind,
-                    [item.id for item in result.intents],
-                )
+                if isinstance(result, SemanticFrame):
+                    logger.info(
+                        "agent_semantics act=%s goals=%s",
+                        result.dialogueAct,
+                        [item.goal for item in result.goals],
+                    )
+                else:
+                    logger.info(
+                        "agent_decision kind=%s intents=%s",
+                        result.kind,
+                        [item.id for item in result.intents],
+                    )
                 self._measure(started, attempts, "valid")
                 return result
         return Decision(kind="temporarily_unavailable", reasonCode=reason)
 
-    async def _within(self, route: Route, turn: Turn, deadline: float) -> Decision:
+    async def _within(self, route: Route, turn: Turn, deadline: float) -> Decision | SemanticFrame:
         task = asyncio.create_task(route.provider.interpret(turn, deadline))
         try:
             done, _ = await asyncio.wait({task}, timeout=deadline)

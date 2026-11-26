@@ -5,6 +5,7 @@ import { interpretationUnavailable, interpret } from './agent/client';
 import { admit, execute, fastRoute, fold, mayDispatch, type Effect, type Runtime } from './agent/recipes';
 import { displayNumber, failure, previewText, resolveQuestion, sectionId, statusText, success } from './agent/examActions';
 import type { Decision, Intent } from './agent/contracts';
+import { contextualSubject, resolveSemantic } from './agent/semantics';
 import { familyFor, formatOverview, guidanceFor, mentionedFamilies, resolveIntake } from './agent/knowledge';
 import { AlertCircle, AlertTriangle, LoaderCircle, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { WorkspaceStart } from './components/WorkspaceStart';
@@ -164,13 +165,20 @@ export const App: React.FC = () => {
       }
       await Promise.resolve();
       if (!alive()) return;
-      const local = fastRoute(content);
+      let local = fastRoute(content);
+      if (!local && origin?.intake?.missing === 'subject' && content.length <= 80) {
+        const subject = contextualSubject(content, origin.intake, await getExamFormats());
+        if (subject?.intake) local = { intake: subject.intake };
+        if (!alive() || runtime.binding() !== binding) return;
+      }
       if (local && 'text' in local) { answer(local.text); return; }
       if (local && 'confirm' in local) {
         const prepared = pending.current;
         pending.current = null;
         if (!local.confirm) {
-          answer(prepared ? 'Đã hủy yêu cầu đang chờ xác nhận.' : 'Hiện chưa có tác vụ trò chuyện đang chờ.');
+          const intakePending = origin?.intake?.phase === 'collecting';
+          if (intakePending) store.setIntake(id, undefined);
+          answer(prepared || intakePending ? 'Đã hủy yêu cầu trò chuyện đang chờ.' : 'Hiện chưa có tác vụ trò chuyện đang chờ.');
         } else if (!prepared || prepared.workspaceId !== id) {
           answer('Hiện chưa có thao tác nào đang chờ xác nhận.');
         } else if (prepared.expires < Date.now() || prepared.binding !== runtime.binding()) {
@@ -181,9 +189,13 @@ export const App: React.FC = () => {
         }
         return;
       }
-      const canAct = !!local || mayDispatch(content);
+      // An unresolved new turn may be a correction. Do not leave an older write runnable.
+      if (!local || 'intake' in local || ('intents' in local && local.intents.some(intent => !['STATUS', 'WARNINGS', 'LIST_SESSIONS', 'SHOW_FORMATS', 'RECALL'].includes(intent.id)))) {
+        pending.current = null;
+      }
+      let canAct = !!local || mayDispatch(content);
       const started = performance.now();
-      const decision: Decision = local && 'intents' in local ? { kind: 'task', intents: local.intents }
+      const interpreted = local && 'intents' in local ? { kind: 'task', intents: local.intents } as Decision
         : local && 'intake' in local ? { kind: 'clarify', intents: [], intake: local.intake }
         : await interpret(id, messageId, redact(content), {
           screen, setup: showQuickModal, status: origin?.status ?? 'draft', view: viewMode,
@@ -194,6 +206,17 @@ export const App: React.FC = () => {
           confirmationPending: pending.current?.workspaceId === id && pending.current.binding === binding,
           preview: origin?.preview?.status ?? null,
         }, controller.signal);
+      if (!alive() || runtime.binding() !== binding) return;
+      const workflow = 'dialogueAct' in interpreted ? resolveSemantic(interpreted) : undefined;
+      if (workflow?.invalidateConfirmation) pending.current = null;
+      if (workflow?.cancel) {
+        store.setIntake(id, undefined);
+        answer('Đã hủy yêu cầu trò chuyện đang chờ. Công việc tạo đề đã gửi vẫn giữ trạng thái hiện tại.');
+        return;
+      }
+      if (workflow?.text) { answer(workflow.text); return; }
+      if (workflow?.setupOnly && 'constraints' in interpreted && interpreted.constraints.includes('NO_GENERATION')) canAct = true;
+      const decision = workflow?.decision ?? interpreted as Decision;
       if (import.meta.env.VITE_AGENT_TRACE === '1') {
         console.info('[ASTRA Agent]', { route: local ? 'local' : 'model', kind: decision.kind,
           intents: decision.intents.map(intent => intent.id), latencyMs: Math.round(performance.now() - started) });
@@ -211,7 +234,7 @@ export const App: React.FC = () => {
         const formats = decision.guidance === 'remark' ? [] : await getExamFormats();
         if (!alive() || runtime.binding() !== binding) return;
         if (decision.intake) {
-          const resolution = resolveIntake(decision.intake, content, origin?.intake, formats, messageId);
+          const resolution = resolveIntake(decision.intake, content, origin?.intake, formats, messageId, !!workflow);
           suggestedTitle = resolution.title && resolution.title !== 'Chọn mẫu đề thi'
             ? resolution.title : decision.title ?? resolution.title;
           titleQuality = resolution.draft?.formatId ? 3 : resolution.draft?.family ? 2 : 1;
@@ -223,7 +246,10 @@ export const App: React.FC = () => {
           }
           resolvedIntake = resolution.draft;
           if (resolvedIntake.topic) suggestedTitle = decision.title ?? suggestedTitle;
-          intents = [resolution.intent];
+          intents = [workflow?.requestGeneration
+            ? { id: 'PREPARE_GENERATION', args: { format: resolution.draft.formatId!, ...(resolution.draft.topic ? { topic: resolution.draft.topic } : {}) } }
+            : workflow?.setupOnly ? { id: 'SELECT_FORMAT', args: { format: resolution.draft.formatId!, details: true } }
+              : resolution.intent];
         } else {
           if (decision.guidance !== 'remark') store.suggestTitle(
             id, decision.guidance === 'capabilities' ? 'Tìm hiểu khả năng ASTRA' : 'Hướng dẫn soạn đề', messageId,
@@ -393,6 +419,8 @@ export const App: React.FC = () => {
     const failed = failure;
     const succeeded = success;
     const current = store.getSnapshot().find(session => session.id === activeId);
+    const activeTurn = turn.current;
+    const validTurn = () => !!activeTurn && turn.current === activeTurn && !activeTurn.signal.aborted;
     const prepare = (text: string, run: Confirmation['run']): Effect => {
       if (!current) return failed('Hãy mở không gian soạn đề trước.');
       pending.current = { workspaceId: current.id, binding: binding(), expires: Date.now() + 5 * 60_000, run };
@@ -525,7 +553,7 @@ export const App: React.FC = () => {
         return (async () => {
           try {
             const formats = await getExamFormats();
-            if (runtimeRef.current?.binding() !== expected || turn.current?.signal.aborted || !turn.current) {
+            if (runtimeRef.current?.binding() !== expected || !validTurn()) {
               return failed('Màn hình đã thay đổi trong lúc tải các mẫu đề.');
             }
             const available = formats.filter(format => format.available);
@@ -566,12 +594,12 @@ export const App: React.FC = () => {
             try {
               await evaluateExamFormat(payload);
             } catch (error) {
-              if (runtimeRef.current?.binding() === expected && !turn.current?.signal.aborted && turn.current) {
+              if (runtimeRef.current?.binding() === expected && validTurn()) {
                 store.setIntake(current.id, { ...intake, topic: proposal.topic, phase: 'selected', validation: 'failed' });
               }
               return failed(error instanceof Error ? error.message : 'Chưa kiểm tra được chuyên đề theo mẫu đề.');
             }
-            if (runtimeRef.current?.binding() !== expected || !turn.current || turn.current.signal.aborted) {
+            if (runtimeRef.current?.binding() !== expected || !validTurn()) {
               return failed('Màn hình đã thay đổi trong lúc kiểm tra mẫu đề.');
             }
             const summary = `${format.displayName} · ${format.totalQuestions} câu · ${format.durationMinutes} phút.${proposal.topic ? ` Chuyên đề: ${proposal.topic}.` : ''} Bấm “Tạo đề thi” để xác nhận gửi yêu cầu.`;

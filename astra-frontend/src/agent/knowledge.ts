@@ -42,6 +42,7 @@ type Resolution = { text: string; draft?: Intake; title?: string } |
 export function resolveIntake(
   proposal: ExamIntake, message: string, previous: Intake | undefined,
   formats: ExamFormat[], sourceId: string,
+  semantic = false,
 ): Resolution {
   const available = formats.filter(format => format.available);
   const availableNames = available.map(format => format.displayName).join(' và ');
@@ -52,7 +53,7 @@ export function resolveIntake(
   const family = literalFamilies.length === 1 ? literalFamilies[0]
     : literalFamilies.length > 1
       ? (correction && proposal.family && literalFamilies.includes(proposal.family) ? proposal.family : undefined)
-      : proposal.mode === 'request' ? priorFamily : proposal.family ?? priorFamily;
+      : semantic ? proposal.family ?? priorFamily : proposal.mode === 'request' ? priorFamily : proposal.family ?? priorFamily;
   const familyChanged = !!previous?.family && !!family && previous.family !== family ||
     !!previousFormat && !!family && familyFor(previousFormat) !== family;
 
@@ -93,7 +94,7 @@ export function resolveIntake(
   }
   if (!matches.length) {
     const alternatives = [...new Set(familyFormats.flatMap(format => format.subjects))].join(', ');
-    return { ...update, text: 'ASTRA hiện chưa hỗ trợ môn ' + subject + (family ? ' cho ' + domain.families[family].label : '') +
+    return { ...(proposal.mode === 'request' ? { draft: { ...draft, missing: 'subject' as const } } : {}), text: 'ASTRA hiện chưa hỗ trợ môn ' + subject + (family ? ' cho ' + domain.families[family].label : '') +
       '. Môn đang có gồm ' + alternatives + '.' };
   }
   if (proposal.mode !== 'request') {

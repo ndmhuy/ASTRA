@@ -29,6 +29,7 @@ class AgentSettings(BaseSettings):
     )
     enabled: bool = False
     transport: Literal["gateway", "direct", "codex", "offline", "worker"] = "worker"
+    semantic_contract: bool = True
     worker_url: str = "https://astra-ai-proxy.letranhoanglong2227.workers.dev"
     api_key: SecretStr | None = None
     gateway_account_id: str = ""
@@ -76,7 +77,15 @@ class DailyBudget:
 
 
 class GeminiGatewayProvider:
-    def __init__(self, client: httpx.AsyncClient, gateway: Gateway, model: str, output_tokens: int):
+    def __init__(
+        self,
+        client: httpx.AsyncClient,
+        gateway: Gateway,
+        model: str,
+        output_tokens: int,
+        *,
+        semantic: bool = False,
+    ):
         if not re.fullmatch(r"gemini-[A-Za-z0-9][A-Za-z0-9._-]{0,90}", model):
             raise ValueError("invalid configured Gemini model")
         self.client = client
@@ -85,13 +94,26 @@ class GeminiGatewayProvider:
         self.headers["cf-aig-max-attempts"] = "1"
         self.url = f"{gateway.base('google-ai-studio')}/v1/models/{model}:generateContent"
         self.output_tokens = output_tokens
+        self.semantic = semantic
 
     async def interpret(self, turn: Turn, timeout: float) -> Decision:
+        from .native import gemini_request, parse_native
+
+        native = (
+            gemini_request(
+                turn,
+                self.output_tokens,
+                minimal_thinking=self.model_name == "gemini-3.1-flash-lite",
+            )
+            if self.semantic
+            else None
+        )
         try:
             response = await self.client.post(
                 self.url,
                 headers=self.headers,
-                json={
+                json=native
+                or {
                     "systemInstruction": {"parts": [{"text": SYSTEM}]},
                     "contents": [{"role": "user", "parts": [{"text": turn_text(turn)}]}],
                     "generationConfig": {
@@ -125,6 +147,8 @@ class GeminiGatewayProvider:
             logger.warning("agent_upstream_status status=%s category=%s", status, code)
             raise ProviderFailure(code)
         try:
+            if self.semantic:
+                return parse_native("gemini", response.json())
             candidates = response.json()["candidates"]
             if len(candidates) != 1 or candidates[0]["finishReason"] != "STOP":
                 raise ValueError("incomplete provider output")
@@ -141,12 +165,14 @@ class GeminiGatewayProvider:
 class DirectGeminiProvider(GeminiGatewayProvider):
     """Direct Gemini transport for a local operator-controlled development session."""
 
-    def __init__(self, client, key: SecretStr, model: str, output_tokens: int):
+    def __init__(self, client, key: SecretStr, model: str, output_tokens: int, *, semantic=False):
         if not re.fullmatch(r"gemini-[A-Za-z0-9][A-Za-z0-9._-]{0,90}", model):
             raise ValueError("invalid configured Gemini model")
         if not key.get_secret_value().strip():
             raise ValueError("missing Gemini key")
         self.client = client
+        self.model_name = model
+        self.semantic = semantic
         self.headers = {"x-goog-api-key": key.get_secret_value()}
         self.url = (
             f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
@@ -175,7 +201,9 @@ async def configured_interpreter(settings: AgentSettings | None = None):
                 from .worker import WorkerInterpretationProvider
 
                 yield ProviderRouter(
-                    WorkerInterpretationProvider(client, settings.worker_url),
+                    WorkerInterpretationProvider(
+                        client, settings.worker_url, semantic=settings.semantic_contract
+                    ),
                     reserve=lambda: True,
                     timing=Timing(primary=33, total=33),
                 )
@@ -197,7 +225,11 @@ async def configured_interpreter(settings: AgentSettings | None = None):
 
                 def make_provider(model):
                     return DirectGeminiProvider(
-                        client, settings.api_key, model, settings.max_output_tokens
+                        client,
+                        settings.api_key,
+                        model,
+                        settings.max_output_tokens,
+                        semantic=settings.semantic_contract,
                     )
             else:
                 required = ("gateway_account_id", "gateway_id", "gateway_token", "model")
@@ -213,7 +245,13 @@ async def configured_interpreter(settings: AgentSettings | None = None):
                 )
 
                 def make_provider(model):
-                    return GeminiGatewayProvider(client, gateway, model, settings.max_output_tokens)
+                    return GeminiGatewayProvider(
+                        client,
+                        gateway,
+                        model,
+                        settings.max_output_tokens,
+                        semantic=settings.semantic_contract,
+                    )
 
             primary = make_provider(settings.model)
             fallback = None

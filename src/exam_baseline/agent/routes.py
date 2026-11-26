@@ -11,8 +11,9 @@ from pydantic import ValidationError
 
 from .admission import Admission, normalize_message
 from .contracts import MAX_BODY, VERSION, Decision, Turn
+from .semantics import SemanticFrame, SemanticTurn, legacy_decision
 
-Interpreter = Callable[[Turn], Awaitable[Decision]]
+Interpreter = Callable[[Turn], Awaitable[Decision | SemanticFrame]]
 
 
 def is_loopback(value: str | None) -> bool:
@@ -50,28 +51,48 @@ def create_agent_router(interpreter: Interpreter | None = None) -> APIRouter:
                 raise HTTPException(413, "agent_body_limit")
             raw.extend(chunk)
         try:
-            payload = Turn.model_validate_json(raw)
+            contract = (
+                SemanticTurn
+                if request.headers.get("X-Astra-Semantic") == "astra-semantic-v1"
+                else Turn
+            )
+            payload = contract.model_validate_json(raw)
         except ValidationError:
             raise HTTPException(422, "agent_invalid_turn") from None
         payload.message = normalize_message(payload.message)
-        fingerprint = sha256(payload.model_dump_json().encode()).hexdigest()
+        fingerprint = sha256(payload.model_dump_json(exclude_none=True).encode()).hexdigest()
         decision = admission.enter(peer, payload, fingerprint)
         if decision is None:
             try:
                 decision = (
-                    Decision.model_validate(await selected(payload))
+                    await selected(payload)
                     if selected
                     else Decision(kind="temporarily_unavailable", reasonCode="disabled")
                 )
+                if not isinstance(decision, SemanticFrame):
+                    decision = Decision.model_validate(decision)
                 admission.finish(peer, payload, fingerprint, decision)
             finally:
                 admission.leave(peer, payload)
-        return JSONResponse(
-            {
+        if (
+            isinstance(decision, SemanticFrame)
+            and request.headers.get("X-Astra-Semantic") == decision.schemaVersion
+        ):
+            result = {
+                "schemaVersion": decision.schemaVersion,
+                "clientMessageId": payload.clientMessageId,
+                "frame": decision.model_dump(exclude_none=True),
+            }
+        else:
+            if isinstance(decision, SemanticFrame):
+                decision = legacy_decision(decision)
+            result = {
                 "schemaVersion": VERSION,
                 "clientMessageId": payload.clientMessageId,
                 "decision": decision.model_dump(exclude_none=True),
-            },
+            }
+        return JSONResponse(
+            result,
             headers={"Cache-Control": "no-store"},
         )
 

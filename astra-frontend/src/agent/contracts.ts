@@ -33,6 +33,10 @@ export type AgentContext = {
   editor?: boolean;
   approved?: boolean;
   confirmationPending?: boolean;
+  dialogue?: {
+    family?: 'thpt' | 'vact' | 'custom'; subject?: string;
+    missing?: 'family' | 'subject'; phase: 'collecting' | 'selected' | 'evaluated' | 'confirmed';
+  };
   preview?: 'not_requested' | 'unavailable' | 'queued' | 'compiling' | 'ready' | 'failed' | null;
 };
 

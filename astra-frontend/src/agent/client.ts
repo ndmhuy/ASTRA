@@ -1,4 +1,5 @@
 import { parseDecision, VERSION, type AgentContext } from './contracts.ts';
+import { parseFrame } from './semantics.ts';
 
 export function interpretationUnavailable(reason?: string): string {
   switch (reason) {
@@ -32,10 +33,15 @@ export async function interpret(
     method: 'POST',
     credentials: 'same-origin',
     cache: 'no-store',
-    headers: { 'Content-Type': 'application/json', 'X-Astra-Agent': VERSION },
+    headers: { 'Content-Type': 'application/json', 'X-Astra-Agent': VERSION, 'X-Astra-Semantic': 'astra-semantic-v1' },
     body: JSON.stringify({ schemaVersion: VERSION, workspaceId, clientMessageId, message, context }),
     signal: AbortSignal.any([signal, AbortSignal.timeout(38000)]),
   });
   if (!response.ok) throw new Error(response.status === 429 ? 'agent_rate' : 'agent_unavailable');
-  return parseDecision(await response.json(), clientMessageId);
+  const result = await response.json();
+  if (result.schemaVersion === 'astra-semantic-v1') {
+    if (result.clientMessageId !== clientMessageId || Object.keys(result).some(key => !['schemaVersion', 'clientMessageId', 'frame'].includes(key))) throw new Error('agent_semantic_contract');
+    return parseFrame(result.frame);
+  }
+  return parseDecision(result, clientMessageId);
 }

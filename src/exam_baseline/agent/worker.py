@@ -11,6 +11,8 @@ from pydantic import ValidationError
 
 from .contracts import VERSION, Decision, Turn
 from .provider import ProviderFailure
+from .semantics import VERSION as SEMANTIC_VERSION
+from .semantics import SemanticFrame, normalize_frame
 
 logger = logging.getLogger(__name__)
 WORKER_URL = "https://astra-ai-proxy.letranhoanglong2227.workers.dev"
@@ -29,10 +31,13 @@ ERRORS = {
     "timeout",
     "rejected",
 }
+SEMANTIC_HASH = json.loads(
+    (Path(__file__).parents[1] / "resources/agent/semantic-contract.json").read_text("utf-8")
+)["contractHash"]
 
 
 class WorkerInterpretationProvider:
-    def __init__(self, client: httpx.AsyncClient, endpoint: str):
+    def __init__(self, client: httpx.AsyncClient, endpoint: str, *, semantic: bool = False):
         url = urlsplit(endpoint)
         if (
             url.scheme != "https"
@@ -45,15 +50,22 @@ class WorkerInterpretationProvider:
         ):
             raise ValueError("Worker endpoint must be an HTTPS origin")
         self.client = client
-        self.url = endpoint.rstrip("/") + "/v1/agent/interpret"
+        self.semantic = semantic
+        self.url = endpoint.rstrip("/") + (
+            "/v2/agent/interpret" if semantic else "/v1/agent/interpret"
+        )
 
-    async def interpret(self, turn: Turn, timeout: float) -> Decision:
+    async def interpret(self, turn: Turn, timeout: float) -> Decision | SemanticFrame:
         try:
+            body = turn.model_dump(exclude_none=True)
+            body["context"] = turn.context.model_dump(exclude_defaults=True, exclude_none=True)
+            if not self.semantic:
+                body["context"].pop("dialogue", None)
             async with self.client.stream(
                 "POST",
                 self.url,
-                json=turn.model_dump(exclude_none=True),
-                headers={"X-Astra-Contract": CONTRACT_HASH},
+                json=body,
+                headers={"X-Astra-Contract": SEMANTIC_HASH if self.semantic else CONTRACT_HASH},
                 timeout=timeout,
                 follow_redirects=False,
             ) as response:
@@ -68,11 +80,15 @@ class WorkerInterpretationProvider:
                     reason = payload.get("error") if isinstance(payload, dict) else None
                     raise ProviderFailure(reason if reason in ERRORS else "transient")
                 if (
-                    payload.get("schemaVersion") != VERSION
+                    payload.get("schemaVersion") != (SEMANTIC_VERSION if self.semantic else VERSION)
                     or payload.get("clientMessageId") != turn.clientMessageId
                 ):
                     raise ProviderFailure("schema")
-                decision = Decision.model_validate(payload["decision"])
+                decision = (
+                    normalize_frame(payload["frame"])
+                    if self.semantic
+                    else Decision.model_validate(payload["decision"])
+                )
                 evidence = payload.get("evidence", {})
                 worker_id = evidence.get("requestId", "")
                 if not isinstance(worker_id, str) or not re.fullmatch(r"[a-f0-9-]{36}", worker_id):

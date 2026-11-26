@@ -14,6 +14,15 @@ export interface Env {
   ASTRA_GLOBAL_PER_MINUTE?: string;
   ASTRA_UPSTREAM_MS?: string;
   ASTRA_OUTPUT_TOKENS?: string;
+  ASTRA_AGENT_FORWARDING_ENABLED?: string;
+  ASTRA_MAS_FORWARDING_ENABLED?: string;
+  ASTRA_AGENT_CONCURRENCY?: string;
+  ASTRA_MAS_CONCURRENCY?: string;
+  ASTRA_CHAT_RESERVED_DAILY?: string;
+  ASTRA_AGENT_TOKEN_DAILY?: string;
+  ASTRA_MAS_TOKEN_DAILY?: string;
+  ASTRA_MAS_PER_MINUTE?: string;
+  ASTRA_MAS_IP_PER_MINUTE?: string;
 }
 
 export function bounded(value: string | undefined, maximum: number): number {

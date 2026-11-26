@@ -1,5 +1,6 @@
 import Ajv, { type ValidateFunction } from "ajv";
 import resources from "./generated.json";
+import { normalizeSemantic, SemanticContractFailure } from "./semantics";
 
 const ajv = new Ajv({ strict: false, validateFormats: false });
 const providerValidator = ajv.compile(resources.providerSchema);
@@ -27,7 +28,7 @@ function validate(validator: ValidateFunction, value: unknown, diagnostics: Diag
   });
 }
 
-export function parseGemini(raw: string, mimeType: string | null) {
+export function parseGemini(raw: string, mimeType: string | null, semantic = false) {
   const diagnostics: Diagnostics = {
     schemaStage: "upstream_json", envelopeParsing: "invalid", jsonParsing: "not_started",
     responseMimeType: mimeType?.split(";")[0] === "application/json" ? "application/json" : "other",
@@ -67,6 +68,17 @@ export function parseGemini(raw: string, mimeType: string | null) {
     diagnostics.jsonParsing = "invalid";
     const proposal = JSON.parse(text);
     diagnostics.jsonParsing = "valid";
+    if (semantic) {
+      try {
+        const frame = normalizeSemantic(proposal);
+        return { decision: frame, diagnostics: { ...diagnostics, schemaStage: "validated",
+          contractVersion: frame.schemaVersion, dialogueAct: frame.dialogueAct,
+          goals: frame.goals.map((goal: {goal: string}) => goal.goal) } };
+      } catch (error) {
+        if (error instanceof SemanticContractFailure) throw new GeminiOutputFailure({ ...diagnostics, ...error.diagnostics });
+        throw error;
+      }
+    }
     const decision = { intents: [], ...proposal };
     // Null optional prose/proposal fields have the same meaning as omission.
     for (const name of ["guidance", "title", "intake"]) {

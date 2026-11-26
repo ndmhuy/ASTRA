@@ -60,6 +60,7 @@ export function retrievedContext(session: ExamSession, messageId: string, query:
   const format = session.intake;
   const source = format && session.messages.find(message => message.id === format.sourceId);
   return {
+    ...(source && format ? { dialogue: { family: format.family, subject: format.subject, missing: format.missing, phase: format.phase } } : {}),
     history: [...relevant.map(item => item.message), ...latest].map(message => (message.role === 'assistant' ? 'Trợ lý: ' : '') + scrub(message.content).slice(0, 390)).filter(Boolean),
     facts: source && format ? [
       [format.family && 'Dạng ' + format.family, format.subject && 'môn ' + scrub(format.subject),

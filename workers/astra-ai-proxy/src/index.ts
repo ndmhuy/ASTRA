@@ -1,11 +1,13 @@
 import Ajv from "ajv";
 import resources from "./generated.json";
+import semanticResources from "./semantic.generated.json";
 import { bounded, type Env } from "./env";
 import { parseGemini, GeminiOutputFailure } from "./gemini";
 export { Admission } from "./admission";
 
 const ajv = new Ajv({ strict: false, validateFormats: false });
 const validateTurn = ajv.compile(resources.turnSchema);
+const validateSemanticTurn = ajv.compile(semanticResources.turnSchema);
 const MAX_BODY = 32768;
 const MAX_RESPONSE = 65536;
 const VERSION = "astra-intent-v1";
@@ -52,7 +54,8 @@ export default {
         return response({ status: "unavailable", forwarding: false }, 503);
       }
     }
-    if (path !== "/v1/agent/interpret") return response({ error: "rejected" }, 404);
+    const semantic = path === "/v2/agent/interpret";
+    if (path !== "/v1/agent/interpret" && !semantic) return response({ error: "rejected" }, 404);
     if (request.method !== "POST") return response({ error: "rejected" }, 405);
     const id = crypto.randomUUID();
     const started = performance.now();
@@ -67,8 +70,8 @@ export default {
     const disconnect = () => controller?.abort();
     let timer: ReturnType<typeof setTimeout> | undefined;
     try {
-      if (env.ASTRA_FORWARDING_ENABLED !== "true") throw new Failure("disabled", 503);
-      if (request.headers.get("X-Astra-Contract") !== resources.contractHash) {
+      if (env.ASTRA_FORWARDING_ENABLED !== "true" || env.ASTRA_AGENT_FORWARDING_ENABLED === "false") throw new Failure("disabled", 503);
+      if (request.headers.get("X-Astra-Contract") !== (semantic ? semanticResources.contractHash : resources.contractHash)) {
         throw new Failure("configuration", 409);
       }
       const account = env.ASTRA_AGENT_GATEWAY_ACCOUNT_ID ?? "";
@@ -89,26 +92,45 @@ export default {
         throw new Failure("rejected", 400);
       }
       const turn: any = JSON.parse(await readBounded(request, MAX_BODY));
-      if (!validateTurn(turn)) throw new Failure("rejected", 400);
+      if (!(semantic ? validateSemanticTurn(turn) : validateTurn(turn))) throw new Failure("rejected", 400);
+      const message = turn.message.trim();
+      if (!message || !/[\p{Letter}\p{Number}]/u.test(message) || /^(.)\1{11,}$/su.test(message) ||
+          /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(message)) throw new Failure("rejected", 400);
       // Connection metadata is set by Cloudflare at the edge. Claimed IDs never grant quota.
       const ip = request.headers.get("CF-Connecting-IP");
       if (!ip) throw new Failure("configuration", 503);
       const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ip));
       const ipHash = Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, "0")).join("");
-      admission = env.ADMISSION.get(env.ADMISSION.idFromName("global-v1"));
-      const admitted = await admission.fetch("https://admission/reserve", {
-        method: "POST", body: JSON.stringify({ ip: ipHash, id, operation: "agent" }),
-      });
-      if (admitted.status === 429) throw new Failure("quota", 429);
-      if (!admitted.ok) throw new Failure("transient", 503);
-      reserved = true;
-      controller = new AbortController();
-      request.signal.addEventListener("abort", disconnect, { once: true });
-      timer = setTimeout(() => controller?.abort(), milliseconds);
       const context = turn.context as Record<string, any>;
       const preview = ["failed", "unavailable"].includes(context.preview) ? context.preview : null;
       const hintKey = JSON.stringify([context.setup, context.status ?? null, context.approved ?? false, preview]);
       const hints = (resources.hints as Record<string, string[]>)[hintKey] ?? [];
+      const providerBody = JSON.stringify({
+        systemInstruction: { parts: [{ text: semantic ? semanticResources.system : resources.system }] },
+        contents: [{ role: "user", parts: [{ text: JSON.stringify({
+          ...(semantic ? { goals: Object.fromEntries(Object.entries(semanticResources.catalog.goals).map(([name, item]) =>
+            [name, { meaning: item.meaning, parameters: item.parameters }])) }
+            : { ...resources.base, availableHints: hints }), context, message: turn.message,
+        }) }] }],
+        generationConfig: {
+          responseMimeType: "application/json", responseJsonSchema: semantic ? semanticResources.providerSchema : resources.providerSchema,
+          ...(model === "gemini-3.1-flash-lite" ? { thinkingConfig: { thinkingLevel: "MINIMAL" } } : {}), maxOutputTokens: tokens,
+        },
+      });
+      admission = env.ADMISSION.get(env.ADMISSION.idFromName("global-v1"));
+      const admitted = await admission.fetch("https://admission/reserve", {
+        method: "POST", body: JSON.stringify({ ip: ipHash, id, operation: "agent",
+          reservedTokens: new TextEncoder().encode(providerBody).length + tokens,
+          ...(semantic ? { turnId: turn.workspaceId + ":" + turn.clientMessageId } : {}) }),
+      });
+      if (admitted.status === 429) throw new Failure("quota", 429);
+      if (admitted.status === 409) throw new Failure("rejected", 409);
+      if (!admitted.ok) throw new Failure("transient", 503);
+      reserved = true;
+      if (request.signal.aborted) throw new Failure("rejected", 499);
+      controller = new AbortController();
+      request.signal.addEventListener("abort", disconnect, { once: true });
+      timer = setTimeout(() => controller?.abort(), milliseconds);
       const upstreamUrl = "https://gateway.ai.cloudflare.com/v1/" + account + "/" + gateway +
         "/google-ai-studio/v1/models/" + model + ":generateContent";
       attempts = 1;
@@ -122,17 +144,7 @@ export default {
           "cf-aig-skip-cache": "true", "cf-aig-collect-log": "false",
           "cf-aig-collect-log-payload": "false",
         },
-        body: JSON.stringify({
-          systemInstruction: { parts: [{ text: resources.system }] },
-          contents: [{ role: "user", parts: [{ text: JSON.stringify({
-            ...resources.base, availableHints: hints, context, message: turn.message,
-          }) }] }],
-          generationConfig: {
-            responseMimeType: "application/json", responseJsonSchema: resources.providerSchema,
-            thinkingConfig: { thinkingLevel: "MINIMAL" },
-            maxOutputTokens: tokens,
-          },
-        }),
+        body: providerBody,
       });
       upstreamStatus = upstream.status;
       if (!upstream.ok) {
@@ -150,11 +162,12 @@ export default {
           upstream.status >= 500 ? "transient" : "rejected";
         throw new Failure(category, 502);
       }
-      const parsed = parseGemini(await readBounded(upstream, MAX_RESPONSE), upstream.headers.get("content-type"));
+      const parsed = parseGemini(await readBounded(upstream, MAX_RESPONSE), upstream.headers.get("content-type"), semantic);
       const decision = parsed.decision;
       outputMetadata = parsed.diagnostics;
       console.log(JSON.stringify({ requestId: id, ...outputMetadata }));
-      return response({ schemaVersion: VERSION, clientMessageId: turn.clientMessageId, decision,
+      return response({ schemaVersion: semantic ? semanticResources.catalog.schemaVersion : VERSION,
+        clientMessageId: turn.clientMessageId, ...(semantic ? { frame: decision } : { decision }),
         evidence: { requestId: id, admitted: true, attempts, provider: "google-ai-studio",
           model, upstreamStatus, elapsedMs: Math.round(performance.now() - started) } });
     } catch (error) {
@@ -166,7 +179,8 @@ export default {
         new Failure("transient", 503);
       category = failure.category;
       if (category === "schema") console.log(JSON.stringify({ requestId: id, ...outputMetadata }));
-      return response({ error: failure.category, requestId: id }, failure.status);
+      return response({ error: failure.category, requestId: id,
+        ...(semantic && Object.keys(outputMetadata).length ? { diagnostics: outputMetadata } : {}) }, failure.status);
     } finally {
       if (timer !== undefined) clearTimeout(timer);
       request.signal.removeEventListener("abort", disconnect);
@@ -177,7 +191,13 @@ export default {
         model: attempts ? env.ASTRA_AGENT_MODEL : undefined,
         category, elapsedMs: Math.round(performance.now() - started) }));
       if (reserved && admission) {
-        try { await admission.fetch("https://admission/release", { method: "POST", body: JSON.stringify({ release: id }) }); }
+        try {
+          await admission.fetch("https://admission/outcome", { method: "POST", body: JSON.stringify({ id, outcome: category }) });
+          // An aborted request can still consume upstream capacity. Keep its bounded lease.
+          if (category !== "timeout" && (!attempts || upstreamStatus !== undefined) && !request.signal.aborted) {
+            await admission.fetch("https://admission/release", { method: "POST", body: JSON.stringify({ release: id }) });
+          }
+        }
         catch { /* Lease expires without refunding the daily attempt. */ }
       }
     }

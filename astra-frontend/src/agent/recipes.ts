@@ -1,5 +1,6 @@
 import type { Intake } from './intake.ts';
 import { MAX_ACTIONS, validIntent, type ExamIntake, type Intent, type IntentId } from './contracts.ts';
+import workflows from '../../../src/exam_baseline/resources/agent/semantic-catalog.json' with { type: 'json' };
 
 // Adapted from the legacy Agent's accent folding. Preserve the original text for data fields.
 export const fold = (value: string) => value.toLocaleLowerCase('vi').replace(/đ/g, 'd')
@@ -54,6 +55,7 @@ export function fastRoute(message: string): Local | undefined {
   if (/^(xem (?:cac |danh sach )?mau de|co nhung mau(?: de)? nao|co khong biet chon de gi)[?]?$/.test(direct)) return action('SHOW_FORMATS');
   const format = /\b(v-act|vact|dgnl)\b/.test(text) ? 'vact' : /\bthpt\b/.test(text) ? 'thpt-math' : null;
   if (format && /^(chon|doi sang|a doi tu thpt sang) (mau )?(thpt|toan thpt|v-act|vact)( va xem chi tiet)?$/.test(direct)) {
+    if (format === 'thpt-math' && !/\btoan\b/.test(direct)) return { intake: { mode: 'request', family: 'thpt' } };
     return action('SELECT_FORMAT', { format, details: direct.endsWith('chi tiet') });
   }
   if (/^(xem chi tiet mau|mo chi tiet mau)$/.test(text)) return action('FORMAT_DETAILS');
@@ -109,7 +111,8 @@ export function fastRoute(message: string): Local | undefined {
   if (/^(thu gon|mo rong)( thanh dieu huong| sidebar)?$/.test(direct)) {
     return action('SET_SIDEBAR', { collapsed: direct.startsWith('thu gon') });
   }
-  if (/\b(word|docx|random|ngau nhien|ngan hang cau hoi|upload|tim web|tim google|huy job)\b/.test(text)) {
+  if (/^(?:xuat|tai) (?:de (?:thanh|sang) )?(?:word|docx)$/.test(text) ||
+      /^(?:random|ngau nhien|ngan hang cau hoi|upload|tim web|tim google|huy job)$/.test(text)) {
     return { text: 'ASTRA hiện hỗ trợ mẫu Toán THPT và V-ACT, cùng xuất PDF, tệp nguồn TEX và đáp án JSON sau khi duyệt. Tính năng thầy cô yêu cầu chưa có.' };
   }
   if (/\b(ignore (previous|all)|bo qua.*(xac nhan|quyen)|export all)\b/.test(text)) {
@@ -143,13 +146,22 @@ export async function execute(
   const signatures = intents.map(({ id, args }) => JSON.stringify([id, Object.entries(args).sort()]));
   if (new Set(signatures).size !== signatures.length) return [];
   const receipts: Receipt[] = [];
+  const deadline = performance.now() + workflows.limits.executionMs;
   let expected = binding;
   for (const intent of intents) {
-    if (!alive() || runtime.binding() !== expected) break;
+    if (!alive() || performance.now() >= deadline || runtime.binding() !== expected) break;
     const actionId = crypto.randomUUID();
     const operation = runtime.dispatch(intent, expected, message, messageId);
     const beforeAwait = runtime.binding();
-    const effect = operation instanceof Promise ? await operation : operation;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const effect = operation instanceof Promise ? await Promise.race([
+      operation,
+      new Promise<Effect>(resolve => {
+        timer = setTimeout(() => resolve({ status: 'unknown',
+          text: 'Chưa quan sát được kết quả trong thời gian chờ. Thầy cô hãy kiểm tra trạng thái trước khi thử lại.' }),
+        Math.max(0, deadline - performance.now()));
+      }),
+    ]).finally(() => { if (timer !== undefined) clearTimeout(timer); }) : operation;
     if (!alive()) break;
     const after = runtime.binding();
     if (operation instanceof Promise && effect.status === 'succeeded' && (effect.expectedAfter ?? beforeAwait) !== after) {

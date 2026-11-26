@@ -12,6 +12,7 @@ import httpx
 
 from exam_baseline.core.contracts import ProviderError
 from exam_baseline.providers.chat_completions import ChatCompletionsProvider
+from exam_baseline.providers.worker_mas import configured_worker_mas
 from exam_baseline.thpt.agents import QUESTION_FORMAT, Agent, IllustratorAgent, SolverAgent
 from exam_baseline.thpt.content import choice_latex
 from exam_baseline.thpt.models import Illustrations, Question, Request
@@ -299,6 +300,10 @@ class JobManager:
     async def provider_scope(self):
         if self.providers is not None:
             yield self.providers
+            return
+        worker_providers = configured_worker_mas(self.settings)
+        if worker_providers is not None:
+            yield worker_providers
             return
         if self.settings.provider != "chat_completions":
             raise UiError(

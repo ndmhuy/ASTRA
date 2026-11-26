@@ -5,6 +5,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { Miniflare, convertV4MiniflareOptions } from "miniflare";
 import resources from "../src/generated.json" with {type:"json"};
+import semanticResources from "../src/semantic.generated.json" with {type:"json"};
+import nativeWire from "../../../eval/agent-semantic/native-wire.fixture.json" with {type:"json"};
 
 const bindings = {
   ASTRA_FORWARDING_ENABLED: "true",
@@ -19,7 +21,7 @@ const bindings = {
 const turn = { schemaVersion: "astra-intent-v1", clientMessageId: "a".repeat(36),
   workspaceId: "b".repeat(36), message: "Natural fixture",
   context: { screen: "start", setup: false } };
-function runtime(overrides = {}, persist = false, scriptPath = "build/index.js") {
+function runtime(overrides = {}, persist = false, scriptPath = "build/index.js", semantic = false) {
   const replies = [];
   const mock = {
     get() { return { intercept() { return { reply(status, body, delay = 0) { replies.push({status,body,delay}); } }; } }; },
@@ -32,9 +34,11 @@ function runtime(overrides = {}, persist = false, scriptPath = "build/index.js")
       assert.equal(request.headers.get("cf-aig-max-attempts"), "1");
       assert.equal(request.headers.has("x-goog-api-key"), false);
       const body = await request.json();
-      assert.equal(body.generationConfig.thinkingConfig.thinkingLevel, "MINIMAL");
-      assert.deepEqual(body.generationConfig.responseJsonSchema, resources.providerSchema);
+      assert.equal(body.generationConfig.thinkingConfig?.thinkingLevel,
+        (overrides.ASTRA_AGENT_MODEL ?? bindings.ASTRA_AGENT_MODEL) === "gemini-3.1-flash-lite" ? "MINIMAL" : undefined);
+      assert.deepEqual(body.generationConfig.responseJsonSchema, semantic ? semanticResources.providerSchema : resources.providerSchema);
       assert.equal(body.generationConfig.maxOutputTokens, Number(overrides.ASTRA_OUTPUT_TOKENS ?? bindings.ASTRA_OUTPUT_TOKENS));
+      if (semantic) assert.deepEqual(body, nativeWire.request, "Worker/direct native payload parity");
       const reply = replies.shift();
       assert.ok(reply, "Unexpected outbound inference");
       if (reply.delay) await new Promise(resolve => setTimeout(resolve, reply.delay));
@@ -278,7 +282,7 @@ test("HTTP quota and overload stay separate from schema failures", async () => {
 });
 test("all 34 existing intent contracts survive the common provider argument schema",async()=>{
   const {mf,mock}=runtime({ASTRA_AGENT_DAILY:"40",ASTRA_GLOBAL_DAILY:"40",
-    ASTRA_IP_PER_MINUTE:"60",ASTRA_GLOBAL_PER_MINUTE:"100"});
+    ASTRA_IP_PER_MINUTE:"60",ASTRA_GLOBAL_PER_MINUTE:"100",ASTRA_AGENT_TOKEN_DAILY:"2000000"});
   const example = schema => schema.enum?.[0] ?? (schema.type==="integer"?1:schema.type==="boolean"?true:"fixture");
   try {
     for(const variant of resources.outputSchema.properties.intents.items.anyOf) {
@@ -305,4 +309,86 @@ test("provider schema excludes cross-field combinations rejected by the applicat
     try {assert.equal((await (await post(mf)).json()).error,"schema");}
     finally {await mf.dispose();}
   }
+});
+
+async function postSemantic(mf, body = turn) {
+  return mf.dispatchFetch("https://local/v2/agent/interpret", {
+    method: "POST", headers: {"content-type":"application/json", "CF-Connecting-IP":"192.0.2.1",
+      "X-Astra-Contract":semanticResources.contractHash}, body:JSON.stringify(body),
+  });
+}
+
+test("v2 native semantics need no executable kind or clarification invariant", async () => {
+  const {mf,mock} = runtime({}, false, "build/index.js", true);
+  const frame = {dialogueAct:"REQUEST", goals:[{goal:"PREPARE_EXAM",parameters:{family:"thpt"}}],title:42};
+  mock.get().intercept().reply(200, JSON.stringify({candidates:[{finishReason:"STOP",content:{parts:[{text:JSON.stringify(frame)}]}}]}));
+  try {
+    const reply = await postSemantic(mf);
+    assert.equal(reply.status,200);
+    const payload = await reply.json();
+    assert.equal(payload.frame.goals[0].parameters.family,"thpt");
+    assert.equal(payload.frame.title,undefined);
+    assert.equal(payload.schemaVersion,"astra-semantic-v1");
+    assert.equal(payload.decision,undefined);
+    assert.equal((await postSemantic(mf)).status,409);
+    mock.assertNoPendingInterceptors();
+  } finally { await mf.dispose(); }
+});
+
+test("v2 semantic mismatch reports safe field paths and consumes one attempt", async () => {
+  const {mf,mock} = runtime({}, false, "build/index.js", true);
+  mock.get().intercept().reply(200, JSON.stringify({candidates:[{finishReason:"STOP",content:{parts:[{text:JSON.stringify({
+    dialogueAct:"REQUEST",goals:[{goal:"PREPARE_EXAM",parameters:{family:"invented"}}],
+  })}]}}]}));
+  try {
+    const reply = await postSemantic(mf);
+    const payload=await reply.json();
+    assert.equal(reply.status,502);
+    assert.equal(payload.error,"schema");
+    assert.ok(payload.diagnostics.schemaStage);
+    assert.ok(payload.diagnostics.validationPaths.length);
+    assert.equal(JSON.stringify(payload).includes("fixture-only-token"),false);
+    assert.equal((await postSemantic(mf)).status,409);
+  } finally { await mf.dispose(); }
+});
+
+test("MAS cannot consume reserved Chat attempts, concurrency or rate capacity", async () => {
+  const {mf} = runtime({ASTRA_GLOBAL_DAILY:"3",ASTRA_AGENT_DAILY:"2",ASTRA_MAS_DAILY:"3",
+    ASTRA_CHAT_RESERVED_DAILY:"2",ASTRA_MAS_FORWARDING_ENABLED:"true",ASTRA_MAS_CONCURRENCY:"1",
+    ASTRA_MAS_PER_MINUTE:"3",ASTRA_MAS_IP_PER_MINUTE:"3"});
+  try {
+    const ns=await mf.getDurableObjectNamespace("ADMISSION");
+    const stub=ns.get(ns.idFromName("global-v1"));
+    const reserve=(operation,id) => stub.fetch("https://quota/reserve",{method:"POST",body:JSON.stringify({operation,id,ip:"same"})});
+    assert.equal((await reserve("mas","m1")).status,200);
+    assert.equal((await reserve("mas","m2")).status,429);
+    assert.equal((await reserve("agent","a1")).status,200);
+    await stub.fetch("https://quota/release",{method:"POST",body:JSON.stringify({release:"m1"})});
+    assert.equal((await reserve("mas","m3")).status,429);
+    await stub.fetch("https://quota/release",{method:"POST",body:JSON.stringify({release:"a1"})});
+    assert.equal((await reserve("agent","a2")).status,200);
+    const health=await (await stub.fetch("https://quota/status")).json();
+    assert.equal(health.workloads.agent.activeReservations,1);
+    assert.equal(health.workloads.mas.activeReservations,0);
+  } finally { await mf.dispose(); }
+});
+
+test("independent token reservations and circuit state fail closed", async () => {
+  const {mf} = runtime({ASTRA_GLOBAL_DAILY:"10",ASTRA_AGENT_DAILY:"5",ASTRA_MAS_DAILY:"5",
+    ASTRA_CHAT_RESERVED_DAILY:"2",ASTRA_AGENT_TOKEN_DAILY:"100",ASTRA_MAS_TOKEN_DAILY:"10",
+    ASTRA_MAS_FORWARDING_ENABLED:"true",ASTRA_MAS_CONCURRENCY:"1",ASTRA_MAS_PER_MINUTE:"5",ASTRA_MAS_IP_PER_MINUTE:"5"});
+  try {
+    const ns=await mf.getDurableObjectNamespace("ADMISSION"), stub=ns.get(ns.idFromName("global-v1"));
+    const reserve=(operation,id,reservedTokens=0) => stub.fetch("https://quota/reserve",{method:"POST",body:JSON.stringify({operation,id,ip:"same",reservedTokens})});
+    assert.equal((await reserve("mas","too-many-tokens",11)).status,429);
+    for (const id of ["failure1","failure2"]) {
+      assert.equal((await reserve("mas",id,1)).status,200);
+      await stub.fetch("https://quota/outcome",{method:"POST",body:JSON.stringify({id,outcome:"timeout"})});
+      await stub.fetch("https://quota/release",{method:"POST",body:JSON.stringify({release:id})});
+    }
+    assert.equal((await reserve("mas","circuit")).status,503);
+    assert.equal((await reserve("agent","chat",100)).status,200);
+    // Exhausting Chat tokens does not release or terminate another workload's lease.
+    assert.equal((await reserve("agent","chat2",1)).status,429);
+  } finally { await mf.dispose(); }
 });
