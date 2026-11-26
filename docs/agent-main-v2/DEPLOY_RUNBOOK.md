@@ -2,6 +2,8 @@
 
 For the operator of the existing local ASTRA application. Cloudflare stores provider credentials and receives outbound model requests. React, FastAPI, MAS, RAG, SQLite and PDF compilation run locally.
 
+Use [Worker runbook](WORKER_RUNBOOK.md) for the current keyless release, deployment gate, fresh-checkout procedure and live acceptance. Direct BYOK configuration below remains a private diagnostic option.
+
 ## Local startup
 
 In the feature worktree, use Git, a project Python environment and Node 22.12 or newer. The offline checks used Python 3.13.5, which is in repository CI, and Node 24.19.0.
@@ -26,7 +28,7 @@ $env:EXAM_MODEL = 'mock-fixture-v1'
 .\start-astra.bat
 ```
 
-`start-astra-demo.bat` is always offline. A usable Agent configuration requires a positive attempt budget, an approved Gemini model and a gateway token. The chat distinguishes an off switch, invalid configuration and quota exhaustion. Restart the server after configuration changes.
+`start-astra-demo.bat` is always offline. The Worker profile uses public configuration and centralized admission. The private direct gateway profile requires its own positive attempt budget, approved Gemini model and gateway token. The chat distinguishes an off switch, invalid configuration and quota exhaustion. Restart the server after configuration changes.
 
 ## Operator configuration
 

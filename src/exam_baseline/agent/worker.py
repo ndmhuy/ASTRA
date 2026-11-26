@@ -2,6 +2,8 @@
 
 import json
 import logging
+import re
+from pathlib import Path
 from urllib.parse import urlsplit
 
 import httpx
@@ -12,6 +14,9 @@ from .provider import ProviderFailure
 
 logger = logging.getLogger(__name__)
 WORKER_URL = "https://astra-ai-proxy.letranhoanglong2227.workers.dev"
+CONTRACT_HASH = json.loads(
+    (Path(__file__).parents[1] / "resources/agent/worker-contract.json").read_text(encoding="utf-8")
+)["contractHash"]
 ERRORS = {
     "disabled",
     "configuration",
@@ -48,6 +53,7 @@ class WorkerInterpretationProvider:
                 "POST",
                 self.url,
                 json=turn.model_dump(exclude_none=True),
+                headers={"X-Astra-Contract": CONTRACT_HASH},
                 timeout=timeout,
                 follow_redirects=False,
             ) as response:
@@ -68,10 +74,15 @@ class WorkerInterpretationProvider:
                     raise ProviderFailure("schema")
                 decision = Decision.model_validate(payload["decision"])
                 evidence = payload.get("evidence", {})
+                worker_id = evidence.get("requestId", "")
+                if not isinstance(worker_id, str) or not re.fullmatch(r"[a-f0-9-]{36}", worker_id):
+                    worker_id = "unavailable"
                 # Only fixed-category/status diagnostics. No remote prose or prompt logging.
                 status = evidence.get("upstreamStatus")
                 logger.info(
-                    "agent_worker_result upstream_status=%s attempts=%s",
+                    "agent_worker_result turn_id=%s worker_id=%s upstream_status=%s attempts=%s",
+                    turn.clientMessageId,
+                    worker_id,
                     status if type(status) is int else None,
                     1 if evidence.get("attempts") == 1 else 0,
                 )

@@ -59,6 +59,9 @@ export default {
     let timer: ReturnType<typeof setTimeout> | undefined;
     try {
       if (env.ASTRA_FORWARDING_ENABLED !== "true") throw new Failure("disabled", 503);
+      if (request.headers.get("X-Astra-Contract") !== resources.contractHash) {
+        throw new Failure("configuration", 409);
+      }
       const account = env.ASTRA_AGENT_GATEWAY_ACCOUNT_ID ?? "";
       const gateway = env.ASTRA_AGENT_GATEWAY_ID ?? "";
       const alias = env.ASTRA_AGENT_GATEWAY_BYOK_ALIAS ?? "default";
@@ -72,6 +75,9 @@ export default {
       if (milliseconds < 100 || tokens < 128) throw new Failure("configuration", 503);
       if (request.headers.get("content-type")?.split(";")[0].trim() !== "application/json") {
         throw new Failure("rejected", 415);
+      }
+      if (["authorization", "cf-aig-authorization", "x-goog-api-key"].some(key => request.headers.has(key))) {
+        throw new Failure("rejected", 400);
       }
       const turn: any = JSON.parse(await readBounded(request, MAX_BODY));
       if (!validateTurn(turn)) throw new Failure("rejected", 400);
@@ -155,6 +161,8 @@ export default {
       if (timer !== undefined) clearTimeout(timer);
       request.signal.removeEventListener("abort", disconnect);
       console.log(JSON.stringify({ requestId: id, admitted: reserved, attempts, upstreamStatus,
+        provider: attempts ? "google-ai-studio" : undefined,
+        model: attempts ? env.ASTRA_AGENT_MODEL : undefined,
         category, elapsedMs: Math.round(performance.now() - started) }));
       if (reserved && admission) {
         try { await admission.fetch("https://admission/release", { method: "POST", body: JSON.stringify({ release: id }) }); }

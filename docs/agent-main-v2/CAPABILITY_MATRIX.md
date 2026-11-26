@@ -33,3 +33,7 @@ The semantic envelope also carries non-executable guidance and intake proposals.
 | V-ACT question regeneration | Native API rejects it for this format. The question editor and verify action are available. |
 | Word export, arbitrary random/custom generation, bank assembly, job cancellation | No matching integrated product route. |
 | Job ownership across devices and account chat isolation | Native prototype has no authenticated tenant boundary. Browser-local generation uses Web Locks and store freshness checks. |
+
+## Worker integration checkpoint, 2026-11-26
+
+The new keyless Worker transport preserves the existing semantic compiler and product recipes. Nine local workerd security/quota groups, seven Python Worker contract cases, existing focused checks, frontend checks/build and mounted semantic-fixture regression passed. Independent dependency installation and UI/health/catalog startup passed in a fresh detached checkout without private .env. Production still returned Hello World. Deployment, project-approved model and real Agent acceptance remain pending. MAS public inference is absent until its Chat Completions academic contract and credential compatibility are verified. [Current gates](PROGRESS.md) ? [Deployment and rollback](WORKER_RUNBOOK.md)

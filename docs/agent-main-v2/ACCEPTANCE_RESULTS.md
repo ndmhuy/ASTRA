@@ -195,3 +195,7 @@ V-ACT is available in the current catalog. Its old absence expectation was updat
 | RND08 | Item-bank or random assembly contract | BLOCKED_EXTERNAL |
 | RND09 | Item-bank or random assembly contract | BLOCKED_EXTERNAL |
 | RND10 | Item-bank or random assembly contract | BLOCKED_EXTERNAL |
+
+## Worker integration checkpoint, 2026-11-26
+
+The new keyless Worker transport preserves the existing semantic compiler and product recipes. Nine local workerd security/quota groups, seven Python Worker contract cases, existing focused checks, frontend checks/build and mounted semantic-fixture regression passed. Independent dependency installation and UI/health/catalog startup passed in a fresh detached checkout without private .env. Production still returned Hello World. Deployment, project-approved model and real Agent acceptance remain pending. MAS public inference is absent until its Chat Completions academic contract and credential compatibility are verified. [Current gates](PROGRESS.md) ? [Deployment and rollback](WORKER_RUNBOOK.md)

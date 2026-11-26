@@ -35,3 +35,7 @@ The native app lacks authenticated tenant ownership and cross-device atomic work
 Run `start-astra-demo.bat` from the feature worktree after installing dependencies. Visit `http://127.0.0.1:8000`. For a controlled local smoke, greet the Agent, select V-ACT, inspect the fixed 120-question and 150-minute setup, and close the dialog. Then open the manual template controls and verify the same catalog. Run `scripts/agent_browser_smoke.py` with Playwright and a local Chromium/Edge install to exercise the full fixture path.
 
 No branch changes were pushed. Cloudflare account setup and live inference were left for operator authorization. [Gateway runbook](DEPLOY_RUNBOOK.md) · [Capability matrix](CAPABILITY_MATRIX.md) · [Acceptance results](ACCEPTANCE_RESULTS.md) · [Progress](PROGRESS.md)
+
+## Worker integration checkpoint, 2026-11-26
+
+The new keyless Worker transport preserves the existing semantic compiler and product recipes. Nine local workerd security/quota groups, seven Python Worker contract cases, existing focused checks, frontend checks/build and mounted semantic-fixture regression passed. Independent dependency installation and UI/health/catalog startup passed in a fresh detached checkout without private .env. Production still returned Hello World. Deployment, project-approved model and real Agent acceptance remain pending. MAS public inference is absent until its Chat Completions academic contract and credential compatibility are verified. [Current gates](PROGRESS.md) ? [Deployment and rollback](WORKER_RUNBOOK.md)

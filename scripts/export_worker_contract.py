@@ -2,6 +2,7 @@
 
 import argparse
 import json
+from hashlib import sha256
 from pathlib import Path
 
 from exam_baseline.agent.contracts import Context, Decision, Turn
@@ -59,9 +60,20 @@ if __name__ == "__main__":
     args = parser.parse_args()
     path = ROOT / "workers/astra-ai-proxy/src/generated.json"
     content = export()
-    if args.check:
-        if path.read_text(encoding="utf-8") != content:
-            raise SystemExit("Worker contract is stale. Run scripts/export_worker_contract.py.")
-    else:
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(content, encoding="utf-8")
+    fingerprint = sha256(content.encode()).hexdigest()
+    resources = json.loads(content)
+    resources["contractHash"] = fingerprint
+    outputs = {
+        path: json.dumps(resources, ensure_ascii=False, indent=2) + "\n",
+        ROOT / "src/exam_baseline/resources/agent/worker-contract.json": json.dumps(
+            {"contractHash": fingerprint}
+        )
+        + "\n",
+    }
+    for target, text in outputs.items():
+        if args.check:
+            if target.read_text(encoding="utf-8") != text:
+                raise SystemExit("Worker contract is stale. Run scripts/export_worker_contract.py.")
+        else:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(text, encoding="utf-8")

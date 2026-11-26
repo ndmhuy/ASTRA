@@ -26,7 +26,7 @@ The topic follow-up is covered at the resolver boundary. Its actual feasibility 
 
 ## One authorized live gateway turn
 
-1. Have the operator provision the gateway and inject server configuration. Use the official gateway profile and a fresh acceptance budget path with a limit of one. Keep gateway retries and Agent fallback disabled. Start the app and check loopback health and the real catalog first. [Gateway setup](CLOUDFLARE_GATEWAY_SETUP.md)
+1. Follow the Worker runbook deployment gate and confirm the approved model. Use the public Worker profile with one centralized attempt and fallback disabled. Check Worker health and local demo MAS health/catalog first. [Worker setup](WORKER_RUNBOOK.md)
 2. Once the operator authorizes the call, start a fresh chat, open the browser Network panel and send “Cô muốn tạo một đề thi thử tốt nghiệp.” exactly once. Record the status of `POST /agent/turn`, the validated decision kind, intake family and intent IDs, upstream status and model, elapsed time, and the visible reply. Expect THPT intake and a question asking which subject the teacher wants. Verify zero exam-generation requests. Stop at the clarification and leave the one-attempt ledger intact.
 3. If the turn fails, stop before another live call. Use the server category and Cloudflare usage metadata to inspect authentication, model and routing. Revalidate offline after fixing the issue. Any further live attempt needs fresh operator authorization.
 

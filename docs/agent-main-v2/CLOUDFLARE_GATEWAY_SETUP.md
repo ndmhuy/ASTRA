@@ -2,9 +2,11 @@
 
 For the operator responsible for Agent V2 credentials. ASTRA's server connects to Cloudflare over HTTPS from its existing runtime.
 
-The owner has provisioned `astra-gateway`, a Google AI Studio stored key and an AI Gateway Run token, and selected Workers AI Standard. Open the ignored `.env` in the feature worktree. Fill the Cloudflare account ID, Run token and Gemini model fields shown below. Check the stored key alias in **Provider Keys**. Leave `default` if the key has that alias. Choose the exact Flash-Lite model ID that the stored key's Google project lists for structured `generateContent`; project access still needs live verification. Save the file and restart ASTRA to load the settings. Keep the token in the server file.
+The distribution architecture now uses the existing public Worker. Shared credentials stay in its dashboard. Use [Worker deployment and acceptance](WORKER_RUNBOOK.md) for current setup, commands, quota configuration and release gates. The sections below describe the optional private direct-gateway diagnostic profile.
 
-## Configure BYOK
+The owner reports astra-gateway, its Google AI Studio key, default alias and Run Secret are configured on the existing astra-ai-proxy Worker. The exact project-approved model and production deployment remain pending.
+
+## Private direct-gateway diagnostics
 
 1. Create or select an authenticated gateway in **AI → AI Gateway**. Record the account ID and gateway ID. Preserve separate gateway and provider budgets for interpretation and MAS.
 2. In **Provider Keys**, add the team's Google AI Studio API key. Give it an alias such as `astra-agent`, then use the same alias in the ASTRA server configuration.
@@ -48,7 +50,7 @@ The Agent sends `cf-aig-max-attempts: 1` on its provider-native gateway request.
 
 | Profile | Entry point or setting |
 | --- | --- |
-| Official gateway | `ASTRA_AGENT_TRANSPORT=gateway` with operator credentials |
+| Private direct gateway | `ASTRA_AGENT_TRANSPORT=gateway` with operator credentials |
 | Direct Gemini diagnostics | `scripts/start_agent_local.py` or explicit `ASTRA_AGENT_TRANSPORT=direct` and a server-only `ASTRA_AGENT_API_KEY` |
 | Private Codex CLI | `scripts/start_agent_codex.py` and an existing local CLI login |
 | Offline | `start-astra-demo.bat` or `ASTRA_AGENT_TRANSPORT=offline`. The browser smoke script injects a semantic fixture. |
@@ -62,4 +64,4 @@ npm.cmd --prefix astra-frontend run build
 
 Use a fresh process when switching profiles. Keep Codex local and out of production settings. Rotate upstream keys in Provider Keys, rotate the Run token in the trusted server environment, then restart and revoke the old credential after validation. If revoking access immediately, stop the interpreter with `ASTRA_AGENT_ENABLED=false` and revoke the token or provider alias in Cloudflare.
 
-Browser clients call the existing same-origin route. End users need no key. Distributing ASTRA to untrusted machines requires a separate authenticated, narrowly scoped intermediary running on a trusted server. Keep Cloudflare credentials and Codex login material under their respective operators' control.
+Browser clients call the existing same-origin route. End users need no key. Distributing ASTRA to untrusted machines uses the public operation-restricted Worker described above, with centralized quotas and anonymous-access limitations. Keep Cloudflare credentials and Codex login material under their respective operators' control.

@@ -8,7 +8,7 @@ Old Agent reference SHA: fb834b976cb62eb7292fa839cdaf1d8738e1ec50
 Feature branch / worktree: feat/longlth2297/agent-main-v2 / ../ASTRA.worktrees/longlth2297-agent-main-v2
 Current HEAD: see git log; checkpoint base fbc951bade177dcea0d6e19079d17238dcd5b495
 Latest origin/main checked: 7523c79556a9935df5008c92043f1e38d6e5d2a2
-Current phase / exact next action: R5 / owner fills the private account ID, Run token and project-approved model, confirms alias, then authorizes one live turn.
+Current phase / exact next action: W6 deployment gate. Owner confirms model, completes Wrangler authentication and authorizes deployment. W7 inference authorization remains separate.
 
 | Phase | Status | Evidence level | Commit / report | Blocker / next step |
 |---|---|---|---|---|
@@ -71,3 +71,22 @@ P8 refreshed origin with prune. Main remained at the audited SHA with 0/0 local 
 - 2026-11-26 W1-W3. Added TypeScript Worker, generated authoritative contract, SQLite Durable Object admission, fail-closed validation and one-attempt BYOK transport. Added public Worker Python provider and explicit keyless launcher with 30/33/38-second Worker/local/browser deadlines. Direct diagnostic settings preserved. Verification in progress; forwarding disabled.
 
 - 2026-11-26 W4-W5. MAS compatibility inspected: Chat Completions JSON/schema/tool contract, output limit 8192, bounded role retries and multi-call orchestration. No verified Gemini academic compatibility; MAS route absent and counter reserved at zero. Six real local workerd/SQLite DO groups passed including parallel admission, persistent restart, UTC reset, expired leases, input rejection and native BYOK fixtures. Fixed workerd redirect mode to manual after actual runtime rejection. 23 focused Python checks and 27 frontend checks passed; build passed. No remote inference.
+
+- 2026-11-26 W5-W6. Nine local workerd test groups passed with real SQLite DO persistence and synthetic upstream fetch. Covered request/body/schema/credential overrides, missing Secret, kill switch, parallel admission, restart, UTC rollover, expired leases, role ceiling, invalid output, charged timeout and admission failure. TypeScript check and Wrangler production dry run passed. Dependency audit found zero vulnerabilities after matching Wrangler's pinned Miniflare 5 beta. Added generated contract fingerprint checked before inference to prevent deployed/client contract drift.
+- 2026-11-26 W5 fresh checkout. Created detached sibling longlth2297-agent-worker-fresh at d323dae, installed independent Python dependencies with pip and npm ci/build without .env, Wrangler or Codex. Real UI, health and catalog returned 200 on port 8011 with demo MAS. LaTeX was detected from this machine; fresh compiler/RAG installation and live AI were not tested. Stopped the temporary server and retained its protected worktree.
+- 2026-11-26 W6. Production /health returned Hello World. Wrangler whoami did not confirm authentication. Existing production Worker remains owner-managed. Credential scan of tracked source, outgoing history, browser bundle and built wheel found zero known key-pattern/value matches and no credential-header markers in browser assets. Latest native process restarted on port 8000 with explicit worker transport and demo MAS. W7 awaits authorization; zero remote inference attempts.
+
+## Worker release gates
+
+| Gate | Observed status |
+| --- | --- |
+| WORKER_IMPLEMENTED | VERIFIED_OFFLINE, production bundle and strict contract |
+| QUOTA_PROTECTION_VERIFIED | VERIFIED_OFFLINE, real local workerd SQLite storage; production binding pending |
+| ASTRA_WORKER_PROFILE_VERIFIED_OFFLINE | VERIFIED_OFFLINE, Python contract tests, mounted UI fixtures and credential-free startup |
+| WORKER_DEPLOYED | BLOCKED_EXTERNAL, owner deployment authorization and Wrangler authentication |
+| LIVE_GATEWAY_VERIFIED | UNVERIFIED, exact model and one authorized inference pending |
+| LIVE_AGENT_ORCHESTRATION_VERIFIED | UNVERIFIED, one live turn plus manual multi-turn acceptance pending |
+| KEYLESS_MAS_GENERATION_VERIFIED | BLOCKED_COMPATIBILITY, existing academic provider contract differs; public MAS route absent |
+| FRESH_CLONE_VERIFIED | LOCAL_STARTUP_VERIFIED at d323dae with independent dependency install; remote AI and complete RAG/LaTeX installation unverified |
+
+Use [Worker runbook](WORKER_RUNBOOK.md) and [next task](NEXT_TASK.md). The initial global budget of one is an operator diagnostic setting. Distributed clients rely on centralized quotas and retain local burst/replay guards.

@@ -4,6 +4,7 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { Miniflare, convertV4MiniflareOptions } from "miniflare";
+import resources from "../src/generated.json" with {type:"json"};
 
 const bindings = {
   ASTRA_FORWARDING_ENABLED: "true",
@@ -21,7 +22,7 @@ const turn = { schemaVersion: "astra-intent-v1", clientMessageId: "a".repeat(36)
 function runtime(overrides = {}, persist = false, scriptPath = "build/index.js") {
   const replies = [];
   const mock = {
-    get() { return { intercept() { return { reply(status, body) { replies.push({status,body}); } }; } }; },
+    get() { return { intercept() { return { reply(status, body, delay = 0) { replies.push({status,body,delay}); } }; } }; },
     assertNoPendingInterceptors() { assert.equal(replies.length, 0); },
   };
   const outbound = async request => {
@@ -32,6 +33,7 @@ function runtime(overrides = {}, persist = false, scriptPath = "build/index.js")
       assert.equal(request.headers.has("x-goog-api-key"), false);
       const reply = replies.shift();
       assert.ok(reply, "Unexpected outbound inference");
+      if (reply.delay) await new Promise(resolve => setTimeout(resolve, reply.delay));
       return new Response(reply.body, {status:reply.status});
   };
   const options = convertV4MiniflareOptions({
@@ -47,7 +49,8 @@ function runtime(overrides = {}, persist = false, scriptPath = "build/index.js")
 }
 async function post(mf, body = turn, headers = {}) {
   return mf.dispatchFetch("https://local/v1/agent/interpret", {
-    method: "POST", headers: { "content-type": "application/json", "CF-Connecting-IP": "192.0.2.1", ...headers },
+    method: "POST", headers: { "content-type": "application/json", "CF-Connecting-IP": "192.0.2.1",
+      "X-Astra-Contract": resources.contractHash, ...headers },
     body: typeof body === "string" ? body : JSON.stringify(body),
   });
 }
@@ -62,6 +65,7 @@ test("Worker admission rejects unsafe requests without upstream", async () => {
     }
     assert.equal((await post(mf, "x".repeat(32769))).status, 413);
     assert.equal((await post(mf, turn, { "content-type": "text/plain" })).status, 415);
+    assert.equal((await post(mf, turn, { authorization: "Bearer override" })).status, 400);
     assert.equal((await mf.dispatchFetch("https://local/v1/mas/complete", {method:"POST"})).status, 404);
     mock.assertNoPendingInterceptors();
   } finally { await mf.dispose(); }
@@ -151,4 +155,37 @@ test("Agent ceiling applies separately from global capacity", async () => {
       {method:"POST",body:JSON.stringify({operation:"agent",id:"no",ip:"hash"})});
     assert.equal(result.status,429);
   } finally { await mf.dispose(); }
+});
+
+test("invalid upstream semantics consume the attempt and fail closed", async () => {
+  const { mf, mock } = runtime({ASTRA_GLOBAL_DAILY:"1"});
+  mock.get().intercept().reply(200, JSON.stringify({candidates:[{
+    finishReason:"STOP",content:{parts:[{text:JSON.stringify({kind:"task",intents:[{id:"INVENTED",args:{}}]})}]},
+  }]}));
+  try {
+    const invalid = await post(mf);
+    assert.equal((await invalid.json()).error,"schema");
+    assert.equal((await post(mf)).status,429);
+    mock.assertNoPendingInterceptors();
+  } finally { await mf.dispose(); }
+});
+
+test("timed-out upstream is charged and cannot retry past the daily ceiling", async () => {
+  const { mf, mock } = runtime({ASTRA_GLOBAL_DAILY:"1"});
+  mock.get().intercept().reply(200, "{}", 300);
+  try {
+    const result = await post(mf);
+    assert.equal((await result.json()).error,"timeout");
+    assert.equal((await post(mf)).status,429);
+    mock.assertNoPendingInterceptors();
+  } finally { await mf.dispose(); }
+});
+test("admission failure blocks upstream forwarding", async () => {
+  // Invalid quota configuration forces admission failure before the upstream request.
+  const broken = runtime({ASTRA_GLOBAL_DAILY:"invalid"});
+  try {
+    const result = await post(broken.mf);
+    assert.equal(result.status,503);
+    broken.mock.assertNoPendingInterceptors();
+  } finally { await broken.mf.dispose(); }
 });
