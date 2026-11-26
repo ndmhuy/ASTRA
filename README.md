@@ -1,32 +1,13 @@
 # ASTRA
 
-ASTRA is an exam generation and verification prototype built by **Trial and Success** for CSC10014 Computational Thinking at HCMUS/APCS. The integrated web app connects the React teacher workspace to FastAPI, the retrieval-augmented generation (RAG) library, and the four-agent exam engine.
+ASTRA generates and verifies THPT and V-ACT practice exams. This guide runs the
+teacher workspace, FastAPI backend, retrieval and four-agent pipeline together
+on Windows with a live model.
 
-[Run the web app](#run-the-web-app) · [CLI and offline demos](#cli-and-offline-demos) · [MVP roadmap](#mvp-roadmap) · [Project report](docs/reports/ASTRA_Trial_and_Success_Report.md)
+## 1. Install
 
-## How the integrated workflow works
-
-```mermaid
-flowchart LR
-    UI["Teacher workspace"] --> API["Validate the THPT blueprint"]
-    API --> RAG["Retrieve evidence for each question"]
-    RAG --> MAS["Composer and Illustrator<br/>Solver and Reviewer"]
-    MAS --> P["Edit and preview the PDF"]
-    P --> A["Approve the revision and download"]
-```
-
-The browser workflow generates **THPT math** practice papers with 22 questions and a 90-minute duration. The backend retrieves evidence from the pinned RAG corpus, binds it to blueprint slots, and sends each section's context to the Composer. The Solver uses the illustrated exam with the Composer's answers kept separate. The Reviewer flags issues for teacher inspection. Retrieval gaps stop generation, and warnings remain visible in the draft. [Connected THPT UI and API](docs/integration/CONNECTED_THPT_UI.md)
-
-| Entry point | What it provides |
-| --- | --- |
-| Web app | THPT practice papers and V-ACT, question editing, answer review, PDF preview, and approved PDF/LaTeX and answer JSON downloads |
-| Exam CLIs | THPT math and V-ACT template workflows, a general four-agent LaTeX pipeline, and a single-agent baseline |
-| RAG workbench | Reference search, retrieval comparisons, Topic Packs, and coverage gaps |
-| Reviewed draft exporter | PDF and DOCX student papers and answer keys from supported Composer and Illustrator draft packages |
-
-## Run the web app
-
-Use PowerShell on Windows with Git, CPython 3.11, and Node.js 22.12 or later. Start in the repository root. ASTRA pins Python 3.11.1 and a specific RAG corpus commit.
+Open PowerShell in the repository root. Use Git, CPython 3.11.1 and Node.js
+22.12 or later.
 
 ```powershell
 python -m venv .venv-win
@@ -36,138 +17,48 @@ git fetch --no-tags origin 8b8fb7b09182b3d9d1eee0b95818027f52ab004d
 if (-not (Test-Path .env)) { Copy-Item .env.example .env }
 ```
 
-For PDF preview, use XeLaTeX, LuaLaTeX, or Tectonic with Vietnamese Babel support. The optional Windows x64 installer downloads Tectonic. Set `EXAM_LATEX_COMPILER` in the backend environment to select an installed compiler. The first compile may need network access for TeX packages.
+The Git fetch loads the pinned corpus used for Math retrieval. For PDF preview,
+use XeLaTeX, LuaLaTeX or Tectonic. If none is installed, run the Windows installer.
 
 ```powershell
 & $astraPython scripts/install_latex_compiler.py
 ```
 
-### Configure a live model
+## 2. Configure the model
 
-Set the following values in the root `.env` to use GPT-6 Luna. Create a key in an OpenAI API project with access to this model. The API project controls usage and billing. [Model reference](https://developers.openai.com/api/docs/models/gpt-6-luna) · [API keys](https://platform.openai.com/api-keys)
+Edit the root `.env` and replace the existing provider and model settings. This
+example uses the OpenAI Chat Completions endpoint. Use a model ID enabled for your
+API project and keep your key in `.env`.
 
 ```dotenv
 EXAM_PROVIDER=chat_completions
-EXAM_MODEL=gpt-6-luna
-EXAM_API_KEY=<YOUR_OPENAI_API_KEY>
+EXAM_MODEL=<YOUR_MODEL_ID>
+EXAM_API_KEY=<YOUR_API_KEY>
 EXAM_BASE_URL=https://api.openai.com/v1
 EXAM_TOKEN_LIMIT_FIELD=max_completion_tokens
 EXAM_RESPONSE_FORMAT=json_object
-EXAM_SCHEMA_AS_TOOL=false
-EXAM_STRUCTURED_OUTPUT_STRICT=false
 EXAM_MAX_OUTPUT_TOKENS=16384
 EXAM_TIMEOUT_SECONDS=120
 ```
 
-Restart the backend after changing `.env`. Keep credentials in the backend environment. If setting `EXAM_SPEND_LIMIT_USD`, configure both token prices for that model.
+Use the provider-specific settings in [`.env.example`](.env.example) for Gemini
+or Anthropic. Restart ASTRA after changing `.env`.
 
-### Start the backend and frontend
-
-From the repository root, run the same launcher for every subject.
+## 3. Run and generate
 
 ```powershell
 .\start-astra.bat
 ```
 
-Open [localhost:8000](http://127.0.0.1:8000/) and choose **Soạn từ mẫu**.
-The six new THPT formats require a configured live model. The launcher starts the
-web app and API in one terminal. Press Ctrl+C to stop. Set `ASTRA_PORT` for another port.
-Use `.\start-astra-demo.bat` to try the bundled Math and V-ACT demos offline.
+The launcher installs frontend dependencies on first use, builds the UI and
+starts the backend in the same terminal. Open [ASTRA on port 8000](http://127.0.0.1:8000/).
 
-For frontend development with Vite hot reload, use the two-terminal setup below.
+1. Choose **Soạn từ mẫu**, select a subject and generate a draft.
+2. Review the questions and answers, then open **Xem trước PDF**.
+3. Approve the current revision and download the student paper and teacher key.
 
-Run one backend worker from the repository root. The local job runner stores results under `runs/ui/`. [Health endpoint](http://127.0.0.1:8000/api/health) · [Interactive API docs](http://127.0.0.1:8000/docs)
+Use Ctrl+C to stop. If port 8000 is busy, set `$env:ASTRA_PORT = '8001'`
+before starting and open port 8001. For an offline Math or V-ACT walkthrough,
+run `.\start-astra-demo.bat`.
 
-```powershell
-.\.venv-win\Scripts\python.exe -m uvicorn exam_baseline.main:app --host 127.0.0.1 --port 8000
-```
-
-Start the frontend from the repository root in a second terminal. Vite forwards `/api` to port 8000. Open the URL Vite prints. [Default local web app](http://127.0.0.1:5173)
-
-```powershell
-cd astra-frontend
-npm.cmd ci
-npm.cmd run dev -- --host 127.0.0.1
-```
-
-## Generate, preview, and approve
-
-1. Select a subject in **Soạn từ mẫu** and start generation. For targeted Math retrieval, enter a line starting with `Chuyên đề:` before confirming the template.
-2. Check the questions, proposed answers, and review warnings. Edit or regenerate individual THPT questions as needed.
-3. Open the PDF preview to check the actual LaTeX layout, formulas, and figures. When ready, approve the current revision.
-4. Download the student PDF or LaTeX and the separate teacher answer JSON. After an edit, preview and approve the new revision before downloading.
-
-The six THPT formats use the following 50-minute blueprints. Each true/false
-question has four statements. English uses passage groups modeled on the
-Ministry's sample, including cloze, ordering, and reading. The new formats use
-subject rules and independent solving. Only Math uses the pinned RAG corpus.
-The six subject drafts keep the Reviewer findings visible for teacher correction.
-Teacher review is required before export.
-
-| Subject | Multiple choice | True/false | Short answer |
-| --- | ---: | ---: | ---: |
-| Physics, Chemistry, Biology, Geography | 18 | 4 | 6 |
-| History | 24 | 4 | 0 |
-| English | 40 | 0 | 0 |
-
-[Ministry Decision 764 and scoring appendix](https://locthanhbaoloc.lamdong.edu.vn/home/uploads/news/2024_09/quyet-dinh-so-764_qd-bgddt.pdf) · [Ministry sample announcement](https://vqa.moet.gov.vn/vi/news/thong-bao/cau-truc-dinh-dang-de-thi-tot-nghiep-thpt-tu-nam-2025-74.html)
-
-The job directory `runs/ui/<job-id>/` contains the LaTeX source and `_internal/result.json`. PDF compilation uses the saved source and runs locally. [PDF preview and export contract](docs/integration/FRONTEND_PDF_PREVIEW_HANDOFF.md)
-
-| If you see | What to check |
-| --- | --- |
-| Port 8000 is in use | Check the health endpoint and use the existing ASTRA backend or stop that process before starting another. |
-| `spend_limit_exceeded` | Check the configured token prices, spend limit, and local ledger. |
-| `retrieval_gap` | Check which topics or slots lack evidence. Narrow the scope or load the pinned corpus before retrying. |
-| `latex_compile_failed` | Open the preview's compiler log, fix the reported error, and retry compilation of the saved draft. |
-| Provider unavailable or generation interrupted | Inspect the job status and run report. Completed jobs persist across backend restarts. For a demonstration, use the local replay options below. |
-
-## CLI and offline demos
-
-From the repository root, run the baseline fixture, four-agent replay, or standalone RAG workbench without a hosted model. Use a new output directory for each pipeline replay.
-
-```powershell
-$astraPython = '.\.venv-win\Scripts\python.exe'
-& $astraPython -m exam_baseline.baseline.cli --offline
-& $astraPython -m exam_baseline.pipeline.cli --request examples/pipeline/text_01/input.json --fixture-dir examples/pipeline/text_01 --output runs/pipeline/demo
-& $astraPython -m rag_workflow.app --demo
-```
-
-For an offline frontend walkthrough, set `VITE_SERVICE_MODE=mock` in the frontend terminal before starting Vite. Use the browser smoke test for an integrated replay with the real pinned corpus and local PDF compiler. On Windows, use a short checkout path so nested replay checkpoint filenames fit within the path limit. Label replay and mock outputs as such. [Browser replay prerequisites](docs/integration/CONNECTED_THPT_UI.md#checks)
-
-For live CLI generation, use the dedicated THPT math or V-ACT command. A saved run can resume with `--resume` after provider access returns. Keep the request, output path, and concurrency settings the same.
-
-```powershell
-& $astraPython -m exam_baseline.thpt.cli --request examples/thpt/request.json --output runs/thpt/exam-01
-& $astraPython -m exam_baseline.vact.cli --request examples/vact/request.json --output runs/vact/exam-01
-```
-
-For THPT math, `--rag` uses the default blueprint or the supplied `--request` JSON. Use `--prompt` or `--prompt-file` to plan 22 slots within the requested curriculum. Each slot receives its own curriculum evidence, exercise patterns, and source warnings. Use `--plan-only` to inspect `planned_request.json` and `rag_audit.json` without calling the model.
-
-```powershell
-& $astraPython -m exam_baseline.thpt.cli --rag --output runs/thpt/rag-01
-& $astraPython -m exam_baseline.thpt.cli --prompt "Đề chuyên đề đạo hàm và tích phân lớp 11-12" --plan-only --output runs/thpt/plan-01
-```
-
-For the general CLI, assemble `mas-intake-v1` from a resolved blueprint and selected passages, then use the intake command to write a `PipelineRequest`. [CLI retrieval and intake](docs/rag-workflow.md) · [Intake and reviewed PDF/DOCX export](docs/MAS_INTAKE_AND_EXPORT.md)
-
-## Verification and evidence
-
-Run `python -m pytest -q` with the project environment from the repository root. Run `npm.cmd test`, `npm.cmd run lint`, and `npm.cmd run build` from `astra-frontend`. The browser smoke test exercises generation, PDF preview, approval, download, and revision invalidation with replayed model responses. The project report records the held-out RAG metrics, the 40-attempt generation replay, and the live evaluation plan. [Integration checks](docs/integration/CONNECTED_THPT_UI.md#checks) · [Benchmark results and commands](docs/reports/ASTRA_Trial_and_Success_Report.md#measured-prototype-checks)
-
-## MVP roadmap
-
-- Generate exams and separate answer materials for all target subjects.
-- Add reusable custom format presets for sections, scoring, and layout.
-- Standardize outage recovery and add a configured fallback provider.
-- Simplify the teacher workspace from blueprint setup through review and export.
-- Compare ASTRA with matched baselines using human-scored quality, teacher effort, latency, and cost.
-- Record every implemented feature in a demo video that plays offline.
-
-[Detailed MVP roadmap and evidence to collect](docs/reports/ASTRA_Trial_and_Success_Report.md#mvp-roadmap)
-
-## Source and guides
-
-[React frontend](astra-frontend/) · [Python backend](src/exam_baseline/) · [RAG workbench](rag_workflow/) · [Sample requests](examples/) · [Tests](tests/)
-
-[THPT math CLI](docs/guides/THPT_TOAN.md) · [V-ACT CLI](docs/guides/VACT.md) · [Source layout](docs/CAU_TRUC_THU_MUC.md) · [Project report](docs/reports/ASTRA_Trial_and_Success_Report.md) · [AI use declaration](docs/reports/ASTRA_Trial_and_Success_AI_Usage_Declaration.md)
+[Integration and troubleshooting](docs/integration/CONNECTED_THPT_UI.md) · [CLI guides](docs/guides/) · [Project report](docs/reports/ASTRA_Trial_and_Success_Report.md)
