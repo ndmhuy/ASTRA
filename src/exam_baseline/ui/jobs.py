@@ -360,6 +360,7 @@ class JobManager:
                     request = bind_retrieval(
                         Request.model_validate(job["nativeRequest"]),
                         MatrixRetrievalResponse(**retrieval),
+                        variant_key=job_id,
                     )
                     job["nativeRequest"] = request.model_dump()
                     self.store.save(job)

@@ -1,6 +1,7 @@
 """Bind the THPT generation matrix to verified, per-question RAG evidence."""
 
 from pathlib import Path
+from textwrap import shorten
 
 from exam_baseline.config import DEFAULT_RAG_CORPUS_REF
 from exam_baseline.thpt.models import COUNTS, Request, Slot
@@ -63,7 +64,9 @@ def retrieval_matrix(request: Request) -> dict:
     }
 
 
-def bind_retrieval(request: Request, retrieval: MatrixRetrievalResponse) -> Request:
+def bind_retrieval(
+    request: Request, retrieval: MatrixRetrievalResponse, *, variant_key: str = ""
+) -> Request:
     if retrieval.status != "success" or retrieval.gaps:
         raise RagHandoffError(retrieval.gaps)
     contexts = {item["question_id"]: item for item in retrieval.question_contexts}
@@ -79,6 +82,7 @@ def bind_retrieval(request: Request, retrieval: MatrixRetrievalResponse) -> Requ
         raise ValueError("Invalid RAG schema or THPT slot coverage")
 
     evidence = {}
+    used_shapes: set[str] = set()
     for slot in request.slots:
         context, entry = contexts[slot.id], entries[slot.id]
         requested = context["requested"]
@@ -104,13 +108,16 @@ def bind_retrieval(request: Request, retrieval: MatrixRetrievalResponse) -> Requ
         ):
             raise ValueError(f"Invalid RAG context for {slot.id}")
         evidence[slot.id] = {
-            "text": render_thpt_prompt_evidence(context)
+            "text": render_thpt_prompt_evidence(context, used_shapes, variant_key=variant_key)
             if (
                 context.get("construction_patterns")
                 or context["curriculum_knowledge"]
                 or context.get("construction_observations")
+                or context.get("examples")
             )
-            else entry["text"],
+            else shorten(
+                entry["text"], width=CONFIG["thpt_prompt_limits"]["field_chars"], placeholder=" …"
+            ),
             "source_ids": entry["topic_ids"],
             "source_locator": entry["locator"],
             "source_version": entry["source_version"],
@@ -125,8 +132,9 @@ def retrieve_request(
     *,
     corpus_ref: str = DEFAULT_CORPUS_REF,
     pack_dir: Path | None = None,
+    variant_key: str = "",
 ) -> Request:
     retrieval = retrieve_exam_context(
         retrieval_matrix(request), ref=corpus_ref, repo=Path.cwd(), pack_dir=pack_dir
     )
-    return bind_retrieval(request, retrieval)
+    return bind_retrieval(request, retrieval, variant_key=variant_key)

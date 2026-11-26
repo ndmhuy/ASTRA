@@ -25,10 +25,11 @@ Composer mặc định tạo P1, P2 rồi P3 tuần tự. Nếu quota cho phép,
 chạy theo thứ tự vì phụ thuộc dữ liệu. Với lỗi tạm thời, lần thử lại tôn trọng
 `Retry-After` nếu API gửi header hợp lệ.
 
-RAG chuyển cho Composer nội dung rút gọn theo câu, gồm bài học, mẫu cấu trúc,
-lỗi sai điển hình và cảnh báo. Nếu thiếu mẫu cấu trúc, Composer nhận các quan sát
-đã trừu tượng hóa và gợi ý biến thể khi có. Dữ liệu RAG đầy đủ vẫn được giữ trong
-truy vết của luồng web để đối chiếu nguồn.
+RAG gửi thông tin bài học, tối đa một mẫu dựng bài và một lỗi thường gặp cho mỗi
+câu. Hệ thống ưu tiên mẫu phù hợp chưa dùng trong đề và có thể chọn mẫu khác cho
+lượt mới. Nếu thiếu mẫu, dùng một quan sát đã trừu tượng hóa hoặc một gợi ý biến
+thể. Dữ liệu đầy đủ vẫn được giữ trong truy vết web. Lượt `--resume` dùng lại mẫu
+đã lưu.
 Vòng sửa chỉ gửi câu cũ thuộc phần hiện tại cho Composer; Reviewer vẫn thấy toàn đề.
 
 `_internal/result.json` có `elapsed_seconds` (tổng các lượt chạy, bao gồm resume nhưng

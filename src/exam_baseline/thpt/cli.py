@@ -68,7 +68,10 @@ async def run(args, request_model=Request, workflow_type=Orchestrator):
             request.rag_evidence = saved.rag_evidence
         else:
             request = retrieve_request(
-                request, corpus_ref=args.rag_corpus_ref, pack_dir=args.rag_pack_dir
+                request,
+                corpus_ref=args.rag_corpus_ref,
+                pack_dir=args.rag_pack_dir,
+                variant_key=str(args.output.resolve()),
             )
     if getattr(args, "plan_only", False):
         args.output.mkdir(parents=True, exist_ok=False)
