@@ -43,7 +43,15 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const path = new URL(request.url).pathname;
     if (path === "/health" && request.method === "GET") {
-      return response({ status: "ok", contract: VERSION, forwarding: env.ASTRA_FORWARDING_ENABLED === "true" });
+      try {
+        const admission = env.ADMISSION.get(env.ADMISSION.idFromName("global-v1"));
+        const status = await admission.fetch("https://admission/status");
+        if (!status.ok) throw new Error("quota storage unavailable");
+        return response({ status: "ok", contract: VERSION,
+          forwarding: env.ASTRA_FORWARDING_ENABLED === "true", quota: await status.json() });
+      } catch {
+        return response({ status: "unavailable", forwarding: false }, 503);
+      }
     }
     if (path !== "/v1/agent/interpret") return response({ error: "rejected" }, 404);
     if (request.method !== "POST") return response({ error: "rejected" }, 405);
@@ -125,7 +133,11 @@ export default {
       });
       upstreamStatus = upstream.status;
       if (!upstream.ok) {
-        await upstream.body?.cancel();
+        const diagnostic = (await readBounded(upstream, MAX_RESPONSE))
+          .replaceAll(token, "[redacted]")
+          .replace(/AIza[0-9A-Za-z_-]+|Bearer\s+[^\s"\\]+|[0-9A-Za-z_-]{40,}/g, "[redacted]")
+          .slice(0, 1000);
+        console.log(JSON.stringify({ requestId: id, upstreamStatus, diagnostic }));
         const category = upstream.status === 429 ? "quota" : [401,403].includes(upstream.status) ? "auth" :
           upstream.status === 404 ? "model" : [408,504].includes(upstream.status) ? "timeout" :
           upstream.status >= 500 ? "transient" : "rejected";

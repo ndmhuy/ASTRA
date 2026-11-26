@@ -10,6 +10,18 @@ export class Admission {
   constructor(private state: DurableObjectState, private env: Env) {}
 
   async fetch(request: Request): Promise<Response> {
+    if (request.method === "GET" && new URL(request.url).pathname === "/status") {
+      const now = Date.now();
+      const day = new Date(now).toISOString().slice(0, 10);
+      const ledger = await this.state.storage.get<Ledger>("ledger");
+      const current = ledger?.counter.day === day ? ledger.counter : undefined;
+      const remaining = Math.max(0, Math.min(
+        bounded(this.env.ASTRA_GLOBAL_DAILY, 10000) - (current?.global ?? 0),
+        bounded(this.env.ASTRA_AGENT_DAILY, 10000) - (current?.agent ?? 0),
+      ));
+      const active = ledger?.leases.filter(lease => lease.expires > now).length ?? 0;
+      return Response.json({ day, remainingAttempts: remaining, activeReservations: active });
+    }
     const body = await request.json() as { release?: string; ip?: string; id?: string; operation?: string };
     // Storage awaits remain inside the transaction. Network calls stay outside.
     return this.state.storage.transaction(async transaction => {

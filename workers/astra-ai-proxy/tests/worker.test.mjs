@@ -189,3 +189,18 @@ test("admission failure blocks upstream forwarding", async () => {
     broken.mock.assertNoPendingInterceptors();
   } finally { await broken.mf.dispose(); }
 });
+
+test("quota status is read-only and reflects the persisted remaining allowance", async () => {
+  const { mf } = runtime();
+  try {
+    const before = await (await mf.dispatchFetch("https://local/health")).json();
+    assert.equal(before.quota.remainingAttempts,3);
+    const again = await (await mf.dispatchFetch("https://local/health")).json();
+    assert.equal(again.quota.remainingAttempts,3);
+    const ns=await mf.getDurableObjectNamespace("ADMISSION");
+    const stub=ns.get(ns.idFromName("global-v1"));
+    await stub.fetch("https://quota/reserve",{method:"POST",body:JSON.stringify({id:"one",ip:"hash",operation:"agent"})});
+    const after=await (await mf.dispatchFetch("https://local/health")).json();
+    assert.equal(after.quota.remainingAttempts,2);
+  } finally { await mf.dispose(); }
+});
