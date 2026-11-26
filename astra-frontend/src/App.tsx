@@ -194,7 +194,9 @@ export const App: React.FC = () => {
       if (!alive()) return;
       if (decision.kind !== 'task') {
         answer(decision.kind === 'temporarily_unavailable'
-          ? 'Dịch vụ hiểu yêu cầu đang chưa sẵn sàng. Thầy cô vẫn có thể dùng các nút trong ASTRA.'
+          ? ('reasonCode' in decision && (decision.reasonCode === 'quota' || decision.reasonCode === 'budget')
+            ? 'Trợ lý đang hết lượt hiểu yêu cầu. Thầy cô có thể dùng nút trong ASTRA hoặc thử lại sau.'
+            : 'Dịch vụ hiểu yêu cầu đang chưa sẵn sàng. Thầy cô vẫn có thể dùng các nút trong ASTRA.')
           : decision.kind === 'unsupported'
             ? 'Tính năng này chưa có trong ASTRA.'
             : 'Thầy cô muốn thao tác nào trong ASTRA? Em cần thêm thông tin để thực hiện.');

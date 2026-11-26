@@ -86,9 +86,14 @@ class Intent(Contract):
 class Decision(Contract):
     kind: Literal["task", "answer", "clarify", "unsupported", "temporarily_unavailable"]
     intents: list[Intent] = Field(default_factory=list, max_length=MAX_ACTIONS)
+    reasonCode: (
+        Literal["disabled", "configuration", "transient", "quota", "schema", "budget"] | None
+    ) = None
 
     @model_validator(mode="after")
     def validate_kind(self):
+        if self.reasonCode and self.kind != "temporarily_unavailable":
+            raise ValueError("reason code requires unavailable decision")
         if (self.kind == "task") != bool(self.intents):
             raise ValueError("task must contain actions")
         return self

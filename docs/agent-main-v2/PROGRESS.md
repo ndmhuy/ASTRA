@@ -6,9 +6,9 @@ Status: IN_PROGRESS
 Baseline SHA: 7523c79556a9935df5008c92043f1e38d6e5d2a2
 Old Agent reference SHA: fb834b976cb62eb7292fa839cdaf1d8738e1ec50
 Feature branch / worktree: feat/longlth2297/agent-main-v2 / ../ASTRA.worktrees/longlth2297-agent-main-v2
-Current HEAD: see git log; checkpoint base 7dc83e0661fad4c9601b4de8ef3d2aebad7f2f60
+Current HEAD: see git log; checkpoint base 5dc9104907dde3defb7a55de4c6c44f06a313d32
 Latest origin/main checked: 7523c79556a9935df5008c92043f1e38d6e5d2a2
-Current phase / exact next action: P6 / provider/latency
+Current phase / exact next action: P7 / key gateway/security
 
 | Phase | Status | Evidence level | Commit / report | Blocker / next step |
 |---|---|---|---|---|
@@ -18,7 +18,7 @@ Current phase / exact next action: P6 / provider/latency
 | P3 context/capabilities | PARTIAL | REAL_UI_FIXTURE | [Inventory](BASELINE.md) | Additional control groups still need mounted coverage |
 | P4 A/B/C workflows | PARTIAL | REAL_UI_FIXTURE, REAL_HTTP_NO_AI | [Browser smoke](../../scripts/agent_browser_smoke.py) | Cross-tab admission and V-ACT regeneration limits recorded |
 | P5 memory/title | VERIFIED_OFFLINE | REAL_UI_FIXTURE, UNIT | [Memory tests](../../astra-frontend/tests/agent-memory.test.mjs) | Browser-local persistence; shared accounts and durable pending plans absent |
-| P6 provider/latency | NOT_STARTED | — | — | — |
+| P6 provider/latency | VERIFIED_OFFLINE | UNIT | [Timing harness](../../astra-frontend/scripts/agent-benchmark.mjs) | Live model eligibility, intent accuracy and p95 require operator verification |
 | P7 key gateway/security | NOT_STARTED | — | — | — |
 | P8 final integration | NOT_STARTED | — | — | — |
 
@@ -34,6 +34,8 @@ Current phase / exact next action: P6 / provider/latency
 - 2026-11-26 17:04 ICT · P4 · Parent `956c0a9dd35230b0d56b4d67bb8c8510ddef6713` · npm test passed 21. Browser used real catalog/evaluate routes and mounted handlers. Observed select V-ACT, reject incompatible THPT limits, no start before confirmation, one intercepted THPT start, active-job chat, note cancellation and review, editor navigation, teacher PDF gate, approval, and browser JSON download. Exam job/preview/approval/artifact responses are HTTP fixtures. Regeneration for V-ACT is unavailable by backend contract.
 
 - 2026-11-26 17:07 ICT · P5 · Parent `7dc83e0661fad4c9601b4de8ef3d2aebad7f2f60` · Browser reload opened the saved chat by its manual title and retrieved the actual format choice after a fixture generation. npm test passed 23, including old-store migration, bounded retrieval, branch/retract, and preserving malformed storage. Store remains canonical. Prepared operations require fresh confirmation after reload.
+
+- 2026-11-26 17:09 ICT · P6 · Parent `5dc9104907dde3defb7a55de4c6c44f06a313d32` · Ran provider timeout, cancellation/late result, quota/cooldown, no-auth/schema fallback, and attempt budget tests. Ran the local routing harness: 16/16 curated cases, 800 samples, p50 0.005 ms, p95 0.021 ms, no provider or rendering timing. Built the frontend. All metrics are offline.
 
 ## Release gates
 - LOCAL_APP_READY: NOT_VERIFIED

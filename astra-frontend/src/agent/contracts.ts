@@ -4,7 +4,7 @@ export const VERSION = catalog.schemaVersion;
 export const MAX_ACTIONS = catalog.maxActions;
 export type IntentId = keyof typeof catalog.intents;
 export type Intent = { id: IntentId; args: Record<string, string | number | boolean> };
-export type Decision = { kind: 'task' | 'answer' | 'clarify' | 'unsupported' | 'temporarily_unavailable'; intents: Intent[] };
+export type Decision = { kind: 'task' | 'answer' | 'clarify' | 'unsupported' | 'temporarily_unavailable'; intents: Intent[]; reasonCode?: string };
 export type AgentContext = {
   screen: 'start' | 'workspace';
   setup: boolean;
@@ -44,12 +44,14 @@ export function parseDecision(value: unknown, messageId: string): Decision {
       value.schemaVersion !== VERSION || value.clientMessageId !== messageId || !record(value.decision)) {
     throw new Error('agent_contract');
   }
-  const { kind, intents } = value.decision;
-  if (Object.keys(value.decision).length !== 2 ||
+  const { kind, intents, reasonCode } = value.decision;
+  if (Object.keys(value.decision).length !== (reasonCode === undefined ? 2 : 3) ||
+      (reasonCode !== undefined && (kind !== 'temporarily_unavailable' ||
+        !['disabled', 'configuration', 'transient', 'quota', 'schema', 'budget'].includes(String(reasonCode)))) ||
       !['task', 'answer', 'clarify', 'unsupported', 'temporarily_unavailable'].includes(String(kind)) ||
       !Array.isArray(intents) || intents.length > MAX_ACTIONS ||
       (kind === 'task') !== (intents.length > 0) || !intents.every(validIntent)) {
     throw new Error('agent_contract');
   }
-  return { kind, intents } as Decision;
+  return { kind, intents, reasonCode } as Decision;
 }

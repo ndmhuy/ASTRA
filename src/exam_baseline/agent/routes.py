@@ -42,7 +42,7 @@ def create_agent_router(interpreter: Interpreter | None = None) -> APIRouter:
                 decision = (
                     Decision.model_validate(await interpreter(payload))
                     if interpreter
-                    else Decision(kind="temporarily_unavailable")
+                    else Decision(kind="temporarily_unavailable", reasonCode="disabled")
                 )
                 admission.finish(peer, payload, fingerprint, decision)
             finally:
@@ -51,7 +51,7 @@ def create_agent_router(interpreter: Interpreter | None = None) -> APIRouter:
             {
                 "schemaVersion": VERSION,
                 "clientMessageId": payload.clientMessageId,
-                "decision": decision.model_dump(),
+                "decision": decision.model_dump(exclude_none=True),
             },
             headers={"Cache-Control": "no-store"},
         )
