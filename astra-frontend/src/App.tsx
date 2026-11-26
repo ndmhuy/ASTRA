@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useSyncExternalStore, useCallback, useLayoutEffect, useRef } from 'react';
 import { flushSync } from 'react-dom';
 import { interpret } from './agent/client';
+import { admit, execute, fastRoute, fold, mayDispatch, type Effect, type Runtime } from './agent/recipes';
+import type { Intent } from './agent/contracts';
 import { AlertCircle, AlertTriangle, LoaderCircle, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { WorkspaceStart } from './components/WorkspaceStart';
 import { AstraWelcome } from './components/AstraWelcome';
@@ -37,6 +39,8 @@ export const App: React.FC = () => {
   const [store] = useState(() => new ExamSessions(examService));
   const sessions = useSyncExternalStore(store.subscribe, store.getSnapshot);
   const turn = useRef<AbortController | null>(null);
+  const [admissionError, setAdmissionError] = useState('');
+  const runtimeRef = useRef<Runtime | null>(null);
   const [chatPending, setChatPending] = useState(false);
   const cancelTurn = () => { turn.current?.abort(); turn.current = null; setChatPending(false); };
   useEffect(() => () => turn.current?.abort(), []);
@@ -57,12 +61,11 @@ export const App: React.FC = () => {
   const prevQuestionCount = active?.previousCount || 0;
   useEffect(() => { store.resume(); return () => store.dispose(); }, [store]);
   useEffect(() => {
-    setViewMode('paper');
     store.setActiveSession(screen === 'workspace' ? activeId : null);
   }, [store, screen, activeId]);
   useEffect(() => () => { if (transitionTimer.current) clearTimeout(transitionTimer.current); }, []);
   const cancelTransition = () => { composerOrigin.current = null; if (transitionTimer.current) clearTimeout(transitionTimer.current); setLeavingStart(false); setRevealingWorkspace(false); };
-  const openSession = (id: string) => { cancelTransition(); setActiveId(id); setScreen('workspace'); };
+  const openSession = (id: string) => { cancelTransition(); setViewMode('paper'); setActiveId(id); setScreen('workspace'); };
   const openManually = (id: string) => { cancelTurn(); setShowQuickModal(false); setConfigureId(null); setEditor(null); openSession(id); };
   const newExam = () => { cancelTurn(); cancelTransition(); setActiveId(null); setConfigureId(null); setLandingDraft(''); attachedFiles.current = []; setShowQuickModal(false); setScreen('start'); };
   const revealSession = (id: string) => {
@@ -105,34 +108,56 @@ export const App: React.FC = () => {
   };
   const sendTurn = async (id: string, content: string, options: { searchWeb: boolean; attachedFiles: File[] }) => {
     if (turn.current) return;
+    const admission = admit(content);
+    setAdmissionError(admission.error || '');
+    if (admission.error) return;
+    content = admission.text;
     const controller = new AbortController();
     turn.current = controller;
     setChatPending(true);
     const messageId = crypto.randomUUID();
     const answer = (text: string) => store.appendMessage(id, 'assistant', text);
     store.appendMessage(id, 'user', content, messageId);
+    const runtime: Runtime = {
+      binding: () => runtimeRef.current!.binding(),
+      dispatch: (intent, expected) => runtimeRef.current!.dispatch(intent, expected),
+    };
+    const binding = runtime.binding();
+    const alive = () => !controller.signal.aborted && !!store.getSnapshot().find(s => s.id === id)?.messages.some(m => m.id === messageId);
     try {
       if (options.searchWeb || options.attachedFiles.length) {
         answer('ASTRA hiện chưa hỗ trợ tìm web hoặc tải tệp. Thầy cô có thể gửi nội dung dạng văn bản.');
         return;
       }
-      if (/^(xin chào|chào( em| astra)?|hello)[! .]*$/iu.test(content)) {
-        answer('Em chào thầy cô! Em có thể giúp chọn mẫu đề hoặc thao tác trong ASTRA.');
+      const local = fastRoute(content);
+      if (local && 'text' in local) { answer(local.text); return; }
+      if (local && 'confirm' in local) {
+        answer(local.confirm ? 'Hiện chưa có thao tác nào đang chờ xác nhận.' : 'Hiện chưa có tác vụ trò chuyện đang chờ.');
         return;
       }
-      const decision = await interpret(id, messageId, content, {
-        screen, setup: showQuickModal, status: active?.status ?? 'draft', view: viewMode,
-      }, controller.signal);
-      if (controller.signal.aborted || !store.getSnapshot().find(s => s.id === id)?.messages.some(m => m.id === messageId)) return;
-      if (decision.kind === 'task' && decision.intents.length === 1 && decision.intents[0].id === 'OPEN_SETUP' &&
-          ['draft', 'error'].includes(store.getSnapshot().find(s => s.id === id)?.status || '')) {
-        flushSync(() => { setConfigureId(id); setShowQuickModal(true); });
-        answer('Đã mở phần cấu hình mẫu đề.');
-      } else {
+      if (!mayDispatch(content)) {
+        answer('Thầy cô muốn em thực hiện thao tác cụ thể nào? Em chưa thao tác.');
+        return;
+      }
+      const decision = local && 'intents' in local ? { kind: 'task', intents: local.intents }
+        : await interpret(id, messageId, content, {
+          screen, setup: showQuickModal, status: store.getSnapshot().find(s => s.id === id)?.status ?? 'draft', view: viewMode,
+        }, controller.signal);
+      if (!alive()) return;
+      if (decision.kind !== 'task') {
         answer(decision.kind === 'temporarily_unavailable'
           ? 'Dịch vụ hiểu yêu cầu đang chưa sẵn sàng. Thầy cô vẫn có thể dùng các nút trong ASTRA.'
-          : 'Thầy cô muốn thao tác nào trong ASTRA? Em cần thêm thông tin để thực hiện.');
+          : decision.kind === 'unsupported'
+            ? 'Tính năng này chưa có trong ASTRA.'
+            : 'Thầy cô muốn thao tác nào trong ASTRA? Em cần thêm thông tin để thực hiện.');
+        return;
       }
+      const receipts = await execute(decision.intents, runtime, binding, alive);
+      if (!alive()) return;
+      const stopped = receipts.length < decision.intents.length;
+      answer([...receipts.map(receipt => receipt.text),
+        ...(stopped ? ['Các bước tiếp theo chưa được thực hiện. Thầy cô hãy kiểm tra trạng thái hiện tại.'] : []),
+      ].join('\n'));
     } catch {
       if (!controller.signal.aborted) answer('Chưa kết nối được với trợ lý ASTRA. Thầy cô có thể thử lại.');
     } finally {
@@ -141,9 +166,25 @@ export const App: React.FC = () => {
   };
   const handleLandingSend = (content: string, options: { searchWeb: boolean; attachedFiles: File[] }) => {
     if (turn.current) return;
+    const admission = admit(content);
+    setAdmissionError(admission.error || '');
+    if (admission.error) return;
+    const quick = fastRoute(admission.text);
+    const navigation = quick && 'intents' in quick && !options.searchWeb && !options.attachedFiles.length
+      ? quick.intents[0] : undefined;
+    if (navigation && ['HOME', 'SET_SIDEBAR', 'OPEN_SESSION'].includes(navigation.id)) {
+      const effect = dispatch(navigation);
+      if (effect.status === 'failed') setAdmissionError(effect.text);
+      else setLandingDraft('');
+      return;
+    }
     const id = configureId || store.create('custom');
-    setLandingDraft('');
-    revealSession(id);
+    flushSync(() => { setLandingDraft(''); openSession(id); });
+    if (navigation?.id === 'CREATE_SESSION') {
+      store.appendMessage(id, 'user', admission.text);
+      store.appendMessage(id, 'assistant', 'Đã mở một không gian soạn đề mới.');
+      return;
+    }
     void sendTurn(id, content, options);
   };
   const handleQuickStart = (params: ExamRequestParams) => {
@@ -182,6 +223,59 @@ export const App: React.FC = () => {
   }, [store, activeId]);
 
 
+  const binding = () => {
+    const current = store.getSnapshot().find(s => s.id === activeId);
+    return JSON.stringify([screen, activeId, showQuickModal, configureId, controlsCollapsed, viewMode,
+      editor?.question.stableId, current?.status, current?.jobId, current?.package?.revision,
+      current?.package?.contentHash, current?.package?.approved, current?.previewOpenedRevision]);
+  };
+  const dispatch = (intent: Intent): Effect => {
+    const failed = (text: string): Effect => ({ status: 'failed', text });
+    const succeeded = (text: string): Effect => ({ status: 'succeeded', text });
+    const current = store.getSnapshot().find(session => session.id === activeId);
+    switch (intent.id) {
+      case 'OPEN_SETUP':
+        if (!current || !['draft', 'error'].includes(current.status) || editor) return failed('Chỉ có thể mở cấu hình cho đề nháp hoặc lần tạo bị lỗi.');
+        flushSync(() => { setConfigureId(current.id); setShowQuickModal(true); });
+        return runtimeRef.current!.binding() !== '' && document.getElementById('astra-preset-dialog')
+          ? succeeded('Đã mở phần cấu hình mẫu đề.')
+          : failed('Chưa mở được phần cấu hình mẫu đề.');
+      case 'HOME':
+        flushSync(() => { cancelTransition(); setEditor(null); setShowQuickModal(false); setConfigureId(null); setActiveId(null); setScreen('start'); });
+        return succeeded('Đã về màn hình bắt đầu.');
+      case 'CREATE_SESSION': {
+        const id = store.create('custom');
+        flushSync(() => { setShowQuickModal(false); setConfigureId(null); setEditor(null); openSession(id); });
+        return succeeded('Đã mở một không gian soạn đề mới.');
+      }
+      case 'OPEN_SESSION': {
+        const title = typeof intent.args.title === 'string' ? fold(intent.args.title) : '';
+        const eligible = store.getSnapshot().filter(item => item.id !== current?.id || title);
+        const exact = eligible.filter(item => fold(item.title) === title);
+        const matches = title ? (exact.length ? exact : eligible.filter(item => fold(item.title).includes(title)))
+          : eligible.slice().sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+        const target = matches[0];
+        if (!target) return failed('Chưa tìm thấy đề phù hợp trong tủ đề trên trình duyệt này.');
+        if (matches.length > 1 && (title || matches[1].createdAt === target.createdAt)) {
+          return failed('Có nhiều đề phù hợp. Thầy cô hãy chọn đúng đề trong tủ đề.');
+        }
+        flushSync(() => { setShowQuickModal(false); setConfigureId(null); setEditor(null); openSession(target.id); });
+        return succeeded(`Đã mở “${target.title}”.`);
+      }
+      case 'SET_SIDEBAR':
+        flushSync(() => setControlsCollapsed(intent.args.collapsed === true));
+        return succeeded(intent.args.collapsed ? 'Đã thu gọn thanh điều hướng.' : 'Đã mở rộng thanh điều hướng.');
+      default: return failed('Thao tác này chưa có liên kết với màn hình hiện tại.');
+    }
+  };
+  useLayoutEffect(() => {
+    runtimeRef.current = {
+      binding,
+      dispatch: (intent, expected) => binding() === expected ? dispatch(intent)
+        : { status: 'failed', text: 'Trạng thái đã thay đổi. Thầy cô hãy gửi lại yêu cầu.' },
+    };
+  });
+
   const sidebarLabel = controlsCollapsed ? 'Mở rộng thanh điều hướng' : 'Thu gọn thanh điều hướng';
 
   if (showWelcome) return <AstraWelcome onComplete={finishWelcome} />;
@@ -203,6 +297,7 @@ export const App: React.FC = () => {
         <div className="header-right"><span className="header-avatar" aria-label="Người dùng: Cùng thầy cô" title="Cùng thầy cô">GV</span><span className="header-session">Cùng thầy cô</span></div>
       </header>
 
+      {admissionError && <div className="canvas-alert-banner is-error" role="alert">{admissionError}</div>}
       {/* Main content */}
       {screen === 'start' && <WorkspaceStart exiting={leavingStart} draft={landingDraft} onDraftChange={setLandingDraft} onTemplate={() => { setConfigureId(null); attachedFiles.current = []; setShowQuickModal(true); }} onDetailed={handleDetailedStart} onSend={handleLandingSend} />}
 

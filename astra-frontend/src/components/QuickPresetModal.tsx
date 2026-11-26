@@ -92,6 +92,7 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, title = 'T
     <div className="preset-modal-backdrop" onClick={onClose}>
       <div
         ref={modalRef}
+        id="astra-preset-dialog"
         role="dialog"
         aria-modal="true"
         aria-labelledby="preset-title"
