@@ -26,7 +26,7 @@ The browser workflow generates **THPT math** practice papers with 22 questions a
 
 ## Run the web app
 
-Use PowerShell on Windows with Git, CPython 3.11, and Node.js 22.12 or later. Start in a checkout of `merge-mas-and-uiux`. The branch pins Python 3.11.1 and a specific RAG corpus commit.
+Use PowerShell on Windows with Git, CPython 3.11, and Node.js 22.12 or later. Start in the repository root. ASTRA pins Python 3.11.1 and a specific RAG corpus commit.
 
 ```powershell
 python -m venv .venv-win
@@ -44,18 +44,18 @@ For PDF preview, use XeLaTeX, LuaLaTeX, or Tectonic with Vietnamese Babel suppor
 
 ### Configure a live model
 
-Set the provider, model, key, and endpoint in the root `.env`. Use the model identifier enabled for your key. This example configures the Gemini-compatible endpoint. The environment template also documents the Claude setup and the optional persistent spend limit. [Environment template](.env.example)
+Set the following values in the root `.env` to use GPT-6 Luna. Create a key in an OpenAI API project with access to this model. The API project controls usage and billing. [Model reference](https://developers.openai.com/api/docs/models/gpt-6-luna) · [API keys](https://platform.openai.com/api-keys)
 
 ```dotenv
 EXAM_PROVIDER=chat_completions
-EXAM_MODEL=<YOUR_ENABLED_GEMINI_MODEL>
-EXAM_API_KEY=<YOUR_GOOGLE_API_KEY>
-EXAM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai
-EXAM_TOKEN_LIMIT_FIELD=max_tokens
-EXAM_RESPONSE_FORMAT=json_schema
+EXAM_MODEL=gpt-6-luna
+EXAM_API_KEY=<YOUR_OPENAI_API_KEY>
+EXAM_BASE_URL=https://api.openai.com/v1
+EXAM_TOKEN_LIMIT_FIELD=max_completion_tokens
+EXAM_RESPONSE_FORMAT=json_object
 EXAM_SCHEMA_AS_TOOL=false
 EXAM_STRUCTURED_OUTPUT_STRICT=false
-EXAM_MAX_OUTPUT_TOKENS=8192
+EXAM_MAX_OUTPUT_TOKENS=16384
 EXAM_TIMEOUT_SECONDS=120
 ```
 
@@ -79,7 +79,7 @@ npm.cmd run dev -- --host 127.0.0.1
 
 ## Generate, preview, and approve
 
-1. Open the template-based composer, select THPT math, and start generation.
+1. Open the template-based composer, select THPT math, and start generation. For a focused paper, enter a line starting with `Chuyên đề:` in the request field before confirming the template. For example, `Chuyên đề: đạo hàm và tích phân lớp 11-12`.
 2. Review the questions, proposed answers, and retrieval warnings. Edit or regenerate individual questions as needed.
 3. Open the PDF preview to check the actual LaTeX layout, formulas, and figures. When ready, approve the current revision.
 4. Download the student PDF or LaTeX and the separate teacher answer JSON. After an edit, preview and approve the new revision before downloading.
@@ -90,6 +90,7 @@ The job directory `runs/ui/<job-id>/` contains the LaTeX source and `_internal/r
 | --- | --- |
 | Port 8000 is in use | Check the health endpoint and use the existing ASTRA backend or stop that process before starting another. |
 | `spend_limit_exceeded` | Check the configured token prices, spend limit, and local ledger. |
+| `retrieval_gap` | Check which topics or slots lack evidence. Narrow the scope or load the pinned corpus before retrying. |
 | `latex_compile_failed` | Open the preview's compiler log, fix the reported error, and retry compilation of the saved draft. |
 | Provider unavailable or generation interrupted | Inspect the job status and run report. Completed jobs persist across backend restarts. For a demonstration, use the local replay options below. |
 
@@ -113,7 +114,14 @@ For live CLI generation, use the dedicated THPT math or V-ACT command. A saved r
 & $astraPython -m exam_baseline.vact.cli --request examples/vact/request.json --output runs/vact/exam-01
 ```
 
-The integrated web job assembles THPT retrieval context automatically. For the general CLI, assemble `mas-intake-v1` from a resolved blueprint and selected passages, then use the intake command to write a `PipelineRequest`. [CLI retrieval and intake](docs/rag-workflow.md) · [Intake and reviewed PDF/DOCX export](docs/MAS_INTAKE_AND_EXPORT.md)
+For THPT math, `--rag` uses the default blueprint or the supplied `--request` JSON. Use `--prompt` or `--prompt-file` to plan 22 slots within the requested curriculum. Each slot receives its own curriculum evidence, exercise patterns, and source warnings. Use `--plan-only` to inspect `planned_request.json` and `rag_audit.json` without calling the model.
+
+```powershell
+& $astraPython -m exam_baseline.thpt.cli --rag --output runs/thpt/rag-01
+& $astraPython -m exam_baseline.thpt.cli --prompt "Đề chuyên đề đạo hàm và tích phân lớp 11-12" --plan-only --output runs/thpt/plan-01
+```
+
+For the general CLI, assemble `mas-intake-v1` from a resolved blueprint and selected passages, then use the intake command to write a `PipelineRequest`. [CLI retrieval and intake](docs/rag-workflow.md) · [Intake and reviewed PDF/DOCX export](docs/MAS_INTAKE_AND_EXPORT.md)
 
 ## Verification and evidence
 

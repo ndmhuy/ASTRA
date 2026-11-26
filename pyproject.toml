@@ -33,10 +33,12 @@ exam-vact = "exam_baseline.vact.cli:main"
 version = {attr = "exam_baseline.__version__"}
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["src", "."]
+include = ["exam_baseline*", "rag_workflow*"]
 
 [tool.setuptools.package-data]
 exam_baseline = ["resources/prompts/*.txt", "resources/fixtures/*.json", "resources/templates/*.tex", "resources/exam_formats/*.json"]
+rag_workflow = ["config.json", "web/*.html", "web/*.css", "web/*.js"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

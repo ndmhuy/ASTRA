@@ -2,6 +2,7 @@
 
 import asyncio
 import json
+import re
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from hashlib import sha256
@@ -10,12 +11,18 @@ from pathlib import Path
 import httpx
 
 from exam_baseline.core.contracts import ProviderError
-from exam_baseline.intake import encode_thpt_retrieval
 from exam_baseline.providers.chat_completions import ChatCompletionsProvider
 from exam_baseline.thpt.agents import QUESTION_FORMAT, Agent, IllustratorAgent, SolverAgent
 from exam_baseline.thpt.content import choice_latex
-from exam_baseline.thpt.models import Illustrations, Question, Request, Slot
-from exam_baseline.thpt.orchestrator import Orchestrator
+from exam_baseline.thpt.models import Illustrations, Question, Request
+from exam_baseline.thpt.orchestrator import Orchestrator, compare_answer
+from exam_baseline.thpt.planner import plan_request_from_prompt
+from exam_baseline.thpt.rag import (
+    RagHandoffError,
+    bind_retrieval,
+    default_request,
+    retrieval_matrix,
+)
 from exam_baseline.thpt.rendering import render, student_view
 from exam_baseline.thpt.runtime import ContractError
 from exam_baseline.thpt.visuals import visual_issues
@@ -26,9 +33,12 @@ from exam_baseline.ui.preview import PreviewService
 from exam_baseline.ui.storage import JobStore
 from exam_baseline.vact import models as vact_models
 from exam_baseline.vact import template as vact_template
+from exam_baseline.vact.agents import SolverAgent as VactSolverAgent
 from exam_baseline.vact.orchestrator import Orchestrator as VactOrchestrator
 from exam_baseline.vact.rendering import render as vact_render
-from rag_workflow.matrix_retriever import default_toan_thpt_matrix, retrieve_exam_context
+from exam_baseline.vact.rendering import student_view as vact_student_view
+from rag_workflow.matrix_retriever import retrieve_exam_context
+from rag_workflow.models import Gap, MatrixRetrievalResponse
 
 VACT_SLOT_SPEC = {
     ("TV", "single"): ("Tiếng Việt", "Đọc hiểu và sử dụng kiến thức để chọn một phương án đúng"),
@@ -115,10 +125,42 @@ def _format_progress_message(role: str, part: str | None, revision: int) -> str:
     return message
 
 
-def _audit_notes(edited: bool) -> str:
-    if edited:
-        return "Đã chỉnh sửa thủ công — thầy cô vui lòng kiểm tra lại trước khi xuất đề."
-    return "Thầy cô vui lòng kiểm tra lại nội dung và đáp án trước khi xuất đề."
+def _current_solutions(job):
+    current_format = job.get("solverResultsVersion") == 1
+    if not current_format and job.get("report", {}).get("demo_mode"):
+        return {}
+    # Legacy jobs did not invalidate Solver results on manual edits. They cannot
+    # tell whether the saved answer belongs to the edited question.
+    stale_ids = set() if current_format else set(job.get("manualEdits", ()))
+    return {
+        entry["question_id"]: entry
+        for entry in job["solutions"]["entries"]
+        if entry["question_id"] not in stale_ids
+    }
+
+
+def _question_verification(raw, solved, edited):
+    check, _ = compare_answer(raw, solved)
+    notes = {
+        "matched": "Đáp án khớp với kết quả giải độc lập.",
+        "mismatched": "Đáp án của câu khác với kết quả giải độc lập.",
+        "needs_recheck": "Chưa có kết quả giải độc lập có thể đối chiếu cho câu này.",
+    }
+    if check == "needs_recheck" and solved is None and edited:
+        notes[check] = "Câu đã chỉnh sửa và cần giải lại trên nội dung mới."
+    elif solved and solved["status"] == "ambiguous":
+        notes[check] = "Solver báo câu hỏi có nhiều cách hiểu."
+    elif solved and solved["status"] == "unsolvable":
+        notes[check] = "Solver chưa giải được câu hỏi từ dữ kiện hiện có."
+    return {
+        "answerCheck": check,
+        "status": {"matched": "VERIFIED", "mismatched": "FLAGGED", "needs_recheck": "PENDING"}[
+            check
+        ],
+        "solverKey": solved["answer"] if solved and solved["status"] == "solved" else None,
+        "writerKey": raw["answer"],
+        "auditNotes": notes[check],
+    }
 
 
 def now():
@@ -176,6 +218,8 @@ def default_vact_slots() -> list[vact_models.Slot]:
 
 def resolve_request(
     payload: ExamGenerateRequest,
+    *,
+    settings=None,
 ) -> tuple[Request | vact_models.Request, dict | None]:
     if payload.formatId == "vact":
         request = vact_models.Request(
@@ -183,43 +227,25 @@ def resolve_request(
             requirements=[payload.prompt] if payload.prompt else [],
         )
         return request, None
-    matrix = default_toan_thpt_matrix()
-    counters = dict.fromkeys(("P1", "P2", "P3"), 0)
-    slots = []
-    for question in matrix["questions"]:
-        part = question["part"]
-        counters[part] += 1
-        question["question_id"] = f"{part}-{counters[part]}"
-        slots.append(
-            Slot(
-                id=question["question_id"],
-                part=part,
-                topic=question["topic"],
-                objective=question["learning_objective"],
-                level=question.get("level") or "TH",
-                statement_levels=list(question.get("statement_levels", {}).values()),
+    scope = re.search(r"^[ \t]*chuyên đề[ \t]*:[ \t]*(\S[^\r\n]*)", payload.prompt, re.I | re.M)
+    if scope and payload.slots is None and settings is not None and not settings.demo_mode:
+        try:
+            request = plan_request_from_prompt(
+                scope[1], corpus_ref=settings.rag_corpus_ref, pack_dir=settings.rag_pack_dir
             )
-        )
+        except RagHandoffError as exc:
+            raise UiError("retrieval_gap", str(exc), 422, exc.gaps) from exc
+        except Gap as exc:
+            raise UiError(
+                "retrieval_gap", str(exc), 422, [{"code": exc.code, "message": str(exc)}]
+            ) from exc
+        request.requirements.append(payload.prompt)
+        return request, retrieval_matrix(request)
     request = Request(
-        slots=payload.slots or slots, requirements=[payload.prompt] if payload.prompt else []
+        slots=payload.slots or default_request().slots,
+        requirements=[payload.prompt] if payload.prompt else [],
     )
-    matrix["questions"] = [
-        {
-            "question_id": s.id,
-            "part": s.part,
-            "topic": s.topic,
-            "learning_objective": s.objective,
-            "level": s.level,
-            **(
-                {"statement_levels": dict(zip("abcd", s.statement_levels, strict=True))}
-                if s.part == "P2"
-                else {}
-            ),
-        }
-        for s in request.slots
-    ]
-    matrix.update(max_observations=2, max_examples=1, max_curriculum_units=2)
-    return request, matrix
+    return request, retrieval_matrix(request)
 
 
 class RepairComposer(Agent):
@@ -274,13 +300,13 @@ class JobManager:
                 "Vui lòng kiểm tra cấu hình hoặc chạy chế độ Demo.",
                 503,
             )
-        settings = self.settings.model_copy(update={"response_format": "json_schema"})
+        settings = self.settings.for_agent_generation()
         async with httpx.AsyncClient(follow_redirects=False) as client:
             provider = ChatCompletionsProvider(settings, client)
             yield dict.fromkeys(("composer", "illustrator", "solver", "reviewer"), provider)
 
     async def start(self, payload: ExamGenerateRequest, key: str):
-        request, matrix = resolve_request(payload)
+        request, matrix = await asyncio.to_thread(resolve_request, payload, settings=self.settings)
         data, created = self.store.create(
             key,
             fingerprint(payload.model_dump()),
@@ -365,8 +391,10 @@ class JobManager:
                             422,
                             retrieval.get("gaps", []),
                         )
-                    request = encode_thpt_retrieval(
-                        Request.model_validate(job["nativeRequest"]), retrieval
+                    request = bind_retrieval(
+                        Request.model_validate(job["nativeRequest"]),
+                        MatrixRetrievalResponse(**retrieval),
+                        variant_key=job_id,
                     )
                     job["nativeRequest"] = request.model_dump()
                     self.store.save(job)
@@ -426,7 +454,10 @@ class JobManager:
                     status="completed",
                     rawQuestions=[q.model_dump() for q in questions],
                     drawings=drawings,
-                    solutions=answers["independent_solver"],
+                    solutions={"entries": []}
+                    if report.get("demo_mode")
+                    else answers["independent_solver"],
+                    solverResultsVersion=1,
                     revision=report["revision"],
                     manualEdits=[],
                     report=report,
@@ -461,12 +492,23 @@ class JobManager:
                     details={"stage": exc.stage, "fields": exc.fields},
                 )
             elif isinstance(exc, ProviderError):
+                messages = {
+                    "spend_limit_exceeded": str(exc),
+                    "provider_rate_limited": "Dịch vụ AI đã chạm hạn mức tốc độ. "
+                    "Vui lòng đợi trước khi tạo lại đề.",
+                    "provider_quota_exhausted": "Dự án API đã chạm giới hạn quota hoặc chi phí. "
+                    "Vui lòng kiểm tra tài khoản API.",
+                }
                 error = UiError(
                     exc.code,
-                    str(exc)
-                    if exc.code == "spend_limit_exceeded"
-                    else "Dịch vụ AI đang bận hoặc gặp sự cố tạm thời. "
-                    "Thầy cô vui lòng thử lại sau ít phút.",
+                    messages.get(
+                        exc.code,
+                        "Dịch vụ AI đang bận hoặc gặp sự cố tạm thời. "
+                        "Thầy cô vui lòng thử lại sau ít phút.",
+                    ),
+                    details={"retryAfterSeconds": exc.retry_after_seconds}
+                    if exc.retry_after_seconds is not None
+                    else None,
                 )
             else:
                 error = UiError(
@@ -517,7 +559,7 @@ class JobManager:
     def _package_vact(self, job):
         slots = job["nativeRequest"]["slots"]
         drawings = {d["question_id"]: d["latex"] for d in job["drawings"]["drawings"]}
-        solutions = {s["question_id"]: s for s in job["solutions"]["entries"]}
+        solutions = _current_solutions(job)
         raw_passages = {p["id"]: p for p in job.get("rawPassages", [])}
         levels = {"NB": "NHAN_BIET", "TH": "THONG_HIEU", "VD": "VAN_DUNG", "VDC": "VAN_DUNG_CAO"}
         passages = []
@@ -546,7 +588,6 @@ class JobManager:
         questions = []
         visual_warnings = []
         for index, (raw, slot) in enumerate(zip(job["rawQuestions"], slots, strict=True), 1):
-            solved = solutions.get(raw["id"], {})
             group = group_by_qid[raw["id"]]
             group_instruction = VACT_GROUP_INSTRUCTIONS.get(group.kind)
             passage_id = raw.get("passage_id")
@@ -571,14 +612,11 @@ class JobManager:
                     "explanation": raw["solution"],
                     "level": levels[slot["level"]],
                     "topic": slot["topic"],
-                    "status": "VERIFIED"
-                    if job["approval"]
-                    else ("FLAGGED" if solved.get("status") != "solved" else "PENDING"),
                     "revisionCount": job["revision"] - 1,
                     "drawingLatex": drawings.get(raw["id"]),
-                    "solverKey": solved.get("answer"),
-                    "writerKey": raw["answer"],
-                    "auditNotes": _audit_notes(raw["id"] in job["manualEdits"]),
+                    **_question_verification(
+                        raw, solutions.get(raw["id"]), raw["id"] in job["manualEdits"]
+                    ),
                 }
             )
         return {
@@ -625,12 +663,11 @@ class JobManager:
             return self._package_vact(job)
         slots = job["nativeRequest"]["slots"]
         drawings = {d["question_id"]: d["latex"] for d in job["drawings"]["drawings"]}
-        solutions = {s["question_id"]: s for s in job["solutions"]["entries"]}
+        solutions = _current_solutions(job)
         retrieval = job["retrieval"]
         levels = {"NB": "NHAN_BIET", "TH": "THONG_HIEU", "VD": "VAN_DUNG", "VDC": "VAN_DUNG_CAO"}
         questions = []
         for index, (raw, slot) in enumerate(zip(job["rawQuestions"], slots, strict=True), 1):
-            solved = solutions.get(raw["id"], {})
             questions.append(
                 {
                     "id": index,
@@ -651,14 +688,11 @@ class JobManager:
                     "explanation": raw["solution"],
                     "level": levels[slot["level"]],
                     "topic": slot["topic"],
-                    "status": "VERIFIED"
-                    if job["approval"]
-                    else ("FLAGGED" if solved.get("status") != "solved" else "PENDING"),
                     "revisionCount": job["revision"] - 1,
                     "drawingLatex": drawings.get(raw["id"]),
-                    "solverKey": solved.get("answer"),
-                    "writerKey": raw["answer"],
-                    "auditNotes": _audit_notes(raw["id"] in job["manualEdits"]),
+                    **_question_verification(
+                        raw, solutions.get(raw["id"]), raw["id"] in job["manualEdits"]
+                    ),
                     "sourceReference": "; ".join(
                         e["locator"]
                         for e in retrieval["mas_intake_rag"]
@@ -764,6 +798,9 @@ class JobManager:
                 job["rawQuestions"][question_id - 1] = Question.model_validate(raw).model_dump()
             job.update(revision=job["revision"] + 1, approval=None)
             job["manualEdits"] = list(set(job["manualEdits"]) | {raw["id"]})
+            solutions = _current_solutions(job)
+            solutions.pop(raw["id"], None)
+            job.update(solutions={"entries": list(solutions.values())}, solverResultsVersion=1)
             self._refresh(job)
             self.store.save(job)
             return self.package(job_id)
@@ -779,6 +816,75 @@ class JobManager:
                     "Nội dung đề thi đã thay đổi. Thầy cô vui lòng tải lại trước khi duyệt.",
                 )
             job["approval"] = {**payload.model_dump(), "approvedAt": now()}
+            self.store.save(job)
+            return self.package(job_id)
+
+    async def verify_question(self, job_id, question_id, revision):
+        async with self.lock(job_id):
+            job = self._completed(job_id)
+            self._check_revision(job, revision)
+            if not 1 <= question_id <= len(job["rawQuestions"]):
+                raise UiError("question_not_found", "Không tìm thấy câu hỏi cần thao tác.", 404)
+            if self.settings.demo_mode and self.providers is None:
+                raise UiError(
+                    "verification_unavailable", "Chế độ demo chưa có Solver độc lập.", 503
+                )
+
+            self._verify_source(job)
+            raw = job["rawQuestions"][question_id - 1]
+            stable_id = raw["id"]
+            drawings = [d for d in job["drawings"]["drawings"] if d["question_id"] == stable_id]
+            if _is_vact(job):
+                passage = raw.get("passage_id")
+                section = vact_models.Section.model_validate(
+                    {
+                        "questions": [raw],
+                        "passages": [p for p in job.get("rawPassages", []) if p["id"] == passage],
+                    }
+                )
+                solver = VactSolverAgent()
+                data = {
+                    "part": "verification",
+                    "question_ids": [stable_id],
+                    **vact_student_view(section),
+                    "drawings": drawings,
+                }
+            else:
+                solver = SolverAgent()
+                data = {
+                    "questions": student_view([Question.model_validate(raw)]),
+                    "drawings": {"drawings": drawings},
+                }
+
+            try:
+                async with self.provider_scope() as providers:
+                    result, _ = await solver.run(providers["solver"], data)
+            except ProviderError as exc:
+                unavailable = (
+                    {"retryAfterSeconds": exc.retry_after_seconds}
+                    if exc.retry_after_seconds is not None
+                    else None
+                )
+                raise UiError(
+                    exc.code,
+                    "Solver chưa thể kiểm tra câu này. Vui lòng thử lại.",
+                    503,
+                    details=unavailable,
+                ) from exc
+            except ContractError as exc:
+                raise UiError(
+                    "invalid_solver_response",
+                    "Kết quả Solver sai định dạng. Vui lòng thử lại.",
+                    502,
+                ) from exc
+            entry = result.entries[0]
+            if entry.question_id != stable_id:
+                raise UiError(
+                    "invalid_solver_response", "Kết quả Solver chưa đúng câu cần kiểm tra.", 502
+                )
+            solutions = _current_solutions(job)
+            solutions[stable_id] = entry.model_dump()
+            job.update(solutions={"entries": list(solutions.values())}, solverResultsVersion=1)
             self.store.save(job)
             return self.package(job_id)
 
@@ -804,20 +910,26 @@ class JobManager:
                     repaired if position == index else Question.model_validate(q)
                     for position, q in enumerate(job["rawQuestions"])
                 ]
-                solutions_data = dict(job["solutions"])
+                solutions = _current_solutions(job)
+                solutions.pop(repaired.id, None)
+                solutions_data = {"entries": list(solutions.values())}
             else:
                 request = Request.model_validate(job["nativeRequest"])
+                slot = request.slots[index]
+                passage = request.rag_evidence.get(slot.id)
                 async with self.provider_scope() as providers:
                     repaired, _ = await RepairComposer().run(
                         providers["composer"],
                         {
                             "question": old,
-                            "slot": request.slots[index].model_dump(),
+                            "slot": slot.model_dump(),
                             "instruction": instruction,
-                            "reference_material": [
+                            "reference_material": [passage.text]
+                            if passage
+                            else [
                                 text
                                 for text in request.reference_material
-                                if text.startswith(f"[THPT_PART:{request.slots[index].part}]")
+                                if text.startswith(f"[THPT_PART:{slot.part}]")
                             ],
                         },
                     )
@@ -867,6 +979,7 @@ class JobManager:
                 rawQuestions=[q.model_dump() for q in questions],
                 drawings=drawings.model_dump(),
                 solutions=solutions_data,
+                solverResultsVersion=1,
                 revision=revision + 1,
                 approval=None,
             )

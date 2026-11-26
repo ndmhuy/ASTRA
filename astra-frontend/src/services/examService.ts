@@ -25,6 +25,7 @@ export interface IExamService {
   getExamPackage(jobId: string): Promise<ExamPackage>;
   regenerateQuestion(jobId: string, questionId: number, instruction?: string, revision?: number): Promise<QuestionItem>;
   updateQuestion(jobId: string, updatedQuestion: QuestionItem): Promise<void>;
+  verifyQuestion?(jobId: string, questionId: number, revision: number): Promise<void>;
   downloadExport(jobId: string, type: 'STUDENT_EXAM' | 'TEACHER_KEY' | 'MATRIX', format: ExportFormat): Promise<void>;
   approveExam?(jobId: string, pkg: ExamPackage): Promise<ExamPackage>;
   requestPreview?(jobId: string, binding: { revision: number; contentHash: string }): Promise<ExamPreviewState>;
@@ -277,7 +278,9 @@ export class MockExamService implements IExamService {
         },
         topics: ['Dao động cơ', 'Sóng cơ & Sóng âm', 'Dòng điện xoay chiều', 'Dao động & Sóng điện từ', 'Sóng ánh sáng']
       },
-      questions: structuredClone(INITIAL_MOCK_QUESTIONS).map(question => ({ ...question, examRevision: 1 }))
+      questions: structuredClone(INITIAL_MOCK_QUESTIONS).map(question => ({
+        ...question, examRevision: 1, status: 'PENDING', answerCheck: 'needs_recheck', solverKey: null,
+      }))
     };
 
     this.jobs.set(jobId, pkg);
@@ -373,11 +376,12 @@ export class MockExamService implements IExamService {
     const current = currentQuestions[index];
     const repaired: QuestionItem = {
       ...current,
-      status: 'VERIFIED',
+      status: 'PENDING',
+      answerCheck: 'needs_recheck',
       revisionCount: (current.revisionCount || 0) + 1,
-      auditNotes: `Đã tự động soạn lại theo yêu cầu: "${instruction || 'Sửa lại nội dung và đồng bộ đáp án'}". Đáp án đã được kiểm tra lại.`,
+      auditNotes: `Đã tạo lại bản mẫu theo yêu cầu: "${instruction || 'Sửa lại nội dung và đồng bộ đáp án'}".`,
       writerKey: current.key,
-      solverKey: current.key
+      solverKey: null,
     };
 
     currentQuestions[index] = repaired;
@@ -390,7 +394,14 @@ export class MockExamService implements IExamService {
     const currentQuestions = pkg.questions;
     const index = currentQuestions.findIndex((q) => q.id === updatedQuestion.id);
     if (index !== -1) {
-      currentQuestions[index] = { ...updatedQuestion };
+      currentQuestions[index] = {
+        ...updatedQuestion,
+        status: 'PENDING',
+        answerCheck: 'needs_recheck',
+        writerKey: updatedQuestion.key,
+        solverKey: null,
+        auditNotes: 'Câu đã chỉnh sửa và cần giải lại trên nội dung mới.',
+      };
       this.bumpRevision(pkg, jobId);
     }
   }
@@ -628,6 +639,14 @@ export class ApiExamService implements IExamService {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question: updatedQuestion, revision: updatedQuestion.examRevision })
+    });
+  }
+
+  async verifyQuestion(jobId: string, questionId: number, revision: number): Promise<void> {
+    await requestJson(`${this.baseUrl}/exams/${jobId}/questions/${questionId}/verify`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ revision }),
     });
   }
 

@@ -2,9 +2,12 @@
 
 import asyncio
 import json
+import re
+from decimal import Decimal, InvalidOperation
 from hashlib import sha256
 from pathlib import Path
 from time import perf_counter
+from typing import Literal
 
 from exam_baseline.core.contracts import LLMProvider
 from exam_baseline.thpt import template
@@ -22,6 +25,111 @@ from exam_baseline.thpt.runtime import ContractError, RecordingProvider
 
 def save(path: Path, data):
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+_BOOL_TRUE = frozenset({"đúng", "dung", "đ", "d", "true", "t"})
+_BOOL_FALSE = frozenset({"sai", "s", "false", "f"})
+
+
+def _parse_p1_letter(answer: str) -> str | None:
+    cleaned = answer.strip()
+    if cleaned.upper() in {"A", "B", "C", "D"}:
+        return cleaned.upper()
+    match = re.fullmatch(
+        r"(?:đáp\s*án|dap\s*an|chọn|chon)?\s*[:.]?\s*([ABCD])(?:[.):])?",
+        cleaned,
+        flags=re.IGNORECASE,
+    )
+    return match.group(1).upper() if match else None
+
+
+def _parse_p2_booleans(answer: str) -> list[bool] | None:
+    lowered = answer.casefold()
+    labeled = re.findall(
+        r"(?<![a-zà-ỹ])([a-d])\s*[):.\-=]\s*(đúng|dung|sai|true|false|đ|d|s|t|f)(?![a-zà-ỹ])",
+        lowered,
+    )
+    if labeled:
+        by_label = {label: token in _BOOL_TRUE for label, token in labeled}
+        if set(by_label) == {"a", "b", "c", "d"}:
+            return [by_label[k] for k in ("a", "b", "c", "d")]
+    tokens = re.findall(r"(?<![a-zà-ỹ])(đúng|dung|sai|true|false|đ|s|t|f)(?![a-zà-ỹ])", lowered)
+    if len(tokens) == 4:
+        return [tok in _BOOL_TRUE for tok in tokens]
+    return None
+
+
+def _parse_p3_decimal(answer: str) -> Decimal | None:
+    cleaned = answer.strip()
+    match = re.fullmatch(r"(-?\d+(?:[.,]\d+)?)(?:\s*[^\d.,\s]{1,12})?", cleaned)
+    if not match:
+        return None
+    try:
+        return Decimal(match.group(1).replace(",", "."))
+    except InvalidOperation:
+        return None
+
+
+AnswerCheck = Literal["matched", "mismatched", "needs_recheck"]
+
+
+def compare_answer(question: dict, entry: dict | None) -> tuple[AnswerCheck, dict | None]:
+    """Compare a question with its current independent solve, using its answer format."""
+    if entry is None or entry["status"] != "solved":
+        return "needs_recheck", None
+    composer_key, solver_key = question.get("answer"), entry["answer"]
+    if question.get("choices") and composer_key:
+        actual = _parse_p1_letter(solver_key)
+        if actual is None:
+            return "needs_recheck", None
+        expected = composer_key.strip().upper()
+        solver_key = actual
+    elif question.get("statements"):
+        actual = _parse_p2_booleans(solver_key)
+        expected = [statement["answer"] for statement in question["statements"]]
+        if actual is None or len(actual) != len(expected):
+            return "needs_recheck", None
+        composer_key = "".join("Đ" if flag else "S" for flag in expected)
+        solver_key = "".join("Đ" if flag else "S" for flag in actual)
+    elif composer_key:
+        actual = _parse_p3_decimal(solver_key)
+        expected = _parse_p3_decimal(composer_key)
+        if actual is None or expected is None:
+            return "needs_recheck", None
+        solver_key = solver_key.strip()
+    else:
+        return "needs_recheck", None
+    if expected == actual:
+        return "matched", None
+    return "mismatched", {
+        "question_id": question["id"],
+        "composer": composer_key,
+        "solver": solver_key,
+    }
+
+
+def compare_answers(questions, solutions) -> dict:
+    """Deterministically compare Composer keys against Blind Solver answers."""
+    by_id = {entry.question_id: entry.model_dump() for entry in solutions.entries}
+    agreed = 0
+    mismatched: list[dict] = []
+    unparsed: list[str] = []
+    for question in questions:
+        check, mismatch = compare_answer(question.model_dump(), by_id.get(question.id))
+        if check == "matched":
+            agreed += 1
+        elif mismatch is not None:
+            mismatched.append(mismatch)
+        else:
+            unparsed.append(question.id)
+
+    return {
+        "agreed_count": agreed,
+        "mismatched_count": len(mismatched),
+        "unparsed_count": len(unparsed),
+        "mismatched": mismatched,
+        "unparsed": unparsed,
+    }
 
 
 class Orchestrator:
@@ -67,13 +175,23 @@ class Orchestrator:
         )
 
     def review_data(self, request, questions, drawings, solutions, source, sections):
-        return dict(
-            matrix=request.model_dump(),
+        data = dict(
+            matrix=request.model_dump(exclude={"rag_evidence"}),
             questions=[q.model_dump() for q in questions],
             drawings=drawings.model_dump(),
             solver=solutions.model_dump(),
             student_latex=source.decode("utf-8"),
         )
+        if isinstance(request, Request) and request.rag_evidence:
+            data["rag_scope"] = {
+                qid: {
+                    "source_ids": passage.source_ids,
+                    "curriculum_unit_ids": passage.curriculum_unit_ids,
+                    "warnings": passage.warnings,
+                }
+                for qid, passage in request.rag_evidence.items()
+            }
+        return data
 
     def feedback_data(self, review, questions, sections):
         return dict(
@@ -118,6 +236,11 @@ class Orchestrator:
             final_latex=None,
             calls=calls,
         )
+        if isinstance(request, Request) and request.rag_evidence:
+            report["rag_evidence"] = {
+                question_id: passage.model_dump(exclude={"text"})
+                for question_id, passage in request.rag_evidence.items()
+            }
 
         async def call(agent, data, revision):
             report["active_stage"] = agent.role
@@ -225,6 +348,8 @@ class Orchestrator:
                 if [s.question_id for s in solutions.entries] != ids:
                     raise ValueError("Solver must cover every question in matrix order")
                 save(folder / "solver.json", solutions.model_dump())
+                agreement = compare_answers(questions, solutions)
+                report["solver_agreement"] = agreement
                 if revision == 1:
                     review = await call(
                         self.reviewer_type(),
@@ -236,6 +361,12 @@ class Orchestrator:
                     if any(s.status != "solved" for s in solutions.entries):
                         review.decision = "needs_revision"
                         review.issues.append("Solver found ambiguous or unsolvable questions")
+                    for mismatch in agreement["mismatched"]:
+                        review.decision = "needs_revision"
+                        review.issues.append(
+                            f"{mismatch['question_id']}: Composer key ({mismatch['composer']}) "
+                            f"disagrees with independent Solver ({mismatch['solver']})."
+                        )
                     save(folder / "review.json", review.model_dump())
                     if review.decision == "needs_revision":
                         feedback = self.feedback_data(review, questions, sections)

@@ -120,6 +120,11 @@ export class ExamSessions {
     }
     if (!id) return;
     const session = this.sessions.find(item => item.id === id);
+    if (session?.status === 'complete' && this.service.verifyQuestion &&
+        session.questions.some(question => !question.answerCheck)) {
+      void this.refresh(id).catch(error => this.setError(id, error));
+      return;
+    }
     if (
       session &&
       session.status === 'complete' &&

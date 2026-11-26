@@ -5,7 +5,7 @@ from typing import Literal
 
 from pydantic import Field, field_validator, model_validator
 
-from exam_baseline.core.models import Model, Text
+from exam_baseline.core.models import Identifier, Model, Text
 from exam_baseline.thpt.content import choice_latex, content_latex
 from exam_baseline.thpt.fonts import DEFAULT_FONT_PROFILE, FontProfile
 from exam_baseline.thpt.visuals import validate_table_source, visual_issues
@@ -22,21 +22,34 @@ class Slot(Model):
     objective: Text
     level: Level
     statement_levels: list[Level] = Field(default_factory=list)
+    curriculum_unit_ids: list[Identifier] = Field(default_factory=list)
+
+
+class RagPassage(Model):
+    text: Text
+    source_ids: list[str] = Field(min_length=1)
+    source_locator: Text
+    source_version: Text
+    curriculum_unit_ids: list[Identifier] = Field(default_factory=list)
+    warnings: list[dict[str, str]] = Field(default_factory=list)
 
 
 class Request(Model):
     template_id: Literal["thpt_math_v2"] = "thpt_math_v2"
     font_profile: FontProfile = DEFAULT_FONT_PROFILE
-    composer_concurrency: int = Field(default=3, ge=1, le=3, strict=True)
+    composer_concurrency: int = Field(default=1, ge=1, le=3, strict=True)
     slots: list[Slot] = Field(min_length=22, max_length=22)
     reference_material: list[Text] = Field(default_factory=list, max_length=20)
     requirements: list[Text] = Field(default_factory=list, max_length=30)
+    rag_evidence: dict[str, RagPassage] = Field(default_factory=dict)
 
     @model_validator(mode="after")
     def valid_matrix(self):
         expected = [f"{part}-{i}" for part, count in COUNTS.items() for i in range(1, count + 1)]
         if [s.id for s in self.slots] != expected:
             raise ValueError("slots must be ordered P1-1..12, P2-1..4, P3-1..6")
+        if self.rag_evidence and self.rag_evidence.keys() != set(expected):
+            raise ValueError("RAG evidence must cover each THPT slot exactly once")
         for slot in self.slots:
             if not slot.id.startswith(slot.part + "-"):
                 raise ValueError("slot part mismatch")
@@ -47,8 +60,8 @@ class Request(Model):
 
 class Statement(Model):
     text: Text
-    answer: bool = Field(strict=True)
     solution: Text
+    answer: bool = Field(strict=True)
 
     @field_validator("text", "solution")
     @classmethod
@@ -62,8 +75,8 @@ class Question(Model):
     stem: Text
     choices: dict[str, Text] = Field(default_factory=dict)
     statements: list[Statement] = Field(default_factory=list)
-    answer: str | None = None
     solution: Text
+    answer: str | None = None
     illustration_request: str | None = None
 
     @field_validator("stem", "solution")
@@ -107,8 +120,9 @@ class Section(Model):
 
 
 class MultipleChoiceQuestion(Question):
-    answer: Literal["A", "B", "C", "D"]
     choices: dict[str, Text] = Field(min_length=4, max_length=4)
+    solution: Text
+    answer: Literal["A", "B", "C", "D"]
 
 
 class TrueFalseQuestion(Question):
@@ -116,6 +130,7 @@ class TrueFalseQuestion(Question):
 
 
 class ShortAnswerQuestion(Question):
+    solution: Text
     answer: str = Field(min_length=1, max_length=4, pattern=r"^-?\d+(?:,\d+)?$")
 
 
@@ -142,13 +157,17 @@ class Illustrations(Model):
 
 class Solution(Model):
     question_id: str
-    answer: Text
     reasoning: Text
+    answer: Text
     status: Literal["solved", "ambiguous", "unsolvable"]
 
 
 class Solutions(Model):
     entries: list[Solution] = Field(min_length=22, max_length=22)
+
+
+class SingleQuestionSolutions(Solutions):
+    entries: list[Solution] = Field(min_length=1, max_length=1)
 
 
 class Review(Model):

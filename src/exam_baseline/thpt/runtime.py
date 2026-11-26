@@ -34,9 +34,14 @@ class RecordingProvider:
                 transient = exc.http_status in {429, 500, 502, 503, 504} or (
                     exc.code in {"provider_timeout", "provider_unreachable"}
                 )
-                if not transient or attempt == self.retries:
+                if (
+                    not transient
+                    or exc.code == "provider_quota_exhausted"
+                    or attempt == self.retries
+                ):
                     raise
-                await asyncio.sleep(1)
+                delay = exc.retry_after_seconds
+                await asyncio.sleep(delay if delay is not None else 1)
 
     async def _once(self, request):
         record = dict(role=self.stage, revision=self.revision, status="started")
@@ -55,6 +60,8 @@ class RecordingProvider:
         except ProviderError as exc:
             completion = exc.completion
             record.update(status="failed", error=exc.code, http_status=exc.http_status)
+            if exc.retry_after_seconds is not None:
+                record["retry_after_seconds"] = exc.retry_after_seconds
             raise
         finally:
             record["latency_ms"] = round((perf_counter() - start) * 1000)

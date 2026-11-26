@@ -511,6 +511,50 @@ def _resolve_level_policy(
     )
 
 
+def _score_curriculum_for_slot(
+    unit: dict[str, Any],
+    base_rank: int,
+    query_text: str,
+    obj_tokens: set[str],
+) -> float:
+    title_norm = normalize(str(unit.get("title") or ""))
+    chap_norm = normalize(str(unit.get("chapter_title") or ""))
+    kw_norm = normalize(" ".join(unit.get("keywords_vi") or []))
+    core_norm = f"{title_norm} {kw_norm}"
+    core_words = set(re.findall(r"[a-z0-9]+", f"{core_norm} {chap_norm}"))
+    q_words = re.findall(r"[a-z0-9]+", normalize(query_text))
+    q_bigrams = {f"{q_words[i]} {q_words[i + 1]}" for i in range(len(q_words) - 1)}
+    c_words = re.findall(r"[a-z0-9]+", core_norm)
+    c_bigrams = {f"{c_words[i]} {c_words[i + 1]}" for i in range(len(c_words) - 1)}
+    ch_words = re.findall(r"[a-z0-9]+", chap_norm)
+    ch_bigrams = {f"{ch_words[i]} {ch_words[i + 1]}" for i in range(len(ch_words) - 1)}
+    prior = max(0.0, 5.0 - base_rank * 0.75)
+    return (
+        prior
+        + 4.0 * len(q_bigrams & c_bigrams)
+        + 1.5 * len(q_bigrams & ch_bigrams)
+        + 1.5 * len(obj_tokens & core_words)
+    )
+
+
+def _score_pattern(pat: dict[str, Any], obj_tokens: set[str]) -> float:
+    score = 10.0 if pat.get("evidence_class") == "official" else 5.0
+    if obj_tokens:
+        pat_text = normalize(
+            " ".join(
+                [
+                    str(pat.get("topic") or ""),
+                    str(pat.get("construction") or ""),
+                    str(pat.get("difficulty_source") or ""),
+                ]
+            )
+        )
+        pat_words = set(re.findall(r"\w+", pat_text))
+        score += 2.0 * len(obj_tokens & pat_words)
+    score += min(int(pat.get("row_count") or 0), 10) * 0.2
+    return score
+
+
 def _score_observation(
     obs: dict[str, Any],
     obj_tokens: set[str],
@@ -547,6 +591,17 @@ def _score_observation(
     return score
 
 
+def _example_levels(example: dict[str, Any]) -> set[str]:
+    return {
+        level
+        for level in [
+            example.get("level"),
+            *(a.get("level") for a in (example.get("answers") or [])),
+        ]
+        if level
+    }
+
+
 def _retrieve_single_question(
     release: dict[str, Any],
     q_spec: MatrixQuestionSpec,
@@ -563,6 +618,7 @@ def _retrieve_single_question(
         "level": q_spec.level,
         "statement_levels": q_spec.statement_levels,
         "needs": list(q_spec.needs),
+        "curriculum_unit_ids": list(q_spec.curriculum_unit_ids),
     }
 
     matched_packs = _resolve_candidate_topic_packs(release, q_spec)
@@ -632,6 +688,37 @@ def _retrieve_single_question(
             if c["unit_id"] not in seen_curr_ids:
                 seen_curr_ids.add(c["unit_id"])
                 all_curriculum.append(c)
+
+    if q_spec.curriculum_unit_ids:
+        lessons = {
+            row["unit_id"]: row for row in release["curriculum_rows"] if row["kind"] != "chương"
+        }
+        missing_ids = [unit for unit in q_spec.curriculum_unit_ids if unit not in lessons]
+        if missing_ids:
+            gaps.append(
+                {
+                    "code": "curriculum_unit_not_found",
+                    "message": f"No verified curriculum lesson for: {', '.join(missing_ids)}.",
+                }
+            )
+        all_curriculum = [lessons[unit] for unit in q_spec.curriculum_unit_ids if unit in lessons]
+    elif all_curriculum:
+        query_for_curr = f"{q_spec.topic} {q_spec.learning_objective or ''}"
+        all_curriculum = [
+            unit
+            for _, unit in sorted(
+                enumerate(all_curriculum),
+                key=lambda item: (
+                    -_score_curriculum_for_slot(item[1], item[0], query_for_curr, obj_tokens),
+                    item[1]["unit_id"],
+                ),
+            )
+        ]
+
+    selected_patterns = sorted(
+        all_part_patterns,
+        key=lambda p: (-_score_pattern(p, obj_tokens), str(p.get("pattern_id") or "")),
+    )[:4]
 
     if not all_part_obs and not all_part_patterns and not all_part_examples:
         available_parts = sorted(
@@ -706,16 +793,42 @@ def _retrieve_single_question(
                 break
             selected_obs.extend(g_obs_sorted)
 
-        # Select P2 examples matching any of the statement levels.
-        scored_ex = sorted(
-            all_part_examples,
-            key=lambda e: (
-                -(1 if e.get("level") in needed_levels else 0),
-                -(1 if e.get("official_anchor_available") else 0),
-                e.get("example_id", ""),
-            ),
-        )
-        selected_examples = scored_ex[: req.max_examples]
+        # Backfill any requested P2 cognitive level still missing when another observation has it.
+        seen_obs_refs = {obs.get("ref") for obs in selected_obs}
+        uncovered_obs = needed_levels - {obs.get("level") for obs in selected_obs}
+        for missing_level in sorted(uncovered_obs):
+            candidates_lvl = [
+                obs
+                for obs in all_part_obs
+                if obs.get("level") == missing_level and obs.get("ref") not in seen_obs_refs
+            ]
+            if candidates_lvl:
+                best_obs = max(
+                    candidates_lvl,
+                    key=lambda o: (
+                        _score_observation(o, obj_tokens, missing_level, False),
+                        str(o.get("ref") or ""),
+                    ),
+                )
+                selected_obs.append(best_obs)
+                seen_obs_refs.add(best_obs.get("ref"))
+
+        # Prefer examples that supply levels missing from the selected sibling groups.
+        uncovered = needed_levels - {obs.get("level") for obs in selected_obs}
+        candidates = all_part_examples.copy()
+        for _ in range(min(len(candidates), req.max_examples)):
+            example = min(
+                candidates,
+                key=lambda e: (
+                    -len(_example_levels(e) & uncovered),
+                    -len(_example_levels(e) & needed_levels),
+                    -bool(e.get("official_anchor_available")),
+                    e["example_id"],
+                ),
+            )
+            selected_examples.append(example)
+            candidates.remove(example)
+            uncovered.difference_update(_example_levels(example))
 
         # Build per-statement (a, b, c, d) coverage diagnostic.
         p2_coverage = {}
@@ -725,12 +838,9 @@ def _retrieve_single_question(
                 continue
             eff_l = eff_stmts[sub_key]
             req_l = req_stmts[sub_key]
-            matching_refs = [o["ref"] for o in all_part_obs if o.get("level") == eff_l]
+            matching_refs = [o["ref"] for o in selected_obs if o.get("level") == eff_l]
             matching_ex_ids = [
-                e["example_id"]
-                for e in all_part_examples
-                if e.get("level") == eff_l
-                or any(a.get("level") == eff_l for a in (e.get("answers") or []))
+                e["example_id"] for e in selected_examples if eff_l in _example_levels(e)
             ]
             is_cov = bool(matching_refs or matching_ex_ids)
             if not is_cov:
@@ -747,8 +857,8 @@ def _retrieve_single_question(
                 {
                     "code": "p2_sublevel_incomplete",
                     "message": (
-                        f"P2 topic pack(s) do not have direct observation/example coverage for statement level(s): "
-                        f"{', '.join(missing_stmt_keys)}. Sibling P2 observations from available levels are provided."
+                        "Selected P2 evidence lacks an observation or example for level(s): "
+                        f"{', '.join(missing_stmt_keys)}."
                     ),
                 }
             )
@@ -868,7 +978,7 @@ def _retrieve_single_question(
         curriculum_knowledge=all_curriculum[: req.max_curriculum_units]
         if "knowledge" in q_spec.needs
         else [],
-        construction_patterns=all_part_patterns if "patterns" in q_spec.needs else [],
+        construction_patterns=selected_patterns if "patterns" in q_spec.needs else [],
         construction_observations=selected_obs if "patterns" in q_spec.needs else [],
         p2_statement_coverage=p2_coverage,
         examples=selected_examples if "examples" in q_spec.needs else [],
@@ -896,6 +1006,9 @@ def parse_matrix_request(payload: dict[str, Any]) -> MatrixRetrievalRequest:
         if not isinstance(q, dict):
             raise Gap("invalid_request", f"Question entry #{idx} must be a JSON object.")
         needs_raw = q.get("needs")
+        curriculum_ids = q.get("curriculum_unit_ids", [])
+        if not isinstance(curriculum_ids, list):
+            raise Gap("invalid_request", f"curriculum_unit_ids must be a list for question #{idx}.")
         spec_kwargs: dict[str, Any] = {
             "question_id": q.get("question_id") or q.get("id") or f"Q{idx:02d}",
             "part": q.get("part"),
@@ -904,6 +1017,7 @@ def parse_matrix_request(payload: dict[str, Any]) -> MatrixRetrievalRequest:
             "level": q.get("level"),
             "statement_levels": q.get("statement_levels"),
             "group_id": q.get("group_id"),
+            "curriculum_unit_ids": tuple(curriculum_ids),
         }
         if needs_raw is not None:
             if not isinstance(needs_raw, list):

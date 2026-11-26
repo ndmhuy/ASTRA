@@ -8,6 +8,7 @@ from fastapi.testclient import TestClient
 
 from exam_baseline.api.app import create_app
 from exam_baseline.config import Settings
+from exam_baseline.core.contracts import Completion
 from exam_baseline.vact import template
 
 VACT_PAYLOAD = {
@@ -118,10 +119,31 @@ def test_vact_catalog_evaluate_generate_package_edit_approve_and_export(tmp_path
     settings = Settings.for_offline().model_copy(
         update={"latex_cache_dir": Path(tmp_path) / "_tex-cache"}
     )
+
+    class Solver:
+        name = model = "offline-vact-solver"
+        parameters = {}
+
+        async def complete(self, prompt):
+            data = json.loads(prompt.user)
+            assert data["question_ids"] == ["q97"]
+            assert len(data["questions"]) == 1
+            assert data["questions"][0]["passage_id"] == "g97_99"
+            assert {"answer", "solution"}.isdisjoint(data["questions"][0])
+            assert [passage["id"] for passage in data["passages"]] == ["g97_99"]
+            assert data["passages"][0]["table"]["columns"] == ["Năm", "Thị phần"]
+            result = dict(
+                entries=[
+                    dict(question_id="q97", answer="B", reasoning="Giải độc lập.", status="solved"),
+                ]
+            )
+            return Completion(text=json.dumps(result), model=self.model)
+
     app = create_app(
         settings,
         ui_output_root=tmp_path,
         ui_runner=_offline_vact_runner,
+        pipeline_providers={"solver": Solver()},
     )
     with TestClient(app) as client:
         catalog = client.get("/api/exam-formats").json()["formats"]
@@ -172,6 +194,13 @@ def test_vact_catalog_evaluate_generate_package_edit_approve_and_export(tmp_path
         edited_pkg = edited.json()
         assert edited_pkg["revision"] == 2
         assert edited_pkg["questions"][0]["stem"] == "Câu 1 đã chỉnh sửa: $2+2=$?"
+        assert edited_pkg["questions"][0]["answerCheck"] == "needs_recheck"
+        assert edited_pkg["questions"][0]["solverKey"] is None
+        checked = client.post(
+            f"/api/exams/{job_id}/questions/97/verify", json={"revision": edited_pkg["revision"]}
+        )
+        assert checked.status_code == 200, checked.text
+        assert checked.json()["questions"][96]["answerCheck"] == "mismatched"
 
         regen = client.post(
             f"/api/exams/{job_id}/questions/1/regenerate",

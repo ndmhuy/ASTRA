@@ -7,6 +7,8 @@ from urllib.parse import urlsplit
 from pydantic import Field, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+DEFAULT_RAG_CORPUS_REF = "8b8fb7b09182b3d9d1eee0b95818027f52ab004d"
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -42,7 +44,7 @@ class Settings(BaseSettings):
     latex_compiler: Path | None = None
     latex_timeout_seconds: float = Field(default=300, gt=0, allow_inf_nan=False)
     latex_cache_dir: Path = Path("runs/latex-cache")
-    rag_corpus_ref: str = "8b8fb7b09182b3d9d1eee0b95818027f52ab004d"
+    rag_corpus_ref: str = DEFAULT_RAG_CORPUS_REF
     rag_pack_dir: Path | None = None
 
     @classmethod
@@ -50,6 +52,15 @@ class Settings(BaseSettings):
         """Validate defaults explicitly, ignoring .env and EXAM_* environment overrides."""
         defaults = {name: field.get_default() for name, field in cls.model_fields.items()}
         return cls(_env_file=None, **defaults)
+
+    def for_agent_generation(self) -> "Settings":
+        # Agent prompts include the schema and Pydantic validates dynamic question maps.
+        if (
+            urlsplit(self.base_url).hostname == "api.openai.com"
+            and self.response_format == "json_object"
+        ):
+            return self
+        return self.model_copy(update={"response_format": "json_schema"})
 
     @model_validator(mode="after")
     def complete_configuration(self):

@@ -73,11 +73,13 @@ class ApprovalRequest(PreviewRequest):
     reviewer: str = Field(min_length=1, max_length=120)
 
 
-class EditRequest(Model):
+class RevisionRequest(Model):
     revision: int = Field(ge=1)
+
+
+class EditRequest(RevisionRequest):
     question: dict
 
 
-class RegenerateRequest(Model):
-    revision: int = Field(ge=1)
+class RegenerateRequest(RevisionRequest):
     instruction: str = Field(default="Sửa câu hỏi và kiểm tra lại lời giải.", max_length=4000)

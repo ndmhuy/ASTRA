@@ -43,11 +43,13 @@ class ProviderError(Exception):
         completion: Completion | None = None,
         *,
         http_status: int | None = None,
+        retry_after_seconds: float | None = None,
     ):
         super().__init__(message)
         self.code = code
         self.completion = completion
         self.http_status = http_status
+        self.retry_after_seconds = retry_after_seconds
 
 
 class LLMProvider(Protocol):

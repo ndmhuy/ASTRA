@@ -1,6 +1,63 @@
 """Adapters converting RAG topic-pack contexts into MAS Composer reference_material and mas-intake-v1."""
 
+from hashlib import sha256
+from textwrap import shorten
 from typing import Any
+
+from .models import CONFIG
+
+
+def render_thpt_prompt_evidence(
+    ctx: dict[str, Any], used_shapes: set[str], *, variant_key: str = ""
+) -> str:
+    """Send one ranked exercise shape, preferring shapes unused in this exam."""
+    limits = CONFIG["thpt_prompt_limits"]
+    qid = ctx["question_id"]
+    part = ctx["requested"]["part"]
+    lines = [f"=== [UNTRUSTED_RAG_EVIDENCE | question_id={qid} | part={part}] ==="]
+
+    def brief(value):
+        return shorten(str(value or ""), width=limits["field_chars"], placeholder=" …")
+
+    for unit in ctx.get("curriculum_knowledge", []):
+        outcomes = unit.get("outcomes_vi") or []
+        if isinstance(outcomes, str):
+            outcomes = [outcomes]
+        summary = brief(next(iter(outcomes), ""))
+        lines.append(f"- Bài [{unit['unit_id']}]: {brief(unit.get('title'))}. {summary}")
+
+    shapes: dict[str, str] = {}
+    for pattern in ctx.get("construction_patterns", []):
+        construction = brief(pattern.get("construction"))
+        if construction:
+            shapes.setdefault(pattern.get("pattern_id") or construction, construction)
+
+    if not shapes:
+        for item in ctx.get("construction_observations", []):
+            given, task = brief(item.get("given")), brief(item.get("task"))
+            if given and task:
+                shapes.setdefault(item["ref"], f"{given} → {task}")
+        for example in ctx.get("examples", []):
+            if variation := brief(example.get("variation_guidance")):
+                shapes.setdefault(example["example_id"], variation)
+
+    if shapes:
+        pool = [key for key in shapes if key not in used_shapes] or list(shapes)
+        pool = pool[: limits["variant_pool_size"]]
+        picked = pool[0]
+        if variant_key and len(pool) > 1:
+            offset = int.from_bytes(sha256(f"{variant_key}:{qid}".encode()).digest()[:4], "big")
+            picked = pool[offset % len(pool)]
+        used_shapes.add(picked)
+        lines.append(f"- Dạng [{picked}]: {shapes[picked]}")
+
+    if mistakes := ctx.get("common_mistakes"):
+        lines.append(f"- Lỗi thường gặp: {brief(mistakes[0].get('detail'))}")
+    if warnings := ctx.get("warnings"):
+        codes = ", ".join(dict.fromkeys(warning["code"] for warning in warnings))
+        lines.append(f"- Lưu ý truy hồi: {codes}")
+    lines.append(f"=== [END_UNTRUSTED_RAG_EVIDENCE | question_id={qid}] ===")
+    return "\n".join(lines)
 
 
 def render_reference_material(ctx: dict[str, Any]) -> str:

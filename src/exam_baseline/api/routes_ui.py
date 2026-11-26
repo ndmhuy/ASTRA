@@ -14,6 +14,7 @@ from exam_baseline.ui.contracts import (
     ExamGenerateRequest,
     PreviewRequest,
     RegenerateRequest,
+    RevisionRequest,
     format_catalog,
 )
 from exam_baseline.ui.jobs import resolve_request
@@ -40,8 +41,10 @@ async def formats():
 
 
 @router.post("/exam-formats/evaluate")
-async def evaluate(payload: ExamGenerateRequest):
-    native, matrix = resolve_request(payload)
+async def evaluate(request: Request, payload: ExamGenerateRequest):
+    native, matrix = await asyncio.to_thread(
+        resolve_request, payload, settings=request.app.state.settings
+    )
     return {
         "status": "validated",
         "formatId": payload.formatId,
@@ -105,6 +108,13 @@ async def edit(request: Request, job_id: UUID, question_id: int, payload: EditRe
 async def regenerate(request: Request, job_id: UUID, question_id: int, payload: RegenerateRequest):
     return await request.app.state.ui_jobs.regenerate(
         str(job_id), question_id, payload.revision, payload.instruction
+    )
+
+
+@router.post("/exams/{job_id}/questions/{question_id}/verify")
+async def verify(request: Request, job_id: UUID, question_id: int, payload: RevisionRequest):
+    return await request.app.state.ui_jobs.verify_question(
+        str(job_id), question_id, payload.revision
     )
 
 
