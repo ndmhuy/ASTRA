@@ -1,8 +1,8 @@
 # Luồng lập kế hoạch MAS trong ASTRA
 
 Đặc tả hành vi của wheel `astra-mas` 0.1.1, từ `prepare_plan` đến
-`MasResult`. Hợp đồng I/O nằm trong `ASTRA_MAS_BUNDLE.md` ở repo và
-`ASTRA_MAS_IO_CONTRACT.md` trong ZIP bàn giao.
+`MasResult`. Các trường dữ liệu, mã lỗi và cấu hình nằm trong
+[hợp đồng I/O](ASTRA_MAS_IO_CONTRACT.md).
 
 ## A. Kiểm tra đầu vào và đọc tệp
 
