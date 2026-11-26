@@ -592,9 +592,11 @@ class JobManager:
         job.update(status="failed", error=error.payload())
         self.store.save(job)
 
-    def _save_version(self, job, change, *, question_id=None, change_id=None):
+    def _save_version(self, job, change, *, question_id=None, change_id=None, promotion=None):
         source = self._render_source(job)
-        self.store.save_version(job, source, change, question_id=question_id, change_id=change_id)
+        self.store.save_version(
+            job, source, change, question_id=question_id, change_id=change_id, promotion=promotion
+        )
 
     def _render_source(self, job):
         if _is_vact(job):
@@ -939,10 +941,20 @@ class JobManager:
                 self._completed(target_job), target, promotion=(workspace_id, job_id)
             )
 
-    async def question_change(self, job_id, question_id, revision, kind, value, change_id=None):
+    async def question_change(
+        self,
+        job_id,
+        question_id,
+        revision,
+        kind,
+        value,
+        change_id=None,
+        *,
+        workspace_id=None,
+    ):
         self._completed(job_id)
         change_id = change_id or str(uuid4())
-        signature = fingerprint([kind, question_id, revision, value])
+        signature = fingerprint([kind, question_id, revision, value, workspace_id])
         existing = self.store.begin_change(
             job_id,
             change_id,
@@ -956,6 +968,7 @@ class JobManager:
                 "beforeRevision": revision,
                 "startedAt": now(),
                 "status": "pending",
+                **({"request": "Hoàn tác thay đổi.", "undoOf": value} if kind == "undone" else {}),
             },
         )
         if existing is not None:
@@ -965,17 +978,119 @@ class JobManager:
                 return self.version(job_id, existing["afterRevision"])
             if existing["status"] == "failed":
                 error = existing["error"]
-                raise UiError(error["code"], error["message"], error.get("status", 409))
+                raise UiError(
+                    error["code"], error["message"], error.get("status", 409), error.get("details")
+                )
             raise UiError("exam_change_pending", "Yêu cầu chỉnh sửa đang được xử lý.")
         try:
+            if kind == "undone":
+                return await self._undo_question(workspace_id, job_id, revision, value, change_id)
             operation = self.edit if kind == "edited" else self.regenerate
             return await operation(job_id, question_id, revision, value, change_id=change_id)
         except (Exception, asyncio.CancelledError) as exc:
             error = {"code": "exam_change_failed", "message": "Chưa lưu được thay đổi câu hỏi."}
             if isinstance(exc, UiError):
-                error = {"code": exc.code, "message": str(exc), "status": exc.status}
+                error = {**exc.payload(), "status": exc.status}
             self.store.fail_change(job_id, change_id, error)
             raise
+
+    async def undo_change(self, workspace_id, job_id, target_id, revision, change_id=None):
+        if not self.store.owns_job(workspace_id, job_id):
+            raise UiError("exam_change_not_found", "Không tìm thấy thay đổi này.", 404)
+        target = self.store.get_change(job_id, target_id)
+        if target["status"] != "completed" or target["kind"] not in {"edited", "regenerated"}:
+            raise UiError("exam_change_not_undoable", "Thay đổi này không thể hoàn tác.")
+        return await self.question_change(
+            job_id,
+            target["questionId"],
+            revision,
+            "undone",
+            target_id,
+            change_id,
+            workspace_id=workspace_id,
+        )
+
+    @staticmethod
+    def _question_state(job, question_id):
+        raw = job["rawQuestions"][question_id - 1]
+        stable_id = raw["id"]
+        drawings = [
+            item for item in job["drawings"]["drawings"] if item["question_id"] == stable_id
+        ]
+        slot = int(stable_id.split("-")[-1]) if stable_id.startswith("P1-") else None
+        passages = [
+            passage
+            for passage in job.get("rawPassages", [])
+            if (passage.get("id") and passage["id"] == raw.get("passage_id"))
+            or (
+                slot is not None
+                and "questionRange" in passage
+                and passage["questionRange"][0] <= slot <= passage["questionRange"][1]
+            )
+        ]
+        return raw, drawings, passages
+
+    async def _undo_question(self, workspace_id, job_id, revision, target_id, change_id):
+        async with self.lock(job_id):
+            if self.store.workspace_job(workspace_id) != job_id:
+                raise UiError("stale_revision", "Thay đổi thuộc lần tạo đề khác.")
+            job = self._completed(job_id)
+            self._check_revision(job, revision)
+            if self.store.change_was_undone(job_id, target_id):
+                raise UiError("exam_change_already_undone", "Thay đổi đã được hoàn tác.")
+            target = self.store.get_change(job_id, target_id)
+            before, _ = self.store.get_version(job_id, target["beforeRevision"])
+            after, _ = self.store.get_version(job_id, target["afterRevision"])
+            number = target["questionId"]
+            original, original_drawings, original_passages = self._question_state(before, number)
+            changed, changed_drawings, changed_passages = self._question_state(after, number)
+            current, current_drawings, current_passages = self._question_state(job, number)
+            if (current, current_drawings, current_passages) != (
+                changed,
+                changed_drawings,
+                changed_passages,
+            ) or original_passages != changed_passages:
+                raise UiError(
+                    "exam_undo_conflict",
+                    "Câu hỏi hoặc ngữ liệu chung đã thay đổi từ lần chỉnh sửa này.",
+                    details={
+                        "questionId": number,
+                        "current": current["stem"],
+                        "afterChange": changed["stem"],
+                        "beforeChange": original["stem"],
+                    },
+                )
+            stable_id = original["id"]
+            job["rawQuestions"][number - 1] = original
+            job["drawings"]["drawings"] = [
+                drawing
+                for drawing in job["drawings"]["drawings"]
+                if drawing["question_id"] != stable_id
+            ] + original_drawings
+            solutions = _current_solutions(job)
+            original_solution = _current_solutions(
+                self._version_job(job, before, target["beforeRevision"])
+            )
+            solutions.pop(stable_id, None)
+            if stable_id in original_solution:
+                solutions[stable_id] = original_solution[stable_id]
+            manual = set(job["manualEdits"]) - {stable_id}
+            manual.update(item for item in before.get("manualEdits", []) if item == stable_id)
+            job.update(
+                revision=revision + 1,
+                approval=None,
+                manualEdits=sorted(manual),
+                solutions={"entries": list(solutions.values())},
+                solverResultsVersion=1,
+            )
+            self._save_version(
+                job,
+                "undone",
+                question_id=number,
+                change_id=change_id,
+                promotion=(workspace_id, job_id),
+            )
+            return self._package(job)
 
     async def edit(self, job_id, question_id, revision, value, *, change_id=None):
         async with self.lock(job_id):

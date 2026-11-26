@@ -443,6 +443,18 @@ class JobStore:
             raise UiError("exam_change_not_found", "Không tìm thấy thay đổi này.", 404)
         return json.loads(row[0])
 
+    def change_was_undone(self, job_id, change_id):
+        with self.connect() as db:
+            return (
+                db.execute(
+                    """SELECT 1 FROM exam_changes WHERE job_id=?
+                       AND json_extract(data, '$.undoOf')=?
+                       AND json_extract(data, '$.status')='completed'""",
+                    (job_id, change_id),
+                ).fetchone()
+                is not None
+            )
+
     def workspace_changes(self, workspace_id):
         self.workspace_job(workspace_id)
         with self.connect() as db:

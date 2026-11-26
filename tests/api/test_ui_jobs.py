@@ -178,6 +178,35 @@ def test_workspaces_share_drafts_link_existing_jobs_and_reject_stale_saves(tmp_p
         assert messages[1]["changeId"] == key["Idempotency-Key"]
         assert "cập nhật mới hơn" in messages[3]["content"]
         assert client.get(f"/api/exams/{job}").json()["revision"] == revision + 1
+        second_key = str(uuid4())
+        second = client.put(
+            f"/api/exams/{job}/questions/2",
+            headers={"Idempotency-Key": second_key},
+            json={"revision": revision + 1, "question": {"stem": "Sửa câu thứ hai."}},
+        ).json()
+        undo_url = f"{workspace_url}/changes/{job}/{key['Idempotency-Key']}/undo"
+        undo_key = {"Idempotency-Key": str(uuid4())}
+        undone = client.post(
+            undo_url, json={"revision": second["revision"]}, headers=undo_key
+        ).json()
+        assert undone["questions"][0]["stem"] == restored["questions"][0]["stem"]
+        assert undone["questions"][1]["stem"] == "Sửa câu thứ hai."
+        assert not undone["approved"] and undone["revision"] == second["revision"] + 1
+        assert (
+            client.post(undo_url, json={"revision": second["revision"]}, headers=undo_key).json()
+            == undone
+        )
+        later = client.put(
+            f"/api/exams/{job}/questions/2",
+            json={"revision": undone["revision"], "question": {"stem": "Sửa câu hai lần nữa."}},
+        ).json()
+        conflict = client.post(
+            f"{workspace_url}/changes/{job}/{second_key}/undo",
+            json={"revision": later["revision"]},
+        )
+        assert conflict.status_code == 409
+        assert conflict.json()["error"]["details"]["current"] == "Sửa câu hai lần nữa."
+        assert client.get(f"/api/exams/{job}").json() == later
         assert client.delete(workspace_url).status_code == 204
         assert client.get("/api/workspaces").json()["workspaces"] == []
         assert client.put(workspace_url, json=draft).status_code == 404

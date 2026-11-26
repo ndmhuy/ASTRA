@@ -13,7 +13,8 @@ import { ExamPaperView, type ExamCanvasViewMode } from './components/Workspace/L
 import type { ChatMessage, ExamRequestParams, QuestionItem } from './types/exam';
 import { QuestionEditor } from './components/QuestionEditor';
 import { ExamVersionHistory } from './components/ExamVersionHistory';
-import { examService } from './services/examService';
+import { ApiError, examService } from './services/examService';
+import { MathRenderer } from './components/MathRenderer';
 import { ExamSessions } from './state/examSessions';
 import { formatProgressStatus, formatVisualWarning } from './utils/userMessages.ts';
 import './styles/workspace.css';
@@ -55,13 +56,14 @@ export const App: React.FC = () => {
   const [historySession, setHistorySession] = useState<string | null>(null);
   const [undo, setUndo] = useState<RegenerationUndo>();
   const [undoing, setUndoing] = useState(false);
+  const [undoConflict, setUndoConflict] = useState<{ id: string; current: string; afterChange: string; beforeChange: string }>();
   const closeQuickModal = useCallback(() => setShowQuickModal(false), []);
   const active = sessions.find(session => session.id === activeId);
   const sharedId = active && !active.browserOnly && examService.workspaceLibrary ? active.id : null;
   const [recordedChat, setRecordedChat] = useState<{ id: string; messages: ChatMessage[]; signature: string }>();
   const history = examService.history;
   const canOpenHistory = Boolean(history && active?.jobId && active.package?.revision && active.status === 'complete');
-  const canUndo = history && undo && active?.id === undo.sessionId && active.jobId === undo.jobId &&
+  const canUndo = !sharedId && history && undo && active?.id === undo.sessionId && active.jobId === undo.jobId &&
     active.package?.revision === undo.revision;
   const messages = useMemo(() => {
     const recorded = recordedChat?.id === sharedId ? recordedChat.messages : [];
@@ -69,6 +71,10 @@ export const App: React.FC = () => {
       (first, second) => Date.parse(first.timestamp) - Date.parse(second.timestamp)
     );
   }, [active?.messages, recordedChat, sharedId]);
+  const latestUndo = sharedId && active?.package?.revision
+    ? [...messages].reverse().find(message => message.changeId && message.examVersion?.jobId === active.jobId &&
+        message.examVersion?.revision === active.package?.revision)
+    : undefined;
   const liveQuestions = active?.questions || [];
   const examMeta = active?.meta || null;
   const isGenerating = active?.status === 'generating';
@@ -219,6 +225,26 @@ export const App: React.FC = () => {
     finally { setUndoing(false); }
   };
 
+  const undoRecordedChange = async (message: ChatMessage) => {
+    const library = examService.workspaceLibrary;
+    const revision = active?.package?.revision;
+    if (!library || !sharedId || !revision || !message.changeId || !message.examVersion || undoing) return;
+    setUndoing(true);
+    setUndoConflict(undefined);
+    try {
+      const pkg = await library.undoChange(sharedId, message.examVersion.jobId, message.changeId, revision);
+      store.acceptPackage(sharedId, pkg.examId, pkg);
+      setViewMode('paper');
+    } catch (error) {
+      if (error instanceof ApiError && error.code === 'exam_undo_conflict' && error.details) {
+        const comparison = error.details as { current: string; afterChange: string; beforeChange: string };
+        setUndoConflict({ id: sharedId, ...comparison });
+      } else {
+        await store.handleActionError(sharedId, error);
+      }
+    } finally { setUndoing(false); }
+  };
+
   const sidebarLabel = controlsCollapsed ? 'Mở rộng thanh điều hướng' : 'Thu gọn thanh điều hướng';
 
   if (showWelcome) return <AstraWelcome onComplete={finishWelcome} />;
@@ -262,7 +288,17 @@ export const App: React.FC = () => {
                     {active.status === 'complete' ? 'Tạo đề mới trong phiên này' : active.status === 'error' ? 'Thử tạo lại' : 'Tạo đề từ yêu cầu'}
                   </button>
                 </div>}
-                <ChatHistory messages={messages} onSuggestion={value => store.setDraft(active.id, value)} onEditMessage={message => store.setDraft(active.id, message.content)} onRetractMessage={message => store.retractMessage(active.id, message.id)} onBranchMessage={message => { const branchId = store.branchAtMessage(active.id, message.id); if (branchId) setActiveId(branchId); }} />
+                {undoConflict?.id === active.id && <div className="editor-error-box" role="alert">
+                  <strong>Có xung đột khi hoàn tác. Hãy kiểm tra câu hỏi và ngữ liệu chung.</strong>
+                  <details open><summary>So sánh đề bài</summary>
+                    <div>Hiện tại: <MathRenderer content={undoConflict.current} /></div>
+                    <div>Sau thay đổi: <MathRenderer content={undoConflict.afterChange} /></div>
+                    <div>Trước thay đổi: <MathRenderer content={undoConflict.beforeChange} /></div>
+                  </details>
+                  <button type="button" className="button-secondary" onClick={() => setUndoConflict(undefined)}>Đóng</button>
+                </div>}
+                <ChatHistory messages={messages} onSuggestion={value => store.setDraft(active.id, value)} onEditMessage={message => store.setDraft(active.id, message.content)} onRetractMessage={message => store.retractMessage(active.id, message.id)} onBranchMessage={message => { const branchId = store.branchAtMessage(active.id, message.id); if (branchId) setActiveId(branchId); }}
+                  currentJobId={active.jobId} undoing={undoing} onUndoChange={sharedId && active.package?.revision ? message => void undoRecordedChange(message) : undefined} />
               </>
             ),
             right: (
@@ -336,7 +372,8 @@ export const App: React.FC = () => {
                     onExportWord={handleExportWord}
                     onExportAnswer={handleExportAnswer}
                     onShowHistory={canOpenHistory ? () => setHistorySession(active.id) : undefined}
-                    onUndoRegeneration={canUndo ? () => { void undoRegeneration(); } : undefined}
+                    onUndoRegeneration={latestUndo ? () => void undoRecordedChange(latestUndo)
+                      : canUndo ? () => void undoRegeneration() : undefined}
                     undoing={undoing}
                   />}
                   questions={liveQuestions}

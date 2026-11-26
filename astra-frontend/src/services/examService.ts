@@ -45,6 +45,7 @@ export interface SavedWorkspace extends WorkspaceDraft {
 interface WorkspaceLibrary {
   list(): Promise<{ workspaces: SavedWorkspace[] }>;
   changes(id: string): Promise<{ messages: ChatMessage[] }>;
+  undoChange(id: string, jobId: string, changeId: string, revision: number): Promise<ExamPackage>;
   save(id: string, draft: WorkspaceDraft, revision: number): Promise<{ revision: number }>;
   archive(id: string): Promise<unknown>;
   importLegacy(id: string, workspace: WorkspaceDraft & Pick<SavedWorkspace, 'createdAt' | 'jobId'>):
@@ -623,6 +624,9 @@ export class ApiExamService implements IExamService {
   readonly workspaceLibrary: WorkspaceLibrary = {
     list: () => requestJson(`${this.baseUrl}/workspaces`),
     changes: id => requestJson(`${this.baseUrl}/workspaces/${id}/changes`),
+    undoChange: (id, jobId, changeId, revision) => this.changeQuestion(
+      `workspaces/${id}/changes/${jobId}/${changeId}/undo`, 'POST', { revision },
+    ).then(pkg => ({ ...pkg, preview: normalizePreview(pkg.preview, this.baseUrl) })),
     save: (id, draft, revision) => requestJson(`${this.baseUrl}/workspaces/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },

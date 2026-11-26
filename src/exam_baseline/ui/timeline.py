@@ -1,7 +1,7 @@
 """Teacher-facing chat messages backed by saved exam changes."""
 
 
-def change_messages(change: dict) -> list[dict]:
+def change_messages(change: dict, *, undone=False) -> list[dict]:
     job_id = change["jobId"]
     change_id = change["id"]
     question = f"[Câu {change['questionId']}]"
@@ -40,9 +40,22 @@ def change_messages(change: dict) -> list[dict]:
             "recorded": True,
             **(
                 {"changeId": change_id}
-                if status == "completed" and change["kind"] != "undone"
+                if status == "completed" and change["kind"] != "undone" and not undone
                 else {}
             ),
         }
     )
     return messages
+
+
+def workspace_change_messages(changes):
+    undone = {
+        (change["jobId"], change["undoOf"])
+        for change in changes
+        if change.get("undoOf") and change["status"] == "completed"
+    }
+    return [
+        message
+        for change in changes
+        for message in change_messages(change, undone=(change["jobId"], change["id"]) in undone)
+    ]

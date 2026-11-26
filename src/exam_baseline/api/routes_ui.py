@@ -22,7 +22,7 @@ from exam_baseline.ui.contracts import (
     format_catalog,
 )
 from exam_baseline.ui.jobs import resolve_request
-from exam_baseline.ui.timeline import change_messages
+from exam_baseline.ui.timeline import workspace_change_messages
 
 router = APIRouter(prefix="/api")
 
@@ -51,7 +51,25 @@ async def workspace_versions(request: Request, workspace_id: UUID, response: Res
 def workspace_changes(request: Request, workspace_id: UUID, response: Response):
     response.headers["Cache-Control"] = "no-store"
     changes = request.app.state.ui_jobs.store.workspace_changes(str(workspace_id))
-    return {"messages": [message for change in changes for message in change_messages(change)]}
+    return {"messages": workspace_change_messages(changes)}
+
+
+@router.post("/workspaces/{workspace_id}/changes/{job_id}/{change_id}/undo")
+async def undo_workspace_change(
+    request: Request,
+    workspace_id: UUID,
+    job_id: UUID,
+    change_id: UUID,
+    payload: RevisionRequest,
+    idempotency_key: Annotated[UUID | None, Header()] = None,
+):
+    return await request.app.state.ui_jobs.undo_change(
+        str(workspace_id),
+        str(job_id),
+        str(change_id),
+        payload.revision,
+        str(idempotency_key) if idempotency_key else None,
+    )
 
 
 @router.post("/workspaces/{workspace_id}/versions/restore")
