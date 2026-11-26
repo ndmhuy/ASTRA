@@ -5,10 +5,39 @@ import json
 from hashlib import sha256
 from pathlib import Path
 
-from exam_baseline.agent.contracts import Context, Decision, Turn
+from exam_baseline.agent.contracts import INTENTS, Context, Decision, Turn, arg_schema
 from exam_baseline.agent.prompt import SYSTEM, available_now, schema, turn_text
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def provider_schema():
+    """One common argument object, followed by strict per-intent validation."""
+    full = schema()
+    arguments = {}
+    for definition in INTENTS.values():
+        for name, rule in definition["args"].items():
+            candidate = arg_schema(rule)
+            previous = arguments.get(name)
+            if previous is None:
+                arguments[name] = candidate
+            elif previous.get("enum") and not candidate.get("enum"):
+                arguments[name] = candidate
+            elif previous.get("enum") and candidate.get("enum"):
+                previous["enum"] = sorted(set(previous["enum"]) | set(candidate["enum"]))
+    full["properties"]["intents"]["items"] = {
+        "type": "object",
+        "properties": {
+            "id": {"type": "string", "enum": list(INTENTS)},
+            "args": {"type": "object", "properties": arguments, "additionalProperties": False},
+        },
+        "required": ["id", "args"],
+        "additionalProperties": False,
+    }
+    full["required"] = ["kind"]
+    for name in ("guidance", "title", "intake"):
+        full["properties"][name] = {"anyOf": [full["properties"][name], {"type": "null"}]}
+    return full
 
 
 def export():
@@ -22,6 +51,7 @@ def export():
     base = json.loads(turn_text(turn))
     for key in ("context", "message", "availableHints"):
         base.pop(key)
+    base["intentArguments"] = {name: definition["args"] for name, definition in INTENTS.items()}
     hints = {}
     for setup in (False, True):
         for status in (None, "draft", "error", "generating", "complete"):
@@ -46,6 +76,7 @@ def export():
                 "turnSchema": Turn.model_json_schema(),
                 "decisionSchema": Decision.model_json_schema(),
                 "outputSchema": schema(),
+                "providerSchema": provider_schema(),
             },
             ensure_ascii=False,
             indent=2,

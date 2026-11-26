@@ -1,14 +1,11 @@
 import Ajv from "ajv";
 import resources from "./generated.json";
 import { bounded, type Env } from "./env";
+import { parseGemini, GeminiOutputFailure } from "./gemini";
 export { Admission } from "./admission";
 
 const ajv = new Ajv({ strict: false, validateFormats: false });
 const validateTurn = ajv.compile(resources.turnSchema);
-const decisionValidator = ajv.compile(resources.decisionSchema);
-const outputValidator = ajv.compile(resources.outputSchema);
-const validateDecision = (data: unknown): boolean => decisionValidator(data);
-const validateOutput = (data: unknown): boolean => outputValidator(data);
 const MAX_BODY = 32768;
 const MAX_RESPONSE = 65536;
 const VERSION = "astra-intent-v1";
@@ -62,9 +59,9 @@ export default {
     let admission: DurableObjectStub | undefined;
     let reserved = false;
     let upstreamStatus: number | undefined;
+    let providerStarted: number | undefined;
     let attempts = 0;
     let category = "valid";
-    let stage = "admission";
     let outputMetadata: Record<string, unknown> = {};
     let controller: AbortController | undefined;
     const disconnect = () => controller?.abort();
@@ -115,7 +112,7 @@ export default {
       const upstreamUrl = "https://gateway.ai.cloudflare.com/v1/" + account + "/" + gateway +
         "/google-ai-studio/v1/models/" + model + ":generateContent";
       attempts = 1;
-      stage = "upstream_fetch";
+      providerStarted = performance.now();
       const upstream = await fetch(upstreamUrl, {
         method: "POST", redirect: "manual", signal: controller.signal,
         headers: {
@@ -131,77 +128,51 @@ export default {
             ...resources.base, availableHints: hints, context, message: turn.message,
           }) }] }],
           generationConfig: {
-            responseMimeType: "application/json", responseJsonSchema: resources.outputSchema,
+            responseMimeType: "application/json", responseJsonSchema: resources.providerSchema,
+            thinkingConfig: { thinkingLevel: "MINIMAL" },
             maxOutputTokens: tokens,
           },
         }),
       });
       upstreamStatus = upstream.status;
       if (!upstream.ok) {
-        const diagnostic = (await readBounded(upstream, MAX_RESPONSE))
-          .replaceAll(token, "[redacted]")
-          .replace(/AIza[0-9A-Za-z_-]+|Bearer\s+[^\s"\\]+|[0-9A-Za-z_-]{40,}/g, "[redacted]")
-          .slice(0, 1000);
-        console.log(JSON.stringify({ requestId: id, upstreamStatus, diagnostic }));
+        let errorCode: number | undefined;
+        let errorStatus: string | undefined;
+        try {
+          const error = JSON.parse(await readBounded(upstream, MAX_RESPONSE)).error;
+          errorCode = Number.isSafeInteger(error?.code) ? error.code : undefined;
+          errorStatus = typeof error?.status === "string" && /^[A-Z_]{1,50}$/.test(error.status)
+            ? error.status : undefined;
+        } catch { /* HTTP classification remains authoritative for malformed error bodies. */ }
+        console.log(JSON.stringify({ requestId: id, upstreamStatus, errorCode, errorStatus }));
         const category = upstream.status === 429 ? "quota" : [401,403].includes(upstream.status) ? "auth" :
           upstream.status === 404 ? "model" : [408,504].includes(upstream.status) ? "timeout" :
           upstream.status >= 500 ? "transient" : "rejected";
         throw new Failure(category, 502);
       }
-      stage = "upstream_json";
-      const payload = JSON.parse(await readBounded(upstream, MAX_RESPONSE));
-      const candidates = payload.candidates;
-      const reason = candidates?.[0]?.finishReason;
-      outputMetadata = {
-        candidateCount: Array.isArray(candidates) ? candidates.length : null,
-        finishReason: typeof reason === "string" && /^[A-Z_]{1,40}$/.test(reason) ? reason : "missing",
-        outputTokens: typeof payload.usageMetadata?.candidatesTokenCount === "number"
-          ? payload.usageMetadata.candidatesTokenCount : null,
-        thoughtTokens: typeof payload.usageMetadata?.thoughtsTokenCount === "number"
-          ? payload.usageMetadata.thoughtsTokenCount : null,
-      };
-      stage = "candidate_completion";
-      if (!Array.isArray(candidates) || candidates.length !== 1 || candidates[0].finishReason !== "STOP") {
-        throw new Failure("schema", 502);
-      }
-      const parts = candidates[0].content?.parts;
-      stage = "response_parts";
-      if (!Array.isArray(parts)) throw new Failure("schema", 502);
-      const text = parts.filter(part => !part.thought).map(part => part.text).join("");
-      outputMetadata.textBytes = new TextEncoder().encode(text).length;
-      stage = "semantic_json";
-      const decision: any = JSON.parse(text);
-      stage = "semantic_validation";
-      const semanticValid = validateDecision(decision) && validateOutput(decision);
-      if (!semanticValid ||
-          (decision.kind === "task") !== Boolean(decision.intents.length) ||
-          (decision.intake && decision.guidance) ||
-          ((decision.intake || decision.guidance) && !["answer","clarify"].includes(decision.kind))) {
-        throw new Failure("schema", 502);
-      }
+      const parsed = parseGemini(await readBounded(upstream, MAX_RESPONSE), upstream.headers.get("content-type"));
+      const decision = parsed.decision;
+      outputMetadata = parsed.diagnostics;
+      console.log(JSON.stringify({ requestId: id, ...outputMetadata }));
       return response({ schemaVersion: VERSION, clientMessageId: turn.clientMessageId, decision,
         evidence: { requestId: id, admitted: true, attempts, provider: "google-ai-studio",
           model, upstreamStatus, elapsedMs: Math.round(performance.now() - started) } });
     } catch (error) {
-      const failure = error instanceof Failure ? error :
+      if (error instanceof GeminiOutputFailure) outputMetadata = error.diagnostics;
+      const failure = error instanceof GeminiOutputFailure ? new Failure("schema", 502) :
+        error instanceof Failure ? error :
         error instanceof Error && error.name === "AbortError" ? new Failure("timeout", 504) :
         error instanceof SyntaxError ? new Failure(reserved ? "schema" : "rejected", reserved ? 502 : 400) :
         new Failure("transient", 503);
       category = failure.category;
-      if (category === "schema") {
-        const errors = stage === "semantic_validation"
-          ? decisionValidator.errors ?? outputValidator.errors ?? [] : [];
-        console.log(JSON.stringify({ requestId: id, schemaStage: stage, ...outputMetadata,
-          validationKeywords: [...new Set(errors.map(error => error.keyword))],
-          validationPaths: [...new Set(errors.map(error => error.instancePath))]
-            .filter(path => /^\/(?:intents|intake|guidance|title|kind)(?:\/[A-Za-z0-9_]+)*$/.test(path))
-            .slice(0, 8) }));
-      }
+      if (category === "schema") console.log(JSON.stringify({ requestId: id, ...outputMetadata }));
       return response({ error: failure.category, requestId: id }, failure.status);
     } finally {
       if (timer !== undefined) clearTimeout(timer);
       request.signal.removeEventListener("abort", disconnect);
       console.log(JSON.stringify({ requestId: id, admitted: reserved, attempts, upstreamStatus,
+        providerElapsedMs: providerStarted === undefined ? undefined
+          : Math.round(performance.now() - providerStarted),
         provider: attempts ? "google-ai-studio" : undefined,
         model: attempts ? env.ASTRA_AGENT_MODEL : undefined,
         category, elapsedMs: Math.round(performance.now() - started) }));

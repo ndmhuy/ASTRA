@@ -287,7 +287,102 @@
           "chat_completions_provider"
         ]
       }
-    ]
+    ],
+    "intentArguments": {
+      "OPEN_SETUP": {},
+      "HOME": {},
+      "CREATE_SESSION": {},
+      "OPEN_SESSION": {
+        "title": "string?"
+      },
+      "SET_SIDEBAR": {
+        "collapsed": "boolean"
+      },
+      "CLOSE_SETUP": {},
+      "LIST_SESSIONS": {
+        "title": "string?"
+      },
+      "DELETE_SESSION": {
+        "title": "string?"
+      },
+      "SET_VIEW": {
+        "view": "paper|review|pdf"
+      },
+      "STATUS": {},
+      "WARNINGS": {},
+      "FOCUS_QUESTION": {
+        "number": "integer",
+        "part": "string?",
+        "view": "paper|review?"
+      },
+      "FOCUS_SECTION": {
+        "part": "string"
+      },
+      "SCROLL_TOP": {},
+      "OPEN_EDITOR": {
+        "number": "integer?",
+        "part": "string?"
+      },
+      "CLOSE_EDITOR": {},
+      "VERIFY_QUESTION": {
+        "number": "integer?",
+        "part": "string?"
+      },
+      "REGENERATE_QUESTION": {
+        "number": "integer?",
+        "part": "string?",
+        "instruction": "string"
+      },
+      "RETRY_PREVIEW": {},
+      "APPROVE": {},
+      "EXPORT": {
+        "format": "pdf|tex|json"
+      },
+      "SHOW_FORMATS": {},
+      "SELECT_FORMAT": {
+        "format": "string",
+        "details": "boolean?"
+      },
+      "FORMAT_DETAILS": {
+        "format": "string?"
+      },
+      "PREPARE_GENERATION": {
+        "format": "string?",
+        "topic": "string?",
+        "count": "integer?",
+        "minutes": "integer?"
+      },
+      "ADD_NOTE": {
+        "number": "integer",
+        "part": "string?",
+        "instruction": "string"
+      },
+      "CANCEL_NOTE": {
+        "number": "integer",
+        "part": "string?"
+      },
+      "REVIEW_NOTES": {},
+      "APPLY_NOTES": {},
+      "RENAME": {
+        "title": "string"
+      },
+      "RECALL": {
+        "what": "first|format"
+      },
+      "CHAT_MESSAGE": {
+        "operation": "copy|draft|retract|branch",
+        "number": "integer"
+      },
+      "SET_DRAFT": {
+        "text": "string"
+      },
+      "PATCH_EDITOR": {
+        "number": "integer?",
+        "part": "string?",
+        "field": "stem|explanation|key|A|B|C|D|statement_a|statement_b|statement_c|statement_d|truth_a|truth_b|truth_c|truth_d|regenerate_instruction",
+        "value": "string"
+      }
+    }
   },
   "hints": {
     "[false,null,false,null]": [
@@ -2654,5 +2749,333 @@
     ],
     "additionalProperties": false
   },
-  "contractHash": "585a3095a00541f10f4138673546045ee2a18fa41df360935c3d6e87a5d8e973"
+  "providerSchema": {
+    "type": "object",
+    "properties": {
+      "kind": {
+        "type": "string",
+        "enum": [
+          "task",
+          "answer",
+          "clarify",
+          "unsupported"
+        ]
+      },
+      "intents": {
+        "type": "array",
+        "maxItems": 4,
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "enum": [
+                "OPEN_SETUP",
+                "HOME",
+                "CREATE_SESSION",
+                "OPEN_SESSION",
+                "SET_SIDEBAR",
+                "CLOSE_SETUP",
+                "LIST_SESSIONS",
+                "DELETE_SESSION",
+                "SET_VIEW",
+                "STATUS",
+                "WARNINGS",
+                "FOCUS_QUESTION",
+                "FOCUS_SECTION",
+                "SCROLL_TOP",
+                "OPEN_EDITOR",
+                "CLOSE_EDITOR",
+                "VERIFY_QUESTION",
+                "REGENERATE_QUESTION",
+                "RETRY_PREVIEW",
+                "APPROVE",
+                "EXPORT",
+                "SHOW_FORMATS",
+                "SELECT_FORMAT",
+                "FORMAT_DETAILS",
+                "PREPARE_GENERATION",
+                "ADD_NOTE",
+                "CANCEL_NOTE",
+                "REVIEW_NOTES",
+                "APPLY_NOTES",
+                "RENAME",
+                "RECALL",
+                "CHAT_MESSAGE",
+                "SET_DRAFT",
+                "PATCH_EDITOR"
+              ]
+            },
+            "args": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 600
+                },
+                "collapsed": {
+                  "type": "boolean"
+                },
+                "view": {
+                  "type": "string",
+                  "enum": [
+                    "paper",
+                    "pdf",
+                    "review"
+                  ]
+                },
+                "number": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 999
+                },
+                "part": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 600
+                },
+                "instruction": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 600
+                },
+                "format": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 600
+                },
+                "details": {
+                  "type": "boolean"
+                },
+                "topic": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 600
+                },
+                "count": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 999
+                },
+                "minutes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 999
+                },
+                "what": {
+                  "type": "string",
+                  "enum": [
+                    "first",
+                    "format"
+                  ]
+                },
+                "operation": {
+                  "type": "string",
+                  "enum": [
+                    "copy",
+                    "draft",
+                    "retract",
+                    "branch"
+                  ]
+                },
+                "text": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 600
+                },
+                "field": {
+                  "type": "string",
+                  "enum": [
+                    "stem",
+                    "explanation",
+                    "key",
+                    "A",
+                    "B",
+                    "C",
+                    "D",
+                    "statement_a",
+                    "statement_b",
+                    "statement_c",
+                    "statement_d",
+                    "truth_a",
+                    "truth_b",
+                    "truth_c",
+                    "truth_d",
+                    "regenerate_instruction"
+                  ]
+                },
+                "value": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 600
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "id",
+            "args"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "guidance": {
+        "anyOf": [
+          {
+            "type": "string",
+            "enum": [
+              "start",
+              "capabilities",
+              "remark"
+            ]
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "title": {
+        "anyOf": [
+          {
+            "type": "string",
+            "maxLength": 60
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "intake": {
+        "anyOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "mode": {
+                "enum": [
+                  "request",
+                  "structure",
+                  "capability"
+                ],
+                "title": "Mode",
+                "type": "string"
+              },
+              "family": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "thpt",
+                      "vact",
+                      "custom"
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Family"
+              },
+              "subject": {
+                "anyOf": [
+                  {
+                    "maxLength": 80,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subject"
+              },
+              "topic": {
+                "anyOf": [
+                  {
+                    "maxLength": 250,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Topic"
+              },
+              "grade": {
+                "anyOf": [
+                  {
+                    "maximum": 12,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Grade"
+              },
+              "count": {
+                "anyOf": [
+                  {
+                    "maximum": 999,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Count"
+              },
+              "minutes": {
+                "anyOf": [
+                  {
+                    "maximum": 999,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Minutes"
+              },
+              "useDefaults": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Usedefaults"
+              }
+            },
+            "required": [
+              "mode"
+            ],
+            "type": "object"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "required": [
+      "kind"
+    ],
+    "additionalProperties": false
+  },
+  "contractHash": "985bfee344ae523eab0c118e86cb951fb243bf3e484067fd0f67480d5a93597e"
 }

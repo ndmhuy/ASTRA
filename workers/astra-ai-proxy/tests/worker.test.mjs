@@ -31,6 +31,10 @@ function runtime(overrides = {}, persist = false, scriptPath = "build/index.js")
       assert.equal(request.headers.get("cf-aig-no-wholesale"), "true");
       assert.equal(request.headers.get("cf-aig-max-attempts"), "1");
       assert.equal(request.headers.has("x-goog-api-key"), false);
+      const body = await request.json();
+      assert.equal(body.generationConfig.thinkingConfig.thinkingLevel, "MINIMAL");
+      assert.deepEqual(body.generationConfig.responseJsonSchema, resources.providerSchema);
+      assert.equal(body.generationConfig.maxOutputTokens, Number(overrides.ASTRA_OUTPUT_TOKENS ?? bindings.ASTRA_OUTPUT_TOKENS));
       const reply = replies.shift();
       assert.ok(reply, "Unexpected outbound inference");
       if (reply.delay) await new Promise(resolve => setTimeout(resolve, reply.delay));
@@ -209,7 +213,7 @@ test("incomplete and invalid semantic results retain diagnostic stages and fail 
   for (const candidate of [
     {finishReason:"MAX_TOKENS",content:{parts:[{text:"{"}]}},
     {finishReason:"STOP",content:{parts:[{text:"not JSON"}]}},
-    {finishReason:"STOP",content:{parts:[{text:JSON.stringify({kind:"clarify",intents:[],guidance:null})}]}},
+    {finishReason:"STOP",content:{parts:[{text:JSON.stringify({kind:"clarify",intents:[],guidance:"invented"})}]}},
   ]) {
     const {mf,mock}=runtime();
     mock.get().intercept().reply(200,JSON.stringify({candidates:[candidate]}));
@@ -219,4 +223,73 @@ test("incomplete and invalid semantic results retain diagnostic stages and fail 
       mock.assertNoPendingInterceptors();
     } finally { await mf.dispose(); }
   }
+});
+
+test("documented Gemini envelope extraction and optional normalization", async () => {
+  const cases = [
+    {candidates:[{finishReason:"STOP",content:{role:"model",parts:[{text:JSON.stringify({
+      kind:"clarify",intake:{mode:"request",family:"thpt"},guidance:null,title:null,
+    })}]}}]},
+    {candidates:[{finishReason:"STOP",content:{parts:[
+      {thought:true,text:"fixture thought omitted"}, {text:'{"kind":"clarify",'},
+      {text:'"intents":[],"intake":{"mode":"request","family":"thpt"}}',thoughtSignature:"fixture-metadata"},
+    ]}}]},
+  ];
+  for (const body of cases) {
+    const {mf,mock}=runtime();
+    mock.get().intercept().reply(200,JSON.stringify(body));
+    try {
+      const result=await post(mf);
+      assert.equal(result.status,200);
+      const payload=await result.json();
+      assert.equal(payload.decision.intake.family,"thpt");
+      assert.deepEqual(payload.decision.intents,[]);
+      assert.equal(Object.hasOwn(payload.decision,"guidance"),false);
+    } finally {await mf.dispose();}
+  }
+});
+test("blocked, absent, empty, truncated and invalid required outputs are rejected", async () => {
+  const cases=[
+    {promptFeedback:{blockReason:"SAFETY"}},
+    {candidates:[]},
+    {candidates:[{finishReason:"STOP",content:{parts:[]}}]},
+    {candidates:[{finishReason:"STOP",content:{parts:[{thought:true,text:"private thought"}]}}]},
+    ...[
+      '{"kind":', '{}', '{"kind":"bad"}',
+      '{"kind":"task","intents":[{"id":"SET_VIEW","args":{}}]}',
+      '{"kind":"task","intents":[{"id":"SET_VIEW","args":{"view":"invented"}}]}',
+      '{"kind":"task","intents":[{"id":"STATUS","args":{"view":"paper"}}]}',
+    ].map(text=>({candidates:[{finishReason:"STOP",content:{parts:[{text}]}}]})),
+  ];
+  for(const body of cases) {
+    const {mf,mock}=runtime();
+    mock.get().intercept().reply(200,JSON.stringify(body));
+    try {assert.equal((await (await post(mf)).json()).error,"schema");}
+    finally {await mf.dispose();}
+  }
+});
+test("HTTP quota and overload stay separate from schema failures", async () => {
+  for(const [status,reason] of [[429,"quota"],[503,"transient"]]) {
+    const {mf,mock}=runtime();
+    mock.get().intercept().reply(status,JSON.stringify({error:{code:status,status:status===429?"RESOURCE_EXHAUSTED":"UNAVAILABLE",message:"private fixture must not be logged"}}));
+    try {assert.equal((await (await post(mf)).json()).error,reason);}
+    finally {await mf.dispose();}
+  }
+});
+test("all 34 existing intent contracts survive the common provider argument schema",async()=>{
+  const {mf,mock}=runtime({ASTRA_AGENT_DAILY:"40",ASTRA_GLOBAL_DAILY:"40",
+    ASTRA_IP_PER_MINUTE:"60",ASTRA_GLOBAL_PER_MINUTE:"100"});
+  const example = schema => schema.enum?.[0] ?? (schema.type==="integer"?1:schema.type==="boolean"?true:"fixture");
+  try {
+    for(const variant of resources.outputSchema.properties.intents.items.anyOf) {
+      const id=variant.properties.id.enum[0];
+      const spec=variant.properties.args;
+      const args=Object.fromEntries(spec.required.map(key=>[key,example(spec.properties[key])]));
+      mock.get().intercept().reply(200,JSON.stringify({candidates:[{finishReason:"STOP",content:{parts:[{text:JSON.stringify({kind:"task",intents:[{id,args}]})}]}}]}));
+      const result=await post(mf);
+      assert.equal(result.status,200,id);
+      assert.equal((await result.json()).decision.intents[0].id,id);
+    }
+    mock.assertNoPendingInterceptors();
+  } finally {await mf.dispose();}
 });
