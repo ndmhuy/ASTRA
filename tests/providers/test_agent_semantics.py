@@ -13,7 +13,7 @@ from exam_baseline.agent.contracts import Turn
 from exam_baseline.agent.gateway import DirectGeminiProvider
 from exam_baseline.agent.native import parse_native
 from exam_baseline.agent.provider import ProviderFailure, ProviderRouter
-from exam_baseline.agent.semantics import legacy_decision, normalize_frame
+from exam_baseline.agent.semantics import SemanticTurn, legacy_decision, normalize_frame
 from exam_baseline.agent.worker import SEMANTIC_HASH, WorkerInterpretationProvider
 from exam_baseline.api.app import create_app
 from exam_baseline.config import Settings
@@ -119,6 +119,17 @@ def test_python_accepts_shared_corpus_and_rejects_shared_unsafe_fixtures():
         if "invalidFrame" in row:
             with pytest.raises(ValueError):
                 normalize_frame(row["invalidFrame"])
+
+
+def test_structured_question_context_is_versioned_and_forbids_application_ids():
+    body = TURN.model_dump()
+    body["context"]["recentQuestion"] = {"number": 1, "part": "P1"}
+    assert SemanticTurn.model_validate(body).context.recentQuestion.number == 1
+    with pytest.raises(ValidationError):
+        Turn.model_validate(body)  # The legacy wire schema remains unchanged.
+    body["context"]["recentQuestion"]["stableId"] = "fabricated"
+    with pytest.raises(ValidationError):
+        SemanticTurn.model_validate(body)
 
 
 def test_bad_provider_json_and_incomplete_output_fail_without_fallback():

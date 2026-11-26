@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useSyncExternalStore, useCallback, useLayoutEffect, useRef } from 'react';
 import { flushSync } from 'react-dom';
-import { meaningful, redact, retrievedContext, searchSessions } from './agent/memory';
+import { meaningful, recentQuestion, redact, retrievedContext, searchSessions } from './agent/memory';
 import { interpretationUnavailable, interpret } from './agent/client';
 import { admit, execute, fastRoute, fold, mayDispatch, type Effect, type Runtime } from './agent/recipes';
 import { displayNumber, failure, previewText, resolveQuestion, sectionId, statusText, success } from './agent/examActions';
@@ -207,7 +207,7 @@ export const App: React.FC = () => {
           preview: origin?.preview?.status ?? null,
         }, controller.signal);
       if (!alive() || runtime.binding() !== binding) return;
-      const workflow = 'dialogueAct' in interpreted ? resolveSemantic(interpreted) : undefined;
+      const workflow = 'dialogueAct' in interpreted ? resolveSemantic(interpreted, recentQuestion(origin)) : undefined;
       if (workflow?.invalidateConfirmation) pending.current = null;
       if (workflow?.cancel) {
         store.setIntake(id, undefined);
@@ -271,7 +271,8 @@ export const App: React.FC = () => {
         pending.current = null;
       }
       const literalNumbers = [...fold(content).matchAll(/\b(?:cau|question|tin nhan|message)\s+(\d+)\b/g)].map(match => Number(match[1]));
-      if (intents.some(intent => typeof intent.args.number === 'number' && !literalNumbers.includes(intent.args.number))) {
+      if (intents.some(intent => typeof intent.args.number === 'number' && !literalNumbers.includes(intent.args.number) &&
+          !(workflow?.referenceTarget?.number === intent.args.number && intent.args.part === workflow.referenceTarget.part))) {
         answer('Thầy cô hãy ghi rõ số câu và phần thi để em xác định đúng câu.');
         return;
       }
@@ -413,6 +414,7 @@ export const App: React.FC = () => {
       current?.preview?.status, current?.artifactChanged,
       agentSelection?.id, agentSelection?.formats.find(format => format.id === agentSelection?.id)?.version,
       current?.intake, current?.notes,
+      current?.conversation?.questionReference,
       store.getSnapshot().map(item => [item.id, item.title])]);
   };
   const dispatch = (intent: Intent, expected?: string, message = '', messageId = '', resolved?: Intake): Effect | Promise<Effect> => {
@@ -662,11 +664,15 @@ export const App: React.FC = () => {
         if (!question || !question.stableId) return failed('Chưa xác định được câu hỏi. Thầy cô hãy ghi số câu và phần thi hoặc mở câu trong trình chỉnh sửa.');
         const label = `câu ${displayNumber(question)}${question.part ? ` (${question.part})` : ''}`;
         const target = { sessionId: current.id, jobId: current.jobId, question };
+        const revision = current.package.revision;
+        const remember = () => { if (typeof revision === 'number') flushSync(() => store.rememberQuestion(current.id, question.stableId!, current.jobId!, revision, messageId)); };
         if (intent.id === 'FOCUS_QUESTION') {
           if (editor) return failed('Hãy đóng trình chỉnh sửa trước khi chuyển tới câu hỏi.');
           const view = intent.args.view as ExamCanvasViewMode | undefined;
           if (view || viewMode === 'pdf') flushSync(() => setViewMode(view ?? 'paper'));
-          return canvas.current?.question(question.stableId) ? succeeded(`Đã chuyển đến ${label}.`) : failed('Câu hỏi chưa hiển thị trong chế độ hiện tại.');
+          if (!canvas.current?.question(question.stableId)) return failed('Câu hỏi chưa hiển thị trong chế độ hiện tại.');
+          remember();
+          return succeeded(`Đã chuyển đến ${label}.`);
         }
         if (intent.id === 'PATCH_EDITOR') {
           const field = String(intent.args.field);
@@ -684,6 +690,7 @@ export const App: React.FC = () => {
         if (intent.id === 'OPEN_EDITOR') {
           if (editor && editor.question.stableId !== question.stableId) return failed('Hãy hoàn tất hoặc đóng trình chỉnh sửa đang mở.');
           flushSync(() => setEditor(target));
+          remember();
           return succeeded(`Đã mở chỉnh sửa ${label}.`);
         }
         if (intent.id === 'VERIFY_QUESTION' && !examService.verifyQuestion) return failed('Kiểm tra lại đáp án chưa khả dụng trong chế độ hiện tại.');

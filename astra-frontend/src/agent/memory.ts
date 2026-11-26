@@ -1,6 +1,7 @@
 import type { ExamSession } from '../state/examSessions.ts';
 import type { ChatMessage } from '../types/exam.ts';
 import { fold } from './recipes.ts';
+import { displayNumber } from './examActions.ts';
 
 export type Conversation = {
   schemaVersion: 1;
@@ -9,7 +10,16 @@ export type Conversation = {
   titleOrigin: 'default' | 'auto' | 'manual' | 'legacy';
   titleSourceId?: string;
   titleQuality?: number;
+  questionReference?: { sourceId: string; jobId: string; stableId: string; revision: number };
 };
+
+export function recentQuestion(session: ExamSession | undefined) {
+  const reference = session?.conversation?.questionReference;
+  if (!session || !reference || reference.jobId !== session.jobId || reference.revision !== session.package?.revision ||
+      !session.messages.some(message => message.id === reference.sourceId && message.role === 'user')) return;
+  const matches = session.questions.filter(question => question.stableId === reference.stableId && question.examRevision === reference.revision);
+  if (matches.length === 1) return { number: displayNumber(matches[0]), ...(matches[0].part ? { part: matches[0].part } : {}) };
+}
 
 export function conversationFor(session: ExamSession): Conversation {
   if (session.conversation?.schemaVersion === 1 && Number.isInteger(session.conversation.revision) &&
@@ -60,6 +70,7 @@ export function retrievedContext(session: ExamSession, messageId: string, query:
   const format = session.intake;
   const source = format && session.messages.find(message => message.id === format.sourceId);
   return {
+    ...(recentQuestion(session) ? { recentQuestion: recentQuestion(session) } : {}),
     ...(source && format ? { dialogue: { family: format.family, subject: format.subject, missing: format.missing, phase: format.phase } } : {}),
     history: [...relevant.map(item => item.message), ...latest].map(message => (message.role === 'assistant' ? 'Trợ lý: ' : '') + scrub(message.content).slice(0, 390)).filter(Boolean),
     facts: source && format ? [

@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { ExamSessions } from '../src/state/examSessions.ts';
-import { retrievedContext } from '../src/agent/memory.ts';
+import { recentQuestion, retrievedContext } from '../src/agent/memory.ts';
 
 test('legacy migration, meaningful title, bounded facts, branch and retract', () => {
   let raw = JSON.stringify([{
@@ -52,4 +52,26 @@ test('malformed storage is preserved for recovery', () => {
   } finally {
     delete globalThis.localStorage;
   }
+});
+
+test('observed question memory is scoped to source, job and revision and is cleared in branches', () => {
+  const question = { id: 15, stableId: 'P2-03', part: 'P2', examRevision: 2 };
+  const source = { id: 'source', role: 'user', content: 'Xem câu 3 phần II', timestamp: '2026-11-27' };
+  const initial = { id: 'session', title: 'Fixture', createdAt: '2026-11-27', messages: [source],
+    questions: [question], package: { revision: 2 }, jobId: 'job', status: 'complete', draft: '' };
+  let raw = JSON.stringify([initial]);
+  globalThis.localStorage = { getItem: () => raw, setItem: (_, value) => { raw = value; } };
+  try {
+    const store = new ExamSessions({});
+    store.rememberQuestion('session', 'P2-03', 'job', 2, 'source');
+    const session = store.getSnapshot()[0];
+    assert.deepEqual(recentQuestion(session), { number: 3, part: 'P2' });
+    assert.equal(recentQuestion({ ...session, package: { revision: 3 } }), undefined);
+    assert.equal(recentQuestion({ ...session, jobId: 'other' }), undefined);
+    assert.equal(recentQuestion({ ...session, messages: [] }), undefined);
+    const branch = store.branchAtMessage('session', 'source');
+    assert.equal(store.getSnapshot().find(item => item.id === branch).conversation.questionReference, undefined);
+    store.retractMessage('session', 'source');
+    assert.equal(recentQuestion(store.getSnapshot().find(item => item.id === 'session')), undefined);
+  } finally { delete globalThis.localStorage; }
 });

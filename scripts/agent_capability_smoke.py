@@ -137,6 +137,23 @@ def observe(base):
 
         def semantic(route):
             turn = route.request.post_data_json
+            if turn["message"] == "Kiểm tra câu vừa xem fixture":
+                assert turn["context"]["recentQuestion"] == {"number": 1, "part": "P1"}
+                route.fulfill(
+                    json={
+                        "schemaVersion": "astra-semantic-v1",
+                        "clientMessageId": turn["clientMessageId"],
+                        "frame": {
+                            "schemaVersion": "astra-semantic-v1",
+                            "dialogueAct": "REQUEST",
+                            "goals": [
+                                {"goal": "VERIFY_ANSWER", "reference": "previous", "parameters": {}}
+                            ],
+                            "constraints": [],
+                        },
+                    }
+                )
+                return
             if turn["message"] == "Late context fixture":
                 held.append((route, turn))
                 return
@@ -205,7 +222,7 @@ def observe(base):
             "Đã đóng trình chỉnh sửa.",
         )
         expect(page.get_by_role("dialog")).to_have_count(0)
-        one("VERIFY_QUESTION", {"number": 1}, "Thực hiện kiểm chứng câu 1 fixture", "bằng bộ giải.")
+        one("VERIFY_QUESTION", {"number": 1}, "Kiểm tra câu vừa xem fixture", "bằng bộ giải.")
         composer.fill("Xác nhận")
         composer.press("Enter")
         expect(page.get_by_text("hai đáp án khớp nhau", exact=False)).to_be_visible()

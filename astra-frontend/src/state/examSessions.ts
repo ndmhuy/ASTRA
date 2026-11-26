@@ -282,6 +282,11 @@ export class ExamSessions {
   }
 
   setIntake(id: string, intake: Intake | undefined) { this.update(id, session => ({ ...session, intake })); }
+  rememberQuestion(id: string, stableId: string, jobId: string, revision: number, sourceId: string) {
+    this.update(id, session => session.jobId === jobId && session.package?.revision === revision &&
+      session.messages.some(message => message.id === sourceId && message.role === 'user')
+      ? { ...session, conversation: { ...touched(session), questionReference: { sourceId, stableId, jobId, revision } } } : session);
+  }
   setNotes(id: string, notes: Note[]) { this.update(id, session => ({ ...session, notes })); }
   retractMessage(id: string, messageId: string) {
     this.update(id, session => {
@@ -290,6 +295,7 @@ export class ExamSessions {
       const messages = session.messages.slice(0, index);
       const ids = new Set(messages.map(message => message.id));
       const conversation = touched(session);
+      if (conversation.questionReference && !ids.has(conversation.questionReference.sourceId)) conversation.questionReference = undefined;
       const titleLost = conversation.titleOrigin === 'auto' && conversation.titleSourceId && !ids.has(conversation.titleSourceId);
       return {
         ...session, messages,
@@ -312,6 +318,7 @@ export class ExamSessions {
     const branch: ExamSession = {
       ...source,
       conversation: { ...conversation, titleOrigin: titleLost ? 'default' : conversation.titleOrigin,
+        questionReference: undefined,
         titleSourceId: titleLost ? undefined : conversation.titleSourceId,
         titleQuality: titleLost ? undefined : conversation.titleQuality, revision: 0 },
       intake: source.intake && (source.intake.sourceIds ?? [source.intake.sourceId]).every(sourceId => ids.has(sourceId))

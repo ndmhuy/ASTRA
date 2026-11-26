@@ -33,6 +33,7 @@ export type AgentContext = {
   editor?: boolean;
   approved?: boolean;
   confirmationPending?: boolean;
+  recentQuestion?: { number: number; part?: string };
   dialogue?: {
     family?: 'thpt' | 'vact' | 'custom'; subject?: string;
     missing?: 'family' | 'subject'; phase: 'collecting' | 'selected' | 'evaluated' | 'confirmed';

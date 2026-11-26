@@ -769,5 +769,40 @@
         }
       }
     ]
+  },
+  {
+    "id": "observed-reference-followup",
+    "partition": "evaluation",
+    "scenarioFamily": "observed-reference",
+    "provenance": "Synthetic current observed question, confirmation remains in React.",
+    "initialState": {
+      "status": "complete",
+      "recentQuestion": {
+        "number": 1,
+        "part": "P1"
+      }
+    },
+    "turns": [
+      {
+        "input": "Kiểm tra câu vừa xem giúp cô.",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "REQUEST",
+          "goals": [
+            {
+              "goal": "VERIFY_ANSWER",
+              "parameters": {},
+              "reference": "previous"
+            }
+          ],
+          "constraints": []
+        },
+        "expected": {
+          "capabilities": [
+            "VERIFY_QUESTION"
+          ]
+        }
+      }
+    ]
   }
 ]

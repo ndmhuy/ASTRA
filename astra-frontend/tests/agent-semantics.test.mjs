@@ -86,3 +86,13 @@ test('a pending UI operation has a bounded observation deadline and stops depend
   assert.equal(receipts[0].status, 'unknown');
   assert.deepEqual(dispatched, ['OPEN_SETUP']);
 });
+
+test('a previous-question reference requires trusted observed state and rejects conflicting targets', () => {
+  const request = frame([{ goal: 'VERIFY_ANSWER', reference: 'previous' }]);
+  assert.equal(resolveSemantic(request).decision, undefined);
+  const result = resolveSemantic(request, { number: 3, part: 'P2' });
+  assert.deepEqual(result.decision.intents, [{ id: 'VERIFY_QUESTION', args: { number: 3, part: 'P2' } }]);
+  assert.deepEqual(result.referenceTarget, { number: 3, part: 'P2' });
+  assert.equal(request.goals[0].parameters.number, undefined);
+  assert.equal(resolveSemantic(frame([{ goal: 'VERIFY_ANSWER', reference: 'previous', parameters: { number: 5 } }]), { number: 3, part: 'P2' }).decision, undefined);
+});

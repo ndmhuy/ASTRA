@@ -41,7 +41,7 @@ for (const scenario of scenarios) {
   for (const [index, turn] of scenario.turns.entries()) {
     workflowTurns++;
     const frame = parseFrame(turn.expectedFrame);
-    const workflow = resolveSemantic(frame);
+    const workflow = resolveSemantic(frame, scenario.initialState.recentQuestion);
     const local = contextualSubject(turn.input, intake, formats);
     if (turn.expected.localSubject) {
       assert.ok(local?.intake, `${scenario.id}: pending subject must resolve locally`);

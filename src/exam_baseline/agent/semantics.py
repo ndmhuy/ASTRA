@@ -25,6 +25,12 @@ class Dialogue(Contract):
 
 class SemanticContext(Context):
     dialogue: Dialogue | None = None
+    recentQuestion: "QuestionReference | None" = None
+
+
+class QuestionReference(Contract):
+    number: Annotated[int, Field(ge=1, le=999)]
+    part: Annotated[str, StringConstraints(min_length=1, max_length=40)] | None = None
 
 
 class SemanticTurn(Turn):

@@ -5,6 +5,7 @@ import { validIntent } from './contracts.ts';
 import type { Intake } from './intake.ts';
 import type { ExamFormat } from '../types/exam.ts';
 import { fold } from './recipes.ts';
+import { sectionId } from './examActions.ts';
 
 export type GoalId = keyof typeof catalog.goals;
 export type SemanticGoal = { goal: GoalId; parameters: Intent['args']; reference?: 'current' | 'previous' | 'recent' };
@@ -58,10 +59,11 @@ export type WorkflowResolution = {
   cancel?: boolean;
   requestGeneration?: boolean;
   setupOnly?: boolean;
+  referenceTarget?: { number: number; part?: string };
 };
 const readOnly = new Set(['READ_PROGRESS', 'READ_WARNINGS', 'LIST_EXAM_FORMATS', 'RECALL_REQUIREMENTS', 'FIND_CONVERSATIONS']);
 
-export function resolveSemantic(frame: SemanticFrame): WorkflowResolution {
+export function resolveSemantic(frame: SemanticFrame, recent?: { number: number; part?: string }): WorkflowResolution {
   const invalidateConfirmation = frame.dialogueAct === 'CORRECT' || frame.dialogueAct === 'CANCEL';
   const stop = (text: string): WorkflowResolution => ({ text, invalidateConfirmation });
   // Inspect the entire turn before exposing even its first side effect.
@@ -74,8 +76,16 @@ export function resolveSemantic(frame: SemanticFrame): WorkflowResolution {
   if (frame.dialogueAct === 'OUT_OF_SCOPE') return stop('Em hỗ trợ soạn, kiểm tra và quản lý đề thi trong ASTRA.');
   if (frame.dialogueAct === 'UNSUPPORTED') return stop('Tính năng này chưa có trong ASTRA. Thầy cô có thể xem các mẫu và thao tác hiện có.');
   if (frame.dialogueAct === 'AMBIGUOUS' || !frame.goals.length) return stop('Thầy cô muốn thao tác nào trong ASTRA? Em cần thêm thông tin.');
-  const definitions = frame.goals.map(goal => catalog.goals[goal.goal]);
-  if (frame.goals.some(goal => goal.reference === 'previous')) return stop('Thầy cô muốn nói đến đề hoặc câu nào? Hãy ghi tên đề hoặc số câu và phần thi.');
+  const usesReference = frame.goals.some(goal => goal.reference === 'previous');
+  const questionGoals = ['INSPECT_QUESTION', 'EDIT_QUESTION', 'VERIFY_ANSWER', 'REGENERATE_ITEM', 'FILL_EDITOR'];
+  if (usesReference && (!recent || frame.goals.length !== 1 || !questionGoals.includes(frame.goals[0].goal) ||
+      (frame.goals[0].parameters.number !== undefined && frame.goals[0].parameters.number !== recent.number) ||
+      (frame.goals[0].parameters.part !== undefined && sectionId(String(frame.goals[0].parameters.part)) !== sectionId(recent.part ?? '')))) {
+    return stop('Thầy cô muốn nói đến đề hoặc câu nào? Hãy ghi tên đề hoặc số câu và phần thi.');
+  }
+  const goals = frame.goals.map(goal => usesReference && recent
+    ? { ...goal, parameters: { ...goal.parameters, number: recent.number, ...(recent.part ? { part: recent.part } : {}) } } : goal);
+  const definitions = goals.map(goal => catalog.goals[goal.goal]);
   if (frame.goals.some((goal, index) => !definitions[index].dialogueActs.includes(frame.dialogueAct) &&
       !(frame.dialogueAct === 'QUESTION' && (readOnly.has(goal.goal) || ['intake', 'format_info'].includes(definitions[index].resolver))))) {
     return stop('Thầy cô đang hỏi thông tin hay muốn thực hiện thao tác? Em chưa thay đổi đề.');
@@ -97,9 +107,9 @@ export function resolveSemantic(frame: SemanticFrame): WorkflowResolution {
   if (frame.constraints.includes('NO_GENERATION') && frame.goals.some(goal => goal.goal === 'APPLY_REVISION_NOTES' || goal.goal === 'REGENERATE_ITEM')) {
     return stop('Em chưa thực hiện thao tác có gọi AI. Thầy cô hãy xác định phần muốn xem hoặc sửa.');
   }
-  const intents = frame.goals.map((goal, index) => ({ id: definitions[index].capability, args: goal.parameters })) as Intent[];
+  const intents = goals.map((goal, index) => ({ id: definitions[index].capability, args: goal.parameters })) as Intent[];
   if (!intents.every(validIntent)) return stop('Thầy cô hãy bổ sung tham số hoặc chỉ rõ câu và phần thi cho yêu cầu này.');
-  return { invalidateConfirmation, decision: { kind: 'task', intents, title: frame.title } };
+  return { invalidateConfirmation, ...(usesReference && recent ? { referenceTarget: recent } : {}), decision: { kind: 'task', intents, title: frame.title } };
 }
 
 export function contextualSubject(message: string, previous: Intake | undefined, formats: ExamFormat[]): Decision | undefined {
