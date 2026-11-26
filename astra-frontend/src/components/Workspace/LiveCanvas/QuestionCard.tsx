@@ -36,6 +36,12 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, index, onE
           </button>
         )}
       </div>
+      {flagged && (
+        <p className="question-answer-warning">
+          <AlertTriangle size={16} aria-hidden="true" />
+          <span><strong>Cảnh báo lệch đáp án.</strong> Đáp án dự kiến khác kết quả giải độc lập. Thầy cô kiểm tra và sửa câu này nếu cần trước khi duyệt đề.</span>
+        </p>
+      )}
       {question.drawingLatex && <details className="question-drawing-details"><summary>Hình minh họa (xem trực quan ở mục Xem trước PDF)</summary><pre>{question.drawingLatex}</pre></details>}
       {(!question.questionType || question.questionType === 'mcq') && <div className="question-choices">
         {(['A', 'B', 'C', 'D'] as const).map(key => (
@@ -81,7 +87,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, index, onE
         <details className={`question-review ${flagged ? 'flagged' : ''}`}>
           <summary>
             {flagged ? (
-              <><AlertTriangle size={14} aria-hidden="true" /><span>Lệch đáp án · Xem chi tiết</span></>
+              <span>Xem hai đáp án để đối chiếu</span>
             ) : matched ? (
               <><CheckCircle2 size={14} aria-hidden="true" /><span>Khớp đáp án · Xem lời giải</span></>
             ) : (
@@ -91,7 +97,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, index, onE
           <div className="review-content">
             <p><strong>{matched ? 'Đáp án' : 'Đáp án dự kiến'}:</strong> {question.key}</p>
             {flagged && question.solverKey && <p><strong>Giải độc lập:</strong> {question.solverKey}</p>}
-            {!matched && <p>{(question.answerCheck && question.auditNotes) || 'Câu hỏi cần được kiểm tra trước khi sử dụng.'}</p>}
+            {!matched && !flagged && <p>{(question.answerCheck && question.auditNotes) || 'Câu hỏi cần được kiểm tra trước khi sử dụng.'}</p>}
             {question.explanation && <div className="review-explanation"><MathRenderer content={question.explanation} /></div>}
             {question.sourceReference && <p className="review-source">Nguồn: {question.sourceReference}</p>}
             {onEdit && <button type="button" className="button-secondary" onClick={onEdit}>Sửa câu hỏi</button>}
