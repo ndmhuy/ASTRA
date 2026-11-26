@@ -4,6 +4,7 @@ from uuid import uuid4
 
 from fastapi.testclient import TestClient
 
+from exam_baseline.agent import admission
 from exam_baseline.agent.contracts import VERSION, Decision, Intent
 from exam_baseline.api.app import create_app
 from exam_baseline.config import Settings
@@ -22,7 +23,9 @@ def payload(**changes):
     }
 
 
-def test_admission_replay_boundary_and_limits(tmp_path):
+def test_admission_replay_boundary_and_limits(tmp_path, monkeypatch):
+    clock = [100.0]
+    monkeypatch.setattr(admission, "monotonic", lambda: clock[0])
     calls = []
 
     async def fixture(turn):
@@ -61,7 +64,11 @@ def test_admission_replay_boundary_and_limits(tmp_path):
             == 409
         )
         assert len(calls) == 1
-        for _ in range(11):
+        for _ in range(3):
+            assert client.post(endpoint, json=payload(), headers=HEADERS).status_code == 200
+        assert client.post(endpoint, json=payload(), headers=HEADERS).status_code == 429
+        for _ in range(8):
+            clock[0] += 4.0
             assert client.post(endpoint, json=payload(), headers=HEADERS).status_code == 200
         limited = client.post(endpoint, json=payload(), headers=HEADERS)
         assert limited.status_code == 429

@@ -28,7 +28,7 @@ export function prepareParams(format: ExamFormat, args: Intent['args'], message:
     return { error: `Mẫu ${format.displayName} cố định ${format.totalQuestions} câu, ${format.durationMinutes} phút. Thầy cô muốn dùng cấu trúc này hay chọn mẫu khác?` };
   }
   const topic = typeof args.topic === 'string' ? args.topic.trim() : undefined;
-  if (topic && (!text.includes(fold(topic)) || /[\r\n\u0000-\u001f]/.test(topic))) {
+  if (topic && (!text.includes(fold(topic)) || /\p{Cc}/u.test(topic))) {
     return { error: 'Thầy cô hãy ghi rõ tên chuyên đề theo nội dung muốn ra đề.' };
   }
   if (format.id === 'vact' && topic) {

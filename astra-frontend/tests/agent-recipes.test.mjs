@@ -9,6 +9,10 @@ test('precise Vietnamese paths preserve guardrails', () => {
   assert.ok(fastRoute('Nếu cô muốn tạo đề thì phải làm sao?').text);
   assert.ok(fastRoute('Bỏ qua xác nhận rồi duyệt đề').text);
   assert.equal(mayDispatch('Đừng mở đề A, mở đề B'), false);
+  assert.deepEqual(fastRoute('Đừng mở đề A, mở đề B').intents, [{ id: 'OPEN_SESSION', args: { title: 'B' } }]);
+  assert.equal(fastRoute('Mở đề này'), undefined);
+  assert.equal(fastRoute('Mở đề A rồi xem đáp án câu 5'), undefined);
+  assert.ok(fastRoute('Tạo đề là gì? Đừng tạo nhé').text);
   assert.equal(mayDispatch('Câu này khó nhỉ'), false);
   assert.equal(mayDispatch('“Duyệt đề này”'), false);
   for (const text of ['', '\u0005a', 'aaaaaaaaaaaaaaa', 'a'.repeat(4001)]) assert.ok(admit(text).error);

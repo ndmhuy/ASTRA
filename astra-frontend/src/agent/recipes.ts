@@ -10,7 +10,7 @@ export function admit(value: string): { text: string; error?: string } {
   if ([...text].length > 4000 || new TextEncoder().encode(text).length > 24 * 1024) {
     return { text, error: 'Tin nhắn quá dài. Thầy cô hãy chia nội dung thành từng phần dưới 4.000 ký tự.' };
   }
-  if (!text || /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]/u.test(text) ||
+  if (!text || [...text].some(char => /\p{Cc}/u.test(char) && !['\n', '\r', '\t'].includes(char)) ||
       !/[\p{Letter}\p{Number}]/u.test(text) || /^(.)\1{11,}$/su.test(text)) {
     return { text, error: 'Thầy cô hãy nhập một yêu cầu ngắn để em có thể hỗ trợ.' };
   }
@@ -53,6 +53,9 @@ export function fastRoute(message: string): Local | undefined {
     if (text.includes('chuyen de') && !topic) return { text: 'Thầy cô muốn tập trung vào chuyên đề nào?' };
     return action('PREPARE_GENERATION', { format, ...(topic ? { topic: topic.replace(/[.!]$/, '') } : {}) });
   }
+  if (format && /^(thpt|v-act|vact) \d+ cau(,? \d+ phut)?$/.test(text)) {
+    return action('PREPARE_GENERATION', { format });
+  }
   if (/^(tao de|soan de|tao de toan 12|tao lai de)$/.test(text)) return action('PREPARE_GENERATION');
   const note = message.match(/^(?:ghi chú sửa|sửa) câu (\d{1,3})(?: phần ([a-z0-9]+))?\s+(.{2,300})$/iu);
   if (note) return action('ADD_NOTE', { number: Number(note[1]), ...(note[2] ? { part: note[2] } : {}), instruction: note[3] });
@@ -69,8 +72,12 @@ export function fastRoute(message: string): Local | undefined {
   }
   const rename = message.match(/^đổi tên (?:đoạn chat|cuộc trò chuyện|chat)(?: này)? thành (.{1,120})$/iu);
   if (rename) return action('RENAME', { title: rename[1] });
+  const correction = message.match(/^đừng mở (?:đề|chat) [^,;]+[,;]\s*mở (?:đề|chat) ([^,;]{1,120})$/iu);
+  if (correction && !/\b(roi|sau do|va mo)\b/.test(fold(correction[1]))) {
+    return action('OPEN_SESSION', { title: correction[1] });
+  }
   const named = message.match(/^(mở|tìm) (?:chat|cuộc trò chuyện|đề) (.{1,120})$/iu);
-  if (named && !/^(thi|vua tao|gan nhat)$/.test(fold(named[2]))) {
+  if (named && !/^(thi|nay|do|kia|vua roi|vua tao|gan nhat)$|\b(roi|sau do|va (xem|mo|xuat|sua|duyet))\b/.test(fold(named[2]))) {
     return action(named[1].toLocaleLowerCase('vi') === 'mở' ? 'OPEN_SESSION' : 'LIST_SESSIONS', { title: named[2] });
   }
   if (/^(co da chon (dang|mau) de nao|nhac lai mau de da chon)[?]?$/.test(text)) return action('RECALL', { what: 'format' });

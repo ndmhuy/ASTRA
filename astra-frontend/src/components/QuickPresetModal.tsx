@@ -5,7 +5,7 @@ import { presetParams } from '../agent/intake';
 import { getBackendHealth, getExamFormats, type BackendHealth } from '../services/examService';
 
 interface Props {
-  dialogRef?: React.Ref<HTMLDivElement>;
+  onDialogMount?: (node: HTMLDivElement | null) => void;
   title?: string;
   onStart: (params: ExamRequestParams) => void;
   onClose: () => void;
@@ -37,7 +37,7 @@ function formatSummary(format: ExamFormat): string {
   return `Môn ${format.subjects[0]} · Lớp ${format.grades[0]}`;
 }
 
-export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, dialogRef, agentSelection, onManualSelect, title = 'Tạo đề từ mẫu' }) => {
+export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, onDialogMount, agentSelection, onManualSelect, title = 'Tạo đề từ mẫu' }) => {
   const [formats, setFormats] = useState<ExamFormat[]>([]);
   const [selectedId, setSelectedId] = useState('thpt-math');
   const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
@@ -54,7 +54,9 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, dialogRef,
   useEffect(() => {
     let active = true;
     void getBackendHealth().then(info => { if (active && info) setHealth(info); });
-    if (!agentSelection) getExamFormats().then(items => { if (active) { setFormats(items); setSelectedId(items.find(item => item.available)?.id || ''); } })
+    if (!agentSelection) getExamFormats().then(items => { if (active) { setFormats(items); setSelectedId(previous =>
+        items.some(item => item.id === previous && item.available) ? previous
+          : items.find(item => item.available)?.id || ''); } })
       .catch(error => { if (active) setError(error instanceof Error ? error.message : 'Không tải được danh sách mẫu đề từ máy chủ.'); });
     return () => { active = false; };
   }, [agentSelection]);
@@ -93,8 +95,7 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, dialogRef,
       <div
         ref={node => {
           modalRef.current = node;
-          if (typeof dialogRef === 'function') dialogRef(node);
-          else if (dialogRef) dialogRef.current = node;
+          onDialogMount?.(node);
         }}
         role="dialog"
         aria-modal="true"

@@ -32,6 +32,16 @@ def serve(port: int, runs: str):
                     Intent(id="SET_SIDEBAR", args={"collapsed": True}),
                 ],
             )
+        if turn.message == "Điền đề bài câu 1 là Tính 2+2.":
+            return Decision(
+                kind="task",
+                intents=[
+                    Intent(
+                        id="PATCH_EDITOR",
+                        args={"number": 1, "field": "stem", "value": "Tính 2+2."},
+                    )
+                ],
+            )
         return Decision(kind="clarify")
 
     app = create_app(
@@ -168,6 +178,16 @@ def run_workflows(page, composer, business_writes):
             route.abort()
         elif url.endswith("/" + job):
             route.fulfill(json={**pkg, "approved": approved})
+        elif url.endswith("/questions/1") and route.request.method == "PUT":
+            request = route.request.post_data_json
+            assert request["revision"] == pkg["revision"]
+            assert request["question"]["stableId"] == "P1-01"
+            approved = False
+            pkg["revision"] = 2
+            pkg["contentHash"] = "b" * 64
+            pkg["questions"][0].update(stem=request["question"]["stem"], examRevision=2)
+            pkg["preview"].update(revision=2, contentHash=pkg["contentHash"])
+            route.fulfill(json={**pkg, "approved": approved})
         elif url.endswith("/fixture.pdf"):
             route.fulfill(content_type="application/pdf", body="%PDF-1.4")
         elif url.endswith("/approve"):
@@ -184,6 +204,14 @@ def run_workflows(page, composer, business_writes):
     expect(dialog.get_by_text("120 câu · 150 phút")).to_be_visible()
     expect(dialog.locator("input:checked")).to_have_count(1)
     expect(dialog.locator(".is-selected")).to_contain_text("V-ACT")
+    page.keyboard.press("Escape")
+
+    say("Tạo đề V-ACT")
+    expect(
+        dialog.get_by_text("Bấm “Tạo đề thi” để xác nhận gửi yêu cầu.", exact=False)
+    ).to_be_visible()
+    expect(dialog.locator(".is-selected")).to_contain_text("V-ACT")
+    assert not starts
     page.keyboard.press("Escape")
 
     say("Tạo đề THPT 15 câu, 45 phút")
@@ -246,6 +274,23 @@ def run_workflows(page, composer, business_writes):
     say("Cô đã chọn dạng đề nào?")
     expect(page.get_by_text("Mẫu gần nhất là Toán THPT", exact=False)).to_be_visible()
     assert len(starts) == 1
+    say("Điền đề bài câu 1 là Tính 2+2.")
+    expect(dialog.get_by_role("textbox", name="Đề bài")).to_have_value("Tính 2+2.")
+    assert pkg["revision"] == 1
+    dialog.get_by_role("button", name="Lưu thay đổi").click()
+    expect(dialog).to_have_count(0)
+    expect(page.locator(".question-stem").first).to_contain_text("Tính 2+2.")
+    assert pkg["revision"] == 2
+    say("Xuất JSON")
+    expect(page.get_by_text("Phiên bản hiện tại cần được phê duyệt", exact=False)).to_be_visible()
+
+    page.get_by_role("button", name="Tạo đề mới").click()
+    page.get_by_role("button", name="Soạn từ mẫu").click()
+    dialog.get_by_text("120 câu · 150 phút").click()
+    dialog.get_by_role("button", name="Tạo đề thi").click()
+    expect(dialog).to_have_count(0)
+    expect(page.get_by_text("Đề thử fixture", exact=True).first).to_be_visible()
+    assert [item["formatId"] for item in starts] == ["thpt-math", "vact"]
 
 
 def main():

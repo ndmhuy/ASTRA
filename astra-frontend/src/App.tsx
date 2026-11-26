@@ -17,7 +17,7 @@ import { ModernChatBar } from './components/Workspace/ChatPane/ModernChatBar';
 import { CanvasHeader } from './components/Workspace/LiveCanvas/CanvasHeader';
 import { ExamPaperView, type ExamCanvasViewMode, type ExamPaperControls } from './components/Workspace/LiveCanvas/ExamPaperView';
 import type { ExamFormat, ExamRequestParams, QuestionItem } from './types/exam';
-import { QuestionEditor } from './components/QuestionEditor';
+import { QuestionEditor, type QuestionEditorControls } from './components/QuestionEditor';
 import { evaluateExamFormat, examService, getExamFormats } from './services/examService';
 import { prepareParams } from './agent/intake';
 import { noteLabel, type Note } from './agent/notes';
@@ -53,6 +53,7 @@ export const App: React.FC = () => {
   const [admissionError, setAdmissionError] = useState('');
   const pending = useRef<Confirmation | null>(null);
   const canvas = useRef<ExamPaperControls>(null);
+  const editorControls = useRef<QuestionEditorControls>(null);
   const editorBusy = useRef(new Set<string>());
   const [agentOpenedPdf, setAgentOpenedPdf] = useState(false);
   const presetDialog = useRef<HTMLDivElement>(null);
@@ -167,7 +168,7 @@ export const App: React.FC = () => {
         const prepared = pending.current;
         pending.current = null;
         if (!local.confirm) {
-          answer(prepared ? 'Đã hủy thao tác đang chờ. Công việc đã gửi vẫn tiếp tục.' : 'Hiện chưa có tác vụ trò chuyện đang chờ.');
+          answer(prepared ? 'Đã hủy yêu cầu đang chờ xác nhận.' : 'Hiện chưa có tác vụ trò chuyện đang chờ.');
         } else if (!prepared || prepared.workspaceId !== id) {
           answer('Hiện chưa có thao tác nào đang chờ xác nhận.');
         } else if (prepared.expires < Date.now() || prepared.binding !== runtime.binding()) {
@@ -210,6 +211,12 @@ export const App: React.FC = () => {
         answer('Thầy cô hãy ghi rõ số câu và phần thi để em xác định đúng câu.');
         return;
       }
+      const literalPart = fold(content).match(/\bcau\s+(\d+)\s+(?:o\s+)?phan\s+(i{1,3}|[123]|p[123]|tv|ta|to|logic|science)\b/);
+      if (literalPart && decision.intents.some(intent => intent.args.number === Number(literalPart[1]) &&
+          typeof intent.args.part === 'string' && sectionId(intent.args.part) !== sectionId(literalPart[2]))) {
+        answer('Phần thi trong thao tác chưa khớp yêu cầu. Thầy cô hãy ghi rõ phần và số câu.');
+        return;
+      }
       const receipts = await execute(decision.intents, runtime, binding, alive, content, messageId);
       if (!alive()) return;
       const stopped = receipts.length < decision.intents.length;
@@ -236,7 +243,7 @@ export const App: React.FC = () => {
     const navigation = quick && 'intents' in quick && !options.searchWeb && !options.attachedFiles.length
       ? quick.intents[0] : undefined;
     if (navigation && ['HOME', 'SET_SIDEBAR', 'OPEN_SESSION'].includes(navigation.id)) {
-      const effect = dispatch(navigation) as Effect;
+      const effect = dispatch(navigation, undefined, admission.text) as Effect;
       if (effect.status === 'failed') setAdmissionError(effect.text);
       else setLandingDraft('');
       return;
@@ -366,7 +373,12 @@ export const App: React.FC = () => {
       }
       case 'OPEN_SESSION': {
         const title = typeof intent.args.title === 'string' ? fold(intent.args.title) : '';
-        const eligible = store.getSnapshot().filter(item => item.id !== current?.id || title);
+        if (/^(nay|do|kia)$/.test(title)) return failed('Thầy cô hãy ghi tên của đề muốn mở.');
+        if (!title && !/\b(vua tao|vua roi|gan nhat|moi nhat|recent|latest)\b/.test(fold(message))) {
+          return failed('Thầy cô muốn mở đề nào trong tủ đề?');
+        }
+        const eligible = store.getSnapshot().filter(item => title || item.id !== current?.id || item.jobId ||
+          item.messages.filter(entry => entry.role === 'user').length > 1);
         const matches = title ? searchSessions(eligible, title)
           : eligible.slice().sort((a, b) => b.createdAt.localeCompare(a.createdAt));
         const target = matches[0];
@@ -551,6 +563,7 @@ export const App: React.FC = () => {
         return viewMode !== 'pdf' && canvas.current?.top() ? succeeded('Đã cuộn lên đầu đề.') : failed('Hãy mở trang đề thi trước.');
       case 'FOCUS_QUESTION':
       case 'OPEN_EDITOR':
+      case 'PATCH_EDITOR':
       case 'VERIFY_QUESTION':
       case 'REGENERATE_QUESTION': {
         if (!current?.jobId || current.status !== 'complete' || !current.package || showQuickModal) return failed('Chỉ có thể thao tác với câu hỏi trong đề đã tạo xong.');
@@ -564,6 +577,19 @@ export const App: React.FC = () => {
           if (view || viewMode === 'pdf') flushSync(() => setViewMode(view ?? 'paper'));
           return canvas.current?.question(question.stableId) ? succeeded(`Đã chuyển đến ${label}.`) : failed('Câu hỏi chưa hiển thị trong chế độ hiện tại.');
         }
+        if (intent.id === 'PATCH_EDITOR') {
+          const field = String(intent.args.field);
+          const value = String(intent.args.value);
+          if (!fold(message).includes(fold(value)) || redact(value) !== value) {
+            return failed('Thầy cô hãy ghi chính xác nội dung muốn điền vào câu hỏi.');
+          }
+          if (editor && editor.question.stableId !== question.stableId) return failed('Thầy cô hãy hoàn tất câu đang mở trước.');
+          if (!editor) flushSync(() => setEditor(target));
+          let patched = false;
+          flushSync(() => { patched = editorControls.current?.patch(field, value) ?? false; });
+          return patched ? succeeded(`Đã điền bản nháp cho ${label}. Thầy cô hãy kiểm tra và bấm nút trong trình chỉnh sửa để tiếp tục.`)
+            : failed('Nội dung này không phù hợp với trường của câu hỏi đang mở.');
+        }
         if (intent.id === 'OPEN_EDITOR') {
           if (editor && editor.question.stableId !== question.stableId) return failed('Hãy hoàn tất hoặc đóng trình chỉnh sửa đang mở.');
           flushSync(() => setEditor(target));
@@ -571,6 +597,10 @@ export const App: React.FC = () => {
         }
         if (intent.id === 'VERIFY_QUESTION' && !examService.verifyQuestion) return failed('Kiểm tra lại đáp án chưa khả dụng trong chế độ hiện tại.');
         const verify = intent.id === 'VERIFY_QUESTION';
+        if (!verify && (typeof intent.args.instruction !== 'string' ||
+            !fold(message).includes(fold(intent.args.instruction)) || redact(intent.args.instruction) !== intent.args.instruction)) {
+          return failed('Thầy cô hãy ghi chính xác yêu cầu muốn dùng để tạo lại câu hỏi.');
+        }
         if (!verify && current.package.blueprint.examType === 'DGNL_DHQG') return failed('V-ACT hỗ trợ sửa trực tiếp và kiểm tra đáp án. Tạo lại từng câu hiện chỉ có cho Toán THPT.');
         return prepare(verify
           ? `Kiểm tra lại đáp án ${label} bằng bộ giải. Thao tác dùng lượt gọi AI.`
@@ -843,14 +873,14 @@ export const App: React.FC = () => {
       {showQuickModal && (
         <QuickPresetModal
           title={configureId ? 'Thiết lập đề theo yêu cầu' : 'Tạo đề từ mẫu'}
-          dialogRef={presetDialog}
+          onDialogMount={node => { presetDialog.current = node; }}
           agentSelection={agentSelection}
           onManualSelect={() => { pending.current = null; setAgentSelection(undefined); }}
           onStart={handleQuickStart}
           onClose={closeQuickModal}
         />
       )}
-      {editor && <QuestionEditor question={editor.question} onClose={() => setEditor(null)}
+      {editor && <QuestionEditor controlsRef={editorControls} question={editor.question} onClose={() => setEditor(null)}
         onVerify={examService.verifyQuestion && editor.question.examRevision !== undefined ? async () => {
           await editQuestion(editor, 'verify');
           if (activeRef.current === editor.sessionId) setViewMode('review');

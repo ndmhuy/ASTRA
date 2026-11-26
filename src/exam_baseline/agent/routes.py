@@ -65,7 +65,7 @@ def create_agent_router(interpreter: Interpreter | None = None) -> APIRouter:
                 )
                 admission.finish(peer, payload, fingerprint, decision)
             finally:
-                admission.active.pop(payload.workspaceId, None)
+                admission.leave(peer, payload)
         return JSONResponse(
             {
                 "schemaVersion": VERSION,
