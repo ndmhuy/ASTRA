@@ -67,6 +67,19 @@ def test_structured_output_sends_request_schema_without_mutating_defaults():
     assert invoke(handler, settings(response_format="json_schema")).text == "{}"
 
 
+def test_luna_generation_keeps_openai_json_mode_and_completion_budget():
+    def handler(request):
+        assert request.url == "https://api.openai.com/v1/chat/completions"
+        data = json.loads(request.content)
+        assert data["model"] == "gpt-6-luna"
+        assert data["response_format"] == {"type": "json_object"}
+        assert data["max_completion_tokens"] == 16384
+        return httpx.Response(200, json=envelope(model="gpt-6-luna"))
+
+    config = settings(max_output_tokens=16384).model_copy(update={"model": "gpt-6-luna"})
+    assert invoke(handler, config.for_agent_generation()).model == "gpt-6-luna"
+
+
 def test_tool_schema_mode_round_trips_full_schema_as_json_arguments():
     def handler(request):
         data = json.loads(request.content)

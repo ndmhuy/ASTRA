@@ -40,8 +40,10 @@ async def formats():
 
 
 @router.post("/exam-formats/evaluate")
-async def evaluate(payload: ExamGenerateRequest):
-    native, matrix = resolve_request(payload)
+async def evaluate(request: Request, payload: ExamGenerateRequest):
+    native, matrix = await asyncio.to_thread(
+        resolve_request, payload, settings=request.app.state.settings
+    )
     return {
         "status": "validated",
         "formatId": payload.formatId,

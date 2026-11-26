@@ -1,14 +1,19 @@
 """Exercise the real THPT agents with explicit replay providers, never paid models."""
 
 import json
+import subprocess
 import time
 from pathlib import Path
 
+import pytest
 from fastapi.testclient import TestClient
 
 from exam_baseline.api.app import create_app
 from exam_baseline.config import Settings
 from exam_baseline.core.contracts import Completion, ProviderError
+from exam_baseline.thpt.rag import DEFAULT_CORPUS_REF
+from rag_workflow import retrieve_exam_context
+from tests.paths import ROOT
 from tests.thpt.test_generation import Scripted
 
 PAYLOAD = {
@@ -25,6 +30,9 @@ PAYLOAD = {
 
 
 def retrieval(matrix):
+    def evidence(question):
+        return f"PRIVATE_BANK_KEY question_id={question['question_id']} |"
+
     return {
         "status": "success",
         "gaps": [],
@@ -32,6 +40,15 @@ def retrieval(matrix):
         "question_contexts": [
             {
                 "question_id": q["question_id"],
+                "status": "ready_with_warnings",
+                "requested": {
+                    **q,
+                    "statement_levels": q.get("statement_levels"),
+                },
+                "curriculum_knowledge": [
+                    {"unit_id": uid} for uid in q.get("curriculum_unit_ids", [])
+                ],
+                "reference_material_text": evidence(q),
                 "warnings": [
                     {"code": "teacher_review_pending", "message": "Synthetic test evidence"}
                 ],
@@ -44,7 +61,10 @@ def retrieval(matrix):
                 "question_id": q["question_id"],
                 "subject": "Toán",
                 "locator": "synthetic-fixture",
-                "text": f"PRIVATE_BANK_KEY {q['question_id']}",
+                "role": "content_support",
+                "source_version": "test-fixture",
+                "topic_ids": ["test-fixture-topic"],
+                "text": evidence(q),
             }
             for q in matrix["questions"]
         ],
@@ -99,8 +119,9 @@ def test_retrieval_agents_teacher_approval_export_edit_and_reconnect(tmp_path):
         assert len(providers["reviewer"].calls) == 1
         assert all("PRIVATE_BANK_KEY" not in json.dumps(call) for call in providers["solver"].calls)
         for call in providers["composer"].calls:
-            assert len(call["reference_material"]) == 1
-            assert call["reference_material"][0].startswith(f"[THPT_PART:{call['part']}]")
+            assert call["reference_material"] == [
+                f"PRIVATE_BANK_KEY question_id={slot['id']} |" for slot in call["slots"]
+            ]
         export_url = f"/api/exams/{job}/export?type=STUDENT_EXAM&format=tex"
         assert client.get(export_url).status_code == 409
         approval = {
@@ -133,6 +154,50 @@ def test_retrieval_agents_teacher_approval_export_edit_and_reconnect(tmp_path):
     with TestClient(restarted) as client:
         assert client.get(f"/api/exams/{job}").json()["revision"] == package["revision"] + 1
         assert '"status": "completed"' in client.get(f"/api/exams/{job}/events").text
+
+
+def test_topic_prompt_uses_pinned_slot_evidence_in_web_job(tmp_path, monkeypatch):
+    if subprocess.run(
+        ["git", "cat-file", "-e", DEFAULT_CORPUS_REF], cwd=ROOT, capture_output=True
+    ).returncode:
+        pytest.skip("Fetch the pinned corpus to run the web integration test")
+    monkeypatch.chdir(ROOT)
+    app, providers = fixture_app(
+        tmp_path,
+        retriever=lambda matrix: retrieve_exam_context(
+            matrix, ref=DEFAULT_CORPUS_REF, repo=ROOT
+        ).to_dict(),
+    )
+    scoped = {**PAYLOAD, "prompt": "Tạo đề Toán THPT\nChuyên đề: đạo hàm và tích phân lớp 11-12"}
+    with TestClient(app) as client:
+        preview = client.post("/api/exam-formats/evaluate", json=scoped)
+        assert preview.status_code == 200, preview.text
+        spec = preview.json()["retrievalMatrix"]
+        assert len(spec["questions"]) == 22
+        assert all(slot["curriculum_unit_ids"] for slot in spec["questions"])
+
+        response = client.post(
+            "/api/exams/generate", json=scoped, headers={"Idempotency-Key": "scoped"}
+        )
+        assert response.status_code == 202
+        job_id = response.json()["jobId"]
+        assert (status := wait(client, job_id))["status"] == "completed", status
+        package = client.get(f"/api/exams/{job_id}").json()
+        assert len(package["questions"]) == 22
+        assert package["provenance"]["corpus_snapshot"] == DEFAULT_CORPUS_REF
+        for call in providers["composer"].calls:
+            assert call["reference_exam"] == ""
+            assert len(call["reference_material"]) == len(call["slots"])
+            for slot, evidence in zip(call["slots"], call["reference_material"], strict=True):
+                assert f"question_id={slot['id']} |" in evidence
+        assert len(providers["reviewer"].calls) == 1
+
+        outside = {**PAYLOAD, "prompt": "Chuyên đề: số phức lớp 12"}
+        rejected = client.post(
+            "/api/exams/generate", json=outside, headers={"Idempotency-Key": "outside"}
+        )
+        assert rejected.status_code == 422
+        assert rejected.json()["error"]["code"] == "retrieval_gap"
 
 
 def test_invalid_scope_idempotency_conflict_and_retrieval_gaps(tmp_path):

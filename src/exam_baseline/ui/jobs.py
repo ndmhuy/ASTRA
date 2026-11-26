@@ -2,6 +2,7 @@
 
 import asyncio
 import json
+import re
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from hashlib import sha256
@@ -10,12 +11,18 @@ from pathlib import Path
 import httpx
 
 from exam_baseline.core.contracts import ProviderError
-from exam_baseline.intake import encode_thpt_retrieval
 from exam_baseline.providers.chat_completions import ChatCompletionsProvider
 from exam_baseline.thpt.agents import QUESTION_FORMAT, Agent, IllustratorAgent, SolverAgent
 from exam_baseline.thpt.content import choice_latex
-from exam_baseline.thpt.models import Illustrations, Question, Request, Slot
+from exam_baseline.thpt.models import Illustrations, Question, Request
 from exam_baseline.thpt.orchestrator import Orchestrator
+from exam_baseline.thpt.planner import plan_request_from_prompt
+from exam_baseline.thpt.rag import (
+    RagHandoffError,
+    bind_retrieval,
+    default_request,
+    retrieval_matrix,
+)
 from exam_baseline.thpt.rendering import render, student_view
 from exam_baseline.thpt.runtime import ContractError
 from exam_baseline.thpt.visuals import visual_issues
@@ -28,7 +35,8 @@ from exam_baseline.vact import models as vact_models
 from exam_baseline.vact import template as vact_template
 from exam_baseline.vact.orchestrator import Orchestrator as VactOrchestrator
 from exam_baseline.vact.rendering import render as vact_render
-from rag_workflow.matrix_retriever import default_toan_thpt_matrix, retrieve_exam_context
+from rag_workflow.matrix_retriever import retrieve_exam_context
+from rag_workflow.models import Gap, MatrixRetrievalResponse
 
 VACT_SLOT_SPEC = {
     ("TV", "single"): ("Tiếng Việt", "Đọc hiểu và sử dụng kiến thức để chọn một phương án đúng"),
@@ -176,6 +184,8 @@ def default_vact_slots() -> list[vact_models.Slot]:
 
 def resolve_request(
     payload: ExamGenerateRequest,
+    *,
+    settings=None,
 ) -> tuple[Request | vact_models.Request, dict | None]:
     if payload.formatId == "vact":
         request = vact_models.Request(
@@ -183,43 +193,25 @@ def resolve_request(
             requirements=[payload.prompt] if payload.prompt else [],
         )
         return request, None
-    matrix = default_toan_thpt_matrix()
-    counters = dict.fromkeys(("P1", "P2", "P3"), 0)
-    slots = []
-    for question in matrix["questions"]:
-        part = question["part"]
-        counters[part] += 1
-        question["question_id"] = f"{part}-{counters[part]}"
-        slots.append(
-            Slot(
-                id=question["question_id"],
-                part=part,
-                topic=question["topic"],
-                objective=question["learning_objective"],
-                level=question.get("level") or "TH",
-                statement_levels=list(question.get("statement_levels", {}).values()),
+    scope = re.search(r"^[ \t]*chuyên đề[ \t]*:[ \t]*(\S[^\r\n]*)", payload.prompt, re.I | re.M)
+    if scope and payload.slots is None and settings is not None and not settings.demo_mode:
+        try:
+            request = plan_request_from_prompt(
+                scope[1], corpus_ref=settings.rag_corpus_ref, pack_dir=settings.rag_pack_dir
             )
-        )
+        except RagHandoffError as exc:
+            raise UiError("retrieval_gap", str(exc), 422, exc.gaps) from exc
+        except Gap as exc:
+            raise UiError(
+                "retrieval_gap", str(exc), 422, [{"code": exc.code, "message": str(exc)}]
+            ) from exc
+        request.requirements.append(payload.prompt)
+        return request, retrieval_matrix(request)
     request = Request(
-        slots=payload.slots or slots, requirements=[payload.prompt] if payload.prompt else []
+        slots=payload.slots or default_request().slots,
+        requirements=[payload.prompt] if payload.prompt else [],
     )
-    matrix["questions"] = [
-        {
-            "question_id": s.id,
-            "part": s.part,
-            "topic": s.topic,
-            "learning_objective": s.objective,
-            "level": s.level,
-            **(
-                {"statement_levels": dict(zip("abcd", s.statement_levels, strict=True))}
-                if s.part == "P2"
-                else {}
-            ),
-        }
-        for s in request.slots
-    ]
-    matrix.update(max_observations=2, max_examples=1, max_curriculum_units=2)
-    return request, matrix
+    return request, retrieval_matrix(request)
 
 
 class RepairComposer(Agent):
@@ -274,13 +266,13 @@ class JobManager:
                 "Vui lòng kiểm tra cấu hình hoặc chạy chế độ Demo.",
                 503,
             )
-        settings = self.settings.model_copy(update={"response_format": "json_schema"})
+        settings = self.settings.for_agent_generation()
         async with httpx.AsyncClient(follow_redirects=False) as client:
             provider = ChatCompletionsProvider(settings, client)
             yield dict.fromkeys(("composer", "illustrator", "solver", "reviewer"), provider)
 
     async def start(self, payload: ExamGenerateRequest, key: str):
-        request, matrix = resolve_request(payload)
+        request, matrix = await asyncio.to_thread(resolve_request, payload, settings=self.settings)
         data, created = self.store.create(
             key,
             fingerprint(payload.model_dump()),
@@ -365,8 +357,9 @@ class JobManager:
                             422,
                             retrieval.get("gaps", []),
                         )
-                    request = encode_thpt_retrieval(
-                        Request.model_validate(job["nativeRequest"]), retrieval
+                    request = bind_retrieval(
+                        Request.model_validate(job["nativeRequest"]),
+                        MatrixRetrievalResponse(**retrieval),
                     )
                     job["nativeRequest"] = request.model_dump()
                     self.store.save(job)
@@ -807,17 +800,21 @@ class JobManager:
                 solutions_data = dict(job["solutions"])
             else:
                 request = Request.model_validate(job["nativeRequest"])
+                slot = request.slots[index]
+                passage = request.rag_evidence.get(slot.id)
                 async with self.provider_scope() as providers:
                     repaired, _ = await RepairComposer().run(
                         providers["composer"],
                         {
                             "question": old,
-                            "slot": request.slots[index].model_dump(),
+                            "slot": slot.model_dump(),
                             "instruction": instruction,
-                            "reference_material": [
+                            "reference_material": [passage.text]
+                            if passage
+                            else [
                                 text
                                 for text in request.reference_material
-                                if text.startswith(f"[THPT_PART:{request.slots[index].part}]")
+                                if text.startswith(f"[THPT_PART:{slot.part}]")
                             ],
                         },
                     )
