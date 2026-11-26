@@ -1,6 +1,6 @@
 # Luồng lập kế hoạch MAS trong ASTRA
 
-Đặc tả hành vi của wheel `astra-mas` 0.1.1, từ `prepare_plan` đến
+Đặc tả hành vi của runtime `astra_mas` 0.1.1, từ `prepare_plan` đến
 `MasResult`. Các trường dữ liệu, mã lỗi và cấu hình nằm trong
 [hợp đồng I/O](ASTRA_MAS_IO_CONTRACT.md).
 
@@ -11,7 +11,7 @@ flowchart TD
   A0(["ASTRA gọi prepare_plan với MasInput, callback và MasLimits"])
   A0 --> A1{"Đạt giới hạn<br/>đầu vào?"}
   A1 -->|Không| AE["MasError theo giới hạn"]
-  A1 -->|Có| A2["Kiểm tra wheel và CPython<br/>Mở tiến trình tạm, chặn mạng Python"]
+  A1 -->|Có| A2["Kiểm tra bundle và CPython<br/>Mở tiến trình tạm, chặn mạng Python"]
   A2 --> A3["Kiểm tra mã định dạng<br/>Kiểm kê PDF, ảnh và dung lượng giải nén Office"]
   A3 --> A4{"Có ma trận riêng?"}
   A4 -->|Không| A6["Dựng khung theo định dạng và môn"]
@@ -118,4 +118,4 @@ ASTRA sở hữu model và thông tin xác thực. Tiến trình lập kế ho�
 với ASTRA qua luồng nội bộ. Lỗi cài đặt, lỗi giao thức hoặc quá thời gian
 trao đổi cũng trả `MasError`. Khi nhận `ready`, ASTRA vẫn đọc `gaps` để hiển
 thị cảnh báo. Khi nhận `blocked`, ASTRA vẫn nhận bản kế hoạch ứng viên cùng
-các địa chỉ cần bổ sung. Bước cuối của wheel là trả `MasResult`.
+các địa chỉ cần bổ sung. Bước cuối của runtime là trả `MasResult`.

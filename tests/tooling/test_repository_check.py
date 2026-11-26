@@ -1,7 +1,6 @@
 import hashlib
 import importlib.util
 import subprocess
-from zipfile import ZIP_DEFLATED, ZipFile
 
 from tests.paths import ROOT
 
@@ -47,19 +46,17 @@ def test_staged_secret_cannot_be_hidden_by_cleaning_working_copy(tmp_path):
     assert load_checker().check_repository(tmp_path) == ["Possible credential: source.txt"]
 
 
-def test_accepts_only_exact_bytecode_from_the_approved_mas_wheel(tmp_path, monkeypatch):
+def test_accepts_only_exact_bytes_of_the_approved_mas_runtime(tmp_path, monkeypatch):
     subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)
     checker = load_checker()
-    wheel = tmp_path / checker.MAS_WHEEL
-    wheel.parent.mkdir(parents=True)
+    payload = b"synthetic bytecode containing a BLA decoy sk-" + b"X" * 40
     runtime = tmp_path / "src" / "astra_mas"
     runtime.mkdir(parents=True)
-    payload = b"synthetic bytecode containing a BLA decoy sk-" + b"X" * 40
-    with ZipFile(wheel, "w", ZIP_DEFLATED) as archive:
-        for name in checker.MAS_RUNTIME_FILES:
-            archive.writestr(f"astra_mas/{name}", payload)
-            (runtime / name).write_bytes(payload)
-    monkeypatch.setattr(checker, "MAS_WHEEL_SHA256", hashlib.sha256(wheel.read_bytes()).hexdigest())
+    names = tuple(checker.MAS_RUNTIME_SHA256)
+    for name in names:
+        (runtime / name).write_bytes(payload)
+    digest = hashlib.sha256(payload).hexdigest()
+    monkeypatch.setattr(checker, "MAS_RUNTIME_SHA256", dict.fromkeys(names, digest))
     git = ["git", "-C", str(tmp_path)]
     subprocess.run([*git, "add", "."], check=True)
     assert checker.check_repository(tmp_path) == []

@@ -1,7 +1,7 @@
 # Backend lập kế hoạch MAS cho ASTRA
 
 **Self-developed.** The MAS component was developed privately. The ASTRA
-handoff publishes the obfuscated wheel, bundled planning data and integration
+handoff includes the obfuscated runtime, bundled planning data and integration
 contract. The implementation source remains private.
 
 Gói tích hợp dành cho ASTRA. Backend đọc yêu cầu, ma trận và tài liệu tham khảo,
@@ -9,19 +9,20 @@ gửi prompt qua callback do ASTRA cấp, rồi trả toàn bộ kế hoạch MA
 dữ liệu tuần tự hóa được thành JSON. ASTRA tự chọn model và giữ thông tin xác
 thực trong callback. Tiến trình lập kế hoạch chặn kết nối mạng và phân giải
 tên miền ở tầng Python. Hai tiến trình trao đổi qua stdin/stdout. Gói dùng
-wheel CPython 3.11 cho macOS và Windows.
+CPython 3.11 trên macOS và Windows.
 
 ## Tóm tắt cách đóng gói
 
 - Lấy phần đọc input và lập kế hoạch từ snapshot nguồn nội bộ. Chạy **BLA 3.3.2**
   ở chế độ `bankrupt` trên cả lõi và adapter ASTRA, rồi biên dịch sang bytecode
-  CPython 3.11. Wheel MAS độc lập chứa bytecode và dữ liệu.
+  CPython 3.11.
 - Bản build ASTRA chứa package `astra_mas` với bộ đọc, planner, prompt và 61
   tệp dữ liệu lập kế hoạch. Luồng kết thúc khi trả plan.
 - ASTRA gọi `prepare_plan()`, cấp callback LLM và có thể điều chỉnh
   `MasLimits`. Hàm trả toàn bộ kế hoạch cùng `state` và các vướng mắc.
-- Thư mục này chứa wheel, bảng phiên bản phụ thuộc, hợp đồng I/O, manifest
-  dữ liệu và sơ đồ ingest dưới dạng Mermaid, LaTeX và PDF đã render.
+- Thư mục này chứa hợp đồng I/O, manifest dữ liệu và sơ đồ ingest dưới dạng
+  Mermaid, LaTeX và PDF đã render. Phiên bản phụ thuộc nằm trong
+  [`requirements-tested.txt`](../../requirements-tested.txt) của ASTRA.
 
 ## Cài và tích hợp
 
@@ -34,10 +35,6 @@ dùng CPython 3.11, import trực tiếp `astra_mas.prepare_plan`.
 tự chuẩn bị tiến trình tạm và nạp lõi. Có thể kiểm tra từ gốc checkout bằng
 `python scripts/smoke_mas.py`. Ví dụ dùng ma trận CSV và callback giả lập để
 in kế hoạch JSON 34 ô.
-
-[Wheel độc lập](astra_mas-0.1.1-cp311-none-any.whl) và
-[`requirements-mas-tested.txt`](requirements-mas-tested.txt) dành cho nơi
-tích hợp bên ngoài checkout ASTRA.
 
 ASTRA gọi `prepare_plan()` và truyền callback LLM async. Với provider có sẵn
 của ASTRA, dùng chế độ JSON object để MAS kiểm tra lược đồ riêng của từng
@@ -222,7 +219,7 @@ mặc định ở mức trần của bộ đọc.
 | Lõi lập kế hoạch và các phụ thuộc thực sự đóng gói | Khoảng **25.700 dòng nguồn** trước BLA |
 | Adapter nhận input, trao đổi prompt và trả plan | Khoảng **400 dòng nguồn** trước BLA |
 | Lịch sử phát triển lõi trong repo riêng | **100 commit** chạm 16 mô-đun trung tâm về đọc tệp, ma trận, xác định phạm vi và lập kế hoạch |
-| Tích hợp riêng cho ASTRA | **5 commit** về adapter, build, tài liệu, kiểm thử và đóng gói wheel 0.1.1 |
+| Tích hợp riêng cho ASTRA | **5 commit** về adapter, build, tài liệu, kiểm thử và đóng gói runtime 0.1.1 |
 
 Số dòng đếm các dòng nguồn không trống, gồm chú thích, trước khi BLA chèn mã
 làm rối. Số commit loại merge và đếm mỗi commit một lần trong từng phạm vi.
@@ -231,20 +228,17 @@ dùng cho bài nộp.
 
 ## Phạm vi bàn giao
 
-Wheel chứa bytecode làm rối bằng BLA và 61 tệp dữ liệu phiên bản hóa.
-[`DATA-MANIFEST.json`](DATA-MANIFEST.json) ghi SHA-256 từng tệp dữ liệu trong wheel.
+Bundle runtime chứa bytecode làm rối bằng BLA và 61 tệp dữ liệu phiên bản hóa.
+[`DATA-MANIFEST.json`](DATA-MANIFEST.json) ghi SHA-256 từng tệp dữ liệu trong bundle.
 Bytecode có thể dịch ngược, prompt có thể đọc từ callback và dữ liệu JSON có
 thể trích xuất.
 
-SHA-256 của wheel
-
-```text
-66fe85d7fd231c7f54dff5c29c1e6707d5d5e5c18adfbc378dec0c1210ef9205
-```
+[Bộ kiểm tra repo](../../scripts/check_repository.py) xác minh SHA-256 của
+bốn tệp runtime đã biên dịch.
 
 ## Đặc tả luồng ingest
 
-[Sơ đồ luồng MAS](ASTRA_MAS_INGEST_FLOW.md) mô tả ba chặng của wheel 0.1.1.
+[Sơ đồ luồng MAS](ASTRA_MAS_INGEST_FLOW.md) mô tả ba chặng của runtime 0.1.1.
 Chặng A kiểm tra giới hạn đầu vào và đọc ma trận, tài liệu. Chặng B xác định
 phạm vi, lập kế hoạch theo địa chỉ ô và kiểm tra đầu ra. Chặng C mô tả từng
 lượt callback LLM, kết quả `ready` hoặc `blocked` và lỗi có mã.

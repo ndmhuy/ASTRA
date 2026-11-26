@@ -3,9 +3,7 @@
 import hashlib
 import re
 import subprocess
-from io import BytesIO
 from pathlib import Path
-from zipfile import ZipFile
 
 ROOT = Path(__file__).resolve().parents[1]
 KEY_PATTERNS = (
@@ -25,27 +23,12 @@ LOCAL_DIRECTORIES = {
 }
 
 
-MAS_WHEEL = "docs/mas/astra_mas-0.1.1-cp311-none-any.whl"
-MAS_WHEEL_SHA256 = "66fe85d7fd231c7f54dff5c29c1e6707d5d5e5c18adfbc378dec0c1210ef9205"
-MAS_RUNTIME_FILES = frozenset({"__init__.pyc", "contracts.pyc", "runtime.pyc", "mas_core.zip"})
-
-
-def _approved_mas_files(root: Path, staged: dict[str, str]) -> dict[str, bytes]:
-    wheel = root / MAS_WHEEL
-    if MAS_WHEEL not in staged or not wheel.is_file():
-        return {}
-    data = wheel.read_bytes()
-    if hashlib.sha256(data).hexdigest() != MAS_WHEEL_SHA256:
-        return {}
-    if (
-        subprocess.check_output(["git", "-C", str(root), "cat-file", "blob", staged[MAS_WHEEL]])
-        != data
-    ):
-        return {}
-    with ZipFile(BytesIO(data)) as archive:
-        return {
-            f"src/astra_mas/{name}": archive.read(f"astra_mas/{name}") for name in MAS_RUNTIME_FILES
-        }
+MAS_RUNTIME_SHA256 = {
+    "__init__.pyc": "bc8b7ad9b432e4037b716b541108d8ae187bbccb2d0ffd33cb71ed1c0e0443b9",
+    "contracts.pyc": "b9419cd80a6f46dd6fecabef2240579d0fed4725b0e0dc5464afdf3b89b3b0d3",
+    "runtime.pyc": "030fff00a18500bd14abcf66bdde6e47ea3aafb3097e0fdb2cf4099d9659c8f1",
+    "mas_core.zip": "b8097d0f93a76fc30dc6583f37f2858cf03156ca000776d41c6eb7dafbe0dbbe",
+}
 
 
 def check_repository(root: Path = ROOT) -> list[str]:
@@ -89,19 +72,19 @@ def check_repository(root: Path = ROOT) -> list[str]:
                     local_keys.append(value)
     issues: list[str] = []
     # The release contains intentional BLA decoys. Accept only the exact reviewed bytes.
-    approved_mas = _approved_mas_files(root, staged)
     for relative in sorted(set(listed) - {""}):
         path = root / relative
-        if path.parent == root / "src" / "astra_mas" and path.name in MAS_RUNTIME_FILES:
-            expected = approved_mas.get(relative)
+        if path.parent == root / "src" / "astra_mas" and path.name in MAS_RUNTIME_SHA256:
+            expected = MAS_RUNTIME_SHA256[path.name]
             if (
-                expected is None
-                or not path.is_file()
-                or path.read_bytes() != expected
+                not path.is_file()
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
                 or relative not in staged
-                or subprocess.check_output(
-                    ["git", "-C", str(root), "cat-file", "blob", staged[relative]]
-                )
+                or hashlib.sha256(
+                    subprocess.check_output(
+                        ["git", "-C", str(root), "cat-file", "blob", staged[relative]]
+                    )
+                ).hexdigest()
                 != expected
             ):
                 issues.append(f"Invalid MAS release payload: {relative}")
