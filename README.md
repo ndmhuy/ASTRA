@@ -2,7 +2,7 @@
 
 ASTRA generates and verifies THPT and V-ACT practice exams. This guide runs the teacher workspace, FastAPI backend, retrieval and four-agent pipeline together on Windows with a live model.
 
-See the [MAS input-to-plan integration contract](docs/ASTRA_MAS_BUNDLE.md) for the separately distributed planning wheel.
+The [MAS input-to-plan bundle](docs/mas/) includes the wheel, install instructions, and workflow diagrams.
 
 ## 1. Install
 

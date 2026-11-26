@@ -1,11 +1,10 @@
 # Backend lập kế hoạch MAS cho ASTRA
 
-**Confidential · Self-developed.** The MAS component was developed privately.
-The ASTRA handoff contains obfuscated bytecode, bundled planning data and the
-integration contract. The implementation source remains private. Distribution
-of the runtime is limited to ASTRA.
+**Self-developed.** The MAS component was developed privately. The ASTRA
+handoff publishes the obfuscated wheel, bundled planning data and integration
+contract. The implementation source remains private.
 
-Gói nội bộ dành cho ASTRA. Backend đọc yêu cầu, ma trận và tài liệu tham khảo,
+Gói tích hợp dành cho ASTRA. Backend đọc yêu cầu, ma trận và tài liệu tham khảo,
 gửi prompt qua callback do ASTRA cấp, rồi trả toàn bộ kế hoạch MAS dưới dạng
 dữ liệu tuần tự hóa được thành JSON. ASTRA tự chọn model và giữ thông tin xác
 thực trong callback. Tiến trình lập kế hoạch chặn kết nối mạng và phân giải
@@ -22,13 +21,15 @@ wheel CPython 3.11 cho macOS và Windows.
   kế hoạch. Các bước sau khi trả plan nằm ngoài phạm vi gói.
 - ASTRA gọi `prepare_plan()`, cấp callback LLM và có thể điều chỉnh
   `MasLimits`. Hàm trả toàn bộ kế hoạch cùng `state` và các vướng mắc.
-- ZIP bàn giao chứa wheel, bảng phiên bản phụ thuộc, hợp đồng I/O, manifest
-  dữ liệu và đặc tả luồng ingest dưới dạng Mermaid, LaTeX và PDF đã render.
+- Thư mục này chứa wheel, bảng phiên bản phụ thuộc, hợp đồng I/O, manifest
+  dữ liệu và sơ đồ ingest dưới dạng Mermaid, LaTeX và PDF đã render.
 
 ## Cài và tích hợp
 
-Giải nén ZIP nội bộ. Dùng CPython 3.11 trong môi trường ASTRA và chạy từ thư mục
-vừa giải nén.
+Dùng CPython 3.11 trong môi trường ASTRA. Chạy lệnh từ `docs/mas` trong
+checkout GitHub hoặc từ thư mục giải nén ZIP. Nếu tải từng tệp, đặt
+[wheel](astra_mas-0.1.1-cp311-none-any.whl) và
+[`requirements-mas-tested.txt`](requirements-mas-tested.txt) cùng thư mục.
 
 ```sh
 python -m pip install --upgrade ./astra_mas-0.1.1-cp311-none-any.whl -c requirements-mas-tested.txt
@@ -215,7 +216,7 @@ mặc định ở mức trần của bộ đọc.
 | Lõi lập kế hoạch và các phụ thuộc thực sự đóng gói | Khoảng **25.700 dòng nguồn** trước BLA |
 | Adapter nhận input, trao đổi prompt và trả plan | Khoảng **400 dòng nguồn** trước BLA |
 | Lịch sử phát triển lõi trong repo riêng | **100 commit** chạm 16 mô-đun trung tâm về đọc tệp, ma trận, xác định phạm vi và lập kế hoạch |
-| Tích hợp riêng cho ASTRA | **5 commit** về adapter, build, tài liệu, kiểm thử và làm cứng gói nội bộ |
+| Tích hợp riêng cho ASTRA | **5 commit** về adapter, build, tài liệu, kiểm thử và đóng gói wheel 0.1.1 |
 
 Số dòng đếm các dòng nguồn không trống, gồm chú thích, trước khi BLA chèn mã
 làm rối. Số commit loại merge và đếm mỗi commit một lần trong từng phạm vi.
@@ -224,10 +225,16 @@ dùng cho bài nộp.
 
 ## Phạm vi bàn giao
 
-Wheel được chuyển nội bộ cho nhóm ASTRA. Repo công khai lưu hợp đồng tích hợp
-và sơ đồ. Wheel chứa bytecode làm rối bằng BLA và 61 tệp dữ liệu phiên bản hóa.
-`DATA-MANIFEST.json` ghi SHA-256 cho từng tệp. Bytecode có thể dịch ngược, prompt
-có thể đọc từ callback và dữ liệu JSON có thể trích xuất.
+Wheel chứa bytecode làm rối bằng BLA và 61 tệp dữ liệu phiên bản hóa.
+[`DATA-MANIFEST.json`](DATA-MANIFEST.json) ghi SHA-256 từng tệp dữ liệu trong wheel.
+Bytecode có thể dịch ngược, prompt có thể đọc từ callback và dữ liệu JSON có
+thể trích xuất.
+
+SHA-256 của wheel
+
+```text
+66fe85d7fd231c7f54dff5c29c1e6707d5d5e5c18adfbc378dec0c1210ef9205
+```
 
 ## Đặc tả luồng ingest
 
@@ -237,7 +244,7 @@ phạm vi, lập kế hoạch theo địa chỉ ô và kiểm tra đầu ra. Ch�
 lượt callback LLM, kết quả `ready` hoặc `blocked` và lỗi có mã.
 
 - `ASTRA_MAS_INGEST_FLOW.md` chứa ba sơ đồ Mermaid.
-- `ASTRA_MAS_INGEST_SPEC.pdf` là bản đặc tả ba trang trong ZIP nội bộ.
-- `ASTRA_MAS_INGEST_SPEC.tex` dùng hình vector ba trang
-  `ASTRA_MAS_INGEST_CHART.pdf`. Có thể biên dịch bằng
-  `xelatex ASTRA_MAS_INGEST_SPEC.tex` trong thư mục đã giải nén.
+- [`ASTRA_MAS_INGEST_SPEC.pdf`](ASTRA_MAS_INGEST_SPEC.pdf) là bản đặc tả ba trang.
+- [`ASTRA_MAS_INGEST_SPEC.tex`](ASTRA_MAS_INGEST_SPEC.tex) dùng hình vector ba trang
+  [`ASTRA_MAS_INGEST_CHART.pdf`](ASTRA_MAS_INGEST_CHART.pdf). Có thể biên dịch bằng
+  `xelatex ASTRA_MAS_INGEST_SPEC.tex` trong thư mục chứa hai tệp này.
