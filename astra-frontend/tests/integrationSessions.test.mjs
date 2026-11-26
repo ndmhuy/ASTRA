@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { ExamSessions } from '../src/state/examSessions.ts';
-import { ApiError, resolveApiUrl } from '../src/services/examService.ts';
+import { ApiError, ApiExamService, resolveApiUrl } from '../src/services/examService.ts';
 
 const params = { subject: 'Toán Học', grade: 12, examType: 'THPT_STANDARD', durationMinutes: 90, itemCount: 22, prompt: 'Đề THPT', uploadedFiles: [] };
 const HASH_1 = 'a'.repeat(64);
@@ -66,6 +66,17 @@ function makePackage(revision = 1, contentHash = HASH_1, previewStatus = 'not_re
 }
 
 const flush = () => new Promise(resolve => setImmediate(resolve));
+
+test('checking a saved question sends only the exam revision', async (t) => {
+  const fetch = t.mock.method(globalThis, 'fetch', async () => new Response('{}'));
+  const service = new ApiExamService('http://localhost:8000/api');
+  await service.verifyQuestion('job-1', 3, 2);
+  assert.equal(fetch.mock.callCount(), 1);
+  const [url, request] = fetch.mock.calls[0].arguments;
+  assert.equal(url, 'http://localhost:8000/api/exams/job-1/questions/3/verify');
+  assert.equal(request.method, 'POST');
+  assert.deepEqual(JSON.parse(request.body), { revision: 2 });
+});
 
 test('a lost start receipt reuses the workspace idempotency key on retry', async () => {
   const requests = [];

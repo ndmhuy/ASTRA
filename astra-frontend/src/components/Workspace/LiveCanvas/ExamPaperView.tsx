@@ -95,7 +95,7 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
     onViewModeChange?.(nextMode);
   };
   const review = activeMode === 'review';
-  const flaggedCount = questions.filter(q => q.status === 'FLAGGED').length;
+  const flaggedCount = questions.filter(q => q.answerCheck !== 'matched').length;
   const lastAutoRequested = useRef<string>('');
   const paperScrollRef = useRef<HTMLDivElement>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);

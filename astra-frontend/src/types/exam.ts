@@ -3,6 +3,7 @@ export type Subject = 'Tổng hợp' | 'Vật Lý' | 'Toán Học' | 'Hóa Học
 export type ExamType = 'THPT_STANDARD' | 'DGNL_DHQG' | 'MID_TERM' | 'CUSTOM';
 export type CognitiveLevel = 'NHAN_BIET' | 'THONG_HIEU' | 'VAN_DUNG' | 'VAN_DUNG_CAO';
 export type VerificationStatus = 'PENDING' | 'VERIFIED' | 'FLAGGED';
+export type AnswerCheck = 'matched' | 'mismatched' | 'needs_recheck';
 export type ExportFormat = 'docx' | 'pdf' | 'tex' | 'json';
 export interface QuestionChoices { A: string; B: string; C: string; D: string; }
 export interface QuestionStatement { text: string; answer: boolean; solution: string; }
@@ -23,8 +24,9 @@ export interface QuestionItem {
   topic: string;
   sourceReference?: string;
   status: VerificationStatus;
-  writerKey?: string;
-  solverKey?: string;
+  answerCheck?: AnswerCheck;
+  writerKey?: string | null;
+  solverKey?: string | null;
   revisionCount?: number;
   auditNotes?: string;
   drawingLatex?: string;

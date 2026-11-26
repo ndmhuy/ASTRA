@@ -17,7 +17,8 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, index, onE
     const frame = requestAnimationFrame(() => setVisible(true));
     return () => cancelAnimationFrame(frame);
   }, []);
-  const flagged = question.status === 'FLAGGED';
+  const matched = question.answerCheck === 'matched';
+  const flagged = question.answerCheck === 'mismatched';
   return (
     <section className={`exam-question-card ${visible ? 'visible' : 'appearing'} ${flagged ? 'is-flagged' : ''}`} aria-label={`Câu ${index + 1}`}>
       <div className="question-card-top">
@@ -38,9 +39,9 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, index, onE
       {question.drawingLatex && <details className="question-drawing-details"><summary>Hình minh họa (xem trực quan ở mục Xem trước PDF)</summary><pre>{question.drawingLatex}</pre></details>}
       {(!question.questionType || question.questionType === 'mcq') && <div className="question-choices">
         {(['A', 'B', 'C', 'D'] as const).map(key => (
-          <div key={key} className={`question-choice ${review && question.status === 'VERIFIED' && question.key === key ? 'correct' : ''}`}>
+          <div key={key} className={`question-choice ${review && matched && question.key === key ? 'correct' : ''}`}>
             <strong className="choice-key-badge">{key}.</strong><MathRenderer content={question.choices[key]} />
-            {review && question.status === 'VERIFIED' && question.key === key && (
+            {review && matched && question.key === key && (
               <span className="answer-label">
                 <CheckCircle2 size={12} aria-hidden="true" />
                 Đáp án
@@ -80,18 +81,17 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, index, onE
         <details className={`question-review ${flagged ? 'flagged' : ''}`}>
           <summary>
             {flagged ? (
-              <><AlertTriangle size={14} aria-hidden="true" /><span>Cần xem xét · Xem ghi chú</span></>
-            ) : question.status === 'VERIFIED' ? (
-              <><CheckCircle2 size={14} aria-hidden="true" /><span>Đã đối chiếu · Xem lời giải</span></>
+              <><AlertTriangle size={14} aria-hidden="true" /><span>Lệch đáp án · Xem chi tiết</span></>
+            ) : matched ? (
+              <><CheckCircle2 size={14} aria-hidden="true" /><span>Khớp đáp án · Xem lời giải</span></>
             ) : (
-              <span>Chờ kiểm định · Xem đáp án dự kiến</span>
+              <span>Cần kiểm tra lại · Xem đáp án dự kiến</span>
             )}
           </summary>
           <div className="review-content">
-            {flagged ? <>
-              <p><strong>Đáp án dự kiến:</strong> {question.key}{question.writerKey ? ` · Người soạn: ${question.writerKey}` : ''}{question.solverKey ? ` · Giải độc lập: ${question.solverKey}` : ''}</p>
-              <p><MathRenderer content={question.auditNotes || 'Câu hỏi cần được kiểm tra trước khi sử dụng.'} /></p>
-            </> : <p><strong>Đáp án:</strong> {question.key}</p>}
+            <p><strong>{matched ? 'Đáp án' : 'Đáp án dự kiến'}:</strong> {question.key}</p>
+            {flagged && question.solverKey && <p><strong>Giải độc lập:</strong> {question.solverKey}</p>}
+            {!matched && <p>{(question.answerCheck && question.auditNotes) || 'Câu hỏi cần được kiểm tra trước khi sử dụng.'}</p>}
             {question.explanation && <div className="review-explanation"><MathRenderer content={question.explanation} /></div>}
             {question.sourceReference && <p className="review-source">Nguồn: {question.sourceReference}</p>}
             {onEdit && <button type="button" className="button-secondary" onClick={onEdit}>Sửa câu hỏi</button>}

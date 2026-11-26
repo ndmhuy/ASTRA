@@ -283,6 +283,17 @@ export const App: React.FC = () => {
         />
       )}
       {editor && <QuestionEditor question={editor.question} onClose={() => setEditor(null)}
+        onVerify={examService.verifyQuestion && editor.question.examRevision !== undefined ? async () => {
+          try {
+            await examService.verifyQuestion!(editor.jobId, editor.question.id, editor.question.examRevision!);
+            await store.refresh(editor.sessionId);
+            setViewMode('review');
+            setEditor(null);
+          } catch (error) {
+            await store.handleActionError(editor.sessionId, error);
+            throw error;
+          }
+        } : undefined}
         onSave={async question => {
           try {
             await examService.updateQuestion(editor.jobId, question);

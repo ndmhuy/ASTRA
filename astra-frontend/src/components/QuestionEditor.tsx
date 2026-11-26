@@ -7,17 +7,19 @@ interface Props {
   question: QuestionItem;
   onSave: (question: QuestionItem) => Promise<void>;
   onRegenerate: (instruction: string) => Promise<void>;
+  onVerify?: () => Promise<void>;
   onClose: () => void;
 }
 
-export const QuestionEditor: React.FC<Props> = ({ question, onSave, onRegenerate, onClose }) => {
+export const QuestionEditor: React.FC<Props> = ({ question, onSave, onRegenerate, onVerify, onClose }) => {
   const [draft, setDraft] = useState(() => structuredClone(question));
   const [instruction, setInstruction] = useState('');
-  const [busyAction, setBusyAction] = useState<'save' | 'regen' | null>(null);
+  const [busyAction, setBusyAction] = useState<'save' | 'regen' | 'verify' | null>(null);
   const [error, setError] = useState('');
   const dialogRef = useRef<HTMLElement>(null);
   const draftRef = useRef(draft);
   const busy = busyAction !== null;
+  const hasUnsavedChanges = JSON.stringify(draft) !== JSON.stringify(question);
 
   useEffect(() => {
     draftRef.current = draft;
@@ -71,7 +73,7 @@ export const QuestionEditor: React.FC<Props> = ({ question, onSave, onRegenerate
     };
   }, [busy, onClose, onSave]);
 
-  const action = async (kind: 'save' | 'regen', operation: () => Promise<void>) => {
+  const action = async (kind: 'save' | 'regen' | 'verify', operation: () => Promise<void>) => {
     setBusyAction(kind);
     setError('');
     try {
@@ -220,6 +222,18 @@ export const QuestionEditor: React.FC<Props> = ({ question, onSave, onRegenerate
 
         <footer className="editor-modal-footer">
           <button type="button" className="button-secondary" disabled={busy} onClick={onClose}>Đóng</button>
+          {onVerify && (
+            <button
+              type="button"
+              className="button-secondary"
+              disabled={busy || hasUnsavedChanges}
+              title={hasUnsavedChanges ? 'Lưu thay đổi trước khi giải lại.' : undefined}
+              onClick={() => { void action('verify', onVerify); }}
+            >
+              {busyAction === 'verify' && <LoaderCircle className="exam-status-spinner" size={14} aria-hidden="true" />}
+              Giải lại câu đã lưu
+            </button>
+          )}
           <button
             type="button"
             className="button-secondary"
