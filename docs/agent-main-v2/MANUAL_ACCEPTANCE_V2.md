@@ -2,6 +2,14 @@
 
 For the teacher or operator validating the product on the current feature branch. Use a new conversation for unrelated scenarios. Leave MAS in demo mode.
 
+## Current semantic release candidate, 2026-11-27
+
+Use the explicit keyless launcher `python scripts/start_agent_worker.py` after building the frontend. The current `/v2` candidate has not been deployed; the existing production Worker is disabled. Read the concrete owner approval gate in [WORKER_RUNBOOK.md](WORKER_RUNBOOK.md) before enabling any inference. Deployment permission, Chat budget permission and real MAS generation permission are separate.
+
+Both mounted browser scripts now pass. Their union observes all 34 registered React adapters using synthetic semantic/business responses. The additional script verifies a context-only reference to the last observed question, expired/duplicate confirmations, a late response after workspace navigation, PDF retry and the remaining adapter gates. The FastAPI concurrency test independently verifies Chat while a simulated MAS job is active and separate Chat/MAS failures. This is offline integration evidence, not actual model language understanding.
+
+After authorized rollout, first verify the public health contract/hash without inference. With a separately approved allowance, use the master specification's natural THPT message, verify an accepted semantic goal and missing-subject clarification, and confirm zero generation writes. Record the actual route, attempt count, HTTP status, finish reason, validation stage, usage and visible timing. An exact local “Toán” follow-up is not live-provider evidence. Broader manual scenarios A–P are in the [current specification](UNIFIED_SEMANTIC_WORKFLOW_SPEC.md); actual NLU accuracy and live MAS remain unverified.
+
 ## Observed offline evidence
 
 | Case | Evidence before manual acceptance |

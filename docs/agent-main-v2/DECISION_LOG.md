@@ -17,3 +17,15 @@ Keep ADMISSION/global-v1 and its consumed counters. Partition attempts, estimate
 ## S-004 ? No speculative goal retrieval infrastructure
 
 The 36-goal catalog remains small. Send compact meanings/parameters and structured context with one model call when needed. Exact subject answers use pending-context catalog matching. No vector service, embedding call, model-training pipeline or extra title inference is warranted by current evidence.
+
+## S-005 — Bind remembered questions to observed revisions
+
+Keep the last successfully observed question target in the existing conversation metadata, with source turn, job ID, stable question ID and revision. Resolve an implicit previous-question goal only when all bindings remain current. Branching clears it; retraction and revision changes invalidate it. This permits useful contextual follow-ups without trusting a model-generated question ID or a number copied from stale history. Mixed implicit-reference compositions still ask for clarification.
+
+## S-006 — Share semantic field bounds and retain safe diagnostic invariants
+
+The canonical goal catalog declares subject/topic/grade bounds. Python, TypeScript and generated native/canonical Worker schemas consume them; a regression check compares them with the retained execution intake contract. This prevents an accepted semantic subject from creating a dialogue fact that fails on the next turn. Private adapter failures expose a field path and whitelisted invariant, never the rejected private value. The alternate was unbounded semantic slots followed by later execution validation, which makes contract failures harder to diagnose and recover from.
+
+## S-007 — Answer information requests from current application data
+
+A QUESTION about a question/answer is a read-only inspection workflow. Use the current package, explicit question/part grounding or a valid observed reference, and label the stored key/explanation truthfully. Do not navigate or invoke academic inference to answer it. A mounted test caught the old broad “là gì / như thế nào” routing shortcut replacing such a request with generic guidance; narrowing that shortcut fixes the cause and leaves unfamiliar language to the semantic model. The regression expectation now requires that the old shortcut abstain, while negated operations remain blocked.

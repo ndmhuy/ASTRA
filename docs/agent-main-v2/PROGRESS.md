@@ -2,13 +2,13 @@
 
 > Scope correction: Cloudflare is for authenticated AI credential gateway only. Do not deploy the ASTRA website, expose the origin, create a Tunnel or migrate MAS. Public web hosting requirements are future blockers, not tasks for this implementation.
 
-Status: PARTIAL
+Status: LOCAL_RELEASE_CANDIDATE; LIVE_GATES_OPEN
 Baseline SHA: 7523c79556a9935df5008c92043f1e38d6e5d2a2
 Old Agent reference SHA: fb834b976cb62eb7292fa839cdaf1d8738e1ec50
 Feature branch / worktree: feat/longlth2297/agent-main-v2 / ../ASTRA.worktrees/longlth2297-agent-main-v2
-Current HEAD: see git log; checkpoint base fbc951bade177dcea0d6e19079d17238dcd5b495
+Current implementation commit: 6951266d91b3f42551b25de1277467546b125b6b; see git log for the following evidence/handoff commit.
 Latest origin/main checked: 073f2e6e701d1c5100f9d67b4686786f5f117d2a
-Current phase / exact next action: S1-S3 semantic vertical slice observed in mounted React using synthetic model fixtures. Continue isolated workload verification, MAS boundary, corpus and release evidence. See NEXT_TASK.md and UNIFIED_SEMANTIC_WORKFLOW_SPEC.md. Production remains unchanged and disabled.
+Current phase / exact next action: S9 local runtime/fresh-clone acceptance verified. Await owner Gate A deployment approval, a separate Chat inference allowance, and independent MAS provider/authorization configuration. S7 has a 197-record/scenario initial corpus; the proposed approximately 700-record coverage objective remains open. Production remains unchanged and disabled. See NEXT_TASK.md.
 
 | Phase | Status | Evidence level | Commit / report | Blocker / next step |
 |---|---|---|---|---|
@@ -122,3 +122,36 @@ Use [Worker runbook](WORKER_RUNBOOK.md) and [next task](NEXT_TASK.md). The initi
 - Worker: independent daily attempts/tokens/concurrency/rate/circuit policies implemented; reserved Chat capacity; bounded replay rejection; uncertain upstream timeout retains lease. First local workerd run: 19/20 groups; all-34-actions group encountered the newly enforced token budget. Its deliberately high-capacity fixture now explicitly configures the corresponding token budget. Rerun pending.
 - Read-only production health: forwarding=false, remainingAttempts=0, activeReservations=0. Latest uploaded version bb165c28-5a06-4372-9c9e-b2bf758b9599 observed in Wrangler versions metadata. No production changes or model calls.
 - External gates remain: deployment authorization, separately approved Chat inference budget, independent MAS credential/provider policy and strong authorization for expensive arbitrary academic prompts.
+
+## Unified release candidate - 2026-11-27 Asia/Bangkok
+
+Implementation checkpoint: 6951266 on feat/longlth2297/agent-main-v2. Core implementation fe648eb; additive readiness 310401d; preserved observed diagnostic ceilings 98c387e; observed-question references a900e79; final shared intake bounds and safe field diagnostics a318b74; stored-answer information and conservative routing 6951266. All are local commits. No push, PR, merge, production deployment, live provider inference, or real academic generation occurred.
+
+| Gate | Status | Actual evidence / limit |
+| --- | --- | --- |
+| SEMANTIC_CONTRACT_READY | VERIFIED | Shared Python/TypeScript catalog; generated native/canonical Worker schemas; strict validation; direct/Worker payload parity and alternate-provider envelope fixtures |
+| WORKFLOW_ENGINE_READY | VERIFIED | Deterministic intake, abstention and bounded ordered existing recipes; actual React receipts and confirmation gates with synthetic responses |
+| CONTEXT_AND_MEMORY_READY | VERIFIED | Source-linked intake, subject fast path, correction/cancellation, stable titles, observed question references bound to source/job/revision; branch/retraction invalidation; unit and mounted fixture evidence |
+| CAPABILITY_COVERAGE_READY | VERIFIED | Both mounted browser scripts observe all 34 adapter IDs. Some destructive/expensive operations are observed at pending confirmation and cancelled; this is not live completion of all academic operations |
+| DUAL_API_ARCHITECTURE_READY | IMPLEMENTED_NOT_VERIFIED | Independent application policies and closed MAS CompletionRequest boundary implemented/tested; real independent provider quota/credential pools are not configured or verified |
+| CONCURRENT_CHAT_VERIFIED | VERIFIED | Actual FastAPI Chat route remains usable while a simulated MAS job waits, during Chat quota failure, and after separate MAS failure. Submitted academic request remains unchanged |
+| WORKER_SECURITY_VERIFIED | VERIFIED | Offline workerd/SQLite persistence, atomic concurrency, Chat reservation, rate/token partitioning, replay rejection, separate circuits, timeout leases, request/schema/response bounds and secret-pattern audit. Production v2 security acceptance remains gated |
+| LIVE_AGENT_VERIFIED | BLOCKED_EXTERNAL | New Worker route is undeployed; no new live allowance is authorized. Historical complete Gemini JSON failed the old application invariant; original conflicting values remain unknown |
+| KEYLESS_MAS_VERIFIED | BLOCKED_EXTERNAL | No independent academic credential/provider compatibility or approved caller authorization/resource policy; public MAS route absent and local Worker adapter fails closed |
+| FRESH_CLONE_VERIFIED | VERIFIED | Isolated local Git clone of 6951266, fresh Python venv and npm ci/build, no private .env/.dev.vars, explicit keyless Worker launcher, HTTP 200 UI/health/catalog, mounted local greeting and zero Agent/business POSTs |
+
+Verification actually executed:
+
+- Python: 56 focused checks passed across Agent turn/provider contracts, semantic normalization, disabled MAS boundary, concurrent Chat, native THPT UI jobs and V-ACT. Includes strict schema synchronization, safe diagnostic fields/invariants and no Writer-key leakage in native job regression. One existing Starlette/httpx deprecation warning remains.
+- Frontend: 39 tests passed; lint and production build passed. Build retains the existing greater-than-500-kB chunk advisory.
+- Worker: TypeScript check, dry-run bundling and all 20 local workerd groups passed. No deployment command without --dry-run was used.
+- Mounted React: scripts/agent_browser_smoke.py passed canonical intake and existing lifecycle flows; scripts/agent_capability_smoke.py passed the other 16 adapters, a real stored previous-question reference, expired and duplicate confirmation rejection, late response after workspace switch, and synthetic verification/PDF retry. These are explicit model/business fixtures.
+- Corpus: 153 semantic records, 21 workflows / 28 turns and 23 adversarial cases; 101 development + 96 evaluation records/scenarios, grouped by scenario family. All deterministic corpus checks passed. Approximate 700-record coverage remains an objective. Model metrics are null, and no claim of 95% real NLU accuracy is made. See eval/agent-semantic/offline-results.json for actual local resolver timing and routing coverage; those are not visible UI latency or semantic accuracy.
+- Fresh clone: D:/HCMUS/Year2/Computational Thinking/Lab/ASTRA.worktrees/longlth2297-semantic-fresh-20261127. Python 3.13.5 and Node 24.19.0; dependencies installed independently with requirements-tested.txt constraints and npm ci. pip check and generated-contract checks passed. The launcher explicitly selected Worker Chat and demo MAS without owner configuration. No AI request was sent. The clone and both protection markers remain; no cleanup was performed.
+- Safe local credential-format audit before implementation commit: 626 working files, 242 outgoing-history blobs and one built frontend JS bundle; zero pattern findings or tracked private environment/database paths. Final audit is recorded in ignored runs/semantic-security-audit.json. This is a pattern audit, not proof that all possible secret formats are absent.
+
+Read-only production state was rechecked: Worker bb165c28-5a06-4372-9c9e-b2bf758b9599, model gemini-3.1-flash-lite, global/Agent ceilings 2, MAS ceiling 0, forwarding false, remaining attempts 0, active reservations 0. Gateway token remains an encrypted Secret binding. No secret values were exposed. The tracked deployment config now preserves the observed ceilings and disabled state.
+
+The current local saved .env selects private Gateway diagnostics but lacks complete configuration. It was preserved. scripts/start_agent_worker.py is the explicit credential-free runtime and never selects that private profile implicitly. The latest isolated startup used it successfully. Stored question/answer questions now return actual current package data without navigation or academic API calls. The old broad la-gi/nhu-the-nao shortcut was removed after a mounted fixture exposed it routing an answer question to generic guidance.
+
+Remaining: owner-approved disabled Worker rollout and readiness/hash check, separately bounded real Chat acceptance, broader manual NLU evaluation and reviewed corpus expansion, real independent MAS configuration/authorization, and any later main integration. No automatic merge of the 18 upstream commits was performed; teammate academic and presentation changes remain untouched. Only five lines were added to ui/jobs.py for provider-scope integration; academic schemas, prompts, models, retries and scoring remain Backend-owned. The deployment/rollback review is concrete in WORKER_RUNBOOK.md.

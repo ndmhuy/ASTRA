@@ -2,6 +2,33 @@
 
 For the operator deploying the credential proxy. The target is the existing `astra-ai-proxy` at `https://astra-ai-proxy.letranhoanglong2227.workers.dev`. React, FastAPI, exams, RAG and LaTeX run locally.
 
+## Current candidate: owner Gate A review, 2026-11-27
+
+The current implementation candidate is `6951266` on `feat/longlth2297/agent-main-v2`. It includes the core `fe648eb`, readiness checkpoint `310401d`, preserved-ceiling configuration `98c387e`, observed-question reference checkpoint `a900e79`, the final intake-bound/diagnostic correction a318b74, and stored-answer information/routing 6951266. Read [Semantic workflows](SEMANTIC_WORKFLOWS.md) and [the current master specification](UNIFIED_SEMANTIC_WORKFLOW_SPEC.md). This section supersedes earlier single-contract/single-pool assumptions; historical evidence below remains intact.
+
+- Target: the existing Worker and `astra-gateway`; no website, Backend, database hosting or new resources.
+- Current production deployment: `bb165c28-5a06-4372-9c9e-b2bf758b9599`, created 2026-11-26 14:53:40 UTC. Read-only deployment/version metadata confirmed Agent/global daily ceilings 2, MAS ceiling 0, model `gemini-3.1-flash-lite`, forwarding false, ADMISSION present and the Gateway token still a Secret binding. Secret values were not read or printed.
+- Current public health: legacy `astra-intent-v1`, forwarding false, remaining attempts 0 and active reservations 0. No inference was performed during this implementation.
+- Proposed change: add `/v2/agent/interpret`, canonical semantic parsing, safe field diagnostics, duplicate-turn protection, separate workload accounting/circuits and Chat reservations. Preserve `/v1/agent/interpret`, its hash and existing Secret bindings. New health metadata lists both contracts and the semantic hash; `masForwarding` remains false.
+- Configuration review: `wrangler.jsonc` retains `keep_vars: true` and now matches the observed production ceilings of 2 with forwarding=false. This local configuration alignment neither resets storage nor adds an allowance to the running Worker. New concurrency/token/rate settings default to bounded Chat policy and disabled MAS; normal public budgets require separate operator approval.
+- Storage: keep ADMISSION, `global-v1` and `v1-admission`. No Durable Object namespace/class migration is needed. New ledger fields are additive. Old leases/rates are interpreted as Agent workload entries, and historical attempt counts remain. Historical token usage is unknown; new token reservations do not reconstruct it.
+- Secrets: preserve the encrypted token and existing account/gateway/BYOK variables. No client credential, new paid resource or billing activation is part of the proposal. MAS remains a closed integration boundary and has no public forwarding endpoint.
+- Rollback: first disable forwarding. Restore the known production version with the existing documented Wrangler rollback command targeting `bb165c28-5a06-4372-9c9e-b2bf758b9599`. Preserve all durable storage and the consumed ceilings/counters; do not delete/recreate ADMISSION. Recheck health and quota without invoking inference. Old code can ignore the additive ledger fields; no MAS requests have been released.
+
+The local Worker dry run, TypeScript checks and 20 workerd groups pass; the final readiness-header check also passes independently. All 34 React adapters have mounted fixture evidence across the two browser scripts. These checks do not authorize deployment or prove real provider understanding.
+
+No paid Cloudflare feature was added. SQLite Durable Objects are supported on the Free plan, and current Workers limits permit the lightweight resource model. Free-plan request CPU and actual account limits still need runtime observation after an authorized deployment; local wall times are not billed CPU measurements. No plan or billing settings were changed. [Workers limits](https://developers.cloudflare.com/workers/platform/limits/), [Durable Object availability and limits](https://developers.cloudflare.com/durable-objects/platform/pricing/)
+
+### Separate inference and MAS gates
+
+After explicit deployment approval, deploy disabled first and verify the public readiness contract/hash and persisted quota. A deployment approval is not an inference allowance. Gate B requires an explicitly bounded new persisted allowance, no automatic retries/fallback, one natural THPT message reaching the real model, accepted canonical meaning, missing-subject clarification and zero generation requests. Preserve the two consumed attempts. Record actual HTTP status, finish reason, field diagnostics, usage, upstream attempt count and visible timing. Disable forwarding after the approved run.
+
+Gate C requires its own multi-turn budget for natural paraphrases, subject follow-up, unsupported subject, family correction, memory and navigation. Gate D separately requires an independent academic credential/provider, approved caller authorization/resource policy and explicit real-generation permission. No anonymous expensive MAS route is available in this candidate.
+
+### Explicit local Worker profile
+
+Build `astra-frontend`, then run `python scripts/start_agent_worker.py --port 8000` from the feature checkout. This explicitly chooses keyless Worker interpretation, disables fallback and keeps MAS in demo mode. Startup sends no inference request. Until the v2 Worker rollout and live gates are approved, model-assisted Chat remains unavailable; local UI controls and deterministic chat remain usable. Private Gateway and Codex diagnostic launchers remain explicit alternatives.
+
 ## Deployment gate
 
 The package is `workers/astra-ai-proxy`. Deployment adds one SQLite-backed Durable Object class `Admission`, binding `ADMISSION`, and migration `v1-admission`. The stable object name is `global-v1`. Preserve this identity and its storage through redeployments. The configuration uses `keep_vars=true` and contains none of the four existing dashboard credential settings. Encrypted secrets remain on the Worker. Preview URLs are disabled. The shipped configuration disables forwarding and permits only one global Agent attempt per UTC day when enabled.

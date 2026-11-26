@@ -3,8 +3,8 @@
 For UI and API reviewers. Each registered semantic intent has an App adapter. The shared registry defines the typed arguments consumed by both language boundaries. Availability is checked against the live local view and session, with reachable actions resolved after a prior step succeeds.
 
 - Registered intent adapters with a source binding: 34/34.
-- Intent IDs observed in the mounted browser smoke: 18/34. The service fixture intercepts expensive exam HTTP. Setup catalog and evaluate use the real FastAPI handlers.
-- The remaining 16 intent IDs have source bindings. Evidence for each scenario and its limits appears in [Acceptance results](ACCEPTANCE_RESULTS.md).
+- Intent IDs observed across the two mounted browser scripts: 34/34. The service fixtures intercept expensive exam HTTP. Setup catalog and evaluate use the real FastAPI handlers. This verifies adapters and normal confirmation gates with synthetic responses, not live academic inference or every state combination.
+- The additional 16 IDs are covered by `scripts/agent_capability_smoke.py`; the original 18 remain in `scripts/agent_browser_smoke.py`. [Current architecture and evidence](SEMANTIC_WORKFLOWS.md)
 
 | Surface | Semantic intents | Handler owner | Availability |
 | --- | --- | --- | --- |
@@ -20,9 +20,11 @@ For UI and API reviewers. Each registered semantic intent has an App adapter. Th
 
 The semantic envelope also carries non-executable guidance and intake proposals. The mounted browser observed the current catalog supplying subject clarification and read-only structure, and the existing SELECT_FORMAT binding opening the real Toán THPT dialog on a follow-up. Topic evaluation continues to use PREPARE_GENERATION. These routes add no new executable IDs. [Acceptance evidence](MANUAL_ACCEPTANCE_V2.md)
 
-## Browser-observed intent IDs
+## Original browser script intent IDs
 
 `OPEN_SETUP`, `OPEN_SESSION`, `SET_SIDEBAR`, `LIST_SESSIONS`, `SET_VIEW`, `STATUS`, `FOCUS_QUESTION`, `OPEN_EDITOR`, `APPROVE`, `EXPORT`, `SELECT_FORMAT`, `PREPARE_GENERATION`, `ADD_NOTE`, `CANCEL_NOTE`, `REVIEW_NOTES`, `RENAME`, `RECALL`, `PATCH_EDITOR`.
+
+Additional IDs observed by `scripts/agent_capability_smoke.py`: `APPLY_NOTES`, `CHAT_MESSAGE`, `CLOSE_EDITOR`, `CLOSE_SETUP`, `CREATE_SESSION`, `DELETE_SESSION`, `FOCUS_SECTION`, `FORMAT_DETAILS`, `HOME`, `REGENERATE_QUESTION`, `RETRY_PREVIEW`, `SCROLL_TOP`, `SET_DRAFT`, `SHOW_FORMATS`, `VERIFY_QUESTION`, `WARNINGS`. Regeneration, note application and deletion are observed at their confirmation gates; the script cancels those pending operations. Verification and preview retry use two explicit synthetic HTTP writes. Clipboard permission and actual paid academic completion are separate acceptance concerns.
 
 ## Remaining product and browser limits
 
