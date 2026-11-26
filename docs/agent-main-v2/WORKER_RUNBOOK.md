@@ -8,7 +8,9 @@ The package is `workers/astra-ai-proxy`. Deployment adds one SQLite-backed Durab
 
 SQLite Durable Objects support Workers Free. Free limits include 100,000 requests/day and 13,000 GB-s/day, and exceeding limits fails operations. Deployment may allocate the named Durable Object namespace within that plan. Confirm the operator account and existing Worker before deployment. [Cloudflare pricing](https://developers.cloudflare.com/durable-objects/platform/pricing/)
 
-The owner must confirm the non-secret `ASTRA_AGENT_MODEL` in the Worker dashboard from the stored key's Google project. No model ID is assumed. Keep the existing Run Secret, account ID, gateway ID and default alias. The current production endpoint returned Hello World on 2026-11-26. The new implementation has only been built and exercised locally.
+The owner selected gemini-3.1-flash-lite. It is configured centrally and remains subject to the actual Google project's model availability. Production version 234510ff-c691-4b59-b365-3127c94c2cea was deployed on 2026-11-26 with forwarding disabled. All four original dashboard bindings were preserved. ADMISSION and SQLite migration v1-admission were confirmed through production version metadata. Public health and a disabled local-to-Worker request passed with zero upstream attempts. The preceding template version is d140af7f-75d2-4e0b-a470-1e07741479e8.
+
+For the current checkpoint, deployment is complete. The following commands remain the reference procedure for future approved deployments. Live enablement and inference still require separate authorization.
 
 ## Commands
 

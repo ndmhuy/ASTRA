@@ -8,7 +8,7 @@ Old Agent reference SHA: fb834b976cb62eb7292fa839cdaf1d8738e1ec50
 Feature branch / worktree: feat/longlth2297/agent-main-v2 / ../ASTRA.worktrees/longlth2297-agent-main-v2
 Current HEAD: see git log; checkpoint base fbc951bade177dcea0d6e19079d17238dcd5b495
 Latest origin/main checked: 7523c79556a9935df5008c92043f1e38d6e5d2a2
-Current phase / exact next action: W6 deployment gate. Owner confirms model, completes Wrangler authentication and authorizes deployment. W7 inference authorization remains separate.
+Current phase / exact next action: W7. Worker deployed with forwarding disabled. Await explicit authorization to enable forwarding and perform one real interpretation.
 
 | Phase | Status | Evidence level | Commit / report | Blocker / next step |
 |---|---|---|---|---|
@@ -81,10 +81,10 @@ P8 refreshed origin with prune. Main remained at the audited SHA with 0/0 local 
 | Gate | Observed status |
 | --- | --- |
 | WORKER_IMPLEMENTED | VERIFIED_OFFLINE, production bundle and strict contract |
-| QUOTA_PROTECTION_VERIFIED | VERIFIED_OFFLINE, real local workerd SQLite storage; production binding pending |
+| QUOTA_PROTECTION_VERIFIED | VERIFIED_OFFLINE for quota races/persistence; production binding/config verified and kill switch observed with zero attempts. Production quota exhaustion remains unexercised. |
 | ASTRA_WORKER_PROFILE_VERIFIED_OFFLINE | VERIFIED_OFFLINE, Python contract tests, mounted UI fixtures and credential-free startup |
-| WORKER_DEPLOYED | BLOCKED_EXTERNAL, owner deployment authorization and Wrangler authentication |
-| LIVE_GATEWAY_VERIFIED | UNVERIFIED, exact model and one authorized inference pending |
+| WORKER_DEPLOYED | VERIFIED_PRODUCTION, version 234510ff-c691-4b59-b365-3127c94c2cea, forwarding false |
+| LIVE_GATEWAY_VERIFIED | UNVERIFIED, gemini-3.1-flash-lite configured; provider availability and one authorized inference pending |
 | LIVE_AGENT_ORCHESTRATION_VERIFIED | UNVERIFIED, one live turn plus manual multi-turn acceptance pending |
 | KEYLESS_MAS_GENERATION_VERIFIED | BLOCKED_COMPATIBILITY, existing academic provider contract differs; public MAS route absent |
 | FRESH_CLONE_VERIFIED | LOCAL_STARTUP_VERIFIED at d323dae with independent dependency install; remote AI and complete RAG/LaTeX installation unverified |
@@ -92,3 +92,7 @@ P8 refreshed origin with prune. Main remained at the audited SHA with 0/0 local 
 Use [Worker runbook](WORKER_RUNBOOK.md) and [next task](NEXT_TASK.md). The initial global budget of one is an operator diagnostic setting. Distributed clients rely on centralized quotas and retain local burst/replay guards.
 
 - 2026-11-26 W6 authorized deployment preparation, parent bc1c024. Wrangler authenticated. Existing Worker's gateway account matches the single authenticated account; encrypted Run Secret, astra-gateway and default alias confirmed through version metadata. Selected owner model gemini-3.1-flash-lite without inference availability claim. Prior version d140af7f-75d2-4e0b-a470-1e07741479e8 retained for rollback. Forwarding false; global/Agent allowance one, MAS zero. Production deployment authorized; live inference remains unauthorized.
+
+- 2026-11-26 21:28 ICT W6 production deployment. Owner authorized existing astra-ai-proxy. Deployed source at 333a44e using Wrangler 4.168.0 with keep-vars. Production version 234510ff-c691-4b59-b365-3127c94c2cea at 100%. Previous version d140af7f-75d2-4e0b-a470-1e07741479e8 recorded privately for rollback. ADMISSION namespace 5facb56f387d4f8c8fe723775e04f024 created with class Admission and migration tag v1-admission from new_sqlite_classes. Runtime usage_model remains standard. No account billing setting was changed.
+- W6 production configuration. Metadata comparison confirmed all four previous plain-text/secret bindings unchanged, including encrypted Run Secret. Model gemini-3.1-flash-lite, forwarding false, global/Agent daily limits 1/1, MAS 0, concurrency 1, IP/global bursts 3/10 per minute, timeout 30000 ms, output 1024. Health returned 200 with astra-intent-v1 and false; public JSON response required no login. Interpretation GET returned 405 and MAS route 404.
+- W6 zero-inference runtime validation. POST to disabled production interpretation returned 503/disabled. The actual local FastAPI Agent endpoint then called the deployed Worker and returned HTTP 200 with temporarily_unavailable/disabled. Production tail recorded request ad684003-63ea-43e5-91f1-cd8856d15d79, admitted=false, attempts=0, category=disabled. Quota reservations and real provider availability were not exercised. Local ASTRA health remained 200 with demoMode=true and mock MAS. W7 has zero live upstream attempts and awaits separate authorization.
