@@ -15,10 +15,9 @@ wheel CPython 3.11 cho macOS và Windows.
 
 - Lấy phần đọc input và lập kế hoạch từ snapshot nguồn nội bộ. Chạy **BLA 3.3.2**
   ở chế độ `bankrupt` trên cả lõi và adapter ASTRA, rồi biên dịch sang bytecode
-  CPython 3.11. Bản giao có 0 tệp nguồn Python.
-- Wheel `astra-mas` tách riêng khỏi ứng dụng ASTRA. Cài cùng app hiện tại và
-  import `astra_mas`. Gói chứa bộ đọc, planner, prompt và 61 tệp dữ liệu lập
-  kế hoạch. Các bước sau khi trả plan nằm ngoài phạm vi gói.
+  CPython 3.11. Wheel MAS độc lập chứa bytecode và dữ liệu.
+- Bản build ASTRA chứa package `astra_mas` với bộ đọc, planner, prompt và 61
+  tệp dữ liệu lập kế hoạch. Luồng kết thúc khi trả plan.
 - ASTRA gọi `prepare_plan()`, cấp callback LLM và có thể điều chỉnh
   `MasLimits`. Hàm trả toàn bộ kế hoạch cùng `state` và các vướng mắc.
 - Thư mục này chứa wheel, bảng phiên bản phụ thuộc, hợp đồng I/O, manifest
@@ -26,26 +25,19 @@ wheel CPython 3.11 cho macOS và Windows.
 
 ## Cài và tích hợp
 
-Dùng CPython 3.11. Chạy hai lệnh sau từ thư mục gốc của checkout ASTRA.
+Cài ASTRA như trong [README](../../README.md). Quy trình cài và build mặc
+định của ASTRA đã chứa MAS và các phụ thuộc của MAS. Trong môi trường ASTRA
+dùng CPython 3.11, import trực tiếp `astra_mas.prepare_plan`.
 
-```sh
-python -m pip install -r requirements-mas.txt
-python scripts/smoke_mas.py
-```
+[Package đã biên dịch](../../src/astra_mas/) chứa lớp import công khai, bytecode
+đã kiểm và `mas_core.zip` với lõi lập kế hoạch cùng dữ liệu. Khi chạy, backend
+tự chuẩn bị tiến trình tạm và nạp lõi. Có thể kiểm tra từ gốc checkout bằng
+`python scripts/smoke_mas.py`. Ví dụ dùng ma trận CSV và callback giả lập để
+in kế hoạch JSON 34 ô.
 
-[Package đã biên dịch](../../src/astra_mas/) có ba mô-đun `.pyc` cho
-điểm import và lớp adapter. `mas_core.zip` chứa 116 mô-đun bytecode của lõi
-và dữ liệu lập kế hoạch. Wheel dùng chính các byte này. Smoke test dùng
-ma trận CSV mẫu và callback giả lập để in kế hoạch JSON 34 ô, không gọi mạng.
-
-Nếu chỉ có ZIP hoặc tải từng tệp, đặt
-[wheel](astra_mas-0.1.1-cp311-none-any.whl) và
-[`requirements-mas-tested.txt`](requirements-mas-tested.txt) cùng thư mục,
-rồi cài từ đó.
-
-```sh
-python -m pip install --upgrade ./astra_mas-0.1.1-cp311-none-any.whl -c requirements-mas-tested.txt
-```
+[Wheel độc lập](astra_mas-0.1.1-cp311-none-any.whl) và
+[`requirements-mas-tested.txt`](requirements-mas-tested.txt) dành cho nơi
+tích hợp bên ngoài checkout ASTRA.
 
 ASTRA gọi `prepare_plan()` và truyền callback LLM async. Với provider có sẵn
 của ASTRA, dùng chế độ JSON object để MAS kiểm tra lược đồ riêng của từng
@@ -96,15 +88,15 @@ chính terminal hoặc tiến trình khởi chạy ASTRA phải nhìn thấy cá
 
 | Thành phần | Khi cần | MAS dùng để làm gì |
 | --- | --- | --- |
-| **CPython 3.11 và pip** | Mọi lượt chạy | Cài wheel `cp311` và phụ thuộc Python theo `requirements-mas-tested.txt`. |
+| **CPython 3.11 và pip** | Mọi lượt MAS | Dùng môi trường Python của ASTRA sau khi cài theo README. |
 | **Poppler** | Đầu vào PDF | `pdfinfo` đếm trang, `pdftotext` trích văn bản, `pdftoppm` tạo ảnh trang, `pdffonts` và `pdfimages` hỗ trợ đánh giá nội dung PDF. |
 | **Pandoc** | DOCX có công thức Word | Chuyển nội dung và công thức OMML. Khi máy thiếu Pandoc, trình đọc dùng văn bản gốc và báo phần công thức bị mất. Với tệp `.doc` cũ, lưu lại thành `.docx` trước khi đưa vào. |
 | **LLM hỗ trợ ảnh** | Ảnh, hình nhúng hoặc trang quét cần đọc | Callback ASTRA nhận ảnh PNG và gửi chúng sang model có khả năng đọc ảnh. |
 | **Tesseract với `vie` và `eng`** | Tùy chọn | OCR cục bộ trên đường đọc ảnh có hỗ trợ dự phòng, với kết quả vẫn được đánh dấu đọc một phần. |
 | **XeLaTeX** | Khi biên dịch lại sơ đồ | Tạo lại PDF từ tệp LaTeX và bản vẽ vector đi kèm. |
 
-Với yêu cầu bằng chữ, TXT, CSV hoặc XLSX, cài wheel và các phụ thuộc Python
-là đủ cho phần đọc nguồn của các định dạng này. Khi dùng PDF hoặc DOCX có
+Với yêu cầu bằng chữ, TXT, CSV hoặc XLSX, cài ASTRA là đủ cho phần đọc các định
+dạng này. Khi dùng PDF hoặc DOCX có
 công thức, cài thêm các công cụ trong bảng.
 
 ### macOS
