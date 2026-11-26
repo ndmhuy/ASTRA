@@ -13,6 +13,7 @@ from exam_baseline.api.app import create_app
 from exam_baseline.config import Settings
 from exam_baseline.core.contracts import Completion, ProviderError
 from exam_baseline.thpt.rag import DEFAULT_CORPUS_REF
+from exam_baseline.ui.exam_source import publish_source
 from rag_workflow import retrieve_exam_context
 from tests.paths import ROOT
 from tests.thpt.test_generation import Scripted
@@ -200,6 +201,42 @@ def test_browser_import_preserves_drafts_and_reconnects_existing_artifacts(tmp_p
         assert workspaces[exam_id]["jobStatus"] == "completed"
         assert client.delete(f"/api/workspaces/{draft_id}").status_code == 204
         assert client.post(draft_url, json=legacy).status_code == 409
+
+
+def test_exam_version_persists_legacy_baseline_and_recovers_interrupted_source(tmp_path):
+    app, _ = fixture_app(tmp_path)
+    with TestClient(app) as client:
+        job = client.post(
+            "/api/exams/generate", json=PAYLOAD, headers={"Idempotency-Key": "version-baseline"}
+        ).json()["jobId"]
+        assert wait(client, job)["status"] == "completed"
+        store = app.state.ui_jobs.store
+        revision = client.get(f"/api/exams/{job}").json()["revision"]
+        initial, source = store.get_version(job, revision)
+        assert store.list_versions(job)[0]["change"] == "generated"
+        path = tmp_path / job / "de_thi.tex"
+        assert source == path.read_bytes()
+        # Simulate the database and disk just before this feature was installed.
+        with store.connect() as db:
+            db.execute("DELETE FROM exam_versions WHERE job_id=?", (job,))
+        publish_source(path.parent, b"new source from an uncommitted revision")
+
+    restarted, _ = fixture_app(tmp_path)
+    with TestClient(restarted) as client:
+        store = restarted.state.ui_jobs.store
+        assert path.read_bytes() == source
+        assert store.get_version(job, revision) == (initial, source)
+        assert store.list_versions(job)[0]["change"] == "baseline"
+        edited = client.put(
+            f"/api/exams/{job}/questions/1",
+            json={"revision": revision, "question": {"stem": "Tính $1+1$ (đã chỉnh sửa)."}},
+        )
+        assert edited.status_code == 200
+        latest, latest_source = store.get_version(job, revision + 1)
+        assert latest["rawQuestions"][0] != initial["rawQuestions"][0]
+        assert latest_source == path.read_bytes() and latest_source != source
+        assert store.get_version(job, revision) == (initial, source)
+        assert store.list_versions(job)[0]["change"] == "edited"
 
 
 def test_retrieval_agents_teacher_approval_export_edit_and_reconnect(tmp_path):
@@ -500,6 +537,15 @@ def test_targeted_regeneration_keeps_ids_invalidates_approval_and_has_no_second_
         assert last_solve["questions"][0]["stem"] == revised["questions"][0]["stem"]
         assert revised["revision"] == package["revision"] + 1
         assert not revised["approved"]
+        versions = app.state.ui_jobs.store.list_versions(job)
+        assert [entry["change"] for entry in versions] == ["regenerated", "generated"]
+        assert versions[0]["questionId"] == 1
+        rejected = client.post(
+            f"/api/exams/{job}/questions/1/regenerate", json={"revision": package["revision"]}
+        )
+        assert rejected.status_code == 409
+        assert app.state.ui_jobs.store.list_versions(job) == versions
+        assert client.get(f"/api/exams/{job}").json() == revised
         assert len(providers["reviewer"].calls) == 1
         assert len(providers["solver"].calls) == 2
         assert all("PRIVATE_BANK_KEY" not in json.dumps(call) for call in providers["solver"].calls)

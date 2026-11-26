@@ -44,6 +44,7 @@ from exam_baseline.thpt.visuals import visual_issues
 from exam_baseline.ui.contracts import ExamGenerateRequest, SubjectGenerateRequest
 from exam_baseline.ui.demo import regenerate_demo_question, run_demo_job
 from exam_baseline.ui.errors import UiError
+from exam_baseline.ui.exam_source import SOURCE_NAME
 from exam_baseline.ui.preview import PreviewService
 from exam_baseline.ui.storage import JobStore
 from exam_baseline.vact import models as vact_models
@@ -530,7 +531,6 @@ class JobManager:
                     report=report,
                     **extra_fields,
                 )
-                self._refresh(job)
                 job["progress"].update(
                     stage=6,
                     stageName="completed",
@@ -538,7 +538,7 @@ class JobManager:
                     completedItems=len(questions),
                     statusMessage="Đề đã sẵn sàng để kiểm tra",
                 )
-                self.store.save(job)
+                self._save_version(job, "generated")
         except asyncio.CancelledError:
             self._fail(
                 job_id,
@@ -591,7 +591,11 @@ class JobManager:
         job.update(status="failed", error=error.payload())
         self.store.save(job)
 
-    def _refresh(self, job):
+    def _save_version(self, job, change, *, question_id=None):
+        source = self._render_source(job)
+        self.store.save_version(job, source, change, question_id=question_id)
+
+    def _render_source(self, job):
         if _is_vact(job):
             sections = _vact_sections(job["rawQuestions"], job.get("rawPassages", []))
             source = vact_render(
@@ -599,7 +603,6 @@ class JobManager:
                 vact_models.Illustrations.model_validate(job["drawings"]),
                 job["nativeRequest"].get("font_profile", "unicode_times"),
             )
-            (self.root / job["jobId"] / "de_thi.tex").write_bytes(source)
             job["sourceHash"] = sha256(source).hexdigest()
             job["contentHash"] = fingerprint(
                 {
@@ -608,7 +611,7 @@ class JobManager:
                     "sourceHash": job["sourceHash"],
                 }
             )
-            return
+            return source
         questions = [Question.model_validate(q) for q in job["rawQuestions"]]
         drawings = Illustrations.model_validate(job["drawings"])
         if _subject_id(job):
@@ -618,12 +621,12 @@ class JobManager:
         else:
             passages = []
             source = render(questions, drawings)
-        (self.root / job["jobId"] / "de_thi.tex").write_bytes(source)
         job["sourceHash"] = sha256(source).hexdigest()
         binding = {"questions": job["rawQuestions"], "sourceHash": job["sourceHash"]}
         if passages:
             binding["passages"] = passages
         job["contentHash"] = fingerprint(binding)
+        return source
 
     def _completed(self, job_id):
         job = self.get(job_id)
@@ -916,8 +919,7 @@ class JobManager:
             solutions = _current_solutions(job)
             solutions.pop(raw["id"], None)
             job.update(solutions={"entries": list(solutions.values())}, solverResultsVersion=1)
-            self._refresh(job)
-            self.store.save(job)
+            self._save_version(job, "edited", question_id=question_id)
             return self.package(job_id)
 
     async def approve(self, job_id, payload):
@@ -1116,14 +1118,13 @@ class JobManager:
                 approval=None,
             )
             job["manualEdits"] = list(set(job["manualEdits"]) | {repaired.id})
-            self._refresh(job)
-            self.store.save(job)
+            self._save_version(job, "regenerated", question_id=question_id)
             # Teacher-initiated regeneration never adds another Reviewer pass.
             return self.package(job_id)
 
     def _verify_source(self, job):
         try:
-            source = (self.root / job["jobId"] / "de_thi.tex").read_bytes()
+            source = (self.root / job["jobId"] / SOURCE_NAME).read_bytes()
         except OSError:
             raise UiError(
                 "artifact_changed",
@@ -1153,7 +1154,7 @@ class JobManager:
             self._verify_source(job)
             root = self.root / job_id
             if kind == "STUDENT_EXAM" and file_format == "tex":
-                return root / "de_thi.tex", "application/x-tex"
+                return root / SOURCE_NAME, "application/x-tex"
             if kind == "STUDENT_EXAM" and file_format == "pdf":
                 return self.previews.file(job), "application/pdf"
             if kind == "TEACHER_KEY" and file_format == "json":

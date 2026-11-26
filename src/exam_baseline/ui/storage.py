@@ -2,11 +2,25 @@
 
 import json
 import sqlite3
+from hashlib import sha256
 from pathlib import Path
 from typing import Literal
 from uuid import uuid4
 
 from exam_baseline.ui.errors import UiError
+from exam_baseline.ui.exam_source import PENDING_NAME, SOURCE_NAME, publish_source, settle_source
+
+EXAM_VERSION_FIELDS = (
+    "rawQuestions",
+    "rawPassages",
+    "drawings",
+    "solutions",
+    "solverResultsVersion",
+    "manualEdits",
+    "approval",
+    "sourceHash",
+    "contentHash",
+)
 
 
 class JobConflict(ValueError):
@@ -33,6 +47,20 @@ class JobStore:
                     archived INTEGER NOT NULL DEFAULT 0
                 )"""
             )
+            db.execute(
+                """CREATE TABLE IF NOT EXISTS exam_versions (
+                    job_id TEXT NOT NULL REFERENCES jobs(id),
+                    revision INTEGER NOT NULL,
+                    created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+                    change TEXT NOT NULL,
+                    question_id INTEGER,
+                    restored_from INTEGER,
+                    data TEXT NOT NULL,
+                    source BLOB,
+                    PRIMARY KEY (job_id, revision)
+                )"""
+            )
+        self._seed_versions()
 
     def connect(self):
         return sqlite3.connect(self.path, timeout=15)
@@ -188,6 +216,112 @@ class JobStore:
                 "UPDATE jobs SET data=? WHERE id=?",
                 (json.dumps(data, ensure_ascii=False), data["jobId"]),
             )
+            if data["status"] == "completed":
+                db.execute(
+                    "UPDATE exam_versions SET data=? WHERE job_id=? AND revision=?",
+                    (self._snapshot(data), data["jobId"], data["revision"]),
+                )
+
+    @staticmethod
+    def _snapshot(job: dict) -> str:
+        return json.dumps(
+            {key: job[key] for key in EXAM_VERSION_FIELDS if key in job}, ensure_ascii=False
+        )
+
+    def _seed_versions(self) -> None:
+        with self.connect() as db:
+            db.execute("BEGIN IMMEDIATE")
+            for marker in self.path.parent.glob(f"*/{PENDING_NAME}"):
+                row = db.execute(
+                    "SELECT json_extract(data, '$.sourceHash') FROM jobs WHERE id=?",
+                    (marker.parent.name,),
+                ).fetchone()
+                settle_source(marker.parent, row[0] if row else None)
+            rows = db.execute(
+                """SELECT j.data FROM jobs j
+                   WHERE json_extract(j.data, '$.status')='completed'
+                   AND NOT EXISTS (SELECT 1 FROM exam_versions v WHERE v.job_id=j.id)"""
+            ).fetchall()
+            for (raw,) in rows:
+                job = json.loads(raw)
+                path = self.path.parent / job["jobId"] / SOURCE_NAME
+                source = path.read_bytes() if path.is_file() else None
+                if source is not None and sha256(source).hexdigest() != job["sourceHash"]:
+                    source = None
+                db.execute(
+                    """INSERT INTO exam_versions (job_id, revision, change, data, source)
+                       VALUES (?, ?, 'baseline', ?, ?)""",
+                    (job["jobId"], job["revision"], self._snapshot(job), source),
+                )
+
+    def save_version(
+        self,
+        job: dict,
+        source: bytes,
+        change: str,
+        *,
+        question_id: int | None = None,
+        restored_from: int | None = None,
+    ) -> None:
+        job_id, revision = job["jobId"], job["revision"]
+        root = self.path.parent / job_id
+        with self.connect() as db:
+            db.execute("BEGIN IMMEDIATE")
+            row = db.execute("SELECT data FROM jobs WHERE id=?", (job_id,)).fetchone()
+            previous = json.loads(row[0])
+            expected = change == "generated" and previous["status"] in {"queued", "running"}
+            if not expected and previous.get("revision") != revision - 1:
+                raise UiError("stale_revision", "Đề thi đã có bản cập nhật mới hơn.")
+            committed_hash = previous.get("sourceHash")
+            settle_source(root, committed_hash)
+            try:
+                db.execute(
+                    """INSERT INTO exam_versions
+                       (job_id, revision, change, question_id, restored_from, data, source)
+                       VALUES (?, ?, ?, ?, ?, ?, ?)""",
+                    (
+                        job_id,
+                        revision,
+                        change,
+                        question_id,
+                        restored_from,
+                        self._snapshot(job),
+                        source,
+                    ),
+                )
+                db.execute(
+                    "UPDATE jobs SET data=? WHERE id=?",
+                    (json.dumps(job, ensure_ascii=False), job_id),
+                )
+                publish_source(root, source)
+                db.commit()
+                committed_hash = job["sourceHash"]
+            except Exception:
+                db.rollback()
+                raise
+            finally:
+                settle_source(root, committed_hash)
+
+    def list_versions(self, job_id: str) -> list[dict]:
+        with self.connect() as db:
+            db.row_factory = sqlite3.Row
+            rows = db.execute(
+                """SELECT revision, created_at AS createdAt, change, question_id AS questionId,
+                          restored_from AS restoredFrom, source IS NOT NULL AS restorable
+                   FROM exam_versions WHERE job_id=? ORDER BY revision DESC""",
+                (job_id,),
+            ).fetchall()
+        return [{**row, "restorable": bool(row["restorable"])} for row in rows]
+
+    def get_version(self, job_id: str, revision: int) -> tuple[dict, bytes | None]:
+        with self.connect() as db:
+            row = db.execute(
+                "SELECT data, source FROM exam_versions WHERE job_id=? AND revision=?",
+                (job_id, revision),
+            ).fetchone()
+        if row is None:
+            raise UiError("exam_version_not_found", "Không tìm thấy phiên bản đề này.", 404)
+        return json.loads(row[0]), row[1]
 
     def interrupt_unfinished(self) -> None:
         with self.connect() as db:
