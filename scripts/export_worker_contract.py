@@ -12,8 +12,11 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def export():
     turn = Turn(
-        schemaVersion="astra-intent-v1", clientMessageId="a" * 36,
-        workspaceId="b" * 36, message="fixture", context=Context(screen="start", setup=False),
+        schemaVersion="astra-intent-v1",
+        clientMessageId="a" * 36,
+        workspaceId="b" * 36,
+        message="fixture",
+        context=Context(screen="start", setup=False),
     )
     base = json.loads(turn_text(turn))
     for key in ("context", "message", "availableHints"):
@@ -23,14 +26,31 @@ def export():
         for status in (None, "draft", "error", "generating", "complete"):
             for approved in (False, True):
                 for preview in (None, "failed", "unavailable"):
-                    context = Context(screen="workspace", setup=setup, status=status,
-                                      approved=approved, preview=preview)
-                    hints[json.dumps([setup, status, approved, preview], separators=(",", ":"))] = available_now(context)
-    return json.dumps({
-        "system": SYSTEM, "base": base, "hints": hints,
-        "turnSchema": Turn.model_json_schema(),
-        "decisionSchema": Decision.model_json_schema(), "outputSchema": schema(),
-    }, ensure_ascii=False, indent=2) + "\n"
+                    context = Context(
+                        screen="workspace",
+                        setup=setup,
+                        status=status,
+                        approved=approved,
+                        preview=preview,
+                    )
+                    hints[json.dumps([setup, status, approved, preview], separators=(",", ":"))] = (
+                        available_now(context)
+                    )
+    return (
+        json.dumps(
+            {
+                "system": SYSTEM,
+                "base": base,
+                "hints": hints,
+                "turnSchema": Turn.model_json_schema(),
+                "decisionSchema": Decision.model_json_schema(),
+                "outputSchema": schema(),
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n"
+    )
 
 
 if __name__ == "__main__":

@@ -11,7 +11,7 @@ export class Admission {
 
   async fetch(request: Request): Promise<Response> {
     const body = await request.json() as { release?: string; ip?: string; id?: string; operation?: string };
-    // No await within the transaction. Counters and leases are committed together.
+    // Storage awaits remain inside the transaction. Network calls stay outside.
     return this.state.storage.transaction(async transaction => {
       const now = Date.now();
       const day = new Date(now).toISOString().slice(0, 10);

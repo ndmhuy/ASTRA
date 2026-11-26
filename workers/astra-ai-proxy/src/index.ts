@@ -5,8 +5,8 @@ export { Admission } from "./admission";
 
 const ajv = new Ajv({ strict: false, validateFormats: false });
 const validateTurn = ajv.compile(resources.turnSchema);
-const validateDecision = ajv.compile(resources.decisionSchema);
-const validateOutput = ajv.compile(resources.outputSchema);
+const validateDecision: (data: unknown) => boolean = ajv.compile(resources.decisionSchema);
+const validateOutput: (data: unknown) => boolean = ajv.compile(resources.outputSchema);
 const MAX_BODY = 32768;
 const MAX_RESPONSE = 65536;
 const VERSION = "astra-intent-v1";
@@ -32,7 +32,7 @@ async function readBounded(response: Request | Response, limit: number): Promise
   const joined = new Uint8Array(size);
   let offset = 0;
   for (const chunk of chunks) { joined.set(chunk, offset); offset += chunk.length; }
-  return new TextDecoder("utf-8", { fatal: true }).decode(joined);
+  return new TextDecoder("utf-8", { fatal: true, ignoreBOM: false }).decode(joined);
 }
 
 function response(body: unknown, status = 200) {
@@ -53,6 +53,9 @@ export default {
     let reserved = false;
     let upstreamStatus: number | undefined;
     let attempts = 0;
+    let category = "valid";
+    let controller: AbortController | undefined;
+    const disconnect = () => controller?.abort();
     let timer: ReturnType<typeof setTimeout> | undefined;
     try {
       if (env.ASTRA_FORWARDING_ENABLED !== "true") throw new Failure("disabled", 503);
@@ -70,7 +73,7 @@ export default {
       if (request.headers.get("content-type")?.split(";")[0].trim() !== "application/json") {
         throw new Failure("rejected", 415);
       }
-      const turn = JSON.parse(await readBounded(request, MAX_BODY));
+      const turn: any = JSON.parse(await readBounded(request, MAX_BODY));
       if (!validateTurn(turn)) throw new Failure("rejected", 400);
       // Connection metadata is set by Cloudflare at the edge. Claimed IDs never grant quota.
       const ip = request.headers.get("CF-Connecting-IP");
@@ -84,9 +87,10 @@ export default {
       if (admitted.status === 429) throw new Failure("quota", 429);
       if (!admitted.ok) throw new Failure("transient", 503);
       reserved = true;
-      const controller = new AbortController();
-      timer = setTimeout(() => controller.abort(), milliseconds);
-      const context = turn.context;
+      controller = new AbortController();
+      request.signal.addEventListener("abort", disconnect, { once: true });
+      timer = setTimeout(() => controller?.abort(), milliseconds);
+      const context = turn.context as Record<string, any>;
       const preview = ["failed", "unavailable"].includes(context.preview) ? context.preview : null;
       const hintKey = JSON.stringify([context.setup, context.status ?? null, context.approved ?? false, preview]);
       const hints = (resources.hints as Record<string, string[]>)[hintKey] ?? [];
@@ -94,7 +98,7 @@ export default {
         "/google-ai-studio/v1/models/" + model + ":generateContent";
       attempts = 1;
       const upstream = await fetch(upstreamUrl, {
-        method: "POST", redirect: "error", signal: controller.signal,
+        method: "POST", redirect: "manual", signal: controller.signal,
         headers: {
           "Content-Type": "application/json", "cf-aig-authorization": "Bearer " + token,
           "cf-aig-byok-alias": alias, "cf-aig-no-wholesale": "true",
@@ -129,8 +133,9 @@ export default {
       const parts = candidates[0].content?.parts;
       if (!Array.isArray(parts)) throw new Failure("schema", 502);
       const text = parts.filter(part => !part.thought).map(part => part.text).join("");
-      const decision = JSON.parse(text);
-      if (!validateDecision(decision) || !validateOutput(decision) ||
+      const decision: any = JSON.parse(text);
+      const semanticValid = validateDecision(decision) && validateOutput(decision);
+      if (!semanticValid ||
           (decision.kind === "task") !== Boolean(decision.intents.length) ||
           (decision.intake && decision.guidance) ||
           ((decision.intake || decision.guidance) && !["answer","clarify"].includes(decision.kind))) {
@@ -144,11 +149,13 @@ export default {
         error instanceof Error && error.name === "AbortError" ? new Failure("timeout", 504) :
         error instanceof SyntaxError ? new Failure(reserved ? "schema" : "rejected", reserved ? 502 : 400) :
         new Failure("transient", 503);
+      category = failure.category;
       return response({ error: failure.category, requestId: id }, failure.status);
     } finally {
-      clearTimeout(timer);
+      if (timer !== undefined) clearTimeout(timer);
+      request.signal.removeEventListener("abort", disconnect);
       console.log(JSON.stringify({ requestId: id, admitted: reserved, attempts, upstreamStatus,
-        elapsedMs: Math.round(performance.now() - started) }));
+        category, elapsedMs: Math.round(performance.now() - started) }));
       if (reserved && admission) {
         try { await admission.fetch("https://admission/release", { method: "POST", body: JSON.stringify({ release: id }) }); }
         catch { /* Lease expires without refunding the daily attempt. */ }

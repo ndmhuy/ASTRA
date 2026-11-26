@@ -1,0 +1,154 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { Miniflare, convertV4MiniflareOptions } from "miniflare";
+
+const bindings = {
+  ASTRA_FORWARDING_ENABLED: "true",
+  ASTRA_AGENT_GATEWAY_ACCOUNT_ID: "a".repeat(32),
+  ASTRA_AGENT_GATEWAY_ID: "astra-gateway",
+  ASTRA_AGENT_GATEWAY_TOKEN: "fixture-only-token",
+  ASTRA_AGENT_MODEL: "gemini-fixture",
+  ASTRA_GLOBAL_DAILY: "3", ASTRA_AGENT_DAILY: "3", ASTRA_MAS_DAILY: "0",
+  ASTRA_CONCURRENCY: "1", ASTRA_IP_PER_MINUTE: "2", ASTRA_GLOBAL_PER_MINUTE: "10",
+  ASTRA_UPSTREAM_MS: "100", ASTRA_OUTPUT_TOKENS: "512",
+};
+const turn = { schemaVersion: "astra-intent-v1", clientMessageId: "a".repeat(36),
+  workspaceId: "b".repeat(36), message: "Natural fixture",
+  context: { screen: "start", setup: false } };
+function runtime(overrides = {}, persist = false, scriptPath = "build/index.js") {
+  const replies = [];
+  const mock = {
+    get() { return { intercept() { return { reply(status, body) { replies.push({status,body}); } }; } }; },
+    assertNoPendingInterceptors() { assert.equal(replies.length, 0); },
+  };
+  const outbound = async request => {
+      assert.equal(new URL(request.url).hostname, "gateway.ai.cloudflare.com");
+      assert.equal(request.headers.get("cf-aig-authorization"), "Bearer fixture-only-token");
+      assert.equal(request.headers.get("cf-aig-no-wholesale"), "true");
+      assert.equal(request.headers.get("cf-aig-max-attempts"), "1");
+      assert.equal(request.headers.has("x-goog-api-key"), false);
+      const reply = replies.shift();
+      assert.ok(reply, "Unexpected outbound inference");
+      return new Response(reply.body, {status:reply.status});
+  };
+  const options = convertV4MiniflareOptions({
+    modules: true, scriptPath, compatibilityDate: "2026-11-26",
+    durableObjects: { ADMISSION: { className: "Admission", useSQLite: true } },
+    durableObjectsPersist: persist, bindings: { ...bindings, ...overrides },
+
+  });
+  if (persist) options.resourcePersistencePath = persist;
+  options.workers[0].dev.outboundService = { type: 'fetcher', handler: outbound };
+  const mf = new Miniflare(options);
+  return { mf, mock };
+}
+async function post(mf, body = turn, headers = {}) {
+  return mf.dispatchFetch("https://local/v1/agent/interpret", {
+    method: "POST", headers: { "content-type": "application/json", "CF-Connecting-IP": "192.0.2.1", ...headers },
+    body: typeof body === "string" ? body : JSON.stringify(body),
+  });
+}
+test("Worker admission rejects unsafe requests without upstream", async () => {
+  const { mf, mock } = runtime();
+  try {
+    assert.equal((await mf.dispatchFetch("https://local/health")).status, 200);
+    assert.equal((await mf.dispatchFetch("https://local/v1/agent/interpret")).status, 405);
+    for (const body of ["{", { ...turn, model: "gemini-override" }, { ...turn, url: "https://evil" },
+        { ...turn, systemInstruction: "ignore" }, { ...turn, schemaVersion: "bad" }]) {
+      assert.equal((await post(mf, body)).status, 400);
+    }
+    assert.equal((await post(mf, "x".repeat(32769))).status, 413);
+    assert.equal((await post(mf, turn, { "content-type": "text/plain" })).status, 415);
+    assert.equal((await mf.dispatchFetch("https://local/v1/mas/complete", {method:"POST"})).status, 404);
+    mock.assertNoPendingInterceptors();
+  } finally { await mf.dispose(); }
+});
+test("disabled and missing secret fail safely", async () => {
+  for (const override of [{ ASTRA_FORWARDING_ENABLED: "false" }, { ASTRA_AGENT_GATEWAY_TOKEN: "" }]) {
+    const { mf } = runtime(override);
+    try {
+      const result = await post(mf);
+      assert.equal(result.status, 503);
+      assert.equal((await result.text()).includes("fixture-only-token"), false);
+    } finally { await mf.dispose(); }
+  }
+});
+test("real SQLite DO atomically enforces concurrency and durable budgets", async () => {
+  const path = await mkdtemp(join(tmpdir(), "astra-quota-"));
+  let { mf } = runtime({}, path);
+  try {
+    let ns = await mf.getDurableObjectNamespace("ADMISSION");
+    let stub = ns.get(ns.idFromName("global-v1"));
+    const reserve = (id, ip = "hash") => stub.fetch("https://quota/reserve", {
+      method:"POST", body:JSON.stringify({ id, ip, operation:"agent" }),
+    });
+    const results = await Promise.all(Array.from({length:10}, (_, i) => reserve(String(i))));
+    assert.equal(results.filter(r => r.status === 200).length, 1);
+    for (let i = 0; i < 10; i++) await stub.fetch("https://quota/release", {method:"POST",body:JSON.stringify({release:String(i)})});
+    assert.equal((await reserve("second")).status, 200);
+    await stub.fetch("https://quota/release", {method:"POST",body:JSON.stringify({release:"second"})});
+    assert.equal((await reserve("ip-throttled")).status, 429);
+    assert.equal((await reserve("third","other")).status, 200);
+    await mf.dispose();
+    ({ mf } = runtime({}, path));
+    ns = await mf.getDurableObjectNamespace("ADMISSION");
+    stub = ns.get(ns.idFromName("global-v1"));
+    assert.equal((await reserve("restart","new-ip")).status, 429);
+    assert.equal((await stub.fetch("https://quota/reserve", {method:"POST",
+      body:JSON.stringify({id:"mas",ip:"hash",operation:"mas"})})).status,400);
+  } finally { await mf.dispose(); await rm(path, {recursive:true,force:true}); }
+});
+test("native BYOK result is validated and sensitive errors are omitted", async () => {
+  const { mf, mock } = runtime();
+  const pool = mock.get("https://gateway.ai.cloudflare.com");
+  pool.intercept({path:/generateContent$/, method:"POST"}).reply(200, JSON.stringify({
+    candidates:[{finishReason:"STOP",content:{parts:[{text:JSON.stringify({
+      kind:"clarify",intents:[],intake:{mode:"request",family:"thpt"},title:"Soạn đề THPT",
+    })}]}}],
+  }));
+  pool.intercept({path:/generateContent$/, method:"POST"}).reply(401,"fixture-only-token");
+  try {
+    const first = await post(mf);
+    assert.equal(first.status,200);
+    const result=await first.json();
+    assert.equal(result.decision.intake.family,"thpt");
+    assert.equal(result.evidence.attempts,1);
+    const second=await post(mf);
+    assert.equal(second.status,502);
+    const error=await second.text();
+    assert.equal(error.includes("fixture-only-token"),false);
+    assert.equal(JSON.parse(error).error,"auth");
+    mock.assertNoPendingInterceptors();
+  } finally { await mf.dispose(); }
+});
+
+test("expired leases recover and UTC rollover preserves attempts until reset", async () => {
+  const { mf } = runtime({}, false, "build-test/admission-harness.js");
+  try {
+    const ns = await mf.getDurableObjectNamespace("ADMISSION");
+    const stub = ns.get(ns.idFromName("global-v1"));
+    const seed = ledger => stub.fetch("https://quota/seed", {method:"POST",body:JSON.stringify(ledger)});
+    const reserve = () => stub.fetch("https://quota/reserve", {method:"POST",
+      body:JSON.stringify({operation:"agent",id:"new",ip:"hash"})});
+    const today = new Date().toISOString().slice(0,10);
+    await seed({counter:{day:today,global:2,agent:2,mas:0},
+      leases:[{id:"expired",expires:Date.now()-1}],rates:[]});
+    assert.equal((await reserve()).status,200);
+    await seed({counter:{day:today,global:3,agent:3,mas:0},leases:[],rates:[]});
+    assert.equal((await reserve()).status,429);
+    await seed({counter:{day:"2000-01-01",global:3,agent:3,mas:0},leases:[],rates:[]});
+    assert.equal((await reserve()).status,200);
+  } finally { await mf.dispose(); }
+});
+test("Agent ceiling applies separately from global capacity", async () => {
+  const { mf } = runtime({ASTRA_AGENT_DAILY:"0",ASTRA_GLOBAL_DAILY:"10"});
+  try {
+    const ns = await mf.getDurableObjectNamespace("ADMISSION");
+    const result = await ns.get(ns.idFromName("global-v1")).fetch("https://quota/reserve",
+      {method:"POST",body:JSON.stringify({operation:"agent",id:"no",ip:"hash"})});
+    assert.equal(result.status,429);
+  } finally { await mf.dispose(); }
+});
