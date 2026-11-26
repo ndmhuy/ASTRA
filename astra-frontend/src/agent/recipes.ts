@@ -64,6 +64,22 @@ export function fastRoute(message: string): Local | undefined {
   if (/^(thu lai|tao lai) (ban )?xem truoc( pdf)?$/.test(text)) return action('RETRY_PREVIEW');
   if (/^(xem|liet ke) ghi chu$/.test(text)) return action('REVIEW_NOTES');
   if (/^(ap dung|sua theo) ghi chu$/.test(text)) return action('APPLY_NOTES');
+  if (/\b(chat|hoi thoai|doan chat) (cua )?(nguoi khac|tai khoan khac)\b/.test(text)) {
+    return { text: 'Em chỉ có thể tìm trong tủ đề hiện có trên trình duyệt này.' };
+  }
+  const rename = message.match(/^đổi tên (?:đoạn chat|cuộc trò chuyện|chat)(?: này)? thành (.{1,120})$/iu);
+  if (rename) return action('RENAME', { title: rename[1] });
+  const named = message.match(/^(mở|tìm) (?:chat|cuộc trò chuyện|đề) (.{1,120})$/iu);
+  if (named && !/^(thi|vua tao|gan nhat)$/.test(fold(named[2]))) {
+    return action(named[1].toLocaleLowerCase('vi') === 'mở' ? 'OPEN_SESSION' : 'LIST_SESSIONS', { title: named[2] });
+  }
+  if (/^(co da chon (dang|mau) de nao|nhac lai mau de da chon)[?]?$/.test(text)) return action('RECALL', { what: 'format' });
+  if (/^(nhac lai (nguyen van )?(yeu cau|loi nhan) (luc |ban )?dau|co noi gi luc dau)[?]?$/.test(text)) return action('RECALL', { what: 'first' });
+  const editMessage = text.match(/^(sao chep|sua|thu hoi|tao nhanh tu) tin nhan (\d{1,3})$/);
+  if (editMessage) {
+    const operations: Record<string, string> = { 'sao chep': 'copy', sua: 'draft', 'thu hoi': 'retract', 'tao nhanh tu': 'branch' };
+    return action('CHAT_MESSAGE', { operation: operations[editMessage[1]], number: Number(editMessage[2]) });
+  }
   if (/^(dong (cau hinh|thiet lap)|dong mau de)$/.test(text)) return action('CLOSE_SETUP');
   if (/^(mo|liet ke|xem) (tu de|danh sach de)$/.test(text)) return action('LIST_SESSIONS');
   if (/^(ve (trang chu|man hinh bat dau)|home)$/.test(text)) return action('HOME');

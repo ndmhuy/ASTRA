@@ -189,6 +189,8 @@ def run_workflows(page, composer, business_writes):
     say("Tạo đề THPT 15 câu, 45 phút")
     expect(page.get_by_text("cố định 22 câu, 90 phút", exact=False)).to_be_visible()
     assert not starts
+    say("Đổi tên đoạn chat thành Ôn Toán tháng 12")
+    expect(page.get_by_text("Đã đổi tên cuộc trò chuyện", exact=False)).to_be_visible()
     say("Tạo đề Toán THPT")
     expect(
         dialog.get_by_text("Bấm “Tạo đề thi” để xác nhận gửi yêu cầu.", exact=False)
@@ -228,6 +230,7 @@ def run_workflows(page, composer, business_writes):
     say("Xác nhận")
     expect(page.get_by_text("Đã phê duyệt phiên bản hiện tại.")).to_be_visible()
     assert approved
+    expect(page.get_by_role("button", name="Ôn Toán tháng 12", exact=True)).to_be_visible()
     say("Xuất JSON")
     expect(page.get_by_text("Tải tệp JSON của phiên bản 1", exact=False)).to_be_visible()
     with page.expect_download() as download:
@@ -235,6 +238,14 @@ def run_workflows(page, composer, business_writes):
     assert download.value.suggested_filename == "dap_an.json"
     assert len(starts) == 1 and len(business_writes) == 2
     expect(page.get_by_text(re.compile("Đã yêu cầu trình duyệt tải tệp"))).to_be_visible()
+
+    page.reload()
+    composer.wait_for(timeout=12000)
+    say("Mở chat Ôn Toán tháng 12")
+    expect(page.get_by_text("Đã yêu cầu trình duyệt tải tệp.", exact=True)).to_be_visible()
+    say("Cô đã chọn dạng đề nào?")
+    expect(page.get_by_text("Mẫu gần nhất là Toán THPT", exact=False)).to_be_visible()
+    assert len(starts) == 1
 
 
 def main():

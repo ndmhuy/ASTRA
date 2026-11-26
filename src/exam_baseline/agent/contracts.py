@@ -30,6 +30,12 @@ class Context(Contract):
     view: Literal["paper", "review", "pdf"] = "paper"
     history: list[Text] = Field(default_factory=list, max_length=8)
     facts: list[Text] = Field(default_factory=list, max_length=6)
+    questionRefs: list[Text] = Field(default_factory=list, max_length=8)
+    editor: bool = False
+    approved: bool = False
+    preview: (
+        Literal["not_requested", "unavailable", "queued", "compiling", "ready", "failed"] | None
+    ) = None
 
 
 class Turn(Contract):

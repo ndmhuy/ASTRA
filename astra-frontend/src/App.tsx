@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useSyncExternalStore, useCallback, useLayoutEffect, useRef } from 'react';
 import { flushSync } from 'react-dom';
+import { meaningful, redact, retrievedContext, searchSessions } from './agent/memory';
 import { interpret } from './agent/client';
 import { admit, execute, fastRoute, fold, mayDispatch, type Effect, type Runtime } from './agent/recipes';
 import { displayNumber, failure, previewText, resolveQuestion, sectionId, statusText, success } from './agent/examActions';
@@ -145,18 +146,21 @@ export const App: React.FC = () => {
       if (store.getSnapshot().some(session => session.id === id)) store.appendMessage(id, 'assistant', text);
       else setAdmissionError(text);
     };
-    store.appendMessage(id, 'user', content, messageId, true);
+    flushSync(() => store.appendMessage(id, 'user', content, messageId, true));
     const runtime: Runtime = {
       binding: () => runtimeRef.current!.binding(),
       dispatch: (intent, expected, message, source) => runtimeRef.current!.dispatch(intent, expected, message, source),
     };
     const binding = runtime.binding();
+    const origin = store.getSnapshot().find(s => s.id === id);
     const alive = () => !controller.signal.aborted && !!store.getSnapshot().find(s => s.id === id)?.messages.some(m => m.id === messageId);
     try {
       if (options.searchWeb || options.attachedFiles.length) {
         answer('ASTRA hiện chưa hỗ trợ tìm web hoặc tải tệp. Thầy cô có thể gửi nội dung dạng văn bản.');
         return;
       }
+      await Promise.resolve();
+      if (!alive()) return;
       const local = fastRoute(content);
       if (local && 'text' in local) { answer(local.text); return; }
       if (local && 'confirm' in local) {
@@ -174,13 +178,18 @@ export const App: React.FC = () => {
         }
         return;
       }
-      if (!mayDispatch(content)) {
+      if (!local && !mayDispatch(content)) {
         answer('Thầy cô muốn em thực hiện thao tác cụ thể nào? Em chưa thao tác.');
         return;
       }
       const decision = local && 'intents' in local ? { kind: 'task', intents: local.intents }
-        : await interpret(id, messageId, content, {
-          screen, setup: showQuickModal, status: store.getSnapshot().find(s => s.id === id)?.status ?? 'draft', view: viewMode,
+        : await interpret(id, messageId, redact(content), {
+          screen, setup: showQuickModal, status: origin?.status ?? 'draft', view: viewMode,
+          ...(origin ? retrievedContext(origin, messageId, content) : {}),
+          questionRefs: origin ? [...new Set(origin.questions.map(q => q.part ?? '').filter(Boolean))].slice(0, 8) : [],
+          editor: Boolean(editor),
+          approved: Boolean(origin?.package?.approved),
+          preview: origin?.preview?.status ?? null,
         }, controller.signal);
       if (!alive()) return;
       if (decision.kind !== 'task') {
@@ -194,7 +203,7 @@ export const App: React.FC = () => {
       if (decision.intents.some(intent => !['STATUS', 'WARNINGS', 'LIST_SESSIONS'].includes(intent.id))) {
         pending.current = null;
       }
-      const literalNumbers = [...fold(content).matchAll(/\b(?:cau|question)\s+(\d+)\b/g)].map(match => Number(match[1]));
+      const literalNumbers = [...fold(content).matchAll(/\b(?:cau|question|tin nhan|message)\s+(\d+)\b/g)].map(match => Number(match[1]));
       if (decision.intents.some(intent => typeof intent.args.number === 'number' && !literalNumbers.includes(intent.args.number))) {
         answer('Thầy cô hãy ghi rõ số câu và phần thi để em xác định đúng câu.');
         return;
@@ -351,8 +360,7 @@ export const App: React.FC = () => {
       case 'OPEN_SESSION': {
         const title = typeof intent.args.title === 'string' ? fold(intent.args.title) : '';
         const eligible = store.getSnapshot().filter(item => item.id !== current?.id || title);
-        const exact = eligible.filter(item => fold(item.title) === title);
-        const matches = title ? (exact.length ? exact : eligible.filter(item => fold(item.title).includes(title)))
+        const matches = title ? searchSessions(eligible, title)
           : eligible.slice().sort((a, b) => b.createdAt.localeCompare(a.createdAt));
         const target = matches[0];
         if (!target) return failed('Chưa tìm thấy đề phù hợp trong tủ đề trên trình duyệt này.');
@@ -372,8 +380,61 @@ export const App: React.FC = () => {
         return succeeded('Đã đóng phần cấu hình.');
       case 'LIST_SESSIONS': {
         const title = typeof intent.args.title === 'string' ? fold(intent.args.title) : '';
-        const matches = store.getSnapshot().filter(item => fold(item.title).includes(title)).slice(0, 8);
+        const matches = (title ? searchSessions(store.getSnapshot(), title) : store.getSnapshot()).slice(0, 8);
         return succeeded(matches.length ? matches.map(item => `• ${item.title}`).join('\n') : 'Chưa có đề phù hợp trong tủ đề.');
+      }
+      case 'RENAME': {
+        const title = String(intent.args.title);
+        if (!current || !fold(message).includes(fold(title))) return failed('Thầy cô hãy ghi rõ tên mới cho cuộc trò chuyện đang mở.');
+        return store.rename(current.id, title)
+          ? succeeded(`Đã đổi tên cuộc trò chuyện thành “${store.getSnapshot().find(item => item.id === current.id)?.title}”.`)
+          : failed('Chưa đặt được tên đã yêu cầu.');
+      }
+      case 'RECALL': {
+        if (!current) return failed('Hãy mở cuộc trò chuyện mà thầy cô muốn xem lại.');
+        if (intent.args.what === 'format') {
+          const source = current.messages.find(item => item.id === current.intake?.sourceId);
+          if (!current.intake || !source) return failed('Cuộc trò chuyện này chưa lưu lựa chọn mẫu đề.');
+          const label = current.intake.formatId === 'vact' ? 'V-ACT' : 'Toán THPT';
+          return succeeded(`Mẫu gần nhất là ${label}. Yêu cầu gốc: “${source.content}”.`);
+        }
+        const first = current.messages.find(item => item.id !== messageId && meaningful(item)) ??
+          current.messages.find(item => item.id !== messageId && item.role === 'user' &&
+            !fastRoute(item.content));
+        return first ? succeeded(`Yêu cầu đầu tiên của thầy cô: “${first.content}”`) : failed('Chưa tìm thấy yêu cầu trước đó trong chat này.');
+      }
+      case 'SET_DRAFT': {
+        const value = String(intent.args.text);
+        if (!current || !fold(message).includes(fold(value))) return failed('Thầy cô hãy ghi rõ nội dung cần đưa vào ô nhập.');
+        store.setDraft(current.id, value);
+        return succeeded('Đã đưa nội dung vào ô nhập.');
+      }
+      case 'CHAT_MESSAGE': {
+        if (!current) return failed('Hãy mở cuộc trò chuyện trước.');
+        const target = current.messages[Number(intent.args.number) - 1];
+        if (!target || target.id === messageId) return failed('Không tìm thấy số tin nhắn này trong cuộc trò chuyện.');
+        if (intent.args.operation === 'draft') {
+          store.setDraft(current.id, target.content);
+          return succeeded('Đã đưa tin nhắn vào ô nhập.');
+        }
+        if (intent.args.operation === 'copy') {
+          if (!navigator.clipboard) return failed('Trình duyệt chưa cho phép sao chép. Thầy cô hãy dùng nút sao chép trên tin nhắn.');
+          return navigator.clipboard.writeText(target.content).then(
+            () => succeeded('Đã sao chép tin nhắn.'), () => failed('Trình duyệt chưa cho phép truy cập bảng tạm.'),
+          );
+        }
+        if (intent.args.operation === 'branch') {
+          const id = store.branchAtMessage(current.id, target.id);
+          if (!id) return failed('Chưa tạo được nhánh hội thoại.');
+          flushSync(() => { setEditor(null); openSession(id); });
+          store.appendMessage(id, 'assistant', 'Đã mở nhánh hội thoại.');
+          return succeeded('Đã tạo nhánh hội thoại.');
+        }
+        if (target.role !== 'user') return failed('Chỉ thu hồi được tin nhắn của thầy cô.');
+        return prepare('Thu hồi tin nhắn đã chọn và các tin sau. Công việc đã gửi hoặc chỉnh sửa đã lưu vẫn giữ nguyên.', () => {
+          store.retractMessage(current.id, target.id);
+          return succeeded('Đã thu hồi đoạn hội thoại. Trạng thái công việc trên máy chủ vẫn giữ nguyên.');
+        });
       }
       case 'DELETE_SESSION': {
         const name = typeof intent.args.title === 'string' ? fold(intent.args.title) : '';
@@ -647,6 +708,7 @@ export const App: React.FC = () => {
         <div className="header-right"><span className="header-avatar" aria-label="Người dùng: Cùng thầy cô" title="Cùng thầy cô">GV</span><span className="header-session">Cùng thầy cô</span></div>
       </header>
 
+      {store.storageWarning && <div className="canvas-alert-banner is-error" role="alert">{store.storageWarning}</div>}
       {admissionError && <div className="canvas-alert-banner is-error" role="alert">{admissionError}</div>}
       {/* Main content */}
       {screen === 'start' && <WorkspaceStart exiting={leavingStart} draft={landingDraft} onDraftChange={setLandingDraft} onTemplate={() => { setConfigureId(null); setAgentSelection(undefined); setShowQuickModal(true); }} onDetailed={handleDetailedStart} onSend={handleLandingSend} />}
@@ -662,7 +724,10 @@ export const App: React.FC = () => {
                   {active.error && <p className="session-error-note">{active.error}</p>}
                   <button type="button" className="button-primary" onClick={() => { cancelTurn(); setAgentSelection(undefined); setConfigureId(active.id); setShowQuickModal(true); }}>{active.status === 'error' ? 'Thử tạo lại' : 'Tạo đề từ yêu cầu'}</button>
                 </div>}
-                <ChatHistory messages={messages} onSuggestion={value => store.setDraft(active.id, value)} onEditMessage={message => store.setDraft(active.id, message.content)} onRetractMessage={message => { cancelTurn(); store.retractMessage(active.id, message.id); }} onBranchMessage={message => { const branchId = store.branchAtMessage(active.id, message.id); if (branchId) openManually(branchId); }} />
+                <ChatHistory messages={messages} onSuggestion={value => store.setDraft(active.id, value)} onEditMessage={message => store.setDraft(active.id, message.content)} onRetractMessage={message => {
+                  cancelTurn(); store.retractMessage(active.id, message.id);
+                  if (active.jobId) store.appendMessage(active.id, 'system', 'Đã thu hồi đoạn hội thoại. Trạng thái công việc trên máy chủ vẫn giữ nguyên.');
+                }} onBranchMessage={message => { const branchId = store.branchAtMessage(active.id, message.id); if (branchId) openManually(branchId); }} />
               </>
             ),
             right: (

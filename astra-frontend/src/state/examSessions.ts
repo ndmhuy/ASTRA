@@ -1,5 +1,6 @@
 import type { ChatMessage, ExamPackage, ExamPreviewState, ExamRequestParams, QuestionItem, GenerationProgress } from '../types/exam';
 import type { IExamService } from '../services/examService';
+import { conversationFor, meaningful, titleFrom, touched, type Conversation } from '../agent/memory.ts';
 import type { Intake } from '../agent/intake.ts';
 import { reconcileNotes, type Note } from '../agent/notes.ts';
 import { formatProgressStatus, humanizeErrorMessage } from '../utils/userMessages.ts';
@@ -28,6 +29,7 @@ export interface ExamSession {
   requestId?: string;
   requestSignature?: string;
   progress?: GenerationProgress;
+  conversation?: Conversation;
   intake?: Intake;
   notes?: Note[];
 }
@@ -67,18 +69,36 @@ export class ExamSessions {
   private previewTimers = new Map<string, ReturnType<typeof setTimeout>>();
   private activeSessionId: string | null = null;
   private disposed = false;
+  private storageImage: string | null = null;
+  private storageReadOnly = false;
+  storageWarning = '';
+  private readonly storageChanged = (event: StorageEvent) => {
+    if (event.key !== 'astra.sessions.v1' && event.key !== null) return;
+    if (event.newValue === this.storageImage) return;
+    this.storageReadOnly = true;
+    this.storageWarning = 'Tủ đề đã được cập nhật trong tab khác. Hãy tải lại trang để tiếp tục lưu.';
+    this.sessions = [...this.sessions];
+    this.listeners.forEach(listener => listener());
+  };
   private service: IExamService;
 
   constructor(service: IExamService) {
     this.service = service;
     if (typeof localStorage !== 'undefined') {
       try {
-        const saved = JSON.parse(localStorage.getItem('astra.sessions.v1') || '[]');
+        this.storageImage = localStorage.getItem('astra.sessions.v1');
+        const saved = JSON.parse(this.storageImage ?? '[]');
+        if (!Array.isArray(saved) || saved.some(item => !item || typeof item.id !== 'string' ||
+            typeof item.title !== 'string' || !Array.isArray(item.messages))) {
+          this.storageReadOnly = true;
+          this.storageWarning = 'Một phần tủ đề chưa đọc được. Dữ liệu cũ vẫn được giữ trong trình duyệt.';
+        }
         if (Array.isArray(saved)) {
           this.sessions = saved
-            .filter(item => typeof item.id === 'string' && Array.isArray(item.messages))
+            .filter(item => item && typeof item.id === 'string' && typeof item.title === 'string' && Array.isArray(item.messages))
             .map(item => ({
               ...item,
+              conversation: conversationFor(item),
               error: item.error ? humanizeErrorMessage(item.error, item.errorCode) : item.error,
               progress: item.progress
                 ? {
@@ -88,20 +108,35 @@ export class ExamSessions {
                 : item.progress,
             }));
         }
-      } catch { console.warn('Could not restore local exam workspaces'); }
+      } catch {
+        this.storageReadOnly = true;
+        this.storageWarning = 'Chưa đọc được tủ đề. Dữ liệu cũ vẫn được giữ trong trình duyệt.';
+      }
     }
   }
   getSnapshot = () => this.sessions;
   subscribe = (listener: () => void) => { this.listeners.add(listener); return () => { this.listeners.delete(listener); }; };
   private emit() {
-    if (typeof localStorage !== 'undefined') {
-      try { localStorage.setItem('astra.sessions.v1', JSON.stringify(this.sessions)); }
-      catch { console.warn('Could not save local exam workspaces'); }
+    if (typeof localStorage !== 'undefined' && !this.storageReadOnly) {
+      try {
+        if (localStorage.getItem('astra.sessions.v1') !== this.storageImage) {
+          this.storageReadOnly = true;
+          this.storageWarning = 'Tủ đề đã thay đổi trong tab khác. Hãy tải lại trang để tiếp tục lưu.';
+        } else {
+          const next = JSON.stringify(this.sessions);
+          if (next !== this.storageImage) localStorage.setItem('astra.sessions.v1', next);
+          this.storageImage = next;
+          this.storageWarning = '';
+        }
+      } catch {
+        this.storageWarning = 'Trình duyệt chưa lưu được thay đổi. Hãy giữ tab này mở và kiểm tra dung lượng lưu trữ.';
+      }
     }
     this.listeners.forEach(listener => listener());
   }
   resume() {
     this.disposed = false;
+    if (typeof window !== 'undefined') window.addEventListener('storage', this.storageChanged);
     this.sessions.filter(session => session.status === 'generating' && session.jobId).forEach(session => {
       this.subscriptions.get(session.id)?.();
       this.watch(session.id, session.jobId!);
@@ -222,24 +257,43 @@ export class ExamSessions {
     this.emit();
   }
   setDraft(id: string, draft: string) { this.update(id, session => ({ ...session, draft })); }
+  rename(id: string, value: string) {
+    const title = titleFrom(value);
+    if (!title) return false;
+    this.update(id, session => ({ ...session, title, conversation: { ...touched(session), titleOrigin: 'manual' } }));
+    return this.sessions.find(session => session.id === id)?.title === title;
+  }
   setIntake(id: string, intake: Intake | undefined) { this.update(id, session => ({ ...session, intake })); }
   setNotes(id: string, notes: Note[]) { this.update(id, session => ({ ...session, notes })); }
   retractMessage(id: string, messageId: string) {
     this.update(id, session => {
       const index = session.messages.findIndex(message => message.id === messageId);
-      return index < 0 ? session : { ...session, messages: session.messages.slice(0, index) };
+      if (index < 0) return session;
+      const messages = session.messages.slice(0, index);
+      const ids = new Set(messages.map(message => message.id));
+      return {
+        ...session, messages, conversation: touched(session),
+        intake: session.intake && ids.has(session.intake.sourceId) ? session.intake : undefined,
+        notes: session.notes?.filter(note => note.status === 'applied' || ids.has(note.sourceId)),
+      };
     });
   }
   branchAtMessage(id: string, messageId: string) {
     const source = this.sessions.find(session => session.id === id);
     const index = source?.messages.findIndex(message => message.id === messageId) ?? -1;
     if (!source || index < 0) return null;
+    const prefix = source.messages.slice(0, index + 1);
     const branch: ExamSession = {
       ...source,
+      conversation: { ...touched(source), titleOrigin: 'auto', revision: 0 },
+      intake: source.intake && prefix.some(message => message.id === source.intake?.sourceId)
+        ? { ...source.intake, phase: 'selected' } : undefined,
+      notes: undefined, progress: undefined, previousCount: 0, requestId: undefined,
+      requestSignature: undefined, error: undefined, errorCode: undefined,
       id: crypto.randomUUID(),
       title: `Nhánh · ${source.title}`,
       createdAt: new Date().toISOString(),
-      messages: source.messages.slice(0, index + 1),
+      messages: prefix,
       draft: '',
       jobId: null, package: undefined, questions: [], meta: null, status: 'draft',
       preview: undefined, previewOpenedRevision: null, previewLog: undefined,
@@ -250,11 +304,18 @@ export class ExamSessions {
     return branch.id;
   }
   appendMessage(id: string, role: ChatMessage['role'], content: string, messageId = crypto.randomUUID(), agentTurn = false) {
-    this.update(id, session => session.messages.some(message => message.id === messageId) ? session : ({
-      ...session,
-      draft: role === 'user' ? '' : session.draft,
-      messages: [...session.messages, { id: messageId, role, content, agentTurn, timestamp: new Date().toISOString() }],
-    }));
+    this.update(id, session => {
+      if (session.messages.some(message => message.id === messageId)) return session;
+      const conversation = touched(session);
+      const message: ChatMessage = { id: messageId, role, content, agentTurn, timestamp: conversation.updatedAt };
+      const auto = conversation.titleOrigin === 'default' && meaningful(message) && titleFrom(content);
+      return {
+        ...session, title: auto || session.title,
+        conversation: { ...conversation, titleOrigin: auto ? 'auto' : conversation.titleOrigin },
+        draft: role === 'user' ? '' : session.draft,
+        messages: [...session.messages, message],
+      };
+    });
   }
   sendMessage(id: string, content: string) { this.appendMessage(id, 'user', content); }
   async generate(id: string, params: ExamRequestParams) {
@@ -283,7 +344,7 @@ export class ExamSessions {
       artifactChanged: false,
       questions: [],
       previousCount: 0,
-      title: session.mode === 'template' ? `Đề thi ${params.subject}` : session.title,
+      title: session.mode === 'template' && !['manual', 'auto'].includes(conversationFor(session).titleOrigin) ? `Đề thi ${params.subject}` : session.title,
       meta: { title: `Đề thi ${params.subject}`, subject: params.subject, duration: params.durationMinutes, completedCount: 0, totalCount: params.itemCount }
     }));
     try {
@@ -597,7 +658,7 @@ export class ExamSessions {
       error: undefined,
       errorCode: undefined,
       status: 'complete',
-      title: session.mode === 'custom' ? session.title : pkg.title,
+      title: session.mode === 'custom' || ['manual', 'auto'].includes(conversationFor(session).titleOrigin) ? session.title : pkg.title,
       questions: pkg.questions,
       meta: { title: pkg.title, subject: pkg.subject, duration: pkg.durationMinutes, completedCount: pkg.questions.length, totalCount: pkg.questions.length },
       preview: pkg.preview,
@@ -646,6 +707,7 @@ export class ExamSessions {
   }
   dispose() {
     this.disposed = true;
+    if (typeof window !== 'undefined') window.removeEventListener('storage', this.storageChanged);
     this.subscriptions.forEach(stop => stop());
     this.subscriptions.clear();
     this.previewTimers.forEach(timer => clearTimeout(timer));

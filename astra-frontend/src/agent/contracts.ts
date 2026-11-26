@@ -12,6 +12,10 @@ export type AgentContext = {
   view: 'paper' | 'review' | 'pdf';
   history?: string[];
   facts?: string[];
+  questionRefs?: string[];
+  editor?: boolean;
+  approved?: boolean;
+  preview?: 'not_requested' | 'unavailable' | 'queued' | 'compiling' | 'ready' | 'failed' | null;
 };
 
 function record(value: unknown): value is Record<string, unknown> {
