@@ -97,3 +97,39 @@ Open `http://127.0.0.1:8000/`. No private environment file is copied. Verify hea
 ## Live checkpoint on 2026-11-26
 
 One real UI turn reached the gateway with upstream HTTP 200 but failed schema validation. Production currently runs b0932058-bdf3-46ed-8ac0-e7977207bfec with forwarding disabled and the diagnostic allowance consumed. Health now reads the persistent ledger without reserving an attempt and reports UTC day, remainingAttempts and activeReservations. See NEXT_TASK.md before enabling another turn. Schema diagnostics report validation stage and safe metadata, while the first turn's exact invalid field was not recorded.
+
+## Structured-output investigation and additional authorized turn
+
+The additional authorized UI turn returned HTTP 200, one candidate, STOP, application/json, valid JSON, one final text part and 70 generated tokens. Both structural schemas passed. The application then rejected a semantic invariant. This establishes a provider/application cross-field contract mismatch. It supplies no evidence of timeout, overload or truncation. The first historical response remains unavailable.
+
+The provider schema had accepted field combinations that the internal validator prohibited. The correction generates four exclusive alternatives for actions, intake, guidance and plain non-action decisions. Actions require a nonempty action list. Other alternatives allow an omitted or empty list. Intake and guidance cannot coexist, and their kinds are answer or clarify. Optional null fields normalize to omission before strict validation. Required fields, action IDs and per-action argument restrictions continue through the full internal schema. The provider-facing common argument object reduces repeated union branches. Final serialized schemas are 3,832 provider bytes and 11,014 internal bytes. Generation and normalization share the Python contract exporter and the deployed/client fingerprint.
+
+The exact triggering combination among the former combined invariant checks was not recorded. The instrumentation now reports specific invariant names and safe decision shape flags. The correction enforces every member of that observed failing invariant class in the provider grammar. It has passed offline tests and awaits a fresh live verification.
+
+### Parsing and diagnostic stages
+
+- HTTP transport distinguishes quota, authentication, model, upstream transient errors and timeout. Error logs contain numeric code and bounded status identifiers.
+- Envelope JSON parsing records success, MIME category and actual byte length.
+- Candidate selection records count, prompt block reason and finish reason. Missing candidates and blocked prompts are rejected.
+- Completion requires STOP. MAX_TOKENS and other incomplete results remain failures.
+- Extraction joins final text parts and skips thought parts and signature-only metadata. Empty final text is rejected.
+- Semantic JSON parsing accepts complete JSON. It supplies no fence removal, guessing or JSON repair.
+- Provider schema validation identifies invalid values and unsupported fields by keyword and path.
+- Application schema and invariant checks enforce each existing action's arguments and the exclusive semantic alternatives.
+- The local Python Worker adapter validates the synchronized version and Decision. React then resolves intake against the real catalog and compiles eligible actions through existing guards.
+
+Logs include safe token counts, final-text byte length, parsing stage, schema paths and provider elapsed time. Raw teacher text, unrestricted provider responses and credential values are excluded.
+
+### Gemini parameter audit
+
+The existing provider-native route uses v1 generateContent, responseMimeType application/json and responseJsonSchema. Google distinguishes responseJsonSchema from its OpenAPI-style responseSchema. The generated schema uses documented object, array, scalar, null, enum, anyOf, properties, required and additionalProperties constraints. Bounds remain enforced by the internal validator even where a provider supports only a subset. [Google structured outputs](https://aistudio.google.com/docs/structured-output) · [GenerateContent reference](https://aistudio.google.com/api-reference/generate-content)
+
+Gemini 3.1 Flash-Lite documents MINIMAL as its lowest thinking level and its default. The public v1 discovery document confirms thinkingConfig.thinkingLevel=MINIMAL. The Worker sets it explicitly for this profile. The 1,024-token output limit remains unchanged. The observed completed 70-token response gives no basis for increasing it for this incident. Missing thought usage is reported as absent, not zero. [Thinking configuration](https://aistudio.google.com/docs/thinking) · [Model documentation](https://aistudio.google.com/docs/models/gemini-3.1-flash-lite) · [v1 discovery](https://generativelanguage.googleapis.com/$discovery/rest?version=v1)
+
+### Future fallback evaluation
+
+The Python InterpretationProvider protocol already returns the shared Decision. ProviderRouter permits bounded fallback only for transient or timeout failures and calls its reserve function before every attempt. The current Worker profile has one remote route and no fallback.
+
+Small OpenAI API models with Structured Outputs and Anthropic's Haiku family with JSON structured output are candidates for a later latency benchmark. Both need an approved provider key, confirmed account/model access and a native adapter. Their actual ASTRA latency and accuracy have not been measured. [OpenAI structured output](https://developers.openai.com/api/docs/guides/structured-outputs) · [Anthropic structured output](https://platform.claude.com/docs/en/build-with-claude/structured-outputs)
+
+A future Worker router must reserve the persistent global and operation allowance before each upstream attempt, including fallback. Retry eligibility must distinguish temporary overload and timeout from quota, authentication, schema and application-contract failures. The latter failures stop the turn. Any broadened quota/provider routing needs explicit approval. One accepted semantic result reaches the existing freshness checks and UI executor, retaining duplicate-action suppression. No fallback service or credential was added during this investigation.

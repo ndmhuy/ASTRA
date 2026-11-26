@@ -51,10 +51,10 @@ Current phase / exact next action: W7 additional attempt identified an applicati
 - 2026-11-26 · Gateway activation, parent `6851fce`. Prepared the ignored local gateway profile for `astra-gateway` with a 30-second deadline, one persisted daily attempt, gateway retries suppressed and fallback disabled. Rebuilt the traced frontend. Board of evidence: 27 frontend checks and 16 focused Python checks passed; loopback UI, health and catalog returned HTTP 200 with demo MAS. Startup reports the missing account ID, Run token and project model by field name. Dashboard alias and project access still require owner confirmation. Zero live attempts.
 - LOCAL_APP_READY: VERIFIED_OFFLINE
 - ORCHESTRATION_OFFLINE_VERIFIED: PARTIAL
-- LIVE_AGENT_VERIFIED: BLOCKED_EXTERNAL
+- LIVE_AGENT_VERIFIED: FAILED_APPLICATION_CONTRACT, latest live turn
 - LIVE_GENERATION_VERIFIED: BLOCKED_EXTERNAL
 - KEY_GATEWAY_READY: VERIFIED_OFFLINE
-- KEY_GATEWAY_LIVE_VERIFIED: BLOCKED_EXTERNAL
+- KEY_GATEWAY_LIVE_VERIFIED: TRANSPORT_OBSERVED, HTTP 200 and complete Gemini JSON
 
 ## Budget / authorization
 - Live inference authorized: NO
@@ -85,7 +85,7 @@ P8 refreshed origin with prune. Main remained at the audited SHA with 0/0 local 
 | ASTRA_WORKER_PROFILE_VERIFIED_OFFLINE | VERIFIED_OFFLINE, Python contract tests, mounted UI fixtures and credential-free startup |
 | WORKER_DEPLOYED | VERIFIED_PRODUCTION, version b0932058-bdf3-46ed-8ac0-e7977207bfec, forwarding false |
 | LIVE_GATEWAY_VERIFIED | TRANSPORT_OBSERVED, one admitted attempt returned upstream HTTP 200 for gemini-3.1-flash-lite; semantic response rejected |
-| LIVE_AGENT_ORCHESTRATION_VERIFIED | FAILED_VALIDATION, schema error before compiler intake; THPT clarification not reached |
+| LIVE_AGENT_ORCHESTRATION_VERIFIED | FAILED_APPLICATION_CONTRACT, completed JSON violated semantic consistency; corrected provider grammar remains live-unverified |
 | KEYLESS_MAS_GENERATION_VERIFIED | BLOCKED_COMPATIBILITY, existing academic provider contract differs; public MAS route absent |
 | FRESH_CLONE_VERIFIED | LOCAL_STARTUP_VERIFIED at d323dae with independent dependency install; remote AI and complete RAG/LaTeX installation unverified |
 
@@ -109,3 +109,5 @@ Use [Worker runbook](WORKER_RUNBOOK.md) and [next task](NEXT_TASK.md). The initi
 
 - 2026-11-26 additional authorized live UI turn. Preserved consumed quota and raised global/Agent daily ceilings from 1 to 2. Before enable remaining=0; after enable remaining=1. Exactly one fresh UI submission, turn 0a3ee1db-6a10-45ca-a04e-50dd655ab6d8, Worker 6a66b6fb-b5bc-41ce-84cf-147bd3cc4dc2. Upstream HTTP 200, one candidate, STOP, application/json, valid JSON, one final text part, 158 text bytes, 2373 prompt tokens and 70 output tokens. No thought token count reported. Provider elapsed 2042 ms, Worker 2228 ms, browser interpretation 2897 ms, total visible response 2955.7 ms. Failure stage application_contract with semantic_invariant after both structural validators passed. No exam/business writes. Disabled immediately as version 4c4cb939-d0d3-4975-89f8-9c50fc29527b; remaining=0, active=0.
 - Verified root cause class. Provider grammar allowed cross-field combinations prohibited by the application's validator. Corrected generated provider schema to four exclusive alternatives: action, intake, guidance and plain non-action. Required action arrays contain at least one entry; non-action arrays remain empty. All prior strict argument and UI guards stay active. Final provider schema is 3832 bytes versus 11014 internal bytes. Sixteen local workerd groups passed including cross-field regression and every existing intent. Exact subtype among the prior combined semantic checks was not retained, so historical provider contents are not fabricated. No third inference attempt.
+
+- Final structured-output checkpoint. Deployed correction d588368 as production version bb165c28-5a06-4372-9c9e-b2bf758b9599 with forwarding false. Metadata confirmed original four gateway/Secret bindings unchanged, global/Agent ceilings 2 and selected model unchanged. Read-only health after redeployment reports remainingAttempts=0 and activeReservations=0. Local server restarted with the final exported fingerprint, distributed Worker provider and demo MAS. No third inference call. WORKER_RUNBOOK.md records the pipeline audit, official Gemini parameter sources and deferred OpenAI/Anthropic fallback evaluation. NEXT_TASK.md records the exact authorization boundary and live evidence.
