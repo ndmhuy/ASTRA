@@ -8,7 +8,7 @@ Old Agent reference SHA: fb834b976cb62eb7292fa839cdaf1d8738e1ec50
 Feature branch / worktree: feat/longlth2297/agent-main-v2 / ../ASTRA.worktrees/longlth2297-agent-main-v2
 Current HEAD: see git log; checkpoint base fbc951bade177dcea0d6e19079d17238dcd5b495
 Latest origin/main checked: 7523c79556a9935df5008c92043f1e38d6e5d2a2
-Current phase / exact next action: W7. Worker deployed with forwarding disabled. Await explicit authorization to enable forwarding and perform one real interpretation.
+Current phase / exact next action: W7 failed semantic validation on the single authorized UI turn. Forwarding disabled, allowance exhausted. Await new diagnostic authorization and explicit allowance.
 
 | Phase | Status | Evidence level | Commit / report | Blocker / next step |
 |---|---|---|---|---|
@@ -83,9 +83,9 @@ P8 refreshed origin with prune. Main remained at the audited SHA with 0/0 local 
 | WORKER_IMPLEMENTED | VERIFIED_OFFLINE, production bundle and strict contract |
 | QUOTA_PROTECTION_VERIFIED | VERIFIED_OFFLINE for quota races/persistence; production binding/config verified and kill switch observed with zero attempts. Production quota exhaustion remains unexercised. |
 | ASTRA_WORKER_PROFILE_VERIFIED_OFFLINE | VERIFIED_OFFLINE, Python contract tests, mounted UI fixtures and credential-free startup |
-| WORKER_DEPLOYED | VERIFIED_PRODUCTION, version 234510ff-c691-4b59-b365-3127c94c2cea, forwarding false |
-| LIVE_GATEWAY_VERIFIED | UNVERIFIED, gemini-3.1-flash-lite configured; provider availability and one authorized inference pending |
-| LIVE_AGENT_ORCHESTRATION_VERIFIED | UNVERIFIED, one live turn plus manual multi-turn acceptance pending |
+| WORKER_DEPLOYED | VERIFIED_PRODUCTION, version b0932058-bdf3-46ed-8ac0-e7977207bfec, forwarding false |
+| LIVE_GATEWAY_VERIFIED | TRANSPORT_OBSERVED, one admitted attempt returned upstream HTTP 200 for gemini-3.1-flash-lite; semantic response rejected |
+| LIVE_AGENT_ORCHESTRATION_VERIFIED | FAILED_VALIDATION, schema error before compiler intake; THPT clarification not reached |
 | KEYLESS_MAS_GENERATION_VERIFIED | BLOCKED_COMPATIBILITY, existing academic provider contract differs; public MAS route absent |
 | FRESH_CLONE_VERIFIED | LOCAL_STARTUP_VERIFIED at d323dae with independent dependency install; remote AI and complete RAG/LaTeX installation unverified |
 
@@ -101,3 +101,5 @@ Use [Worker runbook](WORKER_RUNBOOK.md) and [next task](NEXT_TASK.md). The initi
 
 - 2026-11-26 W7 single live UI attempt. Global allowance verified as 1 from persisted read-only health, then enabled version e338764b-bedf-4f2c-939c-84412b3cb121. Exact requested sentence required model interpretation and was entered once in a fresh real Edge chat. Turn 3611130c-5059-4a8c-8ad0-0354173e2cdd reached Worker request f6c188e1-1739-459b-aa7e-d81164542316. Admitted=true, upstream attempts=1, upstream HTTP=200, provider google-ai-studio, model gemini-3.1-flash-lite. Worker rejected the response as schema after 3610 ms. Browser model route measured 3955 ms, local HTTP turn 4004.6 ms, visible response 4009.3 ms. One Agent request and zero business writes. Local response was temporarily_unavailable/schema. THPT resolution and subject clarification did not occur. Forwarding disabled again at version 4e94ac52-39cd-4b00-95ff-a2304400a02a; persisted remainingAttempts=0, activeReservations=0.
 - W7 offline investigation. Production trace had outcome ok, no exceptions, upstream HTTP 200, category schema. The first instrumentation discarded completion metadata and validation details, so its exact failed field/finish reason cannot be recovered. Fixed this verified diagnostic defect by recording schema stage, candidate completion, safe token counts, byte count and validation paths/keywords without teacher text. Eleven local workerd groups passed; targeted parser/quota checks and TypeScript passed after final refinement. Incomplete, invalid JSON and invalid semantic responses remain rejected. No second live attempt.
+
+- W7 final state. Offline diagnostic fix deployed with forwarding false as b0932058-bdf3-46ed-8ac0-e7977207bfec. Health confirmed remainingAttempts=0 and activeReservations=0 after deployment, proving consumed quota survived redeployment. MAS health remains demoMode=true. Exact provider finish reason/invalid field remains unknown because the first schema trace omitted it. Further inference requires new authorization and an explicitly approved allowance. Evidence remains in ignored runs/live-worker-one/result.json, tail.private.json and actual-response.png.

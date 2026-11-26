@@ -1,22 +1,33 @@
-# Resume after production Worker deployment
+# Resume after the single live Worker attempt
 
-For the next session on feat/longlth2297/agent-main-v2 in the existing feature worktree. Fetch origin and inspect Git state before editing. W6 deployment is complete. Continue at the W7 live authorization gate.
+For feat/longlth2297/agent-main-v2 in the existing feature worktree. Fetch and inspect current HEAD before editing. W7 ran exactly one authorized real UI request and failed response validation. Do not repeat it without new authorization.
 
-Production Worker astra-ai-proxy is deployed at https://astra-ai-proxy.letranhoanglong2227.workers.dev with version 234510ff-c691-4b59-b365-3127c94c2cea. Source checkpoint is 333a44e, followed by deployment documentation commits. Existing gateway variables and encrypted Secret were preserved. ADMISSION uses SQLite migration v1-admission and stable object name global-v1.
+## Actual evidence
 
-Configured model is gemini-3.1-flash-lite, selected by the owner. Availability for the stored Google project remains unverified. Forwarding is false. Global/Agent attempts are 1/1 per UTC day, MAS zero, concurrency one, IP/global bursts 3/10 per minute. No upstream inference occurred.
+Input was ?C? mu?n t?o m?t ?? thi th? t?t nghi?p.? in a new Edge browser chat. It bypassed the deterministic fast path.
 
-1. Read PROGRESS.md and WORKER_RUNBOOK.md. Do not repeat implementation or deployment without a concrete reason.
-2. Await explicit owner authorization to enable production forwarding and run exactly one live interpretation. The owner has authorized deployment only.
-3. After that authorization, verify public health and local demo MAS health, confirm current bindings and remaining diagnostic allowance, then enable ASTRA_FORWARDING_ENABLED centrally. Preserve credentials and model.
-4. Send the approved test once through the actual local ASTRA entry point. Use ?C? mu?n t?o m?t ?? thi th? t?t nghi?p.? Confirm it reaches the model, resolves THPT and asks for a subject with zero generation calls. Capture turn/request IDs, admission, attempts, provider/model, HTTP status, latency, semantic output and visible reply.
-5. If it fails, investigate the observed category offline. Another inference attempt requires fresh authorization. Keep automatic retries/fallback disabled.
-6. After first success, obtain the approved budget for multi-turn manual acceptance. A single successful turn does not establish the full Agent or MAS behavior.
+- Local turn ID 3611130c-5059-4a8c-8ad0-0354173e2cdd.
+- Worker request ID f6c188e1-1739-459b-aa7e-d81164542316.
+- Admission true, one upstream attempt, Google AI Studio, gemini-3.1-flash-lite, upstream HTTP 200.
+- Worker elapsed 3610 ms; browser interpretation 3955 ms; total visible response 4009.3 ms.
+- Local FastAPI returned HTTP 200 with temporarily_unavailable/schema.
+- Visible response was ?K?t qu? t? AI ch?a ??c ???c. Th?y c? c? th? g?i m?t y?u c?u ng?n, v? d? ?Ch?n V-ACT?.?
+- One Agent request and zero business/exam-generation writes. No THPT intake, subject clarification or business instruction was executed.
 
-Production health and disabled rejection were verified without inference. A real local /agent/turn reached production and returned disabled. Production trace ad684003-63ea-43e5-91f1-cd8856d15d79 had admitted=false and attempts=0. Local ASTRA remains at port 8000 in Worker profile with Backend MAS demo mode.
+## Current state
 
-Quota persistence/races/rollover were tested in local workerd. Production migration and quota configuration are verified. Production exhaustion was not exercised while forwarding was disabled.
+Forwarding is disabled on production version b0932058-bdf3-46ed-8ac0-e7977207bfec. Persisted health after redeployment showed remainingAttempts=0 and activeReservations=0 for UTC 2026-11-26. Keep global-v1 and ADMISSION storage intact. Local ASTRA remains at http://127.0.0.1:8000 with Worker transport and mock/demo MAS.
 
-Previous version d140af7f-75d2-4e0b-a470-1e07741479e8 is the original template fallback. Disable forwarding before any rollback and preserve the Durable Object namespace and quota history. Protected version 234510ff-c691-4b59-b365-3127c94c2cea is now available as a rollback target for future changes.
+The original trace recorded only schema, upstream status and timings. The provider body was discarded and gateway payload collection was disabled. Its exact failed field, completion reason and raw semantic response cannot be recovered from the recorded evidence.
 
-Keep the ignored local diagnostic .env and protected fresh-checkout worktree. Public MAS inference remains absent pending academic provider compatibility.
+The verified diagnostic defect is fixed offline. Current Worker logs report the parsing/validation stage, candidate count, finish reason, bounded numeric token metadata, text byte count and schema validation paths/keywords. Eleven local workerd groups passed. Targeted final parser/quota tests and TypeScript check passed. Parser constraints and UI safety remain enforced. This diagnostic fix has been deployed with forwarding disabled.
+
+## Authorized next work boundary
+
+1. Review ignored runs/live-worker-one/result.json and tail.private.json. Screenshot actual-response.png shows the real failure.
+2. Obtain new authorization for one diagnostic inference and an explicit allowance. The previous one-attempt authorization is consumed. Do not reset or delete quota storage. The UTC rollover alone does not grant authorization.
+3. With approval, verify/read remaining quota, deploy/enable only the approved profile and make one controlled real UI request. Disable forwarding afterward. Preserve the model and fallback-disabled policy unless the owner directs otherwise.
+4. Read the detailed schema-stage metadata before proposing a parser, token-budget or generation-parameter correction. Do not assume truncated output, a null field or a schema violation caused the first failure without evidence.
+5. A successful semantic response must still produce actual THPT subject clarification with zero generation requests. Multi-turn acceptance requires its own approved budget.
+
+Production rollback history and setup commands are in WORKER_RUNBOOK.md. Shared credentials remain remote. MAS public inference is absent pending academic provider compatibility.

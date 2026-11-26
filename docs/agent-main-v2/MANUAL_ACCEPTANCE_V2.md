@@ -31,3 +31,7 @@ The topic follow-up is covered at the resolver boundary. Its actual feasibility 
 3. If the turn fails, stop before another live call. Use the server category and Cloudflare usage metadata to inspect authentication, model and routing. Revalidate offline after fixing the issue. Any further live attempt needs fresh operator authorization.
 
 Current gateway credentials, account access and live semantic accuracy remain unverified. The earlier Codex diagnostic failed schema validation. Subsequent manual turns on that checkpoint returned OPEN_SETUP and clarify and were parsed successfully. The current expanded contract and gateway profile still require their own live acceptance.
+
+## Single real Worker turn observed on 2026-11-26
+
+The exact target sentence was entered once in the real chat UI. Worker admission succeeded and one upstream request returned HTTP 200 for gemini-3.1-flash-lite. Worker response validation failed with schema before intake reached the instruction compiler. The UI displayed its schema-error message, and zero exam-generation requests occurred. Forwarding was disabled again, with the persisted attempt consumed. The first trace omitted the exact failed field/finish reason. Detailed schema diagnostics were fixed and tested offline. Another live attempt requires new authorization and allowance. [Actual evidence and next task](NEXT_TASK.md)

@@ -93,3 +93,7 @@ npm.cmd --prefix astra-frontend ci
 ```
 
 Open `http://127.0.0.1:8000/`. No private environment file is copied. Verify health, catalog and UI before any chat submission. A clean detached checkout with independent Python dependency installation, npm ci/build, and real HTTP UI/health/catalog was tested. Remote AI availability and full academic generation remain separate gates.
+
+## Live checkpoint on 2026-11-26
+
+One real UI turn reached the gateway with upstream HTTP 200 but failed schema validation. Production currently runs b0932058-bdf3-46ed-8ac0-e7977207bfec with forwarding disabled and the diagnostic allowance consumed. Health now reads the persistent ledger without reserving an attempt and reports UTC day, remainingAttempts and activeReservations. See NEXT_TASK.md before enabling another turn. Schema diagnostics report validation stage and safe metadata, while the first turn's exact invalid field was not recorded.
