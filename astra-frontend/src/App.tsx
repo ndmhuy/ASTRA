@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useSyncExternalStore, useCallback, useLayoutEffect, useRef } from 'react';
 import { flushSync } from 'react-dom';
 import { meaningful, redact, retrievedContext, searchSessions } from './agent/memory';
-import { interpret } from './agent/client';
+import { interpretationUnavailable, interpret } from './agent/client';
 import { admit, execute, fastRoute, fold, mayDispatch, type Effect, type Runtime } from './agent/recipes';
 import { displayNumber, failure, previewText, resolveQuestion, sectionId, statusText, success } from './agent/examActions';
 import type { Intent } from './agent/contracts';
@@ -183,6 +183,7 @@ export const App: React.FC = () => {
         answer('Thầy cô muốn em thực hiện thao tác cụ thể nào? Em chưa thao tác.');
         return;
       }
+      const started = performance.now();
       const decision = local && 'intents' in local ? { kind: 'task', intents: local.intents }
         : await interpret(id, messageId, redact(content), {
           screen, setup: showQuickModal, status: origin?.status ?? 'draft', view: viewMode,
@@ -192,12 +193,14 @@ export const App: React.FC = () => {
           approved: Boolean(origin?.package?.approved),
           preview: origin?.preview?.status ?? null,
         }, controller.signal);
+      if (import.meta.env.VITE_AGENT_TRACE === '1') {
+        console.info('[ASTRA Agent]', { route: local ? 'local' : 'model', kind: decision.kind,
+          intents: decision.intents.map(intent => intent.id), latencyMs: Math.round(performance.now() - started) });
+      }
       if (!alive()) return;
       if (decision.kind !== 'task') {
         answer(decision.kind === 'temporarily_unavailable'
-          ? ('reasonCode' in decision && (decision.reasonCode === 'quota' || decision.reasonCode === 'budget')
-            ? 'Trợ lý đang hết lượt hiểu yêu cầu. Thầy cô có thể dùng nút trong ASTRA hoặc thử lại sau.'
-            : 'Dịch vụ hiểu yêu cầu đang chưa sẵn sàng. Thầy cô vẫn có thể dùng các nút trong ASTRA.')
+          ? interpretationUnavailable('reasonCode' in decision ? decision.reasonCode : undefined)
           : decision.kind === 'unsupported'
             ? 'Tính năng này chưa có trong ASTRA.'
             : 'Thầy cô muốn thao tác nào trong ASTRA? Em cần thêm thông tin để thực hiện.');

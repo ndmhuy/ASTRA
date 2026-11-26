@@ -41,6 +41,8 @@ Current phase / exact next action: P8 / see final report
 
 - 2026-11-26 17:21 ICT · P8 · Parent `fbc951bade177dcea0d6e19079d17238dcd5b495` · Refetched unchanged main. Frontend lint/build and 23 tests passed. Python suite 408 plus 7 subtests, then 16 focused final Agent checks. Native loopback startup, mock HTTP smoke, and browser fixture passed. Browser covered manual V-ACT setup, evaluated THPT and V-ACT, fixture job progress and notes, editor prefill/save, approval and JSON download. Build and branch credential-pattern scans returned no matches. Audit, coverage, runbook and AI log included.
 
+- 2026-11-26 · Follow-up · Direct Gemini local transport uses the existing credential and model. Model metadata returned HTTP 200 with generateContent support. Native app started with demo MAS, a 30-attempt daily limit and sanitized traces. No inference or generation sent. Live response remains to be manually verified.
+
 ## Release gates
 - LOCAL_APP_READY: VERIFIED_OFFLINE
 - ORCHESTRATION_OFFLINE_VERIFIED: PARTIAL

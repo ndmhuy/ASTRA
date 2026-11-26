@@ -7,6 +7,7 @@ import sqlite3
 from contextlib import asynccontextmanager, closing
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Literal
 
 import httpx
 from pydantic import Field, SecretStr, ValidationError
@@ -27,6 +28,8 @@ class AgentSettings(BaseSettings):
         env_file=".env", env_prefix="ASTRA_AGENT_", extra="ignore", hide_input_in_errors=True
     )
     enabled: bool = False
+    transport: Literal["gateway", "direct"] = "gateway"
+    api_key: SecretStr | None = None
     gateway_account_id: str = ""
     gateway_id: str = ""
     gateway_token: SecretStr | None = None
@@ -76,7 +79,7 @@ class GeminiGatewayProvider:
         if not re.fullmatch(r"gemini-[A-Za-z0-9][A-Za-z0-9._-]{0,90}", model):
             raise ValueError("invalid configured Gemini model")
         self.client = client
-        self.gateway = gateway
+        self.headers = gateway.headers()
         self.url = f"{gateway.base('google-ai-studio')}/v1/models/{model}:generateContent"
         self.output_tokens = output_tokens
 
@@ -84,7 +87,7 @@ class GeminiGatewayProvider:
         try:
             response = await self.client.post(
                 self.url,
-                headers=self.gateway.headers(),
+                headers=self.headers,
                 json={
                     "systemInstruction": {"parts": [{"text": SYSTEM}]},
                     "contents": [{"role": "user", "parts": [{"text": turn_text(turn)}]}],
@@ -122,6 +125,22 @@ class GeminiGatewayProvider:
             raise ProviderFailure("schema") from None
 
 
+class DirectGeminiProvider(GeminiGatewayProvider):
+    """Direct Gemini transport for a local operator-controlled development session."""
+
+    def __init__(self, client, key: SecretStr, model: str, output_tokens: int):
+        if not re.fullmatch(r"gemini-[A-Za-z0-9][A-Za-z0-9._-]{0,90}", model):
+            raise ValueError("invalid configured Gemini model")
+        if not key.get_secret_value().strip():
+            raise ValueError("missing Gemini key")
+        self.client = client
+        self.headers = {"x-goog-api-key": key.get_secret_value()}
+        self.url = (
+            f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+        )
+        self.output_tokens = output_tokens
+
+
 async def configuration_failure(_turn: Turn) -> Decision:
     return Decision(kind="temporarily_unavailable", reasonCode="configuration")
 
@@ -139,27 +158,33 @@ async def configured_interpreter(settings: AgentSettings | None = None):
         return
     async with httpx.AsyncClient(follow_redirects=False, trust_env=False) as client:
         try:
-            if not settings.gateway_token:
-                raise ValueError("missing gateway token")
-            gateway = Gateway(
-                settings.gateway_account_id,
-                settings.gateway_id,
-                settings.gateway_token,
-                settings.gateway_byok_alias,
-            )
-            primary = GeminiGatewayProvider(
-                client, gateway, settings.model, settings.max_output_tokens
-            )
+            if settings.transport == "direct":
+                if not settings.api_key:
+                    raise ValueError("missing Gemini key")
+
+                def make_provider(model):
+                    return DirectGeminiProvider(
+                        client, settings.api_key, model, settings.max_output_tokens
+                    )
+            else:
+                if not settings.gateway_token:
+                    raise ValueError("missing gateway token")
+                gateway = Gateway(
+                    settings.gateway_account_id,
+                    settings.gateway_id,
+                    settings.gateway_token,
+                    settings.gateway_byok_alias,
+                )
+
+                def make_provider(model):
+                    return GeminiGatewayProvider(client, gateway, model, settings.max_output_tokens)
+
+            primary = make_provider(settings.model)
             fallback = None
             if settings.fallback_enabled:
                 if settings.fallback_model == settings.model:
                     raise ValueError("configure a separate fallback model")
-                fallback = GeminiGatewayProvider(
-                    client,
-                    gateway,
-                    settings.fallback_model,
-                    settings.max_output_tokens,
-                )
+                fallback = make_provider(settings.fallback_model)
             budget = DailyBudget(settings.budget_path, settings.daily_attempts)
             timing = Timing(primary=settings.primary_seconds, total=settings.total_seconds)
         except (ValueError, OSError, sqlite3.Error):

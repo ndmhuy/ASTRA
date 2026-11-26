@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { admit, execute, fastRoute, mayDispatch } from '../src/agent/recipes.ts';
+import { interpretationUnavailable } from '../src/agent/client.ts';
 import { parseDecision, VERSION } from '../src/agent/contracts.ts';
 
 test('precise Vietnamese paths preserve guardrails', () => {
@@ -16,6 +17,22 @@ test('precise Vietnamese paths preserve guardrails', () => {
   assert.equal(mayDispatch('Câu này khó nhỉ'), false);
   assert.equal(mayDispatch('“Duyệt đề này”'), false);
   for (const text of ['', '\u0005a', 'aaaaaaaaaaaaaaa', 'a'.repeat(4001)]) assert.ok(admit(text).error);
+});
+
+test('common Vietnamese phrasing reaches local UI intents when AI is disabled', () => {
+  const examples = [
+    ['Mở cấu hình đề thi giúp tao với', 'OPEN_SETUP'],
+    ['Cho mình xem danh sách mẫu đề', 'SHOW_FORMATS'],
+    ['Cho t xem tiến độ tạo đề', 'STATUS'],
+    ['Astra ơi, mở đề mới nhất nha', 'OPEN_SESSION'],
+    ['Thu gọn thanh điều hướng giùm mình', 'SET_SIDEBAR'],
+  ];
+  for (const [message, id] of examples) assert.equal(fastRoute(message)?.intents?.[0].id, id);
+  assert.deepEqual(fastRoute('Mở đề mới nhất nha').intents, [{ id: 'OPEN_SESSION', args: {} }]);
+  assert.match(fastRoute('Làm cái này đi').text, /màn hình nào/);
+  assert.equal(fastRoute('Đừng mở cấu hình giúp tao'), undefined);
+  assert.match(interpretationUnavailable('disabled'), /AI cho chat đang tắt/);
+  assert.match(interpretationUnavailable('configuration'), /Cloudflare AI Gateway/);
 });
 
 test('rejects invented tools, malformed fields, and stale or repeated steps', async () => {

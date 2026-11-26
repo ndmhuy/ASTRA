@@ -51,7 +51,7 @@ def create_app(
         )
         try:
             async with AsyncExitStack() as stack:
-                if agent_interpreter is None and not settings.demo_mode:
+                if agent_interpreter is None:
                     app.state.configured_interpreter = await stack.enter_async_context(
                         configured_interpreter()
                     )

@@ -13,7 +13,20 @@ npm.cmd --prefix astra-frontend ci
 .\start-astra-demo.bat
 ```
 
-Open `http://127.0.0.1:8000`. The demo disables model-assisted chat and uses the existing backend demo behavior. Its content is fixture data. Exact local chat controls still work. PDF compilation requires a supported compiler. The Vite development server forwards `/api` and `/agent` to `ASTRA_API_PROXY_TARGET`, with loopback port 8000 as the default.
+Open `http://127.0.0.1:8000`. The demo launcher forces mock MAS and disables model-assisted chat. Its content is fixture data. Exact local chat controls still work. PDF compilation requires a supported compiler. The Vite development server forwards `/api` and `/agent` to `ASTRA_API_PROXY_TARGET`, with loopback port 8000 as the default.
+
+## Chat with AI while keeping MAS in demo mode
+
+Set the Agent options below in the feature worktree's ignored `.env`. Use the regular launcher with MAS demo mode enabled.
+
+```powershell
+$env:EXAM_DEMO_MODE = '1'
+$env:EXAM_PROVIDER = 'mock'
+$env:EXAM_MODEL = 'mock-fixture-v1'
+.\start-astra.bat
+```
+
+`start-astra-demo.bat` is always offline. A usable Agent configuration requires a positive attempt budget, an approved Gemini model and a gateway token. The chat distinguishes an off switch, invalid configuration and quota exhaustion. Restart the server after configuration changes.
 
 ## Operator configuration
 

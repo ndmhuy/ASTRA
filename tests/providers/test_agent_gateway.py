@@ -9,7 +9,12 @@ from fastapi.testclient import TestClient
 from pydantic import SecretStr, ValidationError
 
 from exam_baseline.agent.contracts import VERSION, Decision, Turn
-from exam_baseline.agent.gateway import AgentSettings, DailyBudget, GeminiGatewayProvider
+from exam_baseline.agent.gateway import (
+    AgentSettings,
+    DailyBudget,
+    DirectGeminiProvider,
+    GeminiGatewayProvider,
+)
 from exam_baseline.agent.provider import ProviderFailure
 from exam_baseline.api.app import create_app
 from exam_baseline.config import Settings
@@ -183,3 +188,28 @@ def test_configured_turn_route_requires_loopback_origin(tmp_path):
         assert not calls
         assert client.post("/agent/turn", json=TURN.model_dump(), headers=marker).status_code == 200
         assert len(calls) == 1
+
+
+def test_direct_gemini_transport_sends_key_only_to_google():
+    def transport(request):
+        assert request.url.host == "generativelanguage.googleapis.com"
+        assert request.headers["x-goog-api-key"] == "fixture-direct-key"
+        assert "cf-aig-authorization" not in request.headers
+        output = {"kind": "task", "intents": [{"id": "OPEN_SETUP", "args": {}}]}
+        return httpx.Response(
+            200,
+            json={
+                "candidates": [
+                    {"finishReason": "STOP", "content": {"parts": [{"text": json.dumps(output)}]}}
+                ]
+            },
+        )
+
+    async def scenario():
+        async with httpx.AsyncClient(transport=httpx.MockTransport(transport)) as client:
+            provider = DirectGeminiProvider(
+                client, SecretStr("fixture-direct-key"), "gemini-fixture", 256
+            )
+            assert (await provider.interpret(TURN, 1)).intents[0].id == "OPEN_SETUP"
+
+    asyncio.run(scenario())

@@ -89,6 +89,11 @@ class ProviderRouter:
             else:
                 route.failures = 0
                 route.until = 0
+                logger.info(
+                    "agent_decision kind=%s intents=%s",
+                    result.kind,
+                    [item.id for item in result.intents],
+                )
                 self._measure(started, attempts, "valid")
                 return result
         return Decision(kind="temporarily_unavailable", reasonCode=reason)

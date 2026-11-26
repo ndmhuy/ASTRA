@@ -1,5 +1,6 @@
 """Test the local interpretation boundary without provider inference."""
 
+from contextlib import asynccontextmanager
 from uuid import uuid4
 
 from fastapi.testclient import TestClient
@@ -73,3 +74,33 @@ def test_admission_replay_boundary_and_limits(tmp_path, monkeypatch):
         limited = client.post(endpoint, json=payload(), headers=HEADERS)
         assert limited.status_code == 429
         assert int(limited.headers["Retry-After"]) > 0
+
+
+def test_demo_mas_can_use_explicit_agent_configuration(tmp_path, monkeypatch):
+    import exam_baseline.api.app as api_app
+
+    @asynccontextmanager
+    async def configured():
+        async def fixture(_turn):
+            return Decision(kind="task", intents=[Intent(id="OPEN_SETUP", args={})])
+
+        yield fixture
+
+    monkeypatch.setattr(api_app, "configured_interpreter", configured)
+    settings = Settings.for_offline().model_copy(update={"demo_mode": True})
+    app = api_app.create_app(settings, ui_output_root=tmp_path)
+    with TestClient(app, base_url="http://127.0.0.1", client=("127.0.0.1", 1000)) as client:
+        assert client.get("/api/health").json()["demoMode"]
+        response = client.post("/agent/turn", json=payload(), headers=HEADERS)
+        assert response.json()["decision"]["intents"][0]["id"] == "OPEN_SETUP"
+
+
+def test_operator_can_distinguish_disabled_agent_from_bad_configuration(tmp_path, monkeypatch):
+    monkeypatch.setenv("ASTRA_AGENT_GATEWAY_TOKEN", "")
+    settings = Settings.for_offline().model_copy(update={"demo_mode": True})
+    for enabled, expected in [("false", "disabled"), ("true", "configuration")]:
+        monkeypatch.setenv("ASTRA_AGENT_ENABLED", enabled)
+        app = create_app(settings, ui_output_root=tmp_path)
+        with TestClient(app, base_url="http://127.0.0.1", client=("127.0.0.1", 1000)) as client:
+            response = client.post("/agent/turn", json=payload(), headers=HEADERS)
+            assert response.json()["decision"]["reasonCode"] == expected

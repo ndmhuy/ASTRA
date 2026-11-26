@@ -1,9 +1,13 @@
-import { MAX_ACTIONS, validIntent, type Intent, type IntentId } from './contracts.ts';
+﻿import { MAX_ACTIONS, validIntent, type Intent, type IntentId } from './contracts.ts';
 
 // Adapted from the legacy Agent's accent folding. Preserve the original text for data fields.
 export const fold = (value: string) => value.toLocaleLowerCase('vi').replace(/đ/g, 'd')
   .normalize('NFD').replace(/\p{Mark}/gu, '').replace(/\s+/g, ' ').trim();
 const command = (value: string) => fold(value).replace(/[.!]+$/, '');
+const directCommand = (text: string) => text
+  .replace(/^(?:astra oi[, ]+|hay |cho (?:co|thay|toi|minh|tao|t|em) )/, '')
+  .replace(/ (?:giup|gium|ho) (?:co|thay|toi|minh|tao|t|em)(?: voi| nhe| nha)?$/, '')
+  .replace(/ (?:voi|nhe|nha)$/, '');
 
 export function admit(value: string): { text: string; error?: string } {
   const text = value.normalize('NFC').trim();
@@ -22,14 +26,18 @@ const action = (id: IntentId, args: Intent['args'] = {}): Local => ({ intents: [
 
 export function fastRoute(message: string): Local | undefined {
   const text = command(message);
+  const direct = directCommand(text);
   if (/^(xin chao|chao( em| astra)?|hello|hi)$/.test(text)) {
     return { text: 'Em chào thầy cô! Em có thể giúp chọn mẫu đề hoặc thao tác trong ASTRA.' };
+  }
+  if (/^(lam|thuc hien) (cai |viec )?(nay|do|kia)( di)?$/.test(text)) {
+    return { text: 'Thầy cô muốn em mở màn hình nào hoặc thao tác với đề nào? Hãy ghi tên đề hoặc số câu nếu có.' };
   }
   if (/^(cam on( em)?|thanks)$/.test(text)) return { text: 'Em sẵn sàng hỗ trợ khi thầy cô cần.' };
   if (/^(dong y|xac nhan|ok)$/.test(text)) return { confirm: true };
   if (/^(huy tac vu|huy yeu cau|thoi dung lai)$/.test(text)) return { confirm: false };
-  if (/^(mo( phan)? (soan de|cau hinh|thiet lap)( giup co)?|mo mau de)$/.test(text)) return action('OPEN_SETUP');
-  if (/^(tinh trang|tien do|toi dau roi|de toi dau roi|status)[?]?$/.test(text)) return action('STATUS');
+  if (/^(mo (?:phan )?(?:soan de|cau hinh|thiet lap)(?: de thi)?|mo mau de|vao (?:phan )?soan de)$/.test(direct)) return action('OPEN_SETUP');
+  if (/^(tinh trang|tien do|toi dau roi|(?:tao )?de (?:toi|den) dau roi|xem (?:tinh trang|tien do)(?: tao de)?|status)[?]?$/.test(direct)) return action('STATUS');
   if (/^(xem dap an|review)$/.test(text)) return action('SET_VIEW', { view: 'review' });
   if (/^(xem de thi|mo de thi)$/.test(text)) return action('SET_VIEW', { view: 'paper' });
   if (/^(xem truoc pdf|mo ban xem truoc|preview pdf)$/.test(text)) return action('SET_VIEW', { view: 'pdf' });
@@ -42,10 +50,10 @@ export function fastRoute(message: string): Local | undefined {
     if (question[1] === 'kiem tra lai dap an') return action('VERIFY_QUESTION', target);
     return action('FOCUS_QUESTION', { ...target, ...(question[1] === 'xem dap an' ? { view: 'review' } : {}) });
   }
-  if (/^(xem (cac )?mau de|co nhung mau nao|co khong biet chon de gi)[?]?$/.test(text)) return action('SHOW_FORMATS');
+  if (/^(xem (?:cac |danh sach )?mau de|co nhung mau(?: de)? nao|co khong biet chon de gi)[?]?$/.test(direct)) return action('SHOW_FORMATS');
   const format = /\b(v-act|vact|dgnl)\b/.test(text) ? 'vact' : /\bthpt\b/.test(text) ? 'thpt-math' : null;
-  if (format && /^(chon|doi sang|a doi tu thpt sang) (mau )?(thpt|toan thpt|v-act|vact)( va xem chi tiet)?$/.test(text)) {
-    return action('SELECT_FORMAT', { format, details: text.endsWith('chi tiet') });
+  if (format && /^(chon|doi sang|a doi tu thpt sang) (mau )?(thpt|toan thpt|v-act|vact)( va xem chi tiet)?$/.test(direct)) {
+    return action('SELECT_FORMAT', { format, details: direct.endsWith('chi tiet') });
   }
   if (/^(xem chi tiet mau|mo chi tiet mau)$/.test(text)) return action('FORMAT_DETAILS');
   if (format && /^(tao|soan) de (toan )?(thpt|v-act|vact)(?: chuyen de:? [\p{Letter}\p{Number} ,_-]+)?(?: \d+ cau)?(?:,? \d+ phut)?$/u.test(text)) {
@@ -76,6 +84,9 @@ export function fastRoute(message: string): Local | undefined {
   if (correction && !/\b(roi|sau do|va mo)\b/.test(fold(correction[1]))) {
     return action('OPEN_SESSION', { title: correction[1] });
   }
+  if (/^mo (?:cho (?:co|thay|toi|minh|tao|t|em) )?de (?:vua tao|gan nhat|moi nhat)(?: di)?$/.test(direct)) {
+    return action('OPEN_SESSION');
+  }
   const named = message.match(/^(mở|tìm) (?:chat|cuộc trò chuyện|đề) (.{1,120})$/iu);
   if (named && !/^(thi|nay|do|kia|vua roi|vua tao|gan nhat)$|\b(roi|sau do|va (xem|mo|xuat|sua|duyet))\b/.test(fold(named[2]))) {
     return action(named[1].toLocaleLowerCase('vi') === 'mở' ? 'OPEN_SESSION' : 'LIST_SESSIONS', { title: named[2] });
@@ -91,9 +102,8 @@ export function fastRoute(message: string): Local | undefined {
   if (/^(mo|liet ke|xem) (tu de|danh sach de)$/.test(text)) return action('LIST_SESSIONS');
   if (/^(ve (trang chu|man hinh bat dau)|home)$/.test(text)) return action('HOME');
   if (/^tao (workspace|khong gian soan de) moi$/.test(text)) return action('CREATE_SESSION');
-  if (/^(mo de (vua tao|gan nhat)|mo cho co de vua tao di)$/.test(text)) return action('OPEN_SESSION');
-  if (/^(thu gon|mo rong)( thanh dieu huong| sidebar)?$/.test(text)) {
-    return action('SET_SIDEBAR', { collapsed: text.startsWith('thu gon') });
+  if (/^(thu gon|mo rong)( thanh dieu huong| sidebar)?$/.test(direct)) {
+    return action('SET_SIDEBAR', { collapsed: direct.startsWith('thu gon') });
   }
   if (/\b(word|docx|random|ngau nhien|ngan hang cau hoi|upload|tim web|tim google|huy job)\b/.test(text)) {
     return { text: 'ASTRA hiện hỗ trợ mẫu Toán THPT và V-ACT, cùng xuất PDF, tệp nguồn TEX và đáp án JSON sau khi duyệt. Tính năng thầy cô yêu cầu chưa có.' };
@@ -143,8 +153,12 @@ export async function execute(
       break;
     }
     receipts.push({ ...effect, actionId, capability: intent.id, before: expected, after });
+    if (import.meta.env?.VITE_AGENT_TRACE === '1') {
+      console.info('[ASTRA Agent]', { intent: intent.id, instruction: intent.id, receipt: effect.status });
+    }
     if (effect.status !== 'succeeded') break;
     expected = after;
   }
   return receipts;
 }
+
