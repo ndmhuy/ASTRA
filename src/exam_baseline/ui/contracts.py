@@ -8,15 +8,16 @@ from pydantic import Field, model_validator
 
 from exam_baseline.core.models import Model
 from exam_baseline.thpt.models import Slot
+from exam_baseline.thpt.subjects import DURATION, PROFILES, FormatId, subject_catalog
 from exam_baseline.vact.models import Slot as VactSlot
 
 
-def format_catalog() -> list[dict]:
+def format_catalog(*, demo_mode: bool = False) -> list[dict]:
     resources = files("exam_baseline.resources").joinpath("exam_formats")
     return [
         json.loads(resources.joinpath(name).read_text(encoding="utf-8"))
         for name in ("thpt_math_v1.json", "vact_v1.json")
-    ]
+    ] + [dict(item, available=not demo_mode) for item in subject_catalog()]
 
 
 class GenerateRequest(Model):
@@ -61,7 +62,26 @@ class VactGenerateRequest(Model):
         return self
 
 
-ExamGenerateRequest = GenerateRequest | VactGenerateRequest
+class SubjectGenerateRequest(Model):
+    formatId: FormatId
+    formatVersion: Literal["1"] = "1"
+    subject: str
+    grade: Literal[12]
+    examType: Literal["THPT_STANDARD"]
+    durationMinutes: Literal[DURATION]
+    itemCount: int = Field(strict=True)
+    prompt: str = Field(default="", max_length=10000)
+    uploadedFiles: list[str] = Field(default_factory=list, max_length=0)
+
+    @model_validator(mode="after")
+    def validate_format(self):
+        profile = PROFILES[self.formatId]
+        if self.subject != profile.subject or self.itemCount != len(profile.ids):
+            raise ValueError("Subject and item count must agree with the selected THPT format")
+        return self
+
+
+ExamGenerateRequest = GenerateRequest | VactGenerateRequest | SubjectGenerateRequest
 
 
 class PreviewRequest(Model):

@@ -72,7 +72,7 @@ export interface ExamPassageTable {
 
 export interface ExamPassage {
   id: string;
-  section: 'TV' | 'TA' | 'TO' | 'LOGIC' | 'SCIENCE';
+  section: 'TV' | 'TA' | 'TO' | 'LOGIC' | 'SCIENCE' | 'P1';
   kind:
     | 'passage'
     | 'vact_passage_en'
