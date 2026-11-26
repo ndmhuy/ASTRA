@@ -2,6 +2,8 @@
 
 For the operator responsible for Agent V2 credentials. ASTRA's server connects to Cloudflare over HTTPS from its existing runtime.
 
+The owner has provisioned `astra-gateway`, a Google AI Studio stored key and an AI Gateway Run token, and selected Workers AI Standard. Open the ignored `.env` in the feature worktree. Fill the Cloudflare account ID, Run token and Gemini model fields shown below. Check the stored key alias in **Provider Keys**. Leave `default` if the key has that alias. Choose the exact Flash-Lite model ID that the stored key's Google project lists for structured `generateContent`; project access still needs live verification. Save the file and restart ASTRA to load the settings. Keep the token in the server file.
+
 ## Configure BYOK
 
 1. Create or select an authenticated gateway in **AI → AI Gateway**. Record the account ID and gateway ID. Preserve separate gateway and provider budgets for interpretation and MAS.
@@ -15,12 +17,12 @@ Put the following in the feature worktree's ignored `.env` or the trusted server
 ASTRA_AGENT_ENABLED=true
 ASTRA_AGENT_TRANSPORT=gateway
 ASTRA_AGENT_GATEWAY_ACCOUNT_ID=<account-id>
-ASTRA_AGENT_GATEWAY_ID=<gateway-id>
+ASTRA_AGENT_GATEWAY_ID=astra-gateway
 ASTRA_AGENT_GATEWAY_TOKEN=<restricted-run-token>
-ASTRA_AGENT_GATEWAY_BYOK_ALIAS=astra-agent
+ASTRA_AGENT_GATEWAY_BYOK_ALIAS=default
 ASTRA_AGENT_MODEL=<project-approved-gemini-model>
-ASTRA_AGENT_PRIMARY_SECONDS=12
-ASTRA_AGENT_TOTAL_SECONDS=12
+ASTRA_AGENT_PRIMARY_SECONDS=30
+ASTRA_AGENT_TOTAL_SECONDS=30
 ASTRA_AGENT_DAILY_ATTEMPTS=1
 ASTRA_AGENT_FALLBACK_ENABLED=false
 ASTRA_AGENT_BUDGET_PATH=runs/agent-gateway-acceptance.sqlite3
@@ -39,6 +41,8 @@ $env:VITE_AGENT_TRACE = '1'
 ```
 
 Use `http://127.0.0.1:8000/`. This keeps MAS in demo mode. Decode errors, quota, timeouts, upstream rejections and credential errors are separate Agent responses. The attempt budget is reserved before inference and persists by UTC day. The initialized test limits above are starting values. Measure live latency before adjusting them. [Acceptance procedure](MANUAL_ACCEPTANCE_V2.md)
+
+The Agent sends `cf-aig-max-attempts: 1` on its provider-native gateway request. For the authorized turn, record the upstream HTTP status and model from `agent_gateway_http`, the validated decision and latency from the Agent logs, and the teacher-visible clarification and exam request count from the browser. A transport failure before response headers has no upstream HTTP status. [Cloudflare header glossary](https://developers.cloudflare.com/ai-gateway/glossary/)
 
 ## Runtime profiles and rotation
 

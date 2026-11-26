@@ -8,7 +8,7 @@ Old Agent reference SHA: fb834b976cb62eb7292fa839cdaf1d8738e1ec50
 Feature branch / worktree: feat/longlth2297/agent-main-v2 / ../ASTRA.worktrees/longlth2297-agent-main-v2
 Current HEAD: see git log; checkpoint base fbc951bade177dcea0d6e19079d17238dcd5b495
 Latest origin/main checked: 7523c79556a9935df5008c92043f1e38d6e5d2a2
-Current phase / exact next action: R5 / operator Cloudflare setup and authorized live acceptance
+Current phase / exact next action: R5 / owner fills the private account ID, Run token and project-approved model, confirms alias, then authorizes one live turn.
 
 | Phase | Status | Evidence level | Commit / report | Blocker / next step |
 |---|---|---|---|---|
@@ -19,7 +19,7 @@ Current phase / exact next action: R5 / operator Cloudflare setup and authorized
 | P4 A/B/C workflows | PARTIAL | REAL_UI_FIXTURE, REAL_HTTP_NO_AI | [Browser smoke](../../scripts/agent_browser_smoke.py) | Browser-local guard added. Backend ownership and full race coverage remain open |
 | P5 memory/title | VERIFIED_OFFLINE | REAL_UI_FIXTURE, UNIT | [Memory tests](../../astra-frontend/tests/agent-memory.test.mjs) | Browser-local persistence; shared accounts and durable pending plans absent |
 | P6 provider/latency | VERIFIED_OFFLINE | UNIT | [Timing harness](../../astra-frontend/scripts/agent-benchmark.mjs) | Live model eligibility, intent accuracy and p95 require operator verification |
-| P7 key gateway/security | VERIFIED_OFFLINE | UNIT, REAL_UI_FIXTURE | [Runbook](DEPLOY_RUNBOOK.md) | Cloudflare provisioning and live calls require authorization |
+| P7 key gateway/security | VERIFIED_OFFLINE | UNIT, REAL_UI_FIXTURE | [Gateway setup](CLOUDFLARE_GATEWAY_SETUP.md) | Owner reports gateway, stored key and Run token provisioned. Runtime authentication and project model access await live acceptance. |
 | P8 final integration | PARTIAL | REAL_UI_FIXTURE, REAL_HTTP_NO_AI, UNIT, STATIC | [Final handoff](FINAL_REPORT.md) | Live provider and gateway verification blocked by authorization. Remaining cases listed in acceptance results. |
 
 ## Checkpoint log (append, never fabricate)
@@ -48,6 +48,7 @@ Current phase / exact next action: R5 / operator Cloudflare setup and authorized
 - 2026-11-26 · R1–R5 · Parent `7e63bd1`. Added shared vocabulary, catalog-grounded intake, guidance, source-linked memory and automatic titles using the existing compiler. Updated BYOK documentation and classified upstream errors without payload logging. 27 frontend tests, 20 focused Python tests, production build and the mounted semantic-fixture regression passed. No local gateway account ID, gateway ID, Run token or model configuration was present. The old process contained two successful manual Codex responses, OPEN_SETUP and clarify. The new contract and Cloudflare live acceptance remain unverified. The exact manual scenarios and authorization gate are in [Manual acceptance V2](MANUAL_ACCEPTANCE_V2.md).
 
 ## Release gates
+- 2026-11-26 · Gateway activation, parent `6851fce`. Prepared the ignored local gateway profile for `astra-gateway` with a 30-second deadline, one persisted daily attempt, gateway retries suppressed and fallback disabled. Rebuilt the traced frontend. Board of evidence: 27 frontend checks and 16 focused Python checks passed; loopback UI, health and catalog returned HTTP 200 with demo MAS. Startup reports the missing account ID, Run token and project model by field name. Dashboard alias and project access still require owner confirmation. Zero live attempts.
 - LOCAL_APP_READY: VERIFIED_OFFLINE
 - ORCHESTRATION_OFFLINE_VERIFIED: PARTIAL
 - LIVE_AGENT_VERIFIED: BLOCKED_EXTERNAL

@@ -52,6 +52,7 @@ def assert_protected(request):
 def test_gemini_gateway_uses_validated_fixed_route_and_schema():
     def transport(request):
         assert_protected(request)
+        assert request.headers["cf-aig-max-attempts"] == "1"
         assert request.url.path == (
             f"/v1/{ACCOUNT}/astra-fixture/google-ai-studio/v1/models/gemini-fixture:generateContent"
         )
@@ -94,6 +95,7 @@ def test_gemini_gateway_uses_validated_fixed_route_and_schema():
         (403, "auth"),
         (404, "model"),
         (429, "quota"),
+        (504, "timeout"),
         (503, "transient"),
         (200, "schema"),
     ],

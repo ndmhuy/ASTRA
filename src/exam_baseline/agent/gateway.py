@@ -80,6 +80,8 @@ class GeminiGatewayProvider:
             raise ValueError("invalid configured Gemini model")
         self.client = client
         self.headers = gateway.headers()
+        self.model_name = model
+        self.headers["cf-aig-max-attempts"] = "1"
         self.url = f"{gateway.base('google-ai-studio')}/v1/models/{model}:generateContent"
         self.output_tokens = output_tokens
 
@@ -105,11 +107,15 @@ class GeminiGatewayProvider:
         except httpx.TransportError:
             raise ProviderFailure("transient") from None
         status = response.status_code
+        if "cf-aig-authorization" in self.headers:
+            logger.info("agent_gateway_http model=%s status=%d", self.model_name, status)
         if status == 429:
             raise ProviderFailure(
                 "quota", _retry_after_seconds(response.headers.get("retry-after"))
             )
-        if status == 408 or status >= 500:
+        if status in {408, 504}:
+            raise ProviderFailure("timeout")
+        if status >= 500:
             raise ProviderFailure("transient")
         if status != 200:
             code = {401: "auth", 403: "auth", 404: "model", 400: "rejected"}.get(
@@ -184,8 +190,11 @@ async def configured_interpreter(settings: AgentSettings | None = None):
                         client, settings.api_key, model, settings.max_output_tokens
                     )
             else:
-                if not settings.gateway_token:
-                    raise ValueError("missing gateway token")
+                required = ("gateway_account_id", "gateway_id", "gateway_token", "model")
+                missing = [name for name in required if not getattr(settings, name)]
+                if missing:
+                    logger.warning("agent_gateway_missing fields=%s", ",".join(missing))
+                    raise ValueError("incomplete gateway configuration")
                 gateway = Gateway(
                     settings.gateway_account_id,
                     settings.gateway_id,

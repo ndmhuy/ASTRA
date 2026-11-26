@@ -123,8 +123,9 @@ def create_web_app() -> FastAPI:
 
 
 def configure_logging() -> None:
-    logger = logging.getLogger("exam_baseline.baseline.evaluation")
-    if not logger.handlers:
-        logger.addHandler(logging.StreamHandler())
-    logger.setLevel(logging.INFO)
-    logger.propagate = False
+    for name in ("exam_baseline.baseline.evaluation", "exam_baseline.agent"):
+        logger = logging.getLogger(name)
+        if not logger.handlers:
+            logger.addHandler(logging.StreamHandler())
+        logger.setLevel(logging.INFO)
+        logger.propagate = False
