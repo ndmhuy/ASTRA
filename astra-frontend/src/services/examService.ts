@@ -18,6 +18,7 @@ import type {
 } from '../types/exam';
 import type { ExamFormat, ExportFormat } from '../types/exam';
 import { humanizeErrorMessage } from '../utils/userMessages.ts';
+import { adaptStudentPaper } from './contractPaper.ts';
 
 export interface IExamService {
   startGeneration(params: ExamRequestParams): Promise<{ jobId: string }>;
@@ -619,7 +620,7 @@ export class ApiExamService implements IExamService {
   async getExamPackage(jobId: string): Promise<ExamPackage> {
     const pkg = await requestJson<ExamPackage>(`${this.baseUrl}/exams/${jobId}`);
     return {
-      ...pkg,
+      ...adaptStudentPaper(pkg, this.baseUrl),
       preview: normalizePreview(pkg.preview, this.baseUrl),
     };
   }
@@ -631,7 +632,7 @@ export class ApiExamService implements IExamService {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ instruction: instruction || 'Sửa câu hỏi và kiểm tra lại lời giải.', revision: revision ?? pkg.revision })
     });
-    return updated.questions.find(question => question.id === questionId)!;
+    return adaptStudentPaper(updated, this.baseUrl).questions.find(question => question.id === questionId)!;
   }
 
   async updateQuestion(jobId: string, updatedQuestion: QuestionItem): Promise<void> {
@@ -656,7 +657,7 @@ export class ApiExamService implements IExamService {
       body: JSON.stringify({ revision: pkg.revision, contentHash: pkg.contentHash, reviewer: 'local-teacher' })
     });
     return {
-      ...updated,
+      ...adaptStudentPaper(updated, this.baseUrl),
       preview: normalizePreview(updated.preview, this.baseUrl),
     };
   }
@@ -715,7 +716,8 @@ export class ApiExamService implements IExamService {
     }
     const url = URL.createObjectURL(await response.blob());
     const link = document.createElement('a'); link.href = url;
-    link.download = type === 'STUDENT_EXAM' ? `de_thi.${format}` : `dap_an.${format}`;
+    const filename = response.headers.get('content-disposition')?.match(/filename="?([a-zA-Z0-9_.-]+)/)?.[1];
+    link.download = filename || (type === 'STUDENT_EXAM' ? `de_thi.${format}` : `dap_an.${format}`);
     link.click(); URL.revokeObjectURL(url);
   }
 }

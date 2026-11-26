@@ -1,3 +1,5 @@
+import type { StudentPaper } from '../services/contractPaper';
+
 /** Backend-adapted UI contracts. Display numbers are separate from stable MAS IDs. */
 export type Subject = 'Tổng hợp' | 'Vật Lý' | 'Toán Học' | 'Hóa Học' | 'Sinh Học' | 'Tiếng Anh' | 'Lịch Sử' | 'Địa Lý' | 'GDCD / KTPL';
 export type ExamType = 'THPT_STANDARD' | 'DGNL_DHQG' | 'MID_TERM' | 'CUSTOM';
@@ -30,6 +32,8 @@ export interface QuestionItem {
   revisionCount?: number;
   auditNotes?: string;
   drawingLatex?: string;
+  responseKind?: 'numeric' | 'digit_sequence';
+  figures?: { url: string; mimeType: string; alt: string }[];
 }
 export interface ExamBlueprint {
   subject: Subject; grade: number; examType: ExamType; title: string;
@@ -72,7 +76,7 @@ export interface ExamPassageTable {
 
 export interface ExamPassage {
   id: string;
-  section: 'TV' | 'TA' | 'TO' | 'LOGIC' | 'SCIENCE' | 'P1';
+  section: 'TV' | 'TA' | 'TO' | 'LOGIC' | 'SCIENCE' | 'P1' | 'P2' | 'P3';
   kind:
     | 'passage'
     | 'vact_passage_en'
@@ -92,6 +96,7 @@ export interface ExamPackage {
   durationMinutes: number; totalScore: number | null; createdAt: string;
   blueprint: ExamBlueprint; questions: QuestionItem[];
   passages?: ExamPassage[];
+  studentPaper?: StudentPaper;
   revision?: number; contentHash?: string; approved?: boolean;
   approval?: { revision: number; contentHash: string; reviewer: string; approvedAt: string } | null;
   preview?: ExamPreviewState;
