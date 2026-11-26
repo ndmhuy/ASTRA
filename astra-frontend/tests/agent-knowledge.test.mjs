@@ -29,7 +29,8 @@ test('partial intake retains family and catalog subject, then prepares a grounde
 test('catalog drives capability, subject rejection, locks and read-only structure', () => {
   assert.match(resolve('Tạo đề THPT môn Hóa', { subject: 'Toán Học' }).text, /Hóa.*Toán/);
   assert.equal(fastRoute('Tạo đề THPT').intake.family, 'thpt');
-  assert.match(resolve('Tạo đề thi thử').text, /Toán THPT.*V-ACT/);
+  assert.match(resolve('Tạo đề thi thử', { family: 'thpt' }).text, /Toán THPT.*V-ACT/);
+  assert.equal(resolve('Tạo đề thi thử tốt nghiệp', { family: 'vact' }).draft.missing, 'subject');
   assert.match(resolve('Tạo đề Toán 12 gồm 15 câu', { subject: 'Toán Học' }).text, /22 câu.*cố định/);
   assert.equal(resolve('Tạo đề đánh giá năng lực ĐHQG-HCM').intent.args.format, 'vact');
   assert.match(resolve('Đề V-ACT có bao nhiêu câu?', { mode: 'structure' }).text, /120 câu/);

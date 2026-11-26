@@ -11,6 +11,12 @@ export const familyFor = (format: ExamFormat) =>
 const contains = (message: string, value: string) =>
   (" " + fold(message).replace(/[^a-z0-9-]+/g, ' ') + " ").includes(" " + fold(value) + " ");
 
+export function mentionedFamilies(message: string) {
+  return (Object.entries(domain.families) as Array<[keyof typeof domain.families, { terms: string[] }]>)
+    .filter(([, family]) => family.terms.some(term => contains(message, term)))
+    .map(([key]) => key);
+}
+
 export function formatOverview(format: ExamFormat) {
   const sectionNames: Record<string, string> = {
     mcq: 'trắc nghiệm', true_false: 'đúng/sai', short_answer: 'trả lời ngắn',
@@ -40,11 +46,13 @@ export function resolveIntake(
   const available = formats.filter(format => format.available);
   const availableNames = available.map(format => format.displayName).join(' và ');
   const previousFormat = available.find(format => format.id === previous?.formatId && format.version === previous?.version);
-  const literalFamilies = (Object.entries(domain.families) as
-    Array<[keyof typeof domain.families, {terms: string[]}]>)
-    .filter(([, family]) => family.terms.some(term => contains(message, term))).map(([key]) => key);
-  const family = proposal.family ?? (literalFamilies.length === 1 ? literalFamilies[0] : undefined) ??
-    previous?.family ?? (previousFormat && familyFor(previousFormat));
+  const literalFamilies = mentionedFamilies(message);
+  const priorFamily = previous?.family ?? (previousFormat && familyFor(previousFormat));
+  const correction = /\b(?:doi|chuyen) sang\b/.test(fold(message));
+  const family = literalFamilies.length === 1 ? literalFamilies[0]
+    : literalFamilies.length > 1
+      ? (correction && proposal.family && literalFamilies.includes(proposal.family) ? proposal.family : undefined)
+      : proposal.mode === 'request' ? priorFamily : proposal.family ?? priorFamily;
   const familyChanged = !!previous?.family && !!family && previous.family !== family ||
     !!previousFormat && !!family && familyFor(previousFormat) !== family;
 

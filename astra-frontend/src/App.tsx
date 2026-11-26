@@ -5,7 +5,7 @@ import { interpretationUnavailable, interpret } from './agent/client';
 import { admit, execute, fastRoute, fold, mayDispatch, type Effect, type Runtime } from './agent/recipes';
 import { displayNumber, failure, previewText, resolveQuestion, sectionId, statusText, success } from './agent/examActions';
 import type { Decision, Intent } from './agent/contracts';
-import { familyFor, formatOverview, guidanceFor, resolveIntake } from './agent/knowledge';
+import { familyFor, formatOverview, guidanceFor, mentionedFamilies, resolveIntake } from './agent/knowledge';
 import { AlertCircle, AlertTriangle, LoaderCircle, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { WorkspaceStart } from './components/WorkspaceStart';
 import { AstraWelcome } from './components/AstraWelcome';
@@ -538,6 +538,8 @@ export const App: React.FC = () => {
             const format = available.find(item => item.id === selected);
             if (!format || !current) return failed('Mẫu yêu cầu hiện không khả dụng.');
             const family = familyFor(format);
+            const named = mentionedFamilies(message);
+            if (named.length === 1 && named[0] !== family) return failed('Mẫu được đề xuất khác với dạng đề thầy cô vừa nêu.');
             const compatibility = resolveIntake({ mode: 'structure', family }, message, undefined, formats, messageId);
             if ('text' in compatibility && !compatibility.title) return failed(compatibility.text);
             const intake = { ...resolved, sourceId: messageId, formatId: format.id, version: format.version,
