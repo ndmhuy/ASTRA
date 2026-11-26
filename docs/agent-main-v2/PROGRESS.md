@@ -90,3 +90,5 @@ P8 refreshed origin with prune. Main remained at the audited SHA with 0/0 local 
 | FRESH_CLONE_VERIFIED | LOCAL_STARTUP_VERIFIED at d323dae with independent dependency install; remote AI and complete RAG/LaTeX installation unverified |
 
 Use [Worker runbook](WORKER_RUNBOOK.md) and [next task](NEXT_TASK.md). The initial global budget of one is an operator diagnostic setting. Distributed clients rely on centralized quotas and retain local burst/replay guards.
+
+- 2026-11-26 W6 authorized deployment preparation, parent bc1c024. Wrangler authenticated. Existing Worker's gateway account matches the single authenticated account; encrypted Run Secret, astra-gateway and default alias confirmed through version metadata. Selected owner model gemini-3.1-flash-lite without inference availability claim. Prior version d140af7f-75d2-4e0b-a470-1e07741479e8 retained for rollback. Forwarding false; global/Agent allowance one, MAS zero. Production deployment authorized; live inference remains unauthorized.
