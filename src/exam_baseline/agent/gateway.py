@@ -1,0 +1,169 @@
+"""Google AI Studio structured interpretation through authenticated BYOK only."""
+
+import json
+import logging
+import re
+import sqlite3
+from contextlib import asynccontextmanager, closing
+from datetime import datetime, timezone
+from pathlib import Path
+
+import httpx
+from pydantic import Field, SecretStr, ValidationError
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from exam_baseline.providers.chat_completions import _retry_after_seconds
+from exam_baseline.providers.gateway import Gateway
+
+from .contracts import Decision, Turn
+from .prompt import SYSTEM, schema, turn_text
+from .provider import ProviderFailure, ProviderRouter, Timing
+
+logger = logging.getLogger(__name__)
+
+
+class AgentSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=".env", env_prefix="ASTRA_AGENT_", extra="ignore", hide_input_in_errors=True
+    )
+    enabled: bool = False
+    gateway_account_id: str = ""
+    gateway_id: str = ""
+    gateway_token: SecretStr | None = None
+    gateway_byok_alias: str = "default"
+    model: str = ""
+    fallback_model: str = ""
+    fallback_enabled: bool = False
+    daily_attempts: int = Field(default=0, ge=0, le=20_000)
+    budget_path: Path = Path("runs/agent-budget.sqlite3")
+    primary_seconds: float = Field(default=1.8, ge=0.2, le=3.5)
+    total_seconds: float = Field(default=4.0, ge=0.5, le=4.5)
+    max_output_tokens: int = Field(default=512, ge=128, le=1024)
+
+
+class DailyBudget:
+    """Count attempts, including failed calls and allowed fallback, by UTC day."""
+
+    def __init__(self, path: Path, limit: int):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        self.path = path
+        self.limit = limit
+        with closing(sqlite3.connect(path)) as db, db:
+            db.execute(
+                "CREATE TABLE IF NOT EXISTS agent_attempts "
+                "(day TEXT PRIMARY KEY, count INTEGER NOT NULL)"
+            )
+
+    def reserve(self) -> bool:
+        if not self.limit:
+            return False
+        today = datetime.now(timezone.utc).date().isoformat()
+        try:
+            with closing(sqlite3.connect(self.path, timeout=0.1)) as db, db:
+                consumed = db.execute(
+                    "INSERT INTO agent_attempts(day, count) VALUES (?, 1) "
+                    "ON CONFLICT(day) DO UPDATE SET count=count+1 WHERE count < ?",
+                    (today, self.limit),
+                )
+                return consumed.rowcount == 1
+        except sqlite3.Error:
+            logger.warning("agent_budget_storage_unavailable")
+            return False
+
+
+class GeminiGatewayProvider:
+    def __init__(self, client: httpx.AsyncClient, gateway: Gateway, model: str, output_tokens: int):
+        if not re.fullmatch(r"gemini-[A-Za-z0-9][A-Za-z0-9._-]{0,90}", model):
+            raise ValueError("invalid configured Gemini model")
+        self.client = client
+        self.gateway = gateway
+        self.url = f"{gateway.base('google-ai-studio')}/v1/models/{model}:generateContent"
+        self.output_tokens = output_tokens
+
+    async def interpret(self, turn: Turn, timeout: float) -> Decision:
+        try:
+            response = await self.client.post(
+                self.url,
+                headers=self.gateway.headers(),
+                json={
+                    "systemInstruction": {"parts": [{"text": SYSTEM}]},
+                    "contents": [{"role": "user", "parts": [{"text": turn_text(turn)}]}],
+                    "generationConfig": {
+                        "responseMimeType": "application/json",
+                        "responseJsonSchema": schema(),
+                        "maxOutputTokens": self.output_tokens,
+                    },
+                },
+                timeout=timeout,
+                follow_redirects=False,
+            )
+        except httpx.TransportError:
+            raise ProviderFailure("transient") from None
+        status = response.status_code
+        if status == 429:
+            raise ProviderFailure(
+                "quota", _retry_after_seconds(response.headers.get("retry-after"))
+            )
+        if status == 408 or status >= 500:
+            raise ProviderFailure("transient")
+        if status != 200:
+            raise ProviderFailure("configuration")
+        try:
+            candidates = response.json()["candidates"]
+            if len(candidates) != 1 or candidates[0]["finishReason"] != "STOP":
+                raise ValueError("incomplete provider output")
+            parts = candidates[0]["content"]["parts"]
+            text = "".join(part["text"] for part in parts if not part.get("thought"))
+            parsed = json.loads(text)
+            if set(parsed) != {"kind", "intents"}:
+                raise ValueError("unknown response fields")
+            return Decision.model_validate(parsed)
+        except (KeyError, TypeError, ValueError, AttributeError):
+            raise ProviderFailure("schema") from None
+
+
+async def configuration_failure(_turn: Turn) -> Decision:
+    return Decision(kind="temporarily_unavailable", reasonCode="configuration")
+
+
+@asynccontextmanager
+async def configured_interpreter(settings: AgentSettings | None = None):
+    try:
+        settings = settings or AgentSettings()
+    except ValidationError:
+        logger.warning("agent_gateway_settings_invalid")
+        yield configuration_failure
+        return
+    if not settings.enabled:
+        yield None
+        return
+    async with httpx.AsyncClient(follow_redirects=False, trust_env=False) as client:
+        try:
+            if not settings.gateway_token:
+                raise ValueError("missing gateway token")
+            gateway = Gateway(
+                settings.gateway_account_id,
+                settings.gateway_id,
+                settings.gateway_token,
+                settings.gateway_byok_alias,
+            )
+            primary = GeminiGatewayProvider(
+                client, gateway, settings.model, settings.max_output_tokens
+            )
+            fallback = None
+            if settings.fallback_enabled:
+                if settings.fallback_model == settings.model:
+                    raise ValueError("configure a separate fallback model")
+                fallback = GeminiGatewayProvider(
+                    client,
+                    gateway,
+                    settings.fallback_model,
+                    settings.max_output_tokens,
+                )
+            budget = DailyBudget(settings.budget_path, settings.daily_attempts)
+            timing = Timing(primary=settings.primary_seconds, total=settings.total_seconds)
+        except (ValueError, OSError, sqlite3.Error):
+            logger.warning("agent_gateway_configuration_unavailable")
+            yield configuration_failure
+            return
+        yield ProviderRouter(primary, fallback=fallback, timing=timing, reserve=budget.reserve)

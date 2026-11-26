@@ -7,6 +7,8 @@ from urllib.parse import urlsplit
 from pydantic import Field, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from exam_baseline.providers.gateway import Gateway
+
 DEFAULT_RAG_CORPUS_REF = "8b8fb7b09182b3d9d1eee0b95818027f52ab004d"
 
 
@@ -23,6 +25,11 @@ class Settings(BaseSettings):
     model: str = Field(default="mock-fixture-v1", min_length=1)
     prompt_version: Literal["v1"] = "v1"
     api_key: SecretStr | None = None
+    use_ai_gateway: bool = False
+    gateway_account_id: str = ""
+    gateway_id: str = ""
+    gateway_token: SecretStr | None = None
+    gateway_byok_alias: str = "default"
     base_url: str = "https://api.openai.com/v1"
     timeout_seconds: float = Field(default=90, gt=0, allow_inf_nan=False)
     max_output_tokens: int = Field(default=8192, gt=0)
@@ -53,25 +60,42 @@ class Settings(BaseSettings):
         defaults = {name: field.get_default() for name, field in cls.model_fields.items()}
         return cls(_env_file=None, **defaults)
 
+    def gateway(self) -> Gateway | None:
+        if not self.use_ai_gateway:
+            return None
+        if self.gateway_token is None:
+            raise ValueError("EXAM_GATEWAY_TOKEN is required for BYOK mode")
+        return Gateway(
+            self.gateway_account_id, self.gateway_id, self.gateway_token, self.gateway_byok_alias
+        )
+
     def for_agent_generation(self) -> "Settings":
         # Agent prompts include the schema and Pydantic validates dynamic question maps.
         if (
-            urlsplit(self.base_url).hostname == "api.openai.com"
-            and self.response_format == "json_object"
-        ):
+            self.use_ai_gateway or urlsplit(self.base_url).hostname == "api.openai.com"
+        ) and self.response_format == "json_object":
             return self
         return self.model_copy(update={"response_format": "json_schema"})
 
     @model_validator(mode="after")
     def complete_configuration(self):
         if self.provider == "chat_completions":
-            if not self.api_key or not self.api_key.get_secret_value().strip():
+            if self.use_ai_gateway:
+                self.gateway()
+                if not self.spend_limit_usd:
+                    raise ValueError("configure EXAM_SPEND_LIMIT_USD for BYOK mode")
+            elif not self.api_key or not self.api_key.get_secret_value().strip():
                 raise ValueError("EXAM_API_KEY is required for chat_completions")
             if self.model == "mock-fixture-v1":
                 raise ValueError("set EXAM_MODEL for the real provider")
             url = urlsplit(self.base_url)
             if url.scheme not in {"http", "https"} or not url.hostname:
                 raise ValueError("EXAM_BASE_URL must be an HTTP(S) URL")
+            if not self.use_ai_gateway and url.hostname in {
+                "gateway.ai.cloudflare.com",
+                "api.cloudflare.com",
+            }:
+                raise ValueError("use EXAM_USE_AI_GATEWAY for the authenticated BYOK gateway")
             if url.username or url.password or url.query or url.fragment:
                 raise ValueError("EXAM_BASE_URL must not contain credentials, query, or fragment")
         if (self.input_price_per_million is None) != (self.output_price_per_million is None):

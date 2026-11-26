@@ -137,6 +137,9 @@ export class ExamSessions {
   resume() {
     this.disposed = false;
     if (typeof window !== 'undefined') window.addEventListener('storage', this.storageChanged);
+    for (const session of this.sessions.filter(item => item.status === 'generating' && !item.jobId)) {
+      this.fail(session.id, Object.assign(new Error('Chưa nhận được mã công việc từ máy chủ.'), { code: 'network_error' }));
+    }
     this.sessions.filter(session => session.status === 'generating' && session.jobId).forEach(session => {
       this.subscriptions.get(session.id)?.();
       this.watch(session.id, session.jobId!);
@@ -319,6 +322,26 @@ export class ExamSessions {
   }
   sendMessage(id: string, content: string) { this.appendMessage(id, 'user', content); }
   async generate(id: string, params: ExamRequestParams) {
+    const start = () => {
+      if (this.storageReadOnly || (typeof localStorage !== 'undefined' &&
+        localStorage.getItem('astra.sessions.v1') !== this.storageImage)) {
+        this.setError(id, new Error('Tủ đề đã thay đổi trong tab khác. Hãy tải lại trước khi tạo đề.'));
+        return undefined;
+      }
+      return this.startGeneration(id, params);
+    };
+    if (typeof navigator !== 'undefined' && navigator.locks) {
+      return navigator.locks.request(`astra-generate:${id}`, { ifAvailable: true }, lock => {
+        if (lock) return start();
+        const session = this.sessions.find(item => item.id === id);
+        if (session?.status !== 'generating') this.setError(id, new Error('Một tab đang gửi yêu cầu cho đề này.'));
+        return undefined;
+      });
+    }
+    return start();
+  }
+
+  private async startGeneration(id: string, params: ExamRequestParams) {
     const existing = this.sessions.find(session => session.id === id);
     if (!existing || existing.status === 'generating') return;
     this.subscriptions.get(id)?.();
@@ -348,6 +371,11 @@ export class ExamSessions {
       meta: { title: `Đề thi ${params.subject}`, subject: params.subject, duration: params.durationMinutes, completedCount: 0, totalCount: params.itemCount }
     }));
     try {
+      if (this.storageWarning) {
+        const error = this.storageWarning;
+        this.fail(id, new Error(error));
+        return undefined;
+      }
       const { jobId } = await this.service.startGeneration({ ...params, clientRequestId: requestId });
       if (this.disposed || !this.sessions.some(session => session.id === id)) return;
       this.update(id, session => ({ ...session, jobId }));

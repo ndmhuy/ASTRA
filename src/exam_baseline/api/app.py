@@ -1,7 +1,7 @@
 """HTTP application composition, settings and baseline service lifetime."""
 
 import logging
-from contextlib import asynccontextmanager
+from contextlib import AsyncExitStack, asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -10,6 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import ValidationError
 
 from exam_baseline import __version__
+from exam_baseline.agent.gateway import configured_interpreter
 from exam_baseline.agent.routes import Interpreter, create_agent_router
 from exam_baseline.api.routes_baseline import root
 from exam_baseline.api.routes_baseline import router as baseline_router
@@ -49,13 +50,17 @@ def create_app(
             runner=ui_runner,
         )
         try:
-            if service is not None:
-                app.state.service = service
+            async with AsyncExitStack() as stack:
+                if agent_interpreter is None and not settings.demo_mode:
+                    app.state.configured_interpreter = await stack.enter_async_context(
+                        configured_interpreter()
+                    )
+                app.state.service = (
+                    service
+                    if service is not None
+                    else await stack.enter_async_context(service_scope(settings, provider))
+                )
                 yield
-            else:
-                async with service_scope(settings, provider) as current:
-                    app.state.service = current
-                    yield
         finally:
             await app.state.ui_jobs.close()
 

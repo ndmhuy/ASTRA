@@ -216,8 +216,13 @@ export const App: React.FC = () => {
       answer([...receipts.map(receipt => receipt.text),
         ...(stopped ? ['Các bước tiếp theo chưa được thực hiện. Thầy cô hãy kiểm tra trạng thái hiện tại.'] : []),
       ].join('\n'));
-    } catch {
-      if (!controller.signal.aborted) answer('Chưa xác định được kết quả của thao tác. Thầy cô hãy kiểm tra trạng thái trước khi thử lại.');
+    } catch (error) {
+      if (!controller.signal.aborted) {
+        const reason = error instanceof Error ? error.message : '';
+        answer(reason === 'agent_rate' ? 'Trợ lý đang nhận quá nhiều yêu cầu. Thầy cô thử lại sau một lát.'
+          : reason.startsWith('agent_') ? 'Chưa kết nối được dịch vụ hiểu yêu cầu. Thầy cô có thể dùng các nút trong ASTRA.'
+            : 'Chưa xác định được kết quả của thao tác. Thầy cô hãy kiểm tra trạng thái trước khi thử lại.');
+      }
     } finally {
       if (turn.current === controller) { turn.current = null; setChatPending(false); }
     }

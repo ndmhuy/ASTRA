@@ -6,9 +6,9 @@ Status: IN_PROGRESS
 Baseline SHA: 7523c79556a9935df5008c92043f1e38d6e5d2a2
 Old Agent reference SHA: fb834b976cb62eb7292fa839cdaf1d8738e1ec50
 Feature branch / worktree: feat/longlth2297/agent-main-v2 / ../ASTRA.worktrees/longlth2297-agent-main-v2
-Current HEAD: see git log; checkpoint base 5dc9104907dde3defb7a55de4c6c44f06a313d32
+Current HEAD: see git log; checkpoint base 443c41a239ed8bc10298a80c141f150d4c9de362
 Latest origin/main checked: 7523c79556a9935df5008c92043f1e38d6e5d2a2
-Current phase / exact next action: P7 / key gateway/security
+Current phase / exact next action: P8 / final integration
 
 | Phase | Status | Evidence level | Commit / report | Blocker / next step |
 |---|---|---|---|---|
@@ -19,7 +19,7 @@ Current phase / exact next action: P7 / key gateway/security
 | P4 A/B/C workflows | PARTIAL | REAL_UI_FIXTURE, REAL_HTTP_NO_AI | [Browser smoke](../../scripts/agent_browser_smoke.py) | Cross-tab admission and V-ACT regeneration limits recorded |
 | P5 memory/title | VERIFIED_OFFLINE | REAL_UI_FIXTURE, UNIT | [Memory tests](../../astra-frontend/tests/agent-memory.test.mjs) | Browser-local persistence; shared accounts and durable pending plans absent |
 | P6 provider/latency | VERIFIED_OFFLINE | UNIT | [Timing harness](../../astra-frontend/scripts/agent-benchmark.mjs) | Live model eligibility, intent accuracy and p95 require operator verification |
-| P7 key gateway/security | NOT_STARTED | — | — | — |
+| P7 key gateway/security | VERIFIED_OFFLINE | UNIT, REAL_UI_FIXTURE | [Runbook](DEPLOY_RUNBOOK.md) | Cloudflare provisioning and live calls require authorization |
 | P8 final integration | NOT_STARTED | — | — | — |
 
 ## Checkpoint log (append, never fabricate)
@@ -36,6 +36,8 @@ Current phase / exact next action: P7 / key gateway/security
 - 2026-11-26 17:07 ICT · P5 · Parent `7dc83e0661fad4c9601b4de8ef3d2aebad7f2f60` · Browser reload opened the saved chat by its manual title and retrieved the actual format choice after a fixture generation. npm test passed 23, including old-store migration, bounded retrieval, branch/retract, and preserving malformed storage. Store remains canonical. Prepared operations require fresh confirmation after reload.
 
 - 2026-11-26 17:09 ICT · P6 · Parent `5dc9104907dde3defb7a55de4c6c44f06a313d32` · Ran provider timeout, cancellation/late result, quota/cooldown, no-auth/schema fallback, and attempt budget tests. Ran the local routing harness: 16/16 curated cases, 800 samples, p50 0.005 ms, p95 0.021 ms, no provider or rendering timing. Built the frontend. All metrics are offline.
+
+- 2026-11-26 17:13 ICT · P7 · Parent `443c41a239ed8bc10298a80c141f150d4c9de362` · Mock requests validated Gemini and MAS native BYOK paths, only Cloudflare Run authentication, BYOK-only/cache/log headers, provider error classification, route/host guard, and durable attempt budget. 50 focused Python checks passed and the mounted fixture workflow still passed. Added browser Web Locks and storage conflict detection for local generation. No account access, provider calls, hosting or gateway provisioning.
 
 ## Release gates
 - LOCAL_APP_READY: NOT_VERIFIED
