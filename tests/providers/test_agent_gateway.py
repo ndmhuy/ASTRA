@@ -58,7 +58,13 @@ def test_gemini_gateway_uses_validated_fixed_route_and_schema():
         sent = json.loads(request.content)
         assert sent["generationConfig"]["responseMimeType"] == "application/json"
         assert sent["generationConfig"]["responseJsonSchema"]["additionalProperties"] is False
-        output = {"kind": "task", "intents": [{"id": "OPEN_SETUP", "args": {}}]}
+        output = {
+            "kind": "clarify",
+            "intents": [],
+            "title": "Soạn đề THPT",
+            "intake": {"mode": "request", "family": "thpt"},
+        }
+        assert "intake" in sent["generationConfig"]["responseJsonSchema"]["properties"]
         return httpx.Response(
             200,
             json={
@@ -72,7 +78,8 @@ def test_gemini_gateway_uses_validated_fixed_route_and_schema():
         async with httpx.AsyncClient(transport=httpx.MockTransport(transport)) as client:
             provider = GeminiGatewayProvider(client, gateway(), "gemini-fixture", 256)
             decision = await provider.interpret(TURN, 1)
-            assert decision.intents[0].id == "OPEN_SETUP"
+            assert decision.intake and decision.intake.family == "thpt"
+            assert decision.title == "Soạn đề THPT"
             with pytest.raises(ValueError):
                 GeminiGatewayProvider(client, gateway(), "gemini-x/redirect", 256)
 
@@ -82,9 +89,10 @@ def test_gemini_gateway_uses_validated_fixed_route_and_schema():
 @pytest.mark.parametrize(
     "status,reason",
     [
-        (400, "configuration"),
-        (401, "configuration"),
-        (403, "configuration"),
+        (400, "rejected"),
+        (401, "auth"),
+        (403, "auth"),
+        (404, "model"),
         (429, "quota"),
         (503, "transient"),
         (200, "schema"),

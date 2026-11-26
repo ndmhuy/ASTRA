@@ -28,7 +28,7 @@ class AgentSettings(BaseSettings):
         env_file=".env", env_prefix="ASTRA_AGENT_", extra="ignore", hide_input_in_errors=True
     )
     enabled: bool = False
-    transport: Literal["gateway", "direct", "codex"] = "gateway"
+    transport: Literal["gateway", "direct", "codex", "offline"] = "gateway"
     api_key: SecretStr | None = None
     gateway_account_id: str = ""
     gateway_id: str = ""
@@ -100,6 +100,8 @@ class GeminiGatewayProvider:
                 timeout=timeout,
                 follow_redirects=False,
             )
+        except httpx.TimeoutException:
+            raise ProviderFailure("timeout") from None
         except httpx.TransportError:
             raise ProviderFailure("transient") from None
         status = response.status_code
@@ -110,7 +112,11 @@ class GeminiGatewayProvider:
         if status == 408 or status >= 500:
             raise ProviderFailure("transient")
         if status != 200:
-            raise ProviderFailure("configuration")
+            code = {401: "auth", 403: "auth", 404: "model", 400: "rejected"}.get(
+                status, "configuration"
+            )
+            logger.warning("agent_upstream_status status=%s category=%s", status, code)
+            raise ProviderFailure(code)
         try:
             candidates = response.json()["candidates"]
             if len(candidates) != 1 or candidates[0]["finishReason"] != "STOP":
@@ -118,7 +124,7 @@ class GeminiGatewayProvider:
             parts = candidates[0]["content"]["parts"]
             text = "".join(part["text"] for part in parts if not part.get("thought"))
             parsed = json.loads(text)
-            if set(parsed) != {"kind", "intents"}:
+            if not isinstance(parsed, dict) or not {"kind", "intents"} <= parsed.keys():
                 raise ValueError("unknown response fields")
             return Decision.model_validate(parsed)
         except (KeyError, TypeError, ValueError, AttributeError):
@@ -153,7 +159,7 @@ async def configured_interpreter(settings: AgentSettings | None = None):
         logger.warning("agent_gateway_settings_invalid")
         yield configuration_failure
         return
-    if not settings.enabled:
+    if not settings.enabled or settings.transport == "offline":
         yield None
         return
     async with httpx.AsyncClient(follow_redirects=False, trust_env=False) as client:

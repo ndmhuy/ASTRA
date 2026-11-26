@@ -8,6 +8,14 @@ export function interpretationUnavailable(reason?: string): string {
       return 'Kết nối AI cho chat chưa dùng được. Người quản trị cần kiểm tra cấu hình dịch vụ AI.';
     case 'budget':
       return 'Agent đã hết ngân sách gọi AI. Các lệnh trực tiếp như “Mở cấu hình” vẫn dùng được.';
+    case 'auth':
+      return 'Dịch vụ AI từ chối thông tin xác thực. Người quản trị kiểm tra token và khóa đã lưu trên gateway.';
+    case 'model':
+      return 'Không tìm thấy model AI trên cấu hình hiện tại. Người quản trị kiểm tra tên model và đường dẫn gateway.';
+    case 'timeout':
+      return 'Dịch vụ AI chưa trả lời trong thời gian chờ. Yêu cầu chưa được thực hiện.';
+    case 'rejected':
+      return 'Dịch vụ AI từ chối yêu cầu. Người quản trị kiểm tra cấu hình gateway và định dạng phản hồi.';
     case 'quota':
       return 'Dịch vụ AI đang giới hạn lượt gọi. Thầy cô thử lại sau hoặc dùng lệnh trực tiếp như “Mở cấu hình”.';
     case 'schema':

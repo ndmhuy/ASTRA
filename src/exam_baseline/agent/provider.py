@@ -67,7 +67,7 @@ class ProviderRouter:
             now = self.clock()
             if route.until > now:
                 reason = route.reason
-                if reason != "transient":
+                if reason not in {"transient", "timeout"}:
                     break
                 continue
             remaining = started + self.timing.total - now
@@ -84,7 +84,7 @@ class ProviderRouter:
                 reason = exc.reason
                 self._record_failure(route, exc)
                 self._measure(started, attempts, reason)
-                if reason != "transient":
+                if reason not in {"transient", "timeout"}:
                     break
             else:
                 route.failures = 0
@@ -104,7 +104,7 @@ class ProviderRouter:
             done, _ = await asyncio.wait({task}, timeout=deadline)
             if task in done:
                 return task.result()
-            raise ProviderFailure("transient")
+            raise ProviderFailure("timeout")
         finally:
             if not task.done():
                 task.add_done_callback(discard_result)
@@ -115,7 +115,10 @@ class ProviderRouter:
         route.failures += 1
         if error.reason == "quota":
             route.until = self.clock() + max(1.0, error.retry_after or self.timing.cooldown)
-        elif error.reason in {"configuration", "schema"} or route.failures >= 2:
+        elif (
+            error.reason in {"configuration", "schema", "auth", "model", "rejected"}
+            or route.failures >= 2
+        ):
             route.until = self.clock() + self.timing.cooldown
 
     def _measure(self, started: float, attempts: int, code: str) -> None:

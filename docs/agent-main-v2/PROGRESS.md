@@ -8,7 +8,7 @@ Old Agent reference SHA: fb834b976cb62eb7292fa839cdaf1d8738e1ec50
 Feature branch / worktree: feat/longlth2297/agent-main-v2 / ../ASTRA.worktrees/longlth2297-agent-main-v2
 Current HEAD: see git log; checkpoint base fbc951bade177dcea0d6e19079d17238dcd5b495
 Latest origin/main checked: 7523c79556a9935df5008c92043f1e38d6e5d2a2
-Current phase / exact next action: P8 / see final report
+Current phase / exact next action: R5 / operator Cloudflare setup and authorized live acceptance
 
 | Phase | Status | Evidence level | Commit / report | Blocker / next step |
 |---|---|---|---|---|
@@ -44,6 +44,8 @@ Current phase / exact next action: P8 / see final report
 - 2026-11-26 · Follow-up · Direct Gemini local transport uses the existing credential and model. Model metadata returned HTTP 200 with generateContent support. Native app started with demo MAS, a 30-attempt daily limit and sanitized traces. No inference or generation sent. Live response remains to be manually verified.
 
 - 2026-11-26 · Codex CLI manual test · Added tool-disabled ephemeral Codex exec with the shared intent schema, 30-second deadline and no fallback. Tested subprocess using a fake process and ran 19 focused Python tests. Native app started with demo MAS and the frontend timeout expanded to 35 seconds. Live inference remains for the user to test.\n\n- 2026-11-26 · Real Codex diagnostic · One authorized endpoint request returned HTTP 200, configuration failure, CLI exit 1 in 6.6 seconds. CLI stderr reported invalid structured-output schema. The detailed error text was truncated by the initial sanitizer. Corrected the schema to require every property, permit null on optional values, remove unsupported constraints, and validate the decoded result. Verified offline for all 34 intent shapes and restarted the app. No second live attempt was made.
+
+- 2026-11-26 · R1–R5 · Parent `7e63bd1`. Added shared vocabulary, catalog-grounded intake, guidance, source-linked memory and automatic titles using the existing compiler. Updated BYOK documentation and classified upstream errors without payload logging. 27 frontend tests, 20 focused Python tests, production build and the mounted semantic-fixture regression passed. No local gateway account ID, gateway ID, Run token or model configuration was present. The old process contained two successful manual Codex responses, OPEN_SETUP and clarify. The new contract and Cloudflare live acceptance remain unverified. The exact manual scenarios and authorization gate are in [Manual acceptance V2](MANUAL_ACCEPTANCE_V2.md).
 
 ## Release gates
 - LOCAL_APP_READY: VERIFIED_OFFLINE

@@ -16,6 +16,10 @@ For UI and API reviewers. Each registered semantic intent has an App adapter. Th
 | Notes | ADD_NOTE, CANCEL_NOTE, REVIEW_NOTES, APPLY_NOTES | ExamSessions and the existing question operation | Job-bound notes. Stable mapping after completion. Applying notes is confirmed and bounded. THPT regeneration only. |
 | Memory | RENAME, RECALL, CHAT_MESSAGE, SET_DRAFT | ExamSessions and the existing composer/ChatHistory | Local browser only. Named and numbered targets resolve from current state. Retract asks for confirmation. Clipboard permissions depend on browser and user activation. |
 
+## Intake and guidance refinement
+
+The semantic envelope also carries non-executable guidance and intake proposals. The mounted browser observed the current catalog supplying subject clarification and read-only structure, and the existing SELECT_FORMAT binding opening the real Toán THPT dialog on a follow-up. Topic evaluation continues to use PREPARE_GENERATION. These routes add no new executable IDs. [Acceptance evidence](MANUAL_ACCEPTANCE_V2.md)
+
 ## Browser-observed intent IDs
 
 `OPEN_SETUP`, `OPEN_SESSION`, `SET_SIDEBAR`, `LIST_SESSIONS`, `SET_VIEW`, `STATUS`, `FOCUS_QUESTION`, `OPEN_EDITOR`, `APPROVE`, `EXPORT`, `SELECT_FORMAT`, `PREPARE_GENERATION`, `ADD_NOTE`, `CANCEL_NOTE`, `REVIEW_NOTES`, `RENAME`, `RECALL`, `PATCH_EDITOR`.
