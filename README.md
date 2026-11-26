@@ -2,6 +2,8 @@
 
 ASTRA generates and verifies THPT and V-ACT practice exams. This guide runs the teacher workspace, FastAPI backend, retrieval and four-agent pipeline together on Windows with a live model.
 
+See the [MAS input-to-plan integration contract](docs/ASTRA_MAS_BUNDLE.md) for the separately distributed planning wheel.
+
 ## 1. Install
 
 Open PowerShell in the repository root. Use Git, CPython 3.11.1 and Node.js 22.12 or later.

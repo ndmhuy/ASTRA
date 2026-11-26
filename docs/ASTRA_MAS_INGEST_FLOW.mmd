@@ -1,0 +1,41 @@
+flowchart TD
+  S(["Thầy/Cô đưa yêu cầu"]) --> F{"Có file kèm?"}
+  F -->|"đề mẫu"| CMP{"So với mẫu có sẵn"}
+  CMP -->|"khớp"| K1["Soạn theo mẫu, đề mẫu làm tham khảo"]
+  CMP -->|"gần"| K2["Đề xuất phát triển từ mẫu, nêu khác biệt"]
+  CMP -->|"khác hẳn"| K3["Giải thích đánh đổi, Thầy/Cô chọn"]
+  F -->|"ma trận"| MG{"Số câu khớp số câu của đề?"}
+  MG -->|"khớp"| OK1["Nhận ma trận"]
+  MG -->|"khác, Thầy/Cô đã đặt số câu"| OK2["Nhận, báo số câu theo ma trận"]
+  MG -->|"khác, chưa đặt, khung công bố"| RF["Từ chối, nói lệch ở phần nào"]
+  F -->|"tài liệu"| DOC["Xếp vai, bỏ phiếu đáp án và bản trùng, báo phần mất khi chuyển đổi"]
+  F -->|"không có"| SC{"Đã chọn phạm vi bài?"}
+  OK1 --> TOP["Chủ đề ô lấy từ file ma trận"]
+  OK2 --> TOP
+  DOC --> SC2{"Đã chọn phạm vi bài?"}
+  SC2 -->|"có"| CON["Thu hẹp chủ đề vào phạm vi"]
+  SC2 -->|"không"| T2
+  SC -->|"có"| T1["Chủ đề từ các bài, xoay vòng theo thứ tự bài"]
+  SC -->|"không"| T2["Chủ đề mặc định cả môn, như trước"]
+  K1 --> SC
+  K2 --> SC
+  K3 --> SC
+  TOP --> G{"Biết lớp?"}
+  T1 --> G
+  T2 --> G
+  CON --> G
+  G -->|"biết"| GF["Chọn mẫu cùng lớp, thiếu thì thêm mẫu chưa rõ lớp, gắn cờ"]
+  G -->|"không"| GN["Không lọc theo lớp"]
+  GF --> CELL["Mỗi ô ghi lớp, bài, nguồn"]
+  GN --> CELL
+  CELL --> NAME{"Có tên do trợ lý đưa?"}
+  NAME -->|"khớp đúng"| PASS["Cho qua, không nhãn"]
+  NAME -->|"sai chỗ"| RET["Trả model một lần, lần hai vào mục thêm"]
+  NAME -->|"gần hoặc ngoài dữ liệu"| LAB["Cho qua, gắn nhãn"]
+  PASS --> CMD{"Có lệnh rõ soạn luôn?"}
+  RET --> CMD
+  LAB --> CMD
+  CMD -->|"có"| SAVE["Xếp slot và lưu"]
+  CMD -->|"không"| TBL["Bảng chọn bài, trợ lý tick sẵn"]
+  TBL --> SAVE
+  SAVE --> ENV["Ghi Paper.json cạnh .tex, ghi lệch, không chặn lưu"]

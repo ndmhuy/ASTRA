@@ -1,0 +1,28 @@
+\documentclass[border=17pt]{standalone}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\renewcommand{\familydefault}{\sfdefault}
+\definecolor{ink}{HTML}{172838}
+\definecolor{muted}{HTML}{516475}
+\definecolor{teal}{HTML}{176B5A}
+\newsavebox{\ingestchart}
+
+\begin{document}
+\sbox{\ingestchart}{\includegraphics{ASTRA_MAS_INGEST_CHART.pdf}}
+\begin{minipage}{\wd\ingestchart}
+\color{ink}
+{\large\bfseries\color{teal} ASTRA \enspace / \enspace CONFIDENTIAL}\par
+\vspace{2mm}
+{\fontsize{30}{34}\selectfont\bfseries MAS file intake decision flow}\par
+\vspace{2mm}
+{\large\color{muted} Decision chart for input and matrices, 21 November 2026.}\par
+\vspace{5mm}
+\usebox{\ingestchart}\par
+\vspace{4mm}
+\hrule
+\vspace{2mm}
+{\large\color{muted} Behavioural specification for the privately developed MAS component. The implementation source remains private.}\par
+\end{minipage}
+\end{document}
