@@ -2,25 +2,25 @@
 
 > Scope correction: Cloudflare is for authenticated AI credential gateway only. Do not deploy the ASTRA website, expose the origin, create a Tunnel or migrate MAS. Public web hosting requirements are future blockers, not tasks for this implementation.
 
-Status: IN_PROGRESS
+Status: PARTIAL
 Baseline SHA: 7523c79556a9935df5008c92043f1e38d6e5d2a2
 Old Agent reference SHA: fb834b976cb62eb7292fa839cdaf1d8738e1ec50
 Feature branch / worktree: feat/longlth2297/agent-main-v2 / ../ASTRA.worktrees/longlth2297-agent-main-v2
-Current HEAD: see git log; checkpoint base 443c41a239ed8bc10298a80c141f150d4c9de362
+Current HEAD: see git log; checkpoint base fbc951bade177dcea0d6e19079d17238dcd5b495
 Latest origin/main checked: 7523c79556a9935df5008c92043f1e38d6e5d2a2
-Current phase / exact next action: P8 / final integration
+Current phase / exact next action: P8 / see final report
 
 | Phase | Status | Evidence level | Commit / report | Blocker / next step |
 |---|---|---|---|---|
-| P0 baseline | VERIFIED_OFFLINE | STATIC, UNIT | [Baseline](BASELINE.md) | Python baseline run in progress |
+| P0 baseline | VERIFIED_OFFLINE | STATIC, UNIT | [Baseline](BASELINE.md) | Python and frontend baseline passed |
 | P1 transport | VERIFIED_OFFLINE | REAL_UI_FIXTURE | [Source reuse](TEAM_CHANGES.md) | Interpreter fixture; no live provider |
 | P2 guard/compiler | VERIFIED_OFFLINE | UNIT | [Guards](../../astra-frontend/tests/agent-recipes.test.mjs) | Mixed negated requests require clarification |
-| P3 context/capabilities | PARTIAL | REAL_UI_FIXTURE | [Inventory](BASELINE.md) | Additional control groups still need mounted coverage |
-| P4 A/B/C workflows | PARTIAL | REAL_UI_FIXTURE, REAL_HTTP_NO_AI | [Browser smoke](../../scripts/agent_browser_smoke.py) | Cross-tab admission and V-ACT regeneration limits recorded |
+| P3 context/capabilities | PARTIAL | REAL_UI_FIXTURE | [Inventory](BASELINE.md) | 18 of 34 bound intent IDs observed in browser |
+| P4 A/B/C workflows | PARTIAL | REAL_UI_FIXTURE, REAL_HTTP_NO_AI | [Browser smoke](../../scripts/agent_browser_smoke.py) | Browser-local guard added. Backend ownership and full race coverage remain open |
 | P5 memory/title | VERIFIED_OFFLINE | REAL_UI_FIXTURE, UNIT | [Memory tests](../../astra-frontend/tests/agent-memory.test.mjs) | Browser-local persistence; shared accounts and durable pending plans absent |
 | P6 provider/latency | VERIFIED_OFFLINE | UNIT | [Timing harness](../../astra-frontend/scripts/agent-benchmark.mjs) | Live model eligibility, intent accuracy and p95 require operator verification |
 | P7 key gateway/security | VERIFIED_OFFLINE | UNIT, REAL_UI_FIXTURE | [Runbook](DEPLOY_RUNBOOK.md) | Cloudflare provisioning and live calls require authorization |
-| P8 final integration | NOT_STARTED | — | — | — |
+| P8 final integration | PARTIAL | REAL_UI_FIXTURE, REAL_HTTP_NO_AI, UNIT, STATIC | [Final handoff](FINAL_REPORT.md) | Live provider and gateway verification blocked by authorization. Remaining cases listed in acceptance results. |
 
 ## Checkpoint log (append, never fabricate)
 - Date/time, phase, HEAD before/after, exact files, verified commands/result, fixture boundary, blockers/owner, next action, decisions and why.
@@ -39,13 +39,15 @@ Current phase / exact next action: P8 / final integration
 
 - 2026-11-26 17:13 ICT · P7 · Parent `443c41a239ed8bc10298a80c141f150d4c9de362` · Mock requests validated Gemini and MAS native BYOK paths, only Cloudflare Run authentication, BYOK-only/cache/log headers, provider error classification, route/host guard, and durable attempt budget. 50 focused Python checks passed and the mounted fixture workflow still passed. Added browser Web Locks and storage conflict detection for local generation. No account access, provider calls, hosting or gateway provisioning.
 
+- 2026-11-26 17:21 ICT · P8 · Parent `fbc951bade177dcea0d6e19079d17238dcd5b495` · Refetched unchanged main. Frontend lint/build and 23 tests passed. Python suite 408 plus 7 subtests, then 16 focused final Agent checks. Native loopback startup, mock HTTP smoke, and browser fixture passed. Browser covered manual V-ACT setup, evaluated THPT and V-ACT, fixture job progress and notes, editor prefill/save, approval and JSON download. Build and branch credential-pattern scans returned no matches. Audit, coverage, runbook and AI log included.
+
 ## Release gates
-- LOCAL_APP_READY: NOT_VERIFIED
-- ORCHESTRATION_OFFLINE_VERIFIED: NOT_VERIFIED
-- LIVE_AGENT_VERIFIED: NOT_VERIFIED
-- LIVE_GENERATION_VERIFIED: NOT_VERIFIED
-- KEY_GATEWAY_READY: NOT_VERIFIED
-- KEY_GATEWAY_LIVE_VERIFIED: NOT_VERIFIED
+- LOCAL_APP_READY: VERIFIED_OFFLINE
+- ORCHESTRATION_OFFLINE_VERIFIED: PARTIAL
+- LIVE_AGENT_VERIFIED: BLOCKED_EXTERNAL
+- LIVE_GENERATION_VERIFIED: BLOCKED_EXTERNAL
+- KEY_GATEWAY_READY: VERIFIED_OFFLINE
+- KEY_GATEWAY_LIVE_VERIFIED: BLOCKED_EXTERNAL
 
 ## Budget / authorization
 - Live inference authorized: NO
@@ -55,4 +57,4 @@ Current phase / exact next action: P8 / final integration
 - Push/PR authorized: NO
 
 ## Follow main
-Record each baseline refresh and relevant source changes. Do not overwrite main or silently port stale handler assumptions. Mark affected gate reopened when contract changes.
+P8 refreshed origin with prune. Main remained at the audited SHA with 0/0 local divergence. No merge was required.
