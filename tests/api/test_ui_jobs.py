@@ -4,6 +4,7 @@ import json
 import subprocess
 import time
 from pathlib import Path
+from uuid import uuid4
 
 import pytest
 from fastapi.testclient import TestClient
@@ -92,6 +93,52 @@ def wait(client, job):
             return status
         time.sleep(0.01)
     raise AssertionError("Job did not reach a terminal state")
+
+
+def test_workspaces_share_drafts_link_existing_jobs_and_reject_stale_saves(tmp_path):
+    app, _ = fixture_app(tmp_path)
+    workspace_url = f"/api/workspaces/{uuid4()}"
+    workspace_id = workspace_url.rsplit("/", 1)[-1]
+    draft = {
+        "schema_version": 1,
+        "revision": 0,
+        "mode": "custom",
+        "title": "Đề nháp",
+        "draft": "  Nội dung nháp\n",
+        "messages": [
+            {"id": "one", "role": "user", "content": "Toán", "timestamp": "2026-11-27T09:00:00Z"}
+        ],
+    }
+    with TestClient(app) as client:
+        assert client.put(workspace_url, json=draft).json() == {"revision": 1}
+        assert client.put(workspace_url, json=draft).json() == {"revision": 1}
+        saved = client.get("/api/workspaces").json()["workspaces"][0]
+        assert saved["draft"] == draft["draft"] and saved["messages"] == draft["messages"]
+        assert saved["jobId"] is None
+
+        update = {**draft, "revision": 1, "draft": "Draft from a second browser"}
+        assert client.put(workspace_url, json=update).json() == {"revision": 2}
+        conflict = client.put(workspace_url, json={**draft, "revision": 1, "draft": "Stale update"})
+        assert conflict.status_code == 409
+
+        url = f"/api/exams/generate?workspace_id={workspace_id}"
+        headers = {"Idempotency-Key": "workspace-job"}
+        started = client.post(url, json=PAYLOAD, headers=headers)
+        assert started.status_code == 202
+        job = started.json()["jobId"]
+        assert client.post(url, json=PAYLOAD, headers=headers).json()["jobId"] == job
+        assert wait(client, job)["status"] == "completed"
+
+    restarted, _ = fixture_app(tmp_path)
+    with TestClient(restarted) as client:
+        (saved,) = client.get("/api/workspaces").json()["workspaces"]
+        assert saved["id"] == workspace_id and saved["jobId"] == job
+        assert saved["jobStatus"] == "completed" and saved["draft"] == update["draft"]
+        assert client.get(f"/api/exams/{job}").json()["questions"]
+        assert client.delete(workspace_url).status_code == 204
+        assert client.get("/api/workspaces").json()["workspaces"] == []
+        assert client.put(workspace_url, json=draft).status_code == 404
+        assert client.get(f"/api/exams/{job}").status_code == 200
 
 
 def test_retrieval_agents_teacher_approval_export_edit_and_reconnect(tmp_path):

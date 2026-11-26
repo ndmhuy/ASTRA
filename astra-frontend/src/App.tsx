@@ -34,6 +34,7 @@ export const App: React.FC = () => {
   const attachedFiles = useRef<File[]>([]);
   const [store] = useState(() => new ExamSessions(examService));
   const sessions = useSyncExternalStore(store.subscribe, store.getSnapshot);
+  const libraryError = useSyncExternalStore(store.subscribe, store.getLibraryError);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [screen, setScreen] = useState<'start' | 'workspace'>('start');
   const [viewMode, setViewMode] = useState<ExamCanvasViewMode>('paper');
@@ -49,7 +50,17 @@ export const App: React.FC = () => {
   const examMeta = active?.meta || null;
   const isGenerating = active?.status === 'generating';
   const prevQuestionCount = active?.previousCount || 0;
-  useEffect(() => { store.resume(); return () => store.dispose(); }, [store]);
+  useEffect(() => {
+    store.resume();
+    window.addEventListener('focus', store.loadLibrary);
+    return () => {
+      window.removeEventListener('focus', store.loadLibrary);
+      store.dispose();
+    };
+  }, [store]);
+  useEffect(() => {
+    if (activeId && !active) { setActiveId(null); setScreen('start'); }
+  }, [activeId, active]);
   useEffect(() => {
     setViewMode('paper');
     store.setActiveSession(screen === 'workspace' ? activeId : null);
@@ -152,7 +163,11 @@ export const App: React.FC = () => {
             {controlsCollapsed ? <PanelLeftOpen size={16} aria-hidden="true" /> : <PanelLeftClose size={16} aria-hidden="true" />}
           </button>
         </div>
-        <SidebarExamLibrary sessions={sessions} activeId={screen === 'workspace' ? activeId : null} onNew={newExam} onOpen={openSession} onDelete={id => { store.remove(id); if (activeId === id) newExam(); if (configureId === id) { setConfigureId(null); setShowQuickModal(false); } }} />
+        <SidebarExamLibrary sessions={sessions} activeId={screen === 'workspace' ? activeId : null}
+          error={libraryError} onRetry={store.retryLibrary} onNew={newExam} onOpen={openSession}
+          onDelete={async id => {
+            if (await store.remove(id) && configureId === id) { setConfigureId(null); setShowQuickModal(false); }
+          }} />
         <button className="side-rail-edge" type="button" onClick={() => setControlsCollapsed(value => !value)} aria-label={sidebarLabel} aria-expanded={!controlsCollapsed} title={sidebarLabel} />
         <div className="header-right"><span className="header-avatar" aria-label="Người dùng: Cùng thầy cô" title="Cùng thầy cô">GV</span><span className="header-session">Cùng thầy cô</span></div>
       </header>
@@ -166,7 +181,7 @@ export const App: React.FC = () => {
             left: (
               <>
                 <div className="studio-chat-heading"><div><span className="studio-kicker">KHÔNG GIAN SOẠN ĐỀ</span><h2>Cùng soạn đề</h2></div></div>
-                <div className="session-context"><strong>{active.title}</strong></div>
+                <div className="session-context"><strong>{active.mode === 'template' ? active.meta?.title ?? active.title : active.title}</strong></div>
                 {(active.status === 'draft' || active.status === 'error') && <div className="session-create-action">
                   {active.error && <p className="session-error-note">{active.error}</p>}
                   <button type="button" className="button-primary" onClick={() => { setConfigureId(active.id); setShowQuickModal(true); }}>{active.status === 'error' ? 'Thử tạo lại' : 'Tạo đề từ yêu cầu'}</button>

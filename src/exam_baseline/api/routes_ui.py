@@ -15,11 +15,31 @@ from exam_baseline.ui.contracts import (
     PreviewRequest,
     RegenerateRequest,
     RevisionRequest,
+    WorkspaceDraft,
     format_catalog,
 )
 from exam_baseline.ui.jobs import resolve_request
 
 router = APIRouter(prefix="/api")
+
+
+@router.get("/workspaces")
+def workspaces(request: Request, response: Response):
+    response.headers["Cache-Control"] = "no-store"
+    return {"workspaces": request.app.state.ui_jobs.store.list_workspaces()}
+
+
+@router.put("/workspaces/{workspace_id}")
+def save_workspace(request: Request, workspace_id: UUID, payload: WorkspaceDraft):
+    revision = request.app.state.ui_jobs.store.save_workspace(
+        str(workspace_id), payload.revision, payload.model_dump(mode="json", exclude={"revision"})
+    )
+    return {"revision": revision}
+
+
+@router.delete("/workspaces/{workspace_id}", status_code=204)
+def archive_workspace(request: Request, workspace_id: UUID):
+    request.app.state.ui_jobs.store.archive_workspace(str(workspace_id))
 
 
 @router.get("/health")
@@ -62,8 +82,11 @@ async def generate(
     request: Request,
     payload: ExamGenerateRequest,
     idempotency_key: Annotated[str, Header(min_length=1, max_length=128)],
+    workspace_id: UUID | None = None,
 ):
-    return await request.app.state.ui_jobs.start(payload, idempotency_key)
+    return await request.app.state.ui_jobs.start(
+        payload, idempotency_key, str(workspace_id) if workspace_id else None
+    )
 
 
 @router.get("/exams/{job_id}/status")

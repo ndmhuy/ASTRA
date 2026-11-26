@@ -24,11 +24,13 @@ function ExamStatus({ session }: { session: ExamSession }) {
 interface Props {
   sessions: ExamSession[];
   activeId: string | null;
+  error: string;
+  onRetry: () => void;
   onNew: () => void;
   onOpen: (id: string) => void;
   onDelete: (id: string) => void;
 }
-export function SidebarExamLibrary({ sessions, activeId, onNew, onOpen, onDelete }: Props) {
+export function SidebarExamLibrary({ sessions, activeId, error, onRetry, onNew, onOpen, onDelete }: Props) {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   useEffect(() => {
     if (!deleteId) return;
@@ -41,7 +43,11 @@ export function SidebarExamLibrary({ sessions, activeId, onNew, onOpen, onDelete
   return <nav className="sidebar-library" aria-label="Đề thi của thầy cô">
     <button type="button" className="sidebar-new-exam" onClick={onNew} title="Tạo đề mới"><Plus size={16} aria-hidden="true" /><span className="sidebar-label">Tạo đề mới</span></button>
     <h2 className="sidebar-library-heading sidebar-label">Tủ đề</h2>
-    {sessions.length === 0 && (
+    {error && <div className="sidebar-library-error">
+      <span role="alert">{error}</span>
+      <button type="button" onClick={onRetry}>Thử lại</button>
+    </div>}
+    {sessions.length === 0 && !error && (
       <div className="sidebar-library-empty sidebar-label">
         <FileText size={15} aria-hidden="true" />
         <span>Đề thi đã soạn sẽ lưu tại đây.</span>
@@ -52,12 +58,13 @@ export function SidebarExamLibrary({ sessions, activeId, onNew, onOpen, onDelete
         <button type="button" className="sidebar-exam" onClick={() => onOpen(session.id)} aria-current={session.id === activeId ? 'page' : undefined} title={session.title}>
           <FileText className="sidebar-exam-document" size={14} aria-hidden="true" />
           <span className="sidebar-exam-copy sidebar-label">
-            <span className="sidebar-exam-title">{session.title}</span>
+            <span className="sidebar-exam-title">{session.mode === 'template' ? session.meta?.title ?? session.title : session.title}</span>
             {session.meta && (
               <span className="sidebar-exam-meta">
                 {session.meta.totalCount} câu · {session.meta.duration} phút
               </span>
             )}
+            {session.browserOnly && <span className="sidebar-exam-meta">Chỉ trên trình duyệt này</span>}
           </span>
           <span className="sidebar-exam-status" role="status"><ExamStatus session={session} /></span>
         </button>

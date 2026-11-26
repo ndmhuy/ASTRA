@@ -363,7 +363,7 @@ class JobManager:
             provider = ChatCompletionsProvider(settings, client)
             yield dict.fromkeys(("composer", "illustrator", "solver", "reviewer"), provider)
 
-    async def start(self, payload: ExamGenerateRequest, key: str):
+    async def start(self, payload: ExamGenerateRequest, key: str, workspace_id: str | None = None):
         request, matrix = await asyncio.to_thread(resolve_request, payload, settings=self.settings)
         data, created = self.store.create(
             key,
@@ -385,6 +385,7 @@ class JobManager:
                 },
                 "approval": None,
             },
+            workspace_id=workspace_id,
         )
         if created:
             task = asyncio.create_task(self._generate(data["jobId"]))

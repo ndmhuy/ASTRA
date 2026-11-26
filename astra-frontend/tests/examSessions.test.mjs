@@ -16,6 +16,37 @@ function fakeService() {
   };
 }
 
+test('a draft save with a lost response is acknowledged before sending newer edits', async () => {
+  let saved;
+  let loseResponse = false;
+  const service = fakeService();
+  service.workspaceLibrary = {
+    async list() { return { workspaces: saved ? [saved] : [] }; },
+    async save(id, draft, revision) {
+      if (saved?.draft === draft.draft) return { revision: saved.revision };
+      assert.equal(revision, saved?.revision ?? 0);
+      saved = { ...draft, id, revision: revision + 1, createdAt: new Date().toISOString(), jobId: null };
+      if (loseResponse) throw Object.assign(new Error('Lost response'), { code: 'network_error' });
+      return { revision: saved.revision };
+    },
+  };
+  const writer = new ExamSessions(service);
+  const id = writer.create('custom');
+  await flush();
+  loseResponse = true;
+  writer.setDraft(id, 'First edit');
+  await flush();
+  assert.ok(writer.getLibraryError());
+  loseResponse = false;
+  writer.setDraft(id, 'Latest edit');
+  await flush();
+
+  const reader = new ExamSessions(service);
+  await reader.loadLibrary();
+  assert.equal(reader.getSnapshot()[0].draft, 'Latest edit');
+  assert.equal(writer.getLibraryError(), '');
+});
+
 test('two generation jobs finish out of order without mixing drafts, chat, questions or metadata', async () => {
   const service = fakeService();
   const store = new ExamSessions(service);

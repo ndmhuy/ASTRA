@@ -1,10 +1,11 @@
 """Validate frontend requests before any retrieval or model call."""
 
 import json
+from datetime import datetime
 from importlib.resources import files
 from typing import Literal
 
-from pydantic import Field, model_validator
+from pydantic import ConfigDict, Field, model_validator
 
 from exam_baseline.core.models import Model
 from exam_baseline.thpt.models import Slot
@@ -82,6 +83,26 @@ class SubjectGenerateRequest(Model):
 
 
 ExamGenerateRequest = GenerateRequest | VactGenerateRequest | SubjectGenerateRequest
+
+
+class WorkspaceMessage(Model):
+    model_config = ConfigDict(str_strip_whitespace=False)
+
+    id: str
+    role: Literal["user", "assistant", "system"]
+    content: str
+    timestamp: datetime
+
+
+class WorkspaceDraft(Model):
+    model_config = ConfigDict(str_strip_whitespace=False)
+
+    schema_version: Literal[1] = 1
+    mode: Literal["template", "custom"]
+    title: str
+    draft: str
+    messages: list[WorkspaceMessage]
+    revision: int = Field(ge=0, strict=True)
 
 
 class PreviewRequest(Model):

@@ -10,6 +10,7 @@
  */
 
 import type {
+  ChatMessage,
   ExamPackage,
   ExamPreviewState,
   ExamRequestParams,
@@ -19,8 +20,33 @@ import type {
 import type { ExamFormat, ExportFormat } from '../types/exam';
 import { humanizeErrorMessage } from '../utils/userMessages.ts';
 
+export interface WorkspaceDraft {
+  schema_version: 1;
+  mode: 'template' | 'custom';
+  title: string;
+  draft: string;
+  messages: ChatMessage[];
+}
+
+export interface SavedWorkspace extends WorkspaceDraft {
+  id: string;
+  createdAt: string;
+  revision: number;
+  jobId: string | null;
+  jobStatus: GenerationProgress['status'] | null;
+  jobMeta: { subject: string; durationMinutes: number; itemCount: number } | null;
+  jobError: GenerationProgress['error'] | null;
+}
+
+interface WorkspaceLibrary {
+  list(): Promise<{ workspaces: SavedWorkspace[] }>;
+  save(id: string, draft: WorkspaceDraft, revision: number): Promise<{ revision: number }>;
+  archive(id: string): Promise<unknown>;
+}
+
 export interface IExamService {
-  startGeneration(params: ExamRequestParams): Promise<{ jobId: string }>;
+  workspaceLibrary?: WorkspaceLibrary;
+  startGeneration(params: ExamRequestParams, workspaceId?: string): Promise<{ jobId: string }>;
   onProgress(jobId: string, callback: (progress: GenerationProgress) => void): () => void;
   getExamPackage(jobId: string): Promise<ExamPackage>;
   regenerateQuestion(jobId: string, questionId: number, instruction?: string, revision?: number): Promise<QuestionItem>;
@@ -570,14 +596,24 @@ export async function getExamFormats(): Promise<ExamFormat[]> {
 
 export class ApiExamService implements IExamService {
   private baseUrl: string;
+  readonly workspaceLibrary: WorkspaceLibrary = {
+    list: () => requestJson(`${this.baseUrl}/workspaces`),
+    save: (id, draft, revision) => requestJson(`${this.baseUrl}/workspaces/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...draft, revision }),
+    }),
+    archive: id => requestJson(`${this.baseUrl}/workspaces/${id}`, { method: 'DELETE' }),
+  };
 
   constructor(baseUrl: string = '/api') {
     this.baseUrl = baseUrl;
   }
 
-  async startGeneration(params: ExamRequestParams): Promise<{ jobId: string }> {
+  async startGeneration(params: ExamRequestParams, workspaceId?: string): Promise<{ jobId: string }> {
     const { clientRequestId, ...payload } = params;
-    return requestJson(`${this.baseUrl}/exams/generate`, {
+    const query = workspaceId ? `?${new URLSearchParams({ workspace_id: workspaceId })}` : '';
+    return requestJson(`${this.baseUrl}/exams/generate${query}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Idempotency-Key': clientRequestId || crypto.randomUUID() },
       body: JSON.stringify(payload)
