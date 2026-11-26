@@ -23,7 +23,7 @@ wheel CPython 3.11 cho macOS và Windows.
 - ASTRA gọi `prepare_plan()`, cấp callback LLM và có thể điều chỉnh
   `MasLimits`. Hàm trả toàn bộ kế hoạch cùng `state` và các vướng mắc.
 - ZIP bàn giao chứa wheel, bảng phiên bản phụ thuộc, hợp đồng I/O, manifest
-  dữ liệu và flowchart ingest gốc dưới dạng Mermaid, LaTeX và PDF đã render.
+  dữ liệu và đặc tả luồng ingest dưới dạng Mermaid, LaTeX và PDF đã render.
 
 ## Cài và tích hợp
 
@@ -174,7 +174,7 @@ lượt gọi, chẳng hạn đọc ảnh, tóm tắt nguồn, xác định ph�
 | Trường `MasResult` | Kiểu | Ý nghĩa |
 | --- | --- | --- |
 | `schema_version` | `"astra-mas-plan-v1"` | Phiên bản hợp đồng của gói |
-| `state` | `"ready" \| "blocked"` | `ready` khi đủ các ô dự kiến, `blocked` khi còn thiếu nội dung hoặc nguồn cần thiết |
+| `state` | `"ready" \| "blocked"` | `ready` khi planner sẵn sàng và các ô có chủ đề, yêu cầu cần đạt. `blocked` giữ bản ứng viên và các mục cần xử lý. Cảnh báo nguồn có thể đi kèm `ready`. |
 | `plan` | `dict` | Toàn bộ envelope MAS v2 với `inputs.shape`, `scope`, `cells`, `groups`, `delivery` và revision |
 | `gaps` | `list[dict]` | Cảnh báo của MAS, cùng mã `mas_unfilled_cells` và địa chỉ khi còn ô thiếu nội dung |
 
@@ -231,17 +231,13 @@ có thể đọc từ callback và dữ liệu JSON có thể trích xuất.
 
 ## Đặc tả luồng ingest
 
-**Sơ đồ quyết định cho input và ma trận** ngày 21/11/2026 mô tả các nhánh
-đề mẫu, ma trận, tài liệu hoặc yêu cầu chỉ có lời. Sơ đồ cũng mô tả cách
-xác định phạm vi, cấu trúc và nguồn của từng ô.
+[Sơ đồ luồng MAS](ASTRA_MAS_INGEST_FLOW.md) mô tả ba chặng của wheel 0.1.1.
+Chặng A kiểm tra giới hạn đầu vào và đọc ma trận, tài liệu. Chặng B xác định
+phạm vi, lập kế hoạch theo địa chỉ ô và kiểm tra đầu ra. Chặng C mô tả từng
+lượt callback LLM, kết quả `ready` hoặc `blocked` và lỗi có mã.
 
-Sơ đồ gốc bao gồm các thao tác của quy trình soạn đề. Với ASTRA, bên gọi
-truyền vai tệp qua `matrix` và `materials`, cấp callback LLM và nhận kế hoạch
-JSON. Các nút
-chọn, xác nhận hoặc ghi paper nằm trong sơ đồ để giữ ngữ cảnh của luồng gốc.
-
-- `ASTRA_MAS_INGEST_FLOW.mmd` giữ nguyên sơ đồ Mermaid gốc.
-- `ASTRA_MAS_INGEST_SPEC.pdf` là bản đặc tả đã render.
-- `ASTRA_MAS_INGEST_SPEC.tex` là bản trình bày LaTeX, dùng hình vector
+- `ASTRA_MAS_INGEST_FLOW.md` chứa ba sơ đồ Mermaid.
+- `ASTRA_MAS_INGEST_SPEC.pdf` là bản đặc tả ba trang trong ZIP nội bộ.
+- `ASTRA_MAS_INGEST_SPEC.tex` dùng hình vector ba trang
   `ASTRA_MAS_INGEST_CHART.pdf`. Có thể biên dịch bằng
   `xelatex ASTRA_MAS_INGEST_SPEC.tex` trong thư mục đã giải nén.
