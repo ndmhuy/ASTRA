@@ -19,6 +19,7 @@ from exam_baseline.thpt.models import (
     TrueFalseSection,
 )
 from exam_baseline.thpt.runtime import ContractError
+from exam_baseline.thpt.variation_table import IllustrationCandidates, is_variation_table
 
 COMMON = """Return JSON matching output_schema, without Markdown fences.
 Escape every LaTeX backslash correctly in JSON strings (double the backslash).
@@ -120,7 +121,7 @@ class Agent:
             try:
                 if targeted:
                     text = _replace_questions(text, original, indices, self.role)
-                response = contract.model_validate_json(text)
+                response = contract.model_validate_json(text, context=data)
             except ContractError as exc:
                 if hasattr(provider, "record_contract"):
                     provider.record_contract("invalid_contract", exc.fields, normalized)
@@ -170,7 +171,9 @@ numbers in repeated questions or copying synthetic examples.
 For diagrams, give an explicit mathematical illustration_request with coordinates,
 equations and relationships; do not generate TikZ yourself. Avoid ambiguous diagrams.
 Every reference to a figure, graph or variation/data table MUST have a nonempty
-illustration_request containing ALL its mathematical data.
+illustration_request containing ALL its mathematical data. For a variation table, list the
+ordered x and f(x) values, derivative signs between points, and separate one-sided limits
+at discontinuities. Include any intervals outside the domain without specifying drawing style.
 Reference style and complexity guide calibration, not copying or shuffling reference answers.
 When feedback is supplied, correct its issues while preserving all slot IDs and objectives.
 """
@@ -269,13 +272,38 @@ answer, and private solution agree. For multiple choice, use A/B/C/D exactly.
 class IllustratorAgent(Agent):
     role = "illustrator"
     response = Illustrations
-    instruction = """Generate native TikZ for exactly the requested question IDs.
-Each latex field is one self-contained tikzpicture. Only existing TikZ/PGFPlots
-packages/libraries may be used (arrows.meta, positioning, patterns). No external
-files, images, shell commands, libraries, definitions or layout changes.
-For data tables, use positioned TikZ nodes and a drawn grid. Preserve every
-header, unit and cell supplied by Composer. Do not use a LaTeX array or tabular.
-Return drawings=[] when no illustrations are requested."""
+    instruction = """Return exactly the requested question IDs. For ordinary drawings, use
+one self-contained TikZ picture in latex and only the existing libraries (arrows.meta,
+positioning, patterns). No external files, images, shell commands, definitions or layout
+changes. For ordinary data tables, preserve every header, unit and cell in a drawn grid.
+Do not use a LaTeX array or tabular. Return drawings=[] when no drawings are requested.
+If variation_table_question_ids is supplied, use variation_table and omit latex for
+those IDs. Send ordered points with x labels and one interval sign: +, -, 0, or gap.
+Use endpoint at the ends and either side of a domain gap, stationary for a zero
+derivative, critical for a nondifferentiable point, regular otherwise, and break for
+a discontinuity separating two branches. An ordinary point needs value; a break
+needs left_limit and right_limit, and no value. Use bare math labels with escaped TeX
+backslashes, e.g. +\\infty, without dollar signs. Copy the given mathematics exactly.
+The server places and draws all signs, arrows and lines."""
+
+    async def run(self, provider: LLMProvider, data: dict):
+        targets = [
+            request["question_id"]
+            for request in data.get("requests", [])
+            if self.response is Illustrations
+            and is_variation_table(request["stem"], request["description"])
+        ]
+        if not targets:
+            return await super().run(provider, data)
+        response, completion = await super().run(
+            provider, {**data, "variation_table_question_ids": targets}
+        )
+        return response.rendered(), completion
+
+    def contract(self, data):
+        if data.get("variation_table_question_ids"):
+            return IllustrationCandidates
+        return super().contract(data)
 
 
 class SolverAgent(Agent):
