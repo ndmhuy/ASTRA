@@ -37,7 +37,7 @@ class RagPassage(Model):
 class Request(Model):
     template_id: Literal["thpt_math_v2"] = "thpt_math_v2"
     font_profile: FontProfile = DEFAULT_FONT_PROFILE
-    composer_concurrency: int = Field(default=3, ge=1, le=3, strict=True)
+    composer_concurrency: int = Field(default=1, ge=1, le=3, strict=True)
     slots: list[Slot] = Field(min_length=22, max_length=22)
     reference_material: list[Text] = Field(default_factory=list, max_length=20)
     requirements: list[Text] = Field(default_factory=list, max_length=30)

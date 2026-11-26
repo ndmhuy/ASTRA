@@ -5,6 +5,7 @@ from pathlib import Path
 from exam_baseline.config import DEFAULT_RAG_CORPUS_REF
 from exam_baseline.thpt.models import COUNTS, Request, Slot
 from rag_workflow import default_toan_thpt_matrix, retrieve_exam_context
+from rag_workflow.mas_adapter import render_thpt_prompt_evidence
 from rag_workflow.models import CONFIG, VERSION, MatrixRetrievalResponse
 
 DEFAULT_CORPUS_REF = DEFAULT_RAG_CORPUS_REF
@@ -103,7 +104,13 @@ def bind_retrieval(request: Request, retrieval: MatrixRetrievalResponse) -> Requ
         ):
             raise ValueError(f"Invalid RAG context for {slot.id}")
         evidence[slot.id] = {
-            "text": entry["text"],
+            "text": render_thpt_prompt_evidence(context)
+            if (
+                context.get("construction_patterns")
+                or context["curriculum_knowledge"]
+                or context.get("construction_observations")
+            )
+            else entry["text"],
             "source_ids": entry["topic_ids"],
             "source_locator": entry["locator"],
             "source_version": entry["source_version"],

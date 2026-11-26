@@ -13,6 +13,7 @@ from exam_baseline.thpt.orchestrator import Orchestrator, compare_answers
 from exam_baseline.thpt.planner import plan_request_from_prompt
 from exam_baseline.thpt.rag import (
     RagHandoffError,
+    bind_retrieval,
     default_request,
     retrieval_matrix,
     retrieve_request,
@@ -87,6 +88,16 @@ def test_real_rag_through_thpt_cli_and_resume(tmp_path, monkeypatch, capsys):
     assert (output / "de_thi.tex").is_file()
 
     retrieval = retrieve_exam_context(retrieval_matrix(default_request()), ref=CORPUS)
+    compact = bind_retrieval(default_request(), retrieval).rag_evidence
+    assert sum(len(item.text) for item in compact.values()) < (
+        sum(len(item["text"]) for item in retrieval.mas_intake_rag) / 2
+    )
+    for context in retrieval.question_contexts:
+        evidence_text = compact[context["question_id"]].text
+        for pattern in context["construction_patterns"]:
+            assert f"[{pattern['pattern_id']}]" in evidence_text
+        if not context["construction_patterns"] and context["construction_observations"]:
+            assert f"[{context['construction_observations'][0]['ref']}]" in evidence_text
     p2_4 = next(c for c in retrieval.question_contexts if c["question_id"] == "P2-4")
     nb = p2_4["p2_statement_coverage"]["a"]
     assert nb["covered"]

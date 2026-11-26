@@ -51,6 +51,11 @@ async def run(args, request_model=Request, workflow_type=Orchestrator):
         request = default_request()
     if args.composer_concurrency is not None:
         request.composer_concurrency = args.composer_concurrency
+    elif args.resume and "composer_concurrency" not in request.model_fields_set:
+        saved = json.loads((args.output / "_internal/request.json").read_bytes())
+        request.composer_concurrency = saved.get(
+            "composer_concurrency", request.composer_concurrency
+        )
     if getattr(args, "solver_concurrency", None) is not None:
         request.solver_concurrency = args.solver_concurrency
     if use_rag and not (args.resume and prompt_text):

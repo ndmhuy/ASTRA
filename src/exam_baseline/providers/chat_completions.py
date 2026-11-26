@@ -1,6 +1,9 @@
 """HTTP Chat Completions adapter. Wire-level assumptions stay in this module."""
 
 import base64
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
+from math import isfinite
 from typing import Any
 
 import httpx
@@ -9,6 +12,21 @@ from exam_baseline.config import Settings
 from exam_baseline.core.contracts import Completion, CompletionRequest, ProviderError
 from exam_baseline.core.models import TokenUsage
 from exam_baseline.providers.budget import SpendLedger
+
+
+def _retry_after_seconds(value: str | None) -> float | None:
+    if not value:
+        return None
+    try:
+        delay = float(value)
+    except ValueError:
+        try:
+            until = parsedate_to_datetime(value)
+            delay = (until - datetime.now(timezone.utc)).total_seconds()
+        except (TypeError, ValueError, OverflowError):
+            return None
+        return max(0.0, delay)
+    return delay if delay >= 0 and isfinite(delay) else None
 
 
 class ChatCompletionsProvider:
@@ -112,6 +130,7 @@ class ChatCompletionsProvider:
         except httpx.TimeoutException as exc:
             raise ProviderError("provider_timeout", "LLM provider timed out.") from exc
         except httpx.HTTPStatusError as exc:
+            status = exc.response.status_code
             code, message = {
                 400: ("provider_bad_request", "Provider rejected the model or request options."),
                 401: ("provider_auth_error", "Provider authentication failed; check the API key."),
@@ -126,13 +145,22 @@ class ChatCompletionsProvider:
                 503: ("provider_unavailable", "Provider is temporarily unavailable or overloaded."),
                 504: ("provider_gateway_timeout", "Provider gateway timed out."),
             }.get(
-                exc.response.status_code,
+                status,
                 ("provider_http_error", "LLM provider rejected the request."),
             )
+            if status == 429:
+                try:
+                    provider_code = exc.response.json()["error"]["code"]
+                except (KeyError, TypeError, ValueError):
+                    provider_code = None
+                if provider_code in ("insufficient_quota", "billing_hard_limit_reached"):
+                    code = "provider_quota_exhausted"
+                    message = "The API project has exhausted its quota or billing limit."
             raise ProviderError(
                 code,
-                f"HTTP {exc.response.status_code}: {message}",
-                http_status=exc.response.status_code,
+                f"HTTP {status}: {message}",
+                http_status=status,
+                retry_after_seconds=_retry_after_seconds(exc.response.headers.get("Retry-After")),
             ) from exc
         except httpx.RequestError as exc:
             raise ProviderError("provider_unreachable", "Could not reach LLM provider.") from exc

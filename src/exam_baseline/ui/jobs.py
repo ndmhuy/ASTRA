@@ -454,12 +454,23 @@ class JobManager:
                     details={"stage": exc.stage, "fields": exc.fields},
                 )
             elif isinstance(exc, ProviderError):
+                messages = {
+                    "spend_limit_exceeded": str(exc),
+                    "provider_rate_limited": "Dịch vụ AI đã chạm hạn mức tốc độ. "
+                    "Vui lòng đợi trước khi tạo lại đề.",
+                    "provider_quota_exhausted": "Dự án API đã chạm giới hạn quota hoặc chi phí. "
+                    "Vui lòng kiểm tra tài khoản API.",
+                }
                 error = UiError(
                     exc.code,
-                    str(exc)
-                    if exc.code == "spend_limit_exceeded"
-                    else "Dịch vụ AI đang bận hoặc gặp sự cố tạm thời. "
-                    "Thầy cô vui lòng thử lại sau ít phút.",
+                    messages.get(
+                        exc.code,
+                        "Dịch vụ AI đang bận hoặc gặp sự cố tạm thời. "
+                        "Thầy cô vui lòng thử lại sau ít phút.",
+                    ),
+                    details={"retryAfterSeconds": exc.retry_after_seconds}
+                    if exc.retry_after_seconds is not None
+                    else None,
                 )
             else:
                 error = UiError(

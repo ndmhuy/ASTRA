@@ -14,16 +14,21 @@ checkpoint không thể khôi phục tự động các bước cũ.
 Dùng `EXAM_PROVIDER=chat_completions`, model/key/endpoint trong `.env` hiện có.
 Không ghi cứng tên model hay quota từ file Composer tham khảo. Cả bốn vai trò dùng
 cấu hình này qua CLI; Python cho phép truyền provider riêng từng vai trò vào Orchestrator.
-CLI THPT dùng `response_format=json_schema` và gửi schema riêng của từng bước tới API.
-Provider cần hỗ trợ chế độ này. Schema P1/P2/P3 buộc số câu, đáp án A/B/C/D,
-bốn ý đúng/sai và trường đáp án số P3; không chỉ mô tả các yêu cầu này trong prompt.
+Với GPT-6 Luna, CLI THPT dùng JSON mode nếu `EXAM_RESPONSE_FORMAT=json_object`.
+Các cấu hình dùng `json_schema` gửi schema riêng từng bước tới API. Cả hai chế độ
+đều kiểm tra số câu, đáp án A/B/C/D, bốn ý đúng/sai và đáp án số P3 bằng Pydantic.
 
 ### Thời gian và chi phí
 
-Composer mặc định tạo ba phần P1/P2/P3 song song, giới hạn ba request. Kết quả ghép
-theo thứ tự cố định. Illustrator → Solver → Reviewer tiếp tục tuần tự vì phụ thuộc dữ liệu.
-Nếu quota thấp hoặc muốn so sánh với luồng cũ, thêm `--composer-concurrency 1`
-(hoặc `2`). Chạy song song không tự giảm số request/token; có thể gặp giới hạn API.
+Composer mặc định tạo P1, P2 rồi P3 tuần tự. Nếu quota cho phép, dùng
+`--composer-concurrency 2` hoặc `3` để chạy song song. Illustrator, Solver và Reviewer
+chạy theo thứ tự vì phụ thuộc dữ liệu. Với lỗi tạm thời, lần thử lại tôn trọng
+`Retry-After` nếu API gửi header hợp lệ.
+
+RAG chuyển cho Composer nội dung rút gọn theo câu, gồm bài học, mẫu cấu trúc,
+lỗi sai điển hình và cảnh báo. Nếu thiếu mẫu cấu trúc, Composer nhận các quan sát
+đã trừu tượng hóa và gợi ý biến thể khi có. Dữ liệu RAG đầy đủ vẫn được giữ trong
+truy vết của luồng web để đối chiếu nguồn.
 Vòng sửa chỉ gửi câu cũ thuộc phần hiện tại cho Composer; Reviewer vẫn thấy toàn đề.
 
 `_internal/result.json` có `elapsed_seconds` (tổng các lượt chạy, bao gồm resume nhưng

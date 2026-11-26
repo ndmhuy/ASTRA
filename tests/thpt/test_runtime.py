@@ -147,3 +147,36 @@ def test_transient_error_retries_once_and_records_both_attempts(tmp_path):
     traced = RecordingProvider(provider, "composer", 1, calls, tmp_path, retries=1)
     asyncio.run(ComposerAgent().run(traced, {}))
     assert [c["status"] for c in calls] == ["failed", "validated"]
+
+
+@pytest.mark.parametrize("quota_exhausted", [False, True])
+def test_retry_waits_for_provider_or_stops_for_exhausted_quota(
+    tmp_path, monkeypatch, quota_exhausted
+):
+    delays = []
+
+    async def record_delay(delay):
+        delays.append(delay)
+
+    monkeypatch.setattr(asyncio, "sleep", record_delay)
+    error = ProviderError(
+        "provider_quota_exhausted" if quota_exhausted else "provider_rate_limited",
+        "HTTP 429",
+        http_status=429,
+        retry_after_seconds=156,
+    )
+    provider = Responses(
+        [error, json.dumps({"questions": [question(request().slots[0]).model_dump()]})]
+    )
+    calls = []
+    traced = RecordingProvider(provider, "composer", 1, calls, tmp_path, retries=1)
+    if quota_exhausted:
+        with pytest.raises(ProviderError):
+            asyncio.run(ComposerAgent().run(traced, {}))
+        assert delays == []
+        assert len(calls) == 1
+    else:
+        asyncio.run(ComposerAgent().run(traced, {}))
+        assert delays == [156]
+        assert len(calls) == 2
+    assert calls[0]["retry_after_seconds"] == 156

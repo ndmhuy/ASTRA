@@ -1,5 +1,7 @@
 import asyncio
 import json
+from datetime import datetime, timedelta, timezone
+from email.utils import format_datetime
 
 import httpx
 import pytest
@@ -78,6 +80,30 @@ def test_luna_generation_keeps_openai_json_mode_and_completion_budget():
 
     config = settings(max_output_tokens=16384).model_copy(update={"model": "gpt-6-luna"})
     assert invoke(handler, config.for_agent_generation()).model == "gpt-6-luna"
+
+
+@pytest.mark.parametrize("permanent", [False, True])
+def test_rate_limit_reports_retry_after_and_distinguishes_quota(permanent):
+    provider_code = "insufficient_quota" if permanent else "rate_limit_exceeded"
+    retry_at = format_datetime(datetime.now(timezone.utc) + timedelta(seconds=90), usegmt=True)
+    retry_after = "12" if permanent else retry_at
+
+    def handler(_):
+        return httpx.Response(
+            429,
+            headers={"Retry-After": retry_after},
+            json={"error": {"code": provider_code}},
+        )
+
+    with pytest.raises(ProviderError) as raised:
+        invoke(handler)
+    exc = raised.value
+    if permanent:
+        assert exc.code == "provider_quota_exhausted"
+        assert exc.retry_after_seconds == 12
+    else:
+        assert exc.code == "provider_rate_limited"
+        assert 87 < exc.retry_after_seconds <= 90
 
 
 def test_tool_schema_mode_round_trips_full_schema_as_json_arguments():

@@ -1,6 +1,57 @@
 """Adapters converting RAG topic-pack contexts into MAS Composer reference_material and mas-intake-v1."""
 
+from textwrap import shorten
 from typing import Any
+
+from .models import CONFIG
+
+
+def render_thpt_prompt_evidence(ctx: dict[str, Any]) -> str:
+    """Project verified evidence into a compact prompt while keeping each pattern's ID."""
+    limits = CONFIG["thpt_prompt_limits"]
+    qid = ctx["question_id"]
+    part = ctx["requested"]["part"]
+    lines = [f"=== [UNTRUSTED_RAG_EVIDENCE | question_id={qid} | part={part}] ==="]
+
+    def brief(value):
+        return shorten(str(value or ""), width=limits["field_chars"], placeholder=" …")
+
+    for unit in ctx.get("curriculum_knowledge", []):
+        outcomes = unit.get("outcomes_vi") or []
+        if isinstance(outcomes, str):
+            outcomes = [outcomes]
+        summary = " | ".join(brief(item) for item in outcomes[: limits["outcomes_per_unit"]])
+        lines.append(f"- Bài [{unit['unit_id']}]: {brief(unit.get('title'))}. {summary}")
+
+    seen_patterns = set()
+    for pattern in ctx.get("construction_patterns", []):
+        construction = brief(pattern.get("construction"))
+        pattern_id = pattern.get("pattern_id") or construction
+        if not construction or pattern_id in seen_patterns:
+            continue
+        seen_patterns.add(pattern_id)
+        difficulty = brief(pattern.get("difficulty_source"))
+        lines.append(
+            f"- Dạng [{pattern_id}]: {construction}"
+            + (f" | Độ khó: {difficulty}" if difficulty else "")
+        )
+
+    if not seen_patterns:
+        observations = ctx.get("construction_observations", [])
+        for item in observations[: limits["max_observations"]]:
+            lines.append(
+                f"- Dạng [{item['ref']}]: {brief(item.get('given'))} → {brief(item.get('task'))}"
+            )
+        for example in ctx.get("examples", [])[:1]:
+            if variation := brief(example.get("variation_guidance")):
+                lines.append(f"- Biến thể: {variation}")
+
+    for mistake in ctx.get("common_mistakes", [])[: limits["max_mistakes"]]:
+        lines.append(f"- Lỗi thường gặp: {brief(mistake.get('detail'))}")
+    for warning in ctx.get("warnings", []):
+        lines.append(f"- Lưu ý [{warning['code']}]: {brief(warning.get('message'))}")
+    lines.append(f"=== [END_UNTRUSTED_RAG_EVIDENCE | question_id={qid}] ===")
+    return "\n".join(lines)
 
 
 def render_reference_material(ctx: dict[str, Any]) -> str:
