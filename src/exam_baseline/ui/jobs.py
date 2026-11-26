@@ -946,7 +946,8 @@ class JobManager:
             ref = {"jobId": current, "revision": job["revision"]}
 
         def message_time(item):
-            timestamp = datetime.fromisoformat(item["timestamp"])
+            text = item["timestamp"]
+            timestamp = datetime.fromisoformat(text[:-1] + "+00:00" if text.endswith("Z") else text)
             return timestamp.replace(tzinfo=timestamp.tzinfo or timezone.utc)
 
         chat = []

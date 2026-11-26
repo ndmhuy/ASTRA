@@ -2,7 +2,7 @@
 
 import asyncio
 import json
-from datetime import UTC
+from datetime import timezone
 from typing import Annotated, Literal
 from uuid import UUID
 
@@ -93,7 +93,7 @@ async def restore_workspace_version(
 
 @router.post("/workspaces/{workspace_id}/import")
 def import_workspace(request: Request, workspace_id: UUID, payload: WorkspaceImport):
-    created_at = payload.createdAt.astimezone(UTC).isoformat(timespec="milliseconds")
+    created_at = payload.createdAt.astimezone(timezone.utc).isoformat(timespec="milliseconds")
     status = request.app.state.ui_jobs.store.import_workspace(
         str(workspace_id),
         created_at.replace("+00:00", "Z"),
