@@ -1,0 +1,203 @@
+"""Check the six THPT formats through the UI API with an offline provider."""
+
+import json
+from collections import Counter
+
+import pytest
+from fastapi.testclient import TestClient
+
+from exam_baseline.api.app import create_app
+from exam_baseline.config import Settings
+from exam_baseline.core.contracts import Completion
+from exam_baseline.thpt.content import choice_latex, content_latex, normalize_subject_content
+from tests.api.test_ui_jobs import wait
+
+FORMATS = [
+    ("thpt-physics", "Vật Lý", (18, 4, 6)),
+    ("thpt-chemistry", "Hóa Học", (18, 4, 6)),
+    ("thpt-biology", "Sinh Học", (18, 4, 6)),
+    ("thpt-history", "Lịch Sử", (24, 4, 0)),
+    ("thpt-geography", "Địa Lý", (18, 4, 6)),
+    ("thpt-english", "Tiếng Anh", (40, 0, 0)),
+]
+
+
+def answer(id_):
+    return {"P1": "A", "P2": "a: Đúng; b: Đúng; c: Đúng; d: Đúng", "P3": "1"}[id_[:2]]
+
+
+def test_subject_notation_normalization_preserves_semantics():
+    raw = "Biết Fe = 56; $V = 5 \\mathrm{lít}$ và $T_{khuôn} = 3 \text{ nm}$."
+    expected = r"Biết $Fe = 56$; $V = 5 \text{lít}$ và $T_{\text{khuôn}} = 3 \text{ nm}$."
+    fixed = normalize_subject_content(raw)
+    assert fixed == expected
+    assert content_latex(fixed)
+    assert choice_latex(normalize_subject_content("C_4H_{11}N")) == r"$\mathrm{C_4H_{11}N}$"
+
+
+class Replay:
+    def __init__(self, role):
+        self.role = role
+        self.calls = []
+
+    async def complete(self, prompt):
+        data = json.loads(prompt.user)
+        self.calls.append(data)
+        if self.role == "composer":
+            if "question" in data:
+                result = {**data["question"], "stem": "Revised question from the same passage."}
+            else:
+                result = {
+                    "questions": [self.question(slot["id"]) for slot in data["slots"]],
+                    "passage": None,
+                }
+                group = data["group"]
+                if isinstance(group, dict) and group["kind"] == "cloze":
+                    first, last = group["range"]
+                    result["passage"] = " ".join(
+                        f"Blank ({n}) ____." for n in range(first, last + 1)
+                    )
+                elif isinstance(group, dict) and group["kind"] == "reading":
+                    result["passage"] = "An original passage for the isolated API test."
+        elif self.role == "solver":
+            assert all("answer" not in q and "solution" not in q for q in data["questions"])
+            assert "PRIVATE_REPLAY_KEY" not in prompt.user
+            result = {
+                "entries": [
+                    dict(
+                        question_id=q["id"],
+                        answer=answer(q["id"]),
+                        reasoning="Test evidence",
+                        status="solved",
+                    )
+                    for q in data["questions"]
+                ]
+            }
+        else:
+            issues = ["P1-1 · Review the chronology."] if data["subject"] == "Lịch Sử" else []
+            result = dict(
+                decision="needs_revision" if issues else "approved",
+                checked_ids=[q["id"] for q in data["questions"]],
+                issues=issues,
+            )
+        return Completion(text=json.dumps(result), model="offline-test")
+
+    @staticmethod
+    def question(id_):
+        return dict(
+            id=id_,
+            stem=f"Test item {id_}.",
+            solution="PRIVATE_REPLAY_KEY",
+            answer=None if id_.startswith("P2") else answer(id_),
+            choices=dict(zip("ABCD", ["Yes", "No", "Maybe", "Neither"], strict=True))
+            if id_.startswith("P1")
+            else {},
+            statements=[
+                dict(text=f"Test statement {n}", solution="PRIVATE_REPLAY_KEY", answer=True)
+                for n in range(4)
+            ]
+            if id_.startswith("P2")
+            else [],
+        )
+
+
+@pytest.mark.parametrize(("format_id", "subject", "counts"), FORMATS)
+def test_subject_review_preview_and_export(tmp_path, format_id, subject, counts):
+    providers = {role: Replay(role) for role in ("composer", "solver", "reviewer")}
+    app = create_app(
+        Settings.for_offline(),
+        ui_output_root=tmp_path,
+        pipeline_providers=providers,
+    )
+    prompt = dict(
+        formatId=format_id,
+        subject=subject,
+        grade=12,
+        examType="THPT_STANDARD",
+        durationMinutes=50,
+        itemCount=sum(counts),
+    )
+    with TestClient(app) as client:
+        formats = client.get("/api/exam-formats").json()["formats"]
+        preset = next(fmt for fmt in formats if fmt["id"] == format_id)
+        assert [s["count"] for s in preset["sections"]] == [n for n in counts if n]
+        assert (
+            sum(
+                section["count"] * section.get("pointsPerQuestion", 1)
+                for section in preset["sections"]
+            )
+            == preset["totalScore"]
+            == 10
+        )
+        assert (
+            client.post("/api/exam-formats/evaluate", json={**prompt, "itemCount": 22}).status_code
+            == 422
+        )
+        assert (
+            client.post(
+                "/api/exam-formats/evaluate", json={**prompt, "subject": "Toán Học"}
+            ).status_code
+            == 422
+        )
+        preview = client.post("/api/exam-formats/evaluate", json=prompt).json()
+        assert preview["retrievalMatrix"] is None
+        assert len(preview["request"]["slots"]) == sum(counts)
+        response = client.post(
+            "/api/exams/generate", json=prompt, headers={"Idempotency-Key": format_id}
+        )
+        job = response.json()["jobId"]
+        assert wait(client, job)["status"] == "completed", client.get(
+            f"/api/exams/{job}/status"
+        ).json()
+        package = client.get(f"/api/exams/{job}").json()
+        assert package["subject"] == subject
+        assert package["durationMinutes"] == 50
+        assert all(q["answerCheck"] == "matched" for q in package["questions"])
+        assert Counter(q["part"] for q in package["questions"]) == {
+            f"P{i}": count for i, count in enumerate(counts, 1) if count
+        }
+        assert not package["approved"]
+        if format_id == "thpt-history":
+            assert len(providers["reviewer"].calls) == 1
+            assert "subject_review_issue" in {w["code"] for w in package["warnings"]}
+        if format_id == "thpt-english":
+            assert [p["questionRange"] for p in package["passages"]] == [
+                [1, 6],
+                [7, 12],
+                [18, 22],
+                [23, 30],
+                [31, 40],
+            ]
+            assert package["questions"][0]["passageId"] == "E1"
+            assert "passageId" not in package["questions"][12]
+            revision = package["revision"]
+            checked = client.post(
+                f"/api/exams/{job}/questions/1/verify", json={"revision": revision}
+            )
+            assert checked.status_code == 200
+            assert providers["solver"].calls[-1]["passage"] == package["passages"][0]["text"]
+            changed = client.post(
+                f"/api/exams/{job}/questions/1/regenerate", json={"revision": revision}
+            )
+            assert changed.status_code == 200, changed.text
+            package = changed.json()
+            assert package["revision"] == revision + 1
+            assert providers["solver"].calls[-1]["passage"] == package["passages"][0]["text"]
+            assert len(providers["solver"].calls[-1]["questions"]) == 1
+        raw_tex = (tmp_path / job / "de_thi.tex").read_text("utf-8")
+        assert f"Môn thi: {subject.upper()}" in raw_tex
+        assert "50 phút" in raw_tex
+        assert "PRIVATE_REPLAY_KEY" not in raw_tex
+        export_url = f"/api/exams/{job}/export"
+        export_params = {"type": "STUDENT_EXAM", "format": "tex"}
+        assert client.get(export_url, params=export_params).status_code == 409
+        approval = client.post(
+            f"/api/exams/{job}/approve",
+            json={
+                "revision": package["revision"],
+                "contentHash": package["contentHash"],
+                "reviewer": "Test teacher",
+            },
+        )
+        assert approval.status_code == 200, approval.text
+        assert client.get(export_url, params=export_params).text == raw_tex

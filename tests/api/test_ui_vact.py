@@ -147,7 +147,7 @@ def test_vact_catalog_evaluate_generate_package_edit_approve_and_export(tmp_path
     )
     with TestClient(app) as client:
         catalog = client.get("/api/exam-formats").json()["formats"]
-        assert [item["id"] for item in catalog] == ["thpt-math", "vact"]
+        assert [item["id"] for item in catalog[:2]] == ["thpt-math", "vact"]
         vact = catalog[1]
         assert vact["examType"] == "DGNL_DHQG"
         assert vact["durationMinutes"] == 150
