@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Check, FileText, Flag, LoaderCircle, Plus, Trash2, X } from 'lucide-react';
+import { Check, FileText, Flag, LoaderCircle, Plus, Trash2, Upload, X } from 'lucide-react';
 import type { ExamSession } from '../state/examSessions';
 
 function ExamStatus({ session }: { session: ExamSession }) {
@@ -26,11 +26,15 @@ interface Props {
   activeId: string | null;
   error: string;
   onRetry: () => void;
+  browserImport: { pending: boolean; message: string };
+  onImport: () => void;
   onNew: () => void;
   onOpen: (id: string) => void;
   onDelete: (id: string) => void;
 }
-export function SidebarExamLibrary({ sessions, activeId, error, onRetry, onNew, onOpen, onDelete }: Props) {
+export function SidebarExamLibrary({
+  sessions, activeId, error, onRetry, browserImport, onImport, onNew, onOpen, onDelete,
+}: Props) {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   useEffect(() => {
     if (!deleteId) return;
@@ -43,6 +47,16 @@ export function SidebarExamLibrary({ sessions, activeId, error, onRetry, onNew, 
   return <nav className="sidebar-library" aria-label="Đề thi của thầy cô">
     <button type="button" className="sidebar-new-exam" onClick={onNew} title="Tạo đề mới"><Plus size={16} aria-hidden="true" /><span className="sidebar-label">Tạo đề mới</span></button>
     <h2 className="sidebar-library-heading sidebar-label">Tủ đề</h2>
+    {sessions.some(session => session.browserOnly) && (
+      <button type="button" className="sidebar-new-exam sidebar-import-action" aria-label="Nhập đề từ trình duyệt này"
+        title="Nhập đề từ trình duyệt này" disabled={browserImport.pending} onClick={onImport}>
+        <Upload size={16} aria-hidden="true" />
+        <span className="sidebar-label">{browserImport.pending ? 'Đang nhập…' : 'Nhập đề cũ'}</span>
+      </button>
+    )}
+    {browserImport.message && (
+      <p className="sidebar-import-status sidebar-label" role="status">{browserImport.message}</p>
+    )}
     {error && <div className="sidebar-library-error">
       <span role="alert">{error}</span>
       <button type="button" onClick={onRetry}>Thử lại</button>

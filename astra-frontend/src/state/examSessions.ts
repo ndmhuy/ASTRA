@@ -38,6 +38,20 @@ interface WorkspaceSave {
   error?: string;
 }
 
+const LEGACY_SESSIONS_KEY = 'astra.sessions.v1';
+const BROWSER_ID_PREFIX = 'browser:';
+
+function originalId(session: ExamSession) {
+  return session.browserOnly ? session.id.slice(BROWSER_ID_PREFIX.length) : session.id;
+}
+
+const importMarker = (id: string) => `${LEGACY_SESSIONS_KEY}.imported.${id}`;
+
+function newestFirst(first: ExamSession, second: ExamSession) {
+  return String(second.createdAt ?? '').localeCompare(String(first.createdAt ?? '')) ||
+    first.id.localeCompare(second.id);
+}
+
 function workspaceDraft({ mode, title, draft, messages }: ExamSession): WorkspaceDraft {
   return { schema_version: 1, mode, title, draft, messages: messages.filter(message => !message.id.startsWith('exam-ready:')) };
 }
@@ -101,17 +115,20 @@ export class ExamSessions {
   private libraryRequest = 0;
   private libraryError = '';
   private localSnapshot: string;
+  private browserBackups = new Map<string, ExamSession>();
+  private browserImport = { pending: false, message: '' };
 
   constructor(service: IExamService) {
     this.service = service;
     try {
       if (typeof localStorage !== 'undefined') {
-        const saved = JSON.parse(localStorage.getItem('astra.sessions.v1') || '[]');
+        const saved = JSON.parse(localStorage.getItem(LEGACY_SESSIONS_KEY) || '[]');
         if (Array.isArray(saved)) {
           this.sessions = saved
-            .filter(item => typeof item.id === 'string' && Array.isArray(item.messages))
+            .filter(item => typeof item?.id === 'string' && Array.isArray(item.messages))
             .map(item => ({
               ...item,
+              id: service.workspaceLibrary ? BROWSER_ID_PREFIX + item.id : item.id,
               browserOnly: !!service.workspaceLibrary,
               error: item.error ? humanizeErrorMessage(item.error, item.errorCode) : item.error,
               progress: item.progress
@@ -120,20 +137,38 @@ export class ExamSessions {
                     statusMessage: formatProgressStatus(item.progress.statusMessage),
                   }
                 : item.progress,
-            }));
+            }))
+            .filter((session: ExamSession) => {
+              if (!session.browserOnly || localStorage.getItem(importMarker(originalId(session))) !== '1') return true;
+              this.browserBackups.set(session.id, session);
+              return false;
+            });
         }
       }
     } catch { console.warn('Could not restore local exam workspaces'); }
-    this.localSnapshot = JSON.stringify(this.sessions);
+    this.localSnapshot = this.serializeLocal();
   }
   getSnapshot = () => this.sessions;
   getLibraryError = () => this.libraryError || [...this.workspaceSaves.values()].find(state => state.error)?.error || '';
+  getBrowserImport = () => this.browserImport;
+  importedWorkspaceId(id: string) {
+    const backup = this.browserBackups.get(id);
+    const sharedId = backup && originalId(backup);
+    return sharedId && this.workspaceSaves.has(sharedId) ? sharedId : null;
+  }
   subscribe = (listener: () => void) => { this.listeners.add(listener); return () => { this.listeners.delete(listener); }; };
+  private serializeLocal() {
+    return JSON.stringify([
+      ...this.browserBackups.values(),
+      ...this.sessions.filter(session => !this.workspaceSaves.has(session.id)),
+    ].sort(newestFirst).map(session => ({ ...session, id: originalId(session) })));
+  }
+
   private emit() {
-    const local = JSON.stringify(this.sessions.filter(session => !this.workspaceSaves.has(session.id)));
+    const local = this.serializeLocal();
     try {
       if (local !== this.localSnapshot && typeof localStorage !== 'undefined') {
-        localStorage.setItem('astra.sessions.v1', local);
+        localStorage.setItem(LEGACY_SESSIONS_KEY, local);
         this.localSnapshot = local;
       }
     } catch { console.warn('Could not save local exam workspaces'); }
@@ -181,7 +216,7 @@ export class ExamSessions {
         this.workspaceSaves.set(entry.id, { revision: entry.revision, saved: JSON.stringify(workspaceDraft(session)) });
         sessions.push(session);
       }
-      this.sessions = sessions.sort((first, second) => second.createdAt.localeCompare(first.createdAt));
+      this.sessions = sessions.sort(newestFirst);
       this.libraryError = '';
       this.emit();
       for (const session of this.sessions) {
@@ -190,11 +225,75 @@ export class ExamSessions {
         }
       }
       if (this.activeSessionId) this.refreshSavedExam(this.activeSessionId);
+      return entries;
     } catch {
       if (this.disposed || request !== this.libraryRequest) return;
       this.libraryError = 'Chưa tải được tủ đề từ máy chủ.';
       this.emit();
     }
+  };
+
+  importBrowserLibrary = async () => {
+    const library = this.service.workspaceLibrary;
+    const sources = this.sessions.filter(session => session.browserOnly);
+    if (!library || this.browserImport.pending || !sources.length) return;
+    this.browserImport = { pending: true, message: '' };
+    this.emit();
+
+    const accepted = new Map<string, { data: string; status: 'imported' | 'existing' }>();
+    let missing = 0;
+    let conflicts = 0;
+    let unconfirmed = 0;
+    for (const session of sources) {
+      try {
+        const payload = {
+          ...workspaceDraft(session), createdAt: session.createdAt, jobId: session.jobId ?? null,
+        };
+        const { status } = await library.importLegacy(originalId(session), payload);
+        accepted.set(session.id, { data: JSON.stringify(payload), status });
+      } catch (error) {
+        const { code } = extractErrorDetails(error);
+        if (code === 'workspace_import_missing_job') missing++;
+        else if (code === 'workspace_import_conflict') conflicts++;
+        else unconfirmed++;
+      }
+    }
+
+    const visible = await this.loadLibrary();
+    let added = 0;
+    let existing = 0;
+    this.sessions = this.sessions.filter(session => {
+      const receipt = accepted.get(session.id);
+      if (!receipt) return true;
+      const id = originalId(session);
+      if (!visible?.has(id)) {
+        unconfirmed++;
+        return true;
+      }
+      const current = { ...workspaceDraft(session), createdAt: session.createdAt, jobId: session.jobId ?? null };
+      if (JSON.stringify(current) !== receipt.data) {
+        conflicts++;
+        return true;
+      }
+      this.stopWatching(session.id);
+      this.browserBackups.set(session.id, session);
+      try { localStorage.setItem(importMarker(id), '1'); }
+      catch { console.warn('Could not remember the imported exam in this browser'); }
+      if (receipt.status === 'imported') added++;
+      else existing++;
+      return false;
+    });
+
+    const message = [
+      added > 0 && `Đã nhập ${added} đề.`,
+      existing > 0 && `${existing} đề đã có trong tủ đề chung.`,
+      missing > 0 && `Không tìm thấy tệp hoặc phiên tạo của ${missing} đề trên máy chủ.`,
+      conflicts > 0 && `Giữ riêng ${conflicts} bản có xung đột với tủ đề chung.`,
+      unconfirmed > 0 && `Chưa xác nhận ${unconfirmed} đề. Hãy thử nhập lại.`,
+      'Bản sao vẫn được giữ trên trình duyệt này.',
+    ].filter(Boolean).join(' ');
+    this.browserImport = { pending: false, message };
+    this.emit();
   };
 
   retryLibrary = async () => {
@@ -400,6 +499,7 @@ export class ExamSessions {
     const branch: ExamSession = {
       ...source,
       id: crypto.randomUUID(),
+      browserOnly: false,
       title: `Nhánh · ${source.title}`,
       createdAt: new Date().toISOString(),
       messages: source.messages.slice(0, index + 1),
@@ -752,6 +852,7 @@ export class ExamSessions {
     const prev = this.sessions.find(session => session.id === id);
     const shared = this.workspaceSaves.has(id);
     const noticeId = shared ? `exam-ready:${prev?.jobId}` : crypto.randomUUID();
+    const notice = `Đã soạn xong ${pkg.questions.length} câu. Hãy kiểm tra bản xem trước PDF và phê duyệt bản hiện tại trước khi xuất file.`;
     const bindingChanged =
       !prev?.package ||
       prev.package.revision !== pkg.revision ||
@@ -779,9 +880,10 @@ export class ExamSessions {
           }
         : {}),
       messages: (session.status === 'complete' && (!shared || session.package)) ||
-        session.messages.some(message => message.id === noticeId)
+        session.messages.some(message => message.id === noticeId ||
+          (session.status === 'complete' && message.role === 'assistant' && message.content === notice))
         ? session.messages
-        : [...session.messages.filter(message => !message.id.startsWith('exam-ready:')), { id: noticeId, role: 'assistant', content: `Đã soạn xong ${pkg.questions.length} câu. Hãy kiểm tra bản xem trước PDF và phê duyệt bản hiện tại trước khi xuất file.`, timestamp: shared ? pkg.createdAt : new Date().toISOString() }],
+        : [...session.messages.filter(message => !message.id.startsWith('exam-ready:')), { id: noticeId, role: 'assistant', content: notice, timestamp: shared ? pkg.createdAt : new Date().toISOString() }],
     }));
     if (this.service.requestPreview && pkg.revision && pkg.contentHash) {
       const status = pkg.preview?.status;

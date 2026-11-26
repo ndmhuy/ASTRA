@@ -35,6 +35,7 @@ export const App: React.FC = () => {
   const [store] = useState(() => new ExamSessions(examService));
   const sessions = useSyncExternalStore(store.subscribe, store.getSnapshot);
   const libraryError = useSyncExternalStore(store.subscribe, store.getLibraryError);
+  const browserImport = useSyncExternalStore(store.subscribe, store.getBrowserImport);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [screen, setScreen] = useState<'start' | 'workspace'>('start');
   const [viewMode, setViewMode] = useState<ExamCanvasViewMode>('paper');
@@ -59,8 +60,12 @@ export const App: React.FC = () => {
     };
   }, [store]);
   useEffect(() => {
-    if (activeId && !active) { setActiveId(null); setScreen('start'); }
-  }, [activeId, active]);
+    if (activeId && !active) {
+      const importedId = store.importedWorkspaceId(activeId);
+      setActiveId(importedId);
+      if (!importedId) setScreen('start');
+    }
+  }, [activeId, active, store]);
   useEffect(() => {
     setViewMode('paper');
     store.setActiveSession(screen === 'workspace' ? activeId : null);
@@ -165,6 +170,7 @@ export const App: React.FC = () => {
         </div>
         <SidebarExamLibrary sessions={sessions} activeId={screen === 'workspace' ? activeId : null}
           error={libraryError} onRetry={store.retryLibrary} onNew={newExam} onOpen={openSession}
+          browserImport={browserImport} onImport={store.importBrowserLibrary}
           onDelete={async id => {
             if (await store.remove(id) && configureId === id) { setConfigureId(null); setShowQuickModal(false); }
           }} />

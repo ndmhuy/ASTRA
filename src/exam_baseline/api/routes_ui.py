@@ -2,6 +2,7 @@
 
 import asyncio
 import json
+from datetime import UTC
 from typing import Annotated, Literal
 from uuid import UUID
 
@@ -16,6 +17,7 @@ from exam_baseline.ui.contracts import (
     RegenerateRequest,
     RevisionRequest,
     WorkspaceDraft,
+    WorkspaceImport,
     format_catalog,
 )
 from exam_baseline.ui.jobs import resolve_request
@@ -35,6 +37,18 @@ def save_workspace(request: Request, workspace_id: UUID, payload: WorkspaceDraft
         str(workspace_id), payload.revision, payload.model_dump(mode="json", exclude={"revision"})
     )
     return {"revision": revision}
+
+
+@router.post("/workspaces/{workspace_id}/import")
+def import_workspace(request: Request, workspace_id: UUID, payload: WorkspaceImport):
+    created_at = payload.createdAt.astimezone(UTC).isoformat(timespec="milliseconds")
+    status = request.app.state.ui_jobs.store.import_workspace(
+        str(workspace_id),
+        created_at.replace("+00:00", "Z"),
+        str(payload.jobId) if payload.jobId else None,
+        payload.model_dump(mode="json", exclude={"createdAt", "jobId"}),
+    )
+    return {"status": status}
 
 
 @router.delete("/workspaces/{workspace_id}", status_code=204)

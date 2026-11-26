@@ -141,6 +141,67 @@ def test_workspaces_share_drafts_link_existing_jobs_and_reject_stale_saves(tmp_p
         assert client.get(f"/api/exams/{job}").status_code == 200
 
 
+def test_browser_import_preserves_drafts_and_reconnects_existing_artifacts(tmp_path):
+    app, _ = fixture_app(tmp_path)
+    draft_id, exam_id, missing_id = (str(uuid4()) for _ in range(3))
+    legacy = {
+        "schema_version": 1,
+        "mode": "custom",
+        "title": "Đề cũ",
+        "draft": "  Nháp chưa gửi\n",
+        "messages": [
+            {"id": "one", "role": "user", "content": "Toán", "timestamp": "2026-11-26T09:00:00Z"}
+        ],
+        "createdAt": "2026-11-26T16:00:00.000+07:00",
+        "jobId": None,
+    }
+    with TestClient(app) as client:
+        draft_url = f"/api/workspaces/{draft_id}/import"
+        assert client.post(draft_url, json=legacy).json() == {"status": "imported"}
+        assert client.post(draft_url, json=legacy).json() == {"status": "existing"}
+        clash = client.post(draft_url, json={**legacy, "draft": "A different browser draft"})
+        assert clash.status_code == 409
+        assert clash.json()["error"]["code"] == "workspace_import_conflict"
+
+        missing = client.post(
+            f"/api/workspaces/{missing_id}/import",
+            json={
+                **legacy,
+                "jobId": str(uuid4()),
+            },
+        )
+        assert missing.status_code == 409
+        assert missing.json()["error"]["code"] == "workspace_import_missing_job"
+
+        started = client.post(
+            "/api/exams/generate", json=PAYLOAD, headers={"Idempotency-Key": "legacy-browser"}
+        )
+        job_id = started.json()["jobId"]
+        assert wait(client, job_id)["status"] == "completed"
+        job_before = client.get(f"/api/exams/{job_id}").json()
+        source = tmp_path / job_id / "de_thi.tex"
+        source_before = source.read_bytes()
+        exam_url = f"/api/workspaces/{exam_id}/import"
+        assert client.post(exam_url, json={**legacy, "jobId": job_id}).json() == {
+            "status": "imported"
+        }
+        assert client.get(f"/api/exams/{job_id}").json() == job_before
+        assert source.read_bytes() == source_before
+
+        workspaces = {
+            item["id"]: item for item in client.get("/api/workspaces").json()["workspaces"]
+        }
+        assert set(workspaces) == {draft_id, exam_id}
+        assert workspaces[draft_id]["createdAt"] == "2026-11-26T09:00:00.000Z"
+        assert workspaces[draft_id]["draft"] == legacy["draft"]
+        assert workspaces[draft_id]["messages"] == legacy["messages"]
+        assert workspaces[draft_id]["jobId"] is None
+        assert workspaces[exam_id]["jobId"] == job_id
+        assert workspaces[exam_id]["jobStatus"] == "completed"
+        assert client.delete(f"/api/workspaces/{draft_id}").status_code == 204
+        assert client.post(draft_url, json=legacy).status_code == 409
+
+
 def test_retrieval_agents_teacher_approval_export_edit_and_reconnect(tmp_path):
     app, providers = fixture_app(tmp_path)
     with TestClient(app) as client:

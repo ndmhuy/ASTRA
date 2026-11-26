@@ -3,6 +3,7 @@
 import json
 import sqlite3
 from pathlib import Path
+from typing import Literal
 from uuid import uuid4
 
 from exam_baseline.ui.errors import UiError
@@ -130,6 +131,49 @@ class JobStore:
                    ON CONFLICT(id) DO UPDATE SET archived=1""",
                 (workspace_id,),
             )
+
+    def import_workspace(
+        self, workspace_id: str, created_at: str, job_id: str | None, draft: dict
+    ) -> Literal["imported", "existing"]:
+        encoded = json.dumps(draft, ensure_ascii=False)
+        with self.connect() as db:
+            db.execute("BEGIN IMMEDIATE")
+            existing = db.execute(
+                "SELECT draft, job_id, archived FROM workspaces WHERE id=?", (workspace_id,)
+            ).fetchone()
+            if existing:
+                saved, saved_job, archived = existing
+                if not archived and saved_job == job_id and json.loads(saved) == draft:
+                    return "existing"
+                raise UiError(
+                    "workspace_import_conflict",
+                    "Bản lưu trên máy chủ khác với bản trên trình duyệt hoặc đã được lưu trữ.",
+                )
+
+            if job_id is not None:
+                job = db.execute(
+                    "SELECT json_extract(data, '$.status') FROM jobs WHERE id=?", (job_id,)
+                ).fetchone()
+                if job is None or (
+                    job[0] == "completed"
+                    and not (self.path.parent / job_id / "de_thi.tex").is_file()
+                ):
+                    raise UiError(
+                        "workspace_import_missing_job",
+                        "Không tìm thấy phiên tạo đề hoặc tệp đề thi trên máy chủ này.",
+                    )
+                if db.execute("SELECT 1 FROM workspaces WHERE job_id=?", (job_id,)).fetchone():
+                    raise UiError(
+                        "workspace_import_conflict",
+                        "Phiên tạo đề này đã thuộc một mục trong tủ đề.",
+                    )
+
+            db.execute(
+                """INSERT INTO workspaces (id, created_at, revision, draft, job_id)
+                   VALUES (?, ?, 1, ?, ?)""",
+                (workspace_id, created_at, encoded, job_id),
+            )
+            return "imported"
 
     def get(self, job_id: str) -> dict:
         with self.connect() as db:

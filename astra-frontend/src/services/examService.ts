@@ -42,6 +42,8 @@ interface WorkspaceLibrary {
   list(): Promise<{ workspaces: SavedWorkspace[] }>;
   save(id: string, draft: WorkspaceDraft, revision: number): Promise<{ revision: number }>;
   archive(id: string): Promise<unknown>;
+  importLegacy(id: string, workspace: WorkspaceDraft & Pick<SavedWorkspace, 'createdAt' | 'jobId'>):
+    Promise<{ status: 'imported' | 'existing' }>;
 }
 
 export interface IExamService {
@@ -604,6 +606,11 @@ export class ApiExamService implements IExamService {
       body: JSON.stringify({ ...draft, revision }),
     }),
     archive: id => requestJson(`${this.baseUrl}/workspaces/${id}`, { method: 'DELETE' }),
+    importLegacy: (id, workspace) => requestJson(`${this.baseUrl}/workspaces/${encodeURIComponent(id)}/import`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(workspace),
+    }),
   };
 
   constructor(baseUrl: string = '/api') {

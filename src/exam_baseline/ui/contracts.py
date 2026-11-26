@@ -4,8 +4,9 @@ import json
 from datetime import datetime
 from importlib.resources import files
 from typing import Literal
+from uuid import UUID
 
-from pydantic import ConfigDict, Field, model_validator
+from pydantic import AwareDatetime, ConfigDict, Field, model_validator
 
 from exam_baseline.core.models import Model
 from exam_baseline.thpt.models import Slot
@@ -94,7 +95,7 @@ class WorkspaceMessage(Model):
     timestamp: datetime
 
 
-class WorkspaceDraft(Model):
+class WorkspaceContent(Model):
     model_config = ConfigDict(str_strip_whitespace=False)
 
     schema_version: Literal[1] = 1
@@ -102,7 +103,15 @@ class WorkspaceDraft(Model):
     title: str
     draft: str
     messages: list[WorkspaceMessage]
+
+
+class WorkspaceDraft(WorkspaceContent):
     revision: int = Field(ge=0, strict=True)
+
+
+class WorkspaceImport(WorkspaceContent):
+    createdAt: AwareDatetime
+    jobId: UUID | None
 
 
 class PreviewRequest(Model):
