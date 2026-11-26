@@ -1,10 +1,12 @@
 """Validate frontend requests before any retrieval or model call."""
 
 import json
+from datetime import datetime
 from importlib.resources import files
 from typing import Literal
+from uuid import UUID
 
-from pydantic import Field, model_validator
+from pydantic import AwareDatetime, ConfigDict, Field, model_validator
 
 from exam_baseline.core.models import Model
 from exam_baseline.thpt.models import Slot
@@ -84,6 +86,54 @@ class SubjectGenerateRequest(Model):
 ExamGenerateRequest = GenerateRequest | VactGenerateRequest | SubjectGenerateRequest
 
 
+class ExamVersionRef(Model):
+    jobId: UUID
+    revision: int = Field(ge=1)
+
+
+class WorkspaceMessage(Model):
+    model_config = ConfigDict(str_strip_whitespace=False)
+
+    id: str
+    role: Literal["user", "assistant", "system"]
+    content: str
+    timestamp: datetime
+    examVersion: ExamVersionRef | None = None
+    recorded: bool = False
+
+
+class WorkspaceContent(Model):
+    model_config = ConfigDict(str_strip_whitespace=False)
+
+    schema_version: Literal[1] = 1
+    mode: Literal["template", "custom"]
+    title: str
+    draft: str
+    messages: list[WorkspaceMessage]
+
+    def storage_content(self, *exclude: str) -> dict:
+        content = self.model_dump(mode="json", exclude={"messages", *exclude})
+        content["messages"] = [
+            item.model_dump(mode="json", exclude_unset=True) for item in self.messages
+        ]
+        return content
+
+
+class WorkspaceDraft(WorkspaceContent):
+    revision: int = Field(ge=0, strict=True)
+
+
+class WorkspaceImport(WorkspaceContent):
+    createdAt: AwareDatetime
+    jobId: UUID | None
+
+
+class WorkspaceBranchRequest(Model):
+    destinationId: UUID
+    messageId: str = Field(min_length=1, max_length=256)
+    copyCurrent: bool = False
+
+
 class PreviewRequest(Model):
     revision: int = Field(ge=1)
     contentHash: str = Field(pattern=r"^[a-f0-9]{64}$")
@@ -95,6 +145,12 @@ class ApprovalRequest(PreviewRequest):
 
 class RevisionRequest(Model):
     revision: int = Field(ge=1)
+
+
+class WorkspaceRestoreRequest(RevisionRequest):
+    jobId: UUID
+    targetJobId: UUID
+    targetRevision: int = Field(ge=1)
 
 
 class EditRequest(RevisionRequest):

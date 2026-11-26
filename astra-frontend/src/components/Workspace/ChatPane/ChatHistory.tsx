@@ -9,9 +9,15 @@ interface ChatHistoryProps {
   onEditMessage?: (message: ChatMessage) => void;
   onRetractMessage?: (message: ChatMessage) => void;
   onBranchMessage?: (message: ChatMessage) => void;
+  onUndoChange?: (message: ChatMessage) => void;
+  currentJobId?: string | null;
+  undoing?: boolean;
 }
 
-export const ChatHistory: React.FC<ChatHistoryProps> = ({ messages, onSuggestion, onEditMessage, onRetractMessage, onBranchMessage }) => {
+export const ChatHistory: React.FC<ChatHistoryProps> = ({
+  messages, onSuggestion, onEditMessage, onRetractMessage, onBranchMessage,
+  onUndoChange, currentJobId, undoing,
+}) => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const [copiedId, setCopiedId] = React.useState<string | null>(null);
 
@@ -66,6 +72,11 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({ messages, onSuggestion
           <div className={isUser ? 'chat-msg-user' : 'chat-msg-assistant'}>
             {!isUser && <div className="chat-msg-label">ASTRA</div>}
             <div className="chat-message-content">{msg.content}</div>
+            {msg.changeId && onUndoChange && msg.examVersion?.jobId === currentJobId && (
+              <button type="button" className="button-secondary" disabled={undoing} onClick={() => onUndoChange(msg)}>
+                <RotateCcw size={14} aria-hidden="true" /> Hoàn tác
+              </button>
+            )}
             {msg.timestamp && <div className="chat-message-time">{new Date(msg.timestamp).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</div>}
           </div>
           <div className="chat-message-actions" aria-label="Thao tác tin nhắn">
@@ -73,8 +84,8 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({ messages, onSuggestion
               {isCopied ? <Check size={14} aria-hidden="true" /> : <Copy size={14} aria-hidden="true" />}
               <span>{isCopied ? 'Đã chép' : 'Sao chép'}</span>
             </button>
-            {isUser && <button type="button" title="Chỉnh sửa tin nhắn" aria-label="Chỉnh sửa tin nhắn" onClick={() => onEditMessage?.(msg)}><Pencil size={14} aria-hidden="true" /><span>Sửa</span></button>}
-            {isUser && <button type="button" title="Thu hồi tin nhắn này và các tin sau" aria-label="Thu hồi tin nhắn" onClick={() => onRetractMessage?.(msg)}><RotateCcw size={14} aria-hidden="true" /><span>Thu hồi</span></button>}
+            {isUser && !msg.recorded && <button type="button" title="Chỉnh sửa tin nhắn" aria-label="Chỉnh sửa tin nhắn" onClick={() => onEditMessage?.(msg)}><Pencil size={14} aria-hidden="true" /><span>Sửa</span></button>}
+            {isUser && !msg.recorded && <button type="button" title="Thu hồi tin nhắn này và các tin sau" aria-label="Thu hồi tin nhắn" onClick={() => onRetractMessage?.(msg)}><RotateCcw size={14} aria-hidden="true" /><span>Thu hồi</span></button>}
             <button type="button" title="Tạo nhánh hội thoại tại đây" aria-label="Tạo nhánh hội thoại" onClick={() => onBranchMessage?.(msg)}><GitBranch size={14} aria-hidden="true" /><span>Tạo nhánh</span></button>
           </div>
         </article>;

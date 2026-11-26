@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useSyncExternalStore, useCallback, useLayoutEffect, useRef } from 'react';
+import React, { useState, useEffect, useSyncExternalStore, useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import { AlertCircle, AlertTriangle, LoaderCircle, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { WorkspaceStart } from './components/WorkspaceStart';
 import { AstraWelcome } from './components/AstraWelcome';
@@ -10,9 +10,11 @@ import { ChatHistory } from './components/Workspace/ChatPane/ChatHistory';
 import { ModernChatBar } from './components/Workspace/ChatPane/ModernChatBar';
 import { CanvasHeader } from './components/Workspace/LiveCanvas/CanvasHeader';
 import { ExamPaperView, type ExamCanvasViewMode } from './components/Workspace/LiveCanvas/ExamPaperView';
-import type { ExamRequestParams, QuestionItem } from './types/exam';
+import type { ChatMessage, ExamRequestParams, QuestionItem } from './types/exam';
 import { QuestionEditor } from './components/QuestionEditor';
-import { examService } from './services/examService';
+import { ExamVersionHistory } from './components/ExamVersionHistory';
+import { ApiError, examService } from './services/examService';
+import { MathRenderer } from './components/MathRenderer';
 import { ExamSessions } from './state/examSessions';
 import { formatProgressStatus, formatVisualWarning } from './utils/userMessages.ts';
 import './styles/workspace.css';
@@ -22,6 +24,13 @@ import './styles/createVision.css';
 import './styles/integratedWorkspace.css';
 import './styles/integration.css';
 import './styles/atelier.css';
+
+interface RegenerationUndo {
+  sessionId: string;
+  jobId: string;
+  previousRevision: number;
+  revision: number;
+}
 
 export const App: React.FC = () => {
   const [showWelcome, setShowWelcome] = useState(true);
@@ -34,22 +43,82 @@ export const App: React.FC = () => {
   const attachedFiles = useRef<File[]>([]);
   const [store] = useState(() => new ExamSessions(examService));
   const sessions = useSyncExternalStore(store.subscribe, store.getSnapshot);
+  const libraryError = useSyncExternalStore(store.subscribe, store.getLibraryError);
+  const browserImport = useSyncExternalStore(store.subscribe, store.getBrowserImport);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [screen, setScreen] = useState<'start' | 'workspace'>('start');
   const [viewMode, setViewMode] = useState<ExamCanvasViewMode>('paper');
   const [controlsCollapsed, setControlsCollapsed] = useState(false);
   const [showQuickModal, setShowQuickModal] = useState(false);
   const [configureId, setConfigureId] = useState<string | null>(null);
-  const [editor, setEditor] = useState<{ sessionId: string; jobId: string; question: QuestionItem } | null>(null);
+  const [editor, setEditor] = useState<{ sessionId: string; jobId: string; question: QuestionItem; workspaceId?: string } | null>(null);
   const [approving, setApproving] = useState(false);
+  const [historySession, setHistorySession] = useState<string | null>(null);
+  const [undo, setUndo] = useState<RegenerationUndo>();
+  const [undoing, setUndoing] = useState(false);
+  const [undoConflict, setUndoConflict] = useState<{ id: string; current: string; afterChange: string; beforeChange: string }>();
   const closeQuickModal = useCallback(() => setShowQuickModal(false), []);
   const active = sessions.find(session => session.id === activeId);
-  const messages = active?.messages || [];
+  const sharedId = active && !active.browserOnly && examService.workspaceLibrary ? active.id : null;
+  const [recordedChat, setRecordedChat] = useState<{ id: string; messages: ChatMessage[]; signature: string }>();
+  const history = examService.history;
+  const canOpenHistory = Boolean(history && active?.jobId && active.package?.revision && active.status === 'complete');
+  const canUndo = !sharedId && history && undo && active?.id === undo.sessionId && active.jobId === undo.jobId &&
+    active.package?.revision === undo.revision;
+  const messages = useMemo(() => {
+    const recorded = recordedChat?.id === sharedId ? recordedChat.messages : [];
+    const byId = new Map([...(active?.messages ?? []), ...recorded].map(message => [message.id, message]));
+    return [...byId.values()].sort(
+      (first, second) => Date.parse(first.timestamp) - Date.parse(second.timestamp)
+    );
+  }, [active?.messages, recordedChat, sharedId]);
+  const latestUndo = sharedId && active?.package?.revision
+    ? [...messages].reverse().find(message => message.changeId && message.examVersion?.jobId === active.jobId &&
+        message.examVersion?.revision === active.package?.revision)
+    : undefined;
   const liveQuestions = active?.questions || [];
   const examMeta = active?.meta || null;
   const isGenerating = active?.status === 'generating';
   const prevQuestionCount = active?.previousCount || 0;
-  useEffect(() => { store.resume(); return () => store.dispose(); }, [store]);
+  useEffect(() => {
+    store.resume();
+    window.addEventListener('focus', store.loadLibrary);
+    return () => {
+      window.removeEventListener('focus', store.loadLibrary);
+      store.dispose();
+    };
+  }, [store]);
+  useEffect(() => {
+    const library = examService.workspaceLibrary;
+    if (!library || !sharedId || screen !== 'workspace') return;
+    let current = true;
+    let pending = false;
+    const refresh = async () => {
+      if (pending) return;
+      pending = true;
+      try {
+        const { messages, milestones } = await library.changes(sharedId);
+        if (current) {
+          const timeline = [...messages, ...milestones];
+          const signature = JSON.stringify(timeline);
+          setRecordedChat(previous => previous?.id === sharedId && previous.signature === signature
+            ? previous : { id: sharedId, messages: timeline, signature });
+        }
+      } catch {
+        // Leave the last server-confirmed messages visible during a disconnect.
+      } finally { pending = false; }
+    };
+    void refresh();
+    const timer = window.setInterval(() => void refresh(), 1500);
+    return () => { current = false; window.clearInterval(timer); };
+  }, [screen, sharedId]);
+  useEffect(() => {
+    if (activeId && !active) {
+      const importedId = store.importedWorkspaceId(activeId);
+      setActiveId(importedId);
+      if (!importedId) setScreen('start');
+    }
+  }, [activeId, active, store]);
   useEffect(() => {
     setViewMode('paper');
     store.setActiveSession(screen === 'workspace' ? activeId : null);
@@ -135,6 +204,63 @@ export const App: React.FC = () => {
     if (activeId) void store.requestPreview(activeId, true);
   }, [store, activeId]);
 
+  const restoreVersion = async (sessionId: string, jobId: string, version: number, revision: number,
+    workspaceId?: string, targetJobId?: string) => {
+    if (!history) return;
+    try {
+      const pkg = await history.restore(jobId, version, revision, workspaceId, targetJobId);
+      if (pkg.examId !== jobId) await store.loadLibrary();
+      store.acceptPackage(sessionId, pkg.examId, pkg);
+      setViewMode('paper');
+      setUndo(previous => previous?.sessionId === sessionId ? undefined : previous);
+    } catch (error) {
+      await store.handleActionError(sessionId, error);
+      throw error;
+    }
+  };
+
+  const undoRegeneration = async () => {
+    if (!canUndo || !undo || undoing) return;
+    setUndoing(true);
+    try { await restoreVersion(undo.sessionId, undo.jobId, undo.previousRevision, undo.revision); }
+    catch { /* The workspace shows the restore error. */ }
+    finally { setUndoing(false); }
+  };
+
+  const undoRecordedChange = async (message: ChatMessage) => {
+    const library = examService.workspaceLibrary;
+    const revision = active?.package?.revision;
+    if (!library || !sharedId || !revision || !message.changeId || !message.examVersion || undoing) return;
+    setUndoing(true);
+    setUndoConflict(undefined);
+    try {
+      const pkg = await library.undoChange(sharedId, message.examVersion.jobId, message.changeId, revision);
+      store.acceptPackage(sharedId, pkg.examId, pkg);
+      setViewMode('paper');
+    } catch (error) {
+      if (error instanceof ApiError && error.code === 'exam_undo_conflict' && error.details) {
+        const comparison = error.details as { current: string; afterChange: string; beforeChange: string };
+        setUndoConflict({ id: sharedId, ...comparison });
+      } else {
+        await store.handleActionError(sharedId, error);
+      }
+    } finally { setUndoing(false); }
+  };
+
+  const branchFromMessage = async (id: string, message: ChatMessage) => {
+    try {
+      let branchId: string | null;
+      try { branchId = await store.branchAtMessage(id, message.id); }
+      catch (error) {
+        if (!(error instanceof ApiError) || error.code !== 'branch_version_unknown') throw error;
+        if (!window.confirm('Tin nhắn này chưa có phiên bản đã lưu. Tạo nhánh từ đề đang dùng?')) return;
+        branchId = await store.branchAtMessage(id, message.id, true);
+      }
+      if (branchId) openSession(branchId);
+    } catch (error) {
+      await store.handleActionError(id, error);
+    }
+  };
 
   const sidebarLabel = controlsCollapsed ? 'Mở rộng thanh điều hướng' : 'Thu gọn thanh điều hướng';
 
@@ -152,7 +278,12 @@ export const App: React.FC = () => {
             {controlsCollapsed ? <PanelLeftOpen size={16} aria-hidden="true" /> : <PanelLeftClose size={16} aria-hidden="true" />}
           </button>
         </div>
-        <SidebarExamLibrary sessions={sessions} activeId={screen === 'workspace' ? activeId : null} onNew={newExam} onOpen={openSession} onDelete={id => { store.remove(id); if (activeId === id) newExam(); if (configureId === id) { setConfigureId(null); setShowQuickModal(false); } }} />
+        <SidebarExamLibrary sessions={sessions} activeId={screen === 'workspace' ? activeId : null}
+          error={libraryError} onRetry={store.retryLibrary} onNew={newExam} onOpen={openSession}
+          browserImport={browserImport} onImport={store.importBrowserLibrary}
+          onDelete={async id => {
+            if (await store.remove(id) && configureId === id) { setConfigureId(null); setShowQuickModal(false); }
+          }} />
         <button className="side-rail-edge" type="button" onClick={() => setControlsCollapsed(value => !value)} aria-label={sidebarLabel} aria-expanded={!controlsCollapsed} title={sidebarLabel} />
         <div className="header-right"><span className="header-avatar" aria-label="Người dùng: Cùng thầy cô" title="Cùng thầy cô">GV</span><span className="header-session">Cùng thầy cô</span></div>
       </header>
@@ -166,23 +297,33 @@ export const App: React.FC = () => {
             left: (
               <>
                 <div className="studio-chat-heading"><div><span className="studio-kicker">KHÔNG GIAN SOẠN ĐỀ</span><h2>Cùng soạn đề</h2></div></div>
-                <div className="session-context"><strong>{active.title}</strong></div>
-                {(active.status === 'draft' || active.status === 'error') && <div className="session-create-action">
+                <div className="session-context"><strong>{active.mode === 'template' ? active.meta?.title ?? active.title : active.title}</strong></div>
+                {(!active.generationId && (active.status === 'draft' || active.status === 'error')) && <div className="session-create-action">
                   {active.error && <p className="session-error-note">{active.error}</p>}
                   <button type="button" className="button-primary" onClick={() => { setConfigureId(active.id); setShowQuickModal(true); }}>{active.status === 'error' ? 'Thử tạo lại' : 'Tạo đề từ yêu cầu'}</button>
                 </div>}
-                <ChatHistory messages={messages} onSuggestion={value => store.setDraft(active.id, value)} onEditMessage={message => store.setDraft(active.id, message.content)} onRetractMessage={message => store.retractMessage(active.id, message.id)} onBranchMessage={message => { const branchId = store.branchAtMessage(active.id, message.id); if (branchId) setActiveId(branchId); }} />
+                {undoConflict?.id === active.id && <div className="editor-error-box" role="alert">
+                  <strong>Có xung đột khi hoàn tác. Hãy kiểm tra câu hỏi và ngữ liệu chung.</strong>
+                  <details open><summary>So sánh đề bài</summary>
+                    <div>Hiện tại: <MathRenderer content={undoConflict.current} /></div>
+                    <div>Sau thay đổi: <MathRenderer content={undoConflict.afterChange} /></div>
+                    <div>Trước thay đổi: <MathRenderer content={undoConflict.beforeChange} /></div>
+                  </details>
+                  <button type="button" className="button-secondary" onClick={() => setUndoConflict(undefined)}>Đóng</button>
+                </div>}
+                <ChatHistory messages={messages} onSuggestion={value => store.setDraft(active.id, value)} onEditMessage={message => store.setDraft(active.id, message.content)} onRetractMessage={message => store.retractMessage(active.id, message.id)} onBranchMessage={message => void branchFromMessage(active.id, message)}
+                  currentJobId={active.jobId} undoing={undoing} onUndoChange={sharedId && active.package?.revision ? message => void undoRecordedChange(message) : undefined} />
               </>
             ),
             right: (
               <>
-                {active.error && (
+                {(active.error || active.generationError) && (
                   <div className="canvas-alert-banner is-error" role="alert">
                     <AlertCircle size={17} aria-hidden="true" />
-                    <span>{active.error}</span>
+                    <span>{active.error || active.generationError}</span>
                   </div>
                 )}
-                {isGenerating && active.progress && (
+                {(isGenerating || active.generationId) && active.progress && (
                   <div className="canvas-progress-banner" role="status" aria-live="polite">
                     <div className="canvas-progress-top">
                       <span className="canvas-progress-label">
@@ -244,6 +385,10 @@ export const App: React.FC = () => {
                     onExportPdf={handleExportPdf}
                     onExportWord={handleExportWord}
                     onExportAnswer={handleExportAnswer}
+                    onShowHistory={canOpenHistory ? () => setHistorySession(active.id) : undefined}
+                    onUndoRegeneration={latestUndo ? () => void undoRecordedChange(latestUndo)
+                      : canUndo ? () => void undoRegeneration() : undefined}
+                    undoing={undoing}
                   />}
                   questions={liveQuestions}
                   passages={active.package?.passages}
@@ -266,7 +411,9 @@ export const App: React.FC = () => {
                   onPreviewOpened={handlePreviewOpened}
                   onEditQuestion={id => {
                     const question = active.questions.find(item => item.id === id);
-                    if (active.jobId && question) setEditor({ sessionId: active.id, jobId: active.jobId, question });
+                    if (active.jobId && question) setEditor({
+                      sessionId: active.id, jobId: active.jobId, question, workspaceId: sharedId ?? undefined,
+                    });
                   }}
                 />
               </>
@@ -284,6 +431,14 @@ export const App: React.FC = () => {
           onClose={closeQuickModal}
         />
       )}
+      {history && active?.jobId && active.package?.revision && historySession === active.id && (
+        <ExamVersionHistory key={active.jobId} history={history} jobId={active.jobId} revision={active.package.revision}
+          workspaceId={active.browserOnly ? undefined : active.id}
+          onClose={() => setHistorySession(null)} onRestore={async (version, revision, jobId, targetJobId) => {
+            await restoreVersion(active.id, jobId, version, revision, active.browserOnly ? undefined : active.id, targetJobId);
+            setHistorySession(null);
+          }} />
+      )}
       {editor && <QuestionEditor question={editor.question} onClose={() => setEditor(null)}
         onVerify={examService.verifyQuestion && editor.question.examRevision !== undefined ? async () => {
           try {
@@ -298,7 +453,7 @@ export const App: React.FC = () => {
         } : undefined}
         onSave={async question => {
           try {
-            await examService.updateQuestion(editor.jobId, question);
+            await examService.updateQuestion(editor.jobId, question, editor.workspaceId);
             store.invalidatePreview(editor.sessionId);
             await store.refresh(editor.sessionId);
             setEditor(null);
@@ -309,7 +464,13 @@ export const App: React.FC = () => {
         }}
         onRegenerate={async instruction => {
           try {
-            await examService.regenerateQuestion(editor.jobId, editor.question.id, instruction, editor.question.examRevision);
+            const previousRevision = editor.question.examRevision;
+            const regenerated = await examService.regenerateQuestion(
+              editor.jobId, editor.question.id, instruction, previousRevision, editor.workspaceId,
+            );
+            if (previousRevision !== undefined && regenerated.examRevision === previousRevision + 1) {
+              setUndo({ sessionId: editor.sessionId, jobId: editor.jobId, previousRevision, revision: regenerated.examRevision });
+            }
             store.invalidatePreview(editor.sessionId);
             await store.refresh(editor.sessionId);
             setEditor(null);

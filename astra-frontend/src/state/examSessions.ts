@@ -1,5 +1,5 @@
 import type { ChatMessage, ExamPackage, ExamPreviewState, ExamRequestParams, QuestionItem, GenerationProgress } from '../types/exam';
-import type { IExamService } from '../services/examService';
+import type { IExamService, SavedWorkspace, WorkspaceDraft } from '../services/examService';
 import { formatProgressStatus, humanizeErrorMessage } from '../utils/userMessages.ts';
 
 export interface ExamSession {
@@ -12,6 +12,8 @@ export interface ExamSession {
   questions: QuestionItem[];
   draft: string;
   jobId: string | null;
+  generationId?: string;
+  generationError?: string;
   meta: { title: string; subject: string; duration: number; completedCount: number; totalCount: number } | null;
   previousCount: number;
   error?: string;
@@ -26,6 +28,58 @@ export interface ExamSession {
   requestId?: string;
   requestSignature?: string;
   progress?: GenerationProgress;
+  browserOnly?: boolean;
+}
+
+interface WorkspaceSave {
+  revision: number;
+  saved?: string;
+  unconfirmed?: { draft: WorkspaceDraft; encoded: string };
+  pending?: Promise<boolean>;
+  archiving?: boolean;
+  error?: string;
+}
+
+const LEGACY_SESSIONS_KEY = 'astra.sessions.v1';
+const BROWSER_ID_PREFIX = 'browser:';
+
+function originalId(session: ExamSession) {
+  return session.browserOnly ? session.id.slice(BROWSER_ID_PREFIX.length) : session.id;
+}
+
+const importMarker = (id: string) => `${LEGACY_SESSIONS_KEY}.imported.${id}`;
+
+function newestFirst(first: ExamSession, second: ExamSession) {
+  return String(second.createdAt ?? '').localeCompare(String(first.createdAt ?? '')) ||
+    first.id.localeCompare(second.id);
+}
+
+function workspaceDraft({ mode, title, draft, messages }: ExamSession): WorkspaceDraft {
+  return { schema_version: 1, mode, title, draft,
+    messages: messages.filter(message => message.recorded || !message.id.startsWith('exam-ready:')) };
+}
+
+function sharedSession(entry: SavedWorkspace, previous?: ExamSession): ExamSession {
+  const { id, mode, createdAt, title, draft, messages, jobId, jobMeta, jobStatus } = entry;
+  const jobError = entry.jobError;
+  const status = jobStatus === 'completed' ? 'complete' : jobStatus === 'failed' ? 'error' : jobId ? 'generating' : 'draft';
+  const sameJob = previous?.jobId === jobId;
+  const notice = sameJob && previous?.messages.find(message => message.id === `exam-ready:${jobId}`);
+  return {
+    questions: [], previousCount: 0,
+    ...(sameJob ? previous : undefined),
+    id, mode, createdAt, title, draft, messages: notice ? [...messages, notice] : messages, jobId, status,
+    generationId: entry.generationStatus === 'queued' || entry.generationStatus === 'running'
+      ? entry.generationId ?? undefined : undefined,
+    generationError: status === 'complete' && entry.generationError
+      ? humanizeErrorMessage(entry.generationError.message, entry.generationError.code) : undefined,
+    meta: sameJob && previous?.meta ? previous.meta : jobMeta && {
+      title: `Đề thi ${jobMeta.subject}`, subject: jobMeta.subject, duration: jobMeta.durationMinutes,
+      completedCount: status === 'complete' ? jobMeta.itemCount : 0, totalCount: jobMeta.itemCount,
+    },
+    error: jobError ? humanizeErrorMessage(jobError.message, jobError.code) : undefined,
+    errorCode: jobError?.code,
+  };
 }
 
 function previewBindingKey(jobId: string, revision: number, contentHash: string): string {
@@ -64,17 +118,26 @@ export class ExamSessions {
   private activeSessionId: string | null = null;
   private disposed = false;
   private service: IExamService;
+  private workspaceSaves = new Map<string, WorkspaceSave>();
+  private starting = new Set<string>();
+  private libraryRequest = 0;
+  private libraryError = '';
+  private localSnapshot: string;
+  private browserBackups = new Map<string, ExamSession>();
+  private browserImport = { pending: false, message: '' };
 
   constructor(service: IExamService) {
     this.service = service;
-    if (typeof localStorage !== 'undefined') {
-      try {
-        const saved = JSON.parse(localStorage.getItem('astra.sessions.v1') || '[]');
+    try {
+      if (typeof localStorage !== 'undefined') {
+        const saved = JSON.parse(localStorage.getItem(LEGACY_SESSIONS_KEY) || '[]');
         if (Array.isArray(saved)) {
           this.sessions = saved
-            .filter(item => typeof item.id === 'string' && Array.isArray(item.messages))
+            .filter(item => typeof item?.id === 'string' && Array.isArray(item.messages))
             .map(item => ({
               ...item,
+              id: service.workspaceLibrary ? BROWSER_ID_PREFIX + item.id : item.id,
+              browserOnly: !!service.workspaceLibrary,
               error: item.error ? humanizeErrorMessage(item.error, item.errorCode) : item.error,
               progress: item.progress
                 ? {
@@ -82,26 +145,209 @@ export class ExamSessions {
                     statusMessage: formatProgressStatus(item.progress.statusMessage),
                   }
                 : item.progress,
-            }));
+            }))
+            .filter((session: ExamSession) => {
+              if (!session.browserOnly || localStorage.getItem(importMarker(originalId(session))) !== '1') return true;
+              this.browserBackups.set(session.id, session);
+              return false;
+            });
         }
-      } catch { console.warn('Could not restore local exam workspaces'); }
-    }
+      }
+    } catch { console.warn('Could not restore local exam workspaces'); }
+    this.localSnapshot = this.serializeLocal();
   }
   getSnapshot = () => this.sessions;
+  getLibraryError = () => this.libraryError || [...this.workspaceSaves.values()].find(state => state.error)?.error || '';
+  getBrowserImport = () => this.browserImport;
+  importedWorkspaceId(id: string) {
+    const backup = this.browserBackups.get(id);
+    const sharedId = backup && originalId(backup);
+    return sharedId && this.workspaceSaves.has(sharedId) ? sharedId : null;
+  }
   subscribe = (listener: () => void) => { this.listeners.add(listener); return () => { this.listeners.delete(listener); }; };
+  private serializeLocal() {
+    return JSON.stringify([
+      ...this.browserBackups.values(),
+      ...this.sessions.filter(session => !this.workspaceSaves.has(session.id)),
+    ].sort(newestFirst).map(session => ({ ...session, id: originalId(session) })));
+  }
+
   private emit() {
-    if (typeof localStorage !== 'undefined') {
-      try { localStorage.setItem('astra.sessions.v1', JSON.stringify(this.sessions)); }
-      catch { console.warn('Could not save local exam workspaces'); }
-    }
+    const local = this.serializeLocal();
+    try {
+      if (local !== this.localSnapshot && typeof localStorage !== 'undefined') {
+        localStorage.setItem(LEGACY_SESSIONS_KEY, local);
+        this.localSnapshot = local;
+      }
+    } catch { console.warn('Could not save local exam workspaces'); }
     this.listeners.forEach(listener => listener());
   }
   resume() {
     this.disposed = false;
-    this.sessions.filter(session => session.status === 'generating' && session.jobId).forEach(session => {
-      this.subscriptions.get(session.id)?.();
-      this.watch(session.id, session.jobId!);
+    this.resumeGeneration();
+    void this.loadLibrary();
+  }
+
+  loadLibrary = async () => {
+    const library = this.service.workspaceLibrary;
+    if (!library) return;
+    const request = ++this.libraryRequest;
+    const before = new Map(this.sessions.map(session => [session.id, session]));
+    try {
+      const { workspaces } = await library.list();
+      if (this.disposed || request !== this.libraryRequest) return;
+      const entries = new Map(workspaces.map(entry => [entry.id, entry]));
+      const sessions = this.sessions.flatMap(session => {
+        const state = this.workspaceSaves.get(session.id);
+        if (!state || state.pending || state.unconfirmed || state.archiving || this.starting.has(session.id) ||
+            before.get(session.id) !== session || state.saved !== JSON.stringify(workspaceDraft(session))) return [session];
+        const entry = entries.get(session.id);
+        if (!entry) {
+          this.stopWatching(session.id);
+          this.workspaceSaves.delete(session.id);
+          return [];
+        }
+        if (entry.revision < state.revision) return [session];
+        const loaded = sharedSession(entry, session);
+        if (entry.jobId !== session.jobId || loaded.generationId !== session.generationId) this.stopWatching(session.id);
+        state.revision = entry.revision;
+        state.saved = JSON.stringify(workspaceDraft(loaded));
+        return [loaded];
+      });
+      const known = new Set(sessions.map(session => session.id));
+      for (const entry of workspaces) {
+        if (known.has(entry.id)) continue;
+        const session = sharedSession(entry);
+        this.workspaceSaves.set(entry.id, { revision: entry.revision, saved: JSON.stringify(workspaceDraft(session)) });
+        sessions.push(session);
+      }
+      this.sessions = sessions.sort(newestFirst);
+      this.libraryError = '';
+      this.emit();
+      this.resumeGeneration();
+      if (this.activeSessionId) this.refreshSavedExam(this.activeSessionId);
+      return entries;
+    } catch {
+      if (this.disposed || request !== this.libraryRequest) return;
+      this.libraryError = 'Chưa tải được tủ đề từ máy chủ.';
+      this.emit();
+    }
+  };
+
+  private resumeGeneration() {
+    for (const session of this.sessions) {
+      const jobId = session.generationId ?? (session.status === 'generating' ? session.jobId : null);
+      if (jobId && !this.subscriptions.has(session.id) && !this.starting.has(session.id)) this.watch(session.id, jobId);
+    }
+  }
+
+  importBrowserLibrary = async () => {
+    const library = this.service.workspaceLibrary;
+    const sources = this.sessions.filter(session => session.browserOnly);
+    if (!library || this.browserImport.pending || !sources.length) return;
+    this.browserImport = { pending: true, message: '' };
+    this.emit();
+
+    const accepted = new Map<string, { data: string; status: 'imported' | 'existing' }>();
+    let missing = 0;
+    let conflicts = 0;
+    let unconfirmed = 0;
+    for (const session of sources) {
+      try {
+        const payload = {
+          ...workspaceDraft(session), createdAt: session.createdAt, jobId: session.jobId ?? null,
+        };
+        const { status } = await library.importLegacy(originalId(session), payload);
+        accepted.set(session.id, { data: JSON.stringify(payload), status });
+      } catch (error) {
+        const { code } = extractErrorDetails(error);
+        if (code === 'workspace_import_missing_job') missing++;
+        else if (code === 'workspace_import_conflict') conflicts++;
+        else unconfirmed++;
+      }
+    }
+
+    const visible = await this.loadLibrary();
+    let added = 0;
+    let existing = 0;
+    this.sessions = this.sessions.filter(session => {
+      const receipt = accepted.get(session.id);
+      if (!receipt) return true;
+      const id = originalId(session);
+      if (!visible?.has(id)) {
+        unconfirmed++;
+        return true;
+      }
+      const current = { ...workspaceDraft(session), createdAt: session.createdAt, jobId: session.jobId ?? null };
+      if (JSON.stringify(current) !== receipt.data) {
+        conflicts++;
+        return true;
+      }
+      this.stopWatching(session.id);
+      this.browserBackups.set(session.id, session);
+      try { localStorage.setItem(importMarker(id), '1'); }
+      catch { console.warn('Could not remember the imported exam in this browser'); }
+      if (receipt.status === 'imported') added++;
+      else existing++;
+      return false;
     });
+
+    const message = [
+      added > 0 && `Đã nhập ${added} đề.`,
+      existing > 0 && `${existing} đề đã có trong tủ đề chung.`,
+      missing > 0 && `Không tìm thấy tệp hoặc phiên tạo của ${missing} đề trên máy chủ.`,
+      conflicts > 0 && `Giữ riêng ${conflicts} bản có xung đột với tủ đề chung.`,
+      unconfirmed > 0 && `Chưa xác nhận ${unconfirmed} đề. Hãy thử nhập lại.`,
+      'Bản sao vẫn được giữ trên trình duyệt này.',
+    ].filter(Boolean).join(' ');
+    this.browserImport = { pending: false, message };
+    this.emit();
+  };
+
+  retryLibrary = async () => {
+    await Promise.all([...this.workspaceSaves.keys()].map(id => this.saveWorkspace(id)));
+    await this.loadLibrary();
+  };
+
+  private saveWorkspace(id: string): Promise<boolean> {
+    const state = this.workspaceSaves.get(id);
+    const library = this.service.workspaceLibrary;
+    if (!state || !library || state.archiving) return Promise.resolve(true);
+    state.pending ??= Promise.resolve().then(async () => {
+      try {
+        let session = this.sessions.find(item => item.id === id);
+        while (session && !state.archiving) {
+          const draft = workspaceDraft(session);
+          const encoded = JSON.stringify(draft);
+          if (!state.unconfirmed && encoded === state.saved) break;
+          state.unconfirmed ??= { draft, encoded };
+          const { revision } = await library.save(id, state.unconfirmed.draft, state.revision);
+          state.revision = revision;
+          state.saved = state.unconfirmed.encoded;
+          state.unconfirmed = undefined;
+          session = this.sessions.find(item => item.id === id);
+        }
+        state.error = undefined;
+        return true;
+      } catch (error) {
+        const { code } = extractErrorDetails(error);
+        if (code !== 'network_error') state.unconfirmed = undefined;
+        state.error = code === 'workspace_changed' || code === 'workspace_not_found'
+          ? 'Đề đã thay đổi trong cửa sổ khác. Hãy sao chép phần chưa lưu trước khi tải lại trang.'
+          : 'Chưa lưu được bản nháp vào máy chủ.';
+        return false;
+      } finally {
+        state.pending = undefined;
+        this.emit();
+      }
+    });
+    return state.pending;
+  }
+
+  private refreshSavedExam(id: string) {
+    if (this.workspaceSaves.has(id) && this.sessions.find(session => session.id === id)?.status === 'complete') {
+      void this.refresh(id).catch(error => this.setError(id, error));
+    }
   }
   private stopPreviewPoll(id: string) {
     const timer = this.previewTimers.get(id);
@@ -119,6 +365,10 @@ export class ExamSessions {
       }
     }
     if (!id) return;
+    if (this.workspaceSaves.has(id)) {
+      this.refreshSavedExam(id);
+      return;
+    }
     const session = this.sessions.find(item => item.id === id);
     if (session?.status === 'complete' && this.service.verifyQuestion &&
         session.questions.some(question => !question.answerCheck)) {
@@ -197,40 +447,90 @@ export class ExamSessions {
     return session.previewOpenedRevision === previewBindingKey(session.jobId, revision, contentHash);
   }
 
-  private update(id: string, change: (session: ExamSession) => ExamSession) {
+  private update(id: string, change: (session: ExamSession) => ExamSession, save = false) {
     if (this.disposed) return;
     this.sessions = this.sessions.map(session => session.id === id ? change(session) : session);
     this.emit();
+    if (save) void this.saveWorkspace(id);
   }
   create(mode: ExamSession['mode']) {
     this.disposed = false;
     const id = crypto.randomUUID();
     const number = this.sessions.length + 1;
+    if (this.service.workspaceLibrary) this.workspaceSaves.set(id, { revision: 0 });
     this.sessions = [{ id, mode, title: `Đề ${number} · ${mode === 'custom' ? 'Theo yêu cầu' : 'Từ mẫu'}`, status: 'draft', createdAt: new Date().toISOString(), messages: [], questions: [], draft: '', jobId: null, meta: null, previousCount: 0 }, ...this.sessions];
     this.emit();
+    void this.saveWorkspace(id);
     return id;
   }
-  remove(id: string) {
+  private stopWatching(id: string) {
     this.subscriptions.get(id)?.();
     this.subscriptions.delete(id);
     this.stopPreviewPoll(id);
+  }
+
+  async remove(id: string): Promise<boolean> {
+    const state = this.workspaceSaves.get(id);
+    if (state && this.service.workspaceLibrary) {
+      if (state.archiving) return false;
+      state.archiving = true;
+      try {
+        await state.pending;
+        await this.service.workspaceLibrary.archive(id);
+        this.workspaceSaves.delete(id);
+        this.libraryRequest++;
+        this.libraryError = '';
+      } catch {
+        state.archiving = false;
+        this.libraryError = 'Chưa xóa được đề khỏi tủ đề. Hãy thử xóa lại.';
+        this.emit();
+        return false;
+      }
+    }
+    this.stopWatching(id);
     this.sessions = this.sessions.filter(session => session.id !== id);
     this.emit();
+    if (state) void this.loadLibrary();
+    return true;
   }
-  setDraft(id: string, draft: string) { this.update(id, session => ({ ...session, draft })); }
+  setDraft(id: string, draft: string) { this.update(id, session => ({ ...session, draft }), true); }
   retractMessage(id: string, messageId: string) {
     this.update(id, session => {
       const index = session.messages.findIndex(message => message.id === messageId);
       return index < 0 ? session : { ...session, messages: session.messages.slice(0, index) };
-    });
+    }, true);
   }
-  branchAtMessage(id: string, messageId: string) {
+  private branchRequests = new Map<string, string>();
+
+  async branchAtMessage(id: string, messageId: string, copyCurrent = false) {
     const source = this.sessions.find(session => session.id === id);
+    if (!source) return null;
+    const library = this.service.workspaceLibrary;
+    if (library && this.workspaceSaves.has(id)) {
+      if (!await this.saveWorkspace(id)) throw new Error('Hãy lưu hội thoại trước khi tạo nhánh.');
+      const key = JSON.stringify([id, messageId, copyCurrent]);
+      const destinationId = this.branchRequests.get(key) ?? crypto.randomUUID();
+      this.branchRequests.set(key, destinationId);
+      try {
+        const { workspaceId } = await library.branch(id, destinationId, messageId, copyCurrent);
+        await this.loadLibrary();
+        if (!this.sessions.some(item => item.id === workspaceId)) {
+          throw Object.assign(new Error('Nhánh đã lưu. Hãy thử tải lại tủ đề.'), { code: 'network_error' });
+        }
+        this.branchRequests.delete(key);
+        return workspaceId;
+      } catch (error) {
+        if (extractErrorDetails(error).code !== 'network_error') this.branchRequests.delete(key);
+        throw error;
+      }
+    }
+    if (source.browserOnly && source.jobId) throw new Error('Hãy nhập đề vào tủ đề chung trước khi tạo nhánh.');
     const index = source?.messages.findIndex(message => message.id === messageId) ?? -1;
     if (!source || index < 0) return null;
     const branch: ExamSession = {
       ...source,
       id: crypto.randomUUID(),
+      browserOnly: false,
       title: `Nhánh · ${source.title}`,
       createdAt: new Date().toISOString(),
       messages: source.messages.slice(0, index + 1),
@@ -239,29 +539,54 @@ export class ExamSessions {
       preview: undefined, previewOpenedRevision: null, previewLog: undefined,
       previewError: undefined, previewErrorCode: undefined, artifactChanged: false,
     };
+    if (this.service.workspaceLibrary) this.workspaceSaves.set(branch.id, { revision: 0 });
     this.sessions = [branch, ...this.sessions];
     this.emit();
+    void this.saveWorkspace(branch.id);
     return branch.id;
   }
   sendMessage(id: string, content: string) {
-    const message = (role: ChatMessage['role'], text: string): ChatMessage => ({ id: crypto.randomUUID(), role, content: text, timestamp: new Date().toISOString() });
-    this.update(id, session => ({ ...session, title: session.mode === 'custom' && !session.meta && session.messages.length === 0 ? content.slice(0, 72) : session.title, draft: '', messages: [...session.messages, message('user', content), message('assistant', session.status === 'complete' ? 'Đã ghi nhận yêu cầu chỉnh sửa cho đề này. Chỉnh sửa bằng hội thoại sẽ khả dụng khi kết nối dịch vụ AI.' : 'Đã ghi nhận yêu cầu cho đề này. Chọn “Tạo đề từ yêu cầu” để chọn môn học, cấu trúc và bắt đầu tạo đề.')] }));
+    this.update(id, session => {
+      const examVersion = session.jobId && session.package?.revision
+        ? { jobId: session.jobId, revision: session.package.revision }
+        : session.status === 'complete' ? undefined : null;
+      const message = (role: ChatMessage['role'], text: string): ChatMessage => ({
+        id: crypto.randomUUID(), role, content: text, timestamp: new Date().toISOString(), examVersion,
+      });
+      return { ...session,
+        title: session.mode === 'custom' && !session.meta && session.messages.length === 0 ? content.slice(0, 72) : session.title,
+        draft: '', messages: [...session.messages, message('user', content), message('assistant', session.status === 'complete' ? 'Đã ghi nhận yêu cầu chỉnh sửa cho đề này. Chỉnh sửa bằng hội thoại sẽ khả dụng khi kết nối dịch vụ AI.' : 'Đã ghi nhận yêu cầu cho đề này. Chọn “Tạo đề từ yêu cầu” để chọn môn học, cấu trúc và bắt đầu tạo đề.')],
+      };
+    }, true);
   }
   async generate(id: string, params: ExamRequestParams) {
     const existing = this.sessions.find(session => session.id === id);
-    if (!existing || existing.status === 'generating') return;
+    if (!existing || existing.status === 'generating' || existing.generationId || this.starting.has(id)) return;
+    const shared = this.workspaceSaves.has(id);
+    if (shared) {
+      this.starting.add(id);
+      const saved = await this.saveWorkspace(id);
+      if (!saved || this.disposed || !this.workspaceSaves.has(id) || this.workspaceSaves.get(id)?.archiving) {
+        this.starting.delete(id);
+        return;
+      }
+    }
     this.subscriptions.get(id)?.();
     this.stopPreviewPoll(id);
     const requestSignature = JSON.stringify(params);
     const requestId = existing.errorCode === 'network_error' && existing.requestSignature === requestSignature
       ? existing.requestId || crypto.randomUUID() : crypto.randomUUID();
+    const keepExam = shared && existing.status === 'complete';
     this.update(id, session => ({
       ...session,
       requestId,
       requestSignature,
-      status: 'generating',
       error: undefined,
       errorCode: undefined,
+      progress: undefined,
+      generationError: undefined,
+      ...(keepExam ? {} : {
+      status: 'generating',
       package: undefined,
       preview: undefined,
       previewOpenedRevision: null,
@@ -271,20 +596,31 @@ export class ExamSessions {
       artifactChanged: false,
       questions: [],
       previousCount: 0,
-      title: session.mode === 'template' ? `Đề thi ${params.subject}` : session.title,
-      meta: { title: `Đề thi ${params.subject}`, subject: params.subject, duration: params.durationMinutes, completedCount: 0, totalCount: params.itemCount }
+      title: !shared && session.mode === 'template' ? `Đề thi ${params.subject}` : session.title,
+      meta: { title: `Đề thi ${params.subject}`, subject: params.subject, duration: params.durationMinutes, completedCount: 0, totalCount: params.itemCount },
+      }),
     }));
     try {
-      const { jobId } = await this.service.startGeneration({ ...params, clientRequestId: requestId });
+      const { jobId } = await this.service.startGeneration({ ...params, clientRequestId: requestId }, shared ? id : undefined);
       if (this.disposed || !this.sessions.some(session => session.id === id)) return;
-      this.update(id, session => ({ ...session, jobId }));
+      this.update(id, session => ({ ...session, ...(keepExam ? { generationId: jobId } : { jobId }) }));
       this.watch(id, jobId);
     } catch (error) { this.fail(id, error); }
+    finally { this.starting.delete(id); }
   }
   private watch(id: string, jobId: string) {
     let finishing = false;
-    const unsubscribe = this.service.onProgress(jobId, progress => {
-        if (this.disposed || finishing || !this.sessions.some(session => session.id === id && session.jobId === jobId)) return;
+    let detach: (() => void) | undefined;
+    const unsubscribe = () => detach?.();
+    const stop = () => {
+      if (this.subscriptions.get(id) !== unsubscribe) return;
+      unsubscribe();
+      this.subscriptions.delete(id);
+    };
+    this.subscriptions.set(id, unsubscribe);
+    detach = this.service.onProgress(jobId, progress => {
+        const session = this.sessions.find(item => item.id === id);
+        if (this.disposed || finishing || !session || (session.generationId ?? session.jobId) !== jobId) return;
         if (progress.status === 'failed') {
           finishing = true;
           const rawMessage = progress.error?.message || progress.statusMessage;
@@ -293,10 +629,11 @@ export class ExamSessions {
             { code: progress.error?.code }
           );
           this.fail(id, error);
-          this.subscriptions.get(id)?.(); this.subscriptions.delete(id);
+          stop();
           return;
         }
         this.update(id, session => {
+          if (session.generationId && session.generationId !== session.jobId) return { ...session, progress };
           const item = progress.latestItemPreview;
           const append = item && !session.questions.some(question => question.id === item.id);
           return { ...session, progress, meta: session.meta ? { ...session.meta, completedCount: progress.completedItems, totalCount: progress.totalItems || session.meta.totalCount } : null, previousCount: append ? session.questions.length : session.previousCount, questions: append ? [...session.questions, item] : session.questions };
@@ -304,18 +641,30 @@ export class ExamSessions {
         if (progress.status === 'completed' || progress.stage >= 5 && progress.percent >= 100) {
           finishing = true;
           void this.service.getExamPackage(jobId).then(pkg => {
-            if (this.sessions.some(session => session.id === id && session.jobId === jobId)) this.complete(id, pkg);
-          }).catch(error => this.fail(id, error)).finally(() => { this.subscriptions.get(id)?.(); this.subscriptions.delete(id); });
+            if (this.sessions.some(session => session.id === id && (session.generationId ?? session.jobId) === jobId)) {
+              if (session.jobId !== jobId) {
+                this.update(id, current => ({ ...current, jobId, status: 'generating', generationId: undefined,
+                  previewOpenedRevision: null, package: undefined }));
+              }
+              this.complete(id, pkg);
+            }
+          }).catch(error => {
+            if (this.subscriptions.get(id) === unsubscribe) this.fail(id, error);
+          }).finally(stop);
         }
       });
-      this.subscriptions.set(id, unsubscribe);
+    if (this.subscriptions.get(id) !== unsubscribe) detach();
   }
   async refresh(id: string) {
     const session = this.sessions.find(item => item.id === id);
     if (!session?.jobId) return;
     const pkg = await this.service.getExamPackage(session.jobId);
+    this.acceptPackage(id, session.jobId, pkg);
+  }
+
+  acceptPackage(id: string, jobId: string, pkg: ExamPackage) {
     const current = this.sessions.find(item => item.id === id);
-    if (current?.jobId === session.jobId && (current.package?.revision || 0) <= (pkg.revision || 0)) this.complete(id, pkg);
+    if (current?.jobId === jobId && (current.package?.revision || 0) <= (pkg.revision || 0)) this.complete(id, pkg);
   }
   async requestPreview(id: string, force = false, allowReloadOnStale = true): Promise<void> {
     const session = this.sessions.find(item => item.id === id);
@@ -502,6 +851,7 @@ export class ExamSessions {
     const { code, message } = extractErrorDetails(error);
     if (code === 'stale_revision' || code === 'stale_hash') {
       try {
+        if (this.workspaceSaves.has(id)) await this.loadLibrary();
         await this.refresh(id);
         this.update(id, session => ({
           ...session,
@@ -569,6 +919,9 @@ export class ExamSessions {
   }
   private complete(id: string, pkg: ExamPackage) {
     const prev = this.sessions.find(session => session.id === id);
+    const shared = this.workspaceSaves.has(id);
+    const noticeId = shared ? `exam-ready:${prev?.jobId}` : crypto.randomUUID();
+    const notice = `Đã soạn xong ${pkg.questions.length} câu. Hãy kiểm tra bản xem trước PDF và phê duyệt bản hiện tại trước khi xuất file.`;
     const bindingChanged =
       !prev?.package ||
       prev.package.revision !== pkg.revision ||
@@ -579,10 +932,11 @@ export class ExamSessions {
     this.update(id, session => ({
       ...session,
       package: pkg,
+      generationId: session.generationId === session.jobId ? undefined : session.generationId,
       error: undefined,
       errorCode: undefined,
       status: 'complete',
-      title: session.mode === 'custom' ? session.title : pkg.title,
+      title: session.mode === 'custom' || shared ? session.title : pkg.title,
       questions: pkg.questions,
       meta: { title: pkg.title, subject: pkg.subject, duration: pkg.durationMinutes, completedCount: pkg.questions.length, totalCount: pkg.questions.length },
       preview: pkg.preview,
@@ -595,9 +949,11 @@ export class ExamSessions {
             artifactChanged: false,
           }
         : {}),
-      messages: session.status === 'complete'
+      messages: (session.status === 'complete' && (!shared || session.package)) ||
+        session.messages.some(message => message.id === noticeId ||
+          (session.status === 'complete' && message.role === 'assistant' && message.content === notice))
         ? session.messages
-        : [...session.messages, { id: crypto.randomUUID(), role: 'assistant', content: `Đã soạn xong ${pkg.questions.length} câu. Hãy kiểm tra bản xem trước PDF và phê duyệt bản hiện tại trước khi xuất file.`, timestamp: new Date().toISOString() }],
+        : [...session.messages.filter(message => !message.id.startsWith('exam-ready:')), { id: noticeId, role: 'assistant', content: notice, timestamp: shared ? pkg.createdAt : new Date().toISOString() }],
     }));
     if (this.service.requestPreview && pkg.revision && pkg.contentHash) {
       const status = pkg.preview?.status;
@@ -622,8 +978,10 @@ export class ExamSessions {
     const rawMessage = error instanceof Error ? error.message : undefined;
     this.update(id, session => ({
       ...session,
-      status: 'error',
-      error: rawMessage ? humanizeErrorMessage(rawMessage, code) : 'Chưa tạo được đề. Thầy cô hãy kiểm tra kết nối rồi thử lại.',
+      status: session.status === 'complete' ? 'complete' : 'error',
+      generationId: undefined,
+      [session.status === 'complete' ? 'generationError' : 'error']:
+        rawMessage ? humanizeErrorMessage(rawMessage, code) : 'Chưa tạo được đề. Thầy cô hãy kiểm tra kết nối rồi thử lại.',
       errorCode: code,
     }));
   }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle2, Download, Eye, FileCheck2, LoaderCircle } from 'lucide-react';
+import { CheckCircle2, Download, Eye, FileCheck2, History, LoaderCircle, Undo2 } from 'lucide-react';
 
 interface ExamMeta {
   title: string;
@@ -22,6 +22,9 @@ interface CanvasHeaderProps {
   approving?: boolean;
   onApprove?: () => void;
   onOpenPdfPreview?: () => void;
+  onShowHistory?: () => void;
+  onUndoRegeneration?: () => void;
+  undoing?: boolean;
 }
 
 export const CanvasHeader: React.FC<CanvasHeaderProps> = ({
@@ -37,6 +40,9 @@ export const CanvasHeader: React.FC<CanvasHeaderProps> = ({
   approving,
   onApprove,
   onOpenPdfPreview,
+  onShowHistory,
+  onUndoRegeneration,
+  undoing,
 }) => {
   const displayApprove = showApprove ?? Boolean(canApprove);
   return (
@@ -58,6 +64,17 @@ export const CanvasHeader: React.FC<CanvasHeaderProps> = ({
         )}
       </div>
       {examMeta && !isGenerating && <div className="canvas-actions">
+        {onUndoRegeneration && (
+          <button type="button" className="button-secondary" title="Hoàn tác lần tạo lại câu vừa rồi"
+            disabled={undoing} onClick={onUndoRegeneration}>
+            <Undo2 size={14} aria-hidden="true" />{undoing ? 'Đang hoàn tác…' : 'Hoàn tác'}
+          </button>
+        )}
+        {onShowHistory && (
+          <button type="button" className="button-secondary" onClick={onShowHistory}>
+            <History size={14} aria-hidden="true" />Lịch sử phiên bản
+          </button>
+        )}
         {displayApprove && !canApprove && onOpenPdfPreview && (
           <button type="button" className="button-primary" onClick={onOpenPdfPreview}>
             <Eye size={14} aria-hidden="true" />

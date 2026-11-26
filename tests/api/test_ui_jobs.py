@@ -4,6 +4,7 @@ import json
 import subprocess
 import time
 from pathlib import Path
+from uuid import uuid4
 
 import pytest
 from fastapi.testclient import TestClient
@@ -12,6 +13,7 @@ from exam_baseline.api.app import create_app
 from exam_baseline.config import Settings
 from exam_baseline.core.contracts import Completion, ProviderError
 from exam_baseline.thpt.rag import DEFAULT_CORPUS_REF
+from exam_baseline.ui.exam_source import publish_source
 from rag_workflow import retrieve_exam_context
 from tests.paths import ROOT
 from tests.thpt.test_generation import Scripted
@@ -92,6 +94,374 @@ def wait(client, job):
             return status
         time.sleep(0.01)
     raise AssertionError("Job did not reach a terminal state")
+
+
+def test_workspaces_share_drafts_link_existing_jobs_and_reject_stale_saves(tmp_path):
+    app, _ = fixture_app(tmp_path)
+    workspace_url = f"/api/workspaces/{uuid4()}"
+    workspace_id = workspace_url.rsplit("/", 1)[-1]
+    draft = {
+        "schema_version": 1,
+        "revision": 0,
+        "mode": "custom",
+        "title": "Đề nháp",
+        "draft": "  Nội dung nháp\n",
+        "messages": [
+            {"id": "one", "role": "user", "content": "Toán", "timestamp": "2026-11-27T09:00:00Z"}
+        ],
+    }
+    with TestClient(app) as client:
+        assert client.put(workspace_url, json=draft).json() == {"revision": 1}
+        assert client.put(workspace_url, json=draft).json() == {"revision": 1}
+        saved = client.get("/api/workspaces").json()["workspaces"][0]
+        assert saved["draft"] == draft["draft"] and saved["messages"] == draft["messages"]
+        assert saved["jobId"] is None
+
+        update = {**draft, "revision": 1, "draft": "Draft from a second browser"}
+        assert client.put(workspace_url, json=update).json() == {"revision": 2}
+        conflict = client.put(workspace_url, json={**draft, "revision": 1, "draft": "Stale update"})
+        assert conflict.status_code == 409
+
+        url = f"/api/exams/generate?workspace_id={workspace_id}"
+        headers = {"Idempotency-Key": "workspace-job"}
+        started = client.post(url, json=PAYLOAD, headers=headers)
+        assert started.status_code == 202
+        job = started.json()["jobId"]
+        assert client.post(url, json=PAYLOAD, headers=headers).json()["jobId"] == job
+        assert wait(client, job)["status"] == "completed"
+
+    restarted, _ = fixture_app(tmp_path)
+    with TestClient(restarted) as client:
+        (saved,) = client.get("/api/workspaces").json()["workspaces"]
+        assert saved["id"] == workspace_id and saved["jobId"] == job
+        assert saved["jobStatus"] == "completed" and saved["draft"] == update["draft"]
+        current = client.get(f"/api/exams/{job}").json()
+        assert current["questions"]
+        assert (
+            client.post(
+                f"/api/exams/{job}/approve",
+                json={
+                    "revision": current["revision"],
+                    "contentHash": current["contentHash"],
+                    "reviewer": "teacher",
+                },
+            ).status_code
+            == 200
+        )
+        export_url = f"/api/exams/{job}/export?type=STUDENT_EXAM&format=tex"
+        store = restarted.state.ui_jobs.store
+        attempt, _ = store.create(
+            "attempt", "attempt", {"status": "queued", "request": PAYLOAD}, workspace_id
+        )
+        (during,) = client.get("/api/workspaces").json()["workspaces"]
+        assert during["jobId"] == job and during["generationId"] == attempt["jobId"]
+        assert client.get(export_url).status_code == 200
+        store.save({**attempt, "status": "failed", "error": {"code": "test_failure"}})
+        (failed,) = client.get("/api/workspaces").json()["workspaces"]
+        assert failed["jobId"] == job and failed["generationStatus"] == "failed"
+        assert client.get(export_url).status_code == 200
+        replaced = client.post(
+            f"/api/exams/generate?workspace_id={workspace_id}",
+            json=PAYLOAD,
+            headers={"Idempotency-Key": "workspace-second-success"},
+        ).json()["jobId"]
+        assert wait(client, replaced)["status"] == "completed"
+        history = client.get(f"{workspace_url}/versions").json()
+        assert history["currentJobId"] == replaced
+        stale_job = client.put(
+            f"/api/exams/{job}/questions/1?workspace_id={workspace_id}",
+            json={"revision": current["revision"], "question": {"stem": "Yêu cầu đã cũ."}},
+        )
+        assert stale_job.status_code == 409
+        assert {entry["jobId"] for entry in history["versions"]} == {job, replaced}
+        previous = next(entry["revision"] for entry in history["versions"] if entry["jobId"] == job)
+        restored = client.post(
+            f"{workspace_url}/versions/restore",
+            json={
+                "revision": history["currentRevision"],
+                "jobId": replaced,
+                "targetJobId": job,
+                "targetRevision": previous,
+            },
+        ).json()
+        assert restored["examId"] == job and not restored["approved"]
+        revision = restored["revision"]
+        edit_url = f"/api/exams/{job}/questions/1"
+        key = {"Idempotency-Key": str(uuid4())}
+        edit = {"revision": revision, "question": {"stem": "Sửa trong tủ đề."}}
+        assert client.put(edit_url, json=edit, headers=key).status_code == 200
+        assert client.put(edit_url, json=edit, headers=key).json()["revision"] == revision + 1
+        assert client.put(edit_url, json=edit).status_code == 409
+        messages = client.get(f"{workspace_url}/changes").json()["messages"][-4:]
+        assert len(messages) == 4
+        assert messages[1]["examVersion"]["revision"] == revision + 1
+        assert messages[1]["changeId"] == key["Idempotency-Key"]
+        assert messages[1]["content"] == "[Câu 1] Đã cập nhật đề bài."
+        assert "cập nhật mới hơn" in messages[3]["content"]
+        assert client.get(f"/api/exams/{job}").json()["revision"] == revision + 1
+        second_key = str(uuid4())
+        second = client.put(
+            f"/api/exams/{job}/questions/2",
+            headers={"Idempotency-Key": second_key},
+            json={"revision": revision + 1, "question": {"stem": "Sửa câu thứ hai."}},
+        ).json()
+        undo_url = f"{workspace_url}/changes/{job}/{key['Idempotency-Key']}/undo"
+        undo_key = {"Idempotency-Key": str(uuid4())}
+        undone = client.post(
+            undo_url, json={"revision": second["revision"]}, headers=undo_key
+        ).json()
+        assert undone["questions"][0]["stem"] == restored["questions"][0]["stem"]
+        assert undone["questions"][1]["stem"] == "Sửa câu thứ hai."
+        assert not undone["approved"] and undone["revision"] == second["revision"] + 1
+        assert (
+            client.post(undo_url, json={"revision": second["revision"]}, headers=undo_key).json()
+            == undone
+        )
+        later = client.put(
+            f"/api/exams/{job}/questions/2",
+            json={"revision": undone["revision"], "question": {"stem": "Sửa câu hai lần nữa."}},
+        ).json()
+        conflict = client.post(
+            f"{workspace_url}/changes/{job}/{second_key}/undo",
+            json={"revision": later["revision"]},
+        )
+        assert conflict.status_code == 409
+        assert conflict.json()["error"]["details"]["current"] == "Sửa câu hai lần nữa."
+        assert client.get(f"/api/exams/{job}").json() == later
+        assert client.delete(workspace_url).status_code == 204
+        assert client.get("/api/workspaces").json()["workspaces"] == []
+        assert client.put(workspace_url, json=draft).status_code == 404
+        assert client.get(f"/api/exams/{job}").status_code == 200
+
+
+def test_browser_import_preserves_drafts_and_reconnects_existing_artifacts(tmp_path):
+    app, _ = fixture_app(tmp_path)
+    draft_id, exam_id, missing_id = (str(uuid4()) for _ in range(3))
+    legacy = {
+        "schema_version": 1,
+        "mode": "custom",
+        "title": "Đề cũ",
+        "draft": "  Nháp chưa gửi\n",
+        "messages": [
+            {"id": "one", "role": "user", "content": "Toán", "timestamp": "2026-11-26T09:00:00Z"}
+        ],
+        "createdAt": "2026-11-26T16:00:00.000+07:00",
+        "jobId": None,
+    }
+    with TestClient(app) as client:
+        draft_url = f"/api/workspaces/{draft_id}/import"
+        assert client.post(draft_url, json=legacy).json() == {"status": "imported"}
+        assert client.post(draft_url, json=legacy).json() == {"status": "existing"}
+        clash = client.post(draft_url, json={**legacy, "draft": "A different browser draft"})
+        assert clash.status_code == 409
+        assert clash.json()["error"]["code"] == "workspace_import_conflict"
+
+        missing = client.post(
+            f"/api/workspaces/{missing_id}/import",
+            json={
+                **legacy,
+                "jobId": str(uuid4()),
+            },
+        )
+        assert missing.status_code == 409
+        assert missing.json()["error"]["code"] == "workspace_import_missing_job"
+
+        started = client.post(
+            "/api/exams/generate", json=PAYLOAD, headers={"Idempotency-Key": "legacy-browser"}
+        )
+        job_id = started.json()["jobId"]
+        assert wait(client, job_id)["status"] == "completed"
+        job_before = client.get(f"/api/exams/{job_id}").json()
+        source = tmp_path / job_id / "de_thi.tex"
+        source_before = source.read_bytes()
+        exam_url = f"/api/workspaces/{exam_id}/import"
+        assert client.post(exam_url, json={**legacy, "jobId": job_id}).json() == {
+            "status": "imported"
+        }
+        assert client.get(f"/api/exams/{job_id}").json() == job_before
+        assert source.read_bytes() == source_before
+
+        workspaces = {
+            item["id"]: item for item in client.get("/api/workspaces").json()["workspaces"]
+        }
+        assert set(workspaces) == {draft_id, exam_id}
+        assert workspaces[draft_id]["createdAt"] == "2026-11-26T09:00:00.000Z"
+        assert workspaces[draft_id]["draft"] == legacy["draft"]
+        assert workspaces[draft_id]["messages"] == legacy["messages"]
+        assert workspaces[draft_id]["jobId"] is None
+        assert workspaces[exam_id]["jobId"] == job_id
+        assert workspaces[exam_id]["jobStatus"] == "completed"
+        assert client.delete(f"/api/workspaces/{draft_id}").status_code == 204
+        assert client.post(draft_url, json=legacy).status_code == 409
+
+
+def test_exam_version_persists_legacy_baseline_and_recovers_interrupted_source(tmp_path):
+    app, _ = fixture_app(tmp_path)
+    with TestClient(app) as client:
+        job = client.post(
+            "/api/exams/generate", json=PAYLOAD, headers={"Idempotency-Key": "version-baseline"}
+        ).json()["jobId"]
+        assert wait(client, job)["status"] == "completed"
+        store = app.state.ui_jobs.store
+        revision = client.get(f"/api/exams/{job}").json()["revision"]
+        initial, source = store.get_version(job, revision)
+        assert store.list_versions(job)[0]["change"] == "generated"
+        path = tmp_path / job / "de_thi.tex"
+        assert source == path.read_bytes()
+        # Simulate the database and disk just before this feature was installed.
+        with store.connect() as db:
+            db.execute("DELETE FROM exam_versions WHERE job_id=?", (job,))
+        publish_source(path.parent, b"new source from an uncommitted revision")
+
+    restarted, _ = fixture_app(tmp_path)
+    with TestClient(restarted) as client:
+        store = restarted.state.ui_jobs.store
+        assert path.read_bytes() == source
+        assert store.get_version(job, revision) == (initial, source)
+        assert store.list_versions(job)[0]["change"] == "baseline"
+        edited = client.put(
+            f"/api/exams/{job}/questions/1",
+            json={"revision": revision, "question": {"stem": "Tính $1+1$ (đã chỉnh sửa)."}},
+        )
+        assert edited.status_code == 200
+        latest, latest_source = store.get_version(job, revision + 1)
+        assert latest["rawQuestions"][0] != initial["rawQuestions"][0]
+        assert latest_source == path.read_bytes() and latest_source != source
+        assert store.get_version(job, revision) == (initial, source)
+        assert store.list_versions(job)[0]["change"] == "edited"
+
+
+def test_restore_returns_previous_exam_as_new_unapproved_revision(tmp_path):
+    app, _ = fixture_app(tmp_path)
+    with TestClient(app) as client:
+        job = client.post(
+            "/api/exams/generate", json=PAYLOAD, headers={"Idempotency-Key": "restorable-exam"}
+        ).json()["jobId"]
+        assert wait(client, job)["status"] == "completed"
+        exam_url = f"/api/exams/{job}"
+        version_url = f"{exam_url}/versions"
+        original = client.get(exam_url).json()
+        initial = original["revision"]
+        source_path = tmp_path / job / "de_thi.tex"
+        source_before = source_path.read_bytes()
+        approval = {
+            "revision": initial,
+            "contentHash": original["contentHash"],
+            "reviewer": "teacher",
+        }
+        assert client.post(f"{exam_url}/approve", json=approval).status_code == 200
+        edited = client.put(
+            f"{exam_url}/questions/1",
+            json={"revision": initial, "question": {"stem": "Tính $2+2$ (đã chỉnh sửa)."}},
+        ).json()
+        last_edit = edited["revision"]
+
+        history = client.get(version_url).json()
+        assert history["currentRevision"] == last_edit
+        assert [version["revision"] for version in history["versions"]] == [last_edit, initial]
+        saved = client.get(f"{version_url}/{initial}").json()
+        assert saved["questions"] == original["questions"]
+        assert saved["approved"] and "preview" not in saved
+        assert (
+            client.post(f"{version_url}/{initial}/restore", json={"revision": initial}).status_code
+            == 409
+        )
+        assert client.get(f"{version_url}/{last_edit + 10}").status_code == 404
+
+        restored = client.post(f"{version_url}/{initial}/restore", json={"revision": last_edit})
+        assert restored.status_code == 200
+        restored = restored.json()
+        assert restored["examId"] == job and restored["revision"] == last_edit + 1
+        assert restored["contentHash"] == original["contentHash"]
+        assert restored["questions"][0]["stem"] == original["questions"][0]["stem"]
+        assert restored["approval"] is None and not restored["approved"]
+        assert source_path.read_bytes() == source_before
+        assert client.get(f"{exam_url}/export?type=STUDENT_EXAM&format=tex").status_code == 409
+        history = client.get(version_url).json()
+        assert history["versions"][0]["restoredFrom"] == initial
+        assert client.get(f"{version_url}/{last_edit}").json()["questions"] == edited["questions"]
+        assert (
+            client.post(
+                f"{exam_url}/approve", json={**approval, "revision": restored["revision"]}
+            ).status_code
+            == 200
+        )
+        assert (
+            client.get(f"{exam_url}/export?type=STUDENT_EXAM&format=tex").content == source_before
+        )
+
+
+def test_branch_uses_the_exam_version_at_the_selected_message(tmp_path):
+    app, _ = fixture_app(tmp_path)
+    workspace_id = str(uuid4())
+    url = f"/api/workspaces/{workspace_id}"
+    message = {"role": "user", "content": "Xin soạn một đề.", "timestamp": "2020-01-01T09:00:00Z"}
+    draft = {
+        "revision": 0,
+        "mode": "custom",
+        "title": "Đề gốc",
+        "draft": "",
+        "messages": [
+            {**message, "id": "legacy"},
+            {**message, "id": "before-exam", "examVersion": None},
+        ],
+    }
+    with TestClient(app) as client:
+        assert client.put(url, json=draft).status_code == 200
+        job_id = client.post(
+            f"/api/exams/generate?workspace_id={workspace_id}",
+            json=PAYLOAD,
+            headers={"Idempotency-Key": "branch-history"},
+        ).json()["jobId"]
+        assert wait(client, job_id)["status"] == "completed"
+        original = client.get(f"/api/exams/{job_id}").json()
+        edit = client.put(
+            f"/api/exams/{job_id}/questions/1",
+            json={"revision": original["revision"], "question": {"stem": "Đã sửa ở đề gốc."}},
+        )
+        assert edit.status_code == 200
+        timeline = client.get(f"{url}/changes").json()
+        before_change = timeline["messages"][0]["id"]
+        destination = str(uuid4())
+        payload = {"destinationId": destination, "messageId": before_change}
+        assert client.post(f"{url}/branch", json=payload).json()["workspaceId"] == destination
+        assert client.post(f"{url}/branch", json=payload).json()["workspaceId"] == destination
+        workspaces = client.get("/api/workspaces").json()["workspaces"]
+        assert len(workspaces) == 2
+        branch = next(item for item in workspaces if item["id"] == destination)
+        assert branch["jobId"] != job_id
+        assert [item["id"] for item in branch["messages"]][-1] == before_change
+        fork = client.get(f"/api/exams/{branch['jobId']}").json()
+        assert fork["contentHash"] == original["contentHash"] and not fork["approved"]
+        assert (tmp_path / branch["jobId"] / "de_thi.tex").read_bytes() == (
+            app.state.ui_jobs.store.get_version(job_id, original["revision"])[1]
+        )
+        assert client.get(f"/api/exams/{job_id}").json() == edit.json()
+        chat_only = str(uuid4())
+        assert (
+            client.post(
+                f"{url}/branch",
+                json={
+                    "destinationId": chat_only,
+                    "messageId": "before-exam",
+                },
+            ).status_code
+            == 200
+        )
+        assert (
+            next(
+                item
+                for item in client.get("/api/workspaces").json()["workspaces"]
+                if item["id"] == chat_only
+            )["jobId"]
+            is None
+        )
+        fallback = {"destinationId": str(uuid4()), "messageId": "legacy"}
+        bad = client.post(f"{url}/branch", json=fallback)
+        assert bad.json()["error"]["code"] == "branch_version_unknown"
+        assert (
+            client.post(f"{url}/branch", json={**fallback, "copyCurrent": True}).status_code == 200
+        )
 
 
 def test_retrieval_agents_teacher_approval_export_edit_and_reconnect(tmp_path):
@@ -392,6 +762,15 @@ def test_targeted_regeneration_keeps_ids_invalidates_approval_and_has_no_second_
         assert last_solve["questions"][0]["stem"] == revised["questions"][0]["stem"]
         assert revised["revision"] == package["revision"] + 1
         assert not revised["approved"]
+        versions = app.state.ui_jobs.store.list_versions(job)
+        assert [entry["change"] for entry in versions] == ["regenerated", "generated"]
+        assert versions[0]["questionId"] == 1
+        rejected = client.post(
+            f"/api/exams/{job}/questions/1/regenerate", json={"revision": package["revision"]}
+        )
+        assert rejected.status_code == 409
+        assert app.state.ui_jobs.store.list_versions(job) == versions
+        assert client.get(f"/api/exams/{job}").json() == revised
         assert len(providers["reviewer"].calls) == 1
         assert len(providers["solver"].calls) == 2
         assert all("PRIVATE_BANK_KEY" not in json.dumps(call) for call in providers["solver"].calls)
