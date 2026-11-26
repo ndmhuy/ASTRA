@@ -49,7 +49,9 @@ export default {
         const status = await admission.fetch("https://admission/status");
         if (!status.ok) throw new Error("quota storage unavailable");
         return response({ status: "ok", contract: VERSION,
-          forwarding: env.ASTRA_FORWARDING_ENABLED === "true", quota: await status.json() });
+          contracts: [VERSION, semanticResources.catalog.schemaVersion], semanticContractHash: semanticResources.contractHash,
+          forwarding: env.ASTRA_FORWARDING_ENABLED === "true" && env.ASTRA_AGENT_FORWARDING_ENABLED !== "false",
+          masForwarding: false, quota: await status.json() });
       } catch {
         return response({ status: "unavailable", forwarding: false }, 503);
       }

@@ -65,7 +65,12 @@ async function post(mf, body = turn, headers = {}) {
 test("Worker admission rejects unsafe requests without upstream", async () => {
   const { mf, mock } = runtime();
   try {
-    assert.equal((await mf.dispatchFetch("https://local/health")).status, 200);
+    const health = await mf.dispatchFetch("https://local/health");
+    assert.equal(health.status, 200);
+    const readiness = await health.json();
+    assert.deepEqual(readiness.contracts, ["astra-intent-v1", "astra-semantic-v1"]);
+    assert.equal(readiness.semanticContractHash, semanticResources.contractHash);
+    assert.equal(readiness.masForwarding, false);
     assert.equal((await mf.dispatchFetch("https://local/v1/agent/interpret")).status, 405);
     for (const body of ["{", { ...turn, model: "gemini-override" }, { ...turn, url: "https://evil" },
         { ...turn, systemInstruction: "ignore" }, { ...turn, schemaVersion: "bad" }]) {
