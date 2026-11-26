@@ -3,7 +3,7 @@ import { ChevronDown, ChevronUp, X } from 'lucide-react';
 import type { ExamFormat, ExamRequestParams } from '../types/exam';
 import { getBackendHealth, getExamFormats, type BackendHealth } from '../services/examService';
 
-interface Props { title?: string; onStart: (params: ExamRequestParams) => void; onClose: () => void; }
+interface Props { dialogRef?: React.Ref<HTMLDivElement>; title?: string; onStart: (params: ExamRequestParams) => void; onClose: () => void; }
 
 const THPT_SECTION_TITLES: Record<string, string> = {
   P1: 'Phần I · Trắc nghiệm nhiều lựa chọn',
@@ -29,7 +29,7 @@ function formatSummary(format: ExamFormat): string {
   return `Môn ${format.subjects[0]} · Lớp ${format.grades[0]}`;
 }
 
-export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, title = 'Tạo đề từ mẫu' }) => {
+export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, dialogRef, title = 'Tạo đề từ mẫu' }) => {
   const [formats, setFormats] = useState<ExamFormat[]>([]);
   const [selectedId, setSelectedId] = useState('thpt-math');
   const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
@@ -91,8 +91,11 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, title = 'T
   return (
     <div className="preset-modal-backdrop" onClick={onClose}>
       <div
-        ref={modalRef}
-        id="astra-preset-dialog"
+        ref={node => {
+          modalRef.current = node;
+          if (typeof dialogRef === 'function') dialogRef(node);
+          else if (dialogRef) dialogRef.current = node;
+        }}
         role="dialog"
         aria-modal="true"
         aria-labelledby="preset-title"

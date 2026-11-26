@@ -29,6 +29,21 @@ export function fastRoute(message: string): Local | undefined {
   if (/^(dong y|xac nhan|ok)$/.test(text)) return { confirm: true };
   if (/^(huy tac vu|huy yeu cau|thoi dung lai)$/.test(text)) return { confirm: false };
   if (/^(mo( phan)? (soan de|cau hinh|thiet lap)( giup co)?|mo mau de)$/.test(text)) return action('OPEN_SETUP');
+  if (/^(tinh trang|tien do|toi dau roi|de toi dau roi|status)[?]?$/.test(text)) return action('STATUS');
+  if (/^(xem dap an|review)$/.test(text)) return action('SET_VIEW', { view: 'review' });
+  if (/^(xem de thi|mo de thi)$/.test(text)) return action('SET_VIEW', { view: 'paper' });
+  if (/^(xem truoc pdf|mo ban xem truoc|preview pdf)$/.test(text)) return action('SET_VIEW', { view: 'pdf' });
+  if (/^(xem canh bao|canh bao)$/.test(text)) return action('WARNINGS');
+  if (/^(cuon len dau de|dau trang)$/.test(text)) return action('SCROLL_TOP');
+  const question = text.match(/^(xem dap an|den|mo chinh sua|kiem tra lai dap an) cau (\d{1,3})(?: phan ([\w -]{1,25}))?$/);
+  if (question) {
+    const target = { number: Number(question[2]), ...(question[3] ? { part: question[3] } : {}) };
+    if (question[1] === 'mo chinh sua') return action('OPEN_EDITOR', target);
+    if (question[1] === 'kiem tra lai dap an') return action('VERIFY_QUESTION', target);
+    return action('FOCUS_QUESTION', { ...target, ...(question[1] === 'xem dap an' ? { view: 'review' } : {}) });
+  }
+  if (/^(dong (cau hinh|thiet lap)|dong mau de)$/.test(text)) return action('CLOSE_SETUP');
+  if (/^(mo|liet ke|xem) (tu de|danh sach de)$/.test(text)) return action('LIST_SESSIONS');
   if (/^(ve (trang chu|man hinh bat dau)|home)$/.test(text)) return action('HOME');
   if (/^tao (workspace|khong gian soan de) moi$/.test(text)) return action('CREATE_SESSION');
   if (/^(mo de (vua tao|gan nhat)|mo cho co de vua tao di)$/.test(text)) return action('OPEN_SESSION');
@@ -73,9 +88,15 @@ export async function execute(
   for (const intent of intents) {
     if (!alive() || runtime.binding() !== expected) break;
     const actionId = crypto.randomUUID();
-    const effect = await runtime.dispatch(intent, expected);
+    const operation = runtime.dispatch(intent, expected);
+    const beforeAwait = runtime.binding();
+    const effect = operation instanceof Promise ? await operation : operation;
     if (!alive()) break;
     const after = runtime.binding();
+    if (operation instanceof Promise && effect.status === 'succeeded' && beforeAwait !== after) {
+      receipts.push({ ...effect, status: 'pending', actionId, capability: intent.id, before: expected, after });
+      break;
+    }
     receipts.push({ ...effect, actionId, capability: intent.id, before: expected, after });
     if (effect.status !== 'succeeded') break;
     expected = after;

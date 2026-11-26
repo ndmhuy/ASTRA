@@ -23,6 +23,14 @@ def serve(port: int, runs: str):
     async def interpret(turn):
         if turn.message == "Cho cô vào nơi thiết lập mẫu":
             return Decision(kind="task", intents=[Intent(id="OPEN_SETUP", args={})])
+        if turn.message == "Mở danh sách rồi thu gọn thanh điều hướng giúp cô":
+            return Decision(
+                kind="task",
+                intents=[
+                    Intent(id="LIST_SESSIONS", args={}),
+                    Intent(id="SET_SIDEBAR", args={"collapsed": True}),
+                ],
+            )
         return Decision(kind="clarify")
 
     app = create_app(
@@ -65,6 +73,15 @@ def observe(base_url: str):
         expect(page.get_by_role("dialog")).to_be_visible()
         expect(page.get_by_text("Đã mở phần cấu hình mẫu đề.", exact=True)).to_be_visible()
         assert len(agent_calls) == 1 and not business_writes
+        page.keyboard.press("Escape")
+        expect(page.get_by_role("dialog")).to_have_count(0)
+        composer.fill("Mở danh sách rồi thu gọn thanh điều hướng giúp cô")
+        composer.press("Enter")
+        expect(page.get_by_role("button", name="Mở rộng thanh điều hướng").first).to_be_visible()
+        composer.fill("Tới đâu rồi?")
+        composer.press("Enter")
+        expect(page.get_by_text("Đề vẫn ở bản nháp", exact=False)).to_be_visible()
+        assert len(agent_calls) == 2 and not business_writes
         browser.close()
     print("Mounted React: greeting and same-origin fixture navigation observed; no exam writes.")
 

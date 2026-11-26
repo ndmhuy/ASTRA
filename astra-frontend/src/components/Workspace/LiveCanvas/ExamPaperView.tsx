@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { ArrowUp, Eye, FileText, ListChecks, LoaderCircle } from 'lucide-react';
 import type { ExamPassage, ExamPreviewState, QuestionItem, VisualWarning } from '../../../types/exam';
 import { formatVisualWarning } from '../../../utils/userMessages.ts';
@@ -35,7 +35,15 @@ function sectionHeading(part: string): string {
   return SECTION_HEADINGS[part] || part;
 }
 
+export type ExamPaperControls = {
+  question(stableId: string): boolean;
+  section(part: string): boolean;
+  top(): boolean;
+};
+
 interface ExamPaperViewProps {
+  controlsRef?: React.Ref<ExamPaperControls>;
+  onManualPdfOpen?: () => void;
   header?: React.ReactNode;
   questions: QuestionItem[];
   passages?: ExamPassage[];
@@ -67,6 +75,8 @@ interface ExamPaperViewProps {
 
 export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
   header,
+  controlsRef,
+  onManualPdfOpen,
   questions,
   passages,
   examMeta,
@@ -97,6 +107,8 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
   const review = activeMode === 'review';
   const flaggedCount = questions.filter(q => q.answerCheck !== 'matched').length;
   const lastAutoRequested = useRef<string>('');
+  const questionElements = useRef(new Map<string, HTMLElement>());
+  const sectionElements = useRef(new Map<string, HTMLElement>());
   const paperScrollRef = useRef<HTMLDivElement>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
@@ -148,13 +160,24 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
     window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
 
   const jumpToSection = (part: string) => {
-    const target = document.getElementById(`exam-section-${part}`);
+    const target = sectionElements.current.get(part);
     target?.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
+    return Boolean(target);
   };
 
   const scrollToTop = () => {
     paperScrollRef.current?.scrollTo({ top: 0, behavior: scrollBehavior() });
+    return Boolean(paperScrollRef.current);
   };
+  useImperativeHandle(controlsRef, () => ({
+    question: stableId => {
+      const target = questionElements.current.get(stableId);
+      target?.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
+      return Boolean(target);
+    },
+    section: jumpToSection,
+    top: scrollToTop,
+  }));
 
   const renderEmptySteps = () => (
     <div className="paper-empty-steps" aria-label="Quy trình 3 bước">
@@ -208,7 +231,7 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
             </span>
           </div>
           {bindingMatch && preview?.status === 'ready' && !artifactChanged && (
-            <a className="button-secondary" href={preview.pdfUrl} target="_blank" rel="noreferrer">
+            <a className="button-secondary" href={preview.pdfUrl} target="_blank" rel="noreferrer" onClick={onManualPdfOpen}>
               Mở PDF trong tab mới
             </a>
           )}
@@ -378,7 +401,10 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
                 : undefined;
             return (
               <React.Fragment key={q.id}>
-                {showPart && <h2 id={`exam-section-${q.part}`} className="exam-section-heading">{sectionHeading(q.part!)}</h2>}
+                {showPart && <h2 id={`exam-section-${q.part}`} className="exam-section-heading" ref={node => {
+                  if (node) sectionElements.current.set(q.part!, node);
+                  else sectionElements.current.delete(q.part!);
+                }}>{sectionHeading(q.part!)}</h2>}
                 {showGroupInstruction && (
                   <p className="vact-group-instruction"><strong>{q.groupInstruction}</strong></p>
                 )}
@@ -418,6 +444,11 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
                   </aside>
                 )}
                 <QuestionCard
+                  articleRef={node => {
+                    if (!q.stableId) return;
+                    if (node) questionElements.current.set(q.stableId, node);
+                    else questionElements.current.delete(q.stableId);
+                  }}
                   question={q}
                   index={i}
                   review={review}

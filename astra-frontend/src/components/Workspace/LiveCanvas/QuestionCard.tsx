@@ -5,13 +5,14 @@ import { MathRenderer } from '../../MathRenderer';
 
 interface QuestionCardProps {
   question: QuestionItem;
+  articleRef?: React.Ref<HTMLElement>;
   index: number;
   onEdit?: () => void;
   appearing?: boolean;
   review?: boolean;
 }
 
-export const QuestionCard: React.FC<QuestionCardProps> = ({ question, index, onEdit, appearing = false, review = false }) => {
+export const QuestionCard: React.FC<QuestionCardProps> = ({ question, articleRef, index, onEdit, appearing = false, review = false }) => {
   const [visible, setVisible] = useState(!appearing);
   useEffect(() => {
     const frame = requestAnimationFrame(() => setVisible(true));
@@ -20,7 +21,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, index, onE
   const matched = question.answerCheck === 'matched';
   const flagged = question.answerCheck === 'mismatched';
   return (
-    <section className={`exam-question-card ${visible ? 'visible' : 'appearing'} ${flagged ? 'is-flagged' : ''}`} aria-label={`Câu ${index + 1}`}>
+    <section ref={articleRef} className={`exam-question-card ${visible ? 'visible' : 'appearing'} ${flagged ? 'is-flagged' : ''}`} aria-label={`Câu ${index + 1}`}>
       <div className="question-card-top">
         <div className="question-stem"><strong>Câu {question.stableId?.split('-')[1] || index + 1}.</strong><MathRenderer content={question.stem} /></div>
         {onEdit && (
