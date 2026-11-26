@@ -170,6 +170,16 @@ def test_persistence_failure_does_not_lose_exam(payload, tmp_path):
     assert any("persistence failed" in warning for warning in body["warnings"])
 
 
+def test_web_launcher_serves_workspace_and_api_from_one_origin(tmp_path):
+    dist = tmp_path / "dist"
+    dist.mkdir()
+    (dist / "index.html").write_text("teacher workspace", encoding="utf-8")
+    app = create_app(Settings.for_offline(), workspace_dir=dist, ui_output_root=tmp_path / "jobs")
+    with TestClient(app) as client:
+        assert client.get("/", follow_redirects=False).text == "teacher workspace"
+        assert client.get("/api/health").json()["status"] == "ok"
+
+
 def test_root_redirects_to_docs_and_swagger_example_passes():
     with make_client() as client:
         redirect = client.get("/", follow_redirects=False)

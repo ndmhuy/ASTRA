@@ -63,6 +63,13 @@ Restart the backend after changing `.env`. Keep credentials in the backend envir
 
 ### Start the backend and frontend
 
+On Windows, run `.\start-astra.bat` from the repository root after Python setup.
+It builds the frontend and serves the teacher workspace, API, and integrated retrieval
+in one terminal at [localhost:8000](http://127.0.0.1:8000/). Press Ctrl+C to stop.
+Use `.\start-astra-demo.bat` for offline demo mode. Set `ASTRA_PORT` to use a different port.
+
+For frontend development with Vite hot reload, use the two-terminal setup below.
+
 Run one backend worker from the repository root. The local job runner stores results under `runs/ui/`. [Health endpoint](http://127.0.0.1:8000/api/health) · [Interactive API docs](http://127.0.0.1:8000/docs)
 
 ```powershell

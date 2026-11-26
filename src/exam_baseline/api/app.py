@@ -6,9 +6,11 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import ValidationError
 
 from exam_baseline import __version__
+from exam_baseline.api.routes_baseline import root
 from exam_baseline.api.routes_baseline import router as baseline_router
 from exam_baseline.api.routes_pipeline import router as pipeline_router
 from exam_baseline.api.routes_ui import router as ui_router
@@ -29,6 +31,7 @@ def create_app(
     pipeline_providers: dict[str, LLMProvider] | None = None,
     pipeline_output_root: Path | None = None,
     ui_output_root: Path | None = None,
+    workspace_dir: Path | None = None,
     ui_runner=None,
     rag_retriever=None,
 ) -> FastAPI:
@@ -67,6 +70,10 @@ def create_app(
     app.include_router(baseline_router)
     app.include_router(pipeline_router)
     app.include_router(ui_router)
+    if workspace_dir is None:
+        app.add_api_route("/", root, methods=["GET"], include_in_schema=False)
+    else:
+        app.mount("/", StaticFiles(directory=workspace_dir, html=True), name="workspace")
 
     @app.exception_handler(UiError)
     async def ui_error(request, exc):
@@ -99,6 +106,12 @@ def create_app(
         )
 
     return app
+
+
+def create_web_app() -> FastAPI:
+    """Serve the built teacher workspace and its API from the same local port."""
+    configure_logging()
+    return create_app(workspace_dir=Path("astra-frontend/dist"))
 
 
 def configure_logging() -> None:
