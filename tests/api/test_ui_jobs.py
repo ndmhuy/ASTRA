@@ -369,6 +369,10 @@ def test_targeted_regeneration_keeps_ids_invalidates_approval_and_has_no_second_
         # Regeneration must replace the bad target before validating the other questions.
         raw = app.state.ui_jobs.get(job)
         raw["rawQuestions"][0]["stem"] = "Dựa vào bảng biến thiên như sau."
+        raw["solutions"]["entries"] = [
+            entry for entry in raw["solutions"]["entries"] if entry["question_id"] != "P1-2"
+        ]
+        previous = {s["question_id"]: s for s in raw["solutions"]["entries"]}
         app.state.ui_jobs.store.save(raw)
         result = client.post(
             f"/api/exams/{job}/questions/1/regenerate",
@@ -378,7 +382,14 @@ def test_targeted_regeneration_keeps_ids_invalidates_approval_and_has_no_second_
         revised = result.json()
         assert revised["questions"][0]["stableId"] == "P1-1"
         assert revised["questions"][0]["stem"] != package["questions"][0]["stem"]
-        assert revised["questions"][1:] != []
+        assert revised["questions"][1]["answerCheck"] == "needs_recheck"
+        saved = app.state.ui_jobs.get(job)["solutions"]["entries"]
+        assert {s["question_id"]: s for s in saved if s["question_id"] != "P1-1"} == {
+            key: value for key, value in previous.items() if key != "P1-1"
+        }
+        last_solve = providers["solver"].calls[-1]
+        assert [q["id"] for q in last_solve["questions"]] == ["P1-1"]
+        assert last_solve["questions"][0]["stem"] == revised["questions"][0]["stem"]
         assert revised["revision"] == package["revision"] + 1
         assert not revised["approved"]
         assert len(providers["reviewer"].calls) == 1

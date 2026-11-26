@@ -20,7 +20,6 @@ example = {
 }
 
 
-@router.get("/", include_in_schema=False)
 def root() -> RedirectResponse:
     return RedirectResponse("/docs")
 
