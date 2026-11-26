@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useSyncExternalStore, useCallback, useLayoutEffect, useRef } from 'react';
+import { flushSync } from 'react-dom';
+import { interpret } from './agent/client';
 import { AlertCircle, AlertTriangle, LoaderCircle, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { WorkspaceStart } from './components/WorkspaceStart';
 import { AstraWelcome } from './components/AstraWelcome';
@@ -34,6 +36,10 @@ export const App: React.FC = () => {
   const attachedFiles = useRef<File[]>([]);
   const [store] = useState(() => new ExamSessions(examService));
   const sessions = useSyncExternalStore(store.subscribe, store.getSnapshot);
+  const turn = useRef<AbortController | null>(null);
+  const [chatPending, setChatPending] = useState(false);
+  const cancelTurn = () => { turn.current?.abort(); turn.current = null; setChatPending(false); };
+  useEffect(() => () => turn.current?.abort(), []);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [screen, setScreen] = useState<'start' | 'workspace'>('start');
   const [viewMode, setViewMode] = useState<ExamCanvasViewMode>('paper');
@@ -57,7 +63,8 @@ export const App: React.FC = () => {
   useEffect(() => () => { if (transitionTimer.current) clearTimeout(transitionTimer.current); }, []);
   const cancelTransition = () => { composerOrigin.current = null; if (transitionTimer.current) clearTimeout(transitionTimer.current); setLeavingStart(false); setRevealingWorkspace(false); };
   const openSession = (id: string) => { cancelTransition(); setActiveId(id); setScreen('workspace'); };
-  const newExam = () => { cancelTransition(); setActiveId(null); setConfigureId(null); setLandingDraft(''); attachedFiles.current = []; setShowQuickModal(false); setScreen('start'); };
+  const openManually = (id: string) => { cancelTurn(); setShowQuickModal(false); setConfigureId(null); setEditor(null); openSession(id); };
+  const newExam = () => { cancelTurn(); cancelTransition(); setActiveId(null); setConfigureId(null); setLandingDraft(''); attachedFiles.current = []; setShowQuickModal(false); setScreen('start'); };
   const revealSession = (id: string) => {
     if (screen === 'workspace') { openSession(id); return; }
     composerOrigin.current = document.querySelector('.integrated-start .composer-box')?.getBoundingClientRect() || null;
@@ -96,11 +103,48 @@ export const App: React.FC = () => {
     setConfigureId(null);
     revealSession(id);
   };
+  const sendTurn = async (id: string, content: string, options: { searchWeb: boolean; attachedFiles: File[] }) => {
+    if (turn.current) return;
+    const controller = new AbortController();
+    turn.current = controller;
+    setChatPending(true);
+    const messageId = crypto.randomUUID();
+    const answer = (text: string) => store.appendMessage(id, 'assistant', text);
+    store.appendMessage(id, 'user', content, messageId);
+    try {
+      if (options.searchWeb || options.attachedFiles.length) {
+        answer('ASTRA hiện chưa hỗ trợ tìm web hoặc tải tệp. Thầy cô có thể gửi nội dung dạng văn bản.');
+        return;
+      }
+      if (/^(xin chào|chào( em| astra)?|hello)[! .]*$/iu.test(content)) {
+        answer('Em chào thầy cô! Em có thể giúp chọn mẫu đề hoặc thao tác trong ASTRA.');
+        return;
+      }
+      const decision = await interpret(id, messageId, content, {
+        screen, setup: showQuickModal, status: active?.status ?? 'draft', view: viewMode,
+      }, controller.signal);
+      if (controller.signal.aborted || !store.getSnapshot().find(s => s.id === id)?.messages.some(m => m.id === messageId)) return;
+      if (decision.kind === 'task' && decision.intents.length === 1 && decision.intents[0].id === 'OPEN_SETUP' &&
+          ['draft', 'error'].includes(store.getSnapshot().find(s => s.id === id)?.status || '')) {
+        flushSync(() => { setConfigureId(id); setShowQuickModal(true); });
+        answer('Đã mở phần cấu hình mẫu đề.');
+      } else {
+        answer(decision.kind === 'temporarily_unavailable'
+          ? 'Dịch vụ hiểu yêu cầu đang chưa sẵn sàng. Thầy cô vẫn có thể dùng các nút trong ASTRA.'
+          : 'Thầy cô muốn thao tác nào trong ASTRA? Em cần thêm thông tin để thực hiện.');
+      }
+    } catch {
+      if (!controller.signal.aborted) answer('Chưa kết nối được với trợ lý ASTRA. Thầy cô có thể thử lại.');
+    } finally {
+      if (turn.current === controller) { turn.current = null; setChatPending(false); }
+    }
+  };
   const handleLandingSend = (content: string, options: { searchWeb: boolean; attachedFiles: File[] }) => {
+    if (turn.current) return;
     const id = configureId || store.create('custom');
-    store.sendMessage(id, content);
-    attachedFiles.current = options.attachedFiles;
-    setLandingDraft(''); setConfigureId(id); setShowQuickModal(true);
+    setLandingDraft('');
+    revealSession(id);
+    void sendTurn(id, content, options);
   };
   const handleQuickStart = (params: ExamRequestParams) => {
     const id = configureId || store.create('template');
@@ -110,7 +154,9 @@ export const App: React.FC = () => {
     revealSession(id);
     void store.generate(id, { ...params, uploadedFiles: [...params.uploadedFiles, ...attachedFiles.current.map(file => file.name)], prompt: instructions ? `${params.prompt}\n${instructions}` : params.prompt });
   };
-  const handleSendMessage = (content: string) => { if (activeId) store.sendMessage(activeId, content); };
+  const handleSendMessage = (content: string, options: { searchWeb: boolean; attachedFiles: File[] }) => {
+    if (activeId) void sendTurn(activeId, content, options);
+  };
   const exportFile = async (type: 'STUDENT_EXAM' | 'TEACHER_KEY', format: 'tex' | 'pdf' | 'json') => {
     const session = active;
     if (!session?.jobId) return;
@@ -152,7 +198,7 @@ export const App: React.FC = () => {
             {controlsCollapsed ? <PanelLeftOpen size={16} aria-hidden="true" /> : <PanelLeftClose size={16} aria-hidden="true" />}
           </button>
         </div>
-        <SidebarExamLibrary sessions={sessions} activeId={screen === 'workspace' ? activeId : null} onNew={newExam} onOpen={openSession} onDelete={id => { store.remove(id); if (activeId === id) newExam(); if (configureId === id) { setConfigureId(null); setShowQuickModal(false); } }} />
+        <SidebarExamLibrary sessions={sessions} activeId={screen === 'workspace' ? activeId : null} onNew={newExam} onOpen={openManually} onDelete={id => { store.remove(id); if (activeId === id) newExam(); if (configureId === id) { setConfigureId(null); setShowQuickModal(false); } }} />
         <button className="side-rail-edge" type="button" onClick={() => setControlsCollapsed(value => !value)} aria-label={sidebarLabel} aria-expanded={!controlsCollapsed} title={sidebarLabel} />
         <div className="header-right"><span className="header-avatar" aria-label="Người dùng: Cùng thầy cô" title="Cùng thầy cô">GV</span><span className="header-session">Cùng thầy cô</span></div>
       </header>
@@ -171,7 +217,7 @@ export const App: React.FC = () => {
                   {active.error && <p className="session-error-note">{active.error}</p>}
                   <button type="button" className="button-primary" onClick={() => { setConfigureId(active.id); setShowQuickModal(true); }}>{active.status === 'error' ? 'Thử tạo lại' : 'Tạo đề từ yêu cầu'}</button>
                 </div>}
-                <ChatHistory messages={messages} onSuggestion={value => store.setDraft(active.id, value)} onEditMessage={message => store.setDraft(active.id, message.content)} onRetractMessage={message => store.retractMessage(active.id, message.id)} onBranchMessage={message => { const branchId = store.branchAtMessage(active.id, message.id); if (branchId) setActiveId(branchId); }} />
+                <ChatHistory messages={messages} onSuggestion={value => store.setDraft(active.id, value)} onEditMessage={message => store.setDraft(active.id, message.content)} onRetractMessage={message => { cancelTurn(); store.retractMessage(active.id, message.id); }} onBranchMessage={message => { const branchId = store.branchAtMessage(active.id, message.id); if (branchId) openManually(branchId); }} />
               </>
             ),
             right: (
@@ -269,7 +315,7 @@ export const App: React.FC = () => {
                 />
               </>
             ),
-            composer: <ModernChatBar onSend={handleSendMessage} disabled={isGenerating} draft={active.draft} onDraftChange={value => store.setDraft(active.id, value)} />,
+            composer: <ModernChatBar onSend={handleSendMessage} disabled={chatPending} draft={active.draft} onDraftChange={value => store.setDraft(active.id, value)} />,
           }}
         </WorkspaceLayout>
       )}

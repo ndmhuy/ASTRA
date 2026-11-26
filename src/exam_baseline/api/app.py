@@ -10,6 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import ValidationError
 
 from exam_baseline import __version__
+from exam_baseline.agent.routes import Interpreter, create_agent_router
 from exam_baseline.api.routes_baseline import root
 from exam_baseline.api.routes_baseline import router as baseline_router
 from exam_baseline.api.routes_pipeline import router as pipeline_router
@@ -34,6 +35,7 @@ def create_app(
     workspace_dir: Path | None = None,
     ui_runner=None,
     rag_retriever=None,
+    agent_interpreter: Interpreter | None = None,
 ) -> FastAPI:
     settings = settings if settings is not None else Settings()
 
@@ -70,6 +72,7 @@ def create_app(
     app.include_router(baseline_router)
     app.include_router(pipeline_router)
     app.include_router(ui_router)
+    app.include_router(create_agent_router(agent_interpreter))
     if workspace_dir is None:
         app.add_api_route("/", root, methods=["GET"], include_in_schema=False)
     else:

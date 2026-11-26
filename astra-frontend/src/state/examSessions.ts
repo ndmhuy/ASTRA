@@ -243,10 +243,14 @@ export class ExamSessions {
     this.emit();
     return branch.id;
   }
-  sendMessage(id: string, content: string) {
-    const message = (role: ChatMessage['role'], text: string): ChatMessage => ({ id: crypto.randomUUID(), role, content: text, timestamp: new Date().toISOString() });
-    this.update(id, session => ({ ...session, title: session.mode === 'custom' && !session.meta && session.messages.length === 0 ? content.slice(0, 72) : session.title, draft: '', messages: [...session.messages, message('user', content), message('assistant', session.status === 'complete' ? 'Đã ghi nhận yêu cầu chỉnh sửa cho đề này. Chỉnh sửa bằng hội thoại sẽ khả dụng khi kết nối dịch vụ AI.' : 'Đã ghi nhận yêu cầu cho đề này. Chọn “Tạo đề từ yêu cầu” để chọn môn học, cấu trúc và bắt đầu tạo đề.')] }));
+  appendMessage(id: string, role: ChatMessage['role'], content: string, messageId = crypto.randomUUID()) {
+    this.update(id, session => session.messages.some(message => message.id === messageId) ? session : ({
+      ...session,
+      draft: role === 'user' ? '' : session.draft,
+      messages: [...session.messages, { id: messageId, role, content, timestamp: new Date().toISOString() }],
+    }));
   }
+  sendMessage(id: string, content: string) { this.appendMessage(id, 'user', content); }
   async generate(id: string, params: ExamRequestParams) {
     const existing = this.sessions.find(session => session.id === id);
     if (!existing || existing.status === 'generating') return;

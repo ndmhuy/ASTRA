@@ -6,14 +6,14 @@ Status: IN_PROGRESS
 Baseline SHA: 7523c79556a9935df5008c92043f1e38d6e5d2a2
 Old Agent reference SHA: fb834b976cb62eb7292fa839cdaf1d8738e1ec50
 Feature branch / worktree: feat/longlth2297/agent-main-v2 / ../ASTRA.worktrees/longlth2297-agent-main-v2
-Current HEAD before checkpoints: 7523c79556a9935df5008c92043f1e38d6e5d2a2
+Current HEAD: see git log; checkpoint base 8bea5728ed03c9d68dff49b8cf8b2caea0dc35d7
 Latest origin/main checked: 7523c79556a9935df5008c92043f1e38d6e5d2a2
-Current phase / exact next action: P1 / integrate versioned turn transport
+Current phase / exact next action: P2 / guard/compiler
 
 | Phase | Status | Evidence level | Commit / report | Blocker / next step |
 |---|---|---|---|---|
 | P0 baseline | VERIFIED_OFFLINE | STATIC, UNIT | [Baseline](BASELINE.md) | Python baseline run in progress |
-| P1 transport | NOT_STARTED | — | — | — |
+| P1 transport | VERIFIED_OFFLINE | REAL_UI_FIXTURE | [Source reuse](TEAM_CHANGES.md) | Interpreter fixture; no live provider |
 | P2 guard/compiler | NOT_STARTED | — | — | — |
 | P3 context/capabilities | NOT_STARTED | — | — | — |
 | P4 A/B/C workflows | NOT_STARTED | — | — | — |
@@ -24,6 +24,8 @@ Current phase / exact next action: P1 / integrate versioned turn transport
 
 ## Checkpoint log (append, never fabricate)
 - Date/time, phase, HEAD before/after, exact files, verified commands/result, fixture boundary, blockers/owner, next action, decisions and why.
+
+- 2026-11-26 16:52 ICT · P1 · Parent `8bea5728ed03c9d68dff49b8cf8b2caea0dc35d7` · Built frontend and ran scripts/agent_browser_smoke.py; mounted greeting opened no dialog and made zero Agent HTTP calls. Semantic fixture opened the current setup dialog via same-origin Uvicorn with zero exam writes. P0 Python baseline: 392 passed, 7 subtests; scripts/smoke_server.py passed with mock provider. Transport includes the local server admission used in P2.
 
 ## Release gates
 - LOCAL_APP_READY: NOT_VERIFIED
