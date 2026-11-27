@@ -525,8 +525,17 @@ class JobManager:
             provider = ChatCompletionsProvider(settings, client)
             yield dict.fromkeys(("composer", "illustrator", "solver", "reviewer"), provider)
 
+    def resolve(self, payload):
+        from exam_baseline.ui.input_documents import reference_material
+
+        references = reference_material(self.root, payload.uploadedFiles)
+        request, matrix = resolve_request(payload, settings=self.settings)
+        if not isinstance(request, AdjacentRequest):
+            request.reference_material.extend(references)
+        return request, matrix
+
     async def start(self, payload: ExamGenerateRequest, key: str, workspace_id: str | None = None):
-        request, matrix = await asyncio.to_thread(resolve_request, payload, settings=self.settings)
+        request, matrix = await asyncio.to_thread(self.resolve, payload)
         data, created = self.store.create(
             key,
             fingerprint(payload.model_dump()),
@@ -1778,6 +1787,7 @@ class JobManager:
             "slot": slot,
             "teacher_instruction": instruction,
             "requirements": job["nativeRequest"].get("requirements", []),
+            "reference_material": job["nativeRequest"].get("reference_material", []),
             "current_drawing": current_drawing,
         }
         is_vact = _is_vact(job)
@@ -1800,44 +1810,43 @@ class JobManager:
                     if d["question_id"] != old["id"] and d["question_id"] in related_ids
                 ],
             )
+        elif _is_adjacent(job):
+            adj_request = AdjacentRequest.model_validate(job["nativeRequest"])
+            context = {"subject": adj_request.subject}
+            composer = RepairComposer()
+            illustrator = IllustratorAgent()
+            solver = AdjacentSolver()
+            data.update(
+                **context,
+                reference_material=[
+                    f"{src.get('title', '')}: {src.get('snippet', '')}"
+                    for src in adj_request.web_sources
+                ],
+            )
         else:
-            if _is_adjacent(job):
-                adj_request = AdjacentRequest.model_validate(job["nativeRequest"])
-                context = {"subject": adj_request.subject}
-                composer = RepairComposer()
-                illustrator = IllustratorAgent()
-                solver = AdjacentSolver()
-                data.update(
-                    **context,
-                    reference_material=[
-                        f"{src.get('title', '')}: {src.get('snippet', '')}"
-                        for src in adj_request.web_sources
-                    ],
-                )
-            else:
-                is_subject = _subject_id(job) is not None
-                request = (SubjectRequest if is_subject else Request).model_validate(
-                    job["nativeRequest"]
-                )
-                evidence = request.rag_evidence.get(slot["id"])
-                context = (
-                    _subject_question_context(job, Question.model_validate(old))
-                    if is_subject
-                    else {}
-                )
-                composer = SubjectRepairComposer() if is_subject else RepairComposer()
-                illustrator = IllustratorAgent()
-                solver = SubjectSolver() if is_subject else SolverAgent()
-                data.update(
-                    **context,
-                    reference_material=[evidence.text]
-                    if evidence
-                    else [
+            is_subject = _subject_id(job) is not None
+            request = (SubjectRequest if is_subject else Request).model_validate(
+                job["nativeRequest"]
+            )
+            evidence = request.rag_evidence.get(slot["id"])
+            context = (
+                _subject_question_context(job, Question.model_validate(old)) if is_subject else {}
+            )
+            composer = SubjectRepairComposer() if is_subject else RepairComposer()
+            illustrator = IllustratorAgent()
+            solver = SubjectSolver() if is_subject else SolverAgent()
+            data.update(
+                **context,
+                reference_material=[
+                    *([evidence.text] if evidence else []),
+                    *(
                         t
                         for t in request.reference_material
-                        if t.startswith(f"[THPT_PART:{slot['part']}]")
-                    ],
-                )
+                        if not t.startswith("[THPT_PART:")
+                        or t.startswith(f"[THPT_PART:{slot['part']}]")
+                    ),
+                ],
+            )
 
         repaired, _ = await composer.run(providers["composer"], data)
         if repaired.id != old["id"]:

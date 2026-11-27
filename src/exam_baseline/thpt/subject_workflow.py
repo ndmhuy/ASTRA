@@ -120,6 +120,7 @@ class SubjectComposer(Agent):
             "part": part,
             "slots": [s.model_dump() for s in request.slots if s.id in ids],
             "requirements": request.requirements,
+            "reference_material": request.reference_material,
             "feedback": feedback,
             "group": "Provide no separate passage; include any required context in each stem.",
         }

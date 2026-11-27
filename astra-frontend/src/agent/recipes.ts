@@ -38,7 +38,7 @@ export function fastRoute(message: string): Local | undefined {
   if (/^(cam on( em)?|thanks)$/.test(text)) return { text: 'Em sẵn sàng hỗ trợ khi thầy cô cần.' };
   if (/^(dong y|xac nhan|ok)$/.test(text)) return { confirm: true };
   if (/^(huy tac vu|huy yeu cau|thoi dung lai)$/.test(text)) return { confirm: false };
-  if (/^(mo (?:phan )?(?:soan de|cau hinh|thiet lap)(?: de thi)?|mo mau de|vao (?:phan )?soan de)$/.test(direct)) return action('OPEN_SETUP');
+  if (/^(mo (?:phan )?(?:soan de|cau hinh|thiet lap)(?: de thi)?|mo mau de|vao (?:phan )?soan de|soan de dua tren tai lieu dinh kem)$/.test(direct)) return action('OPEN_SETUP');
   if (/^(tinh trang|tien do|toi dau roi|(?:tao )?de (?:toi|den) dau roi|xem (?:tinh trang|tien do)(?: tao de)?|status)[?]?$/.test(direct)) return action('STATUS');
   if (/^(xem dap an|review)$/.test(text)) return action('SET_VIEW', { view: 'review' });
   if (/^(xem de thi|mo de thi)$/.test(text)) return action('SET_VIEW', { view: 'paper' });
@@ -104,8 +104,11 @@ export function fastRoute(message: string): Local | undefined {
   if (/^(thu gon|mo rong)( thanh dieu huong| sidebar)?$/.test(direct)) {
     return action('SET_SIDEBAR', { collapsed: direct.startsWith('thu gon') });
   }
+  if (/^upload$/.test(text)) {
+    return { text: 'Thầy cô chọn loại tài liệu và bấm “Đính kèm tài liệu” ngay phía trên ô nhập để tải lên.' };
+  }
   if (/^(?:xuat|tai) (?:de (?:thanh|sang) )?(?:word|docx)$/.test(text) ||
-      /^(?:random|ngau nhien|ngan hang cau hoi|upload|tim web|tim google|huy job)$/.test(text)) {
+      /^(?:random|ngau nhien|ngan hang cau hoi|tim web|tim google|huy job)$/.test(text)) {
     return { text: 'ASTRA chưa hỗ trợ thao tác này. Nhắn “Xem các mẫu đề” để xem danh mục hiện có.' };
   }
   if (/\b(ignore (previous|all)|bo qua.*(xac nhan|quyen)|export all)\b/.test(text)) {

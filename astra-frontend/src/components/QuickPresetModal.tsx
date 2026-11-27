@@ -1,10 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { getActiveUploads, subscribeUploads } from '../services/inputDocuments';
+import React, { useSyncExternalStore, useEffect, useRef, useState } from 'react';
 import { ChevronDown, ChevronUp, X } from 'lucide-react';
 import type { ExamFormat, ExamRequestParams } from '../types/exam';
 import { presetParams } from '../agent/intake';
 import { getBackendHealth, getExamFormats, type BackendHealth } from '../services/examService';
 
+import { DocumentAttachments } from './DocumentAttachments';
+import type { InputDocument, InputDocumentsUpdate } from '../services/inputDocuments';
+
 interface Props {
+  documents: InputDocument[];
+  onDocumentsChange: (documents: InputDocumentsUpdate) => void;
   onDialogMount?: (node: HTMLDivElement | null) => void;
   title?: string;
   onStart: (params: ExamRequestParams) => void;
@@ -38,7 +44,7 @@ function formatSummary(format: ExamFormat): string {
   return `Môn ${format.subjects[0]} · Lớp ${format.grades[0]}`;
 }
 
-export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, onDialogMount, agentSelection, onManualSelect, title = 'Tạo đề từ mẫu' }) => {
+export const QuickPresetModal: React.FC<Props> = ({ documents, onDocumentsChange, onStart, onClose, onDialogMount, agentSelection, onManualSelect, title = 'Tạo đề từ mẫu' }) => {
   const [formats, setFormats] = useState<ExamFormat[]>([]);
   const [manualGroup, setMasterGroup] = useState<'thpt' | 'dgnl'>('thpt');
   const [pickerOpen, setThptPickerOpen] = useState(false);
@@ -49,6 +55,9 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, onDialogMo
   });
   const [health, setHealth] = useState<BackendHealth | null>(null);
   const [error, setError] = useState('');
+  const [localUploading, setUploading] = useState(false);
+  const activeUploads = useSyncExternalStore(subscribeUploads, getActiveUploads);
+  const uploading = localUploading || activeUploads > 0;
   const [catalogAttempt, setCatalogAttempt] = useState(0);
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -112,7 +121,7 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, onDialogMo
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
     const modal = modalRef.current;
-    const controls = () => Array.from(modal?.querySelectorAll<HTMLElement>('button:not(:disabled), input, select') || []);
+    const controls = () => Array.from(modal?.querySelectorAll<HTMLElement>('button:not(:disabled), input:not([type="file"]):not(:disabled), select:not(:disabled)') || []);
     controls()[0]?.focus();
     const handleKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') onClose();
@@ -132,8 +141,8 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, onDialogMo
   };
 
   const start = () => {
-    if (!selected?.available) return;
-    onStart(presetParams(selected));
+    if (!selected?.available || uploading) return;
+    onStart({ ...presetParams(selected), uploadedFiles: documents.map(document => document.id) });
   };
 
   const handleOptionKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -331,10 +340,11 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, onDialogMo
           )}
         </div>
 
+      <DocumentAttachments documents={documents} onChange={onDocumentsChange} onBusyChange={setUploading} />
       {agentSelection?.summary && <p className="preset-details-summary">{agentSelection.summary}</p>}
       <div className="preset-modal-actions">
         <button type="button" className="button-secondary" onClick={onClose}>Huỷ</button>
-        <button type="button" className="button-primary" disabled={!selected?.available || !!error} onClick={start}>Tạo đề thi</button>
+        <button type="button" className="button-primary" disabled={!selected?.available || !!error || uploading} onClick={start}>Tạo đề thi</button>
       </div>
       </div>
     </div>

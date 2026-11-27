@@ -20,6 +20,7 @@ import type {
 } from '../types/exam';
 import type { ExamFormat, ExportFormat } from '../types/exam';
 import { humanizeErrorMessage } from '../utils/userMessages.ts';
+import type { InputDocument } from './inputDocuments';
 import { adaptStudentPaper } from './contractPaper.ts';
 
 export interface WorkspaceDraft {
@@ -28,6 +29,7 @@ export interface WorkspaceDraft {
   title: string;
   draft: string;
   messages: ChatMessage[];
+  inputDocuments?: InputDocument[];
 }
 
 export interface SavedWorkspace extends WorkspaceDraft {
