@@ -155,6 +155,9 @@ def test_adjacent_exam_generation_works_in_demo_mode(tmp_path):
 
 
 class _ScriptedAdjacentProvider:
+    name = model = "scripted"
+    parameters = {}
+
     def __init__(self, role: str):
         self.role = role
         self.calls: list[dict] = []

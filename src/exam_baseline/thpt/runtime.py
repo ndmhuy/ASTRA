@@ -44,7 +44,23 @@ class RecordingProvider:
         policy = POLICY["mas"]
         for attempt in range(min(self.retries + 1, policy["maxAttempts"])):
             try:
-                return await self._once(request)
+                remaining = policy["deadlineSeconds"] - (perf_counter() - started)
+                try:
+                    return await asyncio.wait_for(self._once(request), timeout=max(0, remaining))
+                except asyncio.TimeoutError as error:
+                    if self.record is not None:
+                        self.record.update(
+                            status="failed",
+                            error="provider_timeout",
+                            outcome_uncertain=True,
+                            failure_category="uncertain_transport",
+                        )
+                        self.on_attempt()
+                    raise ProviderError(
+                        "provider_timeout",
+                        "Operation deadline exceeded; upstream completion is uncertain.",
+                        outcome_uncertain=True,
+                    ) from error
             except ProviderError as exc:
                 failure = classify(exc)
                 if (

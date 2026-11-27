@@ -93,6 +93,28 @@ def test_retry_records_two_attempts_one_operation_and_respects_backoff(tmp_path,
     assert delay(2, 5, POLICY["mas"], jitter=lambda: 0) >= 5
 
 
+def test_operation_deadline_bounds_inflight_work_without_automatic_replay(tmp_path, monkeypatch):
+    monkeypatch.setitem(POLICY["mas"], "deadlineSeconds", 0.02)
+
+    class Slow:
+        calls = 0
+
+        async def complete(self, request):
+            self.calls += 1
+            await asyncio.sleep(10)
+
+    provider, records = Slow(), []
+    with pytest.raises(ProviderError) as caught:
+        asyncio.run(
+            RecordingProvider(provider, "composer", 1, records, tmp_path, retries=1).complete(
+                CompletionRequest("", "", {})
+            )
+        )
+    assert classify(caught.value).uncertain and not classify(caught.value).retryable
+    assert provider.calls == len(records) == 1
+    assert records[0]["outcome_uncertain"] is True
+
+
 @pytest.mark.parametrize("safe", [False, True])
 def test_chat_retries_only_when_no_admitted_inference_can_have_occurred(safe, monkeypatch):
     class Fake:

@@ -209,7 +209,7 @@ def test_http_errors_are_sanitized_without_retry(status, code):
     "exception,code",
     [
         (httpx.ReadTimeout, "provider_timeout"),
-        (httpx.ConnectError, "provider_unreachable"),
+        (httpx.ConnectError, "provider_connection_failed"),
     ],
 )
 def test_transport_errors(exception, code):
