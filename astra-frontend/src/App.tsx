@@ -18,6 +18,7 @@ import { ChatHistory } from './components/Workspace/ChatPane/ChatHistory';
 import { ModernChatBar } from './components/Workspace/ChatPane/ModernChatBar';
 import { CanvasHeader } from './components/Workspace/LiveCanvas/CanvasHeader';
 import { ExamPaperView, type ExamCanvasViewMode, type ExamPaperControls } from './components/Workspace/LiveCanvas/ExamPaperView';
+import type { InputDocument } from './services/inputDocuments';
 import type { ChatMessage, ExamFormat, ExamRequestParams, QuestionItem } from './types/exam';
 import { QuestionEditor, type QuestionEditorControls } from './components/QuestionEditor';
 import { ApiError, evaluateExamFormat, examService, getExamFormats } from './services/examService';
@@ -48,13 +49,14 @@ type Confirmation = {
   workspaceId: string;
   binding: string;
   expires: number;
-  run: (sourceId?: string) => Promise<Effect> | Effect;
+  run: (sourceId?: string, uploadedFiles?: string[]) => Promise<Effect> | Effect;
 };
 
 export const App: React.FC = () => {
   const [showWelcome, setShowWelcome] = useState(true);
   const finishWelcome = useCallback(() => setShowWelcome(false), []);
   const [landingDraft, setLandingDraft] = useState('');
+  const [landingDocuments, setLandingDocuments] = useState<InputDocument[]>([]);
   const [leavingStart, setLeavingStart] = useState(false);
   const [revealingWorkspace, setRevealingWorkspace] = useState(false);
   const transitionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -168,7 +170,7 @@ export const App: React.FC = () => {
   const cancelTransition = () => { composerOrigin.current = null; if (transitionTimer.current) clearTimeout(transitionTimer.current); setLeavingStart(false); setRevealingWorkspace(false); };
   const openSession = (id: string) => { cancelTransition(); setAgentOpenedPdf(false); setViewMode('paper'); setActiveId(id); setScreen('workspace'); };
   const openManually = (id: string) => { cancelTurn(); setAgentSelection(undefined); setShowQuickModal(false); setConfigureId(null); setEditor(null); openSession(id); };
-  const newExam = () => { cancelTurn(); cancelTransition(); setActiveId(null); setConfigureId(null); setLandingDraft(''); setAgentSelection(undefined); setShowQuickModal(false); setScreen('start'); };
+  const newExam = () => { cancelTurn(); cancelTransition(); setActiveId(null); setConfigureId(null); setLandingDraft(''); setLandingDocuments([]); setAgentSelection(undefined); setShowQuickModal(false); setScreen('start'); };
   const revealSession = (id: string) => {
     if (screen === 'workspace') { openSession(id); return; }
     composerOrigin.current = document.querySelector('.integrated-start .composer-box')?.getBoundingClientRect() || null;
@@ -203,11 +205,12 @@ export const App: React.FC = () => {
   const handleDetailedStart = () => {
     const id = configureId || store.create('custom');
     store.setDraft(id, landingDraft);
+    store.setInputDocuments(id, landingDocuments);
     setShowQuickModal(false);
     setConfigureId(null);
     revealSession(id);
   };
-  const sendTurn = async (id: string, content: string, options: { searchWeb: boolean; attachedFiles: File[] }) => {
+  const sendTurn = async (id: string, content: string, options: { searchWeb: boolean; attachedFiles: InputDocument[] }) => {
     if (turn.current) return;
     const admission = admit(content);
     setAdmissionError(admission.error || '');
@@ -221,7 +224,7 @@ export const App: React.FC = () => {
       if (store.getSnapshot().some(session => session.id === id)) store.appendMessage(id, 'assistant', text);
       else setAdmissionError(text);
     };
-    flushSync(() => store.appendMessage(id, 'user', content, messageId, true));
+    flushSync(() => { store.setInputDocuments(id, options.attachedFiles); store.appendMessage(id, 'user', content, messageId, true); });
     let resolvedIntake: Intake | undefined;
     const runtime: Runtime = {
       binding: () => runtimeRef.current!.binding(),
@@ -231,11 +234,9 @@ export const App: React.FC = () => {
     const origin = store.getSnapshot().find(s => s.id === id);
     const alive = () => !controller.signal.aborted && !!store.getSnapshot().find(s => s.id === id)?.messages.some(m => m.id === messageId);
     try {
-      if (options.searchWeb || options.attachedFiles.length) {
+      if (options.searchWeb) {
         pending.current = null;
-        answer(options.attachedFiles.length
-          ? 'ASTRA chưa thể đọc tệp đính kèm. Thầy cô có thể dán phần nội dung cần dùng vào tin nhắn.'
-          : 'ASTRA chưa hỗ trợ tìm trên mạng. Thầy cô có thể gửi nội dung dạng văn bản.');
+        answer('ASTRA chưa hỗ trợ tìm trên mạng. Tài liệu đã đính kèm được giữ lại; hãy tắt tìm mạng để tiếp tục.');
         return;
       }
       await Promise.resolve();
@@ -421,7 +422,7 @@ export const App: React.FC = () => {
       if (turn.current === controller) { turn.current = null; setChatPending(false); }
     }
   };
-  const handleLandingSend = (content: string, options: { searchWeb: boolean; attachedFiles: File[] }) => {
+  const handleLandingSend = (content: string, options: { searchWeb: boolean; attachedFiles: InputDocument[] }) => {
     if (turn.current) return;
     const admission = admit(content);
     setAdmissionError(admission.error || '');
@@ -451,7 +452,7 @@ export const App: React.FC = () => {
       if (prepared?.workspaceId && prepared.workspaceId === configureId &&
           prepared.expires >= Date.now() && prepared.binding === runtimeRef.current?.binding() &&
           params.formatId === agentSelection.id) {
-        void Promise.resolve(prepared.run()).then(effect => store.appendMessage(prepared.workspaceId, 'assistant', effect.text));
+        void Promise.resolve(prepared.run(undefined, params.uploadedFiles)).then(effect => store.appendMessage(prepared.workspaceId, 'assistant', effect.text));
       } else {
         setAdmissionError('Xác nhận đã hết hiệu lực. Thầy cô hãy đóng cấu hình và gửi lại yêu cầu.');
       }
@@ -464,9 +465,10 @@ export const App: React.FC = () => {
     setShowQuickModal(false);
     revealSession(id);
     setAgentSelection(undefined);
-    void store.generate(id, { ...params, uploadedFiles: [], prompt: instructions ? `${params.prompt}\n${instructions}` : params.prompt });
+    store.setInputDocuments(id, session?.inputDocuments ?? landingDocuments);
+    void store.generate(id, { ...params, prompt: instructions ? `${params.prompt}\n${instructions}` : params.prompt });
   };
-  const handleSendMessage = (content: string, options: { searchWeb: boolean; attachedFiles: File[] }) => {
+  const handleSendMessage = (content: string, options: { searchWeb: boolean; attachedFiles: InputDocument[] }) => {
     if (activeId) void sendTurn(activeId, content, options);
   };
   const regenerateQuestion = async (
@@ -811,7 +813,7 @@ export const App: React.FC = () => {
             }
             const proposal = prepareParams(format, intent.args, message, resolved?.topic);
             if (!proposal.params) return failed(proposal.error);
-            const payload = proposal.params;
+            const payload = { ...proposal.params, uploadedFiles: (current.inputDocuments ?? []).map(document => document.id) };
             if (current.errorCode === 'network_error' && current.requestSignature &&
                 current.requestSignature !== JSON.stringify(payload)) {
               return failed('Lần gửi trước chưa rõ kết quả. Hãy thử lại với thông số cũ trước khi đổi yêu cầu.');
@@ -840,10 +842,10 @@ export const App: React.FC = () => {
               workspaceId: current.id,
               binding: runtimeRef.current!.binding(),
               expires: Date.now() + CONFIRMATION_TTL_MS,
-              run: async () => {
+              run: async (_sourceId, uploadedFiles) => {
                 flushSync(() => { setShowQuickModal(false); setAgentSelection(undefined); });
                 store.setIntake(current.id, { ...intake, topic: proposal.topic, phase: 'confirmed', validation: 'passed' });
-                const job = await store.generate(current.id, payload);
+                const job = await store.generate(current.id, { ...payload, uploadedFiles: uploadedFiles ?? payload.uploadedFiles });
                 if (job) return { status: 'accepted', text: 'Máy chủ đã nhận công việc tạo đề. Thầy cô có thể trao đổi tiếp trong khi đợi.' };
                 const actual = store.getSnapshot().find(item => item.id === current.id);
                 return actual?.errorCode === 'network_error'
@@ -1075,7 +1077,7 @@ export const App: React.FC = () => {
       {store.storageWarning && <div className="canvas-alert-banner is-error" role="alert">{store.storageWarning}</div>}
       {admissionError && <div className="canvas-alert-banner is-error" role="alert">{admissionError}</div>}
       {/* Main content */}
-      {screen === 'start' && <WorkspaceStart exiting={leavingStart} draft={landingDraft} onDraftChange={setLandingDraft} onTemplate={() => { setConfigureId(null); setAgentSelection(undefined); setShowQuickModal(true); }} onDetailed={handleDetailedStart} onSend={handleLandingSend} />}
+      {screen === 'start' && <WorkspaceStart documents={landingDocuments} onDocumentsChange={setLandingDocuments} exiting={leavingStart} draft={landingDraft} onDraftChange={setLandingDraft} onTemplate={() => { setConfigureId(null); setAgentSelection(undefined); setShowQuickModal(true); }} onDetailed={handleDetailedStart} onSend={handleLandingSend} />}
 
       {screen === 'workspace' && active && (
         <WorkspaceLayout key={active.id}>
@@ -1211,7 +1213,7 @@ export const App: React.FC = () => {
                 />
               </>
             ),
-            composer: <ModernChatBar onSend={handleSendMessage} disabled={chatPending} draft={active.draft} onDraftChange={value => store.setDraft(active.id, value)} />,
+            composer: <ModernChatBar documents={active.inputDocuments ?? []} onDocumentsChange={documents => store.setInputDocuments(active.id, documents)} onSend={handleSendMessage} disabled={chatPending} draft={active.draft} onDraftChange={value => store.setDraft(active.id, value)} />,
           }}
         </WorkspaceLayout>
       )}
@@ -1219,6 +1221,8 @@ export const App: React.FC = () => {
       {/* Quick preset modal */}
       {showQuickModal && (
         <QuickPresetModal
+          documents={configureId ? sessions.find(session => session.id === configureId)?.inputDocuments ?? [] : landingDocuments}
+          onDocumentsChange={documents => { if (configureId) store.setInputDocuments(configureId, documents); else setLandingDocuments(documents); }}
           title={configureId ? 'Thiết lập đề theo yêu cầu' : 'Tạo đề từ mẫu'}
           onDialogMount={node => { presetDialog.current = node; }}
           agentSelection={agentSelection}

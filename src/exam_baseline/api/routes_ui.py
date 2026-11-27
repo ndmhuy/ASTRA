@@ -23,9 +23,32 @@ from exam_baseline.ui.contracts import (
     WorkspaceRestoreRequest,
     format_catalog,
 )
-from exam_baseline.ui.jobs import resolve_request
+from exam_baseline.ui.errors import UiError
+from exam_baseline.ui.input_documents import POLICY, DocumentKind, save_document, validate_filename
 
 router = APIRouter(prefix="/api")
+
+
+@router.get("/input-documents/policy")
+async def document_policy():
+    return POLICY
+
+
+@router.post("/input-documents", status_code=201)
+async def upload_document(
+    request: Request,
+    filename: Annotated[str, Query(min_length=1, max_length=180)],
+    kind: DocumentKind = "supplementary",
+):
+    validate_filename(filename)
+    content = bytearray()
+    async for chunk in request.stream():
+        if len(content) + len(chunk) > POLICY["max_bytes"]:
+            raise UiError("document_too_large", "Mỗi tài liệu tối đa 10 MiB.", 413)
+        content.extend(chunk)
+    return await asyncio.to_thread(
+        save_document, request.app.state.ui_jobs.root, filename, kind, bytes(content)
+    )
 
 
 @router.get("/workspaces")
@@ -140,9 +163,7 @@ async def formats(request: Request):
 
 @router.post("/exam-formats/evaluate")
 async def evaluate(request: Request, payload: ExamGenerateRequest):
-    native, matrix = await asyncio.to_thread(
-        resolve_request, payload, settings=request.app.state.settings
-    )
+    native, matrix = await asyncio.to_thread(request.app.state.ui_jobs.resolve, payload)
     return {
         "status": "validated",
         "formatId": payload.formatId,

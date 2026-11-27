@@ -11,6 +11,7 @@ from pydantic import AwareDatetime, ConfigDict, Field, model_validator
 from exam_baseline.core.models import Model
 from exam_baseline.thpt.models import Slot
 from exam_baseline.thpt.subjects import DURATION, PROFILES, FormatId, subject_catalog
+from exam_baseline.ui.input_documents import POLICY, DocumentIds, DocumentInfo
 from exam_baseline.vact.models import Slot as VactSlot
 
 
@@ -31,7 +32,7 @@ class GenerateRequest(Model):
     durationMinutes: Literal[90]
     itemCount: Literal[22]
     prompt: str = Field(default="", max_length=10000)
-    uploadedFiles: list[str] = Field(default_factory=list, max_length=0)
+    uploadedFiles: DocumentIds = Field(default_factory=list)
     slots: list[Slot] | None = None
 
     @model_validator(mode="after")
@@ -52,7 +53,7 @@ class VactGenerateRequest(Model):
     durationMinutes: Literal[150]
     itemCount: Literal[120]
     prompt: str = Field(default="", max_length=10000)
-    uploadedFiles: list[str] = Field(default_factory=list, max_length=0)
+    uploadedFiles: DocumentIds = Field(default_factory=list)
     slots: list[VactSlot] | None = None
 
     @model_validator(mode="after")
@@ -73,7 +74,7 @@ class SubjectGenerateRequest(Model):
     durationMinutes: Literal[DURATION]
     itemCount: int = Field(strict=True)
     prompt: str = Field(default="", max_length=10000)
-    uploadedFiles: list[str] = Field(default_factory=list, max_length=0)
+    uploadedFiles: DocumentIds = Field(default_factory=list)
 
     @model_validator(mode="after")
     def validate_format(self):
@@ -111,9 +112,12 @@ class WorkspaceContent(Model):
     title: str
     draft: str
     messages: list[WorkspaceMessage]
+    inputDocuments: list[DocumentInfo] = Field(default_factory=list, max_length=POLICY["max_files"])
 
     def storage_content(self, *exclude: str) -> dict:
         content = self.model_dump(mode="json", exclude={"messages", *exclude})
+        if "inputDocuments" not in self.model_fields_set:
+            content.pop("inputDocuments", None)
         content["messages"] = [
             item.model_dump(mode="json", exclude_unset=True) for item in self.messages
         ]

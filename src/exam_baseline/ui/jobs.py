@@ -484,8 +484,16 @@ class JobManager:
             provider = ChatCompletionsProvider(settings, client)
             yield dict.fromkeys(("composer", "illustrator", "solver", "reviewer"), provider)
 
+    def resolve(self, payload):
+        from exam_baseline.ui.input_documents import reference_material
+
+        references = reference_material(self.root, payload.uploadedFiles)
+        request, matrix = resolve_request(payload, settings=self.settings)
+        request.reference_material.extend(references)
+        return request, matrix
+
     async def start(self, payload: ExamGenerateRequest, key: str, workspace_id: str | None = None):
-        request, matrix = await asyncio.to_thread(resolve_request, payload, settings=self.settings)
+        request, matrix = await asyncio.to_thread(self.resolve, payload)
         data, created = self.store.create(
             key,
             fingerprint(payload.model_dump()),
@@ -1681,6 +1689,7 @@ class JobManager:
             "slot": slot,
             "teacher_instruction": instruction,
             "requirements": job["nativeRequest"].get("requirements", []),
+            "reference_material": job["nativeRequest"].get("reference_material", []),
             "current_drawing": current_drawing,
         }
         is_vact = _is_vact(job)
@@ -1717,12 +1726,14 @@ class JobManager:
             solver = SubjectSolver() if is_subject else SolverAgent()
             data.update(
                 **context,
-                reference_material=[evidence.text]
-                if evidence
-                else [
-                    t
-                    for t in request.reference_material
-                    if t.startswith(f"[THPT_PART:{slot['part']}]")
+                reference_material=[
+                    *([evidence.text] if evidence else []),
+                    *(
+                        t
+                        for t in request.reference_material
+                        if not t.startswith("[THPT_PART:")
+                        or t.startswith(f"[THPT_PART:{slot['part']}]")
+                    ),
                 ],
             )
 

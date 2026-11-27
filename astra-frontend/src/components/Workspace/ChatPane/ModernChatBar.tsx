@@ -1,21 +1,28 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { Paperclip, Globe, ArrowUp, X } from 'lucide-react';
+import { Globe, ArrowUp } from 'lucide-react';
+
+import { DocumentAttachments } from '../../DocumentAttachments';
+import type { InputDocument } from '../../../services/inputDocuments';
 
 interface ModernChatBarProps {
-  onSend: (message: string, options: { searchWeb: boolean; attachedFiles: File[] }) => void;
+  documents?: InputDocument[];
+  onDocumentsChange?: (documents: InputDocument[]) => void;
+  onSend: (message: string, options: { searchWeb: boolean; attachedFiles: InputDocument[] }) => void;
   disabled?: boolean;
   draft?: string;
   onDraftChange?: (value: string) => void;
 }
 
-export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled = false, draft, onDraftChange }) => {
+export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled = false, draft, onDraftChange, documents, onDocumentsChange }) => {
   const [localText, setLocalText] = useState('');
   const text = draft ?? localText;
   const setText = (value: string) => { setLocalText(value); onDraftChange?.(value); };
   const [searchWeb, setSearchWeb] = useState(false);
-  const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
+  const [localDocuments, setLocalDocuments] = useState<InputDocument[]>([]);
+  const attachedFiles = documents ?? localDocuments;
+  const setAttachedFiles = (value: InputDocument[]) => { setLocalDocuments(value); onDocumentsChange?.(value); };
+  const [uploading, setUploading] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const adjustHeight = useCallback(() => {
     const el = textareaRef.current;
@@ -39,44 +46,20 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
   };
 
   const handleSend = () => {
-    const trimmed = text.trim();
-    if (!trimmed || disabled) return;
+    const trimmed = text.trim() || (attachedFiles.length ? 'Soạn đề dựa trên tài liệu đính kèm.' : '');
+    if (!trimmed || disabled || uploading) return;
     onSend(trimmed, { searchWeb, attachedFiles });
     setText('');
-    setAttachedFiles([]);
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setAttachedFiles((prev) => [...prev, ...Array.from(e.target.files!)]);
-    }
-    e.target.value = '';
-  };
-
-  const canSend = Boolean(text.trim()) && !disabled;
+  const canSend = (Boolean(text.trim()) || attachedFiles.length > 0) && !disabled && !uploading;
 
   return (
     <div className="studio-composer">
-      {attachedFiles.length > 0 && (
-        <div className="composer-attachments">
-          {attachedFiles.map((f, i) => (
-            <span key={`${f.name}-${i}`} className="composer-file-chip">
-              <span>{f.name}</span>
-              <button
-                type="button"
-                className="composer-file-remove"
-                aria-label={`Bỏ đính kèm ${f.name}`}
-                onClick={() => setAttachedFiles((prev) => prev.filter((_, j) => j !== i))}
-              >
-                <X size={13} aria-hidden="true" />
-              </button>
-            </span>
-          ))}
-        </div>
-      )}
+      <DocumentAttachments documents={attachedFiles} onChange={setAttachedFiles} disabled={disabled} onBusyChange={setUploading} />
 
       <div className="composer-box">
         <textarea
@@ -92,23 +75,6 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
         />
 
         <div className="composer-toolbar">
-          <button
-            type="button"
-            className="composer-tool-btn"
-            onClick={() => fileInputRef.current?.click()}
-            title="Đính kèm tài liệu"
-            aria-label="Đính kèm tài liệu"
-          >
-            <Paperclip size={16} aria-hidden="true" />
-          </button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            multiple
-            className="composer-file-input"
-            onChange={handleFileChange}
-          />
-
           <button
             type="button"
             className={`composer-tool-btn ${searchWeb ? 'is-active' : ''}`}
