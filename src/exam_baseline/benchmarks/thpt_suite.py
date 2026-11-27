@@ -18,6 +18,7 @@ import json
 import re
 import shutil
 from datetime import datetime, timezone
+from hashlib import sha256
 from pathlib import Path
 from time import perf_counter
 from typing import Literal
@@ -407,6 +408,12 @@ def _attempt_key(run_id: str, case_id: str, repeat: int) -> str:
     return f"{run_id}__{case_id}__r{repeat}"
 
 
+def _attempt_dir(suite_output: Path, attempt_key: str) -> Path:
+    """Compact opaque attempt folder preventing Windows MAX_PATH overflows and blind leaks."""
+    digest = sha256(attempt_key.encode("utf-8")).hexdigest()[:10]
+    return suite_output / "r" / digest
+
+
 def _load_existing_attempts(jsonl_path: Path) -> dict[str, dict]:
     records: dict[str, dict] = {}
     if not jsonl_path.is_file():
@@ -438,7 +445,8 @@ async def execute_attempt(
     replay_factory=None,
 ) -> dict:
     """Execute one (run, case, repeat) attempt and return its normalized benchmark record."""
-    attempt_dir = suite_output / "runs" / spec.id / case.id / f"r{repeat}"
+    attempt_key = _attempt_key(spec.id, case.id, repeat)
+    attempt_dir = _attempt_dir(suite_output, attempt_key)
     if attempt_dir.exists():
         shutil.rmtree(attempt_dir)
     attempt_dir.parent.mkdir(parents=True, exist_ok=True)

@@ -72,10 +72,12 @@ def test_blind_csv_export_ungraded_and_graded_report_with_svgs(tmp_path):
     csv_path = suite_dir / "grading_sheet.csv"
     key_path = suite_dir / "blind_key.json"
     csv_text = csv_path.read_text(encoding="utf-8-sig")
-    # Model & architecture names must NOT leak into blind CSV
+    # Model & architecture names must NOT leak into blind CSV (including file paths)
     assert "gemini-2.5-flash-lite" not in csv_text
     assert "gemini-3.8-flash" not in csv_text
     assert "astra_par" not in csv_text
+    assert "hero_strong_naive" not in csv_text
+    assert "hero_weak_astra" not in csv_text
 
     # 2. Report BEFORE human grading MUST display 'Chưa chấm' (never fabricate scores)
     ungraded_md = suite_dir / "REPORT_UNGRADED.md"

@@ -31,8 +31,8 @@ Tài liệu này dành cho **Trọng (`phutrong-2208`)** và bất kỳ thành v
 | **M2** | Thêm `EXAM_REASONING_EFFORT` & đơn giá Gemini 2.5 / 3.1 / 3.8 | **DONE** | `8ae38f9` | `pytest` 60/60 pass (`test_chat_completions`, `test_metrics`, `test_runtime`); Ruff check & format pass |
 | **M3** | Xây dựng `thpt_suite` (4 kiến trúc + 5 đề cố định + `--resume` + template PDF check) | **DONE** | `6123c4a` | `pytest` 4/4 pass (`test_thpt_suite.py`: 4 kiến trúc, `--resume`, `--retry-failed`, 429 wait split, leakage); Ruff pass |
 | **M4** | Xây dựng `thpt_validator` (Seeded Defect Suite cho Toán THPT) | **DONE** | `da2f605` | `pytest` 3/3 pass (`test_thpt_validator.py`: 5 clean + 5 defects, Recall/Precision 1.0 replay, anti-leakage); Ruff pass |
-| **M5** | Xây dựng bộ xuất phiếu chấm mù CSV + `BENCHMARK_REPORT.md` + 3 biểu đồ SVG | **DONE** | *(pending commit)* | `pytest` 1/1 pass (`test_thpt_report.py`: CSV ẩn model, `Chưa chấm`, 7 cột đúng thứ tự, 3 SVG XML hợp lệ); Ruff pass |
-| **M6** | Chạy toàn bộ test, Ruff, `check_repository.py`, ghi `agent-log.sh` | PENDING | — | — |
+| **M5** | Xây dựng bộ xuất phiếu chấm mù CSV + `BENCHMARK_REPORT.md` + 3 biểu đồ SVG | **DONE** | `1c0e1e5` | `pytest` 1/1 pass (`test_thpt_report.py`: CSV ẩn model, `Chưa chấm`, 7 cột đúng thứ tự, 3 SVG XML hợp lệ); Ruff pass |
+| **M6** | Chạy toàn bộ test, Ruff, `check_repository.py`, ghi `agent-log.sh` | **DONE** | *(final commit)* | `pytest` 181/181 pass (`benchmarks`, `providers`, `thpt`, `architecture`; trừ 2 test API cần optional `pypdfium2`); Ruff 229/229 pass; E2E replay CLI 65/65 + 10/10 Validator + 2210 dòng CSV + 3 SVG pass; `check_repository.py` 0 lỗi |
 
 ---
 
