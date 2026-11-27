@@ -20,7 +20,7 @@ import { CanvasHeader } from './components/Workspace/LiveCanvas/CanvasHeader';
 import { ExamPaperView, type ExamCanvasViewMode, type ExamPaperControls } from './components/Workspace/LiveCanvas/ExamPaperView';
 import type { ChatMessage, ExamFormat, ExamRequestParams, QuestionItem, Subject } from './types/exam';
 import { QuestionEditor, type QuestionEditorControls } from './components/QuestionEditor';
-import { ApiError, evaluateExamFormat, examService, getExamFormats } from './services/examService';
+import { ApiError, evaluateExamFormat, examService, getExamFormats, type QuestionRegeneration } from './services/examService';
 import { prepareParams, type Intake } from './agent/intake';
 import { noteLabel, type Note } from './agent/notes';
 import { ExamVersionHistory } from './components/ExamVersionHistory';
@@ -42,6 +42,11 @@ interface RegenerationUndo {
   revision: number;
 }
 type EditorTarget = { sessionId: string; jobId: string; question: QuestionItem; workspaceId?: string };
+type QuestionRun = { id: string; target: EditorTarget; receipt?: QuestionRegeneration; stopping?: boolean };
+const QUESTION_STAGES = {
+  queued: [5, 'Đã xếp hàng'], composer: [25, 'Đang tạo lại'], illustrator: [50, 'Đang vẽ hình'],
+  solver: [75, 'Đang kiểm tra'], saving: [95, 'Đang lưu'],
+} as const;
 const CONFIRMATION_TTL_MS = 5 * 60_000;
 
 type Confirmation = {
@@ -69,6 +74,8 @@ export const App: React.FC = () => {
   const canvas = useRef<ExamPaperControls>(null);
   const editorControls = useRef<QuestionEditorControls>(null);
   const editorBusy = useRef(new Set<string>());
+  const questionRuns = useRef(new Map<string, QuestionRun>());
+  const [questionProgress, setQuestionProgress] = useState<Record<string, QuestionRun | undefined>>({});
   const [agentOpenedPdf, setAgentOpenedPdf] = useState(false);
   const presetDialog = useRef<HTMLDivElement>(null);
   const renderEpoch = useRef({ version: 0, state: '' });
@@ -101,6 +108,10 @@ export const App: React.FC = () => {
     setAgentSelection(undefined);
   }, []);
   const active = sessions.find(session => session.id === activeId);
+  const candidate = activeId ? questionProgress[activeId] : undefined;
+  const questionRun = candidate?.target.jobId === active?.jobId ? candidate : undefined;
+  const questionPending = questionRun && (!questionRun.receipt || questionRun.receipt.status === 'pending') ? questionRun : undefined;
+  const questionStage = questionPending ? QUESTION_STAGES[questionPending.receipt?.stage ?? 'queued'] : undefined;
   const sharedId = active && !active.browserOnly && examService.workspaceLibrary ? active.id : null;
   const [recordedChat, setRecordedChat] = useState<{ id: string; messages: ChatMessage[]; signature: string }>();
   const history = examService.history;
@@ -542,6 +553,80 @@ export const App: React.FC = () => {
     );
     if (previousRevision !== undefined && regenerated.examRevision === previousRevision + 1) {
       setUndo({ sessionId, jobId, previousRevision, revision: regenerated.examRevision });
+    }
+  };
+  const showQuestionRun = (id: string, run?: QuestionRun) => {
+    setQuestionProgress(previous => ({ ...previous, [id]: run }));
+  };
+
+  const acceptQuestionReceipt = async (run: QuestionRun, receipt: QuestionRegeneration) => {
+    const { sessionId, jobId, question } = run.target;
+    if (questionRuns.current.get(sessionId) !== run) return;
+    run.receipt = receipt;
+    if (receipt.status === 'pending') {
+      showQuestionRun(sessionId, { ...run });
+      return;
+    }
+    questionRuns.current.delete(sessionId);
+    showQuestionRun(sessionId, receipt.status === 'cancelled' ? { ...run } : undefined);
+    try {
+      if (receipt.status === 'completed') {
+        if (receipt.afterRevision && question.examRevision !== undefined) {
+          setUndo({ sessionId, jobId, previousRevision: question.examRevision, revision: receipt.afterRevision });
+        }
+        if (store.getSnapshot().find(session => session.id === sessionId)?.jobId === jobId) {
+          store.invalidatePreview(sessionId);
+          await store.refresh(sessionId);
+        }
+      } else if (receipt.error) {
+        await store.handleActionError(sessionId, new ApiError(receipt.error.message, receipt.error.code));
+      }
+    } catch (error) {
+      await store.handleActionError(sessionId, error);
+    } finally {
+      editorBusy.current.delete(sessionId);
+    }
+  };
+
+  const startQuestionRun = async (target: EditorTarget, instruction: string) => {
+    const api = examService.questionRegeneration;
+    if (!api) { await editQuestion(target, 'regen', instruction); return; }
+    const { sessionId, jobId, question, workspaceId } = target;
+    if (editorBusy.current.has(sessionId)) throw new Error('Đang xử lý một thao tác chỉnh sửa.');
+    const run: QuestionRun = { id: crypto.randomUUID(), target };
+    editorBusy.current.add(sessionId);
+    questionRuns.current.set(sessionId, run);
+    showQuestionRun(sessionId, { ...run });
+    setEditor(current => current === target ? null : current);
+    try {
+      await acceptQuestionReceipt(run, await api.start(jobId, run.id, question, instruction, workspaceId));
+      while (questionRuns.current.get(sessionId) === run) {
+        await new Promise(resolve => window.setTimeout(resolve, 500));
+        if (questionRuns.current.get(sessionId) !== run) break;
+        await acceptQuestionReceipt(run, await api.status(jobId, run.id));
+      }
+    } catch (error) {
+      if (questionRuns.current.get(sessionId) !== run) return;
+      questionRuns.current.delete(sessionId);
+      editorBusy.current.delete(sessionId);
+      showQuestionRun(sessionId);
+      await store.handleActionError(sessionId, error);
+    }
+  };
+
+  const stopQuestionRun = async (sessionId: string) => {
+    const run = questionRuns.current.get(sessionId);
+    const api = examService.questionRegeneration;
+    if (!run?.receipt || run.stopping || !api) return;
+    run.stopping = true;
+    showQuestionRun(sessionId, { ...run });
+    try {
+      await acceptQuestionReceipt(run, await api.stop(run.target.jobId, run.id));
+    } catch (error) {
+      if (questionRuns.current.get(sessionId) !== run) return;
+      run.stopping = false;
+      showQuestionRun(sessionId, { ...run });
+      await store.handleActionError(sessionId, error);
     }
   };
   const exportFile = async (type: 'STUDENT_EXAM' | 'TEACHER_KEY', format: 'tex' | 'pdf' | 'json') => {
@@ -1173,20 +1258,28 @@ export const App: React.FC = () => {
                     <span>{active.error || active.generationError}</span>
                   </div>
                 )}
-                {(isGenerating || active.generationId) && active.progress && (
+                {(questionStage || ((isGenerating || active.generationId) && active.progress)) && (
                   <div className="canvas-progress-banner" role="status" aria-live="polite">
                     <div className="canvas-progress-top">
                       <span className="canvas-progress-label">
                         <LoaderCircle className="exam-status-spinner" size={15} aria-hidden="true" />
-                        <span>{formatProgressStatus(active.progress.statusMessage)}</span>
+                        <span>{questionPending && questionStage
+                          ? `${questionStage[1]} · Câu ${displayNumber(questionPending.target.question)}`
+                          : formatProgressStatus(active.progress?.statusMessage || '')}</span>
                       </span>
-                      <strong className="canvas-progress-pct">{active.progress.percent}%</strong>
+                      <strong className="canvas-progress-pct">{questionStage?.[0] ?? active.progress?.percent}%</strong>
                     </div>
                     <div className="canvas-progress-controls">
                       <div className="canvas-progress-track" aria-hidden="true">
-                        <div className="canvas-progress-fill" style={{ width: `${Math.max(4, Math.min(100, active.progress.percent))}%` }} />
+                        <div className="canvas-progress-fill" style={{ width: `${Math.max(4, Math.min(100, questionStage?.[0] ?? active.progress?.percent ?? 0))}%` }} />
                       </div>
-                      {examService.stopGeneration && (active.generationId || active.jobId) && (
+                      {questionPending ? (
+                        <button type="button" className="button-secondary canvas-stop-generation"
+                          disabled={questionPending.stopping || !questionPending.receipt}
+                          onClick={() => void stopQuestionRun(active.id)}>
+                          {questionPending.stopping ? 'Đang dừng…' : 'Dừng'}
+                        </button>
+                      ) : examService.stopGeneration && (active.generationId || active.jobId) && (
                         <button type="button" className="button-secondary canvas-stop-generation"
                           disabled={active.stoppingGeneration}
                           onClick={() => void store.stopGeneration(active.id)}>
@@ -1194,6 +1287,11 @@ export const App: React.FC = () => {
                         </button>
                       )}
                     </div>
+                  </div>
+                )}
+                {questionRun?.receipt?.status === 'cancelled' && !isGenerating && !active.generationId && (
+                  <div className="canvas-progress-banner canvas-progress-controls">
+                    <span className="canvas-progress-label" role="status">Đã dừng tạo lại câu {displayNumber(questionRun.target.question)}</span>
                   </div>
                 )}
                 {active.generationStopped && (
@@ -1326,7 +1424,7 @@ export const App: React.FC = () => {
           if (activeRef.current === editor.sessionId) setViewMode('review');
         } : undefined}
         onSave={async question => { await editQuestion(editor, 'save', question); }}
-        onRegenerate={async instruction => { await editQuestion(editor, 'regen', instruction); }}
+        onRegenerate={async instruction => { await startQuestionRun(editor, instruction); }}
       />}
     </div>
   );

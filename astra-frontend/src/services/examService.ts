@@ -55,7 +55,20 @@ interface WorkspaceLibrary {
     Promise<{ status: 'imported' | 'existing' }>;
 }
 
+export interface QuestionRegeneration {
+  id: string;
+  status: 'pending' | 'completed' | 'failed' | 'cancelled';
+  stage: 'queued' | 'composer' | 'illustrator' | 'solver' | 'saving';
+  afterRevision: number | null;
+  error: { code: string; message: string } | null;
+}
+
 export interface IExamService {
+  questionRegeneration?: {
+    start(jobId: string, changeId: string, question: QuestionItem, instruction: string, workspaceId?: string): Promise<QuestionRegeneration>;
+    status(jobId: string, changeId: string): Promise<QuestionRegeneration>;
+    stop(jobId: string, changeId: string): Promise<QuestionRegeneration>;
+  };
   workspaceLibrary?: WorkspaceLibrary;
   history?: ExamHistory;
   startGeneration(params: ExamRequestParams, workspaceId?: string): Promise<{ jobId: string }>;
@@ -671,6 +684,19 @@ export async function evaluateExamFormat(params: ExamRequestParams): Promise<voi
 }
 
 export class ApiExamService implements IExamService {
+  readonly questionRegeneration: NonNullable<IExamService['questionRegeneration']> = {
+    start: (job, changeId, question, instruction, workspaceId) => {
+      const query = new URLSearchParams({ background: 'true' });
+      if (workspaceId) query.set('workspace_id', workspaceId);
+      return requestJson(`${this.baseUrl}/exams/${job}/questions/${question.id}/regenerate?${query}`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json', 'Idempotency-Key': changeId },
+        body: JSON.stringify({ instruction: instruction || 'Sửa câu hỏi và kiểm tra lại lời giải.',
+          revision: question.examRevision, stableId: question.stableId }),
+      });
+    },
+    status: (job, id) => requestJson(`${this.baseUrl}/exams/${job}/regenerations/${id}`),
+    stop: (job, id) => requestJson(`${this.baseUrl}/exams/${job}/regenerations/${id}/stop`, { method: 'POST' }),
+  };
   private baseUrl: string;
   private pendingChanges = new Map<string, string>();
   readonly history: ExamHistory = {
