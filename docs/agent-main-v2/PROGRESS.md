@@ -1,14 +1,24 @@
 # ASTRA Agent main-v2 progress ledger
 
-> Current scope: authenticated Chat and MAS inference gateways only. The owner now authorizes connecting the existing Backend to the existing MAS Worker, disabled until access/budget approval. No website/Backend hosting, Tunnel, or academic pipeline redesign.
+> Current scope: authenticated Chat and MAS inference gateways only. Owner-approved MAS development forwarding is enabled, with ASTRA budget checks configurable and currently disabled. All real generation must be initiated by the owner on the UI. No website/Backend hosting, Tunnel, or academic pipeline redesign.
 
-Status: MAS_TRANSPORT_DEPLOYED_DISABLED; REAL_EXAM_APPROVAL_PENDING
+Status: MAS_DEVELOPMENT_ENABLED; OWNER_UI_TEST_ONLY
 Baseline SHA: 7523c79556a9935df5008c92043f1e38d6e5d2a2
 Old Agent reference SHA: fb834b976cb62eb7292fa839cdaf1d8738e1ec50
 Feature branch / worktree: feat/longlth2297/agent-main-v2 / ../ASTRA.worktrees/longlth2297-agent-main-v2
 Current implementation: MAS Worker cfbf951; Backend adapter/readiness committed with this checkpoint. Prior Chat checkpoint 6c49612.
 Latest origin/main checked: d67d218c69a751b973bb6d2bd3327433ce91e8bd (2026-11-27); 36 upstream commits not integrated.
-Current phase / exact next action: approve access policy and one bounded real MAS exam, then owner initiates from the UI. Read [MAS runbook](MAS_WORKER_RUNBOOK.md), [owner specification](MAS_CLOUDFLARE_SPEC.md) and [next task](NEXT_TASK.md). No real MAS inference has run. Historical Chat gates/evidence below remain historical. No push, PR or merge.
+Current phase / exact next action: owner creates exams at http://localhost:8001. [Development authorization](MAS_DEVELOPMENT_AUTHORIZATION.md) supersedes the previous one-exam/41-call/two-hour proposal and budget approval gate. No agent-initiated real MAS inference or exam generation has run. See [MAS runbook](MAS_WORKER_RUNBOOK.md) and [next task](NEXT_TASK.md). No push, PR or merge.
+
+## MAS development activation — 2026-11-27
+
+- Owner explicitly approved revocable internal access, real MAS forwarding, multiple owner-initiated UI jobs, and disabling ASTRA request/token/expiry budgets. Agent-triggered Gemini calls and generation are explicitly prohibited. No per-exam budget approval is required in this development mode.
+- Deployed existing MAS Worker version 6cc7f3de-3e99-4b9b-84ec-8217d3714563. Actual metadata/GET health confirm forwarding=true, budgetsEnabled=false, no configured attempt/token/time-window enforcement (health limits/remaining/expiry null), used=0. Gateway/account/BYOK/model/Secrets/DO namespace and prior counters preserved. No billing/resource purchase.
+- Added ASTRA_MAS_BUDGETS_ENABLED switch, default true; development deployment sets false. Bounded-mode implementation remains intact and can be re-enabled without losing usage history. Technical request/response/output/deadline/concurrency bounds, token authorization, fixed destination/model, no cache/fallback, kill switch, and Backend idempotency/retry/academic validation remain.
+- 13 offline workerd/SQLite checks and TypeScript passed, including more than 41 local reservations without budget rejection, persistent accounting, re-enabled budget enforcement, authentication, kill switch and concurrency. No Backend job/integration/smoke or Gemini acceptance was run in this activation task. Production verification consisted only of metadata and GET-only readiness calls.
+- Existing application at localhost:8001 reports demoMode=false/providerConfigured=true; no restart is necessary for the remote policy change. Chat API/configuration was not changed. Its previous window expired at 12:40 Asia/Bangkok; that separate state is not caused by MAS development mode.
+
+The earlier disabled-deployment and approval sections below are historical.
 
 ## MAS Cloudflare connection — 2026-11-27
 

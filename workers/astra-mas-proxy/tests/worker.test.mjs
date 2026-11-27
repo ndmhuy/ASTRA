@@ -162,6 +162,51 @@ test("expired windows and exhausted token budgets never reach the provider",asyn
   }
 });
 
+test("development mode disables only budgets, preserves counters, and production can re-enable them",async()=>{
+  const folder=await mkdtemp(join(tmpdir(),"astra-mas-development-"));
+  const development={ASTRA_MAS_BUDGETS_ENABLED:"false",ASTRA_MAS_ATTEMPT_LIMIT:"0",ASTRA_MAS_DAILY:"0",
+    ASTRA_MAS_TOKEN_BUDGET:"0",ASTRA_MAS_UNTIL:"2000-01-01T00:00:00Z"};
+  let {mf}=runtime(development,folder);
+  try {
+    let ns=await mf.getDurableObjectNamespace("MAS_ADMISSION"),stub=ns.get(ns.idFromName("mas-global-v1"));
+    for(let index=0;index<45;index++) {
+      const id=randomUUID();
+      assert.equal((await stub.fetch("https://quota/reserve",{method:"POST",body:JSON.stringify({id,tokens:50})})).status,200);
+      await stub.fetch("https://quota/release",{method:"POST",body:JSON.stringify({id})});
+    }
+    const quota=(await health(mf)).quota;
+    assert.equal(quota.budgetsEnabled,false);assert.equal(quota.used,45);
+    assert.equal(quota.estimatedTokensReserved,2250);
+    for(const key of ["limit","remaining","estimatedTokenLimit","expiresAt"]) assert.equal(quota[key],null);
+    await mf.dispose();
+    ({mf}=runtime({ASTRA_MAS_BUDGETS_ENABLED:"true",ASTRA_MAS_ATTEMPT_LIMIT:"45",ASTRA_MAS_DAILY:"512"},folder));
+    assert.equal((await health(mf)).quota.used,45);
+    assert.equal((await post(mf)).status,429);
+    await mf.dispose();
+    ({mf}=runtime({...development,ASTRA_MAS_FORWARDING_ENABLED:"false"},folder));
+    assert.equal((await post(mf)).status,503);
+    assert.equal((await health(mf)).quota.used,45);
+  } finally{await mf.dispose();await rm(folder,{recursive:true,force:true});}
+});
+
+test("development forwarding still requires authorization and enforces technical concurrency",async()=>{
+  const {mf,queue,observed}=runtime({ASTRA_MAS_BUDGETS_ENABLED:"false"});queue.push({delay:150});
+  try {
+    assert.equal((await post(mf,payload,{Authorization:"Bearer wrong"})).status,401);
+    const responses=await Promise.all([post(mf),post(mf)]);
+    assert.equal(responses.filter(item=>item.status===200).length,1);
+    assert.equal(responses.filter(item=>item.status===429).length,1);
+    assert.equal(observed.length,1);
+    assert.equal((await post(mf,{...payload,max_tokens:8193})).status,400);
+  } finally{await mf.dispose();}
+});
+
+test("an invalid budget switch fails closed",async()=>{
+  const {mf,observed}=runtime({ASTRA_MAS_BUDGETS_ENABLED:"typo"});
+  try {assert.equal((await post(mf)).status,503);assert.equal(observed.length,0);}
+  finally{await mf.dispose();}
+});
+
 test("incomplete provider envelopes fail closed and oversized responses remain bounded",async()=>{
   for(const text of ["{}","x".repeat(2097153)]) {
     const {mf,queue}=runtime();queue.push({text});

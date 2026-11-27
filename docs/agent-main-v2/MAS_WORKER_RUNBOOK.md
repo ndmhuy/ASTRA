@@ -1,6 +1,20 @@
 # Existing Backend MAS through Cloudflare
 
-For the owner and engineers activating one real exam from the current feature worktree. [Owner specification](MAS_CLOUDFLARE_SPEC.md) authorizes implementation and disabled deployment; section 7 requires approval before real inference. **Deployed and ready for approval; no real MAS/Gemini call or exam has run.**
+For the owner and engineers using MAS from the current feature worktree. **MAS development forwarding is now enabled; application http://localhost:8001 is non-demo.** The [latest owner approval](MAS_DEVELOPMENT_AUTHORIZATION.md) supersedes the older one-exam/41-call/two-hour proposal. Every real inference/job must be initiated by the owner on the UI; the agent performed no live generation or model test.
+
+## Current development mode
+
+Deployment 6cc7f3de-3e99-4b9b-84ec-8217d3714563 retains the existing Worker, Gateway, encrypted Secrets, model and durable namespace. Actual /health reports forwarding=true, configured=true, callerAuthorization=true, quota.budgetsEnabled=false, with limit/remaining/estimatedTokenLimit/expiresAt null and used=0 at verification. Null means the corresponding ASTRA budget is disabled, not exhausted. Counters continue recording admitted requests and conservative token estimates; they are not reset.
+
+The single ASTRA_MAS_BUDGETS_ENABLED flag defaults to true. False bypasses only lifetime/daily attempt, estimated-token and expiry enforcement. Authentication, kill switch, per-request bounds, fixed provider/model, timeout and concurrency always apply. The Backend's current idempotency, retries, academic validation and real-generation configuration are unchanged. No caller credential is distributed to the frontend and no anonymous unrestricted inference route is enabled.
+
+Current deployment uses ignored workers/astra-mas-proxy/.wrangler/development.jsonc, with ASTRA_MAS_FORWARDING_ENABLED=true and ASTRA_MAS_BUDGETS_ENABLED=false. Tracked wrangler defaults remain forwarding=false/budgets=true. Deploy the intended profile explicitly. To stop, set forwarding=false in the active config and deploy; this works in either budget mode. To restore budgets, set budgets=true plus suitable total/daily/token/expiry values; prior usage is retained and exhausted limits will reject requests. Do not run the old one-exam activation procedure below for current development use. No new approval per exam is required under the latest authorization.
+
+Verified: TypeScript and13 offline Worker groups. The new regression admits45 local DO reservations despite zero/expired budgets, preserves counters over restart, then rejects at a re-enabled lifetime cap. Separate tests retain authorization, kill switch and technical concurrency. All upstream responses in Worker tests are intercepted synthetic JSON; no academic exam is generated. Production verification was metadata plus GET /health only. The existing actual8001 process reports demoMode=false/providerConfigured=true and needs no restart for this remote policy change. No live inference smoke/integration test or owner UI submission was performed by the agent.
+
+Chat is unchanged. Its earlier independent expiry12:40 Asia/Bangkok has passed; current MAS development approval does not change Chat's configuration or remaining counters. Actual model/protocol/quality acceptance remains for the owner's UI tests.
+
+## Historical disabled-deployment checkpoint (superseded)
 
 ## Current observed state
 

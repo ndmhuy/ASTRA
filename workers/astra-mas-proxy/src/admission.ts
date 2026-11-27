@@ -9,6 +9,7 @@ export interface Env {
   ASTRA_MAS_GATEWAY_BYOK_ALIAS?: string;
   ASTRA_MAS_MODEL?: string;
   ASTRA_MAS_FORWARDING_ENABLED?: string;
+  ASTRA_MAS_BUDGETS_ENABLED?: string;
   ASTRA_MAS_ATTEMPT_LIMIT?: string;
   ASTRA_MAS_DAILY?: string;
   ASTRA_MAS_TOKEN_BUDGET?: string;
@@ -26,12 +27,16 @@ export function bounded(value: string | undefined, maximum: number) {
 }
 
 export function policy(env: Env) {
-  const until = Date.parse(env.ASTRA_MAS_UNTIL ?? "");
-  if (!Number.isFinite(until)) throw new Error("configuration");
+  const budgetSwitch = env.ASTRA_MAS_BUDGETS_ENABLED ?? "true";
+  if (!["true", "false"].includes(budgetSwitch)) throw new Error("configuration");
+  const budgetsEnabled = budgetSwitch === "true";
+  const until = budgetsEnabled ? Date.parse(env.ASTRA_MAS_UNTIL ?? "") : null;
+  if (budgetsEnabled && !Number.isFinite(until)) throw new Error("configuration");
   const result = {
-    attempts: bounded(env.ASTRA_MAS_ATTEMPT_LIMIT, limits.maxAttempts),
-    daily: bounded(env.ASTRA_MAS_DAILY, limits.maxAttempts),
-    tokens: bounded(env.ASTRA_MAS_TOKEN_BUDGET, limits.maxEstimatedTokens),
+    budgetsEnabled,
+    attempts: budgetsEnabled ? bounded(env.ASTRA_MAS_ATTEMPT_LIMIT, limits.maxAttempts) : null,
+    daily: budgetsEnabled ? bounded(env.ASTRA_MAS_DAILY, limits.maxAttempts) : null,
+    tokens: budgetsEnabled ? bounded(env.ASTRA_MAS_TOKEN_BUDGET, limits.maxEstimatedTokens) : null,
     concurrency: bounded(env.ASTRA_MAS_CONCURRENCY, limits.maxConcurrency),
     upstreamMs: bounded(env.ASTRA_MAS_UPSTREAM_MS, limits.maxDeadlineMs),
     outputTokens: bounded(env.ASTRA_MAS_OUTPUT_TOKENS, limits.maxOutputTokens), until,
@@ -52,10 +57,10 @@ export class MasAdmission {
       const ledger = await this.state.storage.get<Ledger>("ledger");
       const now = Date.now(), day = new Date(now).toISOString().slice(0, 10);
       const used = ledger?.used ?? 0;
-      return Response.json({ used, limit: rules.attempts, day, dailyUsed: ledger?.days[day] ?? 0,
-        remaining: rules.until <= now ? 0 : Math.max(0, Math.min(rules.attempts - used, rules.daily - (ledger?.days[day] ?? 0))),
+      return Response.json({ used, budgetsEnabled: rules.budgetsEnabled, limit: rules.attempts, day, dailyUsed: ledger?.days[day] ?? 0,
+        remaining: !rules.budgetsEnabled ? null : rules.until! <= now ? 0 : Math.max(0, Math.min(rules.attempts! - used, rules.daily! - (ledger?.days[day] ?? 0))),
         estimatedTokensReserved: ledger?.tokens ?? 0, estimatedTokenLimit: rules.tokens,
-        expiresAt: new Date(rules.until).toISOString(),
+        expiresAt: rules.until === null ? null : new Date(rules.until).toISOString(),
         activeReservations: ledger?.leases.filter(lease => lease.until > now).length ?? 0 });
     }
     if (request.method !== "POST") return Response.json({error:"rejected"}, {status:405});
@@ -68,8 +73,9 @@ export class MasAdmission {
         ledger.leases = ledger.leases.filter(lease => lease.id !== body.id);
       } else if (path === "/reserve") {
         if (!/^[a-f0-9-]{36}$/.test(body.id ?? "") || !Number.isSafeInteger(body.tokens) || body.tokens! < 0) return Response.json({error:"rejected"}, {status:400});
-        if (this.env.ASTRA_MAS_FORWARDING_ENABLED !== "true" || rules.until <= now || ledger.used >= rules.attempts ||
-          (ledger.days[day] ?? 0) >= rules.daily || ledger.tokens + body.tokens! > rules.tokens || ledger.leases.length >= rules.concurrency) return Response.json({error:"quota"}, {status:429});
+        const budgetBlocked = rules.budgetsEnabled && (rules.until! <= now || ledger.used >= rules.attempts! ||
+          (ledger.days[day] ?? 0) >= rules.daily! || ledger.tokens + body.tokens! > rules.tokens!);
+        if (this.env.ASTRA_MAS_FORWARDING_ENABLED !== "true" || budgetBlocked || ledger.leases.length >= rules.concurrency) return Response.json({error:"quota"}, {status:429});
         // Lifetime counters cannot renew at midnight or process restart. No refunds.
         ledger.used++; ledger.tokens += body.tokens!;
         ledger.days[day] = (ledger.days[day] ?? 0) + 1;

@@ -1,6 +1,17 @@
-# Next task: approve and observe one real MAS exam
+# Next task: owner tests real MAS through the UI
 
-For the owner/next engineer in the existing feat/longlth2297/agent-main-v2 worktree. Current scope: [MAS specification](MAS_CLOUDFLARE_SPEC.md) and [MAS runbook](MAS_WORKER_RUNBOOK.md). Worker implementation cfbf951; Backend integration/readiness accompanies this checkpoint. Earlier Chat-only and no-MAS authorization blockers are historical.
+For the owner/next engineer in the existing feat/longlth2297/agent-main-v2 worktree. Current authority: [development approval](MAS_DEVELOPMENT_AUTHORIZATION.md), superseding the old one-exam budget gate. Backend integration is 18243ac; this checkpoint adds configurable budget bypass and enabled MAS development deployment. Read [MAS runbook](MAS_WORKER_RUNBOOK.md).
+
+## Active development configuration
+
+- Open **http://localhost:8001**. Application is already running with demoMode=false/providerConfigured=true and the existing ignored caller profile. Startup/reload makes no inference. All real exams and Gemini calls must be initiated by the owner on the UI; do not auto-submit even one job or run live inference smoke/integration checks.
+- Existing MAS deployment 6cc7f3de-3e99-4b9b-84ec-8217d3714563: forwarding=true, ASTRA_MAS_BUDGETS_ENABLED=false. ASTRA total/daily request, estimated-token and expiry limits are bypassed, not deleted. Actual used was0 at activation verification. No per-job budget approval required. Gemini's actual quotas and existing technical limits still apply.
+- Revocable caller token, Gateway Secret, fixed destination/model, persistent counters, concurrency3, upstream90s, Backend100s, output8192, request1MiB/response2MiB, Backend idempotency/academic retries/validation and kill switch remain. Model/prompt/schema/academic logic unchanged. No new Worker/Gateway, paid fallback, billing activation or resource purchase.
+- Active operator config: ignored workers/astra-mas-proxy/.wrangler/development.jsonc. To stop forwarding set ASTRA_MAS_FORWARDING_ENABLED=false there and deploy that exact config. To restore budget enforcement set ASTRA_MAS_BUDGETS_ENABLED=true and configure suitable total/daily/token/expiry values; consumed counters remain. Tracked wrangler defaults are deliberately disabled/bounded; deploy the intended profile explicitly.
+- Verified with13 offline Worker groups, tsc, deployment metadata and GET-only health calls; no academic job or live model call was made. Actual live protocol/quality/speed/concurrent Chat acceptance is exclusively owner-driven.
+- Chat API/code/configuration was untouched. The prior Chat window expired independently at12:40 Asia/Bangkok; MAS activation does not renew it. Preserve its usage and do not silently change it under this MAS-only request.
+
+## Historical one-exam approval proposal — superseded
 
 ## Current MAS gate
 
