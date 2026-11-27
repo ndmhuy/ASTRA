@@ -2,6 +2,8 @@
 
 For the owner/team reviewing the existing Chat candidate. Authorization: [completion specification](LIVE_CHAT_COMPLETION_SPEC.md). Implementation d59294e. [Machine-readable live predictions](../../eval/agent-semantic/live-20261127.json) are separate from the unchanged 197-record/scenario oracle corpus. No fixture responses or business mocks were used in these real browser turns.
 
+Owner follow-up: the initial 09:40 window expired with all four manual attempts unused. On explicit request, reopened until 2026-11-27 12:05 Asia/Bangkok / 05:05 UTC, deployment 6e8c5f3d-a116-4c94-8ae1-40ad14d685f1. Same session used=8/limit=12, remaining=4; no inference, reset or limit increase. This supersedes the initial window below. Four is ASTRA's configured allowance, not observed remaining Gemini quota.
+
 ## Infrastructure and accounting
 
 Existing astra-ai-proxy / astra-gateway / default BYOK / gemini-3.1-flash-lite. Initial disabled rollout 1df26001-8253-4be4-b246-fa2b326c1be5 verified both contracts, encrypted Gateway Token Secret, unchanged ADMISSION namespace 5facb56f387d4f8c8fe723775e04f024, Admission class, global-v1 identity and v1-admission migration. No resource/storage recreation or credential retrieval. Rollback code reference bb165c28-5a06-4372-9c9e-b2bf758b9599: disable forwarding and verify disabled configuration before rollback, since old code lacks session enforcement.

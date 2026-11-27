@@ -12,6 +12,8 @@ Current phase / exact next action: real keyless Chat vertical slice and mounted 
 
 ## Current live checkpoint — 2026-11-27
 
+- Owner explicitly requested reopening the four unused manual attempts after expiry. Deployment 6e8c5f3d-a116-4c94-8ae1-40ad14d685f1 extends only expiry to 05:05 UTC / 12:05 Asia/Bangkok, same session used=8, limit=12, remaining=4. Health/config verified; no inference consumed. This is an ASTRA allowance, not Gemini quota. See NEXT_TASK.md for current window.
+
 - Deployed the existing Worker disabled first, verified both contracts/hash, existing Secret/Gateway/DO namespace and zero current-day consumption. Historical usage was preserved; UTC day differed from the historical two calls.
 - Eight automated upstream attempts: seven HTTP 200 canonical semantic frames, one 30-second upstream deadline. No retries/fallback; zero generation/approval/export writes. Two valid calls opened fresh conversations due to a browser harness mistake and are excluded from contextual acceptance while still consuming budget.
 - Real successes: natural THPT subject clarification; local polite Mathematics continuation opening the actual 22-question/90-minute setup; corrected stored-format recall; truthful unsupported Chemistry; local information-only guidance; model-driven RETURN_HOME with stored receipt and actual home screen.
