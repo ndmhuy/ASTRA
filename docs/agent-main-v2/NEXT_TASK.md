@@ -1,4 +1,6 @@
-# Next task: owner tests real Chat and MAS through the UI
+# Next task: teammate reviews PR24 and owner accepts live UI behavior
+
+[PR24](https://github.com/ndmhuy/ASTRA/pull/24) is open against main. Conflicts are resolved; no PR merge or auto-merge is enabled. Initial CI exposed an old transport assumption in the Gateway configuration test; it now explicitly selects Gateway and blocks outbound sends.49 focused local checks pass after that fix. Assess the updated GitHub checks and require a different member's approval before squash merge. Real Chat/MAS acceptance remains owner-driven only.
 
 For the owner/reviewer on feat/longlth2297/chat-mas-main-review. This branch starts at latest origin/main c0fbdaf and merges the existing feature2fd37f6 in an isolated worktree, preserving the owner's original running app. Current authority includes opening a PR into main for teammate review, not merging the PR. [Development approval](MAS_DEVELOPMENT_AUTHORIZATION.md) still prohibits agent-initiated real inference or exam generation. Read [MAS runbook](MAS_WORKER_RUNBOOK.md) and the current [integration evidence](PROGRESS.md#main-integration-for-teammate-review---2026-11-27).
 

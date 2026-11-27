@@ -3,6 +3,7 @@
 from contextlib import asynccontextmanager
 from uuid import uuid4
 
+import httpx
 from fastapi.testclient import TestClient
 
 from exam_baseline.agent import admission
@@ -96,7 +97,15 @@ def test_demo_mas_can_use_explicit_agent_configuration(tmp_path, monkeypatch):
 
 
 def test_operator_can_distinguish_disabled_agent_from_bad_configuration(tmp_path, monkeypatch):
+    # This case exercises missing Gateway configuration, independently of the
+    # application's default Worker transport and any real local caller profile.
+    monkeypatch.setenv("ASTRA_AGENT_TRANSPORT", "gateway")
     monkeypatch.setenv("ASTRA_AGENT_GATEWAY_TOKEN", "")
+
+    async def no_network(*args, **kwargs):
+        raise AssertionError("Configuration validation must not send a provider request")
+
+    monkeypatch.setattr(httpx.AsyncClient, "send", no_network)
     settings = Settings.for_offline().model_copy(update={"demo_mode": True})
     for enabled, expected in [("false", "disabled"), ("true", "configuration")]:
         monkeypatch.setenv("ASTRA_AGENT_ENABLED", enabled)
