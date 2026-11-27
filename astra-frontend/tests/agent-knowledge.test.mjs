@@ -2,13 +2,59 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import thpt from '../../src/exam_baseline/resources/exam_formats/thpt_math_v1.json' with { type: 'json' };
 import vact from '../../src/exam_baseline/resources/exam_formats/vact_v1.json' with { type: 'json' };
-import { guidanceFor, resolveIntake } from '../src/agent/knowledge.ts';
+import { guidanceFor, resolveIntake, shortSubjectIntake } from '../src/agent/knowledge.ts';
 import { fastRoute } from '../src/agent/recipes.ts';
 import { parseDecision, VERSION } from '../src/agent/contracts.ts';
 
 const catalog = [thpt, vact];
 const resolve = (message, proposal = {}, previous, formats = catalog) =>
   resolveIntake({ mode: 'request', ...proposal }, message, previous, formats, message);
+
+const biology = { ...thpt, id: 'thpt-biology', displayName: 'Sinh Học THPT', subjects: ['Sinh Học'] };
+const history = { ...thpt, id: 'thpt-history', displayName: 'Lịch Sử THPT', subjects: ['Lịch Sử'] };
+
+test('subject shorthand opens matching setup on the first turn', () => {
+  const formats = [...catalog, biology, history];
+  for (const [message, format] of [
+    ['sử', history], ['sử thpt', history], ['sinh', biology], ['đề môn sinh', biology],
+    ['sinh học thpt', biology], ['Môn: Sinh nhé.', biology],
+  ]) {
+    const proposal = shortSubjectIntake(message);
+    assert.equal(proposal?.subject, format.subjects[0]);
+    const result = resolve(message, proposal, undefined, formats);
+    assert.deepEqual(result.intent, { id: 'SELECT_FORMAT', args: { format: format.id, details: true } });
+    assert.equal(result.draft.family, 'thpt');
+  }
+  for (const message of ['Không chọn sinh', 'sinh?', 'sinh hay sử', 'lịch sử là gì?', 'Nếu cô chọn môn Sinh']) {
+    assert.equal(shortSubjectIntake(message), undefined, message);
+  }
+});
+
+test('grounded subjects use only available catalog matches and discard the previous subject constraints', () => {
+  const biologyVact = { ...vact, id: 'vact-biology', displayName: 'Sinh Học V-ACT', subjects: ['Sinh Học'] };
+  const formats = [...catalog, biology, biologyVact];
+  const natural = 'Cô muốn chuẩn bị một đề môn Sinh';
+  const proposal = { mode: 'request', subject: 'Sinh Học' };
+  assert.equal(resolveIntake(proposal, natural, undefined, [...catalog, biology], 'new', true).intent.args.format, biology.id);
+  const ambiguous = resolve(natural, proposal, undefined, formats);
+  assert.equal(ambiguous.intent, undefined);
+  assert.equal(ambiguous.draft.missing, 'family');
+  assert.match(ambiguous.text, /Sinh Học THPT, Sinh Học V-ACT/);
+  assert.doesNotMatch(ambiguous.text, /Toán THPT/);
+  assert.match(resolve('sinh', proposal, undefined, [...catalog, { ...biology, available: false }]).text, /chưa hỗ trợ môn Sinh/);
+  assert.equal(resolve('sinh thpt', proposal, undefined, formats).intent.args.format, biology.id);
+
+  const multipleSubjects = resolve('Đề môn Sinh hay môn Sử', proposal, undefined, [...catalog, biology, history]);
+  assert.equal(multipleSubjects.intent, undefined);
+  assert.match(multipleSubjects.text, /Sinh Học, Lịch Sử/);
+
+  const previous = resolve('Tạo đề Toán THPT 15 câu', { subject: 'Toán Học' }).draft;
+  const correction = resolve('sinh', proposal, { ...previous, topic: 'đạo hàm' }, [...catalog, biology]);
+  assert.equal(correction.intent.id, 'SELECT_FORMAT');
+  assert.equal(correction.draft.count, undefined);
+  assert.equal(correction.draft.topic, undefined);
+  assert.deepEqual(correction.draft.sourceIds, ['sinh']);
+});
 
 test('partial intake retains family and catalog subject, then prepares a grounded topic', () => {
   const initial = resolve('Tạo đề thi thử tốt nghiệp');

@@ -6,7 +6,7 @@ import { admit, execute, fastRoute, fold, mayDispatch, type Effect, type Runtime
 import { displayNumber, failure, inspectQuestion, previewText, resolveQuestion, sectionId, statusText, success } from './agent/examActions';
 import type { Decision, Intent } from './agent/contracts';
 import { contextualSubject, resolveSemantic } from './agent/semantics';
-import { familyFor, formatOverview, guidanceFor, mentionedFamilies, resolveIntake } from './agent/knowledge';
+import { familyFor, formatOverview, guidanceFor, mentionedFamilies, resolveIntake, shortSubjectIntake } from './agent/knowledge';
 import { AlertCircle, AlertTriangle, LoaderCircle, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { WorkspaceStart } from './components/WorkspaceStart';
 import { AstraWelcome } from './components/AstraWelcome';
@@ -241,10 +241,16 @@ export const App: React.FC = () => {
       await Promise.resolve();
       if (!alive()) return;
       let local = fastRoute(content);
-      if (!local && origin?.intake?.missing === 'subject' && content.length <= 80) {
-        const subject = contextualSubject(content, origin.intake, await getExamFormats());
-        if (subject?.intake) local = { intake: subject.intake };
-        if (!alive() || runtime.binding() !== binding) return;
+      let intakeFormats: ExamFormat[] | undefined;
+      if (!local && origin && ['draft', 'error'].includes(origin.status) && !editor && content.length <= 80) {
+        const subject = shortSubjectIntake(content);
+        if (subject) local = { intake: subject };
+        else if (origin.intake?.missing === 'subject') {
+          intakeFormats = await getExamFormats();
+          const contextual = contextualSubject(content, origin.intake, intakeFormats);
+          if (contextual?.intake) local = { intake: contextual.intake };
+          if (!alive() || runtime.binding() !== binding) return;
+        }
       }
       if (local && 'text' in local) { answer(local.text); return; }
       if (local && 'confirm' in local) {
@@ -321,7 +327,7 @@ export const App: React.FC = () => {
           return;
         }
         if (decision.intake?.mode === 'request') pending.current = null;
-        const formats = decision.guidance === 'remark' ? [] : await getExamFormats();
+        const formats = decision.guidance === 'remark' ? [] : intakeFormats ?? await getExamFormats();
         if (!alive() || runtime.binding() !== binding) return;
         if (decision.intake) {
           const resolution = resolveIntake(decision.intake, content, origin?.intake, formats, messageId, !!workflow);
