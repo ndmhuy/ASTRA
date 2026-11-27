@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useSyncExternalStore, useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import { flushSync } from 'react-dom';
 import { meaningful, recentQuestion, redact, retrievedContext, searchSessions } from './agent/memory';
-import { interpretationUnavailable, interpret } from './agent/client';
+import { interpretationUnavailable, interpret, researchAdjacentTopic } from './agent/client';
 import { admit, execute, fastRoute, fold, mayDispatch, type Effect, type Runtime } from './agent/recipes';
 import { displayNumber, failure, inspectQuestion, previewText, resolveQuestion, sectionId, statusText, success } from './agent/examActions';
 import type { Decision, Intent } from './agent/contracts';
 import { contextualSubject, resolveSemantic } from './agent/semantics';
-import { familyFor, formatOverview, guidanceFor, mentionedFamilies, resolveIntake, shortSubjectIntake } from './agent/knowledge';
+import { familyFor, formatOverview, guidanceFor, listAdjacentTopics, matchAdjacentTopic, mentionedFamilies, resolveIntake, shortSubjectIntake } from './agent/knowledge';
 import { AlertCircle, AlertTriangle, LoaderCircle, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { WorkspaceStart } from './components/WorkspaceStart';
 import { AstraWelcome } from './components/AstraWelcome';
@@ -19,7 +19,7 @@ import { ModernChatBar } from './components/Workspace/ChatPane/ModernChatBar';
 import { CanvasHeader } from './components/Workspace/LiveCanvas/CanvasHeader';
 import { ExamPaperView, type ExamCanvasViewMode, type ExamPaperControls } from './components/Workspace/LiveCanvas/ExamPaperView';
 import type { InputDocument } from './services/inputDocuments';
-import type { ChatMessage, ExamFormat, ExamRequestParams, QuestionItem } from './types/exam';
+import type { ChatMessage, ExamFormat, ExamRequestParams, QuestionItem, Subject } from './types/exam';
 import { QuestionEditor, type QuestionEditorControls } from './components/QuestionEditor';
 import { ApiError, evaluateExamFormat, examService, getExamFormats } from './services/examService';
 import { prepareParams, type Intake } from './agent/intake';
@@ -245,14 +245,82 @@ export const App: React.FC = () => {
     const origin = store.getSnapshot().find(s => s.id === id);
     const alive = () => !controller.signal.aborted && !!store.getSnapshot().find(s => s.id === id)?.messages.some(m => m.id === messageId);
     try {
-      if (options.searchWeb) {
+      const adjacentTopic = matchAdjacentTopic(content);
+      const earlyFast = fastRoute(content);
+      const isConfirmOrCancel = Boolean(earlyFast && 'confirm' in earlyFast);
+      const inDraftLikeState = !origin || ['draft', 'error'].includes(origin.status);
+      if (!isConfirmOrCancel && (options.searchWeb || (adjacentTopic && origin?.mode === 'custom' && inDraftLikeState && !editor))) {
         pending.current = null;
-        answer('ASTRA chưa hỗ trợ tìm trên mạng. Tài liệu đã đính kèm được giữ lại; hãy tắt tìm mạng để tiếp tục.');
+        const attachedFilesMessage = 'Chưa thể dùng tài liệu đính kèm khi tìm đề trên mạng. Thầy cô hãy gỡ tệp để tìm mạng, hoặc gửi yêu cầu soạn đề từ tài liệu đính kèm.';
+        if (options.attachedFiles.length) {
+          answer(attachedFilesMessage);
+          return;
+        }
+        if (!adjacentTopic) {
+          const supported = listAdjacentTopics().map(topic => topic.subject).join(', ');
+          answer(`Tính năng Tìm mạng hiện hỗ trợ các chủ đề lân cận: ${supported}. Thầy cô hãy nêu rõ một chủ đề trong danh sách (ví dụ: “Tìm đề SAT Math 10 câu”).`);
+          return;
+        }
+        const foldedContent = fold(content);
+        const countMatch = foldedContent.match(/\b(\d+)\s*cau\b/);
+        const minutesMatch = foldedContent.match(/\b(\d+)\s*phut\b/);
+        const requestedCount = countMatch ? Math.min(20, Math.max(4, Number(countMatch[1]))) : undefined;
+        const requestedMinutes = minutesMatch ? Math.min(120, Math.max(5, Number(minutesMatch[1]))) : undefined;
+        const research = await researchAdjacentTopic(
+          id,
+          messageId,
+          adjacentTopic.id,
+          redact(content),
+          { count: requestedCount, minutes: requestedMinutes },
+          controller.signal,
+        );
+        if (!alive() || runtime.binding() !== binding) return;
+        const sourceLines = research.sources.length
+          ? research.sources.slice(0, 5).map((source, idx) => `  ${idx + 1}. ${source.title} — ${source.url}`).join('\n')
+          : '  • Hiện chưa lấy được kết quả web trực tuyến; dùng mô tả cấu trúc tích hợp sẵn.';
+        const modeLabel = research.searchMode === 'live_web'
+          ? 'Đã tìm kiếm trên mạng'
+          : 'Dùng dữ liệu cấu trúc tích hợp sẵn (ngoại tuyến)';
+        const summary = `[${modeLabel}] ${research.topicLabel} · ${research.suggestedCount} câu · ${research.suggestedMinutes} phút\n${research.summary}\nNguồn tham khảo:\n${sourceLines}\nNếu đồng ý tạo đề này, thầy cô hãy nhắn “Xác nhận”.`;
+        flushSync(() => {
+          store.suggestTitle(id, `Đề luyện tập ${research.topicLabel}`, messageId, 4);
+        });
+        pending.current = {
+          workspaceId: id,
+          binding: runtimeRef.current!.binding(),
+          expires: Date.now() + CONFIRMATION_TTL_MS,
+          run: async () => {
+            const documents = store.getSnapshot().find(session => session.id === id)?.inputDocuments;
+            if (documents?.length) return failure(attachedFilesMessage);
+            const params: ExamRequestParams = {
+              formatId: research.formatId,
+              formatVersion: '1',
+              adjacentTopicId: research.adjacentTopicId,
+              subject: research.subject as Subject,
+              grade: 12,
+              examType: 'CUSTOM',
+              durationMinutes: research.suggestedMinutes,
+              itemCount: research.suggestedCount,
+              prompt: content,
+              uploadedFiles: [],
+              webSources: research.sources,
+            };
+            const job = await store.generate(id, params);
+            if (job) {
+              return { status: 'accepted', text: `Máy chủ đã nhận yêu cầu tạo đề ${research.topicLabel}. Thầy cô có thể theo dõi tiến độ ở khung bên phải.` };
+            }
+            const actual = store.getSnapshot().find(item => item.id === id);
+            return actual?.errorCode === 'network_error'
+              ? { status: 'unknown', text: 'Chưa rõ máy chủ đã nhận yêu cầu hay chưa. Chỉ thử lại với cùng thông số.' }
+              : { status: 'failed', text: actual?.error || 'Chưa nhận được mã công việc tạo đề.' };
+          },
+        };
+        answer(summary);
         return;
       }
       await Promise.resolve();
       if (!alive()) return;
-      let local = fastRoute(content);
+      let local = earlyFast;
       let intakeFormats: ExamFormat[] | undefined;
       if (!local && origin && ['draft', 'error'].includes(origin.status) && !editor && content.length <= 80) {
         const subject = shortSubjectIntake(content);
@@ -498,15 +566,17 @@ export const App: React.FC = () => {
       setUndo({ sessionId, jobId, previousRevision, revision: regenerated.examRevision });
     }
   };
-  const exportFile = async (type: 'STUDENT_EXAM' | 'TEACHER_KEY', format: 'tex' | 'pdf' | 'json') => {
+  const exportFile = async (type: 'STUDENT_EXAM' | 'TEACHER_KEY', format: 'tex' | 'pdf' | 'json' | 'docx' | 'md') => {
     const session = active;
     if (!session?.jobId) return false;
-    try { await examService.downloadExport(session.jobId, type, format); return true; }
+    try {
+      await examService.downloadExport(
+        session.jobId, type, format, session.meta?.title || session.package?.title || session.title,
+      );
+      return true;
+    }
     catch (error) { await store.handleActionError(session.id, error); return false; }
   };
-  const handleExportPdf = () => { void exportFile('STUDENT_EXAM', 'pdf'); };
-  const handleExportWord = () => { void exportFile('STUDENT_EXAM', 'tex'); };
-  const handleExportAnswer = () => { void exportFile('TEACHER_KEY', 'json'); };
   const approve = async () => {
     const session = active;
     if (!session?.jobId || !session.package || !examService.approveExam || !store.canApprove(session.id)) return false;
@@ -1174,21 +1244,11 @@ export const App: React.FC = () => {
                     examMeta={examMeta}
                     isGenerating={isGenerating}
                     canExport={active.package?.approved === true && !active.artifactChanged}
-                    canExportPdf={Boolean(
-                      active.package?.approved &&
-                      !active.artifactChanged &&
-                      active.preview?.status === 'ready' &&
-                      active.preview.revision === active.package.revision &&
-                      active.preview.contentHash === active.package.contentHash
-                    )}
                     showApprove={active.status === 'complete' && !active.package?.approved && !active.artifactChanged}
                     canApprove={store.canApprove(active.id)}
                     approving={approving}
                     onOpenPdfPreview={openPdfManually}
                     onApprove={() => { void approve(); }}
-                    onExportPdf={handleExportPdf}
-                    onExportWord={handleExportWord}
-                    onExportAnswer={handleExportAnswer}
                     onShowHistory={canOpenHistory ? () => setHistorySession(active.id) : undefined}
                     onUndoRegeneration={latestUndo ? () => void undoRecordedChange(latestUndo)
                       : canUndo ? () => void undoRegeneration() : undefined}
@@ -1196,6 +1256,7 @@ export const App: React.FC = () => {
                   />}
                   controlsRef={canvas}
                   onManualPdfOpen={() => store.markPreviewOpened(active.id)}
+                  onExport={format => exportFile(format === 'json' ? 'TEACHER_KEY' : 'STUDENT_EXAM', format)}
                   questions={liveQuestions}
                   passages={active.package?.passages}
                   examMeta={examMeta}

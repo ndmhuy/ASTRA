@@ -1,12 +1,12 @@
 import type { StudentPaper } from '../services/contractPaper';
 
 /** Backend-adapted UI contracts. Display numbers are separate from stable MAS IDs. */
-export type Subject = 'Tổng hợp' | 'Vật Lý' | 'Toán Học' | 'Hóa Học' | 'Sinh Học' | 'Tiếng Anh' | 'Lịch Sử' | 'Địa Lý' | 'GDCD / KTPL';
+export type Subject = 'Tổng hợp' | 'Vật Lý' | 'Toán Học' | 'Hóa Học' | 'Sinh Học' | 'Tiếng Anh' | 'Lịch Sử' | 'Địa Lý' | 'GDCD / KTPL' | 'SAT' | 'IELTS' | 'TOEIC' | 'TOEFL' | 'ACT';
 export type ExamType = 'THPT_STANDARD' | 'DGNL_DHQG' | 'MID_TERM' | 'CUSTOM';
 export type CognitiveLevel = 'NHAN_BIET' | 'THONG_HIEU' | 'VAN_DUNG' | 'VAN_DUNG_CAO';
 export type VerificationStatus = 'PENDING' | 'VERIFIED' | 'FLAGGED';
 export type AnswerCheck = 'matched' | 'mismatched' | 'needs_recheck';
-export type ExportFormat = 'docx' | 'pdf' | 'tex' | 'json';
+export type ExportFormat = 'docx' | 'pdf' | 'tex' | 'json' | 'md';
 export interface QuestionApproval {
   questionId: string;
   questionHash?: string;
@@ -140,10 +140,32 @@ export interface ExamHistory {
   restore(jobId: string, version: number, revision: number, workspaceId?: string, targetJobId?: string): Promise<ExamPackage>;
 }
 
+export interface WebSearchSource {
+  title: string;
+  url: string;
+  snippet: string;
+}
+
+export interface WebResearchResult {
+  schemaVersion: 'astra-web-research-v1';
+  clientMessageId: string;
+  adjacentTopicId: string;
+  topicLabel: string;
+  formatId: string;
+  subject: Subject;
+  summary: string;
+  suggestedCount: number;
+  suggestedMinutes: number;
+  sources: WebSearchSource[];
+  searchMode: 'live_web' | 'offline_fallback';
+}
+
 export interface ExamRequestParams {
   subject: Subject; grade: number; examType: ExamType; durationMinutes: number;
   itemCount: number; prompt: string; uploadedFiles: string[];
   formatId?: string; formatVersion?: string; clientRequestId?: string;
+  adjacentTopicId?: string;
+  webSources?: WebSearchSource[];
 }
 export interface GenerationProgress {
   stage: number; stageName: string; percent: number; estimatedSecondsLeft: number;

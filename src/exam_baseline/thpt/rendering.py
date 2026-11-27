@@ -15,6 +15,15 @@ _COMPLEX_CHOICE = re.compile(
 _CHOICE_ROWS_MARKER = "% ASTRA_CHOICE_ROWS_FIT"
 
 
+def choices_are_compact(values: list[str]) -> bool:
+    return not any(
+        "\n" in value
+        or _COMPLEX_CHOICE.search(value)
+        or len(" ".join(value.replace("$", "").split())) > 16
+        for value in values
+    )
+
+
 def render_choice_rows(choices: dict[str, str], *, legacy_grid: bool = False) -> str:
     """Use four or two columns when they fit, otherwise give each choice its own row."""
     values = [choices[label].strip() for label in "ABCD"]
@@ -29,12 +38,7 @@ def render_choice_rows(choices: dict[str, str], *, legacy_grid: bool = False) ->
         return r"\noindent " + "\\hfill%\n".join(boxes) + r"\par"
 
     pairs = "\n".join((row(options[:2], half_width), r"\nobreak", row(options[2:], half_width)))
-    compact = not any(
-        "\n" in value
-        or _COMPLEX_CHOICE.search(value)
-        or len(" ".join(value.replace("$", "").split())) > 16
-        for value in values
-    )
+    compact = choices_are_compact(values)
     if legacy_grid and not compact:
         return pairs
 

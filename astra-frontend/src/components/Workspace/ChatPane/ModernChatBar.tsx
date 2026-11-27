@@ -82,7 +82,7 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
             type="button"
             className={`composer-tool-btn ${searchWeb ? 'is-active' : ''}`}
             onClick={() => setSearchWeb((v) => !v)}
-            title="Tìm trên mạng"
+            title="Tìm trên mạng cho chủ đề lân cận (SAT, IELTS, TOEIC, TOEFL, ACT)"
             aria-pressed={searchWeb}
           >
             <Globe size={15} aria-hidden="true" />

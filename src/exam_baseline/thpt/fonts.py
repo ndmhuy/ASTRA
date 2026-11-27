@@ -15,7 +15,9 @@ def apply_font_profile(source: bytes, profile: FontProfile = DEFAULT_FONT_PROFIL
     new = (
         b"\\usepackage{fontspec}\n"
         b"\\IfFontExistsTF{Times New Roman}{\\setmainfont{Times New Roman}}"
-        b"{\\setmainfont{TeX Gyre Termes}}"
+        b"{\\IfFontExistsTF{TeX Gyre Termes}{\\setmainfont{TeX Gyre Termes}}"
+        b"{\\IfFontExistsTF{Liberation Serif}{\\setmainfont{Liberation Serif}}"
+        b"{\\setmainfont{DejaVu Serif}}}}"
     )
     if old not in source:
         old, new = old.replace(b"\n", b"\r\n"), new.replace(b"\n", b"\r\n")
