@@ -28,7 +28,7 @@ from exam_baseline.thpt.rag import (
     default_request,
     retrieval_matrix,
 )
-from exam_baseline.thpt.rendering import render, student_view
+from exam_baseline.thpt.rendering import reflow_saved_choice_rows, render, student_view
 from exam_baseline.thpt.runtime import ContractError
 from exam_baseline.thpt.short_answers import MAX_ANSWER_CHARACTERS, validate_short_answer_precision
 from exam_baseline.thpt.subject_workflow import (
@@ -1800,7 +1800,11 @@ class JobManager:
             source = self._verify_source(job)
             root = self.root / job_id
             if kind == "STUDENT_EXAM" and file_format == "tex":
-                return root / SOURCE_NAME, "application/x-tex", source
+                return (
+                    root / SOURCE_NAME,
+                    "application/x-tex",
+                    reflow_saved_choice_rows(source, job["rawQuestions"]),
+                )
             if kind == "STUDENT_EXAM" and file_format == "pdf":
                 return self.previews.file(job), "application/pdf", None
             if kind == "STUDENT_EXAM" and file_format in {"docx", "md"}:
