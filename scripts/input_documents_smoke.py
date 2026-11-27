@@ -105,11 +105,7 @@ def main():
                 modal.get_by_role("button", name="Bỏ đính kèm sample.txt").click()
                 expect(modal.get_by_text("Đề mẫu · sample.txt", exact=False)).to_have_count(0)
                 modal.get_by_role("button", name="Tạo đề thi", exact=True).click()
-                page.wait_for_function(
-                    "() => document.body.textContent.includes('Đề đã sẵn sàng') || "
-                    "document.querySelectorAll('.question-card').length > 0",
-                    timeout=30000,
-                )
+                expect(page.locator(".exam-question-card")).to_have_count(22, timeout=30000)
                 assert generated and len(generated[-1]["uploadedFiles"]) == 1
                 document_id = generated[-1]["uploadedFiles"][0]
                 page.reload()
@@ -135,9 +131,7 @@ def main():
                     chat_modal.get_by_text("Tài liệu thêm · matrix.csv", exact=False)
                 ).to_be_visible()
                 chat_modal.get_by_role("button", name="Tạo đề thi", exact=True).click()
-                page.wait_for_function(
-                    "() => document.querySelectorAll('.question-card').length > 0", timeout=30000
-                )
+                expect(page.locator(".exam-question-card")).to_have_count(22, timeout=30000)
                 assert len(generated) == 2 and len(generated[-1]["uploadedFiles"]) == 2
                 assert document_id not in generated[-1]["uploadedFiles"]
                 page.screenshot(path=str(OUTPUT / "chat-upload-desktop.png"), full_page=True)

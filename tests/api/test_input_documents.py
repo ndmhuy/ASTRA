@@ -12,6 +12,7 @@ from reportlab.pdfgen.canvas import Canvas
 
 from exam_baseline.api.app import create_app
 from exam_baseline.config import Settings
+from exam_baseline.core.contracts import Completion
 from exam_baseline.thpt.subject_workflow import SubjectComposer
 from exam_baseline.thpt.subjects import batches, subject_request
 from exam_baseline.ui.input_documents import POLICY
@@ -149,6 +150,25 @@ def test_uploads_reach_composer_persist_and_never_reach_solver(tmp_path):
         stored = app.state.ui_jobs.get(job_id)
         assert stored["request"]["uploadedFiles"] == ids
         assert len(stored["nativeRequest"]["reference_material"]) == 3
+
+        # A targeted repair keeps the same references without handing them to Solver.
+        composer = providers["composer"]
+
+        async def repair(prompt):
+            data = json.loads(prompt.user)
+            composer.calls.append(data)
+            return Completion(text=json.dumps(data["question"]), model=composer.model)
+
+        composer.complete = repair
+        result = client.post(
+            f"/api/exams/{job_id}/questions/1/regenerate", json={"revision": stored["revision"]}
+        )
+        assert result.status_code == 200, result.text
+        assert all(
+            f"PRIVATE_UPLOAD_{kind}" in json.dumps(composer.calls[-1])
+            for kind in ("sample_exam", "matrix", "supplementary")
+        )
+        assert "PRIVATE_UPLOAD_" not in json.dumps(providers["solver"].calls)
     # Persisted workspace metadata and private document text survive process restart.
     with TestClient(create_app(Settings.for_offline(), ui_output_root=tmp_path)) as client:
         assert client.get("/api/workspaces").json()["workspaces"][0]["inputDocuments"] == documents
