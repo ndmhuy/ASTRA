@@ -17,6 +17,7 @@ EXAM_VERSION_FIELDS = (
     "solutions",
     "solverResultsVersion",
     "manualEdits",
+    "questionApprovals",
     "approval",
     "sourceHash",
     "contentHash",

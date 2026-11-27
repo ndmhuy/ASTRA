@@ -14,6 +14,7 @@ from exam_baseline.ui.contracts import (
     EditRequest,
     ExamGenerateRequest,
     PreviewRequest,
+    QuestionApprovalRequest,
     RegenerateRequest,
     RevisionRequest,
     WorkspaceBranchRequest,
@@ -253,6 +254,13 @@ async def verify(request: Request, job_id: UUID, question_id: int, payload: Revi
     return await request.app.state.ui_jobs.verify_question(
         str(job_id), question_id, payload.revision
     )
+
+
+@router.post("/exams/{job_id}/questions/{question_id}/approve")
+async def approve_question(
+    request: Request, job_id: UUID, question_id: int, payload: QuestionApprovalRequest
+):
+    return await request.app.state.ui_jobs.approve_question(str(job_id), question_id, payload)
 
 
 @router.post("/exams/{job_id}/approve")

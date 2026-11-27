@@ -1,6 +1,11 @@
 import React, { useEffect, useId, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import { ArrowUp, Eye, FileText, ListChecks, LoaderCircle } from 'lucide-react';
-import type { ExamPassage, ExamPreviewState, QuestionItem, VisualWarning } from '../../../types/exam';
+import { ArrowUp, CheckCircle2, Eye, FileText, ListChecks, LoaderCircle } from 'lucide-react';
+import type { ExamPackage, ExamPassage, ExamPreviewState, QuestionItem, VisualWarning } from '../../../types/exam';
+import {
+  buildQuestionReviewSummary,
+  formatQuestionLabel,
+  getPrimaryReviewReason,
+} from '../../../utils/questionReview.ts';
 import { formatVisualWarning } from '../../../utils/userMessages.ts';
 import { StationeryArt } from '../../StationeryArt';
 import { SchoolArt } from '../../SchoolArt';
@@ -35,6 +40,10 @@ function sectionHeading(part: string): string {
   return SECTION_HEADINGS[part] || part;
 }
 
+function questionNodeKey(question: Pick<QuestionItem, 'stableId' | 'id'>): string {
+  return question.stableId?.trim() || `id:${question.id}`;
+}
+
 export type ExamPaperControls = {
   question(stableId: string): boolean;
   section(part: string): boolean;
@@ -57,6 +66,10 @@ interface ExamPaperViewProps {
   isGenerating: boolean;
   latestQuestionCount?: number;
   onEditQuestion?: (questionId: number) => void;
+  onVerifyQuestion?: (questionId: number) => void;
+  onApproveQuestion?: (questionId: number, reason?: string) => Promise<void> | void;
+  verifyingQuestionId?: number | null;
+  approvingQuestionId?: number | null;
   viewMode?: ExamCanvasViewMode;
   onViewModeChange?: (mode: ExamCanvasViewMode) => void;
   examId?: string;
@@ -64,6 +77,7 @@ interface ExamPaperViewProps {
   contentHash?: string;
   approved?: boolean;
   preview?: ExamPreviewState;
+  warnings?: ExamPackage['warnings'];
   visualWarnings?: VisualWarning[];
   previewLog?: string;
   previewError?: string;
@@ -84,6 +98,10 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
   isGenerating,
   latestQuestionCount = 0,
   onEditQuestion,
+  onVerifyQuestion,
+  onApproveQuestion,
+  verifyingQuestionId = null,
+  approvingQuestionId = null,
   viewMode,
   onViewModeChange,
   examId,
@@ -91,6 +109,7 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
   contentHash,
   approved,
   preview,
+  warnings,
   visualWarnings,
   previewLog,
   previewError,
@@ -108,7 +127,12 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
     onViewModeChange?.(nextMode);
   };
   const review = activeMode === 'review';
-  const flaggedCount = questions.filter(q => q.answerCheck !== 'matched').length;
+  const [openReviewKey, setOpenReviewKey] = useState<string | null>(null);
+  const reviewSummary = useMemo(
+    () => buildQuestionReviewSummary(questions, warnings, visualWarnings),
+    [questions, warnings, visualWarnings]
+  );
+  const issueCount = reviewSummary.answerIssueItems.length;
   const lastAutoRequested = useRef<string>('');
   const questionElements = useRef(new Map<string, HTMLElement>());
   const sectionElements = useRef(new Map<string, HTMLElement>());
@@ -162,6 +186,13 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
   const scrollBehavior = (): ScrollBehavior =>
     window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
 
+  const jumpToQuestion = (key: string, openReview = false) => {
+    if (openReview) setOpenReviewKey(key);
+    const target = questionElements.current.get(key);
+    target?.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
+    return Boolean(target);
+  };
+
   const jumpToSection = (part: string) => {
     const target = sectionElements.current.get(part);
     target?.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
@@ -173,11 +204,7 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
     return Boolean(paperScrollRef.current);
   };
   useImperativeHandle(controlsRef, () => ({
-    question: stableId => {
-      const target = questionElements.current.get(stableId);
-      target?.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
-      return Boolean(target);
-    },
+    question: stableId => jumpToQuestion(stableId),
     section: jumpToSection,
     top: scrollToTop,
   }));
@@ -244,48 +271,33 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
           <div className="pdf-preview-warning" role="alert">
             <strong>Cảnh báo hình vẽ / bảng biểu ({visualWarnings.length})</strong>
             <p>
-              Một số câu hỏi có nhắc đến hình vẽ hoặc bảng số liệu nhưng chưa có hình minh họa kèm theo. Thầy cô hãy chỉnh sửa câu hỏi để bổ sung rõ ràng.
+              Một số câu hỏi có nhắc đến hình vẽ hoặc bảng số liệu nhưng chưa có hình minh họa kèm theo. Thầy cô xem trước kỹ trước khi duyệt xuất bản:
             </p>
             <ul>
-              {visualWarnings.map((warning, index) => {
-                const target = questions.find(q => q.stableId === warning.questionId);
-                const label = target ? `Câu ${target.id}` : warning.questionId;
-                return (
-                  <li key={`${warning.questionId}-${index}`}>
-                    <span><strong>{label}:</strong> {formatVisualWarning(warning.code)}</span>
-                    {target && onEditQuestion && (
-                      <button
-                        type="button"
-                        className="button-secondary"
-                        onClick={() => onEditQuestion(target.id)}
-                      >
-                        Sửa {label}
-                      </button>
-                    )}
-                  </li>
-                );
-              })}
+              {visualWarnings.map((warning, index) => (
+                <li key={`${warning.questionId}-${warning.code}-${index}`}>
+                  Câu {warning.questionId}: {formatVisualWarning(warning.code)}
+                </li>
+              ))}
             </ul>
           </div>
         )}
 
         {artifactChanged && (
           <div className="pdf-preview-error" role="alert">
-            <strong>Tệp đề thi đã thay đổi ngoài phiên làm việc</strong>
-            <p>Nội dung đề thi đã bị chỉnh sửa bên ngoài hệ thống nên không thể phê duyệt hoặc xuất tệp từ phiên bản này.</p>
+            <strong>Tệp nguồn đề thi đã thay đổi ngoài phiên làm việc</strong>
+            <p>Không thể sử dụng bản xem trước hiện tại. Thầy cô vui lòng tạo lại đề mới hoặc liên hệ bộ phận kỹ thuật nếu cần kiểm tra.</p>
           </div>
         )}
 
-        {!artifactChanged && (previewErrorCode === 'latex_compiler_unavailable' || preview?.status === 'unavailable') && (
+        {!artifactChanged && preview?.status === 'unavailable' && previewErrorCode === 'latex_compiler_unavailable' && (
           <div className="pdf-preview-error" role="alert">
-            <strong>Máy chủ chưa cài đặt bộ tạo bản in PDF</strong>
-            <p>
-              {previewError || 'Thầy cô vẫn xem và chỉnh sửa câu hỏi bình thường ở mục Đề thi; liên hệ người phụ trách kỹ thuật nếu cần xuất file PDF.'}
-            </p>
+            <strong>Chưa có trình biên dịch PDF trên máy này</strong>
+            <p>{previewError || 'Thầy cô vẫn có thể duyệt đề dựa trên nội dung hiển thị hoặc xuất file nguồn .tex.'}</p>
           </div>
         )}
 
-        {!artifactChanged && previewErrorCode !== 'latex_compiler_unavailable' && (!preview || !bindingMatch || preview.status === 'not_requested' || preview.status === 'queued' || preview.status === 'compiling') && (
+        {!artifactChanged && preview?.status !== 'unavailable' && (!bindingMatch || preview?.status === 'queued' || preview?.status === 'compiling' || preview?.status === 'not_requested') && (
           <div className="pdf-preview-loading" role="status">
             <div className="pdf-preview-loading-row">
               <LoaderCircle className="exam-status-spinner" size={16} aria-hidden="true" />
@@ -351,7 +363,7 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
         <button type="button" aria-pressed={activeMode === 'review'} onClick={() => setMode('review')}><ListChecks size={14} aria-hidden="true" />Xem đáp án</button>
         {showPdf && <button type="button" aria-pressed={activeMode === 'pdf'} onClick={() => setMode('pdf')}><Eye size={14} aria-hidden="true" />Xem trước PDF</button>}
       </div>
-      {flaggedCount > 0 && <button type="button" className="review-count" onClick={() => setMode('review')}>{flaggedCount} câu cần xem xét</button>}
+      {issueCount > 0 && <button type="button" className="review-count" onClick={() => setMode('review')}>{issueCount} câu cần xử lý</button>}
     </div>
     </div>
     <div
@@ -383,6 +395,110 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
                 ))}
               </nav>
             )}
+            {review && questions.length > 0 && (
+              <section className={`review-queue-panel ${issueCount === 0 ? 'is-clear' : ''}`} aria-label="Câu cần xử lý">
+                <div className="review-queue-header">
+                  <div>
+                    <span className="review-queue-kicker">Rà soát từng câu</span>
+                    <h3>
+                      {issueCount > 0
+                        ? `${issueCount} câu cần xử lý`
+                        : 'Đã đối chiếu hết các câu bị gắn cờ'}
+                    </h3>
+                  </div>
+                  <div className="review-queue-counts">
+                    {reviewSummary.unapprovedMatchedItems.length > 0 && (
+                      <span>{reviewSummary.unapprovedMatchedItems.length} câu khớp · chưa duyệt</span>
+                    )}
+                    {reviewSummary.approvedItems.length > 0 && (
+                      <span>{reviewSummary.approvedItems.length} câu đã duyệt</span>
+                    )}
+                    {reviewSummary.sourceOrVisualQuestionCount > 0 && (
+                      <span>{reviewSummary.sourceOrVisualQuestionCount} câu có lưu ý nguồn / hình</span>
+                    )}
+                  </div>
+                </div>
+
+                {reviewSummary.answerIssueItems.length > 0 && (
+                  <ul className="review-queue-list">
+                    {reviewSummary.answerIssueItems.map(item => {
+                      const itemKey = questionNodeKey(item.question);
+                      const writerKey = item.question.writerKey || item.question.key;
+                      return (
+                        <li key={itemKey} className="review-queue-item">
+                          <button
+                            type="button"
+                            className="review-queue-row"
+                            onClick={() => jumpToQuestion(itemKey, true)}
+                          >
+                            <div className="review-queue-row-top">
+                              <strong>{item.label}</strong>
+                              <span className={`question-status-badge is-${item.state.kind}`}>
+                                {item.state.label}
+                              </span>
+                              {item.notes.length > 0 && (
+                                <span className="review-queue-note-badge">
+                                  Lưu ý nguồn/hình ({item.notes.length})
+                                </span>
+                              )}
+                            </div>
+                            <p className="review-queue-reason">{getPrimaryReviewReason(item.question)}</p>
+                            <div className="review-queue-meta">
+                              <span>Dự kiến: {writerKey}</span>
+                              {item.question.solverKey && (
+                                <span>Giải độc lập: {item.question.solverKey}</span>
+                              )}
+                              <span className="review-queue-action-hint">{item.state.primaryAction}</span>
+                            </div>
+                          </button>
+                          {item.notes.length > 0 && (
+                            <details className="review-queue-extra-notes">
+                              <summary>Chi tiết lưu ý nguồn hoặc hình/bảng ({item.notes.length})</summary>
+                              <ul>
+                                {item.notes.map((note, idx) => (
+                                  <li key={idx}>{note}</li>
+                                ))}
+                              </ul>
+                            </details>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+
+                {reviewSummary.unapprovedMatchedItems.length > 0 && (
+                  <details className="review-queue-unapproved" open={issueCount === 0}>
+                    <summary>
+                      Danh sách câu khớp đáp án · chưa duyệt ({reviewSummary.unapprovedMatchedItems.length})
+                    </summary>
+                    <div className="review-queue-chips">
+                      {reviewSummary.unapprovedMatchedItems.map(item => {
+                        const itemKey = questionNodeKey(item.question);
+                        return (
+                          <button
+                            key={itemKey}
+                            type="button"
+                            className="review-queue-chip"
+                            onClick={() => jumpToQuestion(itemKey, true)}
+                          >
+                            <strong>{item.label}</strong>
+                            <span>Chưa duyệt</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </details>
+                )}
+
+                {issueCount === 0 && reviewSummary.unapprovedMatchedItems.length === 0 && reviewSummary.approvedItems.length > 0 && (
+                  <p className="review-queue-all-approved">
+                    <CheckCircle2 size={14} aria-hidden="true" />
+                    <span>Tất cả câu hỏi trong đề đã được duyệt.</span>
+                  </p>
+                )}
+              </section>
+            )}
           </> : <div className="paper-empty">
             <StationeryArt kind="pencil" className="preview-pencil" />
             <StationeryArt kind="apple" className="preview-apple" />
@@ -402,6 +518,10 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
               q.passageId && q.passageId !== prev?.passageId
                 ? passageById.get(q.passageId)
                 : undefined;
+            const itemKey = questionNodeKey(q);
+            const stableNotes = q.stableId
+              ? (reviewSummary.notesByStableId[q.stableId.trim().toUpperCase()] ?? [])
+              : [];
             return (
               <React.Fragment key={q.id}>
                 {showPart && <h2 id={`${sectionId}-${q.part}`} className="exam-section-heading" ref={node => {
@@ -448,15 +568,26 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
                 )}
                 <QuestionCard
                   articleRef={node => {
-                    if (!q.stableId) return;
-                    if (node) questionElements.current.set(q.stableId, node);
-                    else questionElements.current.delete(q.stableId);
+                    if (node) {
+                      questionElements.current.set(itemKey, node);
+                      if (q.stableId) questionElements.current.set(q.stableId, node);
+                    } else {
+                      questionElements.current.delete(itemKey);
+                      if (q.stableId) questionElements.current.delete(q.stableId);
+                    }
                   }}
                   question={q}
                   index={i}
+                  questionLabel={formatQuestionLabel(q, i)}
                   review={review}
+                  reviewOpen={openReviewKey === itemKey}
+                  sourceNotes={stableNotes}
+                  verifying={verifyingQuestionId === q.id}
+                  approving={approvingQuestionId === q.id}
                   appearing={i >= latestQuestionCount}
                   onEdit={onEditQuestion ? () => onEditQuestion(q.id) : undefined}
+                  onVerify={onVerifyQuestion ? () => onVerifyQuestion(q.id) : undefined}
+                  onApprove={onApproveQuestion ? reason => onApproveQuestion(q.id, reason) : undefined}
                 />
               </React.Fragment>
             );

@@ -84,6 +84,8 @@ export const App: React.FC = () => {
   const [configureId, setConfigureId] = useState<string | null>(null);
   const [editor, setEditor] = useState<EditorTarget | null>(null);
   const [approving, setApproving] = useState(false);
+  const [verifyingQuestionId, setVerifyingQuestionId] = useState<number | null>(null);
+  const [approvingQuestionId, setApprovingQuestionId] = useState<number | null>(null);
   const [historySession, setHistorySession] = useState<string | null>(null);
   const [undo, setUndo] = useState<RegenerationUndo>();
   const [undoing, setUndoing] = useState(false);
@@ -467,6 +469,39 @@ export const App: React.FC = () => {
       return false;
     }
     finally { setApproving(false); }
+  };
+  const handleVerifyQuestion = async (questionId: number) => {
+    const session = active;
+    if (!session?.jobId || session.package?.revision === undefined || !examService.verifyQuestion) return;
+    setVerifyingQuestionId(questionId);
+    try {
+      await examService.verifyQuestion(session.jobId, questionId, session.package.revision);
+      await store.refresh(session.id);
+    } catch (error) {
+      await store.handleActionError(session.id, error);
+    } finally {
+      setVerifyingQuestionId(current => (current === questionId ? null : current));
+    }
+  };
+  const handleApproveQuestion = async (questionId: number, reason = '') => {
+    const session = active;
+    if (!session?.jobId || session.package?.revision === undefined || !examService.approveQuestion) return;
+    setApprovingQuestionId(questionId);
+    try {
+      const updated = await examService.approveQuestion(
+        session.jobId,
+        questionId,
+        session.package.revision,
+        reason,
+        'local-teacher',
+      );
+      store.acceptPackage(session.id, updated.examId, updated);
+    } catch (error) {
+      await store.handleActionError(session.id, error);
+      throw error;
+    } finally {
+      setApprovingQuestionId(current => (current === questionId ? null : current));
+    }
   };
   const handlePreviewOpened = useCallback(() => {
     if (activeId && !agentOpenedPdf) store.markPreviewOpened(activeId);
@@ -1118,6 +1153,7 @@ export const App: React.FC = () => {
                   contentHash={active.package?.contentHash}
                   approved={active.package?.approved}
                   preview={active.preview}
+                  warnings={active.package?.warnings}
                   visualWarnings={active.package?.visualWarnings}
                   previewLog={active.previewLog}
                   previewError={active.previewError}
@@ -1125,6 +1161,10 @@ export const App: React.FC = () => {
                   artifactChanged={active.artifactChanged}
                   onRetryPreview={handleRetryPreview}
                   onPreviewOpened={handlePreviewOpened}
+                  verifyingQuestionId={verifyingQuestionId}
+                  approvingQuestionId={approvingQuestionId}
+                  onVerifyQuestion={examService.verifyQuestion && active.jobId && active.package?.revision !== undefined && !isGenerating ? id => { void handleVerifyQuestion(id); } : undefined}
+                  onApproveQuestion={examService.approveQuestion && active.jobId && active.package?.revision !== undefined && !isGenerating ? (id, reason) => handleApproveQuestion(id, reason) : undefined}
                   onEditQuestion={id => {
                     const question = active.questions.find(item => item.id === id);
                     if (active.jobId && question) setEditor({
