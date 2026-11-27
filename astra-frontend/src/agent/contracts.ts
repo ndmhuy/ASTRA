@@ -1,8 +1,10 @@
 import catalog from '../../../src/exam_baseline/resources/agent/catalog.json' with { type: 'json' };
+import local from '../../../src/exam_baseline/resources/agent/local-actions.json' with { type: 'json' };
 
 export const VERSION = catalog.schemaVersion;
 export const MAX_ACTIONS = catalog.maxActions;
-export type IntentId = keyof typeof catalog.intents;
+export const INTENTS = { ...catalog.intents, ...local.intents };
+export type IntentId = keyof typeof INTENTS;
 export type Intent = { id: IntentId; args: Record<string, string | number | boolean> };
 export type ExamIntake = {
   mode: 'request' | 'structure' | 'capability';
@@ -47,9 +49,9 @@ function record(value: unknown): value is Record<string, unknown> {
 
 export function validIntent(value: unknown): value is Intent {
   if (!record(value) || Object.keys(value).length !== 2 || typeof value.id !== 'string' ||
-      !Object.hasOwn(catalog.intents, value.id) || !record(value.args)) return false;
+      !Object.hasOwn(INTENTS, value.id) || !record(value.args)) return false;
   const args = value.args;
-  const rules: Record<string, string> = catalog.intents[value.id as IntentId].args;
+  const rules: Record<string, string> = INTENTS[value.id as IntentId].args;
   return Object.keys(args).every(key => Object.hasOwn(rules, key)) &&
     Object.entries(rules).every(([key, rule]) => {
       if (!Object.hasOwn(args, key)) return rule.endsWith('?');

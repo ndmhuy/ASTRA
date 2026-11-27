@@ -581,11 +581,7 @@ class JobManager:
         )
         if scheduled:
             self._schedule_generation(job_id, updated["executionVersion"])
-        return {
-            "jobId": job_id,
-            "status": updated["status"],
-            "executionVersion": updated.get("executionVersion", 1),
-        }
+        return self.status(job_id)
 
     def pause_generation(self, job_id, version):
         self.get(job_id)
@@ -1424,20 +1420,7 @@ class JobManager:
         }
 
     def status(self, job_id):
-        job = self.get(job_id)
-        return {
-            **job["progress"],
-            "jobId": job_id,
-            "status": job["status"],
-            "error": job.get("error"),
-            "executionVersion": job.get("executionVersion", 1),
-            "checkpointVersion": job.get("checkpointVersion"),
-            "completedOperations": len(job.get("checkpoints", {})),
-            "resumeAvailable": job["status"] in {"paused", "interrupted", "cancelled", "failed"}
-            and job.get("checkpointVersion") == POLICY["checkpointVersion"]
-            and (job.get("error") or {}).get("code") != "checkpoint_incompatible",
-            "retry": job.get("retry"),
-        }
+        return GenerationState.view(self.get(job_id))
 
     def _check_revision(self, job, revision):
         if job["revision"] != revision:

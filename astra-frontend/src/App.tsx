@@ -5,6 +5,8 @@ import { interpretationUnavailable, interpret, researchAdjacentTopic } from './a
 import { admit, execute, fastRoute, fold, mayDispatch, type Effect, type Runtime } from './agent/recipes';
 import { displayNumber, failure, inspectQuestion, previewText, resolveQuestion, sectionId, statusText, success } from './agent/examActions';
 import type { Decision, Intent } from './agent/contracts';
+import { catalogCandidate, catalogMeaning } from './agent/local';
+import { generationTarget, generationReceipt, generationJob, restingGeneration } from './agent/lifecycle';
 import { contextualSubject, resolveSemantic } from './agent/semantics';
 import { familyFor, formatOverview, guidanceFor, listAdjacentTopics, matchAdjacentTopic, mentionedFamilies, resolveIntake, shortSubjectIntake } from './agent/knowledge';
 import { AlertCircle, AlertTriangle, LoaderCircle, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
@@ -333,6 +335,11 @@ export const App: React.FC = () => {
       if (!alive()) return;
       let local = earlyFast;
       let intakeFormats: ExamFormat[] | undefined;
+      if (!local && catalogCandidate(content) && !editor) {
+        intakeFormats = await getExamFormats();
+        local = catalogMeaning(content, intakeFormats);
+        if (!alive() || runtime.binding() !== binding) return;
+      }
       if (!local && origin && ['draft', 'error'].includes(origin.status) && !editor && content.length <= 80) {
         const subject = shortSubjectIntake(content);
         if (subject) local = { intake: subject };
@@ -821,6 +828,44 @@ export const App: React.FC = () => {
       return { status: 'pending', text: `${text} Nếu đồng ý, hãy nhắn “Xác nhận”.` };
     };
     switch (intent.id) {
+      case 'PAUSE_GENERATION':
+      case 'RESUME_GENERATION':
+      case 'RETRY_GENERATION':
+      case 'CANCEL_GENERATION': {
+        const operation = intent.id === 'PAUSE_GENERATION' ? 'pause' : intent.id === 'RESUME_GENERATION' ? 'resume'
+          : intent.id === 'RETRY_GENERATION' ? 'retry' : 'cancel';
+        return (async () => {
+          await store.loadLibrary();
+          if (!validTurn()) return failed('Yêu cầu đã hết hiệu lực.');
+          const selection = generationTarget(store.getSnapshot(), current?.id ?? null, operation,
+            typeof intent.args.title === 'string' ? intent.args.title : undefined);
+          if (!selection.target) return failed(selection.text!);
+          const state = await store.generationState(selection.target.id);
+          if (!validTurn()) return failed('Yêu cầu đã hết hiệu lực.');
+          if (operation === 'cancel') {
+            const stopped = await store.stopGeneration(selection.target.id, { jobId: state.jobId, executionVersion: state.executionVersion });
+            return stopped?.status === 'cancelled' ? { ...succeeded('Backend xác nhận đã dừng phiên chạy.'), expectedAfter: runtimeRef.current!.binding() }
+              : failed('Backend chưa xác nhận việc dừng. Hãy xem trạng thái hiện tại.');
+          }
+          const result = await store.controlGeneration(selection.target.id, operation, { jobId: state.jobId, executionVersion: state.executionVersion });
+          return { ...generationReceipt(operation, result), expectedAfter: runtimeRef.current!.binding() };
+        })().catch(error => failed(error instanceof Error ? error.message : 'Chưa xác nhận được trạng thái Backend.'));
+      }
+      case 'RECOVERABLE_JOBS':
+        return store.loadLibrary().then(() => {
+          const jobs = store.getSnapshot().filter(session => generationJob(session) && (restingGeneration(session.progress?.status) || session.generationStopped));
+          return succeeded(jobs.length ? jobs.map(session => `${session.title}: ${statusText(session)}`).join('\n') : 'Chưa có phiên tạm dừng hoặc bị gián đoạn để tiếp tục.');
+        });
+      case 'OPEN_HISTORY':
+        if (!canOpenHistory || !current) return failed('Cần mở đề đã hoàn tất để xem lịch sử phiên bản.');
+        flushSync(() => setHistorySession(current.id));
+        return succeeded('Đã mở lịch sử phiên bản của đề hiện tại.');
+      case 'EXPORT_DOCUMENT': {
+        if (!current?.package?.approved || current.artifactChanged || editor) return failed('Cần duyệt phiên bản hiện tại trước khi tải Word hoặc Markdown.');
+        const format = intent.args.format as 'docx' | 'md';
+        return prepare(`Tải bản đề ${format.toUpperCase()} của phiên bản đã duyệt.`, async () =>
+          await exportFile('STUDENT_EXAM', format) ? succeeded('Đã yêu cầu trình duyệt tải tệp.') : failed('Chưa tải được tệp.'));
+      }
       case 'OPEN_SETUP':
         if (!current || !['draft', 'error'].includes(current.status) || editor) return failed('Chỉ có thể mở cấu hình cho đề nháp hoặc lần tạo bị lỗi.');
         flushSync(() => { setAgentSelection(undefined); setConfigureId(current.id); setShowQuickModal(true); });
@@ -838,7 +883,7 @@ export const App: React.FC = () => {
       case 'OPEN_SESSION': {
         const title = typeof intent.args.title === 'string' ? fold(intent.args.title) : '';
         if (/^(nay|do|kia)$/.test(title)) return failed('Thầy cô hãy ghi tên của đề muốn mở.');
-        if (!title && !/\b(vua tao|vua roi|gan nhat|moi nhat|recent|latest)\b/.test(fold(message))) {
+        if (!title && !/\b(vua tao|vua roi|gan nhat|gan day nhat|moi nhat|hom nay|luc nay|hoi nay|recent|latest)\b/.test(fold(message))) {
           return failed('Thầy cô muốn mở đề nào trong tủ đề?');
         }
         const eligible = store.getSnapshot().filter(item => title || item.id !== current?.id || item.jobId ||
@@ -942,6 +987,7 @@ export const App: React.FC = () => {
       case 'SELECT_FORMAT':
       case 'FORMAT_DETAILS':
       case 'PREPARE_GENERATION': {
+        if (current?.generationStopped && intent.id !== 'SHOW_FORMATS' && intent.id !== 'FORMAT_DETAILS') return failed('Phiên đang giữ kết quả đã lưu. Hãy tiếp tục phiên này hoặc mở workspace mới trước khi lập đề khác.');
         if (intent.id !== 'SHOW_FORMATS' && (!current || !['draft', 'error'].includes(current.status) || editor)) {
           return failed('Đề phải ở trạng thái nháp hoặc lần tạo bị lỗi mới có thể thiết lập.');
         }
@@ -1030,7 +1076,13 @@ export const App: React.FC = () => {
           }
         })();
       }
-      case 'STATUS': return succeeded(statusText(current));
+      case 'STATUS': {
+        const selection = generationTarget(store.getSnapshot(), current?.id ?? null, 'status');
+        if (!selection.target) return succeeded(store.getSnapshot().some(session => generationJob(session)) ? selection.text! : current ? statusText(current) : selection.text!);
+        const target = selection.target;
+        return store.generationState(target.id).then(state => succeeded(statusText({ ...target, progress: state })))
+          .catch(() => failed('Chưa đọc được trạng thái mới nhất từ Backend. Kết quả đã lưu vẫn được giữ.'));
+      }
       case 'WARNINGS': {
         if (!current?.package) return failed('Chưa có đề hoàn chỉnh để đọc cảnh báo.');
         const pkg = current.package;
@@ -1257,7 +1309,7 @@ export const App: React.FC = () => {
               <>
                 <div className="studio-chat-heading"><div><span className="studio-kicker">KHÔNG GIAN SOẠN ĐỀ</span><h2>Cùng soạn đề</h2></div></div>
                 <div className="session-context"><strong>{active.mode === 'template' ? active.meta?.title ?? active.title : active.title}</strong></div>
-                {(!active.generationId && (active.status === 'draft' || active.status === 'error')) && <div className="session-create-action">
+                {(!active.generationId && !active.generationStopped && (active.status === 'draft' || active.status === 'error')) && <div className="session-create-action">
                   {active.error && <p className="session-error-note">{active.error}</p>}
                   <button type="button" className="button-primary" onClick={() => { cancelTurn(); setAgentSelection(undefined); setConfigureId(active.id); setShowQuickModal(true); }}>{active.status === 'error' ? 'Thử tạo lại' : 'Tạo đề từ yêu cầu'}</button>
                 </div>}
@@ -1304,11 +1356,18 @@ export const App: React.FC = () => {
                           {questionPending.stopping ? 'Đang dừng…' : 'Dừng'}
                         </button>
                       ) : examService.stopGeneration && (active.generationId || active.jobId) && (
+                        <>
+                        {examService.pauseGeneration && <button type="button" className="button-secondary canvas-stop-generation"
+                          disabled={active.stoppingGeneration || active.continuingGeneration || active.progress?.status === 'pausing'}
+                          onClick={() => void store.pauseGeneration(active.id)}>
+                          {active.progress?.status === 'pausing' ? 'Đang lưu để tạm dừng…' : 'Tạm dừng'}
+                        </button>}
                         <button type="button" className="button-secondary canvas-stop-generation"
-                          disabled={active.stoppingGeneration}
+                          disabled={active.stoppingGeneration || active.continuingGeneration}
                           onClick={() => void store.stopGeneration(active.id)}>
                           {active.stoppingGeneration ? 'Đang dừng…' : 'Dừng'}
                         </button>
+                        </>
                       )}
                     </div>
                   </div>
@@ -1320,12 +1379,15 @@ export const App: React.FC = () => {
                 )}
                 {active.generationStopped && (
                   <div className="canvas-progress-banner canvas-progress-controls">
-                    <span className="canvas-progress-label" role="status">Đã dừng</span>
+                    <span className="canvas-progress-label" role="status">
+                      {active.progress?.statusMessage || 'Đã dừng'}
+                      {active.progress && ` · Đã lưu ${active.progress.completedItems}/${active.progress.totalItems} câu`}
+                    </span>
                     {examService.resumeGeneration && active.stoppedJobId && (
                       <button type="button" className="button-secondary canvas-stop-generation"
-                        disabled={active.continuingGeneration}
-                        onClick={() => void store.continueGeneration(active.id)}>
-                        {active.continuingGeneration ? 'Đang tiếp tục…' : 'Tiếp tục'}
+                        disabled={active.continuingGeneration || active.progress?.resumeAvailable === false}
+                        onClick={() => void (active.progress?.error ? store.retryGeneration(active.id) : store.continueGeneration(active.id))}>
+                        {active.continuingGeneration ? 'Đang yêu cầu tiếp tục…' : active.progress?.error ? 'Thử lại phần còn thiếu' : 'Tiếp tục'}
                       </button>
                     )}
                   </div>

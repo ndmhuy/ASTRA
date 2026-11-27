@@ -55,6 +55,7 @@ async def upload_document(
 @router.get("/workspaces")
 def workspaces(request: Request, response: Response):
     response.headers["Cache-Control"] = "no-store"
+    request.app.state.ui_jobs.generation_state.recover()
     return {"workspaces": request.app.state.ui_jobs.store.list_workspaces()}
 
 

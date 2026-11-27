@@ -175,7 +175,13 @@ class JobStore:
                 """SELECT w.id, w.created_at, w.revision, w.draft, j.id,
                           json_extract(j.data, '$.status'), json_extract(j.data, '$.request'),
                           json_extract(j.data, '$.error'), g.id,
-                          json_extract(g.data, '$.status'), json_extract(g.data, '$.error')
+                          json_extract(g.data, '$.status'), json_extract(g.data, '$.error'),
+                          json_extract(g.data, '$.progress'),
+                          json_extract(g.data, '$.executionVersion'),
+                          json_extract(g.data, '$.checkpointVersion'),
+                          json_extract(g.data, '$.retry'),
+                          json_extract(g.data, '$.retryNotBefore'),
+                          (SELECT count(*) FROM json_each(g.data, '$.checkpoints'))
                    FROM workspaces w LEFT JOIN jobs g ON g.id=(
                        SELECT attempt.id FROM workspace_jobs l
                        JOIN jobs attempt ON attempt.id=l.job_id
@@ -200,6 +206,21 @@ class JobStore:
                 "generationId": attempt,
                 "generationStatus": attempt_status,
                 "generationError": json.loads(attempt_error) if attempt_error else None,
+                "generationState": GenerationState.view(
+                    {
+                        "jobId": attempt,
+                        "status": attempt_status,
+                        "progress": json.loads(attempt_progress) if attempt_progress else {},
+                        "executionVersion": attempt_version or 1,
+                        "checkpointVersion": checkpoint_version,
+                        "error": json.loads(attempt_error) if attempt_error else None,
+                        "retry": json.loads(retry_data) if retry_data else None,
+                        "retryNotBefore": retry_not_before or 0,
+                        "completedOperations": completed_operations,
+                    }
+                )
+                if attempt
+                else None,
             }
             for (
                 id_,
@@ -213,6 +234,12 @@ class JobStore:
                 attempt,
                 attempt_status,
                 attempt_error,
+                attempt_progress,
+                attempt_version,
+                checkpoint_version,
+                retry_data,
+                retry_not_before,
+                completed_operations,
             ) in rows
         ]
 

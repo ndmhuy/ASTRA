@@ -1,4 +1,5 @@
 import catalog from '../../../src/exam_baseline/resources/agent/semantic-catalog.json' with { type: 'json' };
+import local from '../../../src/exam_baseline/resources/agent/local-actions.json' with { type: 'json' };
 import type { Decision, ExamIntake, Intent } from './contracts.ts';
 import { validIntent } from './contracts.ts';
 import type { Intake } from './intake.ts';
@@ -6,7 +7,8 @@ import type { ExamFormat } from '../types/exam.ts';
 import { shortSubjectIntake } from './knowledge.ts';
 import { sectionId } from './examActions.ts';
 
-export type GoalId = keyof typeof catalog.goals;
+const GOALS = { ...catalog.goals, ...local.goals };
+export type GoalId = keyof typeof GOALS;
 export type SemanticGoal = { goal: GoalId; parameters: Intent['args']; reference?: 'current' | 'previous' | 'recent' };
 export type SemanticFrame = {
   schemaVersion: 'astra-semantic-v1';
@@ -30,12 +32,12 @@ export function parseFrame(value: unknown): SemanticFrame {
   if (!Array.isArray(goals) || goals.length > catalog.limits.goalsPerTurn ||
       !Array.isArray(bounds) || bounds.length > 5 || bounds.some(item => !constraints.includes(item))) throw new Error('agent_semantic_contract');
   const normalized = goals.map((item): SemanticGoal => {
-    if (!record(item) || !Object.hasOwn(catalog.goals, String(item.goal)) ||
+    if (!record(item) || !Object.hasOwn(GOALS, String(item.goal)) ||
         Object.keys(item).some(key => !['goal', 'parameters', 'reference'].includes(key)) ||
         (item.reference != null && !['current', 'previous', 'recent'].includes(String(item.reference)))) throw new Error('agent_semantic_goal');
     const goal = item.goal as GoalId;
     const parameters = item.parameters ?? {};
-    const rules: Record<string, string> = catalog.goals[goal].parameters;
+    const rules: Record<string, string> = GOALS[goal].parameters;
     if (!record(parameters) || Object.entries(parameters).some(([key, value]) => {
       const rule = rules[key]?.replace(/\?$/, '');
       const bounds: Record<string, { maxLength?: number; maximum?: number }> = catalog.parameterBounds;
@@ -86,7 +88,7 @@ export function resolveSemantic(frame: SemanticFrame, recent?: { number: number;
   }
   const goals = frame.goals.map(goal => usesReference && recent
     ? { ...goal, parameters: { ...goal.parameters, number: recent.number, ...(recent.part ? { part: recent.part } : {}) } } : goal);
-  const definitions = goals.map(goal => catalog.goals[goal.goal]);
+  const definitions = goals.map(goal => GOALS[goal.goal]);
   if (frame.dialogueAct === 'QUESTION' && goals.some(goal => goal.goal === 'INSPECT_QUESTION')) {
     if (!goals.every(goal => goal.goal === 'INSPECT_QUESTION')) return stop('Thầy cô hãy hỏi rõ câu và phần thi cần xem trước.');
     return { invalidateConfirmation, inspections: goals.map(goal => goal.parameters),
@@ -110,7 +112,7 @@ export function resolveSemantic(frame: SemanticFrame, recent?: { number: number;
       decision: { kind: 'answer', intents: [], title: frame.title,
         intake: { mode: information ? 'structure' : 'request', ...goal.parameters } as ExamIntake } };
   }
-  if (frame.constraints.includes('NO_GENERATION') && frame.goals.some(goal => goal.goal === 'APPLY_REVISION_NOTES' || goal.goal === 'REGENERATE_ITEM')) {
+  if (frame.constraints.includes('NO_GENERATION') && frame.goals.some(goal => ['APPLY_REVISION_NOTES', 'REGENERATE_ITEM', 'RESUME_GENERATION', 'RETRY_GENERATION'].includes(goal.goal))) {
     return stop('Em chưa thực hiện thao tác có gọi AI. Thầy cô hãy xác định phần muốn xem hoặc sửa.');
   }
   const intents = goals.map((goal, index) => ({ id: definitions[index].capability, args: goal.parameters })) as Intent[];

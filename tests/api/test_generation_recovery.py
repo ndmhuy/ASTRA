@@ -7,12 +7,14 @@ from threading import Event
 import pytest
 from fastapi.testclient import TestClient
 
+from exam_baseline.agent.contracts import Decision
 from exam_baseline.core.checkpoints import response_checkpoint
 from exam_baseline.core.contracts import ProviderError
 from exam_baseline.thpt.models import Illustrations
 from exam_baseline.ui.errors import UiError
 from exam_baseline.ui.generation_state import ExecutionLost, GenerationState
 from exam_baseline.ui.storage import JobStore
+from tests.api.test_agent_turn import HEADERS, payload
 from tests.api.test_stop_generation import _start, _workspace
 from tests.api.test_ui_jobs import fixture_app, wait
 
@@ -27,8 +29,14 @@ def until(client, job_id, status):
     pytest.fail(f"Did not observe {status}: {current}")
 
 
-def test_pause_inflight_persists_response_and_restart_resumes_same_job_without_repetition(tmp_path):
-    app, providers = fixture_app(tmp_path)
+@pytest.mark.parametrize("abandoned", [False, True])
+def test_pause_inflight_persists_response_and_restart_resumes_same_job_without_repetition(
+    tmp_path, abandoned
+):
+    async def interpret(_turn):
+        return Decision(kind="answer", guidance="capabilities")
+
+    app, providers = fixture_app(tmp_path, agent_interpreter=interpret)
     entered, release = Event(), Event()
     composer = providers["composer"]
     complete = composer.complete
@@ -51,6 +59,7 @@ def test_pause_inflight_persists_response_and_restart_resumes_same_job_without_r
             receipt = client.post(url + "/pause", json={"executionVersion": 1})
             assert receipt.status_code == 202 and receipt.json()["status"] == "pausing"
             assert client.get("/api/health").status_code == 200
+            assert client.post("/agent/turn", json=payload(), headers=HEADERS).status_code == 200
             assert len(composer.calls) == 1  # Only P1 has returned yet.
         finally:
             release.set()
@@ -59,9 +68,26 @@ def test_pause_inflight_persists_response_and_restart_resumes_same_job_without_r
         assert paused["completedOperations"] == 2
         assert [call["part"] for call in composer.calls] == ["P1", "P2"]
         assert app.state.ui_jobs.store.list_versions(job_id) == []
+        saved = client.get("/api/workspaces").json()["workspaces"][0]["generationState"]
+        assert saved["status"] == "paused" and saved["completedItems"] == 16
+        assert saved["completedOperations"] == 2
+        assert client.post("/agent/turn", json=payload(), headers=HEADERS).status_code == 200
+    if abandoned:
+        # Simulate the durable record left by a killed executor, with actual response files.
+        store = app.state.ui_jobs.store
+        store.save(
+            {
+                **store.get(job_id),
+                "status": "running",
+                "executionOwner": "dead-process",
+                "executionLeaseUntil": time.time() - 1,
+            }
+        )
     restarted, next_pool = fixture_app(tmp_path)
     with TestClient(restarted) as client:
-        assert client.get(url + "/status").json()["status"] == "paused"
+        assert client.get(url + "/status").json()["status"] == (
+            "interrupted" if abandoned else "paused"
+        )
         assert not any(provider.calls for provider in next_pool.values())
         first = client.post(url + "/resume", json={"executionVersion": 1})
         duplicate = client.post(url + "/resume", json={"executionVersion": 1})
@@ -74,6 +100,25 @@ def test_pause_inflight_persists_response_and_restart_resumes_same_job_without_r
         with restarted.state.ui_jobs.store.connect() as db:
             assert db.execute("SELECT count(*) FROM jobs").fetchone()[0] == 1
         assert len(restarted.state.ui_jobs.store.list_versions(job_id)) == 1
+
+
+def test_an_old_paused_job_cannot_resume_over_a_replacement_workspace_job(tmp_path):
+    import asyncio
+
+    app, pool = fixture_app(tmp_path)
+    with TestClient(app) as client:
+        app.state.ui_jobs.capacity = asyncio.Semaphore(0)
+        workspace = _workspace(client)
+        first = _start(client, workspace, "old-paused")
+        assert (
+            client.post(f"/api/exams/{first}/pause", json={"executionVersion": 1}).json()["status"]
+            == "paused"
+        )
+        second = _start(client, workspace, "replacement")
+        stale = client.post(f"/api/exams/{first}/resume", json={"executionVersion": 1})
+        assert stale.status_code == 409 and stale.json()["error"]["code"] == "stale_generation"
+        assert client.get(f"/api/exams/{second}/status").json()["status"] == "queued"
+        assert not any(provider.calls for provider in pool.values())
 
 
 def test_sqlite_lease_fences_duplicate_executors_abandoned_jobs_and_late_checkpoint_writes(

@@ -4,6 +4,8 @@ import { conversationFor, suggestedTitle, titleFrom, touched, type Conversation 
 import type { InputDocument, InputDocumentsUpdate } from '../services/inputDocuments';
 import type { Intake } from '../agent/intake.ts';
 import { reconcileNotes, type Note } from '../agent/notes.ts';
+import { activeGeneration, restingGeneration, generationJob } from '../agent/lifecycle.ts';
+export { activeGeneration, restingGeneration, generationJob } from '../agent/lifecycle.ts';
 import { formatProgressStatus, humanizeErrorMessage } from '../utils/userMessages.ts';
 
 export interface ExamSession {
@@ -43,6 +45,7 @@ export interface ExamSession {
   browserOnly?: boolean;
 }
 
+
 interface WorkspaceSave {
   revision: number;
   saved?: string;
@@ -77,7 +80,9 @@ function workspaceDraft({ mode, title, draft, messages, inputDocuments }: ExamSe
 function sharedSession(entry: SavedWorkspace, previous?: ExamSession, memory?: AgentMemory): ExamSession {
   const { id, mode, createdAt, title, draft, messages, jobId, jobMeta, jobStatus } = entry;
   const jobError = entry.jobError;
-  const status = jobStatus === 'completed' ? 'complete' : jobStatus === 'failed' ? 'error' : jobId ? 'generating' : 'draft';
+  const lifecycle = entry.generationState;
+  const status = jobStatus === 'completed' ? 'complete' : jobStatus === 'failed' ? 'error'
+    : activeGeneration(jobStatus) ? 'generating' : 'draft';
   const sameJob = previous?.jobId === jobId;
   const notice = sameJob && previous?.messages.find(message => message.id === `exam-ready:${jobId}`);
   return {
@@ -86,10 +91,11 @@ function sharedSession(entry: SavedWorkspace, previous?: ExamSession, memory?: A
     ...(sameJob ? previous : undefined),
     inputDocuments: entry.inputDocuments,
     id, mode, createdAt, title, draft, messages: notice ? [...messages, notice] : messages, jobId, status,
-    generationId: entry.generationStatus === 'queued' || entry.generationStatus === 'running'
+    progress: lifecycle ?? previous?.progress,
+    generationId: activeGeneration(entry.generationStatus)
       ? entry.generationId ?? undefined : undefined,
-    generationStopped: entry.generationStatus === 'cancelled',
-    stoppedJobId: entry.generationStatus === 'cancelled' ? entry.generationId ?? undefined : undefined,
+    generationStopped: restingGeneration(entry.generationStatus),
+    stoppedJobId: restingGeneration(entry.generationStatus) ? entry.generationId ?? undefined : undefined,
     stoppingGeneration: previous?.stoppingGeneration && entry.generationId === (previous.generationId ?? previous.jobId)
       && (entry.generationStatus === 'queued' || entry.generationStatus === 'running'),
     generationError: status === 'complete' && entry.generationError
@@ -154,6 +160,7 @@ export class ExamSessions {
   private service: IExamService;
   private workspaceSaves = new Map<string, WorkspaceSave>();
   private starting = new Set<string>();
+  private generationControls = new Set<string>();
   private libraryRequest = 0;
   private libraryError = '';
   private localSnapshot: string;
@@ -284,6 +291,8 @@ export class ExamSessions {
           return [];
         }
         if (entry.revision < state.revision) return [session];
+        if (entry.generationId === generationJob(session) && entry.generationState?.executionVersion &&
+            session.progress?.executionVersion && entry.generationState.executionVersion < session.progress.executionVersion) return [session];
         const loaded = sharedSession(entry, session);
         if (entry.jobId !== session.jobId || loaded.generationId !== session.generationId) this.stopWatching(session.id);
         state.revision = entry.revision;
@@ -772,67 +781,126 @@ export class ExamSessions {
         this.fail(id, new Error(error));
         return undefined;
       }
-      const { jobId } = await this.service.startGeneration({ ...params, clientRequestId: requestId }, shared ? id : undefined);
+      const { jobId, executionVersion, status } = await this.service.startGeneration({ ...params, clientRequestId: requestId }, shared ? id : undefined);
       if (this.disposed || !this.sessions.some(session => session.id === id)) return;
-      this.update(id, session => ({ ...session, ...(keepExam ? { generationId: jobId } : { jobId }) }));
+      this.update(id, session => ({ ...session, ...(keepExam ? { generationId: jobId } : { jobId }),
+        ...(executionVersion ? { progress: { stage: 0, stageName: 'queued', percent: 0,
+          completedItems: 0, totalItems: params.itemCount, estimatedSecondsLeft: 0,
+          statusMessage: 'Đã xếp hàng tạo đề', jobId, executionVersion, status: status ?? 'queued' } } : {}),
+      }));
       this.watch(id, jobId);
       return jobId;
     } catch (error) { this.fail(id, error); }
     finally { this.starting.delete(id); }
   }
-  async stopGeneration(id: string) {
+  async stopGeneration(id: string, expected?: { jobId: string; executionVersion: number }) {
     const session = this.sessions.find(item => item.id === id);
     const jobId = session?.generationId ?? (session?.status === 'generating' ? session.jobId : null);
-    if (!jobId || session?.stoppingGeneration || !this.service.stopGeneration) return;
+    if (!session || !jobId || session.stoppingGeneration || this.generationControls.has(id) || !this.service.stopGeneration) return;
+    if (expected && expected.jobId !== jobId) return;
+    this.generationControls.add(id);
     this.update(id, item => ({ ...item, stoppingGeneration: true, generationError: undefined }));
     try {
-      const progress = await this.service.stopGeneration(jobId);
-      if (progress.status === 'cancelled') this.acceptStop(id, jobId);
+      const version = expected?.executionVersion ?? session.progress?.executionVersion ?? (await this.service.generationState?.(jobId))?.executionVersion ?? 1;
+      const progress = await this.service.stopGeneration(jobId, version);
+      if (progress.status === 'cancelled') this.acceptStop(id, jobId, progress);
+      return progress;
     } catch {
       this.update(id, item => (item.generationId ?? item.jobId) === jobId ? {
         ...item, generationError: 'Chưa xác nhận được việc dừng tạo đề. Vui lòng thử lại.',
       } : item);
     } finally {
+      this.generationControls.delete(id);
       this.update(id, item => (item.generationId ?? item.jobId) === jobId
         ? { ...item, stoppingGeneration: false } : item);
     }
   }
 
-  private acceptStop(id: string, jobId: string) {
+  private acceptStop(id: string, jobId: string, progress?: GenerationProgress) {
     const session = this.sessions.find(item => item.id === id);
     if (!session || (session.generationId ?? session.jobId) !== jobId) return;
     this.stopWatching(id);
     const keepExam = session.status === 'complete' && session.jobId !== jobId;
     this.update(id, item => ({
       ...item, generationId: undefined, generationStopped: true, stoppedJobId: jobId, stoppingGeneration: false,
-      progress: undefined, generationError: undefined, error: undefined, errorCode: undefined,
+      progress: progress ?? session.progress, generationError: undefined, error: undefined, errorCode: undefined,
       requestId: undefined, requestSignature: undefined,
       ...(keepExam ? {} : { status: 'draft', jobId: null, questions: [], meta: null, previousCount: 0 }),
     }));
   }
 
-  async continueGeneration(id: string) {
+  async generationState(id: string) {
     const session = this.sessions.find(item => item.id === id);
-    const stoppedJobId = session?.stoppedJobId;
-    if (!stoppedJobId || this.starting.has(id) || !this.service.resumeGeneration) return;
-    this.starting.add(id);
-    this.update(id, item => ({ ...item, continuingGeneration: true, generationError: undefined }));
-    try {
-      const { jobId } = await this.service.resumeGeneration(stoppedJobId);
-      if (this.disposed || !this.sessions.some(item => item.id === id && item.stoppedJobId === stoppedJobId)) return;
-      this.update(id, item => ({
-        ...item, generationStopped: false, stoppedJobId: undefined, progress: undefined,
-        ...(item.status === 'complete' ? { generationId: jobId } : { status: 'generating', jobId }),
-      }));
-      this.watch(id, jobId);
-    } catch (error) {
-      this.update(id, item => item.stoppedJobId === stoppedJobId ? {
-        ...item, generationError: error instanceof Error ? error.message : 'Chưa tiếp tục được quá trình tạo đề.',
-      } : item);
-    } finally {
-      this.starting.delete(id);
-      this.update(id, item => ({ ...item, continuingGeneration: false }));
+    const jobId = session && generationJob(session);
+    if (!session || !jobId) throw new Error('Chưa xác định được phiên tạo đề.');
+    const state = this.service.generationState ? await this.service.generationState(jobId) : session.progress;
+    if (!state) throw new Error('Chưa tải được trạng thái tạo đề.');
+    const current = this.sessions.find(item => item.id === id);
+    if (!current || generationJob(current) !== jobId ||
+        (current.progress?.executionVersion && state.executionVersion && state.executionVersion < current.progress.executionVersion)) {
+      throw new Error('Phiên tạo đề đã thay đổi. Hãy đọc lại trạng thái.');
     }
+    return { ...state, jobId, executionVersion: state.executionVersion ?? 1 };
+  }
+
+  private acceptGenerationState(id: string, progress: GenerationProgress & { jobId: string }) {
+    const session = this.sessions.find(item => item.id === id);
+    if (!session || generationJob(session) !== progress.jobId) return;
+    if (progress.executionVersion && session.progress?.executionVersion && progress.executionVersion < session.progress.executionVersion) return;
+    const resting = restingGeneration(progress.status);
+    if (resting) this.stopWatching(id);
+    const keepExam = session.status === 'complete' && session.jobId !== progress.jobId;
+    this.update(id, item => ({ ...item, progress, generationStopped: resting,
+      stoppedJobId: resting ? progress.jobId : undefined,
+      generationError: progress.error?.message,
+      ...(keepExam ? { generationId: resting ? undefined : progress.jobId } : {
+        jobId: resting ? null : progress.jobId,
+        generationId: undefined,
+        status: resting ? (progress.status === 'failed' ? 'error' : 'draft') : 'generating',
+      }),
+      ...(keepExam || !item.meta ? {} : { meta: { ...item.meta, completedCount: progress.completedItems } }),
+    }));
+  }
+
+  async controlGeneration(id: string, operation: 'pause' | 'resume' | 'retry', expected?: { jobId: string; executionVersion: number }) {
+    if (this.generationControls.has(id)) throw new Error('Đang xử lý yêu cầu cho phiên này.');
+    this.generationControls.add(id);
+    const prior = this.sessions.find(item => item.id === id);
+    const version = expected?.executionVersion ?? prior?.progress?.executionVersion;
+    this.update(id, item => ({ ...item, stoppingGeneration: operation === 'pause', continuingGeneration: operation !== 'pause', generationError: undefined }));
+    try {
+      const before = await this.generationState(id);
+      if ((expected && expected.jobId !== before.jobId) || (version && version !== before.executionVersion)) throw new Error('Phiên chạy đã thay đổi. Hãy kiểm tra lại.');
+      if (operation !== 'pause' && before.resumeAvailable === false) throw new Error(before.error?.message || 'Phiên này chưa thể tiếp tục từ checkpoint.');
+      const invoke: ((jobId: string, version: number) => Promise<GenerationProgress>) | undefined = operation === 'pause' ? this.service.pauseGeneration : operation === 'retry' ? this.service.retryGeneration : this.service.resumeGeneration;
+      if (!invoke) throw new Error('Thao tác chưa được Backend hỗ trợ.');
+      const result = await invoke.call(this.service, before.jobId, before.executionVersion);
+      if (result.jobId && result.jobId !== before.jobId) throw new Error('Backend trả về một phiên tạo đề khác.');
+      const state = this.service.generationState
+        ? await this.service.generationState(before.jobId)
+        : { ...before, ...result };
+      this.acceptGenerationState(id, { ...state, jobId: before.jobId });
+      if (activeGeneration(state.status) || state.status === 'completed') { this.stopWatching(id); this.watch(id, before.jobId); }
+      return { ...state, jobId: before.jobId };
+    } catch (error) {
+      this.update(id, item => ({ ...item, generationError: error instanceof Error ? error.message : 'Chưa xác nhận được thao tác tạo đề.' }));
+      throw error;
+    } finally {
+      this.generationControls.delete(id);
+      this.update(id, item => ({ ...item, stoppingGeneration: false, continuingGeneration: false }));
+    }
+  }
+
+  async continueGeneration(id: string) {
+    try { return await this.controlGeneration(id, 'resume'); } catch { return undefined; }
+  }
+
+  async pauseGeneration(id: string) {
+    try { return await this.controlGeneration(id, 'pause'); } catch { return undefined; }
+  }
+
+  async retryGeneration(id: string) {
+    try { return await this.controlGeneration(id, 'retry'); } catch { return undefined; }
   }
 
   private watch(id: string, jobId: string) {
@@ -848,8 +916,17 @@ export class ExamSessions {
     detach = this.service.onProgress(jobId, progress => {
         const session = this.sessions.find(item => item.id === id);
         if (this.disposed || finishing || !session || (session.generationId ?? session.jobId) !== jobId) return;
+      if (progress.connectionLost) {
+        this.update(id, item => ({ ...item, generationError: progress.statusMessage }));
+        return;
+      }
+      if (progress.executionVersion && session.progress?.executionVersion && progress.executionVersion < session.progress.executionVersion) return;
+      if (progress.status === 'paused' || progress.status === 'interrupted' || (progress.status === 'failed' && progress.resumeAvailable)) {
+        this.acceptGenerationState(id, { ...progress, jobId });
+        return;
+      }
       if (progress.status === 'cancelled') {
-        this.acceptStop(id, jobId);
+        this.acceptStop(id, jobId, progress);
         return;
       }
         if (progress.status === 'failed') {
@@ -868,7 +945,7 @@ export class ExamSessions {
           if (session.generationId && session.generationId !== session.jobId) return { ...session, progress };
           const item = progress.latestItemPreview;
           const append = item && !session.questions.some(question => question.id === item.id);
-          return { ...session, progress, meta: session.meta ? { ...session.meta, completedCount: progress.completedItems, totalCount: progress.totalItems || session.meta.totalCount } : null, previousCount: append ? session.questions.length : session.previousCount, questions: append ? [...session.questions, item] : session.questions };
+          return { ...session, progress, generationError: undefined, meta: session.meta ? { ...session.meta, completedCount: progress.completedItems, totalCount: progress.totalItems || session.meta.totalCount } : null, previousCount: append ? session.questions.length : session.previousCount, questions: append ? [...session.questions, item] : session.questions };
         });
         if (progress.status === 'completed' || progress.stage >= 5 && progress.percent >= 100) {
           finishing = true;

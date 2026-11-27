@@ -21,6 +21,23 @@ class GenerationState:
         self.store, self.clock = store, clock
 
     @staticmethod
+    def view(job):
+        return {
+            **job.get("progress", {}),
+            "jobId": job["jobId"],
+            "status": job["status"],
+            "error": job.get("error"),
+            "executionVersion": job.get("executionVersion", 1),
+            "checkpointVersion": job.get("checkpointVersion"),
+            "completedOperations": job.get("completedOperations", len(job.get("checkpoints", {}))),
+            "resumeAvailable": job["status"] in RESTING
+            and job.get("checkpointVersion") == POLICY["checkpointVersion"]
+            and (job.get("error") or {}).get("code") != "checkpoint_incompatible",
+            "retry": job.get("retry"),
+            "retryNotBefore": job.get("retryNotBefore", 0),
+        }
+
+    @staticmethod
     def _get(db, job_id):
         row = db.execute("SELECT data FROM jobs WHERE id=?", (job_id,)).fetchone()
         if row is None:
@@ -101,6 +118,16 @@ class GenerationState:
         with self.store.connect() as db:
             db.execute("BEGIN IMMEDIATE")
             job = self._get(db, job_id)
+            if operation in {"resume", "retry"} and job.get("workspaceId"):
+                latest = db.execute(
+                    "SELECT job_id FROM workspace_jobs WHERE workspace_id=? "
+                    "ORDER BY rowid DESC LIMIT 1",
+                    (job["workspaceId"],),
+                ).fetchone()
+                if latest != (job_id,):
+                    raise UiError(
+                        "stale_generation", "Không thể tiếp tục phiên cũ của workspace.", 409
+                    )
             current = job.get("executionVersion", 1)
             if current != version:
                 if operation in {"resume", "retry"} and job.get("resumedVersion") == version:
@@ -266,5 +293,7 @@ class GenerationState:
                             ),
                         },
                     )
-                    job["progress"]["statusMessage"] = "Bị gián đoạn; cần tiếp tục thủ công"
+                    job.setdefault("progress", {})["statusMessage"] = (
+                        "Bị gián đoạn; cần tiếp tục thủ công"
+                    )
                     self._put(db, job)
