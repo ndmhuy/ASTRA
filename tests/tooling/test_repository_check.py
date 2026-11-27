@@ -1,3 +1,4 @@
+import hashlib
 import importlib.util
 import subprocess
 
@@ -43,3 +44,27 @@ def test_staged_secret_cannot_be_hidden_by_cleaning_working_copy(tmp_path):
     subprocess.run(["git", "-C", str(tmp_path), "add", "source.txt"], check=True)
     path.write_text("clean working copy", encoding="utf-8")
     assert load_checker().check_repository(tmp_path) == ["Possible credential: source.txt"]
+
+
+def test_accepts_only_exact_bytes_of_the_approved_mas_runtime(tmp_path, monkeypatch):
+    subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)
+    checker = load_checker()
+    payload = b"synthetic bytecode containing a BLA decoy sk-" + b"X" * 40
+    runtime = tmp_path / "src" / "astra_mas"
+    runtime.mkdir(parents=True)
+    names = tuple(checker.MAS_RUNTIME_SHA256)
+    for name in names:
+        (runtime / name).write_bytes(payload)
+    digest = hashlib.sha256(payload).hexdigest()
+    monkeypatch.setattr(checker, "MAS_RUNTIME_SHA256", dict.fromkeys(names, digest))
+    git = ["git", "-C", str(tmp_path)]
+    subprocess.run([*git, "add", "."], check=True)
+    assert checker.check_repository(tmp_path) == []
+
+    target = runtime / "runtime.pyc"
+    target.write_bytes(b"modified")
+    subprocess.run([*git, "add", str(target)], check=True)
+    target.write_bytes(payload)
+    assert checker.check_repository(tmp_path) == [
+        "Invalid MAS release payload: src/astra_mas/runtime.pyc"
+    ]

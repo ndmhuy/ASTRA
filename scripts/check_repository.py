@@ -1,5 +1,6 @@
 """Check Git candidates for local artifacts and likely credentials; never print secret values."""
 
+import hashlib
 import re
 import subprocess
 from pathlib import Path
@@ -19,6 +20,14 @@ LOCAL_DIRECTORIES = {
     "__pycache__",
     ".pytest_cache",
     ".ruff_cache",
+}
+
+
+MAS_RUNTIME_SHA256 = {
+    "__init__.pyc": "bc8b7ad9b432e4037b716b541108d8ae187bbccb2d0ffd33cb71ed1c0e0443b9",
+    "contracts.pyc": "b9419cd80a6f46dd6fecabef2240579d0fed4725b0e0dc5464afdf3b89b3b0d3",
+    "runtime.pyc": "030fff00a18500bd14abcf66bdde6e47ea3aafb3097e0fdb2cf4099d9659c8f1",
+    "mas_core.zip": "b8097d0f93a76fc30dc6583f37f2858cf03156ca000776d41c6eb7dafbe0dbbe",
 }
 
 
@@ -62,8 +71,24 @@ def check_repository(root: Path = ROOT) -> list[str]:
                 if len(value) >= 16:
                     local_keys.append(value)
     issues: list[str] = []
+    # The release contains intentional BLA decoys. Accept only the exact reviewed bytes.
     for relative in sorted(set(listed) - {""}):
         path = root / relative
+        if path.parent == root / "src" / "astra_mas" and path.name in MAS_RUNTIME_SHA256:
+            expected = MAS_RUNTIME_SHA256[path.name]
+            if (
+                not path.is_file()
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+                or relative not in staged
+                or hashlib.sha256(
+                    subprocess.check_output(
+                        ["git", "-C", str(root), "cat-file", "blob", staged[relative]]
+                    )
+                ).hexdigest()
+                != expected
+            ):
+                issues.append(f"Invalid MAS release payload: {relative}")
+            continue
         parts = Path(relative).parts
         forbidden = (
             any(

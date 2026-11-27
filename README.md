@@ -2,6 +2,9 @@
 
 ASTRA generates and verifies THPT and V-ACT practice exams. This guide runs the teacher workspace, FastAPI backend, retrieval and four-agent pipeline together on Windows with a live model.
 
+The standard ASTRA install includes the [MAS planning backend](docs/mas/).
+Use CPython 3.11 to call `astra_mas.prepare_plan`.
+
 ## 1. Install
 
 Open PowerShell in the repository root. Use Git, CPython 3.11.1 and Node.js 22.12 or later.

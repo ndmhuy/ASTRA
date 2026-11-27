@@ -1,0 +1,39 @@
+\documentclass[11pt,a3paper]{article}
+\usepackage[margin=15mm]{geometry}
+\usepackage{fontspec}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\setmainfont{lmsans10-regular.otf}[BoldFont=lmsans10-bold.otf]
+\definecolor{ink}{HTML}{172838}
+\definecolor{muted}{HTML}{516475}
+\definecolor{teal}{HTML}{176B5A}
+\setlength{\parindent}{0pt}
+
+\newcommand{\flowpage}[3]{%
+  {\large\bfseries\color{teal} ASTRA \enspace / \enspace MAS}\par
+  \vspace{2mm}
+  {\LARGE\bfseries Luồng lập kế hoạch MAS}\par
+  \vspace{1mm}
+  {\large\bfseries #2}\par
+  \vspace{1mm}
+  {\small\color{muted} #3}\par
+  \vfill
+  \hfill\includegraphics[page=#1,width=\linewidth,height=.80\textheight,keepaspectratio]%
+    {ASTRA_MAS_INGEST_CHART.pdf}\hfill\null\par
+  \vfill
+  \hrule
+  \vspace{2mm}
+  {\small\color{muted} Đặc tả hành vi của astra-mas 0.1.1. Mã nguồn triển khai được giữ nội bộ.}%
+}
+
+\begin{document}
+\color{ink}
+\flowpage{1}{A. Kiểm tra đầu vào và đọc tệp}%
+  {Ma trận và tài liệu giữ vai do ASTRA truyền. Giới hạn được kiểm trước lượt đọc bằng model.}
+\newpage
+\flowpage{2}{B. Xác định phạm vi và lập kế hoạch}%
+  {Khung, địa chỉ ô và phạm vi đã xác lập ràng buộc nội dung được phép bổ sung.}
+\newpage
+\flowpage{3}{C. Trao đổi với LLM và trả về ASTRA}%
+  {ASTRA cấp callback. Kết quả là kế hoạch kèm trạng thái và cảnh báo, hoặc lỗi có mã.}
+\end{document}
