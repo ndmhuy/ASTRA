@@ -56,7 +56,8 @@ test('QuestionCard renders empty short-answer-cell spans instead of missing-glyp
   const source = fs.readFileSync(questionCardPath, 'utf8');
   assert.ok(!source.includes('\u25a1'), 'QuestionCard must not contain U+25A1 glyph');
   const cellMatches = source.match(/className="short-answer-cell"/g) || [];
-  assert.equal(cellMatches.length, 4, 'short_answer should render 4 empty .short-answer-cell boxes');
+  assert.equal(cellMatches.length, 1, 'short_answer reuses one empty cell element');
+  assert.match(source, /Array\.from\(\{ length: question\.maxAnswerCharacters \?\? 5 \}/);
 });
 
 test('atelier.css uses unified sans-serif fonts and symmetric 2/4-column choice grids', () => {

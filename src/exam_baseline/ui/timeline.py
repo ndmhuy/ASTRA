@@ -1,10 +1,17 @@
 """Teacher-facing chat messages backed by saved exam changes."""
 
+_PARTS = {"P1": "I", "P2": "II", "P3": "III"}
+
 
 def change_messages(change: dict, *, undone=False) -> list[dict]:
     job_id = change["jobId"]
     change_id = change["id"]
-    question = f"[Câu {change['questionId']}]"
+    part, _, number = (change.get("questionStableId") or "").partition("-")
+    question = (
+        f"[Phần {_PARTS[part]}, câu {number}]"
+        if part in _PARTS
+        else f"[Câu {change['questionId']}]"
+    )
     request = change["request"]
     messages = [
         {

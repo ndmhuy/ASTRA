@@ -87,7 +87,7 @@ def test_targeted_composer_retry_preserves_valid_questions_and_checks_id(wrong_i
     questions[1]["answer"] = "1178,1"
     replacement = {
         **questions[1],
-        "stem": "Tính $1{,}2+0{,}3$.",
+        "stem": "Tính $1{,}2+0{,}3$. Làm tròn đến hàng phần mười.",
         "solution": "$1{,}2+0{,}3=1{,}5$.",
         "answer": "1,5",
         "id": "P3-1" if wrong_id else "P3-2",
@@ -122,6 +122,38 @@ def test_targeted_composer_retry_preserves_valid_questions_and_checks_id(wrong_i
     assert retry["contract_feedback"]["previous_questions"] == [questions[1]]
     assert "one question per" in provider.instructions[1]
     assert "six numeric short answers" not in provider.instructions[1]
+
+
+@pytest.mark.parametrize(
+    ("instruction", "answer", "valid"),
+    [
+        ("Làm tròn kết quả đến hàng phần trăm.", "-1,25", True),
+        ("Làm tròn đến 2 chữ số thập phân.", "12,35", True),
+        ("Làm tròn đến chữ số thập phân thứ hai.", "2,65", True),
+        ("Làm tròn đến số nguyên gần nhất.", "13", True),
+        ("Ghi kết quả chính xác, không làm tròn.", "12345", True),
+        ("Làm tròn đến hàng phần trăm.", "-12,25", False),
+        ("Làm tròn đến hàng phần mười.", "1,25", False),
+        ("Làm tròn đến hàng phần mười.", "1,20", False),
+        ("Làm tròn kết quả.", "1,2", False),
+        ("", "1,25", False),
+        ("Không làm tròn. Làm tròn kết quả đến hàng đơn vị.", "1", False),
+    ],
+)
+def test_p3_checks_precision_and_answer_cells(instruction, answer, valid):
+    item = question(request().slots[-1]).model_dump()
+    item.update(stem=f"Tính giá trị của biểu thức. {instruction}", answer=answer)
+    packet = {"questions": [item]}
+    provider = Responses([json.dumps(packet)] * 2)
+    invocation = ComposerAgent().run(provider, {})
+    if valid:
+        section, _ = asyncio.run(invocation)
+        assert section.questions[0].answer == answer
+        assert len(provider.requests) == 1
+    else:
+        with pytest.raises(ContractError):
+            asyncio.run(invocation)
+        assert len(provider.requests) == 2
 
 
 def test_variation_arrows_are_valid_math():

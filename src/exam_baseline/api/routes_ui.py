@@ -54,8 +54,8 @@ def workspace_changes(request: Request, workspace_id: UUID, response: Response):
 
 
 @router.post("/workspaces/{workspace_id}/branch")
-def branch_workspace(request: Request, workspace_id: UUID, payload: WorkspaceBranchRequest):
-    return request.app.state.ui_jobs.branch_workspace(
+async def branch_workspace(request: Request, workspace_id: UUID, payload: WorkspaceBranchRequest):
+    return await request.app.state.ui_jobs.branch_workspace(
         str(workspace_id), str(payload.destinationId), payload.messageId, payload.copyCurrent
     )
 
@@ -244,6 +244,7 @@ async def regenerate(
         payload.instruction,
         str(idempotency_key) if idempotency_key else None,
         workspace_id=str(workspace_id) if workspace_id else None,
+        expected_stable_id=payload.stableId,
     )
 
 
@@ -312,6 +313,17 @@ async def preview_log(
 ):
     path = await request.app.state.ui_jobs.preview(str(job_id), revision, contentHash, log=True)
     return FileResponse(path, media_type="text/plain", headers={"Cache-Control": "no-store"})
+
+
+@router.get("/exams/{job_id}/assets/{asset_id}")
+async def asset(
+    request: Request,
+    job_id: UUID,
+    asset_id: str,
+    revision: Annotated[int | None, Query(ge=1)] = None,
+):
+    path, media_type = request.app.state.ui_jobs.contract_asset(str(job_id), asset_id, revision)
+    return FileResponse(path, media_type=media_type, headers={"Cache-Control": "no-store"})
 
 
 @router.get("/exams/{job_id}/export")

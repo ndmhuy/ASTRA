@@ -192,8 +192,8 @@ export const QuestionEditor: React.FC<Props> = ({ question, onSave, onRegenerate
 
             {draft.questionType === 'short_answer' && (
               <label className="editor-field editor-field-compact">
-                <span className="editor-field-label">Đáp án số</span>
-                <input value={draft.key} onChange={e => setDraft({ ...draft, key: e.target.value })} />
+                <span className="editor-field-label">Đáp án số (tối đa {draft.maxAnswerCharacters ?? 5} ký tự)</span>
+                <input maxLength={draft.maxAnswerCharacters ?? 5} value={draft.key} onChange={e => setDraft({ ...draft, key: e.target.value })} />
               </label>
             )}
 
@@ -237,7 +237,8 @@ export const QuestionEditor: React.FC<Props> = ({ question, onSave, onRegenerate
           <button
             type="button"
             className="button-secondary"
-            disabled={busy}
+            disabled={busy || hasUnsavedChanges}
+            title={hasUnsavedChanges ? 'Lưu thay đổi để AI nhận đúng nội dung hiện tại.' : undefined}
             onClick={() => { void action('regen', () => onRegenerate(instruction)); }}
           >
             {busyAction === 'regen' && <LoaderCircle className="exam-status-spinner" size={14} aria-hidden="true" />}

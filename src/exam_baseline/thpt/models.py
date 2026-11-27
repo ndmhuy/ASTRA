@@ -3,11 +3,16 @@
 import re
 from typing import Literal
 
-from pydantic import Field, field_validator, model_validator
+from pydantic import Field, ValidationInfo, field_validator, model_validator
 
 from exam_baseline.core.models import Identifier, Model, Text
 from exam_baseline.thpt.content import choice_latex, content_latex
 from exam_baseline.thpt.fonts import DEFAULT_FONT_PROFILE, FontProfile
+from exam_baseline.thpt.short_answers import (
+    MAX_ANSWER_CHARACTERS,
+    NUMERIC_ANSWER_PATTERN,
+    validate_short_answer_precision,
+)
 from exam_baseline.thpt.visuals import validate_table_source, visual_issues
 
 Level = Literal["NB", "TH", "VD", "VDC"]
@@ -88,7 +93,7 @@ class Question(Model):
         return value
 
     @model_validator(mode="after")
-    def shape(self):
+    def shape(self, info: ValidationInfo):
         if issues := visual_issues(self.stem, self.illustration_request):
             raise ValueError("; ".join(issues))
         for choice in self.choices.values():
@@ -105,11 +110,13 @@ class Question(Model):
             if (
                 self.choices
                 or self.statements
-                or not re.fullmatch(r"-?\d+(?:,\d+)?", self.answer or "")
+                or not re.fullmatch(NUMERIC_ANSWER_PATTERN, self.answer or "")
             ):
                 raise ValueError("P3 requires a numeric answer using a decimal comma")
-            if len(self.answer) > 4:
-                raise ValueError("P3 answer must fit four answer cells")
+            if len(self.answer) > MAX_ANSWER_CHARACTERS:
+                raise ValueError(f"P3 answer must fit {MAX_ANSWER_CHARACTERS} characters")
+            if info.context and info.context.get("validate_short_answers"):
+                validate_short_answer_precision(self.stem, self.answer)
         else:
             raise ValueError("unknown question ID")
         return self
@@ -131,7 +138,9 @@ class TrueFalseQuestion(Question):
 
 class ShortAnswerQuestion(Question):
     solution: Text
-    answer: str = Field(min_length=1, max_length=4, pattern=r"^-?\d+(?:,\d+)?$")
+    answer: str = Field(
+        min_length=1, max_length=MAX_ANSWER_CHARACTERS, pattern=NUMERIC_ANSWER_PATTERN
+    )
 
 
 class MultipleChoiceSection(Model):

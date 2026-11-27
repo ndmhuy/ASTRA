@@ -20,6 +20,7 @@ from exam_baseline.thpt.subjects import (
     PROFILES,
     SubjectRequest,
     batches,
+    english_groups_for_passages,
 )
 from exam_baseline.vact.schema import compact_schema
 
@@ -181,7 +182,7 @@ def passage_metadata(section_id, text):
 def render_subject(questions, drawings, request, passages):
     before = {}
     for _, first, last, _, instruction in (
-        ENGLISH_GROUPS if request.format_id == "thpt-english" else ()
+        english_groups_for_passages(passages) if request.format_id == "thpt-english" else ()
     ):
         passage = next((p["text"] for p in passages if p["questionRange"] == [first, last]), None)
         before[f"P1-{first}"] = (

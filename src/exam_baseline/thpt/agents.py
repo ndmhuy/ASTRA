@@ -19,6 +19,7 @@ from exam_baseline.thpt.models import (
     TrueFalseSection,
 )
 from exam_baseline.thpt.runtime import ContractError
+from exam_baseline.thpt.short_answers import MAX_ANSWER_CHARACTERS
 from exam_baseline.thpt.variation_table import IllustrationCandidates, is_variation_table
 
 COMMON = """Return JSON matching output_schema, without Markdown fences.
@@ -37,18 +38,26 @@ NB=nhận biết; TH=thông hiểu; VD=vận dụng; VDC=vận dụng cao. Meet 
 topic, objective and cognitive level; do not merely label an easy question VDC.
 """
 
-QUESTION_FORMAT = r"""For THPT question content, use ordinary prose and inline $...$ formulas.
+QUESTION_FORMAT = (
+    r"""For THPT question content, use ordinary prose and inline $...$ formulas.
 For a table, either state all data in prose without referring to a table, or put
 all headers, rows, values and units in illustration_request for Illustrator.
 Never put \begin{array}, \begin{tabular}, \hline, TikZ, or pipe tables in the stem,
 even if the reference shows these commands. Example: stem="Dựa vào bảng số liệu
 sau, xác định nhóm có tần số lớn nhất."; illustration_request="Vẽ bảng hai hàng.
 Hàng Khoảng (phút): [0;10), [10;20), [20;30). Hàng Tần số: 3, 8, 2."
-For P3, solve first and check the final numeric answer fits at most four characters
-including minus sign and decimal comma (e.g. "-1,2"). If it does not fit, redesign
-the numbers or explicitly change the unit or rounding in the stem, then recalculate
-the answer and solution. Never truncate the answer to make it fit.
 """
+    + f"""For P3, specify the unit (or clearly ask for a unitless quantity) and include
+one explicit precision instruction in every stem. Examples: 'Làm tròn kết quả đến
+hàng phần trăm.', 'Làm tròn kết quả đến hàng đơn vị.', or 'Ghi kết quả chính xác,
+không làm tròn.' for an exact integer or terminating decimal. For percentages,
+explicitly ask for the numeric value in percent. Specify domain and constraints when
+they affect the result. Calculate with full precision and round only the final result.
+The result must fit at most {MAX_ANSWER_CHARACTERS} characters including the minus sign
+and decimal comma (e.g. "-1,25"). Never include units in the key or truncate to fit.
+If necessary, change the givens or the requested unit in the stem and solve it again.
+"""
+)
 
 
 def _replace_questions(text, original, indices, stage):
@@ -122,7 +131,9 @@ class Agent:
             try:
                 if targeted:
                     text = _replace_questions(text, original, indices, self.role)
-                response = contract.model_validate_json(text, context=data)
+                response = contract.model_validate_json(
+                    text, context={**data, "validate_short_answers": self.role == "composer"}
+                )
             except ContractError as exc:
                 if hasattr(provider, "record_contract"):
                     provider.record_contract("invalid_contract", exc.fields, normalized)

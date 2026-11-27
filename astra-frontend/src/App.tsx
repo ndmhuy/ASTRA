@@ -17,6 +17,7 @@ import { ApiError, examService } from './services/examService';
 import { MathRenderer } from './components/MathRenderer';
 import { ExamSessions } from './state/examSessions';
 import { formatProgressStatus, formatVisualWarning } from './utils/userMessages.ts';
+import { clarifyQuestionEdit, questionEditIntent } from './utils/questionEditIntent.ts';
 import './styles/workspace.css';
 import './styles/classroom.css';
 import './styles/studio.css';
@@ -52,6 +53,8 @@ export const App: React.FC = () => {
   const [showQuickModal, setShowQuickModal] = useState(false);
   const [configureId, setConfigureId] = useState<string | null>(null);
   const [editor, setEditor] = useState<{ sessionId: string; jobId: string; question: QuestionItem; workspaceId?: string } | null>(null);
+  const [chatEditing, setChatEditing] = useState<string | null>(null);
+  const pendingChatEdit = useRef<{ sessionId: string; jobId: string; revision?: number; instruction: string }>(null);
   const [approving, setApproving] = useState(false);
   const [historySession, setHistorySession] = useState<string | null>(null);
   const [undo, setUndo] = useState<RegenerationUndo>();
@@ -179,7 +182,57 @@ export const App: React.FC = () => {
     revealSession(id);
     void store.generate(id, { ...params, uploadedFiles: [...params.uploadedFiles, ...attachedFiles.current.map(file => file.name)], prompt: instructions ? `${params.prompt}\n${instructions}` : params.prompt });
   };
-  const handleSendMessage = (content: string) => { if (activeId) store.sendMessage(activeId, content); };
+  const regenerateQuestion = async (
+    sessionId: string, jobId: string, question: QuestionItem, instruction: string, workspaceId?: string,
+  ) => {
+    const previousRevision = question.examRevision;
+    const regenerated = await examService.regenerateQuestion(
+      jobId, question.id, instruction, previousRevision, workspaceId, question.stableId,
+    );
+    if (previousRevision !== undefined && regenerated.examRevision === previousRevision + 1) {
+      setUndo({ sessionId, jobId, previousRevision, revision: regenerated.examRevision });
+    }
+    store.invalidatePreview(sessionId);
+    await store.refresh(sessionId);
+  };
+  const handleSendMessage = async (content: string) => {
+    const session = active;
+    if (!session || chatEditing) return;
+    if (session.status !== 'complete' || !session.jobId || !session.package) {
+      store.sendMessage(session.id, content);
+      return;
+    }
+    const snapshot = { sessionId: session.id, jobId: session.jobId, revision: session.package.revision };
+    const pending = pendingChatEdit.current;
+    pendingChatEdit.current = null;
+    const matchesPending = pending?.sessionId === snapshot.sessionId && pending.jobId === snapshot.jobId &&
+      pending.revision === snapshot.revision;
+    const clarified = matchesPending ? clarifyQuestionEdit(content, pending.instruction, session.questions) : undefined;
+    const intent = clarified?.kind === 'edit' ? clarified : questionEditIntent(content, session.questions);
+    if (intent.kind !== 'edit') {
+      if (intent.kind === 'clarify' || clarified?.kind === 'clarify') {
+        pendingChatEdit.current = { ...snapshot, instruction: clarified?.kind === 'clarify' ? pending!.instruction : content };
+      }
+      const example = session.package.blueprint.examType === 'DGNL_DHQG'
+        ? 'Ví dụ: Sửa câu 97 để làm rõ đơn vị trong câu hỏi.'
+        : 'Ví dụ: Sửa câu 1 Phần III, ghi rõ làm tròn đến hàng phần trăm.';
+      store.sendMessage(session.id, content, pendingChatEdit.current ? `Thầy cô muốn sửa câu nào? ${example}` : undefined);
+      return;
+    }
+    setChatEditing(session.id);
+    try {
+      const instruction = clarified?.kind === 'edit' && pending
+        ? `${pending.instruction}\nGiáo viên xác nhận câu cần sửa: ${intent.question.stableId || content}.`
+        : content;
+      await regenerateQuestion(session.id, session.jobId, intent.question, instruction, sharedId ?? undefined);
+      if (!sharedId) store.sendMessage(session.id, content, 'Đã tạo lại và giải kiểm tra câu đã chọn.');
+    } catch (error) {
+      await store.handleActionError(session.id, error);
+      store.setDraft(session.id, content);
+    } finally {
+      setChatEditing(null);
+    }
+  };
   const exportFile = async (type: 'STUDENT_EXAM' | 'TEACHER_KEY', format: 'tex' | 'pdf' | 'json') => {
     const session = active;
     if (!session?.jobId) return;
@@ -418,7 +471,7 @@ export const App: React.FC = () => {
                 />
               </>
             ),
-            composer: <ModernChatBar onSend={handleSendMessage} disabled={isGenerating} draft={active.draft} onDraftChange={value => store.setDraft(active.id, value)} />,
+            composer: <ModernChatBar onSend={handleSendMessage} disabled={isGenerating || Boolean(chatEditing)} draft={active.draft} onDraftChange={value => store.setDraft(active.id, value)} />,
           }}
         </WorkspaceLayout>
       )}
@@ -464,15 +517,7 @@ export const App: React.FC = () => {
         }}
         onRegenerate={async instruction => {
           try {
-            const previousRevision = editor.question.examRevision;
-            const regenerated = await examService.regenerateQuestion(
-              editor.jobId, editor.question.id, instruction, previousRevision, editor.workspaceId,
-            );
-            if (previousRevision !== undefined && regenerated.examRevision === previousRevision + 1) {
-              setUndo({ sessionId: editor.sessionId, jobId: editor.jobId, previousRevision, revision: regenerated.examRevision });
-            }
-            store.invalidatePreview(editor.sessionId);
-            await store.refresh(editor.sessionId);
+            await regenerateQuestion(editor.sessionId, editor.jobId, editor.question, instruction, editor.workspaceId);
             setEditor(null);
           } catch (error) {
             await store.handleActionError(editor.sessionId, error);

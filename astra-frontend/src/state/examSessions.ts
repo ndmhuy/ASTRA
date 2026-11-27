@@ -545,7 +545,7 @@ export class ExamSessions {
     void this.saveWorkspace(branch.id);
     return branch.id;
   }
-  sendMessage(id: string, content: string) {
+  sendMessage(id: string, content: string, reply?: string) {
     this.update(id, session => {
       const examVersion = session.jobId && session.package?.revision
         ? { jobId: session.jobId, revision: session.package.revision }
@@ -555,7 +555,7 @@ export class ExamSessions {
       });
       return { ...session,
         title: session.mode === 'custom' && !session.meta && session.messages.length === 0 ? content.slice(0, 72) : session.title,
-        draft: '', messages: [...session.messages, message('user', content), message('assistant', session.status === 'complete' ? 'Đã ghi nhận yêu cầu chỉnh sửa cho đề này. Chỉnh sửa bằng hội thoại sẽ khả dụng khi kết nối dịch vụ AI.' : 'Đã ghi nhận yêu cầu cho đề này. Chọn “Tạo đề từ yêu cầu” để chọn môn học, cấu trúc và bắt đầu tạo đề.')],
+        draft: '', messages: [...session.messages, message('user', content), message('assistant', reply ?? (session.status === 'complete' ? 'Để sửa một câu, hãy ghi số câu hoặc mở nút chỉnh sửa trên đề.' : 'Đã ghi nhận yêu cầu cho đề này. Chọn “Tạo đề từ yêu cầu” để chọn môn học, cấu trúc và bắt đầu tạo đề.'))],
       };
     }, true);
   }
