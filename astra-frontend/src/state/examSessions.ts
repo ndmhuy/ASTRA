@@ -1,5 +1,8 @@
 import type { ChatMessage, ExamPackage, ExamPreviewState, ExamRequestParams, QuestionItem, GenerationProgress } from '../types/exam';
 import type { IExamService, SavedWorkspace, WorkspaceDraft } from '../services/examService';
+import { conversationFor, suggestedTitle, titleFrom, touched, type Conversation } from '../agent/memory.ts';
+import type { Intake } from '../agent/intake.ts';
+import { reconcileNotes, type Note } from '../agent/notes.ts';
 import { formatProgressStatus, humanizeErrorMessage } from '../utils/userMessages.ts';
 
 export interface ExamSession {
@@ -28,6 +31,9 @@ export interface ExamSession {
   requestId?: string;
   requestSignature?: string;
   progress?: GenerationProgress;
+  conversation?: Conversation;
+  intake?: Intake;
+  notes?: Note[];
   browserOnly?: boolean;
 }
 
@@ -41,6 +47,9 @@ interface WorkspaceSave {
 }
 
 const LEGACY_SESSIONS_KEY = 'astra.sessions.v1';
+const AGENT_MEMORY_KEY = 'astra.agent.workspaces.v1';
+type AgentMemory = Pick<ExamSession, 'conversation' | 'intake' | 'notes'>;
+const agentMemory = ({ conversation, intake, notes }: AgentMemory): AgentMemory => ({ conversation, intake, notes });
 const BROWSER_ID_PREFIX = 'browser:';
 
 function originalId(session: ExamSession) {
@@ -59,7 +68,7 @@ function workspaceDraft({ mode, title, draft, messages }: ExamSession): Workspac
     messages: messages.filter(message => message.recorded || !message.id.startsWith('exam-ready:')) };
 }
 
-function sharedSession(entry: SavedWorkspace, previous?: ExamSession): ExamSession {
+function sharedSession(entry: SavedWorkspace, previous?: ExamSession, memory?: AgentMemory): ExamSession {
   const { id, mode, createdAt, title, draft, messages, jobId, jobMeta, jobStatus } = entry;
   const jobError = entry.jobError;
   const status = jobStatus === 'completed' ? 'complete' : jobStatus === 'failed' ? 'error' : jobId ? 'generating' : 'draft';
@@ -67,6 +76,7 @@ function sharedSession(entry: SavedWorkspace, previous?: ExamSession): ExamSessi
   const notice = sameJob && previous?.messages.find(message => message.id === `exam-ready:${jobId}`);
   return {
     questions: [], previousCount: 0,
+    ...agentMemory(previous ?? memory ?? {}),
     ...(sameJob ? previous : undefined),
     id, mode, createdAt, title, draft, messages: notice ? [...messages, notice] : messages, jobId, status,
     generationId: entry.generationStatus === 'queued' || entry.generationStatus === 'running'
@@ -117,6 +127,19 @@ export class ExamSessions {
   private previewTimers = new Map<string, ReturnType<typeof setTimeout>>();
   private activeSessionId: string | null = null;
   private disposed = false;
+  private storageImage: string | null = null;
+  private agentImage: string | null = null;
+  private agentMemories = new Map<string, AgentMemory>();
+  private storageReadOnly = false;
+  storageWarning = '';
+  private readonly storageChanged = (event: StorageEvent) => {
+    if (event.key !== LEGACY_SESSIONS_KEY && event.key !== AGENT_MEMORY_KEY && event.key !== null) return;
+    if (event.key !== null && event.newValue === (event.key === AGENT_MEMORY_KEY ? this.agentImage : this.storageImage)) return;
+    this.storageReadOnly = true;
+    this.storageWarning = 'Tủ đề đã được cập nhật trong tab khác. Hãy tải lại trang để tiếp tục lưu.';
+    this.sessions = [...this.sessions];
+    this.listeners.forEach(listener => listener());
+  };
   private service: IExamService;
   private workspaceSaves = new Map<string, WorkspaceSave>();
   private starting = new Set<string>();
@@ -128,16 +151,31 @@ export class ExamSessions {
 
   constructor(service: IExamService) {
     this.service = service;
-    try {
-      if (typeof localStorage !== 'undefined') {
-        const saved = JSON.parse(localStorage.getItem(LEGACY_SESSIONS_KEY) || '[]');
+    if (typeof localStorage !== 'undefined') {
+      try {
+        this.storageImage = localStorage.getItem('astra.sessions.v1');
+        if (service.workspaceLibrary) {
+          this.agentImage = localStorage.getItem(AGENT_MEMORY_KEY);
+          const cached = JSON.parse(this.agentImage ?? '{"schemaVersion":1,"workspaces":[]}');
+          if (cached.schemaVersion !== 1 || !Array.isArray(cached.workspaces) || cached.workspaces.some(
+            (entry: unknown) => !Array.isArray(entry) || typeof entry[0] !== 'string' || !entry[1] || typeof entry[1] !== 'object'
+          )) throw new Error('Invalid local Agent memory');
+          this.agentMemories = new Map(cached.workspaces);
+        }
+        const saved = JSON.parse(this.storageImage ?? '[]');
+        if (!Array.isArray(saved) || saved.some(item => !item || typeof item.id !== 'string' ||
+            typeof item.title !== 'string' || !Array.isArray(item.messages))) {
+          this.storageReadOnly = true;
+          this.storageWarning = 'Một phần tủ đề chưa đọc được. Dữ liệu cũ vẫn được giữ trong trình duyệt.';
+        }
         if (Array.isArray(saved)) {
           this.sessions = saved
-            .filter(item => typeof item?.id === 'string' && Array.isArray(item.messages))
+            .filter(item => item && typeof item.id === 'string' && typeof item.title === 'string' && Array.isArray(item.messages))
             .map(item => ({
               ...item,
               id: service.workspaceLibrary ? BROWSER_ID_PREFIX + item.id : item.id,
               browserOnly: !!service.workspaceLibrary,
+              conversation: conversationFor(item),
               error: item.error ? humanizeErrorMessage(item.error, item.errorCode) : item.error,
               progress: item.progress
                 ? {
@@ -152,8 +190,11 @@ export class ExamSessions {
               return false;
             });
         }
+      } catch {
+        this.storageReadOnly = true;
+        this.storageWarning = 'Chưa đọc được tủ đề. Dữ liệu cũ vẫn được giữ trong trình duyệt.';
       }
-    } catch { console.warn('Could not restore local exam workspaces'); }
+    }
     this.localSnapshot = this.serializeLocal();
   }
   getSnapshot = () => this.sessions;
@@ -173,17 +214,41 @@ export class ExamSessions {
   }
 
   private emit() {
-    const local = this.serializeLocal();
-    try {
-      if (local !== this.localSnapshot && typeof localStorage !== 'undefined') {
-        localStorage.setItem(LEGACY_SESSIONS_KEY, local);
-        this.localSnapshot = local;
+    if (typeof localStorage !== 'undefined' && !this.storageReadOnly) {
+      try {
+        if (localStorage.getItem(LEGACY_SESSIONS_KEY) !== this.storageImage ||
+            (this.service.workspaceLibrary && localStorage.getItem(AGENT_MEMORY_KEY) !== this.agentImage)) {
+          this.storageReadOnly = true;
+          this.storageWarning = 'Tủ đề đã thay đổi trong tab khác. Hãy tải lại trang để tiếp tục lưu.';
+        } else {
+          const next = this.serializeLocal();
+          if (next !== this.localSnapshot) {
+            localStorage.setItem(LEGACY_SESSIONS_KEY, next);
+            this.storageImage = next;
+            this.localSnapshot = next;
+          }
+          if (this.service.workspaceLibrary) {
+            for (const session of this.sessions.filter(item => this.workspaceSaves.has(item.id))) {
+              this.agentMemories.set(session.id, agentMemory(session));
+            }
+            const agent = JSON.stringify({ schemaVersion: 1, workspaces: [...this.agentMemories] });
+            if (agent !== this.agentImage) localStorage.setItem(AGENT_MEMORY_KEY, agent);
+            this.agentImage = agent;
+          }
+          this.storageWarning = '';
+        }
+      } catch {
+        this.storageWarning = 'Trình duyệt chưa lưu được thay đổi. Hãy giữ tab này mở và kiểm tra dung lượng lưu trữ.';
       }
-    } catch { console.warn('Could not save local exam workspaces'); }
+    }
     this.listeners.forEach(listener => listener());
   }
   resume() {
     this.disposed = false;
+    if (typeof window !== 'undefined') window.addEventListener('storage', this.storageChanged);
+    for (const session of this.sessions.filter(item => item.status === 'generating' && !item.jobId)) {
+      this.fail(session.id, Object.assign(new Error('Chưa nhận được mã công việc từ máy chủ.'), { code: 'network_error' }));
+    }
     this.resumeGeneration();
     void this.loadLibrary();
   }
@@ -217,7 +282,8 @@ export class ExamSessions {
       const known = new Set(sessions.map(session => session.id));
       for (const entry of workspaces) {
         if (known.has(entry.id)) continue;
-        const session = sharedSession(entry);
+        const legacy = this.sessions.find(item => item.browserOnly && originalId(item) === entry.id);
+        const session = sharedSession(entry, undefined, legacy ?? this.agentMemories.get(entry.id));
         this.workspaceSaves.set(entry.id, { revision: entry.revision, saved: JSON.stringify(workspaceDraft(session)) });
         sessions.push(session);
       }
@@ -488,16 +554,58 @@ export class ExamSessions {
       }
     }
     this.stopWatching(id);
+    this.agentMemories.delete(id);
     this.sessions = this.sessions.filter(session => session.id !== id);
     this.emit();
     if (state) void this.loadLibrary();
     return true;
   }
   setDraft(id: string, draft: string) { this.update(id, session => ({ ...session, draft }), true); }
+  rename(id: string, value: string) {
+    const title = titleFrom(value);
+    if (!title) return false;
+    this.update(id, session => ({ ...session, title, conversation: { ...touched(session), titleOrigin: 'manual' } }), true);
+    return this.sessions.find(session => session.id === id)?.title === title;
+  }
+  suggestTitle(id: string, value: string, sourceId: string, quality = 1) {
+    this.update(id, session => {
+      const conversation = conversationFor(session);
+      if (conversation.titleOrigin === 'manual' || conversation.titleOrigin === 'legacy' ||
+          (conversation.titleQuality ?? 0) >= quality ||
+          session.messages.filter(message => message.role === 'user' && !/^(chào(?: em)?|xin chào|hello|hi)[ !.]*$/iu.test(message.content)).length > 3) return session;
+      const source = session.messages.find(message => message.id === sourceId && message.role === 'user');
+      const title = source && suggestedTitle(value, source.content);
+      if (!title) return session;
+      return { ...session, title, conversation: {
+        ...conversation, titleOrigin: 'auto', titleSourceId: sourceId, titleQuality: quality,
+      } };
+    }, true);
+  }
+
+  setIntake(id: string, intake: Intake | undefined) { this.update(id, session => ({ ...session, intake })); }
+  rememberQuestion(id: string, stableId: string, jobId: string, revision: number, sourceId: string) {
+    this.update(id, session => session.jobId === jobId && session.package?.revision === revision &&
+      session.messages.some(message => message.id === sourceId && message.role === 'user')
+      ? { ...session, conversation: { ...touched(session), questionReference: { sourceId, stableId, jobId, revision } } } : session);
+  }
+  setNotes(id: string, notes: Note[]) { this.update(id, session => ({ ...session, notes })); }
   retractMessage(id: string, messageId: string) {
     this.update(id, session => {
       const index = session.messages.findIndex(message => message.id === messageId);
-      return index < 0 ? session : { ...session, messages: session.messages.slice(0, index) };
+      if (index < 0) return session;
+      const messages = session.messages.slice(0, index);
+      const ids = new Set(messages.map(message => message.id));
+      const conversation = touched(session);
+      if (conversation.questionReference && !ids.has(conversation.questionReference.sourceId)) conversation.questionReference = undefined;
+      const titleLost = conversation.titleOrigin === 'auto' && conversation.titleSourceId && !ids.has(conversation.titleSourceId);
+      return {
+        ...session, messages,
+        title: titleLost ? 'Cuộc trò chuyện mới' : session.title,
+        conversation: titleLost ? { ...conversation, titleOrigin: 'default', titleSourceId: undefined, titleQuality: undefined } : conversation,
+        intake: session.intake && (session.intake.sourceIds ?? [session.intake.sourceId]).every(source => ids.has(source))
+          ? session.intake : undefined,
+        notes: session.notes?.filter(note => note.status === 'applied' || ids.has(note.sourceId)),
+      };
     }, true);
   }
   private branchRequests = new Map<string, string>();
@@ -517,6 +625,16 @@ export class ExamSessions {
         if (!this.sessions.some(item => item.id === workspaceId)) {
           throw Object.assign(new Error('Nhánh đã lưu. Hãy thử tải lại tủ đề.'), { code: 'network_error' });
         }
+        this.update(workspaceId, child => {
+          const ids = new Set(child.messages.map(message => message.id));
+          const conversation = touched(source);
+          const lostTitle = conversation.titleOrigin === 'auto' && conversation.titleSourceId && !ids.has(conversation.titleSourceId);
+          return { ...child, conversation: { ...conversation, revision: 0, questionReference: undefined,
+            ...(lostTitle ? { titleOrigin: 'default', titleSourceId: undefined, titleQuality: undefined } : {}) },
+            intake: source.intake && (source.intake.sourceIds ?? [source.intake.sourceId]).every(id => ids.has(id))
+              ? { ...source.intake, phase: source.intake.formatId ? 'selected' : 'collecting' } : undefined,
+            notes: undefined };
+        });
         this.branchRequests.delete(key);
         return workspaceId;
       } catch (error) {
@@ -527,13 +645,25 @@ export class ExamSessions {
     if (source.browserOnly && source.jobId) throw new Error('Hãy nhập đề vào tủ đề chung trước khi tạo nhánh.');
     const index = source?.messages.findIndex(message => message.id === messageId) ?? -1;
     if (!source || index < 0) return null;
+    const prefix = source.messages.slice(0, index + 1);
+    const ids = new Set(prefix.map(message => message.id));
+    const conversation = touched(source);
+    const titleLost = conversation.titleOrigin === 'auto' && conversation.titleSourceId && !ids.has(conversation.titleSourceId);
     const branch: ExamSession = {
       ...source,
+      conversation: { ...conversation, titleOrigin: titleLost ? 'default' : conversation.titleOrigin,
+        questionReference: undefined,
+        titleSourceId: titleLost ? undefined : conversation.titleSourceId,
+        titleQuality: titleLost ? undefined : conversation.titleQuality, revision: 0 },
+      intake: source.intake && (source.intake.sourceIds ?? [source.intake.sourceId]).every(sourceId => ids.has(sourceId))
+        ? { ...source.intake, phase: source.intake.formatId ? 'selected' : 'collecting' } : undefined,
+      notes: undefined, progress: undefined, previousCount: 0, requestId: undefined,
+      requestSignature: undefined, error: undefined, errorCode: undefined,
       id: crypto.randomUUID(),
       browserOnly: false,
-      title: `Nhánh · ${source.title}`,
+      title: titleLost ? 'Cuộc trò chuyện mới' : 'Nhánh · ' + source.title,
       createdAt: new Date().toISOString(),
-      messages: source.messages.slice(0, index + 1),
+      messages: prefix,
       draft: '',
       jobId: null, package: undefined, questions: [], meta: null, status: 'draft',
       preview: undefined, previewOpenedRevision: null, previewLog: undefined,
@@ -545,21 +675,43 @@ export class ExamSessions {
     void this.saveWorkspace(branch.id);
     return branch.id;
   }
-  sendMessage(id: string, content: string, reply?: string) {
+  appendMessage(id: string, role: ChatMessage['role'], content: string, messageId = crypto.randomUUID(), agentTurn = false) {
     this.update(id, session => {
+      if (session.messages.some(message => message.id === messageId)) return session;
+      const conversation = touched(session);
       const examVersion = session.jobId && session.package?.revision
         ? { jobId: session.jobId, revision: session.package.revision }
         : session.status === 'complete' ? undefined : null;
-      const message = (role: ChatMessage['role'], text: string): ChatMessage => ({
-        id: crypto.randomUUID(), role, content: text, timestamp: new Date().toISOString(), examVersion,
-      });
-      return { ...session,
-        title: session.mode === 'custom' && !session.meta && session.messages.length === 0 ? content.slice(0, 72) : session.title,
-        draft: '', messages: [...session.messages, message('user', content), message('assistant', reply ?? (session.status === 'complete' ? 'Để sửa một câu, hãy ghi số câu hoặc mở nút chỉnh sửa trên đề.' : 'Đã ghi nhận yêu cầu cho đề này. Chọn “Tạo đề từ yêu cầu” để chọn môn học, cấu trúc và bắt đầu tạo đề.'))],
+      const message: ChatMessage = { id: messageId, role, content, agentTurn, examVersion, timestamp: conversation.updatedAt };
+      return {
+        ...session, conversation,
+        draft: role === 'user' ? '' : session.draft,
+        messages: [...session.messages, message],
       };
     }, true);
   }
+  sendMessage(id: string, content: string) { this.appendMessage(id, 'user', content); }
   async generate(id: string, params: ExamRequestParams) {
+    const start = () => {
+      if (this.storageReadOnly || (typeof localStorage !== 'undefined' &&
+        localStorage.getItem('astra.sessions.v1') !== this.storageImage)) {
+        this.setError(id, new Error('Tủ đề đã thay đổi trong tab khác. Hãy tải lại trước khi tạo đề.'));
+        return undefined;
+      }
+      return this.startGeneration(id, params);
+    };
+    if (typeof navigator !== 'undefined' && navigator.locks) {
+      return navigator.locks.request(`astra-generate:${id}`, { ifAvailable: true }, lock => {
+        if (lock) return start();
+        const session = this.sessions.find(item => item.id === id);
+        if (session?.status !== 'generating') this.setError(id, new Error('Một tab đang gửi yêu cầu cho đề này.'));
+        return undefined;
+      });
+    }
+    return start();
+  }
+
+  private async startGeneration(id: string, params: ExamRequestParams) {
     const existing = this.sessions.find(session => session.id === id);
     if (!existing || existing.status === 'generating' || existing.generationId || this.starting.has(id)) return;
     const shared = this.workspaceSaves.has(id);
@@ -601,10 +753,16 @@ export class ExamSessions {
       }),
     }));
     try {
+      if (this.storageWarning) {
+        const error = this.storageWarning;
+        this.fail(id, new Error(error));
+        return undefined;
+      }
       const { jobId } = await this.service.startGeneration({ ...params, clientRequestId: requestId }, shared ? id : undefined);
       if (this.disposed || !this.sessions.some(session => session.id === id)) return;
       this.update(id, session => ({ ...session, ...(keepExam ? { generationId: jobId } : { jobId }) }));
       this.watch(id, jobId);
+      return jobId;
     } catch (error) { this.fail(id, error); }
     finally { this.starting.delete(id); }
   }
@@ -633,6 +791,7 @@ export class ExamSessions {
           return;
         }
         this.update(id, session => {
+          if (session.progress && (progress.percent < session.progress.percent || progress.stage < session.progress.stage)) return session;
           if (session.generationId && session.generationId !== session.jobId) return { ...session, progress };
           const item = progress.latestItemPreview;
           const append = item && !session.questions.some(question => question.id === item.id);
@@ -931,12 +1090,13 @@ export class ExamSessions {
     }
     this.update(id, session => ({
       ...session,
+      notes: reconcileNotes(session.notes, pkg.examId, pkg.questions),
       package: pkg,
       generationId: session.generationId === session.jobId ? undefined : session.generationId,
       error: undefined,
       errorCode: undefined,
       status: 'complete',
-      title: session.mode === 'custom' || shared ? session.title : pkg.title,
+      title: session.conversation?.titleOrigin === 'manual' || session.mode === 'custom' || shared ? session.title : pkg.title,
       questions: pkg.questions,
       meta: { title: pkg.title, subject: pkg.subject, duration: pkg.durationMinutes, completedCount: pkg.questions.length, totalCount: pkg.questions.length },
       preview: pkg.preview,
@@ -982,11 +1142,14 @@ export class ExamSessions {
       generationId: undefined,
       [session.status === 'complete' ? 'generationError' : 'error']:
         rawMessage ? humanizeErrorMessage(rawMessage, code) : 'Chưa tạo được đề. Thầy cô hãy kiểm tra kết nối rồi thử lại.',
+      notes: session.notes?.map(note => note.jobId === session.jobId && note.status === 'recorded'
+        ? { ...note, status: 'unresolved' } : note),
       errorCode: code,
     }));
   }
   dispose() {
     this.disposed = true;
+    if (typeof window !== 'undefined') window.removeEventListener('storage', this.storageChanged);
     this.subscriptions.forEach(stop => stop());
     this.subscriptions.clear();
     this.previewTimers.forEach(timer => clearTimeout(timer));

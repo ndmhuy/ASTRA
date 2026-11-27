@@ -1,7 +1,7 @@
 """HTTP application composition, settings and baseline service lifetime."""
 
 import logging
-from contextlib import asynccontextmanager
+from contextlib import AsyncExitStack, asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -10,6 +10,8 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import ValidationError
 
 from exam_baseline import __version__
+from exam_baseline.agent.gateway import configured_interpreter
+from exam_baseline.agent.routes import Interpreter, create_agent_router
 from exam_baseline.api.routes_baseline import root
 from exam_baseline.api.routes_baseline import router as baseline_router
 from exam_baseline.api.routes_pipeline import router as pipeline_router
@@ -34,6 +36,7 @@ def create_app(
     workspace_dir: Path | None = None,
     ui_runner=None,
     rag_retriever=None,
+    agent_interpreter: Interpreter | None = None,
 ) -> FastAPI:
     settings = settings if settings is not None else Settings()
 
@@ -47,13 +50,17 @@ def create_app(
             runner=ui_runner,
         )
         try:
-            if service is not None:
-                app.state.service = service
+            async with AsyncExitStack() as stack:
+                if agent_interpreter is None:
+                    app.state.configured_interpreter = await stack.enter_async_context(
+                        configured_interpreter()
+                    )
+                app.state.service = (
+                    service
+                    if service is not None
+                    else await stack.enter_async_context(service_scope(settings, provider))
+                )
                 yield
-            else:
-                async with service_scope(settings, provider) as current:
-                    app.state.service = current
-                    yield
         finally:
             await app.state.ui_jobs.close()
 
@@ -70,6 +77,7 @@ def create_app(
     app.include_router(baseline_router)
     app.include_router(pipeline_router)
     app.include_router(ui_router)
+    app.include_router(create_agent_router(agent_interpreter))
     if workspace_dir is None:
         app.add_api_route("/", root, methods=["GET"], include_in_schema=False)
     else:
@@ -115,8 +123,9 @@ def create_web_app() -> FastAPI:
 
 
 def configure_logging() -> None:
-    logger = logging.getLogger("exam_baseline.baseline.evaluation")
-    if not logger.handlers:
-        logger.addHandler(logging.StreamHandler())
-    logger.setLevel(logging.INFO)
-    logger.propagate = False
+    for name in ("exam_baseline.baseline.evaluation", "exam_baseline.agent"):
+        logger = logging.getLogger(name)
+        if not logger.handlers:
+            logger.addHandler(logging.StreamHandler())
+        logger.setLevel(logging.INFO)
+        logger.propagate = False

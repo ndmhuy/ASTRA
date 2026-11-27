@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "astra-workloads-v1",
+  "AGENT_CHAT": {
+    "operation": "agent", "maxRequestBytes": 32768, "maxResponseBytes": 65536,
+    "maxOutputTokens": 1024, "deadlineMs": 30000, "leaseMs": 45000,
+    "reservedDailyAttempts": 2, "estimatedDailyTokens": 70000,
+    "circuitFailures": 2, "circuitCooldownMs": 20000
+  },
+  "MAS_GENERATION": {
+    "operation": "mas", "enabled": false, "maxRequestBytes": 0,
+    "maxResponseBytes": 0, "maxOutputTokens": 0, "deadlineMs": 90000,
+    "leaseMs": 105000, "estimatedDailyTokens": 0,
+    "circuitFailures": 2, "circuitCooldownMs": 20000
+  }
+}

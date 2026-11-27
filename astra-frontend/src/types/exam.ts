@@ -140,6 +140,7 @@ export interface GenerationProgress {
 export interface ExamVersionReference { jobId: string; revision: number; }
 export interface ChatMessage {
   id: string; role: 'user' | 'assistant' | 'system'; content: string; timestamp: string;
+  agentTurn?: boolean;
   examVersion?: ExamVersionReference | null;
   recorded?: boolean;
   changeId?: string;
