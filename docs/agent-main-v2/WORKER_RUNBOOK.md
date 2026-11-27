@@ -1,5 +1,7 @@
 # ASTRA Worker deployment and acceptance
 
+> Current 2026-11-27 live state: [results](LIVE_CHAT_RESULTS.md), [owner window and next task](NEXT_TASK.md), [new authorization](LIVE_CHAT_COMPLETION_SPEC.md). These supersede historical authorization/deployment blockers below. Same persistent session used=8 of 12; automation exhausted; MAS demo.
+
 For the operator deploying the credential proxy. The target is the existing `astra-ai-proxy` at `https://astra-ai-proxy.letranhoanglong2227.workers.dev`. React, FastAPI, exams, RAG and LaTeX run locally.
 
 ## Current candidate: owner Gate A review, 2026-11-27

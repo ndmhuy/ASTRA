@@ -1,30 +1,24 @@
-# Next task: owner release gates for the semantic candidate
+# Next task: owner manual Chat acceptance
 
-For the next engineer on feat/longlth2297/agent-main-v2 in the existing worktree. Implementation is at 6951266; the following documentation/AI-log commit contains the final handoff. Read UNIFIED_SEMANTIC_WORKFLOW_SPEC.md, PROGRESS.md, SEMANTIC_WORKFLOWS.md and the current WORKER_RUNBOOK.md gate before acting.
+For the owner/next engineer in the existing feat/longlth2297/agent-main-v2 worktree. Implementation d59294e; read [live report](LIVE_CHAT_RESULTS.md), [actual predictions](../../eval/agent-semantic/live-20261127.json) and [current authorization](LIVE_CHAT_COMPLETION_SPEC.md). Older deployment/inference blockers are historical.
 
-## Exact next external step
+The real natural THPT to subject question to local Mathematics to actual setup path works. Stored-format recall was corrected and verified live; unsupported Chemistry and home navigation passed. One V-ACT switch timed out upstream at 30 seconds and still needs manual acceptance. Zero exam writes. Eight automated upstream attempts consumed: seven valid frames, one timeout. Two harness-context mistakes count but are excluded from contextual acceptance.
 
-Owner Gate A: review and authorize deployment of the existing lightweight astra-ai-proxy Worker, disabled, preserving current global/Agent ceilings 2 and all persisted usage. Current production is bb165c28-5a06-4372-9c9e-b2bf758b9599 and forwarding=false. Keep astra-gateway, its existing BYOK alias/token and ADMISSION/global-v1/v1-admission. No website or Backend deployment, no new paid resources, no storage reset.
+## Current runtime and owner allowance
 
-After explicit deployment authorization, verify /health lists astra-intent-v1 and astra-semantic-v1, compare semanticContractHash with src/exam_baseline/resources/agent/semantic-contract.json, check masForwarding=false and inspect persisted quota. This read-only readiness check must not invoke inference.
+- Open http://localhost:8000. Actual keyless Worker-profile app remains running here; MAS demo, no local token or private fallback. Reload opens home; select the existing sidebar chat to continue it.
+- Four reserved owner attempts: same persistent session astra-chat-acceptance-20261127-0205, used=8, limit=12. Expiry 2026-11-27 02:40 UTC / 09:40 Asia/Bangkok. Final deployed version: a7bc80dd-afaa-4952-b39b-0a079ebc6fc8 (metadata and health verified; forwarding enabled, used=8, remaining=4, MAS disabled).
+- Both contracts retained; semantic hash 27addb54bfcb694d5cd838671cf1a1662829eec84b365cba48e24e6a2500b7d4. Existing Gemini 3.1 Flash Lite / astra-gateway / BYOK default.
+- Session allowance/expiry survive UTC rollover/restart. Public traffic consumes the same cap. Read /health.quota.diagnostic and root remainingAttempts, not raw daily workload remainder. After expiry inference is blocked even if forwarding flag stays true.
+- Automation is exhausted: do not run agent_live_acceptance.py again. Follow the four-step owner script in LIVE_CHAT_RESULTS.md. Subject continuation and exact format recall can be local; natural intake/switch/recall usually use the model. Maximum three/IP/minute.
+- Setup modal blocks chat. Escape/close/Cancel preserves intake; then continue. No generation/confirmation clicks during Chat-only acceptance.
 
-Gate B separately needs a newly approved bounded persisted Chat allowance. Both historical authorizations are consumed. No retry or fallback initially. Submit one natural THPT message that actually reaches the model; require accepted canonical THPT meaning, missing-subject clarification, one upstream attempt, recorded timings/usage/diagnostics, and zero generation writes. Disable forwarding after the approved test. Do not claim acceptance if the message used a local fast path. Gate C multi-turn acceptance needs its own budget.
+If the app exits, run `.venv-win/Scripts/python.exe scripts/start_agent_worker.py --port 8000` in this worktree. Startup makes no inference and bypasses the preserved private .env. After expiry leave the window closed; renewal needs owner direction, retaining session usage. To close early, in workers/astra-ai-proxy set ASTRA_FORWARDING_ENABLED=false in existing ignored .wrangler/live-chat-session.jsonc, deploy that same config and verify /health.forwarding=false. Never recreate/reset storage. Historical rollback code bb165c28-5a06-4372-9c9e-b2bf758b9599 is only safe after disabling forwarding.
 
-## MAS remains independently blocked
+## Remaining release gates
 
-Do not enable public MAS forwarding. The local disabled adapter preserves CompletionRequest and academic model/limits but cannot forward arbitrary academic prompts anonymously. Gate D needs an independent credential and actual quota pool, provider compatibility, owner-approved caller authorization/resource policy and explicit generation authorization. Do not substitute the Agent model or key, and do not change academic contracts to fit Agent limits.
-
-## Independent follow-up work
-
-- Extend and team-review the 197-record/scenario synthetic subset toward the proposed approximately 700 coverage objective. Keep paraphrase/scenario families within one partition. Use actual live failure evidence when authorized; do not inflate counts with template duplicates or report oracle-frame checks as NLU accuracy.
-- Record independent evaluation predictions using the existing harness; it never calls a provider itself. NLU goal/slot accuracy, visible model latency and token/billing metrics are unmeasured.
-- Inspect and reconcile the 18 upstream main commits when integration is explicitly undertaken. Do not automatically merge/rebase main or rewrite pushed history. The current branch intentionally preserves its existing base.
-
-## Local recovery and evidence
-
-- Explicit keyless runtime: build astra-frontend, then python scripts/start_agent_worker.py --port 8000. Model Chat remains unavailable until the v2 deployment/live gates; deterministic UI/chat and demo MAS remain usable. The saved private Gateway .env was preserved and has incomplete configuration.
-- 56 focused Python tests, 39 frontend checks, 20 workerd groups, frontend lint/build, generated-contract checks, both mounted browser scripts and the isolated-clone startup passed. Exact scope/limits are in PROGRESS.md. No model inference was performed.
-- The isolated clone is ../longlth2297-semantic-fresh-20261127 and has its own fresh dependencies, no private .env/.dev.vars, and a DO_NOT_DELETE marker. Do not remove it or other live worktrees without owner agreement.
-- Ignored evidence: runs/semantic-worker-tests.log, runs/semantic-frontend-tests.log, runs/semantic-build.log, runs/semantic-security-audit.json, runs/semantic-fresh-results.json and runs/semantic-fresh-start.log. No secret values are needed to continue.
-
-No deployment, inference, real generation, public-budget activation, push, PR or merge is authorized by this handoff. Safe local fixes, tests and corpus work remain authorized.
+- Record owner family-switch/manual behavior. Full live acceptance remains conditional; corrected recall is development evidence. Core Chat can be reviewed; PR preparation also needs owner acceptance and upstream compatibility. No push/PR/merge authorized here.
+- Latest fetched origin/main 0adcc468 has 30 commits missing here. No automatic merge/rebase. Preserve existing worktree and protected fresh clone ../longlth2297-semantic-fresh-20261127.
+- Focused checks passed: 23 Python, 40 frontend, 22 Worker groups, contracts, lint/build. Repository verify.py fails on 91 existing Ruff findings in unchanged RAG code. Address separately before claiming the entire repository green.
+- Independent MAS provider/credential/quota pool and caller authorization remain unavailable. MAS daily=0 and forwarding false. Do not use Chat credentials for academic generation.
+- The 197-record/scenario corpus is unchanged. Independent NLU accuracy and population p95 remain unmeasured; expansion to 700 is not a substitute for evaluation.

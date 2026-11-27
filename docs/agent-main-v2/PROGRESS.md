@@ -2,13 +2,25 @@
 
 > Scope correction: Cloudflare is for authenticated AI credential gateway only. Do not deploy the ASTRA website, expose the origin, create a Tunnel or migrate MAS. Public web hosting requirements are future blockers, not tasks for this implementation.
 
-Status: LOCAL_RELEASE_CANDIDATE; LIVE_GATES_OPEN
+Status: LIVE_CHAT_CORE_VERIFIED; OWNER_MANUAL_ACCEPTANCE_OPEN
 Baseline SHA: 7523c79556a9935df5008c92043f1e38d6e5d2a2
 Old Agent reference SHA: fb834b976cb62eb7292fa839cdaf1d8738e1ec50
 Feature branch / worktree: feat/longlth2297/agent-main-v2 / ../ASTRA.worktrees/longlth2297-agent-main-v2
-Current implementation commit: 6951266d91b3f42551b25de1277467546b125b6b; see git log for the following evidence/handoff commit.
-Latest origin/main checked: 073f2e6e701d1c5100f9d67b4686786f5f117d2a
-Current phase / exact next action: S9 local runtime/fresh-clone acceptance verified. Await owner Gate A deployment approval, a separate Chat inference allowance, and independent MAS provider/authorization configuration. S7 has a 197-record/scenario initial corpus; the proposed approximately 700-record coverage objective remains open. Production remains unchanged and disabled. See NEXT_TASK.md.
+Current implementation commit: d59294e; prior semantic checkpoint 6951266.
+Latest origin/main checked: 0adcc4681b4c51b588ba2efcb317cd9586df8117 (2026-11-27).
+Current phase / exact next action: real keyless Chat vertical slice and mounted setup verified. Owner manual acceptance remains, especially the family switch that timed out. See [live report](LIVE_CHAT_RESULTS.md) and [next task](NEXT_TASK.md). The [completion authorization](LIVE_CHAT_COMPLETION_SPEC.md) supersedes historical deployment/allowance blockers below. No push, PR or merge.
+
+## Current live checkpoint — 2026-11-27
+
+- Deployed the existing Worker disabled first, verified both contracts/hash, existing Secret/Gateway/DO namespace and zero current-day consumption. Historical usage was preserved; UTC day differed from the historical two calls.
+- Eight automated upstream attempts: seven HTTP 200 canonical semantic frames, one 30-second upstream deadline. No retries/fallback; zero generation/approval/export writes. Two valid calls opened fresh conversations due to a browser harness mistake and are excluded from contextual acceptance while still consuming budget.
+- Real successes: natural THPT subject clarification; local polite Mathematics continuation opening the actual 22-question/90-minute setup; corrected stored-format recall; truthful unsupported Chemistry; local information-only guidance; model-driven RETURN_HOME with stored receipt and actual home screen.
+- Fixed observed recall mismatch: allow INFORM/QUESTION for this read-only goal and describe current-format recall separately from literal first-message recall. Regression passed; subsequent real prediction selected what=format and read stored Toán THPT. That tuned sample is development evidence.
+- Persistent diagnostic session, maximum 12 across UTC rollover/restart, automation cap 8, manual allowance 4, absolute expiry. No reset or namespace replacement. See live report for final deployment/window.
+- Focused verification: 23 Python, 40 frontend, frontend lint/build, Worker TypeScript and 22 workerd groups, generated contracts and diff checks passed. Repository scripts/verify.py stops at 91 existing Ruff findings in 14 unchanged rag_workflow files; unrelated RAG code was not changed.
+- Current origin/main has 30 commits absent from this branch. No integration performed. MAS is demo; independent API/caller authorization pending. No population NLU/p95 or production-readiness claim.
+
+The following phase table and entries are historical; this checkpoint and the live report take precedence.
 
 | Phase | Status | Evidence level | Commit / report | Blocker / next step |
 |---|---|---|---|---|

@@ -1,0 +1,591 @@
+{
+  "provenance": "Real mounted React + localhost keyless Worker profile + existing Cloudflare Gateway BYOK; no network fixtures. Synthetic teacher input only. Separately recorded live predictions, not oracle dataset.",
+  "session": "astra-chat-acceptance-20261127-0205",
+  "dateUtc": "2026-11-27",
+  "automatedAttempts": 8,
+  "validSemanticResponses": 7,
+  "timeoutAttempts": 1,
+  "ownerReservedAttempts": 4,
+  "limitations": [
+    "Two harness turns incorrectly opened fresh conversations; both counted and excluded from memory acceptance.",
+    "Recall corrected sample is development regression evidence after tuning, not independent evaluation.",
+    "Visible timings include 100 ms browser settling and automation overhead; no population p95.",
+    "Timeout had no upstream HTTP status or token usage; no claim of provider overload or exhausted quota.",
+    "Information-only Word question routed locally and returned general download prerequisites, not a detailed Word tutorial.",
+    "Out-of-scope and spam/duplicate behavior were not additionally tested live in this bounded session."
+  ],
+  "turns": [
+    {
+      "id": "intake",
+      "input": "Cô đang muốn chuẩn bị một bài thi thử tốt nghiệp cho học sinh, em giúp cô bắt đầu với.",
+      "expected": {
+        "goal": "PREPARE_EXAM",
+        "slots": {
+          "family": "thpt"
+        },
+        "outcome": "Ask subject; no modal or generation",
+        "prohibited": "generation, approval, export; unrequested mutation"
+      },
+      "observedFrame": {
+        "schemaVersion": "astra-semantic-v1",
+        "dialogueAct": "REQUEST",
+        "goals": [
+          {
+            "goal": "PREPARE_EXAM",
+            "parameters": {
+              "family": "thpt"
+            }
+          }
+        ],
+        "constraints": [],
+        "title": "Chuẩn bị đề thi tốt nghiệp"
+      },
+      "observedFallback": null,
+      "assessment": "passed",
+      "lastStoredReply": "Thầy cô muốn ôn thi tốt nghiệp môn nào? Mẫu đang hỗ trợ Toán Học.",
+      "setupDialogObserved": false,
+      "homeScreenObserved": false,
+      "intakeAfter": {
+        "sourceId": "6c103f7a-21da-4665-8888-5931cf56c786",
+        "sourceIds": [
+          "6c103f7a-21da-4665-8888-5931cf56c786"
+        ],
+        "family": "thpt",
+        "phase": "collecting",
+        "missing": "subject"
+      },
+      "remoteAttempts": 1,
+      "visibleElapsedMs": 2216,
+      "immediatePending": true,
+      "businessWrites": [],
+      "workerEvidence": {
+        "turnId": "6c103f7a-21da-4665-8888-5931cf56c786",
+        "requestId": "04a0725e-c784-477d-a3f2-a714e69367c4",
+        "attempts": 1,
+        "upstreamStatus": 200,
+        "elapsedMs": 1643,
+        "providerElapsedMs": 1630,
+        "promptTokenCount": 1515,
+        "candidatesTokenCount": 73,
+        "totalTokenCount": 1588,
+        "textBytes": 197,
+        "schemaStage": "validated",
+        "finishReason": "STOP",
+        "dialogueAct": "REQUEST"
+      },
+      "contractHash": "e0cacdee692c80c18b2fb94a810b3b15e1fb80c381f331f21cca823bdf3ae7dc",
+      "sessionUsedBefore": 0,
+      "sessionUsedAfter": 1
+    },
+    {
+      "id": "subject",
+      "input": "Môn Toán nhé.",
+      "expected": {
+        "goal": "local contextual subject",
+        "slots": {
+          "family": "thpt",
+          "subject": "math"
+        },
+        "outcome": "Select THPT Mathematics and open existing setup; zero inference",
+        "prohibited": "generation, approval, export; unrequested mutation"
+      },
+      "observedFrame": {
+        "schemaVersion": "astra-semantic-v1",
+        "dialogueAct": "INFORM",
+        "goals": [
+          {
+            "goal": "PREPARE_EXAM",
+            "parameters": {
+              "subject": "Toán"
+            }
+          }
+        ],
+        "constraints": [],
+        "title": "Chọn môn Toán"
+      },
+      "observedFallback": null,
+      "assessment": "excluded_harness_new_conversation",
+      "lastStoredReply": "Thầy cô muốn chọn mẫu nào? ASTRA hiện có Toán THPT và ĐGNL ĐHQG-HCM (V-ACT).",
+      "setupDialogObserved": false,
+      "homeScreenObserved": false,
+      "intakeAfter": {
+        "sourceId": "6c103f7a-21da-4665-8888-5931cf56c786",
+        "sourceIds": [
+          "6c103f7a-21da-4665-8888-5931cf56c786"
+        ],
+        "family": "thpt",
+        "phase": "collecting",
+        "missing": "subject"
+      },
+      "remoteAttempts": 1,
+      "visibleElapsedMs": 1935,
+      "immediatePending": true,
+      "businessWrites": [],
+      "workerEvidence": {
+        "turnId": "122b7dab-0d13-417c-bf13-eec40379d00b",
+        "requestId": "749d20b9-eb73-4ef3-8fd9-d799e81dcb5f",
+        "attempts": 1,
+        "upstreamStatus": 200,
+        "elapsedMs": 1398,
+        "providerElapsedMs": 1387,
+        "promptTokenCount": 1498,
+        "candidatesTokenCount": 69,
+        "totalTokenCount": 1567,
+        "textBytes": 178,
+        "schemaStage": "validated",
+        "finishReason": "STOP",
+        "dialogueAct": "INFORM"
+      },
+      "contractHash": "e0cacdee692c80c18b2fb94a810b3b15e1fb80c381f331f21cca823bdf3ae7dc",
+      "sessionUsedBefore": 1,
+      "sessionUsedAfter": 2
+    },
+    {
+      "id": "recall",
+      "input": "Nhắc lại giúp cô môn và kỳ thi mình vừa thống nhất lúc nãy với.",
+      "expected": {
+        "goal": "RECALL_REQUIREMENTS",
+        "slots": {},
+        "outcome": "Recall THPT Mathematics from stored state; no mutation",
+        "prohibited": "generation, approval, export; unrequested mutation"
+      },
+      "observedFrame": {
+        "schemaVersion": "astra-semantic-v1",
+        "dialogueAct": "QUESTION",
+        "goals": [
+          {
+            "goal": "RECALL_REQUIREMENTS",
+            "parameters": {
+              "what": "first"
+            }
+          }
+        ],
+        "constraints": [],
+        "title": "Nhắc lại yêu cầu đã thống nhất"
+      },
+      "observedFallback": null,
+      "assessment": "excluded_harness_new_conversation",
+      "lastStoredReply": "Chưa tìm thấy yêu cầu trước đó trong chat này.",
+      "setupDialogObserved": false,
+      "homeScreenObserved": false,
+      "intakeAfter": {
+        "sourceId": "6c103f7a-21da-4665-8888-5931cf56c786",
+        "sourceIds": [
+          "6c103f7a-21da-4665-8888-5931cf56c786"
+        ],
+        "family": "thpt",
+        "phase": "collecting",
+        "missing": "subject"
+      },
+      "remoteAttempts": 1,
+      "visibleElapsedMs": 2076,
+      "immediatePending": true,
+      "businessWrites": [],
+      "workerEvidence": {
+        "turnId": "15378316-8022-4056-b94e-0393d45376e4",
+        "requestId": "0ee88067-2d7a-42dc-8b31-28a49cc8f3af",
+        "attempts": 1,
+        "upstreamStatus": 200,
+        "elapsedMs": 1861,
+        "providerElapsedMs": 1848,
+        "promptTokenCount": 1511,
+        "candidatesTokenCount": 72,
+        "totalTokenCount": 1583,
+        "textBytes": 210,
+        "schemaStage": "validated",
+        "finishReason": "STOP",
+        "dialogueAct": "QUESTION"
+      },
+      "contractHash": "e0cacdee692c80c18b2fb94a810b3b15e1fb80c381f331f21cca823bdf3ae7dc",
+      "sessionUsedBefore": 2,
+      "sessionUsedAfter": 3
+    },
+    {
+      "id": "subject-same-chat",
+      "input": "Môn Toán nhé.",
+      "expected": {
+        "goal": "local contextual subject",
+        "slots": {
+          "family": "thpt",
+          "subject": "math"
+        },
+        "outcome": "Select THPT Mathematics and open existing setup; zero inference",
+        "prohibited": "generation, approval, export; unrequested mutation"
+      },
+      "observedFrame": null,
+      "observedFallback": null,
+      "assessment": "passed_local",
+      "lastStoredReply": "Đã chọn mẫu. Toán THPT có 22 câu, 90 phút. Các phần gồm trắc nghiệm (12 câu), đúng/sai (4 câu), trả lời ngắn (6 câu).",
+      "setupDialogObserved": true,
+      "homeScreenObserved": false,
+      "intakeAfter": {
+        "sourceId": "a00d39c5-9d58-4abc-98ce-73beda19920c",
+        "sourceIds": [
+          "6c103f7a-21da-4665-8888-5931cf56c786",
+          "a00d39c5-9d58-4abc-98ce-73beda19920c"
+        ],
+        "family": "thpt",
+        "subject": "Toán Học",
+        "phase": "selected",
+        "formatId": "thpt-math",
+        "version": "1"
+      },
+      "remoteAttempts": 0,
+      "visibleElapsedMs": 152,
+      "immediatePending": true,
+      "businessWrites": [],
+      "workerEvidence": null,
+      "contractHash": "e0cacdee692c80c18b2fb94a810b3b15e1fb80c381f331f21cca823bdf3ae7dc",
+      "sessionUsedBefore": 3,
+      "sessionUsedAfter": 3
+    },
+    {
+      "id": "recall-same-chat",
+      "input": "Nhắc lại giúp cô môn và kỳ thi mình vừa thống nhất lúc nãy với.",
+      "expected": {
+        "goal": "RECALL_REQUIREMENTS",
+        "slots": {},
+        "outcome": "Recall THPT Mathematics from stored state; no mutation",
+        "prohibited": "generation, approval, export; unrequested mutation"
+      },
+      "observedFrame": {
+        "schemaVersion": "astra-semantic-v1",
+        "dialogueAct": "INFORM",
+        "goals": [
+          {
+            "goal": "RECALL_REQUIREMENTS",
+            "parameters": {
+              "what": "first"
+            }
+          }
+        ],
+        "constraints": [],
+        "title": "Nhắc lại yêu cầu bài thi"
+      },
+      "observedFallback": null,
+      "assessment": "failed_resolver_dialogue_act_and_wrong_recall_slot",
+      "lastStoredReply": "Thầy cô đang hỏi thông tin hay muốn thực hiện thao tác? Em chưa thay đổi đề.",
+      "setupDialogObserved": false,
+      "homeScreenObserved": false,
+      "intakeAfter": {
+        "sourceId": "a00d39c5-9d58-4abc-98ce-73beda19920c",
+        "sourceIds": [
+          "6c103f7a-21da-4665-8888-5931cf56c786",
+          "a00d39c5-9d58-4abc-98ce-73beda19920c"
+        ],
+        "family": "thpt",
+        "subject": "Toán Học",
+        "phase": "selected",
+        "formatId": "thpt-math",
+        "version": "1"
+      },
+      "remoteAttempts": 1,
+      "visibleElapsedMs": 2614,
+      "immediatePending": true,
+      "businessWrites": [],
+      "workerEvidence": {
+        "turnId": "fbde8912-3427-4355-8b5d-52537050c9bd",
+        "requestId": "5155a366-3bca-4e87-9d81-576f9b769fc5",
+        "attempts": 1,
+        "upstreamStatus": 200,
+        "elapsedMs": 1894,
+        "providerElapsedMs": 1684,
+        "promptTokenCount": 1655,
+        "candidatesTokenCount": 71,
+        "totalTokenCount": 1726,
+        "textBytes": 197,
+        "schemaStage": "validated",
+        "finishReason": "STOP",
+        "dialogueAct": "INFORM"
+      },
+      "contractHash": "e0cacdee692c80c18b2fb94a810b3b15e1fb80c381f331f21cca823bdf3ae7dc",
+      "sessionUsedBefore": 3,
+      "sessionUsedAfter": 4
+    },
+    {
+      "id": "recall-corrected",
+      "input": "Nhắc lại giúp cô môn và kỳ thi mình vừa thống nhất lúc nãy với.",
+      "expected": {
+        "goal": "RECALL_REQUIREMENTS",
+        "slots": {},
+        "outcome": "Recall THPT Mathematics from stored state; no mutation",
+        "prohibited": "generation, approval, export; unrequested mutation"
+      },
+      "observedFrame": {
+        "schemaVersion": "astra-semantic-v1",
+        "dialogueAct": "QUESTION",
+        "goals": [
+          {
+            "goal": "RECALL_REQUIREMENTS",
+            "parameters": {
+              "what": "format"
+            }
+          }
+        ],
+        "constraints": [],
+        "title": "Nhắc lại thông tin môn và kỳ thi"
+      },
+      "observedFallback": null,
+      "assessment": "passed_after_fix_not_independent",
+      "lastStoredReply": "Mẫu gần nhất là Toán THPT. Yêu cầu gốc: “Môn Toán nhé.”.",
+      "setupDialogObserved": false,
+      "homeScreenObserved": false,
+      "intakeAfter": {
+        "sourceId": "a00d39c5-9d58-4abc-98ce-73beda19920c",
+        "sourceIds": [
+          "6c103f7a-21da-4665-8888-5931cf56c786",
+          "a00d39c5-9d58-4abc-98ce-73beda19920c"
+        ],
+        "family": "thpt",
+        "subject": "Toán Học",
+        "phase": "selected",
+        "formatId": "thpt-math",
+        "version": "1"
+      },
+      "remoteAttempts": 1,
+      "visibleElapsedMs": 3100,
+      "immediatePending": true,
+      "businessWrites": [],
+      "workerEvidence": {
+        "turnId": "4d261cae-2933-4c5d-82c0-ab0a393e9235",
+        "requestId": "ed39100c-a14d-4ae3-962c-703bb6ce6080",
+        "attempts": 1,
+        "upstreamStatus": 200,
+        "elapsedMs": 1996,
+        "providerElapsedMs": 1983,
+        "promptTokenCount": 1742,
+        "candidatesTokenCount": 73,
+        "totalTokenCount": 1815,
+        "textBytes": 209,
+        "schemaStage": "validated",
+        "finishReason": "STOP",
+        "dialogueAct": "QUESTION"
+      },
+      "contractHash": "27addb54bfcb694d5cd838671cf1a1662829eec84b365cba48e24e6a2500b7d4",
+      "sessionUsedBefore": 4,
+      "sessionUsedAfter": 5
+    },
+    {
+      "id": "unsupported",
+      "input": "Cô đổi ý rồi, thay Toán bằng môn Hóa cho kỳ thi tốt nghiệp này được chứ?",
+      "expected": {
+        "goal": "PREPARE_EXAM",
+        "slots": {
+          "family": "thpt",
+          "subject": "chemistry"
+        },
+        "outcome": "Truthfully unsupported; no substitution or generation",
+        "prohibited": "generation, approval, export; unrequested mutation"
+      },
+      "observedFrame": {
+        "schemaVersion": "astra-semantic-v1",
+        "dialogueAct": "CORRECT",
+        "goals": [
+          {
+            "goal": "PREPARE_EXAM",
+            "parameters": {
+              "family": "thpt",
+              "subject": "Hóa Học"
+            }
+          }
+        ],
+        "constraints": [],
+        "title": "Đổi môn thi tốt nghiệp"
+      },
+      "observedFallback": null,
+      "assessment": "passed",
+      "lastStoredReply": "ASTRA hiện chưa hỗ trợ môn Hóa Học cho tốt nghiệp THPT. Môn đang có gồm Toán Học.",
+      "setupDialogObserved": false,
+      "homeScreenObserved": false,
+      "intakeAfter": {
+        "sourceId": "f43d3200-6bba-4c1d-aff8-585f29781f2a",
+        "sourceIds": [
+          "6c103f7a-21da-4665-8888-5931cf56c786",
+          "a00d39c5-9d58-4abc-98ce-73beda19920c",
+          "f43d3200-6bba-4c1d-aff8-585f29781f2a"
+        ],
+        "family": "thpt",
+        "subject": "Hóa Học",
+        "phase": "collecting",
+        "missing": "subject"
+      },
+      "remoteAttempts": 1,
+      "visibleElapsedMs": 3029,
+      "immediatePending": true,
+      "businessWrites": [],
+      "workerEvidence": {
+        "turnId": "f43d3200-6bba-4c1d-aff8-585f29781f2a",
+        "requestId": "304729c1-1888-4a4b-adc6-5d227ed0e0a2",
+        "attempts": 1,
+        "upstreamStatus": 200,
+        "elapsedMs": 2535,
+        "providerElapsedMs": 2525,
+        "promptTokenCount": 1765,
+        "candidatesTokenCount": 83,
+        "totalTokenCount": 1848,
+        "textBytes": 223,
+        "schemaStage": "validated",
+        "finishReason": "STOP",
+        "dialogueAct": "CORRECT"
+      },
+      "contractHash": "27addb54bfcb694d5cd838671cf1a1662829eec84b365cba48e24e6a2500b7d4",
+      "sessionUsedBefore": 5,
+      "sessionUsedAfter": 6
+    },
+    {
+      "id": "switch",
+      "input": "Bỏ hướng tốt nghiệp vừa rồi, cô muốn chuyển sang bài đánh giá năng lực của ĐHQG TP.HCM; khoan tạo đề nhé.",
+      "expected": {
+        "goal": "PREPARE_EXAM",
+        "slots": {
+          "family": "vact"
+        },
+        "outcome": "Switch to V-ACT setup, clear obsolete THPT subject; no generation",
+        "prohibited": "generation, approval, export; unrequested mutation"
+      },
+      "observedFrame": null,
+      "observedFallback": {
+        "kind": "temporarily_unavailable",
+        "intents": [],
+        "reasonCode": "timeout"
+      },
+      "assessment": "failed_upstream_deadline_no_prediction",
+      "lastStoredReply": "Dịch vụ AI chưa trả lời trong thời gian chờ. Yêu cầu chưa được thực hiện.",
+      "setupDialogObserved": false,
+      "homeScreenObserved": false,
+      "intakeAfter": {
+        "sourceId": "f43d3200-6bba-4c1d-aff8-585f29781f2a",
+        "sourceIds": [
+          "6c103f7a-21da-4665-8888-5931cf56c786",
+          "a00d39c5-9d58-4abc-98ce-73beda19920c",
+          "f43d3200-6bba-4c1d-aff8-585f29781f2a"
+        ],
+        "family": "thpt",
+        "subject": "Hóa Học",
+        "phase": "collecting",
+        "missing": "subject"
+      },
+      "remoteAttempts": 1,
+      "visibleElapsedMs": 30342,
+      "immediatePending": true,
+      "businessWrites": [],
+      "workerEvidence": {
+        "turnId": "c2443342-61c7-484f-8164-61ab288bf272",
+        "requestId": "035fe814-e2af-430b-a9ac-3e718b0f3725",
+        "attempts": 1,
+        "elapsedMs": 30010,
+        "providerElapsedMs": 30000
+      },
+      "contractHash": "27addb54bfcb694d5cd838671cf1a1662829eec84b365cba48e24e6a2500b7d4",
+      "sessionUsedBefore": 6,
+      "sessionUsedAfter": 7
+    },
+    {
+      "id": "information",
+      "input": "Nếu cô muốn tải bản Word thì cần thao tác thế nào, cô chỉ đang hỏi cách làm thôi.",
+      "expected": {
+        "goal": "APPLICATION_GUIDANCE",
+        "slots": {},
+        "outcome": "Explain operation/preconditions; no export, navigation or generation",
+        "prohibited": "generation, approval, export; unrequested mutation"
+      },
+      "observedFrame": null,
+      "observedFallback": null,
+      "assessment": "passed_local_safety_general_guidance",
+      "lastStoredReply": "Thầy cô có thể chọn mẫu Toán THPT hoặc V-ACT, xác nhận tạo đề, kiểm tra đề và bản PDF, rồi duyệt để tải tệp.",
+      "setupDialogObserved": false,
+      "homeScreenObserved": false,
+      "intakeAfter": {
+        "sourceId": "f43d3200-6bba-4c1d-aff8-585f29781f2a",
+        "sourceIds": [
+          "6c103f7a-21da-4665-8888-5931cf56c786",
+          "a00d39c5-9d58-4abc-98ce-73beda19920c",
+          "f43d3200-6bba-4c1d-aff8-585f29781f2a"
+        ],
+        "family": "thpt",
+        "subject": "Hóa Học",
+        "phase": "collecting",
+        "missing": "subject"
+      },
+      "remoteAttempts": 0,
+      "visibleElapsedMs": 146,
+      "immediatePending": false,
+      "businessWrites": [],
+      "workerEvidence": null,
+      "contractHash": "27addb54bfcb694d5cd838671cf1a1662829eec84b365cba48e24e6a2500b7d4",
+      "sessionUsedBefore": 7,
+      "sessionUsedAfter": 7
+    },
+    {
+      "id": "navigation",
+      "input": "Đưa cô trở lại màn hình bắt đầu để cô xem lại các lựa chọn nhé.",
+      "expected": {
+        "goal": "RETURN_HOME",
+        "slots": {},
+        "outcome": "Actual supported home navigation with receipt; no generation",
+        "prohibited": "generation, approval, export; unrequested mutation"
+      },
+      "observedFrame": {
+        "schemaVersion": "astra-semantic-v1",
+        "dialogueAct": "REQUEST",
+        "goals": [
+          {
+            "goal": "RETURN_HOME",
+            "parameters": {}
+          }
+        ],
+        "constraints": [],
+        "title": "Trở về màn hình bắt đầu"
+      },
+      "observedFallback": null,
+      "assessment": "passed",
+      "lastStoredReply": "Đã về màn hình bắt đầu.",
+      "setupDialogObserved": false,
+      "homeScreenObserved": true,
+      "intakeAfter": {
+        "sourceId": "f43d3200-6bba-4c1d-aff8-585f29781f2a",
+        "sourceIds": [
+          "6c103f7a-21da-4665-8888-5931cf56c786",
+          "a00d39c5-9d58-4abc-98ce-73beda19920c",
+          "f43d3200-6bba-4c1d-aff8-585f29781f2a"
+        ],
+        "family": "thpt",
+        "subject": "Hóa Học",
+        "phase": "collecting",
+        "missing": "subject"
+      },
+      "remoteAttempts": 1,
+      "visibleElapsedMs": 4774,
+      "immediatePending": true,
+      "businessWrites": [],
+      "workerEvidence": {
+        "turnId": "401b9e7b-64f0-460a-8ec4-4c212b866bd2",
+        "requestId": "153815c9-c8f9-419e-9ff7-bf496448baf2",
+        "attempts": 1,
+        "upstreamStatus": 200,
+        "elapsedMs": 4398,
+        "providerElapsedMs": 4385,
+        "promptTokenCount": 1794,
+        "candidatesTokenCount": 52,
+        "totalTokenCount": 1846,
+        "textBytes": 137,
+        "schemaStage": "validated",
+        "finishReason": "STOP",
+        "dialogueAct": "REQUEST"
+      },
+      "contractHash": "27addb54bfcb694d5cd838671cf1a1662829eec84b365cba48e24e6a2500b7d4",
+      "sessionUsedBefore": 7,
+      "sessionUsedAfter": 8
+    }
+  ],
+  "finalDeployment": {
+    "version": "a7bc80dd-afaa-4952-b39b-0a079ebc6fc8",
+    "forwarding": true,
+    "masForwarding": false,
+    "used": 8,
+    "limit": 12,
+    "remaining": 4,
+    "expiresAtUtc": "2026-11-27T02:40:00Z",
+    "semanticContractHash": "27addb54bfcb694d5cd838671cf1a1662829eec84b365cba48e24e6a2500b7d4"
+  }
+}

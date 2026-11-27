@@ -2,6 +2,8 @@
 
 For engineers continuing Agent V2. These are local implementation decisions, not team-ratified entries in docs/DECISIONS.md. The full current specification is UNIFIED_SEMANTIC_WORKFLOW_SPEC.md.
 
+Current live evidence and authorization: [completion specification](LIVE_CHAT_COMPLETION_SPEC.md), [results](LIVE_CHAT_RESULTS.md). Earlier undeployed-route statements describe their original checkpoint.
+
 ## S-001 ? Separate meaning and execution
 
 Use astra-semantic-v1 goals and extracted parameters. Reuse Decision/Intent and React receipts as the execution boundary. Missing domain data pauses in deterministic intake. The alternative was more provider schema cross-field repair; two historical complete JSON responses failed application invariants, so execution-shaped output is being migrated. Live NLU remains unverified.
@@ -29,3 +31,8 @@ The canonical goal catalog declares subject/topic/grade bounds. Python, TypeScri
 ## S-007 — Answer information requests from current application data
 
 A QUESTION about a question/answer is a read-only inspection workflow. Use the current package, explicit question/part grounding or a valid observed reference, and label the stored key/explanation truthfully. Do not navigate or invoke academic inference to answer it. A mounted test caught the old broad “là gì / như thế nào” routing shortcut replacing such a request with generic guidance; narrowing that shortcut fixes the cause and leaves unfamiliar language to the semantic model. The regression expectation now requires that the old shortcut abstain, while negated operations remain blocked.
+
+
+## S-007 - Preserve a bounded acceptance session across UTC days
+
+The owner authorized 12 additional upstream attempts total, eight automation plus four manual. Daily counters alone could silently renew that allowance at UTC rollover. Keep per-session usage in the existing ADMISSION/global-v1 ledger, require an absolute expiry, never refund attempts, and archive old daily counters on rollover. A single manual phase raises the same session cap from 8 to 12 without resetting used=8. No new resource or public MAS operation. SQLite restart/rollover, expiry and oversized-limit regressions pass; production usage was preserved through disabled deployments.

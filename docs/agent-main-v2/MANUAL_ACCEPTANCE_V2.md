@@ -1,5 +1,7 @@
 # ASTRA Agent V2 manual acceptance
 
+> Current 2026-11-27 live state: [results](LIVE_CHAT_RESULTS.md), [owner window and next task](NEXT_TASK.md), [new authorization](LIVE_CHAT_COMPLETION_SPEC.md). These supersede historical authorization/deployment blockers below. Same persistent session used=8 of 12; automation exhausted; MAS demo.
+
 For the teacher or operator validating the product on the current feature branch. Use a new conversation for unrelated scenarios. Leave MAS in demo mode.
 
 ## Current semantic release candidate, 2026-11-27
