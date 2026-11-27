@@ -1,8 +1,9 @@
 """Native LaTeX question, passage and table assembly; answers stay private."""
 
 from exam_baseline.pipeline.rendering.syntax import validate_drawing_code
-from exam_baseline.thpt.content import choice_latex, content_latex
+from exam_baseline.thpt.content import content_latex
 from exam_baseline.thpt.fonts import apply_font_profile
+from exam_baseline.thpt.rendering import render_choice_rows
 from exam_baseline.vact import template
 
 
@@ -52,7 +53,9 @@ def render(sections, drawings, font_profile):
                         body.append(" & ".join(content_latex(c) for c in row) + r"\\\hline")
                     body += [r"\end{tabular}\end{adjustbox}\end{center}"]
                 seen.add(p.id)
-            body.append(r"\noindent\textbf{Câu " + q.id[1:] + ":} " + content_latex(q.stem) + r"\\")
+            body.append(
+                r"\noindent\textbf{Câu " + q.id[1:] + ":} " + content_latex(q.stem) + r"\par"
+            )
             if q.id in figures:
                 body += [
                     r"\begin{center}\begin{adjustbox}{max width=0.95\linewidth, "
@@ -60,8 +63,7 @@ def render(sections, drawings, font_profile):
                     figures[q.id],
                     r"\end{adjustbox}\end{center}",
                 ]
-            for label in "ABCD":
-                body.append(r"\noindent " + label + ". " + choice_latex(q.choices[label]) + r"\\")
+            body.append(render_choice_rows(q.choices))
             body.append(r"\par\vspace{0.3cm}")
     return apply_font_profile(
         template.assemble({k: "\n".join(v) + "\n" for k, v in parts.items()}), font_profile

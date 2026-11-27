@@ -1831,10 +1831,10 @@ class JobManager:
                     "stale_hash",
                     "Nội dung đề thi đã thay đổi. Thầy cô vui lòng tải lại để xem bản mới nhất.",
                 )
-            self._verify_source(job)
+            source = self._verify_source(job)
             if file or log:
                 return self.previews.file(job, log=log)
-            return self.previews.request(job) if start else self.previews.status(job)
+            return self.previews.request(job, source) if start else self.previews.status(job)
 
     async def close(self):
         tasks = list(self.tasks)

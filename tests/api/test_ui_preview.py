@@ -7,6 +7,8 @@ import pytest
 from fastapi.testclient import TestClient
 from pypdf import PdfWriter
 
+from exam_baseline.thpt.content import choice_latex
+from exam_baseline.thpt.rendering import render_choice_rows
 from tests.api.test_ui_jobs import PAYLOAD, fixture_app, wait
 
 
@@ -127,6 +129,62 @@ def test_revision_hash_source_and_cached_pdf_tampering_are_rejected(tmp_path, co
         assert client.post(url, json=new_binding).status_code == 409
 
 
+@pytest.mark.parametrize("old_layout", ["separate_lines", "always_pair"])
+def test_saved_exam_preview_reflows_choices_and_preserves_approval(
+    tmp_path, compiler, monkeypatch, old_layout
+):
+    app, providers = fixture_app(tmp_path)
+    with TestClient(app) as client:
+
+        def old_choice_rows(choices):
+            if old_layout == "always_pair":
+                return render_choice_rows(choices, legacy_grid=True)
+            return "\n".join(
+                rf"\noindent {label}. {choice_latex(choices[label])}\\" for label in "ABCD"
+            )
+
+        with monkeypatch.context() as legacy:
+            legacy.setattr("exam_baseline.thpt.rendering.render_choice_rows", old_choice_rows)
+            job, package, binding = start(client)
+
+        url = f"/api/exams/{job}"
+        assert (
+            client.post(
+                url + "/approve", json={**binding, "reviewer": "fixture-teacher"}
+            ).status_code
+            == 200
+        )
+        source_path = tmp_path / job / "de_thi.tex"
+        saved = source_path.read_bytes()
+        old_key = f"{binding['revision']}-{package['preview']['sourceHash']}"
+        if old_layout == "always_pair":
+            old_key += "-2"
+        old_cache = tmp_path / job / "_preview" / old_key
+        old_cache.mkdir(parents=True)
+        old_pdf = b"%PDF-old layout"
+        (old_cache / "preview.pdf").write_bytes(old_pdf)
+        (old_cache / "status.json").write_text(
+            json.dumps({"status": "ready", "pdfHash": sha256(old_pdf).hexdigest()}), "utf-8"
+        )
+
+        before = {role: len(provider.calls) for role, provider in providers.items()}
+        assert client.get(url + "/preview", params=binding).json()["status"] == "not_requested"
+        assert client.post(url + "/preview", json=binding).status_code == 202
+        state = ready(client, job, binding)
+        assert state["status"] == "ready" and not state["draft"]
+        marker = b"% ASTRA_CHOICE_ROWS_FIT"
+        assert marker not in saved
+        assert compiler[0].count(marker) == 12
+        assert b"\n\\noindent A. " not in compiler[0]
+        assert b"\\parbox[t]" in compiler[0]
+        assert source_path.read_bytes() == saved
+        assert client.get(url + "/export?type=STUDENT_EXAM&format=tex").content == saved
+        pdf = client.get(state["pdfUrl"]).content
+        assert pdf.startswith(b"%PDF-") and pdf != old_pdf
+        assert client.get(url + "/export?type=STUDENT_EXAM&format=pdf").content == pdf
+        assert {role: len(provider.calls) for role, provider in providers.items()} == before
+
+
 @pytest.mark.parametrize("failure", ["missing", "timeout", "invalid_pdf", "preparation"])
 def test_compiler_failures_have_diagnostics_and_no_pdf(tmp_path, monkeypatch, failure):
     monkeypatch.setattr(
@@ -189,8 +247,8 @@ def test_interrupted_preview_is_retryable(tmp_path, compiler):
     app, _ = fixture_app(tmp_path)
     with TestClient(app) as client:
         job, package, binding = start(client)
-        source_hash = sha256((tmp_path / job / "de_thi.tex").read_bytes()).hexdigest()
-        directory = tmp_path / job / "_preview" / f"{binding['revision']}-{source_hash}"
+        manager = app.state.ui_jobs
+        directory = manager.previews.directory(manager.get(job))
         directory.mkdir(parents=True)
         (directory / "status.json").write_text(json.dumps({"status": "compiling"}), "utf-8")
         state = client.get(package["preview"]["statusUrl"]).json()
