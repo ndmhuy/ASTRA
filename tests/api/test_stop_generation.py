@@ -7,9 +7,94 @@ from uuid import uuid4
 import pytest
 from fastapi.testclient import TestClient
 
+from exam_baseline.core.contracts import Completion
 from exam_baseline.ui import jobs
 from exam_baseline.ui.errors import UiError
 from tests.api.test_ui_jobs import PAYLOAD, fixture_app, wait
+
+
+def test_stop_question_regeneration_then_retry_discards_late_reply(tmp_path):
+    app, providers = fixture_app(tmp_path)
+    entered, release = Event(), Event()
+    composer = providers["composer"]
+    original = composer.complete
+
+    async def compose(prompt):
+        data = json.loads(prompt.user)
+        if "question" not in data:
+            return await original(prompt)
+        if data["teacher_instruction"] == "first":
+            entered.set()
+            try:
+                await asyncio.Future()
+            except asyncio.CancelledError:
+                while not release.is_set():
+                    await asyncio.sleep(0.01)
+        repaired = {**data["question"], "stem": f"Tính $2+2$ ({data['teacher_instruction']})."}
+        return Completion(text=json.dumps(repaired, ensure_ascii=False), model=composer.model)
+
+    composer.complete = compose
+    with TestClient(app) as client:
+        try:
+            workspace = _workspace(client)
+            job = _start(client, workspace, "initial-question-paper")
+            assert wait(client, job)["status"] == "completed"
+            exam = f"/api/exams/{job}"
+            original_paper = client.get(exam).json()
+            binding = {key: original_paper[key] for key in ("revision", "contentHash")}
+            assert client.post(
+                exam + "/approve", json={**binding, "reviewer": "teacher"}
+            ).is_success
+            source = (tmp_path / job / "de_thi.tex").read_bytes()
+
+            def start(instruction):
+                result = client.post(
+                    exam + "/questions/1/regenerate",
+                    params={"workspace_id": workspace, "background": True},
+                    json={"revision": binding["revision"], "instruction": instruction},
+                )
+                assert result.status_code == 202
+                return result.json()["id"]
+
+            old = start("first")
+            assert entered.wait(5)
+            manager = app.state.ui_jobs
+            task = manager.question_tasks[(job, old)]
+            url = f"{exam}/regenerations/{old}"
+            assert client.get(url).json()["stage"] == "composer"
+            assert client.post(url + "/stop").json()["status"] == "cancelled"
+            assert client.post(url + "/stop").json()["status"] == "cancelled"
+            paper = client.get(exam).json()
+            assert paper["approved"] and paper["revision"] == binding["revision"]
+            assert (tmp_path / job / "de_thi.tex").read_bytes() == source
+
+            new = start("second")
+            deadline = time.monotonic() + 5
+            while time.monotonic() < deadline:
+                receipt = client.get(f"{exam}/regenerations/{new}").json()
+                if receipt["status"] != "pending":
+                    break
+                time.sleep(0.01)
+            assert receipt["status"] == "completed", receipt
+            assert not task.done()
+            solved = len(providers["solver"].calls)
+            release.set()
+            deadline = time.monotonic() + 5
+            while not task.done() and time.monotonic() < deadline:
+                time.sleep(0.01)
+            assert task.done()
+            assert client.get(url).json()["status"] == "cancelled"
+            assert len(providers["solver"].calls) == solved
+            final = client.get(exam).json()
+            assert final["revision"] == binding["revision"] + 1 and not final["approved"]
+            assert final["questions"][0]["stem"] == "Tính $2+2$ (second)."
+            assert final["questions"][1:] == [
+                {**question, "examRevision": final["revision"], "revisionCount": 1}
+                for question in original_paper["questions"][1:]
+            ]
+            assert len(manager.store.list_versions(job)) == 2
+        finally:
+            release.set()
 
 
 def _workspace(client):

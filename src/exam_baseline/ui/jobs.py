@@ -498,6 +498,7 @@ class JobManager:
         self.retriever = retriever or self._retrieve
         self.runner = runner
         self.tasks = {}
+        self.question_tasks = {}
         self.locks = {}
         self.capacity = asyncio.Semaphore(2)
         self.previews = PreviewService(self.root, settings)
@@ -855,7 +856,7 @@ class JobManager:
         if source is None:
             source = self._render_source(job)
         if job.get("contractExport"):
-            job["contentHash"] = await self._publish_contract(job)
+            job["contentHash"] = await self._publish_contract(job, change_id=change_id)
         if change == "generated":
             self._active_generation(job["jobId"])
         self.store.save_version(
@@ -906,7 +907,7 @@ class JobManager:
         job["contentHash"] = fingerprint(binding)
         return source
 
-    async def _publish_contract(self, job):
+    async def _publish_contract(self, job, *, change_id=None):
         format_id = job["request"]["formatId"]
         spec = contract_artifacts.profile(format_id)
         directory = self.root / job["jobId"]
@@ -935,7 +936,11 @@ class JobManager:
                 if format_id != "thpt-english"
                 else {},
             )
-            await asyncio.to_thread(contract_artifacts.write_bundle, directory, paper, key)
+            if change_id is not None:
+                self._check_question_change(job["jobId"], change_id)
+                contract_artifacts.write_bundle(directory, paper, key)
+            else:
+                await asyncio.to_thread(contract_artifacts.write_bundle, directory, paper, key)
         except (OSError, ValueError, ValidationError) as exc:
             raise UiError(
                 "thpt_contract_export_failed",
@@ -1424,6 +1429,7 @@ class JobManager:
         *,
         workspace_id=None,
         expected_stable_id=None,
+        background=False,
     ):
         job = self._completed(job_id)
         stable_id = (
@@ -1433,8 +1439,13 @@ class JobManager:
         )
         if expected_stable_id is not None and expected_stable_id != stable_id:
             raise UiError("invalid_question_id", "Câu được chọn chưa khớp với đề hiện tại.", 422)
+        if background and stable_id is None:
+            raise UiError("question_not_found", "Không tìm thấy câu hỏi cần thao tác.", 404)
         change_id = change_id or str(uuid4())
-        signature = fingerprint([kind, question_id, revision, value, workspace_id])
+        signature = fingerprint(
+            [kind, question_id, revision, value, workspace_id]
+            + (["background"] if background else [])
+        )
         existing = self.store.begin_change(
             job_id,
             change_id,
@@ -1449,9 +1460,26 @@ class JobManager:
                 "beforeRevision": revision,
                 "startedAt": now(),
                 "status": "pending",
+                **({"stage": "queued"} if background else {}),
                 **({"request": "Hoàn tác thay đổi.", "undoOf": value} if kind == "undone" else {}),
             },
         )
+        if background:
+            if existing is None:
+                key = (job_id, change_id)
+                task = asyncio.create_task(
+                    self._run_regeneration(
+                        job_id,
+                        question_id,
+                        revision,
+                        value,
+                        change_id,
+                        workspace_id,
+                    )
+                )
+                self.question_tasks[key] = task
+                task.add_done_callback(lambda _: self.question_tasks.pop(key, None))
+            return self.regeneration_status(job_id, change_id)
         if existing is not None:
             if existing["status"] == "completed":
                 if self._completed(job_id)["revision"] == existing["afterRevision"]:
@@ -1463,6 +1491,58 @@ class JobManager:
                     error["code"], error["message"], error.get("status", 409), error.get("details")
                 )
             raise UiError("exam_change_pending", "Yêu cầu chỉnh sửa đang được xử lý.")
+        return await self._apply_question_change(
+            job_id, question_id, revision, kind, value, change_id, workspace_id
+        )
+
+    async def _run_regeneration(self, job_id, number, revision, instruction, change_id, workspace):
+        try:
+            await self._apply_question_change(
+                job_id, number, revision, "regenerated", instruction, change_id, workspace
+            )
+        except (Exception, asyncio.CancelledError):
+            # The change receipt already records the failure or cancellation.
+            return
+
+    def regeneration_status(self, job_id, change_id):
+        change = self.store.get_change(job_id, change_id)
+        if "stage" not in change or change["kind"] != "regenerated":
+            raise UiError("exam_change_not_found", "Không tìm thấy lần tạo lại câu hỏi.", 404)
+        return {
+            key: change.get(key)
+            for key in (
+                "id",
+                "questionId",
+                "status",
+                "stage",
+                "beforeRevision",
+                "afterRevision",
+                "error",
+            )
+        }
+
+    def stop_regeneration(self, job_id, change_id):
+        self.regeneration_status(job_id, change_id)
+        if self.store.cancel_regeneration(job_id, change_id):
+            if task := self.question_tasks.get((job_id, change_id)):
+                task.cancel()
+        return self.regeneration_status(job_id, change_id)
+
+    def _check_question_change(self, job_id, change_id, stage=None):
+        if change_id is None:
+            return
+        change = self.store.get_change(job_id, change_id)
+        if change["status"] != "pending" or (
+            stage is not None
+            and "stage" in change
+            and stage != change["stage"]
+            and not self.store.change_stage(job_id, change_id, stage)
+        ):
+            raise asyncio.CancelledError
+
+    async def _apply_question_change(
+        self, job_id, question_id, revision, kind, value, change_id, workspace_id
+    ):
         try:
             if kind == "undone":
                 return await self._undo_question(workspace_id, job_id, revision, value, change_id)
@@ -1790,44 +1870,60 @@ class JobManager:
     async def regenerate(
         self, job_id, question_id, revision, instruction, *, change_id=None, promotion=None
     ):
+        self._check_question_change(job_id, change_id, "composer")
+        job = self._completed(job_id)
+        self._check_revision(job, revision)
+        if not 1 <= question_id <= len(job["rawQuestions"]):
+            raise UiError("question_not_found", "Không tìm thấy câu hỏi cần thao tác.", 404)
+        index = question_id - 1
+        solution = None
+        if self.settings.demo_mode and self.providers is None:
+            if _is_vact(job):
+                raise UiError("verification_unavailable", "Tạo lại câu V-ACT cần kết nối AI.", 503)
+            repaired = Question.model_validate(
+                regenerate_demo_question(job["rawQuestions"][index], instruction)
+            )
+            drawings = job["drawings"]["drawings"]
+        else:
+            try:
+                async with self.provider_scope() as providers:
+                    guarded = {
+                        role: GenerationProvider(
+                            provider,
+                            lambda stage=role: self._check_question_change(
+                                job_id, change_id, stage
+                            ),
+                        )
+                        for role, provider in providers.items()
+                    }
+                    repaired, drawings, solution = await self._regenerate_question(
+                        job, index, instruction, guarded
+                    )
+            except ContractError as exc:
+                raise UiError(
+                    "invalid_repair",
+                    "Câu được tạo lại chưa đúng cấu trúc hoặc ngữ liệu của đề.",
+                    422,
+                    details={"stage": exc.stage, "fields": exc.fields},
+                ) from exc
+            except ProviderError as exc:
+                raise UiError(
+                    exc.code,
+                    "Dịch vụ AI chưa thể tạo lại và kiểm tra câu này. Vui lòng thử lại.",
+                    503,
+                    details={"retryAfterSeconds": exc.retry_after_seconds}
+                    if exc.retry_after_seconds is not None
+                    else None,
+                ) from exc
+
         async with self.lock(job_id):
+            self._check_question_change(job_id, change_id, "saving")
             job = self._completed(job_id)
             self._check_revision(job, revision)
-            if not 1 <= question_id <= len(job["rawQuestions"]):
-                raise UiError("question_not_found", "Không tìm thấy câu hỏi cần thao tác.", 404)
-            index = question_id - 1
             solutions = _current_solutions(job)
-            if self.settings.demo_mode and self.providers is None:
-                if _is_vact(job):
-                    raise UiError(
-                        "verification_unavailable", "Tạo lại câu V-ACT cần kết nối AI.", 503
-                    )
-                old = job["rawQuestions"][index]
-                repaired = Question.model_validate(regenerate_demo_question(old, instruction))
-                drawings = job["drawings"]["drawings"]
+            if solution is None:
                 solutions.pop(repaired.id, None)
             else:
-                try:
-                    async with self.provider_scope() as providers:
-                        repaired, drawings, solution = await self._regenerate_question(
-                            job, index, instruction, providers
-                        )
-                except ContractError as exc:
-                    raise UiError(
-                        "invalid_repair",
-                        "Câu được tạo lại chưa đúng cấu trúc hoặc ngữ liệu của đề.",
-                        422,
-                        details={"stage": exc.stage, "fields": exc.fields},
-                    ) from exc
-                except ProviderError as exc:
-                    raise UiError(
-                        exc.code,
-                        "Dịch vụ AI chưa thể tạo lại và kiểm tra câu này. Vui lòng thử lại.",
-                        503,
-                        details={"retryAfterSeconds": exc.retry_after_seconds}
-                        if exc.retry_after_seconds is not None
-                        else None,
-                    ) from exc
                 solutions[repaired.id] = solution.model_dump()
             job["rawQuestions"][index] = repaired.model_dump()
             job.update(
@@ -2030,7 +2126,7 @@ class JobManager:
             return self.previews.request(job, source) if start else self.previews.status(job)
 
     async def close(self):
-        tasks = list(self.tasks.values())
+        tasks = [*self.tasks.values(), *self.question_tasks.values()]
         for task in tasks:
             task.cancel()
         await asyncio.gather(*tasks, return_exceptions=True)
