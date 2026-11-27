@@ -244,6 +244,7 @@ async def regenerate(
         payload.instruction,
         str(idempotency_key) if idempotency_key else None,
         workspace_id=str(workspace_id) if workspace_id else None,
+        expected_stable_id=payload.stableId,
     )
 
 

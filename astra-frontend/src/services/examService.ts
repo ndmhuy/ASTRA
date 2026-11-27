@@ -60,7 +60,7 @@ export interface IExamService {
   startGeneration(params: ExamRequestParams, workspaceId?: string): Promise<{ jobId: string }>;
   onProgress(jobId: string, callback: (progress: GenerationProgress) => void): () => void;
   getExamPackage(jobId: string): Promise<ExamPackage>;
-  regenerateQuestion(jobId: string, questionId: number, instruction?: string, revision?: number, workspaceId?: string): Promise<QuestionItem>;
+  regenerateQuestion(jobId: string, questionId: number, instruction?: string, revision?: number, workspaceId?: string, stableId?: string): Promise<QuestionItem>;
   updateQuestion(jobId: string, updatedQuestion: QuestionItem, workspaceId?: string): Promise<void>;
   verifyQuestion?(jobId: string, questionId: number, revision: number): Promise<void>;
   downloadExport(jobId: string, type: 'STUDENT_EXAM' | 'TEACHER_KEY' | 'MATRIX', format: ExportFormat): Promise<void>;
@@ -702,11 +702,11 @@ export class ApiExamService implements IExamService {
     };
   }
 
-  async regenerateQuestion(jobId: string, questionId: number, instruction?: string, revision?: number, workspaceId?: string): Promise<QuestionItem> {
+  async regenerateQuestion(jobId: string, questionId: number, instruction?: string, revision?: number, workspaceId?: string, stableId?: string): Promise<QuestionItem> {
     const targetRevision = revision ?? (await this.getExamPackage(jobId)).revision;
     const query = workspaceId ? `?workspace_id=${encodeURIComponent(workspaceId)}` : '';
     const updated = await this.changeQuestion(`exams/${jobId}/questions/${questionId}/regenerate${query}`, 'POST', {
-      instruction: instruction || 'Sửa câu hỏi và kiểm tra lại lời giải.', revision: targetRevision,
+      instruction: instruction || 'Sửa câu hỏi và kiểm tra lại lời giải.', revision: targetRevision, stableId,
     });
     return adaptStudentPaper(updated, this.baseUrl).questions.find(question => question.id === questionId)!;
   }

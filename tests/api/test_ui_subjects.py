@@ -94,7 +94,11 @@ class Replay:
     def question(id_):
         return dict(
             id=id_,
-            stem=f"Test item {id_}.",
+            stem=(
+                f"Test item {id_}. Ghi kết quả chính xác, không làm tròn."
+                if id_.startswith("P3")
+                else f"Test item {id_}."
+            ),
             solution="PRIVATE_REPLAY_KEY",
             answer=None if id_.startswith("P2") else answer(id_),
             choices=dict(zip("ABCD", ["Yes", "No", "Maybe", "Neither"], strict=True))

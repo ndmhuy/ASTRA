@@ -33,6 +33,7 @@ export interface QuestionItem {
   auditNotes?: string;
   drawingLatex?: string;
   responseKind?: 'numeric' | 'digit_sequence';
+  maxAnswerCharacters?: number;
   figures?: { url: string; mimeType: string; alt: string }[];
 }
 export interface ExamBlueprint {

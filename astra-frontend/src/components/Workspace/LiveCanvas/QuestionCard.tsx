@@ -85,11 +85,10 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, index, onE
           {review ? (
             <strong className="short-answer-value">{question.key}</strong>
           ) : (
-            <span className="short-answer-boxes" aria-label="4 ô điền đáp án">
-              <span className="short-answer-cell" aria-hidden="true" />
-              <span className="short-answer-cell" aria-hidden="true" />
-              <span className="short-answer-cell" aria-hidden="true" />
-              <span className="short-answer-cell" aria-hidden="true" />
+            <span className="short-answer-boxes" aria-label={`${question.maxAnswerCharacters ?? 5} ô điền đáp án`}>
+              {Array.from({ length: question.maxAnswerCharacters ?? 5 }, (_, index) => (
+                <span key={index} className="short-answer-cell" aria-hidden="true" />
+              ))}
             </span>
           )}
         </div>

@@ -29,6 +29,7 @@ cho năm môn THPT. Backend đã tự xuất cặp JSON sau khi sinh đề thàn
 | Sinh đề | `POST /api/exams/generate` | Gửi `Idempotency-Key` riêng cho mỗi lần xác nhận. Dùng lại cùng key nếu retry chính lần xác nhận đó. API trả `jobId`. |
 | Theo dõi | `GET /api/exams/{jobId}/events` hoặc `/status` | Dùng `status`, `stageName`, `completedItems` và `totalItems`. Khi `failed`, thoát trạng thái đang sinh và hiển thị lỗi. |
 | Đọc đề | `GET /api/exams/{jobId}` sau `completed` | Ưu tiên `studentPaper` cho nội dung đề. `questions` hiện cung cấp dữ liệu cho màn hình giáo viên và job legacy. |
+| Tạo lại một câu THPT hoặc V-ACT | `POST /api/exams/{jobId}/questions/{id}/regenerate` | Dùng `questions[].id` trong URL, gửi `revision`, `stableId` và `instruction`. Dùng `?workspace_id=…` cho workspace lưu chung. Đọc `answerCheck` của phiên bản mới. Với V-ACT, API giữ nguyên nhóm và ngữ liệu dùng chung. |
 | Tải hình | `GET /api/exams/{jobId}/assets/{assetId}` | Ghép `figure.assetId` với `studentPaper.assets[].id`. Các hình sinh từ luồng hiện tại có MIME `image/png`. |
 | Preview | `POST /api/exams/{jobId}/preview` | Gửi revision và hash, chờ `ready` qua `statusUrl`, rồi mở `pdfUrl` do backend trả. |
 | Duyệt và tải | `POST /api/exams/{jobId}/approve`, rồi `GET /api/exams/{jobId}/export` | Gửi revision, hash và `reviewer` khi duyệt. Tải đề với `type=STUDENT_EXAM&format=json`, tải đáp án với `type=TEACHER_KEY&format=json`. Dùng tên file từ `Content-Disposition`. |
@@ -59,6 +60,9 @@ Ví dụ body cho preset Hóa.
 - `contentHash` do server cấp. Khi lưu hoặc tạo lại câu, lấy revision và hash
   mới trước khi hiện preview hoặc duyệt lại. Với `stale_revision` hoặc
   `stale_hash`, tải lại đề.
+- Câu trả lời ngắn mới ghi rõ hàng làm tròn hoặc yêu cầu kết quả chính xác.
+  Giới hạn trong schema của repo là 5 ký tự, tính cả dấu trừ và dấu phẩy.
+  Màn hình giáo viên lấy giới hạn từ `questions[].maxAnswerCharacters`.
 - File học sinh chỉ chứa nội dung đề. Giữ `teacher-key.json` và package legacy
   có đáp án trong luồng giáo viên. Màn hình chia sẻ cho học sinh cần dùng bản
   đề đã duyệt và cơ chế phân quyền riêng phía backend.

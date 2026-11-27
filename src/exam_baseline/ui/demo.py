@@ -324,6 +324,7 @@ def _thpt_demo_questions(slots) -> list[dict]:
             )
         else:
             stem, answer, solution = _THPT_P3[idx]
+            stem += " Ghi kết quả chính xác, không làm tròn."
             questions.append(
                 {
                     "id": slot.id,
