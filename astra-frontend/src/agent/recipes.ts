@@ -59,16 +59,9 @@ export function fastRoute(message: string): Local | undefined {
     return action('SELECT_FORMAT', { format, details: direct.endsWith('chi tiet') });
   }
   if (/^(xem chi tiet mau|mo chi tiet mau)$/.test(text)) return action('FORMAT_DETAILS');
-  if (format && /^(tao|soan) de (toan )?(thpt|v-act|vact)(?: chuyen de:? [\p{Letter}\p{Number} ,_-]+)?(?: \d+ cau)?(?:,? \d+ phut)?$/u.test(text)) {
-    const topic = message.match(/(?:chuyên đề|chuyen de):?\s+(.+?)(?=\s+\d+\s+câu|$)/iu)?.[1];
-    if (text.includes('chuyen de') && !topic) return { text: 'Thầy cô muốn tập trung vào chuyên đề nào?' };
-    if (format === 'thpt-math' && !/^(tao|soan) de toan thpt\b/.test(text)) {
-      return { intake: { mode: 'request', family: 'thpt', ...(topic ? { topic: topic.replace(/[.!]$/, '') } : {}) } };
-    }
-    return action('PREPARE_GENERATION', { format, ...(topic ? { topic: topic.replace(/[.!]$/, '') } : {}) });
-  }
-  if (format && /^(thpt|v-act|vact) \d+ cau(,? \d+ phut)?$/.test(text)) {
-    return { intake: { mode: 'request', family: format === 'thpt-math' ? 'thpt' : 'vact' } };
+  if (/^(tao|soan) de thpt$/.test(text)) return { intake: { mode: 'request', family: 'thpt' } };
+  if (format && /^(tao|soan) de (toan thpt|v-act|vact)$/.test(text)) {
+    return action('PREPARE_GENERATION', { format });
   }
   if (/^(tao de|soan de|tao de toan 12|tao lai de)$/.test(text)) return action('PREPARE_GENERATION');
   const note = message.match(/^(?:ghi chú sửa|sửa) câu (\d{1,3})(?: phần ([a-z0-9]+))?\s+(.{2,300})$/iu);
@@ -113,16 +106,10 @@ export function fastRoute(message: string): Local | undefined {
   }
   if (/^(?:xuat|tai) (?:de (?:thanh|sang) )?(?:word|docx)$/.test(text) ||
       /^(?:random|ngau nhien|ngan hang cau hoi|upload|tim web|tim google|huy job)$/.test(text)) {
-    return { text: 'ASTRA hiện hỗ trợ mẫu Toán THPT và V-ACT, cùng xuất PDF, tệp nguồn TEX và đáp án JSON sau khi duyệt. Tính năng thầy cô yêu cầu chưa có.' };
+    return { text: 'ASTRA chưa hỗ trợ thao tác này. Nhắn “Xem các mẫu đề” để xem danh mục hiện có.' };
   }
   if (/\b(ignore (previous|all)|bo qua.*(xac nhan|quyen)|export all)\b/.test(text)) {
     return { text: 'Thầy cô hãy gửi trực tiếp yêu cầu thao tác trong ASTRA.' };
-  }
-  if (/^(neu\b|lam sao\b|huong dan\b)|\bphai lam sao\b/.test(text)) {
-    return { text: 'Thầy cô có thể chọn mẫu Toán THPT hoặc V-ACT, xác nhận tạo đề, kiểm tra đề và bản PDF, rồi duyệt để tải tệp.' };
-  }
-  if (/\b(thoi tiet|du bao thoi tiet)\b/.test(text)) {
-    return { text: 'Em hỗ trợ soạn, kiểm tra và quản lý đề thi trong ASTRA.' };
   }
 }
 

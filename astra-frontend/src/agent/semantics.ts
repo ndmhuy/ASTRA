@@ -1,10 +1,9 @@
 import catalog from '../../../src/exam_baseline/resources/agent/semantic-catalog.json' with { type: 'json' };
-import domain from '../../../src/exam_baseline/resources/agent/domain.json' with { type: 'json' };
 import type { Decision, ExamIntake, Intent } from './contracts.ts';
 import { validIntent } from './contracts.ts';
 import type { Intake } from './intake.ts';
 import type { ExamFormat } from '../types/exam.ts';
-import { fold } from './recipes.ts';
+import { shortSubjectIntake } from './knowledge.ts';
 import { sectionId } from './examActions.ts';
 
 export type GoalId = keyof typeof catalog.goals;
@@ -121,9 +120,6 @@ export function resolveSemantic(frame: SemanticFrame, recent?: { number: number;
 
 export function contextualSubject(message: string, previous: Intake | undefined, formats: ExamFormat[]): Decision | undefined {
   if (previous?.missing !== 'subject') return;
-  const text = fold(message).replace(/[.!]+$/, '').replace(/^mon\s+/, '').replace(/\s+(?:nhe|nha)$/, '');
-  const subjects: Record<string, string[]> = { ...domain.subjects };
-  for (const format of formats) for (const subject of format.subjects) subjects[subject] ??= [];
-  const subject = Object.entries(subjects).find(([name, aliases]) => [name, ...aliases].some(term => fold(term) === text))?.[0];
-  if (subject) return { kind: 'answer', intents: [], intake: { mode: 'request', subject } };
+  const intake = shortSubjectIntake(message, formats);
+  if (intake) return { kind: 'answer', intents: [], intake };
 }

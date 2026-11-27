@@ -873,24 +873,43 @@ def _retrieve_single_question(
             or (req.include_unknown_level and o.get("level_status") == "unknown")
         ]
         exact_ex = [e for e in all_part_examples if e.get("level") == eff_level]
+        # A matched pack can cover several subtopics at the same level.
+        topic_words = set(re.findall(r"\w+", normalize(q_spec.topic)))
+        exact_ex.sort(
+            key=lambda e: -len(topic_words & set(re.findall(r"\w+", normalize(e["topic"]))))
+        )
 
         if not eligible_obs and not exact_ex:
             avail_lvls = sorted(
                 {o.get("level") for o in all_part_obs if o.get("level")}
                 | {e.get("level") for e in all_part_examples if e.get("level")}
             )
-            gaps.append(
-                {
-                    "code": "level_not_covered",
-                    "message": (
-                        f"Matched topic pack(s) {[p['display_topic'] for p in matched_packs]} "
-                        f"have part {q_spec.part}, but no observations or examples at level {eff_level!r} "
-                        f"(available levels in {q_spec.part}: {avail_lvls})."
-                    ),
-                }
-            )
-            # Still include adjacent-level patterns/curriculum for diagnostic context, but mark status="gap".
-            selected_examples = all_part_examples[: req.max_examples]
+            if req.allow_curriculum_only and all_curriculum and "knowledge" in q_spec.needs:
+                warnings.append(
+                    {
+                        "code": "curriculum_only_for_level",
+                        "message": (
+                            f"Chưa có câu mẫu ở mức {eff_level}. Câu này dùng nguồn chương trình "
+                            "đúng chủ đề. Giáo viên cần kiểm tra mức độ trước khi sử dụng."
+                        ),
+                    }
+                )
+                selected_patterns = []
+                all_mistakes = []
+            else:
+                gaps.append(
+                    {
+                        "code": "level_not_covered",
+                        "message": (
+                            f"Matched topic pack(s) {[p['display_topic'] for p in matched_packs]} "
+                            f"have part {q_spec.part}, but no observations or examples "
+                            f"at level {eff_level!r} "
+                            f"(available levels in {q_spec.part}: {avail_lvls})."
+                        ),
+                    }
+                )
+                # Include adjacent-level examples only for diagnostic context.
+                selected_examples = all_part_examples[: req.max_examples]
         else:
             scored_obs = sorted(
                 eligible_obs,
@@ -903,7 +922,11 @@ def _retrieve_single_question(
             other_ex = [e for e in all_part_examples if e.get("level") != eff_level]
             selected_examples = (exact_ex + other_ex)[: req.max_examples]
 
-    if not selected_examples and "examples" in q_spec.needs:
+    if (
+        not selected_examples
+        and "examples" in q_spec.needs
+        and not any(w["code"] == "curriculum_only_for_level" for w in warnings)
+    ):
         warnings.append(
             {
                 "code": "missing_ready_examples",
@@ -1031,6 +1054,7 @@ def parse_matrix_request(payload: dict[str, Any]) -> MatrixRetrievalRequest:
         "matrix_id": payload.get("matrix_id", "toan-thpt-matrix"),
         "vdc_policy": payload.get("vdc_policy", CONFIG["default_vdc_policy"]),
         "include_unknown_level": payload.get("include_unknown_level", False),
+        "allow_curriculum_only": payload.get("allow_curriculum_only", False),
         "max_observations": payload.get(
             "max_observations", CONFIG["default_max_observations_per_question"]
         ),

@@ -236,6 +236,22 @@ pack = get_topic_pack(release, "5fed66930d74", part="P1", level="TH")
 4. **Automatic Cache Invalidation (`release_fingerprint`):**
    - `load_profile_release()` verifies the SHA-256 checksum of `profile.bundle.json`, `completion.json`, `levels.json`, all 71 `topics/*.json` files, `rag/data/toan-*.jsonl`, and `config.json`. Any change to any file immediately produces a new `release_fingerprint` and invalidates the in-memory cache.
 
+### Probability examples in a local Toán release
+
+Build this supplement when the base release lacks examples for the probability
+levels requested by an exam matrix:
+
+```powershell
+python scripts/build_probability_rag_pack.py runs/rag-probability-pack-v1
+```
+
+Set `EXAM_RAG_PACK_DIR=runs/rag-probability-pack-v1` in the local `.env` and
+restart ASTRA. The builder maintains the base corpus snapshot and writes a new
+fingerprint and file manifest for the supplemented release. The examples use
+original wording, reference the corpus observations used to check their scope,
+and remain pending teacher review. The checked answers and levels are recorded
+in the [independent review receipt](../rag_workflow/probability_supplement_review.json).
+
 ### Toán THPT Acceptance Suite Results
 
 Measured with `python -m rag_workflow.eval --acceptance` (`eval/toan_thpt_acceptance.json`):

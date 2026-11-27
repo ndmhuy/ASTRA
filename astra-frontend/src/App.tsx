@@ -6,7 +6,7 @@ import { admit, execute, fastRoute, fold, mayDispatch, type Effect, type Runtime
 import { displayNumber, failure, inspectQuestion, previewText, resolveQuestion, sectionId, statusText, success } from './agent/examActions';
 import type { Decision, Intent } from './agent/contracts';
 import { contextualSubject, resolveSemantic } from './agent/semantics';
-import { familyFor, formatOverview, guidanceFor, mentionedFamilies, resolveIntake } from './agent/knowledge';
+import { familyFor, formatOverview, guidanceFor, mentionedFamilies, resolveIntake, shortSubjectIntake } from './agent/knowledge';
 import { AlertCircle, AlertTriangle, LoaderCircle, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { WorkspaceStart } from './components/WorkspaceStart';
 import { AstraWelcome } from './components/AstraWelcome';
@@ -42,11 +42,13 @@ interface RegenerationUndo {
   revision: number;
 }
 type EditorTarget = { sessionId: string; jobId: string; question: QuestionItem; workspaceId?: string };
+const CONFIRMATION_TTL_MS = 5 * 60_000;
+
 type Confirmation = {
   workspaceId: string;
   binding: string;
   expires: number;
-  run: () => Promise<Effect> | Effect;
+  run: (sourceId?: string) => Promise<Effect> | Effect;
 };
 
 export const App: React.FC = () => {
@@ -230,16 +232,25 @@ export const App: React.FC = () => {
     const alive = () => !controller.signal.aborted && !!store.getSnapshot().find(s => s.id === id)?.messages.some(m => m.id === messageId);
     try {
       if (options.searchWeb || options.attachedFiles.length) {
-        answer('ASTRA hiện chưa hỗ trợ tìm web hoặc tải tệp. Thầy cô có thể gửi nội dung dạng văn bản.');
+        pending.current = null;
+        answer(options.attachedFiles.length
+          ? 'ASTRA chưa thể đọc tệp đính kèm. Thầy cô có thể dán phần nội dung cần dùng vào tin nhắn.'
+          : 'ASTRA chưa hỗ trợ tìm trên mạng. Thầy cô có thể gửi nội dung dạng văn bản.');
         return;
       }
       await Promise.resolve();
       if (!alive()) return;
       let local = fastRoute(content);
-      if (!local && origin?.intake?.missing === 'subject' && content.length <= 80) {
-        const subject = contextualSubject(content, origin.intake, await getExamFormats());
-        if (subject?.intake) local = { intake: subject.intake };
-        if (!alive() || runtime.binding() !== binding) return;
+      let intakeFormats: ExamFormat[] | undefined;
+      if (!local && origin && ['draft', 'error'].includes(origin.status) && !editor && content.length <= 80) {
+        const subject = shortSubjectIntake(content);
+        if (subject) local = { intake: subject };
+        else if (origin.intake?.missing === 'subject') {
+          intakeFormats = await getExamFormats();
+          const contextual = contextualSubject(content, origin.intake, intakeFormats);
+          if (contextual?.intake) local = { intake: contextual.intake };
+          if (!alive() || runtime.binding() !== binding) return;
+        }
       }
       if (local && 'text' in local) { answer(local.text); return; }
       if (local && 'confirm' in local) {
@@ -254,7 +265,7 @@ export const App: React.FC = () => {
         } else if (prepared.expires < Date.now() || prepared.binding !== runtime.binding()) {
           answer('Xác nhận đã hết hiệu lực hoặc trạng thái đã thay đổi. Thầy cô hãy gửi lại yêu cầu.');
         } else {
-          const effect = await prepared.run();
+          const effect = await prepared.run(messageId);
           if (alive() || !store.getSnapshot().some(session => session.id === id)) answer(effect.text);
         }
         return;
@@ -316,7 +327,7 @@ export const App: React.FC = () => {
           return;
         }
         if (decision.intake?.mode === 'request') pending.current = null;
-        const formats = decision.guidance === 'remark' ? [] : await getExamFormats();
+        const formats = decision.guidance === 'remark' ? [] : intakeFormats ?? await getExamFormats();
         if (!alive() || runtime.binding() !== binding) return;
         if (decision.intake) {
           const resolution = resolveIntake(decision.intake, content, origin?.intake, formats, messageId, !!workflow);
@@ -324,8 +335,29 @@ export const App: React.FC = () => {
             ? resolution.title : decision.title ?? resolution.title;
           titleQuality = resolution.draft?.formatId ? 3 : resolution.draft?.family ? 2 : 1;
           if ('text' in resolution) {
-            if (resolution.draft) store.setIntake(id, resolution.draft);
-            if (suggestedTitle) store.suggestTitle(id, suggestedTitle, messageId, titleQuality);
+            const { draft, preset } = resolution;
+            flushSync(() => {
+              if (draft) store.setIntake(id, draft);
+              if (suggestedTitle) store.suggestTitle(id, suggestedTitle, messageId, titleQuality);
+            });
+            if (draft && preset) {
+              const accepted: Intake = {
+                ...draft, formatId: preset.id, version: preset.version, subject: preset.subjects[0],
+                count: preset.totalQuestions, minutes: preset.durationMinutes, grade: preset.grades[0],
+              };
+              const action: Intent = !workflow?.setupOnly && (workflow?.requestGeneration || draft.topic)
+                ? { id: 'PREPARE_GENERATION', args: { format: preset.id, ...(draft.topic ? { topic: draft.topic } : {}) } }
+                : { id: 'SELECT_FORMAT', args: { format: preset.id, details: true } };
+              const expected = runtime.binding();
+              pending.current = {
+                workspaceId: id,
+                binding: expected,
+                expires: Date.now() + CONFIRMATION_TTL_MS,
+                run: (sourceId = messageId) => runtimeRef.current!.dispatch(action, expected, '', sourceId, {
+                  ...accepted, sourceIds: [...new Set([...(accepted.sourceIds ?? [messageId]), sourceId])],
+                }),
+              };
+            }
             answer(resolution.text);
             return;
           }
@@ -382,7 +414,8 @@ export const App: React.FC = () => {
         const reason = error instanceof Error ? error.message : '';
         answer(reason === 'agent_rate' ? 'Trợ lý đang nhận quá nhiều yêu cầu. Thầy cô thử lại sau một lát.'
           : reason.startsWith('agent_') ? 'Chưa kết nối được dịch vụ hiểu yêu cầu. Thầy cô có thể dùng các nút trong ASTRA.'
-            : 'Chưa xác định được kết quả của thao tác. Thầy cô hãy kiểm tra trạng thái trước khi thử lại.');
+            : error instanceof ApiError ? error.message
+              : 'Chưa xác định được kết quả của thao tác. Thầy cô hãy kiểm tra trạng thái trước khi thử lại.');
       }
     } finally {
       if (turn.current === controller) { turn.current = null; setChatPending(false); }
@@ -611,7 +644,7 @@ export const App: React.FC = () => {
     const validTurn = () => !!activeTurn && turn.current === activeTurn && !activeTurn.signal.aborted;
     const prepare = (text: string, run: Confirmation['run']): Effect => {
       if (!current) return failed('Hãy mở không gian soạn đề trước.');
-      pending.current = { workspaceId: current.id, binding: binding(), expires: Date.now() + 5 * 60_000, run };
+      pending.current = { workspaceId: current.id, binding: binding(), expires: Date.now() + CONFIRMATION_TTL_MS, run };
       return { status: 'pending', text: `${text} Nếu đồng ý, hãy nhắn “Xác nhận”.` };
     };
     switch (intent.id) {
@@ -754,6 +787,9 @@ export const App: React.FC = () => {
               : 'Chưa tải được mẫu đề khả dụng.');
             const format = available.find(item => item.id === selected);
             if (!format || !current) return failed('Mẫu yêu cầu hiện không khả dụng.');
+            if (resolved?.formatId === format.id && resolved.version && resolved.version !== format.version) {
+              return failed('Mẫu đề đã đổi phiên bản. Thầy cô hãy gửi lại yêu cầu.');
+            }
             const family = familyFor(format);
             const named = mentionedFamilies(message);
             if (named.length === 1 && named[0] !== family) return failed('Mẫu được đề xuất khác với dạng đề thầy cô vừa nêu.');
@@ -803,7 +839,7 @@ export const App: React.FC = () => {
             pending.current = {
               workspaceId: current.id,
               binding: runtimeRef.current!.binding(),
-              expires: Date.now() + 5 * 60_000,
+              expires: Date.now() + CONFIRMATION_TTL_MS,
               run: async () => {
                 flushSync(() => { setShowQuickModal(false); setAgentSelection(undefined); });
                 store.setIntake(current.id, { ...intake, topic: proposal.topic, phase: 'confirmed', validation: 'passed' });

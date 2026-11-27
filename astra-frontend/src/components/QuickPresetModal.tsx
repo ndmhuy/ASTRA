@@ -49,6 +49,7 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, onDialogMo
   });
   const [health, setHealth] = useState<BackendHealth | null>(null);
   const [error, setError] = useState('');
+  const [catalogAttempt, setCatalogAttempt] = useState(0);
   const modalRef = useRef<HTMLDivElement>(null);
 
   const catalog = agentSelection?.formats ?? formats;
@@ -106,7 +107,7 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, onDialogMo
         }
       });
     return () => { active = false; };
-  }, [agentSelection]);
+  }, [agentSelection, catalogAttempt]);
 
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
@@ -124,6 +125,11 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, onDialogMo
     modal?.addEventListener('keydown', handleKey);
     return () => { modal?.removeEventListener('keydown', handleKey); previous?.focus(); };
   }, [onClose]);
+
+  const retryCatalog = () => {
+    setError('');
+    setCatalogAttempt(attempt => attempt + 1);
+  };
 
   const start = () => {
     if (!selected?.available) return;
@@ -173,8 +179,11 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, onDialogMo
         </div>
 
         {error && (
-          <div role="alert" className="preset-error-box">
-            <p>{error}</p>
+          <div className="preset-error-box">
+            <p role="alert">{error}</p>
+            <button type="button" className="button-secondary" onClick={retryCatalog}>
+              Tải lại danh sách mẫu đề
+            </button>
           </div>
         )}
         {!error && !catalog.length && (

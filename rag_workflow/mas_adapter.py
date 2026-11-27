@@ -27,17 +27,28 @@ def render_thpt_prompt_evidence(
         lines.append(f"- Bài [{unit['unit_id']}]: {brief(unit.get('title'))}. {summary}")
 
     shapes: dict[str, str] = {}
-    for pattern in ctx.get("construction_patterns", []):
-        construction = brief(pattern.get("construction"))
-        if construction:
-            shapes.setdefault(pattern.get("pattern_id") or construction, construction)
+    observations = ctx.get("construction_observations", [])
+    examples = ctx.get("examples", [])
+    effective_level = ctx.get("resolved_level", {}).get("effective")
+    if part in ("P1", "P3") and not any(o.get("level") == effective_level for o in observations):
+        # A reviewed exact-level example is stronger than a general pattern for this slot.
+        for example in examples:
+            if example.get("level") == effective_level:
+                if variation := brief(example.get("variation_guidance")):
+                    shapes.setdefault(example["example_id"], variation)
 
     if not shapes:
-        for item in ctx.get("construction_observations", []):
+        for pattern in ctx.get("construction_patterns", []):
+            construction = brief(pattern.get("construction"))
+            if construction:
+                shapes.setdefault(pattern.get("pattern_id") or construction, construction)
+
+    if not shapes:
+        for item in observations:
             given, task = brief(item.get("given")), brief(item.get("task"))
             if given and task:
                 shapes.setdefault(item["ref"], f"{given} → {task}")
-        for example in ctx.get("examples", []):
+        for example in examples:
             if variation := brief(example.get("variation_guidance")):
                 shapes.setdefault(example["example_id"], variation)
 

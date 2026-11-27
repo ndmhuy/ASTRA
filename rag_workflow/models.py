@@ -322,6 +322,7 @@ class MatrixRetrievalRequest:
     matrix_id: str = "toan-thpt-matrix"
     vdc_policy: str = CONFIG["default_vdc_policy"]
     include_unknown_level: bool = False
+    allow_curriculum_only: bool = False
     max_observations: int = CONFIG["default_max_observations_per_question"]
     max_examples: int = CONFIG["default_max_examples_per_question"]
     max_curriculum_units: int = CONFIG["default_max_curriculum_units_per_question"]
@@ -361,6 +362,8 @@ class MatrixRetrievalRequest:
             )
         if type(self.include_unknown_level) is not bool:
             raise Gap("invalid_request", "include_unknown_level must be a boolean.")
+        if type(self.allow_curriculum_only) is not bool:
+            raise Gap("invalid_request", "allow_curriculum_only must be a boolean.")
         for field_name in ("max_observations", "max_examples", "max_curriculum_units"):
             val = getattr(self, field_name)
             if type(val) is not int or not 1 <= val <= CONFIG["max_top_k"]:

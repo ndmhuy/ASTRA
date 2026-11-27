@@ -678,6 +678,30 @@ class SyntheticPackRetrievalTests(unittest.TestCase):
         )
         self.assertEqual(level_gap.question_contexts[0]["gaps"][0]["code"], "level_not_covered")
 
+        curriculum_only = retrieve_exam_context(
+            {
+                "allow_curriculum_only": True,
+                "questions": [
+                    {
+                        "question_id": "Q_CURRICULUM",
+                        "topic": "Nguyên hàm",
+                        "part": "P1",
+                        "level": "VD",
+                    },
+                ],
+            },
+            pack_dir=self.pack_dir,
+        )
+        context = curriculum_only.question_contexts[0]
+        self.assertEqual(curriculum_only.status, "success")
+        self.assertEqual(context["status"], "ready_with_warnings")
+        self.assertEqual(context["resolved_level"]["effective"], "VD")
+        self.assertTrue(context["curriculum_knowledge"])
+        self.assertFalse(context["construction_patterns"])
+        self.assertFalse(context["construction_observations"])
+        self.assertFalse(context["examples"])
+        self.assertIn("curriculum_only_for_level", {w["code"] for w in context["warnings"]})
+
         # When include_unknown_level=True, the unknown observation is returned with a warning
         with_unknown = retrieve_exam_context(
             {
