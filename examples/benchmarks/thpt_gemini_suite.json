@@ -1,0 +1,184 @@
+{
+  "schema_version": "thpt-benchmark-v1",
+  "name": "ASTRA THPT Math Scientific Benchmark (Gemini 2.5 / 3.1 / 3.8)",
+  "description": "OFAT benchmark isolating (E1) Architecture, (E2) Model & Reasoning Effort, and (E3) Hero Comparison proving Weak Model + ASTRA beats Strong Model + Naive Baseline.",
+  "usd_to_vnd_rate": 26000.0,
+  "cost_target_vnd": 2000.0,
+  "cases": [
+    {
+      "id": "case_01_general",
+      "title": "Đề tổng hợp Toán THPT chuẩn 2025",
+      "prompt": "Tạo đề thi thử tốt nghiệp THPT môn Toán cấu trúc 2025 gồm 12 câu trắc nghiệm nhiều lựa chọn, 4 câu đúng sai và 6 câu trả lời ngắn, phủ đều chương trình Toán 12 chuẩn GDPT 2018.",
+      "focus_topics": ["Ứng dụng đạo hàm", "Nguyên hàm - Tích phân", "Xác suất có điều kiện", "Hình học Oxyz"]
+    },
+    {
+      "id": "case_02_integrals",
+      "title": "Trọng tâm Nguyên hàm & Tích phân",
+      "prompt": "Tạo đề kiểm tra theo khung đề THPT Toán 2025, tập trung mạnh vào chuyên đề Nguyên hàm, Tích phân và ứng dụng tính diện tích hình phẳng, thể tích khối tròn xoay; không trộn kiến thức ngoài chương trình.",
+      "focus_topics": ["Nguyên hàm", "Tích phân xác định", "Ứng dụng tích phân"]
+    },
+    {
+      "id": "case_03_probability",
+      "title": "Trọng tâm Xác suất & Thống kê",
+      "prompt": "Tạo đề thi thử THPT Toán 2025 nhấn mạnh Xác suất có điều kiện, công thức Bayes, thống kê mẫu số liệu ghép nhóm kết hợp bài toán thực tế rõ đơn vị và quy tắc làm tròn.",
+      "focus_topics": ["Xác suất có điều kiện", "Công thức Bayes", "Mẫu số liệu ghép nhóm"]
+    },
+    {
+      "id": "case_04_variation_graph",
+      "title": "Hàm số, bảng biến thiên & đồ thị",
+      "prompt": "Tạo đề thi thử THPT Toán 2025 có ít nhất 2 câu sử dụng bảng biến thiên hoặc đồ thị hàm số rõ ràng, nhất quán số liệu giữa đề bài và lời giải, tuân thủ nghiêm ngặt quy tắc trình bày LaTeX.",
+      "focus_topics": ["Khảo sát hàm số", "Bảng biến thiên", "Cực trị và tiệm cận"]
+    },
+    {
+      "id": "case_05_cognitive_mix",
+      "title": "Phân hóa mức độ NB / TH / VD / VDC",
+      "prompt": "Tạo đề thi thử THPT Toán 2025 có độ phân hóa rõ rệt theo ma trận NB-TH-VD-VDC, các câu Phần III đòi hỏi vận dụng thực tế nhiều bước với đáp số tối đa 4 ký tự.",
+      "focus_topics": ["Phân hóa NB-TH-VD-VDC", "Vận dụng thực tế", "Hình học không gian & Oxyz"]
+    }
+  ],
+  "runs": [
+    {
+      "id": "e1_arch_naive_chat",
+      "experiment": "E1_architecture",
+      "label": "2.5-flash-lite (low) + Ngu chat",
+      "architecture": "naive_chat",
+      "model": "gemini-2.5-flash-lite",
+      "reasoning_effort": "low",
+      "temperature": 0.0,
+      "seed": 42,
+      "repeats": 1
+    },
+    {
+      "id": "e1_arch_single_shot_rag",
+      "experiment": "E1_architecture",
+      "label": "2.5-flash-lite (low) + Ngu work (RAG 1-shot)",
+      "architecture": "single_shot_rag",
+      "model": "gemini-2.5-flash-lite",
+      "reasoning_effort": "low",
+      "temperature": 0.0,
+      "seed": 42,
+      "repeats": 1
+    },
+    {
+      "id": "e1_arch_astra_seq",
+      "experiment": "E1_architecture",
+      "label": "2.5-flash-lite (low) + ASTRA Tuần tự",
+      "architecture": "astra_seq",
+      "model": "gemini-2.5-flash-lite",
+      "reasoning_effort": "low",
+      "temperature": 0.0,
+      "seed": 42,
+      "repeats": 1
+    },
+    {
+      "id": "e1_arch_astra_par",
+      "experiment": "E1_architecture",
+      "label": "2.5-flash-lite (low) + ASTRA Song song",
+      "architecture": "astra_par",
+      "model": "gemini-2.5-flash-lite",
+      "reasoning_effort": "low",
+      "temperature": 0.0,
+      "seed": 42,
+      "repeats": 1
+    },
+    {
+      "id": "e2_model_25_none",
+      "experiment": "E2_model_reasoning",
+      "label": "2.5-flash-lite (none) + ASTRA Song song",
+      "architecture": "astra_par",
+      "model": "gemini-2.5-flash-lite",
+      "reasoning_effort": "none",
+      "temperature": 0.0,
+      "seed": 42,
+      "repeats": 1
+    },
+    {
+      "id": "e2_model_25_medium",
+      "experiment": "E2_model_reasoning",
+      "label": "2.5-flash-lite (medium) + ASTRA Song song",
+      "architecture": "astra_par",
+      "model": "gemini-2.5-flash-lite",
+      "reasoning_effort": "medium",
+      "temperature": 0.0,
+      "seed": 42,
+      "repeats": 1
+    },
+    {
+      "id": "e2_model_31_low",
+      "experiment": "E2_model_reasoning",
+      "label": "3.1-flash-lite (low) + ASTRA Song song",
+      "architecture": "astra_par",
+      "model": "gemini-3.1-flash-lite",
+      "reasoning_effort": "low",
+      "temperature": 0.0,
+      "seed": 42,
+      "repeats": 1
+    },
+    {
+      "id": "e2_model_31_medium",
+      "experiment": "E2_model_reasoning",
+      "label": "3.1-flash-lite (medium) + ASTRA Song song",
+      "architecture": "astra_par",
+      "model": "gemini-3.1-flash-lite",
+      "reasoning_effort": "medium",
+      "temperature": 0.0,
+      "seed": 42,
+      "repeats": 1
+    },
+    {
+      "id": "e2_model_38_low",
+      "experiment": "E2_model_reasoning",
+      "label": "3.8-flash (low) + ASTRA Song song",
+      "architecture": "astra_par",
+      "model": "gemini-3.8-flash",
+      "reasoning_effort": "low",
+      "temperature": 0.0,
+      "seed": 42,
+      "repeats": 1
+    },
+    {
+      "id": "e2_model_38_high",
+      "experiment": "E2_model_reasoning",
+      "label": "3.8-flash (high) + ASTRA Song song",
+      "architecture": "astra_par",
+      "model": "gemini-3.8-flash",
+      "reasoning_effort": "high",
+      "temperature": 0.0,
+      "seed": 42,
+      "repeats": 1
+    },
+    {
+      "id": "e3_hero_weak_astra_par",
+      "experiment": "E3_hero_comparison",
+      "label": "HERO: 2.5-flash-lite (low) + ASTRA Song song",
+      "architecture": "astra_par",
+      "model": "gemini-2.5-flash-lite",
+      "reasoning_effort": "low",
+      "temperature": 0.0,
+      "seed": 42,
+      "repeats": 1
+    },
+    {
+      "id": "e3_hero_strong_naive",
+      "experiment": "E3_hero_comparison",
+      "label": "BASELINE: 3.8-flash (high) + Ngu chat",
+      "architecture": "naive_chat",
+      "model": "gemini-3.8-flash",
+      "reasoning_effort": "high",
+      "temperature": 0.0,
+      "seed": 42,
+      "repeats": 1
+    },
+    {
+      "id": "e3_hero_strong_single_shot",
+      "experiment": "E3_hero_comparison",
+      "label": "BASELINE: 3.8-flash (high) + Ngu work (RAG 1-shot)",
+      "architecture": "single_shot_rag",
+      "model": "gemini-3.8-flash",
+      "reasoning_effort": "high",
+      "temperature": 0.0,
+      "seed": 42,
+      "repeats": 1
+    }
+  ]
+}
