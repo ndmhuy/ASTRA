@@ -1,3 +1,4 @@
+import type { WebResearchResult } from '../types/exam.ts';
 import { parseDecision, VERSION, type AgentContext } from './contracts.ts';
 import { parseFrame } from './semantics.ts';
 
@@ -44,4 +45,32 @@ export async function interpret(
     return parseFrame(result.frame);
   }
   return parseDecision(result, clientMessageId);
+}
+
+export async function researchAdjacentTopic(
+  workspaceId: string,
+  clientMessageId: string,
+  adjacentTopicId: string,
+  message: string,
+  options: { count?: number; minutes?: number },
+  signal: AbortSignal,
+): Promise<WebResearchResult> {
+  const response = await fetch('/agent/research', {
+    method: 'POST',
+    credentials: 'same-origin',
+    cache: 'no-store',
+    headers: { 'Content-Type': 'application/json', 'X-Astra-Agent': VERSION },
+    body: JSON.stringify({
+      schemaVersion: 'astra-web-research-v1',
+      workspaceId,
+      clientMessageId,
+      adjacentTopicId,
+      message,
+      ...(options.count !== undefined ? { count: options.count } : {}),
+      ...(options.minutes !== undefined ? { minutes: options.minutes } : {}),
+    }),
+    signal: AbortSignal.any([signal, AbortSignal.timeout(15000)]),
+  });
+  if (!response.ok) throw new Error(response.status === 422 ? 'agent_research_unsupported' : 'agent_unavailable');
+  return await response.json() as WebResearchResult;
 }

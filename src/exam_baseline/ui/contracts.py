@@ -83,7 +83,35 @@ class SubjectGenerateRequest(Model):
         return self
 
 
-ExamGenerateRequest = GenerateRequest | VactGenerateRequest | SubjectGenerateRequest
+class AdjacentSource(Model):
+    title: str = Field(min_length=1, max_length=200)
+    url: str = Field(min_length=10, max_length=500)
+    snippet: str = Field(default="", max_length=600)
+
+
+class AdjacentGenerateRequest(Model):
+    formatId: Literal[
+        "adjacent-sat",
+        "adjacent-ielts",
+        "adjacent-toeic",
+        "adjacent-toefl",
+        "adjacent-act",
+    ]
+    formatVersion: Literal["1"] = "1"
+    adjacentTopicId: Literal["sat", "ielts", "toeic", "toefl", "act"]
+    subject: str = Field(min_length=1, max_length=80)
+    grade: int = Field(default=12, ge=1, le=12)
+    examType: Literal["CUSTOM"] = "CUSTOM"
+    durationMinutes: int = Field(ge=5, le=180, strict=True)
+    itemCount: int = Field(ge=4, le=20, strict=True)
+    prompt: str = Field(default="", max_length=10000)
+    uploadedFiles: list[str] = Field(default_factory=list, max_length=0)
+    webSources: list[AdjacentSource] = Field(default_factory=list, max_length=8)
+
+
+ExamGenerateRequest = (
+    GenerateRequest | VactGenerateRequest | SubjectGenerateRequest | AdjacentGenerateRequest
+)
 
 
 class ExamVersionRef(Model):
