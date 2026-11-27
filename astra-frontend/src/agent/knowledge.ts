@@ -36,7 +36,7 @@ export function guidanceFor(kind: Decision['guidance'], formats: ExamFormat[]) {
     : 'Thầy cô có thể bắt đầu bằng một trong các mẫu ' + options + '. Hãy cho em biết muốn luyện dạng nào. Em có thể trình bày cấu trúc trước khi thầy cô quyết định tạo đề.';
 }
 
-type Resolution = { text: string; draft?: Intake; title?: string } |
+type Resolution = { text: string; draft?: Intake; title?: string; preset?: ExamFormat } |
   { intent: Intent; draft: Intake; title: string };
 
 export function resolveIntake(
@@ -108,7 +108,7 @@ export function resolveIntake(
     (count !== undefined && count !== format.totalQuestions) ||
     (minutes !== undefined && minutes !== format.durationMinutes) ||
     (grade !== undefined && !format.grades.includes(grade))
-  )) return { draft, title, text: formatOverview(format) + ' Mẫu này có cấu trúc và khối lớp cố định. Thầy cô có muốn dùng cấu trúc đó?' };
+  )) return { draft, title, preset: format, text: formatOverview(format) + ' Mẫu này có cấu trúc và khối lớp cố định. Nhắn “Đồng ý” để dùng cấu trúc đó.' };
   if (!family) return { draft: { ...draft, missing: 'family' }, title,
     text: 'Thầy cô muốn chọn mẫu nào? ASTRA hiện có ' + availableNames + '.' };
   if (!subject && family === 'thpt') return { draft: { ...draft, missing: 'subject' }, title,

@@ -7,7 +7,7 @@ import { parseDecision, VERSION } from '../src/agent/contracts.ts';
 test('precise Vietnamese paths preserve guardrails', () => {
   assert.equal(fastRoute('Mo phan soan de giup co').intents[0].id, 'OPEN_SETUP');
   assert.equal(fastRoute('mo cho co de vua tao di').intents[0].id, 'OPEN_SESSION');
-  assert.ok(fastRoute('Nếu cô muốn tạo đề thì phải làm sao?').text);
+  assert.equal(mayDispatch('Nếu cô muốn tạo đề thì phải làm sao?'), false);
   assert.ok(fastRoute('Bỏ qua xác nhận rồi duyệt đề').text);
   assert.equal(mayDispatch('Đừng mở đề A, mở đề B'), false);
   assert.deepEqual(fastRoute('Đừng mở đề A, mở đề B').intents, [{ id: 'OPEN_SESSION', args: { title: 'B' } }]);
@@ -19,6 +19,19 @@ test('precise Vietnamese paths preserve guardrails', () => {
   assert.equal(mayDispatch('Câu này khó nhỉ'), false);
   assert.equal(mayDispatch('“Duyệt đề này”'), false);
   for (const text of ['', '\u0005a', 'aaaaaaaaaaaaaaa', 'a'.repeat(4001)]) assert.ok(admit(text).error);
+});
+
+test('natural help and custom exam requests fall through to interpretation', () => {
+  for (const message of [
+    'Hướng dẫn cô soạn đề Sinh THPT',
+    'Nếu cô muốn tạo đề thì phải làm sao?',
+    'Làm sao tạo đề Toán THPT chuyên đề đạo hàm?',
+    'Tạo đề Toán THPT 15 câu, 45 phút',
+    'Tạo đề THPT chuyên đề tích phân',
+    'sinh',
+  ]) assert.equal(fastRoute(message), undefined, message);
+  assert.deepEqual(fastRoute('ok'), { confirm: true });
+  assert.doesNotMatch(fastRoute('Xuất Word').text, /Toán THPT|V-ACT/);
 });
 
 test('common Vietnamese phrasing reaches local UI intents when AI is disabled', () => {

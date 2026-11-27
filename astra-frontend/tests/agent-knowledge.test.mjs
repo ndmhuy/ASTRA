@@ -31,7 +31,11 @@ test('catalog drives capability, subject rejection, locks and read-only structur
   assert.equal(fastRoute('Tạo đề THPT').intake.family, 'thpt');
   assert.match(resolve('Tạo đề thi thử', { family: 'thpt' }).text, /Toán THPT.*V-ACT/);
   assert.equal(resolve('Tạo đề thi thử tốt nghiệp', { family: 'vact' }).draft.missing, 'subject');
-  assert.match(resolve('Tạo đề Toán 12 gồm 15 câu', { subject: 'Toán Học' }).text, /22 câu.*cố định/);
+  const conflict = resolve('Tạo đề Toán THPT 15 câu', { subject: 'Toán Học' });
+  assert.match(conflict.text, /22 câu.*cố định.*Đồng ý/);
+  assert.equal(conflict.preset.id, thpt.id);
+  assert.equal(conflict.draft.count, 15);
+  assert.equal(conflict.intent, undefined);
   assert.equal(resolve('Tạo đề đánh giá năng lực ĐHQG-HCM').intent.args.format, 'vact');
   assert.match(resolve('Đề V-ACT có bao nhiêu câu?', { mode: 'structure' }).text, /120 câu/);
   assert.equal(resolve('Đừng tạo đề, chỉ xem cấu trúc', { mode: 'structure' }).intent, undefined);
