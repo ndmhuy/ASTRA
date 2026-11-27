@@ -190,6 +190,16 @@ async def status(request: Request, job_id: UUID):
     return request.app.state.ui_jobs.status(str(job_id))
 
 
+@router.post("/exams/{job_id}/stop")
+async def stop_generation(request: Request, job_id: UUID):
+    return request.app.state.ui_jobs.stop_generation(str(job_id))
+
+
+@router.post("/exams/{job_id}/resume", status_code=202)
+async def resume_generation(request: Request, job_id: UUID):
+    return request.app.state.ui_jobs.resume_generation(str(job_id))
+
+
 @router.get("/exams/{job_id}/events")
 async def events(request: Request, job_id: UUID):
     manager = request.app.state.ui_jobs
@@ -203,7 +213,7 @@ async def events(request: Request, job_id: UUID):
             if encoded != previous:
                 yield f"data: {encoded}\n\n"
                 previous = encoded
-            if packet["status"] in {"completed", "failed"}:
+            if packet["status"] in {"completed", "failed", "cancelled"}:
                 return
             await asyncio.sleep(0.3)
 
@@ -260,13 +270,15 @@ async def edit(
 @router.post("/exams/{job_id}/questions/{question_id}/regenerate")
 async def regenerate(
     request: Request,
+    response: Response,
     job_id: UUID,
     question_id: int,
     payload: RegenerateRequest,
     idempotency_key: Annotated[UUID | None, Header()] = None,
     workspace_id: UUID | None = None,
+    background: bool = False,
 ):
-    return await request.app.state.ui_jobs.question_change(
+    result = await request.app.state.ui_jobs.question_change(
         str(job_id),
         question_id,
         payload.revision,
@@ -275,7 +287,22 @@ async def regenerate(
         str(idempotency_key) if idempotency_key else None,
         workspace_id=str(workspace_id) if workspace_id else None,
         expected_stable_id=payload.stableId,
+        background=background,
     )
+    if background:
+        response.status_code = 202
+    return result
+
+
+@router.get("/exams/{job_id}/regenerations/{change_id}")
+def regeneration_status(request: Request, response: Response, job_id: UUID, change_id: UUID):
+    response.headers["Cache-Control"] = "no-store"
+    return request.app.state.ui_jobs.regeneration_status(str(job_id), str(change_id))
+
+
+@router.post("/exams/{job_id}/regenerations/{change_id}/stop")
+async def stop_regeneration(request: Request, job_id: UUID, change_id: UUID):
+    return request.app.state.ui_jobs.stop_regeneration(str(job_id), str(change_id))
 
 
 @router.post("/exams/{job_id}/questions/{question_id}/verify")

@@ -121,6 +121,36 @@ test('two generation jobs finish out of order without mixing drafts, chat, quest
   assert.equal(service.stopped.length, 2);
 });
 
+test('stopping a run preserves the draft and ignores its late completion after restart', async () => {
+  const service = fakeService();
+  service.stopGeneration = async () => { throw new Error('Lost stop response'); };
+  const store = new ExamSessions(service);
+  const id = store.create('custom');
+  const find = () => store.getSnapshot().find(session => session.id === id);
+  store.setDraft(id, 'Nội dung chưa gửi');
+  const old = await store.generate(id, params());
+  await store.stopGeneration(id);
+  assert.match(find().generationError, /Chưa xác nhận/);
+  assert.equal(find().jobId, old);
+  service.callbacks.get(old)({ status: 'cancelled' });
+  assert.equal(find().status, 'draft');
+  assert.equal(find().generationStopped, true);
+  assert.equal(find().draft, 'Nội dung chưa gửi');
+
+  const next = await store.generate(id, params());
+  assert.notEqual(next, old);
+  service.callbacks.get(old)({ status: 'completed', stage: 6, percent: 100 });
+  await flush();
+  assert.equal(find().status, 'generating');
+  assert.equal(find().jobId, next);
+  service.callbacks.get(next)({ status: 'completed', stage: 6, percent: 100 });
+  await flush();
+  assert.equal(find().status, 'complete');
+  assert.equal(find().jobId, next);
+  assert.equal(find().generationStopped, false);
+  store.dispose();
+});
+
 test('failed final fetch stays in drafts and can be retried without affecting another session', async () => {
   const service = fakeService();
   service.getExamPackage = async () => { throw new Error('network'); };

@@ -26,6 +26,8 @@ def change_messages(change: dict, *, undone=False) -> list[dict]:
     status = change["status"]
     if status == "pending":
         content = "Đang xử lý yêu cầu."
+    elif status == "cancelled":
+        content = "Đã dừng tạo lại câu hỏi."
     elif status == "failed":
         content = change["error"]["message"]
     elif change["kind"] == "regenerated":

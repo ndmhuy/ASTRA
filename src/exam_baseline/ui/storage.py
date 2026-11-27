@@ -40,6 +40,9 @@ class JobConflict(ValueError):
     pass
 
 
+ACTIVE_GENERATION = frozenset({"queued", "running"})
+
+
 class JobStore:
     def __init__(self, path: Path):
         self.path = path
@@ -138,6 +141,14 @@ class JobStore:
                 ).fetchone()
                 if current is None:
                     raise UiError("workspace_not_found", "Không tìm thấy đề đã lưu.", 404)
+                if resumed_from := data.get("resumedFrom"):
+                    latest = db.execute(
+                        "SELECT job_id FROM workspace_jobs WHERE workspace_id=? "
+                        "ORDER BY rowid DESC LIMIT 1",
+                        (workspace_id,),
+                    ).fetchone()
+                    if latest != (resumed_from,):
+                        raise UiError("generation_inactive", "Phiên tạo đề hiện tại đã thay đổi.")
                 if db.execute(
                     """SELECT 1 FROM workspace_jobs l JOIN jobs j ON j.id=l.job_id
                        WHERE l.workspace_id=? AND json_extract(j.data, '$.status') IN
@@ -171,7 +182,8 @@ class JobStore:
                        ORDER BY attempt.rowid DESC LIMIT 1)
                    LEFT JOIN jobs j ON j.id=coalesce(
                        (SELECT id FROM jobs WHERE id=w.job_id
-                        AND json_extract(data, '$.status')='completed'), g.id)
+                        AND json_extract(data, '$.status')='completed'),
+                       CASE WHEN json_extract(g.data, '$.status') <> 'cancelled' THEN g.id END)
                    WHERE w.archived=0 ORDER BY w.created_at DESC, w.id"""
             ).fetchall()
         return [
@@ -387,6 +399,26 @@ class JobStore:
                     (self._snapshot(data), data["jobId"], data["revision"]),
                 )
 
+    def save_generation(self, data: dict) -> bool:
+        with self.connect() as db:
+            changed = db.execute(
+                """UPDATE jobs SET data=? WHERE id=?
+                   AND json_extract(data, '$.status') IN ('queued', 'running')""",
+                (json.dumps(data, ensure_ascii=False), data["jobId"]),
+            )
+            return changed.rowcount == 1
+
+    def stop_generation(self, job_id: str) -> bool:
+        with self.connect() as db:
+            changed = db.execute(
+                """UPDATE jobs SET data=json_set(data, '$.status', 'cancelled',
+                      '$.progress.stageName', 'cancelled', '$.progress.estimatedSecondsLeft', 0,
+                      '$.progress.statusMessage', 'Đã dừng tạo đề')
+                   WHERE id=? AND json_extract(data, '$.status') IN ('queued', 'running')""",
+                (job_id,),
+            )
+            return changed.rowcount == 1
+
     @staticmethod
     def _snapshot(job: dict) -> str:
         return json.dumps(
@@ -437,9 +469,29 @@ class JobStore:
             db.execute("BEGIN IMMEDIATE")
             row = db.execute("SELECT data FROM jobs WHERE id=?", (job_id,)).fetchone()
             previous = json.loads(row[0])
-            expected = change == "generated" and previous["status"] in {"queued", "running"}
-            if not expected and previous.get("revision") != revision - 1:
+            if change == "generated":
+                if previous["status"] not in ACTIVE_GENERATION:
+                    raise UiError("generation_inactive", "Phiên tạo đề đã kết thúc.")
+                workspace_id = previous.get("workspaceId")
+                if workspace_id is not None:
+                    changed = db.execute(
+                        """UPDATE workspaces SET job_id=? WHERE id=? AND archived=0
+                           AND ?=(SELECT job_id FROM workspace_jobs WHERE workspace_id=?
+                                  ORDER BY rowid DESC LIMIT 1)""",
+                        (job_id, workspace_id, job_id, workspace_id),
+                    )
+                    if changed.rowcount != 1:
+                        raise UiError("generation_inactive", "Phiên tạo đề hiện tại đã thay đổi.")
+            elif previous.get("revision") != revision - 1:
                 raise UiError("stale_revision", "Đề thi đã có bản cập nhật mới hơn.")
+            if change_id is not None:
+                active = db.execute(
+                    """SELECT 1 FROM exam_changes WHERE job_id=? AND id=?
+                       AND json_extract(data, '$.status')='pending'""",
+                    (job_id, change_id),
+                ).fetchone()
+                if not active:
+                    raise UiError("exam_change_inactive", "Thay đổi câu hỏi đã kết thúc.")
             committed_hash = previous.get("sourceHash")
             settle_source(root, committed_hash)
             try:
@@ -469,12 +521,6 @@ class JobStore:
                     "UPDATE jobs SET data=? WHERE id=?",
                     (json.dumps(job, ensure_ascii=False), job_id),
                 )
-                if change == "generated":
-                    db.execute(
-                        """UPDATE workspaces SET job_id=?
-                           WHERE id=(SELECT workspace_id FROM workspace_jobs WHERE job_id=?)""",
-                        (job_id, job_id),
-                    )
                 if change_id is not None:
                     self._finish_change(db, job_id, change_id, "completed", revision, None, summary)
                 publish_source(root, source)
@@ -613,6 +659,16 @@ class JobStore:
                 if row[0] != signature:
                     raise JobConflict("Mã yêu cầu chỉnh sửa đã được dùng cho nội dung khác.")
                 return json.loads(row[1])
+            if (
+                "stage" in data
+                and db.execute(
+                    """SELECT 1 FROM exam_changes WHERE job_id=?
+                   AND json_extract(data, '$.status')='pending'
+                   AND json_extract(data, '$.stage') IS NOT NULL LIMIT 1""",
+                    (job_id,),
+                ).fetchone()
+            ):
+                raise UiError("exam_change_pending", "Đang tạo lại một câu hỏi trong đề.")
             db.execute(
                 "INSERT INTO exam_changes VALUES (?, ?, ?, ?)",
                 (job_id, change_id, signature, json.dumps(data, ensure_ascii=False)),
@@ -621,17 +677,31 @@ class JobStore:
 
     @staticmethod
     def _finish_change(db, job_id, change_id, status, revision, error, summary=None):
-        db.execute(
+        changed = db.execute(
             """UPDATE exam_changes SET data=json_set(data, '$.status', ?, '$.afterRevision', ?,
                       '$.finishedAt', strftime('%Y-%m-%dT%H:%M:%fZ', 'now'),
                       '$.error', json(?), '$.summary', ?)
                WHERE job_id=? AND id=? AND json_extract(data, '$.status')='pending'""",
             (status, revision, json.dumps(error, ensure_ascii=False), summary, job_id, change_id),
         )
+        return changed.rowcount == 1
 
     def fail_change(self, job_id, change_id, error):
         with self.connect() as db:
             self._finish_change(db, job_id, change_id, "failed", None, error)
+
+    def cancel_regeneration(self, job_id, change_id):
+        with self.connect() as db:
+            return self._finish_change(db, job_id, change_id, "cancelled", None, None)
+
+    def change_stage(self, job_id, change_id, stage):
+        with self.connect() as db:
+            changed = db.execute(
+                """UPDATE exam_changes SET data=json_set(data, '$.stage', ?)
+                   WHERE job_id=? AND id=? AND json_extract(data, '$.status')='pending'""",
+                (stage, job_id, change_id),
+            )
+            return changed.rowcount == 1
 
     def get_change(self, job_id, change_id):
         with self.connect() as db:

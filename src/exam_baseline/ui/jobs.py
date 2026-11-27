@@ -67,7 +67,7 @@ from exam_baseline.ui.demo import regenerate_demo_question, run_demo_job
 from exam_baseline.ui.errors import UiError
 from exam_baseline.ui.exam_source import SOURCE_NAME
 from exam_baseline.ui.preview import PreviewService
-from exam_baseline.ui.storage import EXAM_VERSION_FIELDS, JobStore
+from exam_baseline.ui.storage import ACTIVE_GENERATION, EXAM_VERSION_FIELDS, JobStore
 from exam_baseline.ui.student_export import export_student_document
 from exam_baseline.ui.timeline import workspace_change_messages
 from exam_baseline.vact import models as vact_models
@@ -475,6 +475,21 @@ class SubjectRepairComposer(RepairComposer):
     )
 
 
+class GenerationProvider:
+    def __init__(self, provider, check_active):
+        self.provider = provider
+        self.check_active = check_active
+
+    def __getattr__(self, name):
+        return getattr(self.provider, name)
+
+    async def complete(self, request):
+        self.check_active()
+        response = await self.provider.complete(request)
+        self.check_active()
+        return response
+
+
 class JobManager:
     def __init__(self, settings, *, root=None, providers=None, retriever=None, runner=None):
         self.settings = settings
@@ -484,7 +499,8 @@ class JobManager:
         self.providers = providers
         self.retriever = retriever or self._retrieve
         self.runner = runner
-        self.tasks = set()
+        self.tasks = {}
+        self.question_tasks = {}
         self.locks = {}
         self.capacity = asyncio.Semaphore(2)
         self.previews = PreviewService(self.root, settings)
@@ -536,22 +552,45 @@ class JobManager:
 
     async def start(self, payload: ExamGenerateRequest, key: str, workspace_id: str | None = None):
         request, matrix = await asyncio.to_thread(self.resolve, payload)
-        data, created = self.store.create(
+        return self._queue_generation(
             key,
             fingerprint(payload.model_dump()),
+            workspace_id,
+            request=payload.model_dump(),
+            nativeRequest=request.model_dump(),
+            matrix=matrix,
+        )
+
+    def resume_generation(self, job_id):
+        job = self.get(job_id)
+        if job["status"] != "cancelled":
+            raise UiError("generation_inactive", "Chỉ có thể tiếp tục phiên tạo đề đã dừng.")
+        return self._queue_generation(
+            f"continue:{job_id}",
+            fingerprint({"resumedFrom": job_id}),
+            job.get("workspaceId"),
+            request=job["request"],
+            nativeRequest=job["nativeRequest"],
+            matrix=job["matrix"],
+            resumedFrom=job_id,
+            retrieval=job.get("retrieval"),
+        )
+
+    def _queue_generation(self, key, request_hash, workspace_id, **fields):
+        data, created = self.store.create(
+            key,
+            request_hash,
             {
+                **fields,
                 "status": "queued",
                 "createdAt": now(),
-                "request": payload.model_dump(),
-                "nativeRequest": request.model_dump(),
-                "matrix": matrix,
                 "progress": {
                     "stage": 0,
                     "stageName": "queued",
                     "percent": 0,
                     "estimatedSecondsLeft": 0,
                     "completedItems": 0,
-                    "totalItems": payload.itemCount,
+                    "totalItems": fields["request"]["itemCount"],
                     "statusMessage": "Đã xếp hàng tạo đề",
                 },
                 "approval": None,
@@ -559,13 +598,30 @@ class JobManager:
             workspace_id=workspace_id,
         )
         if created:
-            task = asyncio.create_task(self._generate(data["jobId"]))
-            self.tasks.add(task)
-            task.add_done_callback(self.tasks.discard)
+            job_id = data["jobId"]
+            task = asyncio.create_task(self._generate(job_id))
+            self.tasks[job_id] = task
+            task.add_done_callback(lambda _: self.tasks.pop(job_id, None))
         return {"jobId": data["jobId"], "status": data["status"]}
 
-    def progress(self, job_id, role, part=None, revision=1):
+    def stop_generation(self, job_id):
+        self.get(job_id)
+        if self.store.stop_generation(job_id) and (task := self.tasks.get(job_id)):
+            task.cancel()
+        return self.status(job_id)
+
+    def _active_generation(self, job_id):
         job = self.get(job_id)
+        if job["status"] not in ACTIVE_GENERATION:
+            raise asyncio.CancelledError
+        return job
+
+    def _save_generation(self, job):
+        if not self.store.save_generation(job):
+            raise asyncio.CancelledError
+
+    def progress(self, job_id, role, part=None, revision=1):
+        job = self._active_generation(job_id)
         stage, percent = {
             "rag": (1, 5),
             "composer": (2, 20),
@@ -580,36 +636,41 @@ class JobManager:
             percent=max(percent, job["progress"]["percent"]),
             statusMessage=_format_progress_message(role, part, revision),
         )
-        self.store.save(job)
+        self._save_generation(job)
 
     async def _generate(self, job_id):
         try:
             async with self.capacity:
-                job = self.get(job_id)
+                job = self._active_generation(job_id)
+                previous = job.get("resumedFrom")
+                prior_attempts = []
+                while previous:
+                    prior_attempts.append(self.root / previous / "_generation" / "_internal")
+                    previous = self.get(previous).get("resumedFrom")
                 is_vact = _is_vact(job)
                 is_adjacent = _is_adjacent(job)
                 demo_active = self.runner is None and self.settings.demo_mode
                 if is_vact:
                     job["retrieval"] = None
-                    self.store.save(job)
+                    self._save_generation(job)
                     request = vact_models.Request.model_validate(job["nativeRequest"])
                     orchestrator_type = VactOrchestrator
                     question_model = vact_models.Question
                 elif is_adjacent:
                     job["retrieval"] = None
-                    self.store.save(job)
+                    self._save_generation(job)
                     request = AdjacentRequest.model_validate(job["nativeRequest"])
                     orchestrator_type = AdjacentOrchestrator
                     question_model = Question
                 elif _subject_id(job):
                     job["retrieval"] = None
-                    self.store.save(job)
+                    self._save_generation(job)
                     request = SubjectRequest.model_validate(job["nativeRequest"])
                     orchestrator_type = SubjectOrchestrator
                     question_model = Question
                 elif demo_active:
                     self.progress(job_id, "rag")
-                    job = self.get(job_id)
+                    job = self._active_generation(job_id)
                     job["retrieval"] = {
                         "status": "success",
                         "gaps": [],
@@ -617,16 +678,20 @@ class JobManager:
                         "question_contexts": [],
                         "mas_intake_rag": [],
                     }
-                    self.store.save(job)
+                    self._save_generation(job)
                     request = Request.model_validate(job["nativeRequest"])
                     orchestrator_type = Orchestrator
                     question_model = Question
                 else:
                     self.progress(job_id, "rag")
-                    retrieval = await asyncio.to_thread(self.retriever, job["matrix"])
-                    job = self.get(job_id)
+                    reuse = any((attempt / "request.json").is_file() for attempt in prior_attempts)
+                    retrieval = job.get("retrieval") if reuse else None
+                    if retrieval is None:
+                        retrieval = await asyncio.to_thread(self.retriever, job["matrix"])
+                        reuse = False
+                    job = self._active_generation(job_id)
                     job["retrieval"] = retrieval
-                    self.store.save(job)
+                    self._save_generation(job)
                     if retrieval.get("status") != "success" or retrieval.get("gaps"):
                         raise UiError(
                             "retrieval_gap",
@@ -634,16 +699,18 @@ class JobManager:
                             422,
                             retrieval.get("gaps", []),
                         )
-                    request = bind_retrieval(
-                        Request.model_validate(job["nativeRequest"]),
-                        MatrixRetrievalResponse(**retrieval),
-                        variant_key=job_id,
-                    )
+                    request = Request.model_validate(job["nativeRequest"])
+                    if not reuse:
+                        request = bind_retrieval(
+                            request,
+                            MatrixRetrievalResponse(**retrieval),
+                            variant_key=job_id,
+                        )
                     job["nativeRequest"] = request.model_dump()
-                    self.store.save(job)
+                    self._save_generation(job)
                     orchestrator_type = Orchestrator
                     question_model = Question
-                output = self.root / job_id
+                output = self.root / job_id / "_generation"
 
                 def progress(role, part=None, revision=1):
                     self.progress(job_id, role, part, revision)
@@ -656,9 +723,22 @@ class JobManager:
                     report = await run_demo_job(request, output, progress, is_vact=is_vact)
                 else:
                     async with self.provider_scope() as providers:
-                        report = await orchestrator_type(providers, on_progress=progress).run(
-                            request, output
+
+                        def check_active():
+                            self._active_generation(job_id)
+
+                        guarded = {
+                            role: GenerationProvider(provider, check_active)
+                            for role, provider in providers.items()
+                        }
+                        report = await orchestrator_type(guarded, on_progress=progress).run(
+                            request,
+                            output,
+                            checkpoint_sources=tuple(
+                                path / "checkpoints" for path in prior_attempts
+                            ),
                         )
+                job = self._active_generation(job_id)
                 if report.get("execution_status") != "completed":
                     raise UiError(
                         "generation_failed",
@@ -696,7 +776,6 @@ class JobManager:
                     extra_fields["rawPassages"] = [p.model_dump() for p in passages]
                 elif _subject_id(job):
                     extra_fields["rawPassages"] = answers.get("passages", [])
-                job = self.get(job_id)
                 job.update(
                     status="completed",
                     rawQuestions=[q.model_dump() for q in questions],
@@ -769,7 +848,7 @@ class JobManager:
     def _fail(self, job_id, error):
         job = self.get(job_id)
         job.update(status="failed", error=error.payload())
-        self.store.save(job)
+        self.store.save_generation(job)
 
     async def _save_version(
         self,
@@ -783,10 +862,14 @@ class JobManager:
         restored_from=None,
         source=None,
     ):
+        if change == "generated":
+            self._active_generation(job["jobId"])
         if source is None:
             source = self._render_source(job)
         if job.get("contractExport"):
-            job["contentHash"] = await self._publish_contract(job)
+            job["contentHash"] = await self._publish_contract(job, change_id=change_id)
+        if change == "generated":
+            self._active_generation(job["jobId"])
         self.store.save_version(
             job,
             source,
@@ -835,7 +918,7 @@ class JobManager:
         job["contentHash"] = fingerprint(binding)
         return source
 
-    async def _publish_contract(self, job):
+    async def _publish_contract(self, job, *, change_id=None):
         format_id = job["request"]["formatId"]
         spec = contract_artifacts.profile(format_id)
         directory = self.root / job["jobId"]
@@ -864,7 +947,11 @@ class JobManager:
                 if format_id != "thpt-english"
                 else {},
             )
-            await asyncio.to_thread(contract_artifacts.write_bundle, directory, paper, key)
+            if change_id is not None:
+                self._check_question_change(job["jobId"], change_id)
+                contract_artifacts.write_bundle(directory, paper, key)
+            else:
+                await asyncio.to_thread(contract_artifacts.write_bundle, directory, paper, key)
         except (OSError, ValueError, ValidationError) as exc:
             raise UiError(
                 "thpt_contract_export_failed",
@@ -1353,6 +1440,7 @@ class JobManager:
         *,
         workspace_id=None,
         expected_stable_id=None,
+        background=False,
     ):
         job = self._completed(job_id)
         stable_id = (
@@ -1362,8 +1450,13 @@ class JobManager:
         )
         if expected_stable_id is not None and expected_stable_id != stable_id:
             raise UiError("invalid_question_id", "Câu được chọn chưa khớp với đề hiện tại.", 422)
+        if background and stable_id is None:
+            raise UiError("question_not_found", "Không tìm thấy câu hỏi cần thao tác.", 404)
         change_id = change_id or str(uuid4())
-        signature = fingerprint([kind, question_id, revision, value, workspace_id])
+        signature = fingerprint(
+            [kind, question_id, revision, value, workspace_id]
+            + (["background"] if background else [])
+        )
         existing = self.store.begin_change(
             job_id,
             change_id,
@@ -1378,9 +1471,26 @@ class JobManager:
                 "beforeRevision": revision,
                 "startedAt": now(),
                 "status": "pending",
+                **({"stage": "queued"} if background else {}),
                 **({"request": "Hoàn tác thay đổi.", "undoOf": value} if kind == "undone" else {}),
             },
         )
+        if background:
+            if existing is None:
+                key = (job_id, change_id)
+                task = asyncio.create_task(
+                    self._run_regeneration(
+                        job_id,
+                        question_id,
+                        revision,
+                        value,
+                        change_id,
+                        workspace_id,
+                    )
+                )
+                self.question_tasks[key] = task
+                task.add_done_callback(lambda _: self.question_tasks.pop(key, None))
+            return self.regeneration_status(job_id, change_id)
         if existing is not None:
             if existing["status"] == "completed":
                 if self._completed(job_id)["revision"] == existing["afterRevision"]:
@@ -1392,6 +1502,58 @@ class JobManager:
                     error["code"], error["message"], error.get("status", 409), error.get("details")
                 )
             raise UiError("exam_change_pending", "Yêu cầu chỉnh sửa đang được xử lý.")
+        return await self._apply_question_change(
+            job_id, question_id, revision, kind, value, change_id, workspace_id
+        )
+
+    async def _run_regeneration(self, job_id, number, revision, instruction, change_id, workspace):
+        try:
+            await self._apply_question_change(
+                job_id, number, revision, "regenerated", instruction, change_id, workspace
+            )
+        except (Exception, asyncio.CancelledError):
+            # The change receipt already records the failure or cancellation.
+            return
+
+    def regeneration_status(self, job_id, change_id):
+        change = self.store.get_change(job_id, change_id)
+        if "stage" not in change or change["kind"] != "regenerated":
+            raise UiError("exam_change_not_found", "Không tìm thấy lần tạo lại câu hỏi.", 404)
+        return {
+            key: change.get(key)
+            for key in (
+                "id",
+                "questionId",
+                "status",
+                "stage",
+                "beforeRevision",
+                "afterRevision",
+                "error",
+            )
+        }
+
+    def stop_regeneration(self, job_id, change_id):
+        self.regeneration_status(job_id, change_id)
+        if self.store.cancel_regeneration(job_id, change_id):
+            if task := self.question_tasks.get((job_id, change_id)):
+                task.cancel()
+        return self.regeneration_status(job_id, change_id)
+
+    def _check_question_change(self, job_id, change_id, stage=None):
+        if change_id is None:
+            return
+        change = self.store.get_change(job_id, change_id)
+        if change["status"] != "pending" or (
+            stage is not None
+            and "stage" in change
+            and stage != change["stage"]
+            and not self.store.change_stage(job_id, change_id, stage)
+        ):
+            raise asyncio.CancelledError
+
+    async def _apply_question_change(
+        self, job_id, question_id, revision, kind, value, change_id, workspace_id
+    ):
         try:
             if kind == "undone":
                 return await self._undo_question(workspace_id, job_id, revision, value, change_id)
@@ -1719,44 +1881,60 @@ class JobManager:
     async def regenerate(
         self, job_id, question_id, revision, instruction, *, change_id=None, promotion=None
     ):
+        self._check_question_change(job_id, change_id, "composer")
+        job = self._completed(job_id)
+        self._check_revision(job, revision)
+        if not 1 <= question_id <= len(job["rawQuestions"]):
+            raise UiError("question_not_found", "Không tìm thấy câu hỏi cần thao tác.", 404)
+        index = question_id - 1
+        solution = None
+        if self.settings.demo_mode and self.providers is None:
+            if _is_vact(job):
+                raise UiError("verification_unavailable", "Tạo lại câu V-ACT cần kết nối AI.", 503)
+            repaired = Question.model_validate(
+                regenerate_demo_question(job["rawQuestions"][index], instruction)
+            )
+            drawings = job["drawings"]["drawings"]
+        else:
+            try:
+                async with self.provider_scope() as providers:
+                    guarded = {
+                        role: GenerationProvider(
+                            provider,
+                            lambda stage=role: self._check_question_change(
+                                job_id, change_id, stage
+                            ),
+                        )
+                        for role, provider in providers.items()
+                    }
+                    repaired, drawings, solution = await self._regenerate_question(
+                        job, index, instruction, guarded
+                    )
+            except ContractError as exc:
+                raise UiError(
+                    "invalid_repair",
+                    "Câu được tạo lại chưa đúng cấu trúc hoặc ngữ liệu của đề.",
+                    422,
+                    details={"stage": exc.stage, "fields": exc.fields},
+                ) from exc
+            except ProviderError as exc:
+                raise UiError(
+                    exc.code,
+                    "Dịch vụ AI chưa thể tạo lại và kiểm tra câu này. Vui lòng thử lại.",
+                    503,
+                    details={"retryAfterSeconds": exc.retry_after_seconds}
+                    if exc.retry_after_seconds is not None
+                    else None,
+                ) from exc
+
         async with self.lock(job_id):
+            self._check_question_change(job_id, change_id, "saving")
             job = self._completed(job_id)
             self._check_revision(job, revision)
-            if not 1 <= question_id <= len(job["rawQuestions"]):
-                raise UiError("question_not_found", "Không tìm thấy câu hỏi cần thao tác.", 404)
-            index = question_id - 1
             solutions = _current_solutions(job)
-            if self.settings.demo_mode and self.providers is None:
-                if _is_vact(job):
-                    raise UiError(
-                        "verification_unavailable", "Tạo lại câu V-ACT cần kết nối AI.", 503
-                    )
-                old = job["rawQuestions"][index]
-                repaired = Question.model_validate(regenerate_demo_question(old, instruction))
-                drawings = job["drawings"]["drawings"]
+            if solution is None:
                 solutions.pop(repaired.id, None)
             else:
-                try:
-                    async with self.provider_scope() as providers:
-                        repaired, drawings, solution = await self._regenerate_question(
-                            job, index, instruction, providers
-                        )
-                except ContractError as exc:
-                    raise UiError(
-                        "invalid_repair",
-                        "Câu được tạo lại chưa đúng cấu trúc hoặc ngữ liệu của đề.",
-                        422,
-                        details={"stage": exc.stage, "fields": exc.fields},
-                    ) from exc
-                except ProviderError as exc:
-                    raise UiError(
-                        exc.code,
-                        "Dịch vụ AI chưa thể tạo lại và kiểm tra câu này. Vui lòng thử lại.",
-                        503,
-                        details={"retryAfterSeconds": exc.retry_after_seconds}
-                        if exc.retry_after_seconds is not None
-                        else None,
-                    ) from exc
                 solutions[repaired.id] = solution.model_dump()
             job["rawQuestions"][index] = repaired.model_dump()
             job.update(
@@ -1983,7 +2161,7 @@ class JobManager:
             return self.previews.request(job, source) if start else self.previews.status(job)
 
     async def close(self):
-        tasks = list(self.tasks)
+        tasks = [*self.tasks.values(), *self.question_tasks.values()]
         for task in tasks:
             task.cancel()
         await asyncio.gather(*tasks, return_exceptions=True)

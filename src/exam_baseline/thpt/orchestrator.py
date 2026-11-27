@@ -209,7 +209,14 @@ class Orchestrator:
         self.providers = providers
         self.on_progress = on_progress
 
-    async def run(self, request: Request, output: Path, *, resume: bool = False) -> dict:
+    async def run(
+        self,
+        request: Request,
+        output: Path,
+        *,
+        resume: bool = False,
+        checkpoint_sources: tuple[Path, ...] = (),
+    ) -> dict:
         started = perf_counter()
         self.template.original()  # Verify before spending provider calls.
         references = self.references(request)
@@ -269,12 +276,22 @@ class Orchestrator:
                 ).encode()
             ).hexdigest()
             checkpoint = checkpoints / f"{fingerprint}.json"
-            if resume and checkpoint.exists():
-                saved = json.loads(checkpoint.read_text("utf-8"))
+            prior = next(
+                (
+                    path / checkpoint.name
+                    for path in checkpoint_sources
+                    if (path / checkpoint.name).is_file()
+                ),
+                checkpoint if resume and checkpoint.is_file() else None,
+            )
+            if prior is not None:
+                saved = json.loads(prior.read_text("utf-8"))
                 content = json.dumps(saved["response"], ensure_ascii=False, sort_keys=True)
                 if sha256(content.encode()).hexdigest() != saved["sha256"]:
                     raise ValueError("Changed checkpoint; refusing to resume")
                 response = agent.contract(data).model_validate(saved["response"])
+                if prior != checkpoint:
+                    save(checkpoint, saved)
                 return response
             provider = RecordingProvider(
                 self.providers[agent.role],
