@@ -1,12 +1,14 @@
-"""Run the built ASTRA app over local HTTP with a semantic provider fixture."""
+"""Run the built ASTRA app with a semantic fixture. Use --intake-only for chat intake."""
 
+import multiprocessing
 import os
 import socket
-import subprocess
 import sys
 import tempfile
 import time
+from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import parse_qs, urlsplit
 from uuid import uuid4
 
 import httpx
@@ -44,13 +46,27 @@ def serve(port: int, runs: str):
                     }
                 ],
             },
-            "Cô chưa biết bắt đầu soạn đề từ đâu.": {
-                "dialogueAct": "GUIDANCE",
-                "goals": [{"goal": "APPLICATION_GUIDANCE"}],
-            },
             "Tạo đề thi thử tốt nghiệp": {
                 "dialogueAct": "REQUEST",
                 "goals": [{"goal": "PREPARE_EXAM", "parameters": {"family": "thpt"}}],
+            },
+            "Hướng dẫn cô soạn đề Sinh THPT": {
+                "dialogueAct": "QUESTION",
+                "goals": [
+                    {
+                        "goal": "INSPECT_FORMAT",
+                        "parameters": {"family": "thpt", "subject": "Sinh Học"},
+                    }
+                ],
+            },
+            "Cô muốn tạo đề Toán THPT 15 câu, 45 phút": {
+                "dialogueAct": "REQUEST",
+                "goals": [
+                    {
+                        "goal": "REQUEST_GENERATION",
+                        "parameters": {"family": "thpt", "subject": "Toán Học"},
+                    }
+                ],
             },
             "Đừng tạo đề, chỉ xem cấu trúc": {
                 "dialogueAct": "QUESTION",
@@ -69,13 +85,12 @@ def serve(port: int, runs: str):
     uvicorn.run(app, host="127.0.0.1", port=port, log_level="warning", access_log=False)
 
 
-def observe(base_url: str):
+def observe(base_url: str, intake_only: bool = False):
     from playwright.sync_api import expect, sync_playwright
 
     with sync_playwright() as playwright:
         channel = "msedge" if os.name == "nt" else None
         browser = playwright.chromium.launch(channel=channel)
-        page = browser.new_page(reduced_motion="reduce")
         business_writes: list[str] = []
         agent_calls: list[str] = []
 
@@ -85,33 +100,37 @@ def observe(base_url: str):
             if request.url.endswith("/agent/turn"):
                 agent_calls.append(request.url)
 
-        page.on("request", record)
-        page.goto(base_url)
-        composer = page.locator("textarea").first
-        composer.wait_for(timeout=12000)
-        composer.fill("Chào em")
-        composer.press("Enter")
-        expect(page.get_by_text("Em chào thầy cô!", exact=False)).to_be_visible()
-        expect(page.get_by_role("dialog")).to_have_count(0)
-        assert not agent_calls
+        if not intake_only:
+            page = browser.new_page(reduced_motion="reduce")
+            page.on("request", record)
+            page.goto(base_url)
+            composer = page.locator("textarea").first
+            composer.wait_for(timeout=12000)
+            composer.fill("Chào em")
+            composer.press("Enter")
+            expect(page.get_by_text("Em chào thầy cô!", exact=False)).to_be_visible()
+            expect(page.get_by_role("dialog")).to_have_count(0)
+            assert not agent_calls
 
-        composer.fill("Cho cô vào nơi thiết lập mẫu")
-        composer.press("Enter")
-        expect(page.get_by_role("dialog")).to_be_visible()
-        expect(page.get_by_text("Đã mở phần cấu hình mẫu đề.", exact=True)).to_be_visible()
-        assert len(agent_calls) == 1 and not business_writes
-        page.keyboard.press("Escape")
-        expect(page.get_by_role("dialog")).to_have_count(0)
-        composer.fill("Mở danh sách rồi thu gọn thanh điều hướng giúp cô")
-        composer.press("Enter")
-        expect(page.get_by_role("button", name="Mở rộng thanh điều hướng").first).to_be_visible()
-        composer.fill("Tới đâu rồi?")
-        composer.press("Enter")
-        expect(page.get_by_text("Đề vẫn ở bản nháp", exact=False)).to_be_visible()
-        assert len(agent_calls) == 2 and not business_writes
-        run_workflows(page, composer, business_writes)
-        # Keep the second browser flow outside the shared loopback burst window.
-        page.wait_for_timeout(2100)
+            composer.fill("Cho cô vào nơi thiết lập mẫu")
+            composer.press("Enter")
+            expect(page.get_by_role("dialog")).to_be_visible()
+            expect(page.get_by_text("Đã mở phần cấu hình mẫu đề.", exact=True)).to_be_visible()
+            assert len(agent_calls) == 1 and not business_writes
+            page.keyboard.press("Escape")
+            expect(page.get_by_role("dialog")).to_have_count(0)
+            composer.fill("Mở danh sách rồi thu gọn thanh điều hướng giúp cô")
+            composer.press("Enter")
+            expect(
+                page.get_by_role("button", name="Mở rộng thanh điều hướng").first
+            ).to_be_visible()
+            composer.fill("Tới đâu rồi?")
+            composer.press("Enter")
+            expect(page.get_by_text("Đề vẫn ở bản nháp", exact=False)).to_be_visible()
+            assert len(agent_calls) == 2 and not business_writes
+            run_workflows(page, composer, business_writes)
+            # Keep the second browser flow outside the shared loopback burst window.
+            page.wait_for_timeout(2100)
         product = browser.new_page(reduced_motion="reduce")
         product.on("request", record)
         product.goto(base_url)
@@ -119,9 +138,9 @@ def observe(base_url: str):
         before = len(business_writes)
         calls_before_intake = len(agent_calls)
         for text, expected in [
-            ("Cô chưa biết bắt đầu soạn đề từ đâu.", "Thầy cô có thể bắt đầu"),
+            ("Hướng dẫn cô soạn đề Sinh THPT", "Sinh Học THPT có 28 câu"),
             ("Tạo đề thi thử tốt nghiệp", "Thầy cô muốn ôn thi tốt nghiệp môn nào?"),
-            ("Toán", "Đã chọn mẫu. Toán THPT có 22 câu"),
+            ("sinh", "Đã chọn mẫu. Sinh Học THPT có 28 câu"),
         ]:
             editor = product.locator("textarea").first
             editor.fill(text)
@@ -131,19 +150,79 @@ def observe(base_url: str):
         assert (
             len(agent_calls) == calls_before_intake + 2
         )  # Subject answer is contextual, zero inference.
-        expect(product.locator(".sidebar-exam-title").first).to_have_text("Đề thi thử Toán THPT")
+        expect(product.locator(".sidebar-exam-title").first).to_have_text(
+            "Đề thi thử Sinh Học THPT"
+        )
         product.keyboard.press("Escape")
         expect(product.get_by_role("dialog")).to_have_count(0)
         editor = product.locator("textarea").first
         editor.fill("Đừng tạo đề, chỉ xem cấu trúc")
         editor.press("Enter")
         expect(product.get_by_role("dialog")).to_have_count(0)
-        expect(product.get_by_text("Toán THPT có 22 câu", exact=False)).to_have_count(2)
+        expect(product.get_by_text("Sinh Học THPT có 28 câu", exact=False)).to_have_count(3)
+
+        product.locator('input[type="file"]').set_input_files(
+            {"name": "bitwise.pdf", "mimeType": "application/pdf", "buffer": b"%PDF-fixture"}
+        )
+        editor.fill("tạo đề từ đây (môn: tin học)")
+        editor.press("Enter")
+        expect(product.get_by_text("ASTRA chưa thể đọc tệp đính kèm.", exact=False)).to_be_visible()
+        assert len(agent_calls) == calls_before_intake + 3
         assert len(business_writes) == before
+
+        home = browser.new_page(reduced_motion="reduce")
+        home.on("request", record)
+        home.goto(base_url)
+        home.route("**/api/exam-formats", lambda route: route.abort(), times=1)
+        home_composer = home.locator("textarea").first
+        home_composer.fill("Mở cấu hình")
+        home_composer.press("Enter")
+        preset = home.get_by_role("dialog", name="Thiết lập đề theo yêu cầu")
+        expect(preset.get_by_role("alert")).to_contain_text("Không kết nối được máy chủ")
+        preset.get_by_role("button", name="Tải lại danh sách mẫu đề").click()
+        expect(preset.get_by_role("alert")).to_have_count(0)
+        expect(preset.get_by_text("Đề thi THPT Quốc gia")).to_be_visible()
+        assert len(agent_calls) == calls_before_intake + 3
+        assert len(business_writes) == before
+
+        math = browser.new_page(reduced_motion="reduce")
+        math.on("request", record)
+        math.goto(base_url)
+        starts = []
+
+        def submit(route):
+            starts.append(route.request.post_data_json)
+            route.fulfill(status=202, json={"jobId": str(uuid4()), "status": "queued"})
+
+        math.route("**/api/exams/generate*", submit)
+        math_composer = math.locator("textarea").first
+        math_composer.fill("Cô muốn tạo đề Toán THPT 15 câu, 45 phút")
+        math_composer.press("Enter")
+        expect(math.get_by_text("Toán THPT có 22 câu, 90 phút.", exact=False)).to_contain_text(
+            "Nhắn “Đồng ý”"
+        )
+        assert len(agent_calls) == calls_before_intake + 4 and not starts
+        math_composer.fill("ok")
+        math_composer.press("Enter")
+        math_setup = math.get_by_role("dialog")
+        expect(
+            math_setup.get_by_text("Bấm “Tạo đề thi” để xác nhận gửi yêu cầu.", exact=False)
+        ).to_be_visible()
+        assert len(agent_calls) == calls_before_intake + 4 and len(business_writes) == before
+        if screenshot := os.environ.get("ASTRA_CHAT_SMOKE_SCREENSHOT"):
+            math.screenshot(path=screenshot)
+        math_setup.get_by_role("button", name="Tạo đề thi").click()
+        expect(math.get_by_text("Máy chủ đã nhận công việc tạo đề", exact=False)).to_be_visible()
+        assert len(starts) == 1 and len(business_writes) == before + 1
+        assert (starts[0]["formatId"], starts[0]["itemCount"], starts[0]["durationMinutes"]) == (
+            "thpt-math",
+            22,
+            90,
+        )
+        assert starts[0]["uploadedFiles"] == [] and "15 câu" not in starts[0]["prompt"]
         browser.close()
     print(
-        "Mounted React: greeting and same-origin fixture navigation, catalog intake, "
-        "fixture lifecycle, notes and approval/export gates observed."
+        "Mounted React passed: catalog retry, Biology intake, PDF rejection and Math confirmation."
     )
 
 
@@ -157,7 +236,9 @@ def run_workflows(page, composer, business_writes):
         composer.press("Enter")
 
     starts = []
+    drafts = {}
     job = str(uuid4())
+    generated_workspace = None
     finished = False
     approved = False
     digest = "a" * 64
@@ -202,12 +283,14 @@ def run_workflows(page, composer, business_writes):
     }
 
     def exam_http(route):
-        nonlocal approved
-        url = route.request.url
-        if url.endswith("/generate"):
+        nonlocal approved, generated_workspace
+        request_url = urlsplit(route.request.url)
+        path = request_url.path
+        if path.endswith("/generate"):
+            generated_workspace = parse_qs(request_url.query).get("workspace_id", [None])[0]
             starts.append(route.request.post_data_json)
             route.fulfill(status=202, json={"jobId": job, "status": "queued"})
-        elif url.endswith("/status"):
+        elif path.endswith("/status"):
             route.fulfill(
                 json={
                     "stage": 5 if finished else 2,
@@ -220,11 +303,11 @@ def run_workflows(page, composer, business_writes):
                     "status": "completed" if finished else "running",
                 }
             )
-        elif url.endswith("/events"):
+        elif path.endswith("/events"):
             route.abort()
-        elif url.endswith("/" + job):
+        elif path.endswith("/" + job):
             route.fulfill(json={**pkg, "approved": approved})
-        elif url.endswith("/questions/1") and route.request.method == "PUT":
+        elif path.endswith("/questions/1") and route.request.method == "PUT":
             request = route.request.post_data_json
             assert request["revision"] == pkg["revision"]
             assert request["question"]["stableId"] == "P1-01"
@@ -234,17 +317,28 @@ def run_workflows(page, composer, business_writes):
             pkg["questions"][0].update(stem=request["question"]["stem"], examRevision=2)
             pkg["preview"].update(revision=2, contentHash=pkg["contentHash"])
             route.fulfill(json={**pkg, "approved": approved})
-        elif url.endswith("/fixture.pdf"):
+        elif path.endswith("/fixture.pdf"):
             route.fulfill(content_type="application/pdf", body="%PDF-1.4")
-        elif url.endswith("/approve"):
+        elif path.endswith("/approve"):
             approved = True
             route.fulfill(json={**pkg, "approved": True})
-        elif "/export?" in url:
+        elif path.endswith("/export"):
             route.fulfill(content_type="application/json", body="{}")
         else:
             route.abort()
 
+    def save_draft(route):
+        if route.request.method != "PUT":
+            route.fallback()
+            return
+        workspace_id = urlsplit(route.request.url).path.rsplit("/", 1)[-1]
+        draft = route.request.post_data_json
+        revision = draft["revision"] + 1
+        drafts[workspace_id] = {**draft, "revision": revision}
+        route.fulfill(json={"revision": revision})
+
     page.route("**/api/exams/**", exam_http)
+    page.route("**/api/workspaces/*", save_draft)
     say("Chọn V-ACT và xem chi tiết")
     dialog = page.get_by_role("dialog")
     expect(dialog.get_by_text("120 câu · 150 phút")).to_be_visible()
@@ -260,10 +354,6 @@ def run_workflows(page, composer, business_writes):
     assert not starts
     page.keyboard.press("Escape")
 
-    say("Tạo đề THPT 15 câu, 45 phút")
-    locked = page.get_by_text("Toán THPT có 22 câu, 90 phút.", exact=False)
-    expect(locked).to_contain_text("cố định")
-    assert not starts
     say("Đổi tên đoạn chat thành Ôn Toán tháng 12")
     expect(page.get_by_text("Đã đổi tên cuộc trò chuyện", exact=False)).to_be_visible()
     say("Tạo đề Toán THPT")
@@ -285,7 +375,7 @@ def run_workflows(page, composer, business_writes):
     say("Sửa câu 1 rõ hơn")
     expect(page.get_by_text("Đã lưu ghi chú cho Câu 1", exact=False)).to_have_count(2)
     finished = True
-    expect(page.get_by_text("Có ghi chú chỉnh sửa", exact=False)).to_be_visible()
+    expect(page.get_by_text("Đề thử fixture", exact=True).first).to_be_visible()
     say("Xem ghi chú")
     expect(page.get_by_text("rõ hơn (chờ duyệt)", exact=False)).to_be_visible()
     say("Xem đáp án câu 1")
@@ -308,12 +398,41 @@ def run_workflows(page, composer, business_writes):
     expect(page.get_by_role("button", name="Ôn Toán tháng 12", exact=True)).to_be_visible()
     say("Xuất JSON")
     expect(page.get_by_text("Tải tệp JSON của phiên bản 1", exact=False)).to_be_visible()
-    with page.expect_download() as download:
+    with (
+        page.expect_download() as download,
+        page.expect_response(
+            lambda response: (
+                response.ok
+                and response.request.method == "PUT"
+                and "/api/workspaces/" in response.url
+                and any(
+                    message["content"] == "Đã yêu cầu trình duyệt tải tệp."
+                    for message in response.request.post_data_json["messages"]
+                )
+            )
+        ),
+    ):
         say("Xác nhận")
     assert download.value.suggested_filename == "dap_an.json"
     assert len(starts) == 1 and len(business_writes) == 2
     expect(page.get_by_text(re.compile("Đã yêu cầu trình duyệt tải tệp"))).to_be_visible()
 
+    def workspace_list(route):
+        response = route.fetch()
+        payload = response.json()
+        workspaces = {workspace["id"]: workspace for workspace in payload["workspaces"]}
+        for workspace_id, draft in drafts.items():
+            workspace = workspaces.setdefault(
+                workspace_id,
+                {"id": workspace_id, "createdAt": datetime.now(timezone.utc).isoformat()},
+            )
+            workspace.update(draft)
+        if generated_workspace:
+            workspaces[generated_workspace].update(jobId=job, jobStatus="completed")
+        payload["workspaces"] = list(workspaces.values())
+        route.fulfill(response=response, json=payload)
+
+    page.route("**/api/workspaces", workspace_list)
     page.reload()
     composer.wait_for(timeout=12000)
     say("Mở chat Ôn Toán tháng 12")
@@ -346,15 +465,12 @@ def main():
         port = listener.getsockname()[1]
     base = f"http://127.0.0.1:{port}"
     with tempfile.TemporaryDirectory(prefix="astra-agent-") as runs:
-        process = subprocess.Popen(
-            [sys.executable, __file__, "--serve", str(port), runs],
-            cwd=ROOT,
-            creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
-        )
+        process = multiprocessing.get_context("spawn").Process(target=serve, args=(port, runs))
+        process.start()
         try:
             with httpx.Client(trust_env=False) as client:
                 for _ in range(100):
-                    if process.poll() is not None:
+                    if not process.is_alive():
                         raise RuntimeError("Agent smoke server exited")
                     try:
                         client.get(base + "/api/health", timeout=0.3).raise_for_status()
@@ -363,14 +479,11 @@ def main():
                         time.sleep(0.1)
                 else:
                     raise TimeoutError("Agent smoke server did not start")
-            observe(base)
+            observe(base, intake_only="--intake-only" in sys.argv[1:])
         finally:
             process.terminate()
-            process.wait(timeout=10)
+            process.join(timeout=10)
 
 
 if __name__ == "__main__":
-    if sys.argv[1:2] == ["--serve"]:
-        serve(int(sys.argv[2]), sys.argv[3])
-    else:
-        main()
+    main()
