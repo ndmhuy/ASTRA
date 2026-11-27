@@ -1,0 +1,22 @@
+{
+  "name": "astra-mas-proxy",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-27",
+  "keep_vars": true,
+  "workers_dev": true,
+  "preview_urls": false,
+  "observability": { "enabled": true },
+  "durable_objects": { "bindings": [{ "name": "MAS_ADMISSION", "class_name": "MasAdmission" }] },
+  "migrations": [{ "tag": "v1-mas-admission", "new_sqlite_classes": ["MasAdmission"] }],
+  "vars": {
+    "ASTRA_MAS_FORWARDING_ENABLED": "false",
+    "ASTRA_MAS_MODEL": "gemini-3.1-flash-lite",
+    "ASTRA_MAS_ATTEMPT_LIMIT": "0",
+    "ASTRA_MAS_DAILY": "0",
+    "ASTRA_MAS_TOKEN_BUDGET": "0",
+    "ASTRA_MAS_UNTIL": "2000-01-01T00:00:00Z",
+    "ASTRA_MAS_CONCURRENCY": "3",
+    "ASTRA_MAS_UPSTREAM_MS": "90000",
+    "ASTRA_MAS_OUTPUT_TOKENS": "8192"
+  }
+}
