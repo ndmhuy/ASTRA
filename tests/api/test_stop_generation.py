@@ -1,4 +1,5 @@
 import asyncio
+import json
 import time
 from threading import Event
 from uuid import uuid4
@@ -169,3 +170,37 @@ def test_stop_queued_replacement_keeps_existing_exam_after_restart(tmp_path):
         (saved,) = client.get("/api/workspaces").json()["workspaces"]
         assert saved["jobId"] == old and saved["jobStatus"] == "completed"
         assert saved["generationId"] == replacement and saved["generationStatus"] == "cancelled"
+
+
+def test_continue_reuses_finished_part_and_keeps_stopped_attempt_cancelled(tmp_path):
+    app, providers = fixture_app(tmp_path)
+    entered = Event()
+    parts = []
+    composer = providers["composer"]
+    complete = composer.complete
+
+    async def block_first_p2(prompt):
+        part = json.loads(prompt.user)["part"]
+        parts.append(part)
+        if part == "P2" and not entered.is_set():
+            entered.set()
+            await asyncio.Future()
+        return await complete(prompt)
+
+    composer.complete = block_first_p2
+    with TestClient(app) as client:
+        workspace = _workspace(client)
+        old = _start(client, workspace, "before-continue")
+        assert entered.wait(5)
+        url = f"/api/exams/{old}"
+        assert client.post(url + "/stop").json()["status"] == "cancelled"
+        continued = client.post(url + "/resume")
+        assert continued.status_code == 202
+        new = continued.json()["jobId"]
+        assert old != new
+        assert client.post(url + "/resume").json()["jobId"] == new
+        assert wait(client, new)["status"] == "completed"
+        assert parts == ["P1", "P2", "P2", "P3"]
+        assert client.get(url + "/status").json()["status"] == "cancelled"
+        assert app.state.ui_jobs.store.list_versions(old) == []
+        assert client.get(f"/api/workspaces/{workspace}/versions").json()["currentJobId"] == new

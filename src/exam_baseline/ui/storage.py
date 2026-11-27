@@ -141,6 +141,14 @@ class JobStore:
                 ).fetchone()
                 if current is None:
                     raise UiError("workspace_not_found", "Không tìm thấy đề đã lưu.", 404)
+                if resumed_from := data.get("resumedFrom"):
+                    latest = db.execute(
+                        "SELECT job_id FROM workspace_jobs WHERE workspace_id=? "
+                        "ORDER BY rowid DESC LIMIT 1",
+                        (workspace_id,),
+                    ).fetchone()
+                    if latest != (resumed_from,):
+                        raise UiError("generation_inactive", "Phiên tạo đề hiện tại đã thay đổi.")
                 if db.execute(
                     """SELECT 1 FROM workspace_jobs l JOIN jobs j ON j.id=l.job_id
                        WHERE l.workspace_id=? AND json_extract(j.data, '$.status') IN

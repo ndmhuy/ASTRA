@@ -174,6 +174,11 @@ async def stop_generation(request: Request, job_id: UUID):
     return request.app.state.ui_jobs.stop_generation(str(job_id))
 
 
+@router.post("/exams/{job_id}/resume", status_code=202)
+async def resume_generation(request: Request, job_id: UUID):
+    return request.app.state.ui_jobs.resume_generation(str(job_id))
+
+
 @router.get("/exams/{job_id}/events")
 async def events(request: Request, job_id: UUID):
     manager = request.app.state.ui_jobs

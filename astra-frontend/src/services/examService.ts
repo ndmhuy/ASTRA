@@ -61,6 +61,7 @@ export interface IExamService {
   startGeneration(params: ExamRequestParams, workspaceId?: string): Promise<{ jobId: string }>;
   onProgress(jobId: string, callback: (progress: GenerationProgress) => void): () => void;
   stopGeneration?(jobId: string): Promise<GenerationProgress>;
+  resumeGeneration?(jobId: string): Promise<{ jobId: string }>;
   getExamPackage(jobId: string): Promise<ExamPackage>;
   regenerateQuestion(jobId: string, questionId: number, instruction?: string, revision?: number, workspaceId?: string, stableId?: string): Promise<QuestionItem>;
   updateQuestion(jobId: string, updatedQuestion: QuestionItem, workspaceId?: string): Promise<void>;
@@ -761,6 +762,10 @@ export class ApiExamService implements IExamService {
 
   stopGeneration(jobId: string): Promise<GenerationProgress> {
     return requestJson(`${this.baseUrl}/exams/${jobId}/stop`, { method: 'POST' });
+  }
+
+  resumeGeneration(jobId: string): Promise<{ jobId: string }> {
+    return requestJson(`${this.baseUrl}/exams/${jobId}/resume`, { method: 'POST' });
   }
 
   async getExamPackage(jobId: string): Promise<ExamPackage> {

@@ -540,22 +540,45 @@ class JobManager:
 
     async def start(self, payload: ExamGenerateRequest, key: str, workspace_id: str | None = None):
         request, matrix = await asyncio.to_thread(resolve_request, payload, settings=self.settings)
-        data, created = self.store.create(
+        return self._queue_generation(
             key,
             fingerprint(payload.model_dump()),
+            workspace_id,
+            request=payload.model_dump(),
+            nativeRequest=request.model_dump(),
+            matrix=matrix,
+        )
+
+    def resume_generation(self, job_id):
+        job = self.get(job_id)
+        if job["status"] != "cancelled":
+            raise UiError("generation_inactive", "Chỉ có thể tiếp tục phiên tạo đề đã dừng.")
+        return self._queue_generation(
+            f"continue:{job_id}",
+            fingerprint({"resumedFrom": job_id}),
+            job.get("workspaceId"),
+            request=job["request"],
+            nativeRequest=job["nativeRequest"],
+            matrix=job["matrix"],
+            resumedFrom=job_id,
+            retrieval=job.get("retrieval"),
+        )
+
+    def _queue_generation(self, key, request_hash, workspace_id, **fields):
+        data, created = self.store.create(
+            key,
+            request_hash,
             {
+                **fields,
                 "status": "queued",
                 "createdAt": now(),
-                "request": payload.model_dump(),
-                "nativeRequest": request.model_dump(),
-                "matrix": matrix,
                 "progress": {
                     "stage": 0,
                     "stageName": "queued",
                     "percent": 0,
                     "estimatedSecondsLeft": 0,
                     "completedItems": 0,
-                    "totalItems": payload.itemCount,
+                    "totalItems": fields["request"]["itemCount"],
                     "statusMessage": "Đã xếp hàng tạo đề",
                 },
                 "approval": None,
@@ -607,6 +630,11 @@ class JobManager:
         try:
             async with self.capacity:
                 job = self._active_generation(job_id)
+                previous = job.get("resumedFrom")
+                prior_attempts = []
+                while previous:
+                    prior_attempts.append(self.root / previous / "_generation" / "_internal")
+                    previous = self.get(previous).get("resumedFrom")
                 is_vact = _is_vact(job)
                 is_adjacent = _is_adjacent(job)
                 demo_active = self.runner is None and self.settings.demo_mode
@@ -644,7 +672,11 @@ class JobManager:
                     question_model = Question
                 else:
                     self.progress(job_id, "rag")
-                    retrieval = await asyncio.to_thread(self.retriever, job["matrix"])
+                    reuse = any((attempt / "request.json").is_file() for attempt in prior_attempts)
+                    retrieval = job.get("retrieval") if reuse else None
+                    if retrieval is None:
+                        retrieval = await asyncio.to_thread(self.retriever, job["matrix"])
+                        reuse = False
                     job = self._active_generation(job_id)
                     job["retrieval"] = retrieval
                     self._save_generation(job)
@@ -655,11 +687,13 @@ class JobManager:
                             422,
                             retrieval.get("gaps", []),
                         )
-                    request = bind_retrieval(
-                        Request.model_validate(job["nativeRequest"]),
-                        MatrixRetrievalResponse(**retrieval),
-                        variant_key=job_id,
-                    )
+                    request = Request.model_validate(job["nativeRequest"])
+                    if not reuse:
+                        request = bind_retrieval(
+                            request,
+                            MatrixRetrievalResponse(**retrieval),
+                            variant_key=job_id,
+                        )
                     job["nativeRequest"] = request.model_dump()
                     self._save_generation(job)
                     orchestrator_type = Orchestrator
@@ -686,7 +720,11 @@ class JobManager:
                             for role, provider in providers.items()
                         }
                         report = await orchestrator_type(guarded, on_progress=progress).run(
-                            request, output
+                            request,
+                            output,
+                            checkpoint_sources=tuple(
+                                path / "checkpoints" for path in prior_attempts
+                            ),
                         )
                 job = self._active_generation(job_id)
                 if report.get("execution_status") != "completed":
