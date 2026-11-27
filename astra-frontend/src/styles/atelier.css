@@ -283,7 +283,6 @@
   display: flex;
   align-items: center;
   flex: 0 0 14px;
-  gap: 4px;
   margin: 10px 4px 2px;
 }
 
@@ -297,11 +296,15 @@
   color: rgba(214, 228, 220, 0.56);
 }
 
-.integrated-shell .sidebar-library-search button {
+.integrated-shell .sidebar-library-search-field button {
+  position: absolute;
+  inset-inline-end: 4px;
+  inset-block: 0;
+  margin-block: auto;
   display: grid;
   place-items: center;
   width: 20px;
-  height: 14px;
+  height: 20px;
   padding: 0;
   border: 0;
   border-radius: var(--radius-sm);
@@ -317,6 +320,7 @@
 .integrated-shell .sidebar-library-search-field {
   position: absolute;
   inset-inline: -4px;
+  block-size: 26px;
   /* Center the field in the space around the heading's 10px / 2px margins. */
   inset-block-start: calc(50% - 4px);
   transform: translateY(-50%);
@@ -326,9 +330,10 @@
   display: block;
   box-sizing: border-box;
   width: 100%;
+  height: 100%;
   min-width: 0;
   padding: 4px 26px 4px 7px;
-  border: 1px solid var(--atelier-edge);
+  border: 0;
   border-radius: var(--radius-md);
   background: var(--atelier-paper);
   color: var(--atelier-ink);
@@ -336,11 +341,6 @@
 }
 
 .integrated-shell .sidebar-library-search .sidebar-library-search-close {
-  position: absolute;
-  inset-inline-end: 4px;
-  inset-block-start: 50%;
-  transform: translateY(-50%);
-  height: 20px;
   color: var(--atelier-muted);
 }
 
@@ -350,9 +350,7 @@
 }
 
 .app-shell.integrated-shell .sidebar-library-search input:focus {
-  border-color: var(--atelier-edge) !important;
-  outline: 1px solid var(--atelier-gold) !important;
-  outline-offset: 1px;
+  outline: none !important;
   box-shadow: none !important;
 }
 

@@ -106,21 +106,22 @@ export function SidebarExamLibrary({
   return <nav className="sidebar-library" aria-label="Đề thi của thầy cô">
     <button type="button" className="sidebar-new-exam" onClick={onNew} title="Tạo đề mới"><Plus size={16} aria-hidden="true" /><span className="sidebar-label">Tạo đề mới</span></button>
     <div className="sidebar-library-search">
-      {searchOpen ? <div className="sidebar-library-search-field"
+      {!searchOpen && <h2 className="sidebar-library-heading sidebar-label">Tủ đề</h2>}
+      <div className="sidebar-library-search-field"
         onKeyDown={event => {
-          if (event.key !== 'Escape') return;
+          if (!searchOpen || event.key !== 'Escape') return;
           event.preventDefault();
           dismissSearch();
         }}>
-        <input type="search" aria-label="Tìm đề thi và tin nhắn" placeholder="Tìm trong tủ đề…"
-          maxLength={200} value={query} autoFocus onChange={event => setQuery(event.target.value)} />
-        <button type="button" className="sidebar-library-search-close" aria-label="Đóng tìm kiếm"
-          title="Đóng tìm kiếm" onClick={dismissSearch}><X size={14} aria-hidden="true" /></button>
-      </div> : <>
-        <h2 className="sidebar-library-heading sidebar-label">Tủ đề</h2>
-        <button ref={searchButton} type="button" aria-label="Tìm trong tủ đề" title="Tìm trong tủ đề"
-          onClick={() => setSearchOpen(true)}><Search size={14} aria-hidden="true" /></button>
-      </>}
+        {searchOpen && <input type="search" aria-label="Tìm đề thi và tin nhắn" placeholder="Tìm trong tủ đề…"
+          maxLength={200} value={query} autoFocus onChange={event => setQuery(event.target.value)} />}
+        <button ref={searchButton} type="button" className={searchOpen ? 'sidebar-library-search-close' : undefined}
+          aria-label={searchOpen ? 'Đóng tìm kiếm' : 'Tìm trong tủ đề'}
+          title={searchOpen ? 'Đóng tìm kiếm' : 'Tìm trong tủ đề'}
+          onClick={searchOpen ? dismissSearch : () => setSearchOpen(true)}>
+          {searchOpen ? <X size={14} aria-hidden="true" /> : <Search size={14} aria-hidden="true" />}
+        </button>
+      </div>
     </div>
     {sessions.some(session => session.browserOnly) && (
       <button type="button" className="sidebar-new-exam sidebar-import-action" aria-label="Nhập đề từ trình duyệt này"
