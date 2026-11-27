@@ -2,7 +2,9 @@
 
 For the owner/next engineer in the existing feat/longlth2297/agent-main-v2 worktree. Current authority: [development approval](MAS_DEVELOPMENT_AUTHORIZATION.md), superseding the old one-exam budget gate. Backend integration is 18243ac; this checkpoint adds configurable budget bypass and enabled MAS development deployment. Read [MAS runbook](MAS_WORKER_RUNBOOK.md).
 
-Teammate setup: [TEAM_QUICKSTART.md](TEAM_QUICKSTART.md). Workers are already deployed, but a fresh local clone needs dependencies/frontend build and privately supplied ignored caller profiles. No teammate needs to configure Cloudflare or receive the Gemini/Gateway credentials. The owner now authorizes committing/pushing this feature branch as a backup; no PR/merge or main integration is performed. Pre-push scripts/verify.py still stops on91 existing RAG lint findings.
+Teammate setup: run `.\start.cmd`; see [TEAM_QUICKSTART.md](TEAM_QUICKSTART.md). It prepares dependencies/pinned corpus/frontend and opens localhost:8001. Privately supplied Worker caller tokens are entered/imported once per machine/user, saved outside Git and reused across branches/clones. Gemini/Gateway keys stay on Cloudflare; no teammate Cloudflare setup or per-user login is added. The owner authorizes committing/pushing this feature branch as a backup; no PR/merge or main integration is performed. Latest origin/main c0fbdafe has48 upstream commits not integrated. Pre-push scripts/verify.py still stops on91 existing RAG lint findings.
+
+Launcher readiness was observed on isolated port8002 using only local health/static GETs and offline tests, with no model request or exam submission. The owner's actual app remains on8001. Caller profile storage is plaintext, outside Git; rotate/revoke at the Worker and use `start.cmd --configure` to update local access. Do not remove authorization or commit tokens to eliminate first-time entry. The following older runtime sections remain historical where superseded by this checkpoint and the current Chat/MAS configuration.
 
 ## Current Chat follow-up
 

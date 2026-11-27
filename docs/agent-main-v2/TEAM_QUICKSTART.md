@@ -1,36 +1,60 @@
-# Run this branch on a teammate's machine
+# Run ASTRA locally with the team's Workers
 
-For trusted ASTRA developers checking out feat/longlth2297/agent-main-v2. Cloudflare Workers/Gateways are already deployed. Teammates do **not** need Wrangler, a Cloudflare account, a Gemini API key or a Gateway Token to run the local application. They do need the revocable internal caller credentials supplied privately by the owner; these are deliberately absent from Git.
+For teammates reviewing `feat/longlth2297/agent-main-v2`, and clones containing this change after merge. Run **`.\start.cmd`** from the repository root. The launcher prepares dependencies, builds the frontend and opens **http://localhost:8001** with real Chat and MAS configured. It never submits a Chat request or generates an exam during startup.
 
-## One-time local setup
+Workers/Gateways are already deployed. Teammates need neither a Cloudflare account nor Wrangler, Gemini API key or Gateway Token. First use on a new machine requires the two revocable **Worker caller tokens**, supplied privately by the owner. No login or per-user permission system is added for the course submission.
 
-1. Check out the feature branch and use Python3.13 and Node24, matching the observed development runtime. Install Python app dependencies with `python -m pip install -e ".[dev]"` in a virtual environment. Root requirements.txt covers the older standard-library RAG tool, not the full FastAPI application.
-2. Build the frontend: in astra-frontend run `npm ci`, then `npm run build`. Built dist and dependencies are ignored and do not arrive with Git.
-3. Receive `.env.agent-worker` privately from the owner and place it in the repository root. It contains only ASTRA_AGENT_WORKER_CALLER_TOKEN, the Backend's restricted Worker access credential. Never commit/paste its value into chat or frontend config. Without it, budgetless remote Chat is rejected even though the UI opens.
-4. For real MAS too, receive the ignored `.env.mas-worker` profile privately. It contains the separate MAS caller credential and non-secret academic model/transport settings. This is not a Gemini/Gateway credential. The local profile used by this branch selects gemini-3.1-flash-lite and real MAS.
+## First use on a machine
 
-No deployment or Cloudflare dashboard change is needed per teammate. Local credentials remain required whenever a teammate runs their own Backend. Caller rotation/revocation affects machines holding that credential; the owner supplies the replacement through a secure channel.
-
-## Start locally
-
-Activate the virtual environment first. From the repository root:
+Install Git, Python (observed runtime: Python 3.13) and Node.js 24 with npm, then clone/check out the branch. The launcher creates a virtual environment when needed, installs the Python application with the repository constraints, ensures the Backend's pinned RAG commit is available, runs `npm ci` and builds the UI. Missing corpus objects are fetched without changing the branch or working files. Existing dependencies/builds are reused until their inputs change. Initial setup needs internet access for packages, but makes no inference request.
 
 ```powershell
-# Real Chat, MAS demo:
-python scripts/start_agent_worker.py --port 8000
-
-# Real Chat and real MAS, requires both ignored profiles:
-python scripts/start_mas_worker.py --port 8001
+.\start.cmd
 ```
 
-Choose one command for the desired profile. Open http://localhost:8000 or http://localhost:8001 respectively. These commands start the server without making an inference request. Default generic startup can load an old .env or leave Chat disabled; use the explicit launchers above.
+If access is missing, the terminal asks for these two values with hidden input:
 
-`localhost` refers to the machine opening the address. A teammate's browser cannot reach the owner's localhost by opening that URL on their own machine. A future shared deployment would let browsers use its Backend without holding caller credentials; no shared website/Backend hosting is deployed by this work.
+- `ASTRA_AGENT_WORKER_CALLER_TOKEN`: Chat Worker access.
+- `ASTRA_MAS_CALLER_TOKEN`: MAS Worker access.
 
-The same existing Workers serve the team. Actual provider quota and technical rates/concurrency are shared; Chat currently allows3/IP/minute,10 globally/minute and one active inference. ASTRA total/session/token/expiry budgets are disabled in the current authenticated development profile. Gemini quota or technical throttling can still reject requests. Academic validation and teacher approval remain active.
+These are **not** Gemini keys or Cloudflare account/API/Gateway tokens. The owner provides them privately once. Do not paste them into a PR, commit, screenshot or frontend configuration.
 
-Only the owner/user initiates live model calls or exam generation. There is no startup/live smoke-generation requirement. See WORKER_RUNBOOK.md and MAS_WORKER_RUNBOOK.md for current deployment state and kill switches.
+Alternatively import privately supplied legacy files once:
 
-## Push verification checkpoint
+```powershell
+.\start.cmd --import-profile C:\private\.env.agent-worker C:\private\.env.mas-worker
+```
 
-Implementation and focused checks are recorded in PROGRESS.md. Before this branch backup, scripts/verify.py was run: compilation completed, then Ruff stopped on91 pre-existing findings in unchanged rag_workflow files. The full repository gate is therefore not green; do not describe this push as merge-ready. Current upstream main has not been merged/rebased into the feature branch.
+Import copies only the two caller fields; provider/Gateway keys in a source file are ignored. Existing ignored legacy profiles in the checkout are automatically imported on first use. The original files and private root `.env` are preserved.
+
+The new shared local profile is `%LOCALAPPDATA%\ASTRA\worker.env`, outside the checkout. It survives branch switching and new clones under the same Windows user. On other systems it uses `$XDG_CONFIG_HOME/ASTRA/worker.env` or `~/.config/ASTRA/worker.env`; run `python scripts/run_app.py` instead of `start.cmd`.
+
+## Subsequent runs and branch changes
+
+Run `.\start.cmd` again. No repeated token entry or Cloudflare dashboard setup is needed while those caller tokens remain valid. Changes to dependency inputs or frontend sources trigger installation/build refresh. The branch being run must contain the launcher; older branches do not acquire this behavior until the change is merged.
+
+Stop the previous app with Ctrl+C before switching branches. If port 8001 is occupied, the launcher stops with an explanation; it never kills another app or an active exam. Use `--port 8002` to start separately. `localhost` always refers to the teammate's own machine.
+
+```powershell
+# Update caller access after the owner rotates it:
+.\start.cmd --configure
+
+# Read-only local configuration check, no install/start/API call:
+.\start.cmd --check
+```
+
+Optional PDF compilation still needs an installed LaTeX compiler, as documented in the [main setup guide](../../README.md#run-the-web-app). The launcher does not install an OS-level compiler. Chat and generation use the existing Backend; academic prompts, model, schemas, validation and teacher approval are preserved.
+
+## Credential boundary and shared usage
+
+Gemini API keys and Gateway credentials stay on Cloudflare. The caller profile is a local plaintext credential file, **not encrypted storage**. Keeping it outside Git prevents accidental branch commits; it does not hide the token from someone controlling the machine. A holder can call the permitted Worker routes and consume shared quota. The owner can revoke/rotate the Worker caller secrets; local profiles must then be updated with `--configure`.
+
+Do not commit the shared tokens or bundle them into the UI to remove the first-use step. Private Worker authorization and kill switches remain enabled. The existing Workers serve the team with shared Gemini quota and technical limits; ASTRA's total/session/token/expiry budgets are currently disabled in authenticated development mode. Technical throttling and actual Gemini quota can still reject calls. No billing is enabled by this launcher.
+
+Only the user initiates live Chat requests or exam generation on the UI. Operator details: [Chat runbook](WORKER_RUNBOOK.md), [MAS runbook](MAS_WORKER_RUNBOOK.md).
+
+## Verification checkpoint
+
+The launcher was observed installing/building and serving the real application on isolated port 8002, with `demoMode=false`, `providerConfigured=true`, private Chat access configured and the UI responding HTTP 200. The next preparation reused its caches. Verification made only local readiness/static GETs and offline tests; zero model calls and zero exam jobs were submitted.
+
+Focused checks are recorded in [PROGRESS.md](PROGRESS.md). The repository-wide `scripts/verify.py` still stops on 91 existing Ruff findings in unchanged `rag_workflow` files. Upstream `main` has not been integrated; this checkpoint does not establish a green merge gate.

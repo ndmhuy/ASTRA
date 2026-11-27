@@ -1,7 +1,7 @@
 """Real MAS via authenticated Worker; startup performs no model inference.
 
-Load only the ignored .env.mas-worker profile, never the private legacy .env.
-The Worker remains independently disabled until owner activation.
+Load an explicit/ignored Worker profile, never the private legacy .env.
+Remote forwarding policy is independently controlled on Cloudflare.
 """
 
 import argparse
@@ -17,8 +17,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=8000)
     parser.add_argument("--model", help="Non-secret Gemini model ID, if absent from the profile")
+    parser.add_argument("--profile", type=Path, help="Shared local Worker profile")
     args = parser.parse_args()
-    profile = ROOT / ".env.mas-worker"
+    from exam_baseline.worker_profile import resolve_profile
+
+    profile = resolve_profile(".env.mas-worker", args.profile)
     if not profile.is_file():
         parser.error("Missing ignored .env.mas-worker caller profile; see MAS_WORKER_RUNBOOK.md")
 
@@ -58,6 +61,8 @@ def main():
         ASTRA_MAS_WORKER_URL=mas.worker_url,
         ASTRA_MAS_CALLER_TOKEN=mas.caller_token.get_secret_value(),
     )
+    if args.profile:
+        os.environ["ASTRA_WORKER_PROFILE"] = str(profile)
     os.chdir(ROOT)
 
     # create_web_app normally reads legacy .env. Inject the already validated

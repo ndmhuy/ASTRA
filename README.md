@@ -26,6 +26,18 @@ The browser workflow generates **THPT math** practice papers with 22 questions a
 
 ## Run the web app
 
+### Team Cloudflare setup
+
+For the deployed ASTRA Chat and MAS Workers, run `.\start.cmd` from the repository
+root with Python and Node.js 24 installed. It prepares dependencies, builds the UI
+and opens http://localhost:8001. First use asks for the two privately supplied
+Worker caller tokens and saves them outside Git for future branches/clones on the
+same machine. Gemini/Gateway keys stay on Cloudflare; teammates need no Cloudflare
+account or deployment. See the [team quickstart](docs/agent-main-v2/TEAM_QUICKSTART.md)
+for setup, credential boundaries and current verification limits.
+
+### Manual development setup
+
 Use PowerShell on Windows with Git, CPython 3.11, and Node.js 22.12 or later. Start in the repository root. ASTRA pins Python 3.11.1 and a specific RAG corpus commit.
 
 ```powershell

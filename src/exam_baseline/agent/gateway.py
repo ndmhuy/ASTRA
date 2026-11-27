@@ -199,10 +199,12 @@ async def configured_interpreter(settings: AgentSettings | None = None):
     async with httpx.AsyncClient(follow_redirects=False, trust_env=False) as client:
         try:
             if settings.transport == "worker":
+                from exam_baseline.worker_profile import resolve_profile
+
                 from .worker import WorkerInterpretationProvider
 
                 caller = settings.worker_caller_token
-                caller_profile = Path(__file__).resolve().parents[3] / ".env.agent-worker"
+                caller_profile = resolve_profile(".env.agent-worker")
                 if caller is None and caller_profile.is_file():
                     caller = AgentSettings(_env_file=caller_profile).worker_caller_token
                 logger.info("agent_worker_access configured=%s", caller is not None)
