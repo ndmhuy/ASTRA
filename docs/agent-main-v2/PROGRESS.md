@@ -2,13 +2,20 @@
 
 > Current scope: authenticated Chat and MAS inference gateways only. Owner-approved MAS development forwarding is enabled, with ASTRA budget checks configurable and currently disabled. All real generation must be initiated by the owner on the UI. No website/Backend hosting, Tunnel, or academic pipeline redesign.
 
-Status: MAS_DEVELOPMENT_ENABLED; OWNER_UI_TEST_ONLY
+Status: CHAT_AND_MAS_DEVELOPMENT_ENABLED; OWNER_UI_TEST_ONLY
 Baseline SHA: 7523c79556a9935df5008c92043f1e38d6e5d2a2
 Old Agent reference SHA: fb834b976cb62eb7292fa839cdaf1d8738e1ec50
 Feature branch / worktree: feat/longlth2297/agent-main-v2 / ../ASTRA.worktrees/longlth2297-agent-main-v2
 Current implementation: MAS Worker cfbf951; Backend adapter/readiness committed with this checkpoint. Prior Chat checkpoint 6c49612.
 Latest origin/main checked: d67d218c69a751b973bb6d2bd3327433ce91e8bd (2026-11-27); 36 upstream commits not integrated.
 Current phase / exact next action: owner creates exams at http://localhost:8001. [Development authorization](MAS_DEVELOPMENT_AUTHORIZATION.md) supersedes the previous one-exam/41-call/two-hour proposal and budget approval gate. No agent-initiated real MAS inference or exam generation has run. See [MAS runbook](MAS_WORKER_RUNBOOK.md) and [next task](NEXT_TASK.md). No push, PR or merge.
+
+## Chat development activation — 2026-11-27
+
+- Owner subsequently requested removing Chat call limits too. Deployed Chat Worker734d9fd6-0aa5-458e-8152-57a1f4763dc7 with forwarding=true and ASTRA_AGENT_BUDGETS_ENABLED=false: total/daily/session/token budgets and diagnostic expiry bypassed, existing usage21 preserved. Health remaining/limit/expiry null means disabled, not exhausted. Bounded behavior defaults true and remains available.
+- Budgetless Chat requires an independent revocable Backend caller credential. Encrypted ASTRA_AGENT_CALLER_TOKEN stays on Worker; ignored .env.agent-worker supplies ASTRA_AGENT_WORKER_CALLER_TOKEN to the local Backend. Frontend and provider payload receive no caller/Gateway secret. Header is not forwarded to Gemini. Bounded legacy profile remains compatible.
+- Preserved provider/model/contract hash, namespace, diagnostic history, replay rejection, rate limits3/IP/minute and10/global/minute, concurrency1, output1024/deadline30s, no retry/fallback and kill switch. Independent MAS deployment/configuration untouched.
+-25 workerd/SQLite groups and9 focused Python adapter checks passed, all explicit offline fixtures. Actual deployment metadata, GET-only health and Backend startup log confirmed private caller loaded. Backend8001 restarted only after a read-only check found no queued/running jobs; application still demoMode=false/providerConfigured=true. No agent inference, generation, live smoke or academic job test.
 
 ## MAS development activation — 2026-11-27
 

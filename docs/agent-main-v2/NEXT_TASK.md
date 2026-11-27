@@ -1,6 +1,15 @@
-# Next task: owner tests real MAS through the UI
+# Next task: owner tests real Chat and MAS through the UI
 
 For the owner/next engineer in the existing feat/longlth2297/agent-main-v2 worktree. Current authority: [development approval](MAS_DEVELOPMENT_AUTHORIZATION.md), superseding the old one-exam budget gate. Backend integration is 18243ac; this checkpoint adds configurable budget bypass and enabled MAS development deployment. Read [MAS runbook](MAS_WORKER_RUNBOOK.md).
+
+## Current Chat follow-up
+
+- Owner explicitly asked to remove Chat call limits as well. Existing Chat Worker734d9fd6-0aa5-458e-8152-57a1f4763dc7 now has ASTRA_AGENT_BUDGETS_ENABLED=false and forwarding=true. Lifetime/daily/session/token/expiry budget checks bypassed; usage/history retained (21 at verification). No new per-call or per-session approval required. Earlier expiry12:40 is inactive in this mode.
+- Budgetless requests require a separate revocable Backend credential: encrypted ASTRA_AGENT_CALLER_TOKEN on Worker, ignored .env.agent-worker with ASTRA_AGENT_WORKER_CALLER_TOKEN locally. Agent settings load that file automatically. It is never sent to the frontend or Gemini. Use http://localhost:8001; Backend was restarted without an active generation and logged private access configured=true. The old8000 process has not reloaded this credential.
+- Retained technical rate limits3/IP/minute and10/global/minute, concurrency1, replay rejection, existing deadlines/output cap and kill switch. Existing Gateway/model/contracts and MAS configuration unchanged. To restore budget checks set ASTRA_AGENT_BUDGETS_ENABLED=true and appropriate limits; do not reset usage. Active operator config workers/astra-ai-proxy/.wrangler/development.jsonc is ignored. Tracked defaults remain disabled/bounded.
+- Verified25 offline Worker groups,9 Python adapter checks, generated hashes and GET-only readiness. Zero agent-initiated live Chat/MAS inference or generation. All actual model calls must be owner-driven through UI.
+
+The earlier MAS-only instruction to leave Chat expired is superseded by this explicit Chat follow-up.
 
 ## Active development configuration
 

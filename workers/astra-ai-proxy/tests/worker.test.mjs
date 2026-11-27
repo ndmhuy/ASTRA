@@ -19,6 +19,61 @@ const bindings = {
   ASTRA_UPSTREAM_MS: "100", ASTRA_OUTPUT_TOKENS: "512",
 };
 
+test("private development Chat bypasses budgets and retains usage over restart",async()=>{
+  const path=await mkdtemp(join(tmpdir(),"astra-chat-development-"));
+  const config={ASTRA_AGENT_BUDGETS_ENABLED:"false",ASTRA_GLOBAL_DAILY:"0",ASTRA_AGENT_DAILY:"0",
+    ASTRA_AGENT_TOKEN_DAILY:"0",ASTRA_IP_PER_MINUTE:"60",ASTRA_GLOBAL_PER_MINUTE:"100",
+    ASTRA_DIAGNOSTIC_SESSION:"development-fixture",ASTRA_DIAGNOSTIC_LIMIT:"2",ASTRA_DIAGNOSTIC_UNTIL:"2000-01-01T00:00:00Z"};
+  let {mf}=runtime(config,path,"build-test/admission-harness.js");
+  try {
+    let ns=await mf.getDurableObjectNamespace("ADMISSION"),stub=ns.get(ns.idFromName("global-v1"));
+    await stub.fetch("https://quota/seed",{method:"POST",body:JSON.stringify({
+      counter:{day:"2000-01-01",global:2,agent:2,mas:0},leases:[],rates:[],sessions:{"development-fixture":{used:2}},
+    })});
+    for(let i=0;i<45;i++) {
+      const id="development-"+i;
+      assert.equal((await stub.fetch("https://quota/reserve",{method:"POST",body:JSON.stringify({operation:"agent",ip:"test",id,reservedTokens:100})})).status,200);
+      await stub.fetch("https://quota/release",{method:"POST",body:JSON.stringify({release:id})});
+    }
+    const status=await(await stub.fetch("https://quota/status")).json();
+    assert.equal(status.budgetsEnabled,false);assert.equal(status.remainingAttempts,null);
+    assert.equal(status.diagnostic.used,47);assert.equal(status.diagnostic.expiresAt,null);
+    assert.equal(status.workloads.agent.remainingAttempts,null);
+    assert.equal((await(await stub.fetch("https://quota/history?day=2000-01-01")).json()).agent,2);
+    await mf.dispose();
+    ({mf}=runtime({...config,ASTRA_AGENT_BUDGETS_ENABLED:"true"},path));
+    ns=await mf.getDurableObjectNamespace("ADMISSION");stub=ns.get(ns.idFromName("global-v1"));
+    assert.equal((await(await stub.fetch("https://quota/status")).json()).diagnostic.used,47);
+    assert.equal((await stub.fetch("https://quota/reserve",{method:"POST",body:JSON.stringify({operation:"agent",ip:"test",id:"after-reenable"})})).status,429);
+  } finally{await mf.dispose();await rm(path,{recursive:true,force:true});}
+});
+
+test("budgetless Chat requires private caller access and retains rate/kill switches",async()=>{
+  const config={ASTRA_AGENT_BUDGETS_ENABLED:"false",ASTRA_AGENT_CALLER_TOKEN:"c".repeat(64),
+    ASTRA_GLOBAL_DAILY:"0",ASTRA_AGENT_DAILY:"0",ASTRA_AGENT_TOKEN_DAILY:"0"};
+  const {mf,mock}=runtime(config);
+  const caller={"X-Astra-Caller":"c".repeat(64)};
+  const valid=JSON.stringify({candidates:[{finishReason:"STOP",content:{parts:[{text:JSON.stringify({kind:"task",intents:[{id:"OPEN_SETUP",args:{}}]})}]}}]});
+  try {
+    assert.equal((await post(mf)).status,401);
+    assert.equal((await post(mf,turn,{"X-Astra-Caller":"wrong"})).status,401);
+    assert.equal((await post(mf,turn,{...caller,Origin:"https://untrusted.example"})).status,401);
+    for(let i=0;i<2;i++) {mock.get().intercept().reply(200,valid);assert.equal((await post(mf,turn,caller)).status,200);}
+    assert.equal((await post(mf,turn,caller)).status,429);
+    assert.equal((await mf.dispatchFetch("https://local/v1/mas/complete",{method:"POST"})).status,404);
+    const status=await(await mf.dispatchFetch("https://local/health")).json();
+    assert.equal(status.callerAuthorizationRequired,true);assert.equal(status.masForwarding,false);
+    mock.assertNoPendingInterceptors();
+  } finally{await mf.dispose();}
+  const {mf:disabled}=runtime({...config,ASTRA_FORWARDING_ENABLED:"false"});
+  try{assert.equal((await post(disabled,turn,caller)).status,503);}finally{await disabled.dispose();}
+});
+
+test("invalid Chat budget mode fails closed",async()=>{
+  const {mf,mock}=runtime({ASTRA_AGENT_BUDGETS_ENABLED:"typo"});
+  try{assert.equal((await post(mf)).status,503);mock.assertNoPendingInterceptors();}finally{await mf.dispose();}
+});
+
 test("diagnostic session survives restart and UTC rollover without refreshing its allowance", async () => {
   const path = await mkdtemp(join(tmpdir(), "astra-session-"));
   const config = {ASTRA_GLOBAL_DAILY:"12",ASTRA_AGENT_DAILY:"12",ASTRA_IP_PER_MINUTE:"60",
@@ -88,6 +143,7 @@ function runtime(overrides = {}, persist = false, scriptPath = "build/index.js",
       assert.equal(request.headers.get("cf-aig-no-wholesale"), "true");
       assert.equal(request.headers.get("cf-aig-max-attempts"), "1");
       assert.equal(request.headers.has("x-goog-api-key"), false);
+      assert.equal(request.headers.has("X-Astra-Caller"), false);
       const body = await request.json();
       assert.equal(body.generationConfig.thinkingConfig?.thinkingLevel,
         (overrides.ASTRA_AGENT_MODEL ?? bindings.ASTRA_AGENT_MODEL) === "gemini-3.1-flash-lite" ? "MINIMAL" : undefined);

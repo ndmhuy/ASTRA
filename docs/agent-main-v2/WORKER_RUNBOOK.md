@@ -1,5 +1,15 @@
 # ASTRA Worker deployment and acceptance
 
+## Current private Chat development — 2026-11-27
+
+Owner requested removing Chat call limits after approving MAS development. Deployment734d9fd6-0aa5-458e-8152-57a1f4763dc7 has forwarding=true and ASTRA_AGENT_BUDGETS_ENABLED=false. This bypasses ASTRA global/Agent daily, session, estimated-token and expiry checks only. Usage/history remain; actual Gemini quotas and technical rate/concurrency limits still apply. /health.quota remaining/limit/expiry are null rather than an exhausted zero. Re-enable the switch (default true) with suitable limits to restore bounded behavior; counters are not reset.
+
+Unlimited-budget mode requires private Backend access: ASTRA_AGENT_CALLER_TOKEN encrypted Secret, X-Astra-Caller header sent only by WorkerInterpretationProvider, local credential ASTRA_AGENT_WORKER_CALLER_TOKEN in ignored .env.agent-worker. AgentSettings automatically loads this profile for worker transport. No frontend bundle or Gemini request receives it. Missing/wrong caller or browser Origin is rejected before admission. Existing v1/v2 contracts/hash/model and bounded legacy compatibility remain. To revoke, disable forwarding or rotate the caller Secret/profile together. Caller access and budgets are independent from MAS.
+
+Use http://localhost:8001; its Backend has reloaded private Chat access and retains real MAS mode. The prior8000 process remains on its earlier profile. Active deployment file is ignored workers/astra-ai-proxy/.wrangler/development.jsonc; tracked defaults remain forwarding=false/budgets=true. Kill switch works in either budget mode. Retained3/IP/minute,10/global/minute, concurrency1, replay rejection, deadlines/output cap and no automatic retry/fallback.
+
+25 workerd/SQLite groups and9 Python adapter checks passed offline. Live verification was deployment metadata and GET-only health plus safe startup log configured=true. No Gemini call or generation was initiated by the agent. All inference remains owner-driven on UI. The following acceptance windows/gates are historical and superseded by NEXT_TASK.md and this owner request.
+
 > Current 2026-11-27 live state: [results](LIVE_CHAT_RESULTS.md), [owner window and next task](NEXT_TASK.md), [new authorization](LIVE_CHAT_COMPLETION_SPEC.md). These supersede historical authorization/deployment blockers below. Same persistent session used=8 of 12; automation exhausted; MAS demo.
 
 For the operator deploying the credential proxy. The target is the existing `astra-ai-proxy` at `https://astra-ai-proxy.letranhoanglong2227.workers.dev`. React, FastAPI, exams, RAG and LaTeX run locally.

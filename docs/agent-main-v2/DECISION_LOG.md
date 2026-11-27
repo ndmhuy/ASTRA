@@ -36,3 +36,7 @@ A QUESTION about a question/answer is a read-only inspection workflow. Use the c
 ## S-007 - Preserve a bounded acceptance session across UTC days
 
 The owner authorized 12 additional upstream attempts total, eight automation plus four manual. Daily counters alone could silently renew that allowance at UTC rollover. Keep per-session usage in the existing ADMISSION/global-v1 ledger, require an absolute expiry, never refund attempts, and archive old daily counters on rollover. A single manual phase raises the same session cap from 8 to 12 without resetting used=8. No new resource or public MAS operation. SQLite restart/rollover, expiry and oversized-limit regressions pass; production usage was preserved through disabled deployments.
+
+## S-008 — Private development Chat can bypass budgets without opening anonymous inference
+
+The owner later requested removal of Chat call limits for development, like MAS. Preserve the bounded implementation and usage, but allow ASTRA_AGENT_BUDGETS_ENABLED=false to bypass daily/session/token/expiry checks. Require an independent revocable Backend caller token whenever this switch is false; bounded legacy clients remain compatible. Retain rate/concurrency/replay/circuit/kill-switch protections and the existing semantic/provider wire. This avoids replacing finite public allowances with an unrestricted anonymous endpoint. Verification is offline plus GET-only readiness; the owner exclusively initiates real inference.

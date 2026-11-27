@@ -1,7 +1,7 @@
 import Ajv from "ajv";
 import resources from "./generated.json";
 import semanticResources from "./semantic.generated.json";
-import { bounded, type Env } from "./env";
+import { bounded, agentBudgetsEnabled, type Env } from "./env";
 import { parseGemini, GeminiOutputFailure } from "./gemini";
 export { Admission } from "./admission";
 
@@ -40,6 +40,15 @@ function response(body: unknown, status = 200) {
   return Response.json(body, { status, headers: { "Cache-Control": "no-store" } });
 }
 
+async function callerAuthorized(request: Request, secret?: string) {
+  if (!secret || !/^[a-f0-9]{64}$/.test(secret)) return false;
+  const values = [secret, request.headers.get("X-Astra-Caller") ?? ""];
+  const digests = await Promise.all(values.map(value => crypto.subtle.digest("SHA-256", new TextEncoder().encode(value))));
+  const [a,b] = digests.map(value => new Uint8Array(value)); let difference = 0;
+  for (let i=0;i<a.length;i++) difference |= a[i] ^ b[i];
+  return difference === 0;
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const path = new URL(request.url).pathname;
@@ -52,6 +61,7 @@ export default {
           contracts: [VERSION, semanticResources.catalog.schemaVersion], semanticContractHash: semanticResources.contractHash,
           model: /^gemini-[A-Za-z0-9._-]{1,90}$/.test(env.ASTRA_AGENT_MODEL ?? "") ? env.ASTRA_AGENT_MODEL : null,
           forwarding: env.ASTRA_FORWARDING_ENABLED === "true" && env.ASTRA_AGENT_FORWARDING_ENABLED !== "false",
+          callerAuthorizationRequired: !agentBudgetsEnabled(env),
           masForwarding: false, quota: await status.json() });
       } catch {
         return response({ status: "unavailable", forwarding: false }, 503);
@@ -75,6 +85,8 @@ export default {
     let timer: ReturnType<typeof setTimeout> | undefined;
     try {
       if (env.ASTRA_FORWARDING_ENABLED !== "true" || env.ASTRA_AGENT_FORWARDING_ENABLED === "false") throw new Failure("disabled", 503);
+      requestStage = "authorization";
+      if (!agentBudgetsEnabled(env) && (request.headers.has("Origin") || !await callerAuthorized(request,env.ASTRA_AGENT_CALLER_TOKEN))) throw new Failure("auth",401);
       if (request.headers.get("X-Astra-Contract") !== (semantic ? semanticResources.contractHash : resources.contractHash)) {
         throw new Failure("configuration", 409);
       }

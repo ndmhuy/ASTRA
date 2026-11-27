@@ -82,7 +82,14 @@ SEMANTIC_HASH = json.loads(
 
 
 class WorkerInterpretationProvider:
-    def __init__(self, client: httpx.AsyncClient, endpoint: str, *, semantic: bool = False):
+    def __init__(
+        self,
+        client: httpx.AsyncClient,
+        endpoint: str,
+        *,
+        semantic: bool = False,
+        caller_token: str | None = None,
+    ):
         url = urlsplit(endpoint)
         if (
             url.scheme != "https"
@@ -95,6 +102,9 @@ class WorkerInterpretationProvider:
         ):
             raise ValueError("Worker endpoint must be an HTTPS origin")
         self.client = client
+        if caller_token is not None and not re.fullmatch(r"[a-f0-9]{64}", caller_token):
+            raise ValueError("invalid Worker caller credential")
+        self.caller_token = caller_token
         self.semantic = semantic
         self.url = endpoint.rstrip("/") + (
             "/v2/agent/interpret" if semantic else "/v1/agent/interpret"
@@ -110,7 +120,10 @@ class WorkerInterpretationProvider:
                 "POST",
                 self.url,
                 json=body,
-                headers={"X-Astra-Contract": SEMANTIC_HASH if self.semantic else CONTRACT_HASH},
+                headers={
+                    "X-Astra-Contract": SEMANTIC_HASH if self.semantic else CONTRACT_HASH,
+                    **({"X-Astra-Caller": self.caller_token} if self.caller_token else {}),
+                },
                 timeout=timeout,
                 follow_redirects=False,
             ) as response:

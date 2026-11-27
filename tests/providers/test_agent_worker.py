@@ -96,3 +96,29 @@ def test_worker_success_uses_existing_intake_contract():
             assert interpreter.reserve()
 
     asyncio.run(run())
+
+
+def test_worker_private_access_header_is_backend_only_and_preserves_wire():
+    async def run():
+        def transport(request):
+            assert request.headers["X-Astra-Caller"] == "c" * 64
+            assert "authorization" not in request.headers
+            assert "cf-aig-authorization" not in request.headers
+            assert json.loads(request.content)["message"] == TURN.message
+            assert "worker_caller_token" not in request.content.decode()
+            return httpx.Response(
+                200,
+                json={
+                    "schemaVersion": TURN.schemaVersion,
+                    "clientMessageId": TURN.clientMessageId,
+                    "decision": {"kind": "clarify", "intents": []},
+                },
+            )
+
+        async with httpx.AsyncClient(transport=httpx.MockTransport(transport)) as client:
+            result = await WorkerInterpretationProvider(
+                client, "https://worker.example", caller_token="c" * 64
+            ).interpret(TURN, 1)
+            assert result.kind == "clarify"
+
+    asyncio.run(run())

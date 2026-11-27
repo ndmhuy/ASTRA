@@ -1,5 +1,5 @@
 import type { Env } from "./env";
-import { bounded, diagnosticPolicy } from "./env";
+import { bounded, diagnosticPolicy, agentBudgetsEnabled } from "./env";
 import policies from "../../../src/exam_baseline/resources/agent/workloads.json";
 
 type Operation = "agent" | "mas";
@@ -18,18 +18,19 @@ export class Admission {
       const ledger = await this.state.storage.get<Ledger>("ledger");
       const current = ledger?.counter.day === day ? ledger.counter : undefined;
       const policy = diagnosticPolicy(this.env);
+      const budgetsEnabled = agentBudgetsEnabled(this.env);
       const used = policy ? ledger?.sessions?.[policy.id]?.used ?? 0 : 0;
       const remaining = Math.max(0, Math.min(
         bounded(this.env.ASTRA_GLOBAL_DAILY, 10000) - (current?.global ?? 0),
         bounded(this.env.ASTRA_AGENT_DAILY, 10000) - (current?.agent ?? 0),
       ));
       const active = ledger?.leases.filter(lease => lease.expires > now).length ?? 0;
-      return Response.json({ day, remainingAttempts: policy ? Math.min(remaining, policy.until <= now ? 0 : Math.max(0, policy.limit - used)) : remaining,
+      return Response.json({ day, budgetsEnabled, remainingAttempts: !budgetsEnabled ? null : policy ? Math.min(remaining, policy.until <= now ? 0 : Math.max(0, policy.limit - used)) : remaining,
         consumedAttempts: { global: current?.global ?? 0, agent: current?.agent ?? 0, mas: current?.mas ?? 0 },
-        diagnostic: policy ? { session: policy.id, used, limit: policy.limit, expiresAt: new Date(policy.until).toISOString(),
-          remaining: policy.until <= now ? 0 : Math.max(0, policy.limit - used) } : null,
+        diagnostic: policy ? { session: policy.id, used, limit: budgetsEnabled ? policy.limit : null, expiresAt: budgetsEnabled ? new Date(policy.until).toISOString() : null,
+          remaining: !budgetsEnabled ? null : policy.until <= now ? 0 : Math.max(0, policy.limit - used) } : null,
         activeReservations: active,
-        workloads: { agent: { remainingAttempts: remaining,
+        workloads: { agent: { remainingAttempts: budgetsEnabled ? remaining : null,
           activeReservations: ledger?.leases.filter(lease => lease.expires > now && (lease.operation ?? "agent") === "agent").length ?? 0 },
           mas: { enabled: this.env.ASTRA_MAS_FORWARDING_ENABLED === "true",
             remainingAttempts: Math.max(0, bounded(this.env.ASTRA_MAS_DAILY ?? "0", 10000) - (current?.mas ?? 0)),
@@ -76,10 +77,11 @@ export class Admission {
       if (previousDay) ledger.counter = { day, global: 0, agent: 0, mas: 0 };
       const globalLimit = bounded(this.env.ASTRA_GLOBAL_DAILY, 10000);
       const operation = body.operation as Operation;
+      const enforceBudget = operation !== "agent" || agentBudgetsEnabled(this.env);
       const diagnostic = operation === "agent" ? diagnosticPolicy(this.env) : undefined;
       if (diagnostic) {
         const used = ledger.sessions?.[diagnostic.id]?.used ?? 0;
-        if (diagnostic.until <= now || used >= diagnostic.limit) return Response.json({error:"quota"}, {status:429});
+        if (enforceBudget && (diagnostic.until <= now || used >= diagnostic.limit)) return Response.json({error:"quota"}, {status:429});
         if (!ledger.sessions?.[diagnostic.id] && Object.keys(ledger.sessions ?? {}).length >= 16) return Response.json({error:"configuration"}, {status:503});
       }
       if ((ledger.circuits?.[operation]?.until ?? 0) > now) return Response.json({error: "circuit_open"}, {status: 503});
@@ -106,9 +108,9 @@ export class Admission {
       const keys = [prefix + "global:" + minute, prefix + body.ip + ":" + minute];
       const limits = [burstLimit, ipLimit];
       if (keys.some((key, i) => (ledger.rates.find(rate => rate.key === key)?.count ?? 0) >= limits[i]) ||
-          ledger.counter.global >= globalLimit || ledger.counter[operation] >= workloadLimit ||
+          (enforceBudget && (ledger.counter.global >= globalLimit || ledger.counter[operation] >= workloadLimit ||
           (operation === "mas" && globalLimit - ledger.counter.global <= Math.max(0, reservedChat - ledger.counter.agent)) ||
-          (ledger.counter[operation === "agent" ? "agentTokens" : "masTokens"] ?? 0) + reservedTokens > tokenLimit ||
+          (ledger.counter[operation === "agent" ? "agentTokens" : "masTokens"] ?? 0) + reservedTokens > tokenLimit)) ||
           ledger.leases.filter(lease => (lease.operation ?? "agent") === operation).length >= concurrency ||
           ledger.turns.filter(turn => (turn.operation ?? "agent") === operation).length >= 256) {
         return Response.json({ error: "quota" }, { status: 429 });

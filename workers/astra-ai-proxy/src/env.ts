@@ -5,6 +5,8 @@ export interface Env {
   ASTRA_AGENT_GATEWAY_ID?: string;
   ASTRA_AGENT_GATEWAY_BYOK_ALIAS?: string;
   ASTRA_AGENT_MODEL?: string;
+  ASTRA_AGENT_BUDGETS_ENABLED?: string;
+  ASTRA_AGENT_CALLER_TOKEN?: string;
   ASTRA_FORWARDING_ENABLED?: string;
   ASTRA_GLOBAL_DAILY?: string;
   ASTRA_AGENT_DAILY?: string;
@@ -26,6 +28,12 @@ export interface Env {
   ASTRA_DIAGNOSTIC_SESSION?: string;
   ASTRA_DIAGNOSTIC_LIMIT?: string;
   ASTRA_DIAGNOSTIC_UNTIL?: string;
+}
+
+export function agentBudgetsEnabled(env: Env) {
+  const value = env.ASTRA_AGENT_BUDGETS_ENABLED ?? "true";
+  if (!["true", "false"].includes(value)) throw new Error("configuration");
+  return value === "true";
 }
 
 export function diagnosticPolicy(env: Env) {

@@ -31,6 +31,7 @@ class AgentSettings(BaseSettings):
     transport: Literal["gateway", "direct", "codex", "offline", "worker"] = "worker"
     semantic_contract: bool = True
     worker_url: str = "https://astra-ai-proxy.letranhoanglong2227.workers.dev"
+    worker_caller_token: SecretStr | None = None
     api_key: SecretStr | None = None
     gateway_account_id: str = ""
     gateway_id: str = ""
@@ -200,9 +201,17 @@ async def configured_interpreter(settings: AgentSettings | None = None):
             if settings.transport == "worker":
                 from .worker import WorkerInterpretationProvider
 
+                caller = settings.worker_caller_token
+                caller_profile = Path(__file__).resolve().parents[3] / ".env.agent-worker"
+                if caller is None and caller_profile.is_file():
+                    caller = AgentSettings(_env_file=caller_profile).worker_caller_token
+                logger.info("agent_worker_access configured=%s", caller is not None)
                 yield ProviderRouter(
                     WorkerInterpretationProvider(
-                        client, settings.worker_url, semantic=settings.semantic_contract
+                        client,
+                        settings.worker_url,
+                        semantic=settings.semantic_contract,
+                        caller_token=caller.get_secret_value() if caller else None,
                     ),
                     reserve=lambda: True,
                     timing=Timing(primary=33, total=33),
