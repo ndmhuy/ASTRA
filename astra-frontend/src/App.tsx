@@ -180,7 +180,12 @@ export const App: React.FC = () => {
     const instructions = session?.messages.filter(message => message.role === 'user').map(message => message.content).join('\n');
     setShowQuickModal(false);
     revealSession(id);
-    void store.generate(id, { ...params, uploadedFiles: [...params.uploadedFiles, ...attachedFiles.current.map(file => file.name)], prompt: instructions ? `${params.prompt}\n${instructions}` : params.prompt });
+    void store.generate(id, {
+      ...params,
+      uploadedFiles: [...params.uploadedFiles, ...attachedFiles.current.map(file => file.name)],
+      prompt: instructions ? `${params.prompt}\n${instructions}` : params.prompt,
+      ...(params.formatId === 'thpt-math' && instructions ? { teacherInstruction: instructions } : {}),
+    });
   };
   const regenerateQuestion = async (
     sessionId: string, jobId: string, question: QuestionItem, instruction: string, workspaceId?: string,
@@ -394,7 +399,7 @@ export const App: React.FC = () => {
                   <details className="canvas-source-warnings">
                     <summary>
                       <AlertTriangle size={14} aria-hidden="true" />
-                      <span>Cảnh báo cần kiểm tra ({active.package.warnings.length})</span>
+                      <span>Lưu ý khi rà soát đề ({active.package.warnings.length})</span>
                     </summary>
                     <div className="canvas-source-warnings-body">
                       {active.package.warnings.map((warning, i) => (

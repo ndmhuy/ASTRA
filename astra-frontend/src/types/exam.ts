@@ -127,6 +127,7 @@ export interface ExamHistory {
 export interface ExamRequestParams {
   subject: Subject; grade: number; examType: ExamType; durationMinutes: number;
   itemCount: number; prompt: string; uploadedFiles: string[];
+  teacherInstruction?: string;
   formatId?: string; formatVersion?: string; clientRequestId?: string;
 }
 export interface GenerationProgress {

@@ -17,6 +17,7 @@ from exam_baseline.providers.chat_completions import ChatCompletionsProvider
 from exam_baseline.thpt import contract_artifacts
 from exam_baseline.thpt.agents import QUESTION_FORMAT, Agent, IllustratorAgent, SolverAgent
 from exam_baseline.thpt.content import choice_latex
+from exam_baseline.thpt.mas_input import math_request, prepare_math_plan
 from exam_baseline.thpt.models import Illustrations, Question, Request
 from exam_baseline.thpt.orchestrator import Orchestrator, compare_answer
 from exam_baseline.thpt.planner import plan_request_from_prompt
@@ -27,7 +28,7 @@ from exam_baseline.thpt.rag import (
     retrieval_matrix,
 )
 from exam_baseline.thpt.rendering import render, student_view
-from exam_baseline.thpt.runtime import ContractError
+from exam_baseline.thpt.runtime import ContractError, RecordingProvider
 from exam_baseline.thpt.short_answers import MAX_ANSWER_CHARACTERS, validate_short_answer_precision
 from exam_baseline.thpt.subject_workflow import (
     SUBJECT_COMMON,
@@ -47,7 +48,7 @@ from exam_baseline.thpt.subjects import (
     subject_request,
 )
 from exam_baseline.thpt.visuals import visual_issues
-from exam_baseline.ui.contracts import ExamGenerateRequest, SubjectGenerateRequest
+from exam_baseline.ui.contracts import ExamGenerateRequest, GenerateRequest, SubjectGenerateRequest
 from exam_baseline.ui.demo import regenerate_demo_question, run_demo_job
 from exam_baseline.ui.errors import UiError
 from exam_baseline.ui.exam_source import SOURCE_NAME
@@ -110,6 +111,7 @@ VACT_GROUP_INSTRUCTIONS = {
 }
 
 _ROLE_LABELS = {
+    "planner": "Đang lập ma trận theo yêu cầu của giáo viên",
     "rag": "Đang tra cứu tài liệu tham khảo",
     "composer": "Đang soạn câu hỏi",
     "illustrator": "Đang vẽ hình minh họa",
@@ -214,6 +216,11 @@ def _question_verification(raw, solved, edited):
         notes[check] = "Solver báo câu hỏi có nhiều cách hiểu."
     elif solved and solved["status"] == "unsolvable":
         notes[check] = "Solver chưa giải được câu hỏi từ dữ kiện hiện có."
+    elif check == "needs_recheck" and solved and solved["status"] == "solved":
+        notes[check] = (
+            "Kết quả giải độc lập có định dạng chưa đối chiếu tự động được. "
+            "Hãy so sánh hai đáp án và kiểm tra yêu cầu ghi kết quả."
+        )
     if raw["id"].startswith("P3-"):
         try:
             validate_short_answer_precision(raw["stem"], raw["answer"])
@@ -401,7 +408,7 @@ class JobManager:
         ).to_dict()
 
     @asynccontextmanager
-    async def provider_scope(self):
+    async def provider_scope(self, *, planning=False):
         if self.providers is not None:
             yield self.providers
             return
@@ -412,21 +419,42 @@ class JobManager:
                 "Vui lòng kiểm tra cấu hình hoặc chạy chế độ Demo.",
                 503,
             )
-        settings = self.settings.for_agent_generation()
+        settings = (
+            self.settings.model_copy(
+                update={
+                    "response_format": "json_object",
+                    "structured_output_strict": False,
+                    "schema_as_tool": False,
+                }
+            )
+            if planning
+            else self.settings.for_agent_generation()
+        )
         async with httpx.AsyncClient(follow_redirects=False) as client:
             provider = ChatCompletionsProvider(settings, client)
             yield dict.fromkeys(("composer", "illustrator", "solver", "reviewer"), provider)
 
     async def start(self, payload: ExamGenerateRequest, key: str, workspace_id: str | None = None):
-        request, matrix = await asyncio.to_thread(resolve_request, payload, settings=self.settings)
+        if isinstance(payload, GenerateRequest) and payload.needs_math_plan:
+            request, matrix = None, None
+        else:
+            request, matrix = await asyncio.to_thread(
+                resolve_request, payload, settings=self.settings
+            )
         data, created = self.store.create(
             key,
-            fingerprint(payload.model_dump()),
+            fingerprint(
+                payload.model_dump(
+                    exclude={"teacherInstruction"}
+                    if not getattr(payload, "teacherInstruction", "")
+                    else set()
+                )
+            ),
             {
                 "status": "queued",
                 "createdAt": now(),
                 "request": payload.model_dump(),
-                "nativeRequest": request.model_dump(),
+                "nativeRequest": request.model_dump() if request else None,
                 "matrix": matrix,
                 "progress": {
                     "stage": 0,
@@ -450,6 +478,7 @@ class JobManager:
     def progress(self, job_id, role, part=None, revision=1):
         job = self.get(job_id)
         stage, percent = {
+            "planner": (1, 1),
             "rag": (1, 5),
             "composer": (2, 20),
             "illustrator": (3, 50),
@@ -471,6 +500,32 @@ class JobManager:
                 job = self.get(job_id)
                 is_vact = _is_vact(job)
                 demo_active = self.runner is None and self.settings.demo_mode
+                instruction = job["request"].get("teacherInstruction")
+                if instruction and job["nativeRequest"] is None:
+                    self.progress(job_id, "planner")
+                    job = self.get(job_id)
+                    if demo_active:
+                        raise UiError(
+                            "mas_unavailable", "Hãy bật chế độ AI để tạo đề theo yêu cầu.", 422
+                        )
+                    async with self.provider_scope(planning=True) as providers:
+                        planner_provider = RecordingProvider(
+                            providers["composer"],
+                            "planner",
+                            1,
+                            [],
+                            self.root / "_planner" / job_id,
+                            retries=self.settings.planner_provider_retries,
+                        )
+                        result = await prepare_math_plan(
+                            instruction, planner_provider, self.settings
+                        )
+                    job["masPlan"] = result
+                    self.store.save(job)
+                    planned = math_request(result, instruction)
+                    job["nativeRequest"] = planned.model_dump()
+                    job["matrix"] = retrieval_matrix(planned)
+                    self.store.save(job)
                 if is_vact:
                     job["retrieval"] = None
                     self.store.save(job)
@@ -605,6 +660,15 @@ class JobManager:
         except Exception as exc:
             if isinstance(exc, UiError):
                 error = exc
+            elif isinstance(exc, (RagHandoffError, Gap)):
+                details = (
+                    exc.gaps
+                    if isinstance(exc, RagHandoffError)
+                    else [{"code": exc.code, "message": str(exc)}]
+                )
+                error = UiError(
+                    "retrieval_gap", "Chưa đủ tài liệu cho phạm vi yêu cầu.", 422, details
+                )
             elif isinstance(exc, ContractError):
                 error = UiError(
                     "invalid_contract",
@@ -961,11 +1025,16 @@ class JobManager:
                     ),
                 }
             )
-        warnings = [
-            dict(warning, questionId=c["question_id"])
-            for c in retrieval.get("question_contexts", [])
-            for warning in c.get("warnings", [])
-        ]
+        warnings = []
+        for context in retrieval.get("question_contexts", []):
+            evidence_warnings = context.get("warnings", [])
+            codes = {warning["code"] for warning in evidence_warnings}
+            for warning in evidence_warnings:
+                if warning["code"] == "missing_ready_examples":
+                    if "curriculum_only_for_level" in codes:
+                        continue
+                    warning = {**warning, "message": "Chưa có câu mẫu cho chủ đề ở phần này."}
+                warnings.append(dict(warning, questionId=context["question_id"]))
         if format_id:
             warnings.append(
                 {
@@ -1004,7 +1073,17 @@ class JobManager:
             "gaps": retrieval.get("gaps", []),
             "provenance": {"formatSource": SOURCE}
             if format_id
-            else retrieval.get("release_info", {}),
+            else {
+                **retrieval.get("release_info", {}),
+                **(
+                    {
+                        "masPlanRevision": job["masPlan"]["plan"]["plan_revision"],
+                        "masPlanGaps": job["masPlan"]["gaps"],
+                    }
+                    if job.get("masPlan")
+                    else {}
+                ),
+            },
             **(
                 {"studentPaper": self._contract_file(job, contract_artifacts.STUDENT)[1]}
                 if job.get("contractExport")

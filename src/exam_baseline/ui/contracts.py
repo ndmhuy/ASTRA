@@ -30,9 +30,14 @@ class GenerateRequest(Model):
     examType: Literal["THPT_STANDARD"]
     durationMinutes: Literal[90]
     itemCount: Literal[22]
+    teacherInstruction: str = Field(default="", max_length=10000)
     prompt: str = Field(default="", max_length=10000)
     uploadedFiles: list[str] = Field(default_factory=list, max_length=0)
     slots: list[Slot] | None = None
+
+    @property
+    def needs_math_plan(self) -> bool:
+        return bool(self.teacherInstruction.strip()) and self.slots is None
 
     @model_validator(mode="after")
     def validate_slots(self):

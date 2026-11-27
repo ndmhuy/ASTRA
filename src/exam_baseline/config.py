@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     api_key: SecretStr | None = None
     base_url: str = "https://api.openai.com/v1"
     timeout_seconds: float = Field(default=90, gt=0, allow_inf_nan=False)
+    planner_provider_retries: int = Field(default=1, ge=0, le=3)
     max_output_tokens: int = Field(default=8192, gt=0)
     token_limit_field: Literal["max_completion_tokens", "max_tokens"] = "max_completion_tokens"
     response_format: Literal["json_object", "json_schema", "text"] = "json_object"
