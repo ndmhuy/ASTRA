@@ -1,10 +1,12 @@
-"""Convert an approved student paper to editable Word content."""
+"""Convert an approved student paper to Word or Markdown."""
 
 import re
 import subprocess
 from io import BytesIO
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from typing import Literal
+from zipfile import ZIP_DEFLATED, ZipFile
 
 from docx import Document
 from docx.shared import Cm, Pt, RGBColor
@@ -29,7 +31,7 @@ _BLANK = re.compile(r"\\underline\{\\hspace\{[0-3](?:\.\d{1,2})?cm\}\}")
 _QUESTION_CONTINUES = re.compile(r"^(?:Câu \d+\.|[A-C]\. |[a-c]\) )")
 
 
-def _student_latex(paper: dict, figures: dict) -> str:
+def _student_latex(paper: dict, figures: dict, *, markdown: bool) -> str:
     title = content_latex(paper["title"])
     body = [
         r"\documentclass{article}",
@@ -37,7 +39,7 @@ def _student_latex(paper: dict, figures: dict) -> str:
         rf"\title{{{title}}}",
         r"\date{}",
         r"\begin{document}",
-        r"\maketitle",
+        rf"\section*{{{title}}}" if markdown else r"\maketitle",
         f"Thời gian: {paper['durationMinutes']} phút",
         "Họ và tên: .......................................................... "
         "Lớp: ....................",
@@ -47,7 +49,8 @@ def _student_latex(paper: dict, figures: dict) -> str:
     for question in paper["questions"]:
         part = question["part"]
         if part != previous_part:
-            body.append(r"\section*{" + _HEADINGS[part] + "}")
+            heading = r"\subsection*{" if markdown else r"\section*{"
+            body.append(heading + _HEADINGS[part] + "}")
             if part in SECTION_SPEC:
                 body.append(content_latex(SECTION_SPEC[part][2]))
         instruction = question.get("groupInstruction")
@@ -87,9 +90,13 @@ def _student_latex(paper: dict, figures: dict) -> str:
     return _BLANK.sub(lambda _: r"\_\_\_\_\_\_\_\_", "\n\n".join([*body, r"\end{document}"]))
 
 
-def export_student_word(paper, job, *, compiler, timeout, cache_directory: Path) -> bytes:
+def export_student_document(
+    paper, job, format: Literal["docx", "md"], *, compiler, timeout, cache_directory: Path
+) -> tuple[str, str, bytes]:
+    markdown = format == "md"
+    writer = "markdown+tex_math_dollars-raw_html-raw_tex-link_attributes" if markdown else "docx"
     # Keep every input and output private to this request, including all figure asset paths.
-    with TemporaryDirectory(prefix="astra-word-") as temp:
+    with TemporaryDirectory(prefix="astra-export-") as temp:
         directory = Path(temp)
         figures = render_assets(
             directory,
@@ -100,15 +107,16 @@ def export_student_word(paper, job, *, compiler, timeout, cache_directory: Path)
             cache_directory=cache_directory,
         )
         source = directory / "paper.tex"
-        source.write_text(_student_latex(paper, figures), encoding="utf-8")
-        output = directory / "de_thi.docx"
+        source.write_text(_student_latex(paper, figures, markdown=markdown), encoding="utf-8")
+        output = directory / f"de_thi.{format}"
         subprocess.run(
             [
                 get_pandoc_path(),
                 "-f",
                 "latex",
                 "-t",
-                "docx",
+                writer,
+                "--wrap=none",
                 "--fail-if-warnings",
                 "-o",
                 output.name,
@@ -119,6 +127,16 @@ def export_student_word(paper, job, *, compiler, timeout, cache_directory: Path)
             check=True,
             timeout=timeout,
         )
+        if markdown:
+            if not figures:
+                return output.name, "text/markdown; charset=utf-8", output.read_bytes()
+            result = BytesIO()
+            with ZipFile(result, "w", compression=ZIP_DEFLATED) as archive:
+                archive.write(output, output.name)
+                for path in sorted({figure["path"] for figure in figures.values()}):
+                    archive.write(directory / path, path)
+            return "de_thi.zip", "application/zip", result.getvalue()
+
         document = Document(output)
         for section in document.sections:
             section.page_width = Cm(21)
@@ -135,4 +153,5 @@ def export_student_word(paper, job, *, compiler, timeout, cache_directory: Path)
                 paragraph.paragraph_format.keep_with_next = True
         result = BytesIO()
         document.save(result)
-        return result.getvalue()
+        media = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        return output.name, media, result.getvalue()

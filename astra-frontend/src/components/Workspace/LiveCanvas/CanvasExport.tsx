@@ -1,12 +1,13 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { Download } from 'lucide-react';
 
-export type CanvasExportFormat = 'docx' | 'pdf' | 'tex' | 'json';
+export type CanvasExportFormat = 'docx' | 'pdf' | 'tex' | 'json' | 'md';
 
 const OPTIONS: ReadonlyArray<{ format: CanvasExportFormat; label: string }> = [
   { format: 'docx', label: 'Word (.docx)' },
   { format: 'pdf', label: 'PDF (.pdf)' },
   { format: 'tex', label: 'LaTeX (.tex)' },
+  { format: 'md', label: 'Markdown (.md)' },
   { format: 'json', label: 'Đáp án (.json)' },
 ];
 
@@ -17,14 +18,15 @@ export function CanvasExport({ approved, pdfReady, onExport }: {
 }) {
   const [open, setOpen] = useState(false);
   const [pending, setPending] = useState<CanvasExportFormat>();
-  const root = useRef<HTMLDivElement>(null);
+  const popup = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
   const popupId = useId();
 
   useEffect(() => {
     if (!open) return;
     function handleOutside(event: PointerEvent) {
-      if (!root.current?.contains(event.target as Node)) setOpen(false);
+      const target = event.target as Node;
+      if (!trigger.current?.contains(target) && !popup.current?.contains(target)) setOpen(false);
     }
     function handleEscape(event: KeyboardEvent) {
       if (event.key !== 'Escape') return;
@@ -44,17 +46,18 @@ export function CanvasExport({ approved, pdfReady, onExport }: {
     try {
       if (await onExport(format)) {
         setOpen(false);
-        if (root.current?.contains(document.activeElement)) trigger.current?.focus();
+        if (popup.current?.contains(document.activeElement)) trigger.current?.focus();
       }
     } finally {
       setPending(undefined);
     }
   }
 
-  return <div ref={root} className="canvas-export">
-    <button ref={trigger} type="button" aria-expanded={open} aria-controls={open ? popupId : undefined}
+  return <>
+    <button ref={trigger} className="canvas-export-trigger" type="button"
+      aria-expanded={open} aria-controls={open ? popupId : undefined}
       onClick={() => setOpen(!open)}><Download size={14} aria-hidden="true" />Xuất</button>
-    {open && <div id={popupId} className="canvas-export-popup" role="group" aria-label="Định dạng xuất đề">
+    {open && <div ref={popup} id={popupId} className="canvas-export-popup" role="group" aria-label="Định dạng xuất đề">
       {!approved && <p>Cần phê duyệt đề trước khi xuất.</p>}
       {OPTIONS.map(({ format, label }) => <button key={format} type="button"
         disabled={!approved || Boolean(pending) || (format === 'pdf' && !pdfReady)}
@@ -62,5 +65,5 @@ export function CanvasExport({ approved, pdfReady, onExport }: {
         {pending === format ? 'Đang tạo tệp…' : label}
       </button>)}
     </div>}
-  </div>;
+  </>;
 }

@@ -480,10 +480,15 @@ export const App: React.FC = () => {
       setUndo({ sessionId, jobId, previousRevision, revision: regenerated.examRevision });
     }
   };
-  const exportFile = async (type: 'STUDENT_EXAM' | 'TEACHER_KEY', format: 'tex' | 'pdf' | 'json' | 'docx') => {
+  const exportFile = async (type: 'STUDENT_EXAM' | 'TEACHER_KEY', format: 'tex' | 'pdf' | 'json' | 'docx' | 'md') => {
     const session = active;
     if (!session?.jobId) return false;
-    try { await examService.downloadExport(session.jobId, type, format); return true; }
+    try {
+      await examService.downloadExport(
+        session.jobId, type, format, session.meta?.title || session.package?.title || session.title,
+      );
+      return true;
+    }
     catch (error) { await store.handleActionError(session.id, error); return false; }
   };
   const approve = async () => {

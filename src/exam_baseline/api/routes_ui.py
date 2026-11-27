@@ -347,7 +347,7 @@ async def export(
     request: Request,
     job_id: UUID,
     type: Literal["STUDENT_EXAM", "TEACHER_KEY"],
-    format: Literal["tex", "json", "pdf", "docx"],
+    format: Literal["tex", "json", "pdf", "docx", "md"],
 ):
     path, media_type, content = await request.app.state.ui_jobs.export(str(job_id), type, format)
     if content is not None:
