@@ -43,7 +43,12 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, index, onE
           <span><strong>Cảnh báo lệch đáp án.</strong> Đáp án dự kiến khác kết quả giải độc lập. Thầy cô kiểm tra và sửa câu này nếu cần trước khi duyệt đề.</span>
         </p>
       )}
-      {question.drawingLatex && <details className="question-drawing-details"><summary>Hình minh họa (xem trực quan ở mục Xem trước PDF)</summary><pre>{question.drawingLatex}</pre></details>}
+      {question.figures?.map(figure => (
+        figure.mimeType === 'application/pdf'
+          ? <iframe key={figure.url} loading="lazy" title={figure.alt} src={figure.url} width="100%" height="240" />
+          : <img key={figure.url} className="contract-question-figure" loading="lazy" alt={figure.alt} src={figure.url} />
+      ))}
+      {!question.figures?.length && question.drawingLatex && <details className="question-drawing-details"><summary>Hình minh họa (xem trực quan ở mục Xem trước PDF)</summary><pre>{question.drawingLatex}</pre></details>}
       {(!question.questionType || question.questionType === 'mcq') && (
         <div className={`question-choices ${getChoiceGridClass(question.choices)}`}>
           {(['A', 'B', 'C', 'D'] as const).map(key => (
@@ -74,17 +79,16 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, index, onE
           ))}
         </div>
       )}
-      {question.questionType === 'short_answer' && (
+      {question.questionType === 'short_answer' && (review || !question.responseKind) && (
         <div className="question-short-answer">
           <span>Đáp án:</span>
           {review ? (
             <strong className="short-answer-value">{question.key}</strong>
           ) : (
-            <span className="short-answer-boxes" aria-label="4 ô điền đáp án">
-              <span className="short-answer-cell" aria-hidden="true" />
-              <span className="short-answer-cell" aria-hidden="true" />
-              <span className="short-answer-cell" aria-hidden="true" />
-              <span className="short-answer-cell" aria-hidden="true" />
+            <span className="short-answer-boxes" aria-label={`${question.maxAnswerCharacters ?? 5} ô điền đáp án`}>
+              {Array.from({ length: question.maxAnswerCharacters ?? 5 }, (_, index) => (
+                <span key={index} className="short-answer-cell" aria-hidden="true" />
+              ))}
             </span>
           )}
         </div>

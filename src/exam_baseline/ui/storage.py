@@ -527,7 +527,7 @@ class JobStore:
                 (job_id, self._snapshot(job), source),
             )
             root = self.path.parent / job_id
-            root.mkdir()
+            root.mkdir(exist_ok=bool(job.get("contractExport")))
             committed_hash = None
             try:
                 publish_source(root, source)

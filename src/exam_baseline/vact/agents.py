@@ -124,6 +124,42 @@ class IllustratorAgent(BaseIllustrator):
     wire_schema = staticmethod(compact_schema)
 
 
+class RepairComposer(VactAgent):
+    role = "composer"
+    response = Question
+    instruction = """Revise only the current question according to teacher_instruction.
+Keep its ID, passage_id, section, group kind, language and slot objective. The shared
+passage, table and drawings from other questions are fixed student data. Use their
+facts and units without changing them or requiring a new shared passage. For English
+error identification, preserve exactly one marker each of [A], [B], [C], and [D].
+Keep four distinct options and exactly one correct answer with a private solution.
+Keep the existing illustration_request unless the requested change needs a new diagram.
+When keep_drawing is true, preserve illustration_request exactly because others use the drawing.
+Do not include the answer in the stem or change unrelated content."""
+
+    def contract(self, data):
+        original = data["question"]
+
+        @model_validator(mode="after")
+        def check_binding(question):
+            if (question.id, question.passage_id) != (original["id"], original["passage_id"]):
+                raise ValueError("Keep the original question ID and passage_id")
+            if (
+                data["keep_drawing"]
+                and question.illustration_request != original["illustration_request"]
+            ):
+                raise ValueError("Keep the original illustration_request for the shared diagram")
+            if data["group_kind"] == "vact_error_id" and any(
+                question.stem.count(f"[{letter}]") != 1 for letter in "ABCD"
+            ):
+                raise ValueError("Use one [A], [B], [C], and [D] error marker in the stem")
+            return question
+
+        return create_model(
+            "VactQuestionRepair", __base__=Question, __validators__={"check_binding": check_binding}
+        )
+
+
 class SolverAgent(VactAgent):
     role = "solver"
     common = COMMON

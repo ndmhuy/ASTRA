@@ -119,6 +119,25 @@ def test_vact_catalog_evaluate_generate_package_edit_approve_and_export(tmp_path
     settings = Settings.for_offline().model_copy(
         update={"latex_cache_dir": Path(tmp_path) / "_tex-cache"}
     )
+    calls = {"composer": [], "solver": []}
+
+    class Composer:
+        async def complete(self, prompt):
+            data = json.loads(prompt.user)
+            calls["composer"].append(data)
+            assert data["question"]["id"] == data["slot"]["id"] == "q97"
+            assert data["group_kind"] == "data_set"
+            assert data["passage"]["table"]["columns"] == ["Năm", "Thị phần"]
+            question = {
+                **data["question"],
+                "answer": "B",
+                "stem": "Thị phần tăng bao nhiêu điểm phần trăm?",
+                "choices": {"A": "$10$", "B": "$15$", "C": "$20$", "D": "$35$"},
+                "solution": "Thị phần tăng $35-20=15$ điểm phần trăm.",
+            }
+            if data["teacher_instruction"] == "Đổi đoạn đọc":
+                question["passage_id"] = "g100_102"
+            return Completion(text=json.dumps(question), model="offline-vact-composer")
 
     class Solver:
         name = model = "offline-vact-solver"
@@ -126,6 +145,7 @@ def test_vact_catalog_evaluate_generate_package_edit_approve_and_export(tmp_path
 
         async def complete(self, prompt):
             data = json.loads(prompt.user)
+            calls["solver"].append(data)
             assert data["question_ids"] == ["q97"]
             assert len(data["questions"]) == 1
             assert data["questions"][0]["passage_id"] == "g97_99"
@@ -143,7 +163,7 @@ def test_vact_catalog_evaluate_generate_package_edit_approve_and_export(tmp_path
         settings,
         ui_output_root=tmp_path,
         ui_runner=_offline_vact_runner,
-        pipeline_providers={"solver": Solver()},
+        pipeline_providers={"composer": Composer(), "solver": Solver()},
     )
     with TestClient(app) as client:
         catalog = client.get("/api/exam-formats").json()["formats"]
@@ -202,18 +222,33 @@ def test_vact_catalog_evaluate_generate_package_edit_approve_and_export(tmp_path
         assert checked.status_code == 200, checked.text
         assert checked.json()["questions"][96]["answerCheck"] == "mismatched"
 
+        regenerate_url = f"/api/exams/{job_id}/questions/97/regenerate"
+        request_data = {"revision": edited_pkg["revision"], "stableId": "q97"}
+        wrong_target = client.post(regenerate_url, json={**request_data, "stableId": "q98"})
+        assert wrong_target.json()["error"]["code"] == "invalid_question_id"
+        assert not calls["composer"]
+        invalid = client.post(regenerate_url, json={**request_data, "instruction": "Đổi đoạn đọc"})
+        assert invalid.status_code == 422, invalid.text
+        assert len(calls["composer"]) == 2 and len(calls["solver"]) == 1
         regen = client.post(
-            f"/api/exams/{job_id}/questions/1/regenerate",
-            json={"revision": edited_pkg["revision"], "instruction": "Đổi câu hỏi"},
+            regenerate_url,
+            json={**request_data, "instruction": "Nêu rõ đơn vị cần tính."},
         )
-        assert regen.status_code == 422
-        assert regen.json()["error"]["code"] == "unsupported_for_format"
+        assert regen.status_code == 200, regen.text
+        regenerated = regen.json()
+        assert regenerated["revision"] == edited_pkg["revision"] + 1
+        assert regenerated["passages"] == edited_pkg["passages"]
+        assert regenerated["questions"][96]["passageId"] == "g97_99"
+        assert regenerated["questions"][96]["answerCheck"] == "matched"
+        assert regenerated["questions"][97]["stem"] == edited_pkg["questions"][97]["stem"]
+        assert regenerated["questions"][0]["drawingLatex"] == pkg["questions"][0]["drawingLatex"]
+        assert len(calls["composer"]) == 3 and len(calls["solver"]) == 2
 
         approved = client.post(
             f"/api/exams/{job_id}/approve",
             json={
-                "revision": edited_pkg["revision"],
-                "contentHash": edited_pkg["contentHash"],
+                "revision": regenerated["revision"],
+                "contentHash": regenerated["contentHash"],
                 "reviewer": "fixture-teacher",
             },
         )

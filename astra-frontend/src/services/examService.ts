@@ -20,6 +20,7 @@ import type {
 } from '../types/exam';
 import type { ExamFormat, ExportFormat } from '../types/exam';
 import { humanizeErrorMessage } from '../utils/userMessages.ts';
+import { adaptStudentPaper } from './contractPaper.ts';
 
 export interface WorkspaceDraft {
   schema_version: 1;
@@ -59,7 +60,7 @@ export interface IExamService {
   startGeneration(params: ExamRequestParams, workspaceId?: string): Promise<{ jobId: string }>;
   onProgress(jobId: string, callback: (progress: GenerationProgress) => void): () => void;
   getExamPackage(jobId: string): Promise<ExamPackage>;
-  regenerateQuestion(jobId: string, questionId: number, instruction?: string, revision?: number, workspaceId?: string): Promise<QuestionItem>;
+  regenerateQuestion(jobId: string, questionId: number, instruction?: string, revision?: number, workspaceId?: string, stableId?: string): Promise<QuestionItem>;
   updateQuestion(jobId: string, updatedQuestion: QuestionItem, workspaceId?: string): Promise<void>;
   verifyQuestion?(jobId: string, questionId: number, revision: number): Promise<void>;
   downloadExport(jobId: string, type: 'STUDENT_EXAM' | 'TEACHER_KEY' | 'MATRIX', format: ExportFormat): Promise<void>;
@@ -610,7 +611,9 @@ export class ApiExamService implements IExamService {
   readonly history: ExamHistory = {
     list: (jobId, workspaceId) => requestJson(workspaceId
       ? `${this.baseUrl}/workspaces/${workspaceId}/versions` : `${this.baseUrl}/exams/${jobId}/versions`),
-    read: (jobId, version) => requestJson(`${this.baseUrl}/exams/${jobId}/versions/${version}`),
+    read: async (jobId, version) => adaptStudentPaper(
+      await requestJson<ExamPackage>(`${this.baseUrl}/exams/${jobId}/versions/${version}`), this.baseUrl,
+    ),
     restore: async (jobId, version, revision, workspaceId, targetJobId) => {
       const path = workspaceId ? `workspaces/${workspaceId}/versions/restore` : `exams/${jobId}/versions/${version}/restore`;
       const pkg = await requestJson<ExamPackage>(`${this.baseUrl}/${path}`, {
@@ -619,7 +622,7 @@ export class ApiExamService implements IExamService {
         body: JSON.stringify(workspaceId
           ? { revision, jobId, targetJobId: targetJobId ?? jobId, targetRevision: version } : { revision }),
       });
-      return { ...pkg, preview: normalizePreview(pkg.preview, this.baseUrl) };
+      return { ...adaptStudentPaper(pkg, this.baseUrl), preview: normalizePreview(pkg.preview, this.baseUrl) };
     },
   };
   readonly workspaceLibrary: WorkspaceLibrary = {
@@ -631,7 +634,7 @@ export class ApiExamService implements IExamService {
     }),
     undoChange: (id, jobId, changeId, revision) => this.changeQuestion(
       `workspaces/${id}/changes/${jobId}/${changeId}/undo`, 'POST', { revision },
-    ).then(pkg => ({ ...pkg, preview: normalizePreview(pkg.preview, this.baseUrl) })),
+    ).then(pkg => ({ ...adaptStudentPaper(pkg, this.baseUrl), preview: normalizePreview(pkg.preview, this.baseUrl) })),
     save: (id, draft, revision) => requestJson(`${this.baseUrl}/workspaces/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -694,18 +697,18 @@ export class ApiExamService implements IExamService {
   async getExamPackage(jobId: string): Promise<ExamPackage> {
     const pkg = await requestJson<ExamPackage>(`${this.baseUrl}/exams/${jobId}`);
     return {
-      ...pkg,
+      ...adaptStudentPaper(pkg, this.baseUrl),
       preview: normalizePreview(pkg.preview, this.baseUrl),
     };
   }
 
-  async regenerateQuestion(jobId: string, questionId: number, instruction?: string, revision?: number, workspaceId?: string): Promise<QuestionItem> {
+  async regenerateQuestion(jobId: string, questionId: number, instruction?: string, revision?: number, workspaceId?: string, stableId?: string): Promise<QuestionItem> {
     const targetRevision = revision ?? (await this.getExamPackage(jobId)).revision;
     const query = workspaceId ? `?workspace_id=${encodeURIComponent(workspaceId)}` : '';
     const updated = await this.changeQuestion(`exams/${jobId}/questions/${questionId}/regenerate${query}`, 'POST', {
-      instruction: instruction || 'Sửa câu hỏi và kiểm tra lại lời giải.', revision: targetRevision,
+      instruction: instruction || 'Sửa câu hỏi và kiểm tra lại lời giải.', revision: targetRevision, stableId,
     });
-    return updated.questions.find(question => question.id === questionId)!;
+    return adaptStudentPaper(updated, this.baseUrl).questions.find(question => question.id === questionId)!;
   }
 
   async updateQuestion(jobId: string, updatedQuestion: QuestionItem, workspaceId?: string): Promise<void> {
@@ -748,7 +751,7 @@ export class ApiExamService implements IExamService {
       body: JSON.stringify({ revision: pkg.revision, contentHash: pkg.contentHash, reviewer: 'local-teacher' })
     });
     return {
-      ...updated,
+      ...adaptStudentPaper(updated, this.baseUrl),
       preview: normalizePreview(updated.preview, this.baseUrl),
     };
   }
@@ -807,7 +810,8 @@ export class ApiExamService implements IExamService {
     }
     const url = URL.createObjectURL(await response.blob());
     const link = document.createElement('a'); link.href = url;
-    link.download = type === 'STUDENT_EXAM' ? `de_thi.${format}` : `dap_an.${format}`;
+    const filename = response.headers.get('content-disposition')?.match(/filename="?([a-zA-Z0-9_.-]+)/)?.[1];
+    link.download = filename || (type === 'STUDENT_EXAM' ? `de_thi.${format}` : `dap_an.${format}`);
     link.click(); URL.revokeObjectURL(url);
   }
 }

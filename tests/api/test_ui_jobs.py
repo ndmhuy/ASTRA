@@ -196,7 +196,7 @@ def test_workspaces_share_drafts_link_existing_jobs_and_reject_stale_saves(tmp_p
         assert len(messages) == 4
         assert messages[1]["examVersion"]["revision"] == revision + 1
         assert messages[1]["changeId"] == key["Idempotency-Key"]
-        assert messages[1]["content"] == "[Câu 1] Đã cập nhật đề bài."
+        assert messages[1]["content"] == "[Phần I, câu 1] Đã cập nhật đề bài."
         assert "cập nhật mới hơn" in messages[3]["content"]
         assert client.get(f"/api/exams/{job}").json()["revision"] == revision + 1
         second_key = str(uuid4())

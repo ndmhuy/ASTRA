@@ -33,6 +33,7 @@ def question(slot):
             ]
         )
     else:
+        data["stem"] += " Ghi kết quả chính xác, không làm tròn."
         data["answer"] = str(n + 1)
     return Question.model_validate(data)
 

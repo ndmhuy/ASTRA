@@ -159,3 +159,4 @@ class EditRequest(RevisionRequest):
 
 class RegenerateRequest(RevisionRequest):
     instruction: str = Field(default="Sửa câu hỏi và kiểm tra lại lời giải.", max_length=4000)
+    stableId: str | None = Field(default=None, pattern=r"^(?:P[123]-[1-9][0-9]?|q[1-9][0-9]{0,2})$")
