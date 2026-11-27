@@ -12,6 +12,8 @@ Current phase / exact next action: real keyless Chat vertical slice and mounted 
 
 ## Current live checkpoint — 2026-11-27
 
+- Latest owner follow-up explicitly authorizes 20 additional manual calls. Actual consumed count reached 12 before this update. Deployment b5fe6c1f-cafe-4583-ad72-309ba8c38150 preserves used=12 and raises total session/global/Agent ceilings to 32, remaining=20, expiry 05:40 UTC / 12:40 Asia/Bangkok. Actual metadata/health verified; no update-time inference. Worker maximum validation and regression now support 32 and reject 33; TypeScript/22 Worker groups passed. This supersedes earlier four-attempt/manual-window limits, not the historical automated evidence. MAS remains disabled.
+
 - Owner explicitly requested reopening the four unused manual attempts after expiry. Deployment 6e8c5f3d-a116-4c94-8ae1-40ad14d685f1 extends only expiry to 05:05 UTC / 12:05 Asia/Bangkok, same session used=8, limit=12, remaining=4. Health/config verified; no inference consumed. This is an ASTRA allowance, not Gemini quota. See NEXT_TASK.md for current window.
 
 - Deployed the existing Worker disabled first, verified both contracts/hash, existing Secret/Gateway/DO namespace and zero current-day consumption. Historical usage was preserved; UTC day differed from the historical two calls.

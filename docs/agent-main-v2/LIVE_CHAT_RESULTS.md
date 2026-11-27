@@ -2,6 +2,8 @@
 
 For the owner/team reviewing the existing Chat candidate. Authorization: [completion specification](LIVE_CHAT_COMPLETION_SPEC.md). Implementation d59294e. [Machine-readable live predictions](../../eval/agent-semantic/live-20261127.json) are separate from the unchanged 197-record/scenario oracle corpus. No fixture responses or business mocks were used in these real browser turns.
 
+Latest owner follow-up supersedes the original budget/windows: explicitly requested 20 additional manual calls. Actual preserved usage was 12; total session/global/Agent ceilings are now 32, leaving 20 at verification. Same session, expiry 2026-11-27 05:40 UTC / 12:40 Asia/Bangkok, deployment b5fe6c1f-cafe-4583-ad72-309ba8c38150. No new inference during configuration. Worker TypeScript and all 22 groups passed, including preservation of used=12 when granting 20 and rejection above the updated maximum 32. Prior acceptance data below remains historical; this is an ASTRA allowance, not Gemini's remaining quota.
+
 Owner follow-up: the initial 09:40 window expired with all four manual attempts unused. On explicit request, reopened until 2026-11-27 12:05 Asia/Bangkok / 05:05 UTC, deployment 6e8c5f3d-a116-4c94-8ae1-40ad14d685f1. Same session used=8/limit=12, remaining=4; no inference, reset or limit increase. This supersedes the initial window below. Four is ASTRA's configured allowance, not observed remaining Gemini quota.
 
 ## Infrastructure and accounting

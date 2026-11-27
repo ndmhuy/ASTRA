@@ -49,13 +49,24 @@ test("diagnostic session survives restart and UTC rollover without refreshing it
     ({mf}=runtime({...config,ASTRA_DIAGNOSTIC_LIMIT:"3"},path));
     ns=await mf.getDurableObjectNamespace("ADMISSION"); stub=ns.get(ns.idFromName("global-v1"));
     assert.equal((await (await stub.fetch("https://quota/status")).json()).diagnostic.remaining,1);
+    await mf.dispose();
+    ({mf}=runtime({...config,ASTRA_GLOBAL_DAILY:"32",ASTRA_AGENT_DAILY:"32",ASTRA_DIAGNOSTIC_LIMIT:"32"},path,"build-test/admission-harness.js"));
+    ns=await mf.getDurableObjectNamespace("ADMISSION"); stub=ns.get(ns.idFromName("global-v1"));
+    await stub.fetch("https://quota/seed",{method:"POST",body:JSON.stringify({
+      counter:{day:new Date().toISOString().slice(0,10),global:12,agent:12,mas:0},leases:[],rates:[],
+      sessions:{"acceptance-fixture":{used:12}},
+    })});
+    const extended=await (await stub.fetch("https://quota/status")).json();
+    assert.equal(extended.diagnostic.used,12); assert.equal(extended.remainingAttempts,20);
+    assert.equal((await reserve("owner-thirteenth")).status,200);
+    assert.equal((await (await stub.fetch("https://quota/status")).json()).diagnostic.used,13);
   } finally {await mf.dispose();await rm(path,{recursive:true,force:true});}
 });
 
 test("expired or oversized diagnostic allowances fail closed without upstream",async()=>{
   for(const override of [
     {ASTRA_DIAGNOSTIC_LIMIT:"8",ASTRA_DIAGNOSTIC_UNTIL:"2000-01-01T00:00:00Z"},
-    {ASTRA_DIAGNOSTIC_LIMIT:"13",ASTRA_DIAGNOSTIC_UNTIL:new Date(Date.now()+600000).toISOString()},
+    {ASTRA_DIAGNOSTIC_LIMIT:"33",ASTRA_DIAGNOSTIC_UNTIL:new Date(Date.now()+600000).toISOString()},
   ]) {
     const {mf,mock}=runtime({ASTRA_DIAGNOSTIC_SESSION:"acceptance-fixture",...override});
     try {assert.notEqual((await post(mf)).status,200);mock.assertNoPendingInterceptors();}

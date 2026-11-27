@@ -31,7 +31,7 @@ export interface Env {
 export function diagnosticPolicy(env: Env) {
   if (![env.ASTRA_DIAGNOSTIC_SESSION, env.ASTRA_DIAGNOSTIC_LIMIT, env.ASTRA_DIAGNOSTIC_UNTIL].some(value => value !== undefined)) return;
   const id = env.ASTRA_DIAGNOSTIC_SESSION ?? "";
-  const limit = bounded(env.ASTRA_DIAGNOSTIC_LIMIT, 12);
+  const limit = bounded(env.ASTRA_DIAGNOSTIC_LIMIT, 32);
   const until = Date.parse(env.ASTRA_DIAGNOSTIC_UNTIL ?? "");
   if (!/^[a-z0-9-]{1,64}$/.test(id) || !Number.isFinite(until)) throw new Error("configuration");
   return { id, limit, until };
