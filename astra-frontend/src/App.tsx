@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useSyncExternalStore, useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import { flushSync } from 'react-dom';
 import { meaningful, recentQuestion, redact, retrievedContext, searchSessions } from './agent/memory';
-import { interpretationUnavailable, interpret } from './agent/client';
+import { interpretationUnavailable, interpret, researchAdjacentTopic } from './agent/client';
 import { admit, execute, fastRoute, fold, mayDispatch, type Effect, type Runtime } from './agent/recipes';
 import { displayNumber, failure, inspectQuestion, previewText, resolveQuestion, sectionId, statusText, success } from './agent/examActions';
 import type { Decision, Intent } from './agent/contracts';
 import { contextualSubject, resolveSemantic } from './agent/semantics';
-import { familyFor, formatOverview, guidanceFor, mentionedFamilies, resolveIntake, shortSubjectIntake } from './agent/knowledge';
+import { familyFor, formatOverview, guidanceFor, listAdjacentTopics, matchAdjacentTopic, mentionedFamilies, resolveIntake, shortSubjectIntake } from './agent/knowledge';
 import { AlertCircle, AlertTriangle, LoaderCircle, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { WorkspaceStart } from './components/WorkspaceStart';
 import { AstraWelcome } from './components/AstraWelcome';
@@ -18,7 +18,7 @@ import { ChatHistory } from './components/Workspace/ChatPane/ChatHistory';
 import { ModernChatBar } from './components/Workspace/ChatPane/ModernChatBar';
 import { CanvasHeader } from './components/Workspace/LiveCanvas/CanvasHeader';
 import { ExamPaperView, type ExamCanvasViewMode, type ExamPaperControls } from './components/Workspace/LiveCanvas/ExamPaperView';
-import type { ChatMessage, ExamFormat, ExamRequestParams, QuestionItem } from './types/exam';
+import type { ChatMessage, ExamFormat, ExamRequestParams, QuestionItem, Subject } from './types/exam';
 import { QuestionEditor, type QuestionEditorControls } from './components/QuestionEditor';
 import { ApiError, evaluateExamFormat, examService, getExamFormats } from './services/examService';
 import { prepareParams, type Intake } from './agent/intake';
@@ -231,11 +231,75 @@ export const App: React.FC = () => {
     const origin = store.getSnapshot().find(s => s.id === id);
     const alive = () => !controller.signal.aborted && !!store.getSnapshot().find(s => s.id === id)?.messages.some(m => m.id === messageId);
     try {
-      if (options.searchWeb || options.attachedFiles.length) {
+      if (options.attachedFiles.length) {
         pending.current = null;
-        answer(options.attachedFiles.length
-          ? 'ASTRA chưa thể đọc tệp đính kèm. Thầy cô có thể dán phần nội dung cần dùng vào tin nhắn.'
-          : 'ASTRA chưa hỗ trợ tìm trên mạng. Thầy cô có thể gửi nội dung dạng văn bản.');
+        answer('ASTRA chưa thể đọc tệp đính kèm. Thầy cô có thể dán phần nội dung cần dùng vào tin nhắn.');
+        return;
+      }
+      const adjacentTopic = matchAdjacentTopic(content);
+      const earlyFast = fastRoute(content);
+      const isConfirmOrCancel = Boolean(earlyFast && 'confirm' in earlyFast);
+      const inDraftLikeState = !origin || ['draft', 'error'].includes(origin.status);
+      if (!isConfirmOrCancel && (options.searchWeb || (adjacentTopic && origin?.mode === 'custom' && inDraftLikeState && !editor))) {
+        pending.current = null;
+        if (!adjacentTopic) {
+          const supported = listAdjacentTopics().map(topic => topic.subject).join(', ');
+          answer(`Tính năng Tìm mạng hiện hỗ trợ các chủ đề lân cận: ${supported}. Thầy cô hãy nêu rõ một chủ đề trong danh sách (ví dụ: “Tìm đề SAT Math 10 câu”).`);
+          return;
+        }
+        const foldedContent = fold(content);
+        const countMatch = foldedContent.match(/\b(\d+)\s*cau\b/);
+        const minutesMatch = foldedContent.match(/\b(\d+)\s*phut\b/);
+        const requestedCount = countMatch ? Math.min(20, Math.max(4, Number(countMatch[1]))) : undefined;
+        const requestedMinutes = minutesMatch ? Math.min(120, Math.max(5, Number(minutesMatch[1]))) : undefined;
+        const research = await researchAdjacentTopic(
+          id,
+          messageId,
+          adjacentTopic.id,
+          redact(content),
+          { count: requestedCount, minutes: requestedMinutes },
+          controller.signal,
+        );
+        if (!alive() || runtime.binding() !== binding) return;
+        const sourceLines = research.sources.length
+          ? research.sources.slice(0, 5).map((source, idx) => `  ${idx + 1}. ${source.title} — ${source.url}`).join('\n')
+          : '  • Hiện chưa lấy được kết quả web trực tuyến; dùng mô tả cấu trúc tích hợp sẵn.';
+        const modeLabel = research.searchMode === 'live_web'
+          ? 'Đã tìm kiếm trên mạng'
+          : 'Dùng dữ liệu cấu trúc tích hợp sẵn (ngoại tuyến)';
+        const summary = `[${modeLabel}] ${research.topicLabel} · ${research.suggestedCount} câu · ${research.suggestedMinutes} phút\n${research.summary}\nNguồn tham khảo:\n${sourceLines}\nNếu đồng ý tạo đề này, thầy cô hãy nhắn “Xác nhận”.`;
+        flushSync(() => {
+          store.suggestTitle(id, `Đề luyện tập ${research.topicLabel}`, messageId, 4);
+        });
+        pending.current = {
+          workspaceId: id,
+          binding: runtimeRef.current!.binding(),
+          expires: Date.now() + CONFIRMATION_TTL_MS,
+          run: async () => {
+            const params: ExamRequestParams = {
+              formatId: research.formatId,
+              formatVersion: '1',
+              adjacentTopicId: research.adjacentTopicId,
+              subject: research.subject as Subject,
+              grade: 12,
+              examType: 'CUSTOM',
+              durationMinutes: research.suggestedMinutes,
+              itemCount: research.suggestedCount,
+              prompt: content,
+              uploadedFiles: [],
+              webSources: research.sources,
+            };
+            const job = await store.generate(id, params);
+            if (job) {
+              return { status: 'accepted', text: `Máy chủ đã nhận yêu cầu tạo đề ${research.topicLabel}. Thầy cô có thể theo dõi tiến độ ở khung bên phải.` };
+            }
+            const actual = store.getSnapshot().find(item => item.id === id);
+            return actual?.errorCode === 'network_error'
+              ? { status: 'unknown', text: 'Chưa rõ máy chủ đã nhận yêu cầu hay chưa. Chỉ thử lại với cùng thông số.' }
+              : { status: 'failed', text: actual?.error || 'Chưa nhận được mã công việc tạo đề.' };
+          },
+        };
+        answer(summary);
         return;
       }
       await Promise.resolve();

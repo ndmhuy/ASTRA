@@ -12,13 +12,14 @@ from uuid import uuid4
 import httpx
 from jsonschema import ValidationError
 
+from exam_baseline.agent.research import ADJACENT_TOPICS
 from exam_baseline.core.contracts import ProviderError
 from exam_baseline.providers.chat_completions import ChatCompletionsProvider
 from exam_baseline.providers.worker_mas import configured_worker_mas
 from exam_baseline.thpt import contract_artifacts
 from exam_baseline.thpt.agents import QUESTION_FORMAT, Agent, IllustratorAgent, SolverAgent
 from exam_baseline.thpt.content import choice_latex
-from exam_baseline.thpt.models import Illustrations, Question, Request
+from exam_baseline.thpt.models import Illustrations, Question, Request, Slot
 from exam_baseline.thpt.orchestrator import Orchestrator, compare_answer
 from exam_baseline.thpt.planner import plan_request_from_prompt
 from exam_baseline.thpt.rag import (
@@ -48,7 +49,15 @@ from exam_baseline.thpt.subjects import (
     subject_request,
 )
 from exam_baseline.thpt.visuals import visual_issues
+from exam_baseline.ui.adjacent_workflow import (
+    AdjacentOrchestrator,
+    AdjacentRequest,
+    AdjacentSolver,
+    render_adjacent,
+    run_adjacent_demo_job,
+)
 from exam_baseline.ui.contracts import (
+    AdjacentGenerateRequest,
     ExamGenerateRequest,
     QuestionApprovalRequest,
     SubjectGenerateRequest,
@@ -160,6 +169,10 @@ def _thpt_solver_input(question, drawings):
         "questions": student_view([question]),
         "drawings": {"drawings": [d for d in drawings if d["question_id"] == question.id]},
     }
+
+
+def _is_adjacent(job):
+    return bool(job.get("request", {}).get("adjacentTopicId"))
 
 
 def _subject_id(job):
@@ -378,7 +391,33 @@ def resolve_request(
     payload: ExamGenerateRequest,
     *,
     settings=None,
-) -> tuple[Request | vact_models.Request, dict | None]:
+) -> tuple[Request | vact_models.Request | SubjectRequest | AdjacentRequest, dict | None]:
+    if isinstance(payload, AdjacentGenerateRequest):
+        topic = ADJACENT_TOPICS[payload.adjacentTopicId]
+        levels = ("NB", "TH", "VD", "VDC")
+        slots = [
+            Slot(
+                id=f"P1-{index}",
+                part="P1",
+                topic=topic["subject"],
+                objective=topic["sectionGuidance"],
+                level=levels[(index - 1) % len(levels)],
+            )
+            for index in range(1, payload.itemCount + 1)
+        ]
+        return (
+            AdjacentRequest(
+                adjacent_topic_id=payload.adjacentTopicId,
+                topic_label=topic["label"],
+                subject=topic["subject"],
+                duration_minutes=payload.durationMinutes,
+                section_guidance=topic["sectionGuidance"],
+                slots=slots,
+                requirements=[payload.prompt] if payload.prompt else [],
+                web_sources=[source.model_dump() for source in payload.webSources],
+            ),
+            None,
+        )
     if isinstance(payload, SubjectGenerateRequest):
         if settings is not None and settings.demo_mode:
             raise UiError("provider_not_configured", "Mẫu đề này cần chạy với AI thật.", 422)
@@ -537,6 +576,7 @@ class JobManager:
             async with self.capacity:
                 job = self.get(job_id)
                 is_vact = _is_vact(job)
+                is_adjacent = _is_adjacent(job)
                 demo_active = self.runner is None and self.settings.demo_mode
                 if is_vact:
                     job["retrieval"] = None
@@ -544,6 +584,12 @@ class JobManager:
                     request = vact_models.Request.model_validate(job["nativeRequest"])
                     orchestrator_type = VactOrchestrator
                     question_model = vact_models.Question
+                elif is_adjacent:
+                    job["retrieval"] = None
+                    self.store.save(job)
+                    request = AdjacentRequest.model_validate(job["nativeRequest"])
+                    orchestrator_type = AdjacentOrchestrator
+                    question_model = Question
                 elif _subject_id(job):
                     job["retrieval"] = None
                     self.store.save(job)
@@ -593,6 +639,8 @@ class JobManager:
 
                 if self.runner:
                     report = await self.runner(request, output, progress)
+                elif demo_active and is_adjacent:
+                    report = await run_adjacent_demo_job(request, output, progress)
                 elif demo_active:
                     report = await run_demo_job(request, output, progress, is_vact=is_vact)
                 else:
@@ -758,7 +806,11 @@ class JobManager:
             return source
         questions = [Question.model_validate(q) for q in job["rawQuestions"]]
         drawings = Illustrations.model_validate(job["drawings"])
-        if _subject_id(job):
+        if _is_adjacent(job):
+            request = AdjacentRequest.model_validate(job["nativeRequest"])
+            passages = []
+            source = render_adjacent(questions, drawings, request)
+        elif _subject_id(job):
             request = SubjectRequest.model_validate(job["nativeRequest"])
             passages = job["rawPassages"]
             source = render_subject(questions, drawings, request, passages)
@@ -965,11 +1017,19 @@ class JobManager:
         slots = job["nativeRequest"]["slots"]
         drawings = {d["question_id"]: d["latex"] for d in job["drawings"]["drawings"]}
         solutions = _current_solutions(job)
+        adjacent = _is_adjacent(job)
         format_id = _subject_id(job)
         retrieval = job["retrieval"] or {}
-        subject = job["request"]["subject"] if format_id else "Toán Học"
-        profile_title = f"{subject} THPT" if format_id else "Toán THPT"
-        duration = job["request"]["durationMinutes"] if format_id else 90
+        web_sources = job["nativeRequest"].get("web_sources", []) if adjacent else []
+        web_ref = "; ".join(src["url"] for src in web_sources[:3] if src.get("url"))
+        if adjacent:
+            subject = job["request"]["subject"]
+            profile_title = job["nativeRequest"].get("topic_label") or subject
+            duration = job["request"]["durationMinutes"]
+        else:
+            subject = job["request"]["subject"] if format_id else "Toán Học"
+            profile_title = f"{subject} THPT" if format_id else "Toán THPT"
+            duration = job["request"]["durationMinutes"] if format_id else 90
         passages = job.get("rawPassages", [])
         passage_ids = {
             number: passage["id"]
@@ -1023,7 +1083,9 @@ class JobManager:
                         raw, solutions.get(raw["id"]), raw["id"] in job["manualEdits"]
                     ),
                     "questionApproval": _serialize_question_approval(job, raw, index),
-                    "sourceReference": "; ".join(
+                    "sourceReference": web_ref
+                    if adjacent
+                    else "; ".join(
                         e["locator"]
                         for e in retrieval.get("mas_intake_rag", [])
                         if e["question_id"] == raw["id"]
@@ -1035,7 +1097,23 @@ class JobManager:
             for c in retrieval.get("question_contexts", [])
             for warning in c.get("warnings", [])
         ]
-        if format_id:
+        if adjacent:
+            warnings.append(
+                {
+                    "code": "web_research_unverified",
+                    "message": (
+                        "Đề được soạn cho chủ đề lân cận từ nguồn tìm kiếm trên mạng. "
+                        "Thầy cô vui lòng rà soát nội dung và đáp án trước khi sử dụng."
+                    ),
+                }
+            )
+            report = job.get("report", {})
+            if report.get("revision") == job["revision"]:
+                warnings.extend(
+                    {"code": "adjacent_review_issue", "message": issue}
+                    for issue in report.get("review_issues", [])
+                )
+        elif format_id:
             warnings.append(
                 {
                     "code": "subject_sources_unverified",
@@ -1050,13 +1128,25 @@ class JobManager:
                     {"code": "subject_review_issue", "message": issue}
                     for issue in report.get("review_issues", [])
                 )
+        provenance = (
+            {
+                "sourceType": "web_search",
+                "adjacentTopicId": job["request"]["adjacentTopicId"],
+                "topicLabel": profile_title,
+                "sources": web_sources,
+            }
+            if adjacent
+            else {"formatSource": SOURCE}
+            if format_id
+            else retrieval.get("release_info", {})
+        )
         return {
             "examId": job["jobId"],
-            "title": f"Đề {profile_title}",
+            "title": f"Đề luyện tập {profile_title}" if adjacent else f"Đề {profile_title}",
             "subject": subject,
             "grade": 12,
             "durationMinutes": duration,
-            "totalScore": 10,
+            "totalScore": None if adjacent else 10,
             "createdAt": job["createdAt"],
             "revision": job["revision"],
             "contentHash": job["contentHash"],
@@ -1071,9 +1161,7 @@ class JobManager:
             "hasDrawings": bool(drawings),
             "warnings": warnings,
             "gaps": retrieval.get("gaps", []),
-            "provenance": {"formatSource": SOURCE}
-            if format_id
-            else retrieval.get("release_info", {}),
+            "provenance": provenance,
             **(
                 {"studentPaper": self._contract_file(job, contract_artifacts.STUDENT)[1]}
                 if job.get("contractExport")
@@ -1082,7 +1170,7 @@ class JobManager:
             "blueprint": {
                 "subject": subject,
                 "grade": 12,
-                "examType": "THPT_STANDARD",
+                "examType": "CUSTOM" if adjacent else "THPT_STANDARD",
                 "title": profile_title,
                 "totalQuestions": len(slots),
                 "durationMinutes": duration,
@@ -1573,10 +1661,17 @@ class JobManager:
                 )
             else:
                 question = Question.model_validate(raw)
-                solver = SubjectSolver() if _subject_id(job) else SolverAgent()
-                data = _thpt_solver_input(question, drawings)
-                if _subject_id(job):
-                    data.update(_subject_question_context(job, question))
+                if _is_adjacent(job):
+                    solver = AdjacentSolver()
+                    data = {
+                        "subject": job["request"]["subject"],
+                        **_thpt_solver_input(question, drawings),
+                    }
+                else:
+                    solver = SubjectSolver() if _subject_id(job) else SolverAgent()
+                    data = _thpt_solver_input(question, drawings)
+                    if _subject_id(job):
+                        data.update(_subject_question_context(job, question))
 
             try:
                 async with self.provider_scope() as providers:
@@ -1704,27 +1799,43 @@ class JobManager:
                 ],
             )
         else:
-            is_subject = _subject_id(job) is not None
-            request = (SubjectRequest if is_subject else Request).model_validate(
-                job["nativeRequest"]
-            )
-            evidence = request.rag_evidence.get(slot["id"])
-            context = (
-                _subject_question_context(job, Question.model_validate(old)) if is_subject else {}
-            )
-            composer = SubjectRepairComposer() if is_subject else RepairComposer()
-            illustrator = IllustratorAgent()
-            solver = SubjectSolver() if is_subject else SolverAgent()
-            data.update(
-                **context,
-                reference_material=[evidence.text]
-                if evidence
-                else [
-                    t
-                    for t in request.reference_material
-                    if t.startswith(f"[THPT_PART:{slot['part']}]")
-                ],
-            )
+            if _is_adjacent(job):
+                adj_request = AdjacentRequest.model_validate(job["nativeRequest"])
+                context = {"subject": adj_request.subject}
+                composer = RepairComposer()
+                illustrator = IllustratorAgent()
+                solver = AdjacentSolver()
+                data.update(
+                    **context,
+                    reference_material=[
+                        f"{src.get('title', '')}: {src.get('snippet', '')}"
+                        for src in adj_request.web_sources
+                    ],
+                )
+            else:
+                is_subject = _subject_id(job) is not None
+                request = (SubjectRequest if is_subject else Request).model_validate(
+                    job["nativeRequest"]
+                )
+                evidence = request.rag_evidence.get(slot["id"])
+                context = (
+                    _subject_question_context(job, Question.model_validate(old))
+                    if is_subject
+                    else {}
+                )
+                composer = SubjectRepairComposer() if is_subject else RepairComposer()
+                illustrator = IllustratorAgent()
+                solver = SubjectSolver() if is_subject else SolverAgent()
+                data.update(
+                    **context,
+                    reference_material=[evidence.text]
+                    if evidence
+                    else [
+                        t
+                        for t in request.reference_material
+                        if t.startswith(f"[THPT_PART:{slot['part']}]")
+                    ],
+                )
 
         repaired, _ = await composer.run(providers["composer"], data)
         if repaired.id != old["id"]:

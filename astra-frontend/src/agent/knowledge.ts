@@ -4,6 +4,31 @@ import type { Decision, ExamIntake, Intent } from './contracts.ts';
 import type { Intake } from './intake.ts';
 import { fold } from './recipes.ts';
 
+export type AdjacentTopicConfig = {
+  id: string;
+  formatId: string;
+  label: string;
+  subject: string;
+  language: string;
+  defaultCount: number;
+  defaultMinutes: number;
+  terms: string[];
+  searchQueries: string[];
+  sectionGuidance: string;
+};
+
+const ADJACENT_TOPICS = (
+  (domain as unknown as { adjacentTopics?: Record<string, AdjacentTopicConfig> }).adjacentTopics ?? {}
+);
+
+export function listAdjacentTopics(): AdjacentTopicConfig[] {
+  return Object.values(ADJACENT_TOPICS);
+}
+
+export function matchAdjacentTopic(message: string): AdjacentTopicConfig | undefined {
+  return listAdjacentTopics().find(topic => topic.terms.some(term => contains(message, term)));
+}
+
 export const familyFor = (format: ExamFormat) =>
   (Object.keys(domain.families) as Array<keyof typeof domain.families>)
     .find(key => domain.families[key].examType === format.examType);

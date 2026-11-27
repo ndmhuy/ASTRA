@@ -15,7 +15,9 @@ def test_unicode_profile_changes_only_font_lines(newline):
         b"\\usepackage{fontspec}"
         + newline
         + b"\\IfFontExistsTF{Times New Roman}{\\setmainfont{Times New Roman}}"
-        b"{\\setmainfont{TeX Gyre Termes}}"
+        b"{\\IfFontExistsTF{TeX Gyre Termes}{\\setmainfont{TeX Gyre Termes}}"
+        b"{\\IfFontExistsTF{Liberation Serif}{\\setmainfont{Liberation Serif}}"
+        b"{\\setmainfont{DejaVu Serif}}}}"
     )
     assert generated.replace(new, old, 1) == source
     assert sha256(original()).hexdigest() == TEMPLATE_SHA256
