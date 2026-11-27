@@ -20,7 +20,7 @@ class Settings(BaseSettings):
         hide_input_in_errors=True,
     )
 
-    provider: Literal["mock", "chat_completions"] = "mock"
+    provider: Literal["mock", "chat_completions", "worker_mas"] = "mock"
     demo_mode: bool = False
     model: str = Field(default="mock-fixture-v1", min_length=1)
     prompt_version: Literal["v1"] = "v1"
@@ -79,6 +79,8 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def complete_configuration(self):
+        if self.provider == "worker_mas" and self.model == "mock-fixture-v1":
+            raise ValueError("set EXAM_MODEL for the real MAS provider")
         if self.provider == "chat_completions":
             if self.use_ai_gateway:
                 self.gateway()

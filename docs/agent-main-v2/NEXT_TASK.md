@@ -1,6 +1,17 @@
-# Next task: owner manual Chat acceptance
+# Next task: approve and observe one real MAS exam
 
-For the owner/next engineer in the existing feat/longlth2297/agent-main-v2 worktree. Implementation d59294e; read [live report](LIVE_CHAT_RESULTS.md), [actual predictions](../../eval/agent-semantic/live-20261127.json) and [current authorization](LIVE_CHAT_COMPLETION_SPEC.md). Older deployment/inference blockers are historical.
+For the owner/next engineer in the existing feat/longlth2297/agent-main-v2 worktree. Current scope: [MAS specification](MAS_CLOUDFLARE_SPEC.md) and [MAS runbook](MAS_WORKER_RUNBOOK.md). Worker implementation cfbf951; Backend integration/readiness accompanies this checkpoint. Earlier Chat-only and no-MAS authorization blockers are historical.
+
+## Current MAS gate
+
+- Application for MAS acceptance: **http://localhost:8001**, actual Backend demoMode=false/providerConfigured=true. The old 8000 process remains the demo profile; use 8001. Restart using `.venv-win/Scripts/python.exe scripts/start_mas_worker.py --port 8001` and the existing ignored .env.mas-worker profile. No Gemini/Gateway key is needed locally; only the revocable Worker caller credential.
+- Existing MAS Worker final version aa62dcd7-ab17-4c31-b282-745634d05d3c, model gemini-3.1-flash-lite, independent astra-mas-gateway/default BYOK. Actual deployed Secrets and prior Gateway bindings preserved. Forwarding=false, total/daily/token limits zero, used=0. Never replace this with the Chat Worker or its credential.
+- No owner-approved MAS inference has occurred. Specification section 7 explicitly requires access-policy/budget approval first. Concrete proposal: internal revocable bearer access; owner starts exactly one standard Toán THPT 22-question/90-minute exam; maximum 41 upstream calls, 4000000 conservative reservation units, two-hour activation window. See runbook for derivation, payload limits, exact deployment steps and acceptance evidence to capture. Do not silently reset counters or auto-run the exam.
+- After approval, activate through the existing Worker with bounded quotas and expiry, verify metadata/health, then let the owner submit through the current UI. Keep native RAG/Composer/Illustrator/Blind Solver/Reviewer/validation unchanged. Worker has no academic orchestration. No website/Backend deployment, push, PR, merge or new Gateway/Worker.
+- Actual disabled checks passed: wrong/no caller token401, correct token with forwarding disabled503, used remains0. 10 Worker groups,17 focused Python checks, real RAG22-context preflight, and non-demo mounted browser passed. Synthetic HTTP academic completions are explicitly fixtures, not live Gemini acceptance. Independent Chat responsiveness during a blocked MAS request passed locally; live concurrent Chat/MAS remains for owner acceptance.
+- Latest fetched origin/main d67d218c has 36 missing commits; no integration performed. Earlier unrelated RAG lint findings remain outside scope.
+
+## Prior Chat checkpoint (historical; MAS information below is superseded)
 
 The real natural THPT to subject question to local Mathematics to actual setup path works. Stored-format recall was corrected and verified live; unsupported Chemistry and home navigation passed. One V-ACT switch timed out upstream at 30 seconds and still needs manual acceptance. Zero exam writes. Eight automated upstream attempts consumed: seven valid frames, one timeout. Two harness-context mistakes count but are excluded from contextual acceptance.
 

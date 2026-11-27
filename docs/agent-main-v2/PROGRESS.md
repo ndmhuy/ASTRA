@@ -1,14 +1,23 @@
 # ASTRA Agent main-v2 progress ledger
 
-> Scope correction: Cloudflare is for authenticated AI credential gateway only. Do not deploy the ASTRA website, expose the origin, create a Tunnel or migrate MAS. Public web hosting requirements are future blockers, not tasks for this implementation.
+> Current scope: authenticated Chat and MAS inference gateways only. The owner now authorizes connecting the existing Backend to the existing MAS Worker, disabled until access/budget approval. No website/Backend hosting, Tunnel, or academic pipeline redesign.
 
-Status: LIVE_CHAT_CORE_VERIFIED; OWNER_MANUAL_ACCEPTANCE_OPEN
+Status: MAS_TRANSPORT_DEPLOYED_DISABLED; REAL_EXAM_APPROVAL_PENDING
 Baseline SHA: 7523c79556a9935df5008c92043f1e38d6e5d2a2
 Old Agent reference SHA: fb834b976cb62eb7292fa839cdaf1d8738e1ec50
 Feature branch / worktree: feat/longlth2297/agent-main-v2 / ../ASTRA.worktrees/longlth2297-agent-main-v2
-Current implementation commit: d59294e; prior semantic checkpoint 6951266.
-Latest origin/main checked: 0adcc4681b4c51b588ba2efcb317cd9586df8117 (2026-11-27).
-Current phase / exact next action: real keyless Chat vertical slice and mounted setup verified. Owner manual acceptance remains, especially the family switch that timed out. See [live report](LIVE_CHAT_RESULTS.md) and [next task](NEXT_TASK.md). The [completion authorization](LIVE_CHAT_COMPLETION_SPEC.md) supersedes historical deployment/allowance blockers below. No push, PR or merge.
+Current implementation: MAS Worker cfbf951; Backend adapter/readiness committed with this checkpoint. Prior Chat checkpoint 6c49612.
+Latest origin/main checked: d67d218c69a751b973bb6d2bd3327433ce91e8bd (2026-11-27); 36 upstream commits not integrated.
+Current phase / exact next action: approve access policy and one bounded real MAS exam, then owner initiates from the UI. Read [MAS runbook](MAS_WORKER_RUNBOOK.md), [owner specification](MAS_CLOUDFLARE_SPEC.md) and [next task](NEXT_TASK.md). No real MAS inference has run. Historical Chat gates/evidence below remain historical. No push, PR or merge.
+
+## MAS Cloudflare connection — 2026-11-27
+
+- Actual existing astra-mas-proxy now deployed disabled at aa62dcd7-ab17-4c31-b282-745634d05d3c. Preserved Gateway/account/default BYOK bindings and encrypted Gateway Token. Added independent MAS_ADMISSION storage and encrypted revocable caller token. Actual health: configured=true, callerAuthorization=true, model=gemini-3.1-flash-lite, forwarding=false, used/limit=0/0. Gemini 3.1 owner choice was interpreted explicitly as the current Chat model ID; keys/Gateways remain separate.
+- Backend worker_mas provider reuses the existing Chat Completions payload/response parser and academic Settings. Native prompts, agents, schemas, RAG, format/scoring and generation/revision logic unchanged. Separate local caller credential in ignored .env.mas-worker; no Gemini/Gateway credentials distributed.
+- Actual application at http://localhost:8001 has demoMode=false, providerConfigured=true; mounted browser greeting made zero Agent/exam POSTs. Port 8000 remains the previous demo runtime. Runtime startup and readiness checks made zero upstream calls.
+- 10 MAS Worker workerd/SQLite groups and tsc passed; 17 focused Python checks passed, including an explicitly synthetic native UI job and Chat responsiveness while its MAS request waited. Targeted Ruff/format, generated Chat contracts and actual disabled access checks passed. Real RAG preflight: success/22 contexts/zero gaps. Full academic/unrelated suites not repeated.
+- Owner gate from new specification section 7 remains: approve internal bearer access and one standard 22-question THPT job, proposed 41-attempt ceiling, 4000000 conservative byte/token reservation units, two-hour expiry. Normal first pass 6 calls; up to 11 with a feedback revision; 41 includes existing schema/transient repair bounds. No live Gemini compatibility, real generated exam or quality result claimed before owner acceptance.
+- Chat Worker/Gateway/code/budgets unchanged. Prior Chat window expires independently at 12:40 Asia/Bangkok; expiry is not a MAS failure. Details, activation and rollback instructions are in MAS_WORKER_RUNBOOK.md.
 
 ## Current live checkpoint — 2026-11-27
 

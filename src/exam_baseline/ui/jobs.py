@@ -301,10 +301,11 @@ class JobManager:
         if self.providers is not None:
             yield self.providers
             return
-        worker_providers = configured_worker_mas(self.settings)
-        if worker_providers is not None:
-            yield worker_providers
-            return
+        async with httpx.AsyncClient(follow_redirects=False) as worker_client:
+            worker_providers = configured_worker_mas(self.settings, worker_client)
+            if worker_providers is not None:
+                yield worker_providers
+                return
         if self.settings.provider != "chat_completions":
             raise UiError(
                 "provider_not_configured",
