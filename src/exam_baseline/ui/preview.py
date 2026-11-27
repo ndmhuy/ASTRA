@@ -1,4 +1,4 @@
-"""Compile exact student LaTeX locally; cache only validated, revision-bound PDFs."""
+"""Compile student LaTeX locally; cache only validated, revision-bound PDFs."""
 
 import asyncio
 import json
@@ -10,7 +10,10 @@ from uuid import uuid4
 from pypdf import PdfReader
 
 from exam_baseline.pipeline.rendering.compiler import compile_document, find_compiler
+from exam_baseline.thpt.rendering import reflow_saved_choice_rows
 from exam_baseline.ui.errors import UiError
+
+PDF_LAYOUT_VERSION = 3
 
 
 class PreviewService:
@@ -24,7 +27,8 @@ class PreviewService:
         return find_compiler(self.settings.latex_compiler)
 
     def directory(self, job):
-        return self.root / job["jobId"] / "_preview" / f"{job['revision']}-{job['sourceHash']}"
+        binding = f"{job['revision']}-{job['sourceHash']}-{PDF_LAYOUT_VERSION}"
+        return self.root / job["jobId"] / "_preview" / binding
 
     def status(self, job):
         directory = self.directory(job)
@@ -57,7 +61,7 @@ class PreviewService:
         temp.write_text(json.dumps(state), "utf-8")
         temp.replace(directory / "status.json")
 
-    def request(self, job):
+    def request(self, job, source):
         state = self.status(job)
         if state["status"] == "ready" or self.directory(job) in self.tasks:
             return state
@@ -70,13 +74,7 @@ class PreviewService:
                 503,
             )
         directory = self.directory(job)
-        source = (self.root / job["jobId"] / "de_thi.tex").read_bytes()
-        if sha256(source).hexdigest() != job["sourceHash"]:
-            raise UiError(
-                "artifact_changed",
-                "Tệp đề thi đã bị thay đổi bên ngoài phiên làm việc "
-                "nên không thể tạo bản xem trước.",
-            )
+        source = reflow_saved_choice_rows(source, job["rawQuestions"])
         self._save(directory, {"status": "queued"})
         task = asyncio.create_task(self._compile(directory, source, compiler))
         self.tasks[directory] = task
