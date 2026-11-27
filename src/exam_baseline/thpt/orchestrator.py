@@ -21,6 +21,7 @@ from exam_baseline.thpt.metrics import summarize_calls
 from exam_baseline.thpt.models import Request
 from exam_baseline.thpt.rendering import render, student_view
 from exam_baseline.thpt.runtime import ContractError, RecordingProvider
+from exam_baseline.thpt.topic_review import TopicReviewer, review_topic
 
 
 def save(path: Path, data):
@@ -282,7 +283,9 @@ class Orchestrator:
                 revision,
                 calls,
                 internal / "responses",
-                retries=0 if agent.role == "reviewer" else 1,
+                retries=0
+                if agent.role == "reviewer" and not isinstance(agent, TopicReviewer)
+                else 1,
             )
             try:
                 response, _ = await agent.run(provider, data)
@@ -290,10 +293,11 @@ class Orchestrator:
                 report["active_stage"] = agent.role
                 report["active_part"] = data.get("part")
                 raise
-            content = json.dumps(response.model_dump(), ensure_ascii=False, sort_keys=True)
+            payload = response.model_dump(by_alias=True)
+            content = json.dumps(payload, ensure_ascii=False, sort_keys=True)
             save(
                 checkpoint,
-                {"response": response.model_dump(), "sha256": sha256(content.encode()).hexdigest()},
+                {"response": payload, "sha256": sha256(content.encode()).hexdigest()},
             )
             save(internal / "result.json", report)
             return response
@@ -345,6 +349,21 @@ class Orchestrator:
                             task.cancel()
                         await asyncio.gather(*tasks, return_exceptions=True)
                         raise
+                if isinstance(request, Request) and request.topic_review_instruction:
+                    audit_history = []
+                    report["topic_audits"] = audit_history
+                    audited = await review_topic(
+                        call,
+                        request,
+                        [q for section in sections for q in section.questions],
+                        revision,
+                        audit_history,
+                    )
+                    by_id = {q.id: q for q in audited}
+                    for part, section in zip(self.parts(request), sections, strict=True):
+                        section.questions = [by_id[q.id] for q in section.questions]
+                        save(folder / f"{part}.json", section.model_dump())
+                    save(folder / "topic_review.json", audit_history)
                 for section in sections:
                     questions.extend(section.questions)
                 stems = [q.stem.casefold().strip() for q in questions]

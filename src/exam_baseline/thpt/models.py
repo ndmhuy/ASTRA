@@ -46,6 +46,8 @@ class Request(Model):
     slots: list[Slot] = Field(min_length=22, max_length=22)
     reference_material: list[Text] = Field(default_factory=list, max_length=20)
     requirements: list[Text] = Field(default_factory=list, max_length=30)
+    topic_review_instruction: Text | None = None
+    topic_repair_limit: int = Field(default=2, ge=0, le=3)
     rag_evidence: dict[str, RagPassage] = Field(default_factory=dict)
 
     @model_validator(mode="after")

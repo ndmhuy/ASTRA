@@ -107,7 +107,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, articleRef
           </summary>
           <div className="review-content">
             <p><strong>{matched ? 'Đáp án' : 'Đáp án dự kiến'}:</strong> {question.key}</p>
-            {flagged && question.solverKey && <p><strong>Giải độc lập:</strong> {question.solverKey}</p>}
+            {!matched && question.solverKey && <p><strong>Giải độc lập:</strong> {question.solverKey}</p>}
             {!matched && !flagged && <p>{(question.answerCheck && question.auditNotes) || 'Câu hỏi cần được kiểm tra trước khi sử dụng.'}</p>}
             {question.explanation && <div className="review-explanation"><MathRenderer content={question.explanation} /></div>}
             {question.sourceReference && <p className="review-source">Nguồn: {question.sourceReference}</p>}
