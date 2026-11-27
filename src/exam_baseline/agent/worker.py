@@ -138,7 +138,18 @@ class WorkerInterpretationProvider:
                     log_evidence(turn, payload)
                 if response.status_code != 200:
                     reason = payload.get("error") if isinstance(payload, dict) else None
-                    raise ProviderFailure(reason if reason in ERRORS else "transient")
+                    evidence = payload.get("evidence", {}) if isinstance(payload, dict) else {}
+                    # Repeating the same logical turn after admission can be duplicate
+                    # inference. Only explicit pre-admission failures are safe to retry.
+                    safe = (
+                        reason == "transient"
+                        and isinstance(evidence, dict)
+                        and evidence.get("admitted") is False
+                        and evidence.get("attempts") == 0
+                    )
+                    raise ProviderFailure(
+                        reason if reason in ERRORS else "transient", safe_retry=safe
+                    )
                 if (
                     payload.get("schemaVersion") != (SEMANTIC_VERSION if self.semantic else VERSION)
                     or payload.get("clientMessageId") != turn.clientMessageId
@@ -165,6 +176,10 @@ class WorkerInterpretationProvider:
                     1 if evidence.get("attempts") == 1 else 0,
                 )
                 return decision
+        except httpx.ConnectTimeout:
+            raise ProviderFailure("timeout", safe_retry=True) from None
+        except httpx.ConnectError:
+            raise ProviderFailure("transient", safe_retry=True) from None
         except httpx.TimeoutException:
             raise ProviderFailure("timeout") from None
         except httpx.TransportError:

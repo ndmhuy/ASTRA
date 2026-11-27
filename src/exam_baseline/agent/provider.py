@@ -7,6 +7,8 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Protocol
 
+from exam_baseline.core.recovery import POLICY, delay
+
 from .contracts import Decision, Turn
 from .semantics import SemanticFrame
 
@@ -14,10 +16,11 @@ logger = logging.getLogger(__name__)
 
 
 class ProviderFailure(Exception):
-    def __init__(self, reason: str, retry_after: float | None = None):
+    def __init__(self, reason: str, retry_after: float | None = None, *, safe_retry=False):
         super().__init__(reason)
         self.reason = reason
         self.retry_after = retry_after
+        self.safe_retry = safe_retry
 
 
 class InterpretationProvider(Protocol):
@@ -74,13 +77,27 @@ class ProviderRouter:
             remaining = started + self.timing.total - now
             if remaining <= (self.timing.minimum_fallback if index else 0):
                 break
-            if not self.reserve():
-                reason = "budget"
-                break
-            attempts += 1
-            deadline = min(remaining, self.timing.primary) if index == 0 else remaining
             try:
-                result = await self._within(route, turn, deadline)
+                for retry in range(POLICY["chat"]["maxAttempts"]):
+                    if not self.reserve():
+                        raise ProviderFailure("budget")
+                    attempts += 1
+                    remaining = started + self.timing.total - self.clock()
+                    deadline = min(remaining, self.timing.primary) if index == 0 else remaining
+                    try:
+                        result = await self._within(route, turn, deadline)
+                        break
+                    except ProviderFailure as error:
+                        wait = delay(retry, error.retry_after, POLICY["chat"])
+                        if (
+                            not error.safe_retry
+                            or retry + 1 == POLICY["chat"]["maxAttempts"]
+                            or self.clock() + wait + self.timing.minimum_fallback
+                            >= started + self.timing.total
+                        ):
+                            raise
+                        self._record_failure(route, error)
+                        await asyncio.sleep(wait)
             except ProviderFailure as exc:
                 reason = exc.reason
                 self._record_failure(route, exc)

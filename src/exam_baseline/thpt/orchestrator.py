@@ -19,6 +19,7 @@ from exam_baseline.core.checkpoints import (
     restore_response,
 )
 from exam_baseline.core.contracts import LLMProvider
+from exam_baseline.core.recovery import POLICY
 from exam_baseline.thpt import template
 from exam_baseline.thpt.agents import (
     ComposerAgent,
@@ -341,7 +342,7 @@ class Orchestrator:
                 revision,
                 calls,
                 internal / "responses",
-                retries=0 if agent.role == "reviewer" else 1,
+                retries=0 if agent.role == "reviewer" else POLICY["mas"]["maxAttempts"] - 1,
                 on_attempt=lambda: save(internal / "result.json", report),
                 operation_id=fingerprint,
             )

@@ -11,6 +11,7 @@ import httpx
 from exam_baseline.config import Settings
 from exam_baseline.core.contracts import Completion, CompletionRequest, ProviderError
 from exam_baseline.core.models import TokenUsage
+from exam_baseline.core.recovery import OPERATION, daily_quota
 from exam_baseline.providers.budget import SpendLedger
 
 
@@ -124,16 +125,36 @@ class ChatCompletionsProvider:
 
     async def _send(self, payload):
         try:
+            headers = self.headers
+            operation = OPERATION.get()
+            if operation and operation[0] and "X-Astra-MAS-Stage" in headers:
+                headers = {
+                    **headers,
+                    "X-Astra-MAS-Operation": operation[0],
+                    "X-Astra-MAS-Attempt": operation[1],
+                }
             response = await self.client.post(
                 self.url,
                 json=payload,
-                headers=self.headers,
+                headers=headers,
                 timeout=self.timeout,
                 follow_redirects=False,
             )
             response.raise_for_status()
+        except httpx.ConnectTimeout as exc:
+            raise ProviderError(
+                "provider_connect_timeout", "Provider connection timed out."
+            ) from exc
+        except httpx.ConnectError as exc:
+            raise ProviderError(
+                "provider_connection_failed", "Could not connect to provider."
+            ) from exc
         except httpx.TimeoutException as exc:
-            raise ProviderError("provider_timeout", "LLM provider timed out.") from exc
+            raise ProviderError(
+                "provider_timeout",
+                "Response timed out; completion is uncertain.",
+                outcome_uncertain=True,
+            ) from exc
         except httpx.HTTPStatusError as exc:
             status = exc.response.status_code
             code, message = {
@@ -153,19 +174,63 @@ class ChatCompletionsProvider:
                 status,
                 ("provider_http_error", "LLM provider rejected the request."),
             )
+            try:
+                document = exc.response.json()
+                error = document.get("error", {}) if isinstance(document, dict) else {}
+                error = error if isinstance(error, dict) else {}
+            except (TypeError, ValueError):
+                error = {}
+            provider_code = error.get("code")
+            if not isinstance(provider_code, str):
+                provider_code = None
+            retry_after = _retry_after_seconds(exc.response.headers.get("Retry-After"))
+            retryable = None
+            if error.get("type") == "astra_mas_error":
+                known = {
+                    "caller_unauthorized": "provider_auth_error",
+                    "mas_forwarding_disabled": "provider_disabled",
+                    "configuration": "provider_configuration",
+                    "invalid_request": "provider_bad_request",
+                    "invalid_stage": "provider_bad_request",
+                    "invalid_operation": "provider_bad_request",
+                    "mas_transport_error": "provider_unreachable",
+                    "upstream_quota_unknown": "provider_failure_unclassified",
+                    "upstream_auth": "provider_auth_error",
+                    "upstream_access": "provider_access_denied",
+                    "upstream_model": "provider_not_found",
+                    "upstream_invalid_request": "provider_bad_request",
+                    "upstream_quota_exhausted": "provider_quota_exhausted",
+                    "upstream_rate_limited": "provider_rate_limited",
+                    "mas_capacity": "provider_capacity",
+                    "mas_budget_exhausted": "provider_quota_exhausted",
+                    "upstream_timeout": "provider_timeout",
+                }
+                code = known.get(provider_code, code)
+                if provider_code in {"upstream_failed", "mas_budget_or_capacity"}:
+                    code, retryable = "provider_failure_unclassified", False
             if status == 429:
-                try:
-                    provider_code = exc.response.json()["error"]["code"]
-                except (KeyError, TypeError, ValueError):
-                    provider_code = None
-                if provider_code in ("insufficient_quota", "billing_hard_limit_reached"):
+                if daily_quota(error) or provider_code in {
+                    "upstream_quota_exhausted",
+                    "mas_budget_exhausted",
+                }:
                     code = "provider_quota_exhausted"
                     message = "The API project has exhausted its quota or billing limit."
+                    retryable = False
+                elif (
+                    provider_code
+                    in {"rate_limit_exceeded", "upstream_rate_limited", "mas_capacity"}
+                    or retry_after
+                ):
+                    retryable = True
+                else:
+                    retryable = False
             raise ProviderError(
                 code,
                 f"HTTP {status}: {message}",
                 http_status=status,
-                retry_after_seconds=_retry_after_seconds(exc.response.headers.get("Retry-After")),
+                retry_after_seconds=retry_after,
+                retryable=retryable,
+                outcome_uncertain=code == "provider_timeout",
             ) from exc
         except httpx.RequestError as exc:
             raise ProviderError("provider_unreachable", "Could not reach LLM provider.") from exc

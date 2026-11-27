@@ -15,8 +15,9 @@ import httpx
 from jsonschema import ValidationError
 
 from exam_baseline.agent.research import ADJACENT_TOPICS
-from exam_baseline.core.checkpoints import GenerationPaused
+from exam_baseline.core.checkpoints import CheckpointError, GenerationPaused
 from exam_baseline.core.contracts import ProviderError
+from exam_baseline.core.recovery import classify
 from exam_baseline.providers.chat_completions import ChatCompletionsProvider
 from exam_baseline.providers.worker_mas import configured_worker_mas
 from exam_baseline.thpt import contract_artifacts
@@ -482,9 +483,10 @@ GENERATION_RUN = ContextVar("astra_generation_run", default=None)
 
 
 class GenerationProvider:
-    def __init__(self, provider, check_active):
+    def __init__(self, provider, check_active, retry_wait=None):
         self.provider = provider
         self.check_active = check_active
+        self.retry_wait = retry_wait
 
     def __getattr__(self, name):
         return getattr(self.provider, name)
@@ -788,8 +790,40 @@ class JobManager:
                         def check_active():
                             self._active_generation(job_id)
 
+                        async def retry_wait(delay, attempt, error):
+                            current = self._active_generation(job_id)
+                            current.update(
+                                status="retrying",
+                                retry={
+                                    "attempt": attempt,
+                                    "maxAttempts": POLICY["mas"]["maxAttempts"],
+                                    "category": classify(error).category,
+                                    "phase": "waiting",
+                                    "retryAt": self.generation_state.clock() + delay,
+                                },
+                            )
+                            if error.retry_after_seconds is not None:
+                                current["retryNotBefore"] = (
+                                    self.generation_state.clock() + error.retry_after_seconds
+                                )
+                            current["progress"]["statusMessage"] = (
+                                f"Kết nối tạm lỗi; đang chờ thử lại lần {attempt}"
+                            )
+                            self._save_generation(current)
+                            deadline = asyncio.get_running_loop().time() + delay
+                            while (remaining := deadline - asyncio.get_running_loop().time()) > 0:
+                                self._active_generation(job_id)
+                                await asyncio.sleep(min(remaining, POLICY["controlPollSeconds"]))
+                            current = self._active_generation(job_id)
+                            current["status"] = "running"
+                            current["retry"]["phase"] = "in_progress"
+                            current["progress"]["statusMessage"] = (
+                                f"Đang kết nối lại, lần {attempt}"
+                            )
+                            self._save_generation(current)
+
                         guarded = {
-                            role: GenerationProvider(provider, check_active)
+                            role: GenerationProvider(provider, check_active, retry_wait)
                             for role, provider in providers.items()
                         }
                         run = GENERATION_RUN.get()
@@ -880,6 +914,13 @@ class JobManager:
         except Exception as exc:
             if isinstance(exc, UiError):
                 error = exc
+            elif isinstance(exc, CheckpointError):
+                error = UiError(
+                    "checkpoint_incompatible",
+                    "Checkpoint không tương thích hoặc đã hỏng. "
+                    "Kiểm tra cấu hình và dữ liệu đã lưu; không tự gọi AI lại.",
+                    409,
+                )
             elif isinstance(exc, ContractError):
                 error = UiError(
                     "invalid_contract",
@@ -889,6 +930,18 @@ class JobManager:
                 )
             elif isinstance(exc, ProviderError):
                 messages = {
+                    "provider_auth_error": "Xác thực AI thất bại. Kiểm tra token Worker/cấu hình.",
+                    "provider_access_denied": "Dịch vụ từ chối truy cập. Kiểm tra cấu hình.",
+                    "provider_not_found": "Không tìm thấy model hoặc endpoint đã cấu hình.",
+                    "provider_bad_request": "Yêu cầu bị từ chối. Cần kiểm tra cấu hình.",
+                    "provider_timeout": (
+                        "Phản hồi chưa rõ; upstream có thể đã xử lý. "
+                        "Kết quả đã lưu được giữ; cần tiếp tục thủ công."
+                    ),
+                    "provider_failure_unclassified": (
+                        "Proxy chưa phân loại được lỗi upstream. "
+                        "Kiểm tra cấu hình Worker trước khi tiếp tục."
+                    ),
                     "spend_limit_exceeded": str(exc),
                     "provider_rate_limited": "Dịch vụ AI đã chạm hạn mức tốc độ. "
                     "Vui lòng đợi trước khi tạo lại đề.",
@@ -913,7 +966,18 @@ class JobManager:
                     if isinstance(exc, ValueError)
                     else "Chưa thể hoàn tất việc tạo đề lúc này. Thầy cô vui lòng thử lại.",
                 )
-            self._fail(job_id, error)
+            if isinstance(exc, ProviderError) and classify(exc).recoverable:
+                run = GENERATION_RUN.get()
+                if exc.retry_after_seconds is not None:
+                    pending = self._active_generation(job_id, allow_pause=True)
+                    pending["retryNotBefore"] = (
+                        self.generation_state.clock() + exc.retry_after_seconds
+                    )
+                    self._save_generation(pending)
+                state = "interrupted" if classify(exc).uncertain else "paused"
+                self.generation_state.settle(job_id, run[1], run[2], state, error=error.payload())
+            else:
+                self._fail(job_id, error)
 
     def _fail(self, job_id, error):
         run = GENERATION_RUN.get()
@@ -1370,7 +1434,8 @@ class JobManager:
             "checkpointVersion": job.get("checkpointVersion"),
             "completedOperations": len(job.get("checkpoints", {})),
             "resumeAvailable": job["status"] in {"paused", "interrupted", "cancelled", "failed"}
-            and job.get("checkpointVersion") == POLICY["checkpointVersion"],
+            and job.get("checkpointVersion") == POLICY["checkpointVersion"]
+            and (job.get("error") or {}).get("code") != "checkpoint_incompatible",
             "retry": job.get("retry"),
         }
 

@@ -8,6 +8,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from exam_baseline.core.checkpoints import response_checkpoint
+from exam_baseline.core.contracts import ProviderError
 from exam_baseline.thpt.models import Illustrations
 from exam_baseline.ui.errors import UiError
 from exam_baseline.ui.generation_state import ExecutionLost, GenerationState
@@ -126,3 +127,52 @@ def test_pausing_queued_work_makes_no_provider_calls_and_requires_versioned_cont
         response = client.post(url + "/pause", json={"executionVersion": 1})
         assert response.json()["status"] == "paused"
         assert not any(provider.calls for provider in pool.values())
+
+
+def test_pause_interrupts_retry_backoff_and_retry_after_survives_restart(tmp_path):
+    app, pool = fixture_app(tmp_path)
+    attempts = []
+
+    async def unavailable(prompt):
+        attempts.append(prompt)
+        raise ProviderError(
+            "provider_unavailable", "fake503", http_status=503, retry_after_seconds=5
+        )
+
+    pool["composer"].complete = unavailable
+    with TestClient(app) as client:
+        job_id = _start(client, _workspace(client), "pause-retry")
+        url = f"/api/exams/{job_id}"
+        until(client, job_id, "retrying")
+        assert (
+            client.post(url + "/pause", json={"executionVersion": 1}).json()["status"] == "pausing"
+        )
+        assert until(client, job_id, "paused")["retry"]["phase"] == "waiting"
+        assert len(attempts) == 1
+    restarted, next_pool = fixture_app(tmp_path)
+    with TestClient(restarted) as client:
+        result = client.post(url + "/resume", json={"executionVersion": 1})
+        assert result.status_code == 429
+        assert not any(provider.calls for provider in next_pool.values())
+
+
+def test_bounded_provider_failures_pause_and_manual_retry_finishes_same_job(tmp_path):
+    app, pool = fixture_app(tmp_path)
+    original = pool["composer"].complete
+    failures = []
+
+    async def unavailable(prompt):
+        failures.append(prompt)
+        raise ProviderError("provider_unavailable", "fake503", http_status=503)
+
+    pool["composer"].complete = unavailable
+    with TestClient(app) as client:
+        job_id = _start(client, _workspace(client), "recover-provider")
+        state = until(client, job_id, "paused")
+        assert len(failures) == 2 and state["error"]["code"] == "provider_unavailable"
+        assert not pool["solver"].calls
+        pool["composer"].complete = original
+        response = client.post(f"/api/exams/{job_id}/retry", json={"executionVersion": 1})
+        assert response.json()["jobId"] == job_id
+        assert wait(client, job_id)["status"] == "completed"
+        assert len(pool["composer"].calls) == 3

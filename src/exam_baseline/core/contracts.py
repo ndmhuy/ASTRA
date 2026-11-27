@@ -44,12 +44,16 @@ class ProviderError(Exception):
         *,
         http_status: int | None = None,
         retry_after_seconds: float | None = None,
+        retryable: bool | None = None,
+        outcome_uncertain: bool = False,
     ):
         super().__init__(message)
         self.code = code
         self.completion = completion
         self.http_status = http_status
         self.retry_after_seconds = retry_after_seconds
+        self.retryable = retryable
+        self.outcome_uncertain = outcome_uncertain
 
 
 class LLMProvider(Protocol):

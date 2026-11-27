@@ -3,14 +3,11 @@
 import asyncio
 import json
 import time
-from pathlib import Path
 
-from exam_baseline.core.checkpoints import GenerationPaused, atomic_json
+from exam_baseline.core.checkpoints import GenerationPaused, atomic_json, digest
+from exam_baseline.core.recovery import POLICY
 from exam_baseline.ui.errors import UiError
 
-POLICY = json.loads(
-    (Path(__file__).parents[1] / "resources/agent/recovery-policy.json").read_text("utf-8")
-)
 ACTIVE = frozenset({"queued", "running", "pausing", "resuming", "retrying"})
 RESTING = frozenset({"paused", "interrupted", "cancelled", "failed"})
 
@@ -140,11 +137,26 @@ class GenerationState:
             elif operation in {"resume", "retry"}:
                 if job["status"] not in RESTING:
                     return job, False
+                original_hash = db.execute(
+                    "SELECT request_hash FROM jobs WHERE id=?", (job_id,)
+                ).fetchone()[0]
+                if "request" in job and digest(job["request"]) != original_hash:
+                    raise UiError(
+                        "checkpoint_incompatible", "Cấu hình tạo đề ban đầu đã thay đổi.", 409
+                    )
                 if job.get("checkpointVersion") != POLICY["checkpointVersion"]:
                     raise UiError(
                         "checkpoint_incompatible",
                         "Checkpoint cũ không tương thích. Không có yêu cầu AI nào được gửi.",
                         409,
+                    )
+                remaining = job.get("retryNotBefore", 0) - self.clock()
+                if remaining > 0:
+                    raise UiError(
+                        "generation_retry_later",
+                        "Dịch vụ yêu cầu chờ trước khi thử lại.",
+                        429,
+                        {"retryAfterSeconds": remaining},
                     )
                 if operation == "retry" and job["status"] not in {
                     "failed",
@@ -165,6 +177,7 @@ class GenerationState:
                     pauseRequested=False,
                     error=None,
                     retry=None,
+                    retryNotBefore=0,
                 )
                 job["progress"]["statusMessage"] = "Đang chuẩn bị tiếp tục từ kết quả đã lưu"
             else:
