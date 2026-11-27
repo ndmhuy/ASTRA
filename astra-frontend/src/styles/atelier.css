@@ -1020,6 +1020,7 @@
 }
 
 .workspace-active.create-mode .view-switch {
+  position: relative;
   display: inline-flex;
   gap: 2px;
   padding: 3px;
@@ -1039,16 +1040,45 @@
   font-weight: 500;
 }
 
-.workspace-active.create-mode .view-switch button:hover:not([aria-pressed="true"]) {
+.workspace-active.create-mode .view-switch button:hover:not(:is([aria-pressed="true"], .canvas-export-trigger[aria-expanded="true"])) {
   color: var(--atelier-ink);
   background: rgba(255, 253, 248, 0.5);
 }
 
-.workspace-active.create-mode .view-switch button[aria-pressed="true"] {
+.workspace-active.create-mode .view-switch button:is([aria-pressed="true"], .canvas-export-trigger[aria-expanded="true"]) {
   background: var(--atelier-paper);
   color: var(--atelier-forest);
   font-weight: 600;
   box-shadow: 0 1px 2px rgba(18, 38, 30, 0.08);
+}
+
+.canvas-export-popup {
+  position: absolute;
+  z-index: 5;
+  inset-block-start: calc(100% + 5px);
+  inset-inline-end: 0;
+  min-width: max-content;
+  display: grid;
+  gap: 2px;
+  padding: 4px;
+  border: 1px solid var(--atelier-edge);
+  border-radius: var(--radius-md);
+  background: var(--atelier-paper);
+  box-shadow: 0 4px 12px rgba(18, 38, 30, 0.12);
+}
+
+.workspace-active.create-mode .view-switch .canvas-export-popup button {
+  justify-content: flex-start;
+}
+
+.workspace-active.create-mode .view-switch .canvas-export-popup button:hover:not(:disabled) {
+  background: var(--ui-green-soft);
+}
+
+.canvas-export-popup p {
+  margin: 4px 9px;
+  color: var(--atelier-muted);
+  font-size: 12px;
 }
 
 .workspace-active.create-mode .review-count {

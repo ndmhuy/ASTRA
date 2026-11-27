@@ -65,7 +65,7 @@ export interface IExamService {
   updateQuestion(jobId: string, updatedQuestion: QuestionItem, workspaceId?: string): Promise<void>;
   verifyQuestion?(jobId: string, questionId: number, revision: number): Promise<void>;
   approveQuestion?(jobId: string, questionId: number, revision: number, reason?: string, reviewer?: string): Promise<ExamPackage>;
-  downloadExport(jobId: string, type: 'STUDENT_EXAM' | 'TEACHER_KEY' | 'MATRIX', format: ExportFormat): Promise<void>;
+  downloadExport(jobId: string, type: 'STUDENT_EXAM' | 'TEACHER_KEY' | 'MATRIX', format: ExportFormat, title?: string): Promise<void>;
   approveExam?(jobId: string, pkg: ExamPackage): Promise<ExamPackage>;
   requestPreview?(jobId: string, binding: { revision: number; contentHash: string }): Promise<ExamPreviewState>;
   getPreviewStatus?(jobId: string, binding: { revision: number; contentHash: string }, statusUrl?: string): Promise<ExamPreviewState>;
@@ -527,9 +527,11 @@ export class MockExamService implements IExamService {
   }
 
   async downloadExport(jobId: string, type: 'STUDENT_EXAM' | 'TEACHER_KEY' | 'MATRIX', format: ExportFormat): Promise<void> {
+    if (format === 'docx') throw new ApiError('Xuất Word cần kết nối với máy chủ ASTRA.', 'word_export_unavailable');
+    if (format === 'md') throw new ApiError('Xuất Markdown cần kết nối với máy chủ ASTRA.', 'markdown_export_unavailable');
     const pkg = this.getJob(jobId);
     const title = pkg.title;
-    const filename = `${title}_${type}.${format === 'docx' ? 'doc' : format}`;
+    const filename = `${title}_${type}.${format}`;
 
     let content = `==========================================================\n`;
     content += `${title.toUpperCase()}\n`;
@@ -579,6 +581,15 @@ export class ApiError extends Error {
     this.status = status;
     this.details = details;
   }
+}
+
+function exportFilename(title: string, format: ExportFormat | 'zip', date: Date) {
+  const name = [...title.replace(/[<>:"/\\|?*\p{Cc}]/gu, ' ').replace(/\s+/g, ' ').trim()]
+    .slice(0, 100).join('').replace(/[. ]+$/u, '') || 'Đề thi';
+  const pad = (value: number) => String(value).padStart(2, '0');
+  const day = [date.getFullYear(), pad(date.getMonth() + 1), pad(date.getDate())].join('-');
+  const time = [date.getHours(), date.getMinutes(), date.getSeconds()].map(pad).join('-');
+  return name + ' - ' + day + ' ' + time + '.' + format;
 }
 
 const apiBaseUrl = import.meta.env?.VITE_API_BASE_URL ?? '/api';
@@ -876,7 +887,8 @@ export class ApiExamService implements IExamService {
     return response.text();
   }
 
-  async downloadExport(jobId: string, type: 'STUDENT_EXAM' | 'TEACHER_KEY' | 'MATRIX', format: ExportFormat): Promise<void> {
+  async downloadExport(jobId: string, type: 'STUDENT_EXAM' | 'TEACHER_KEY' | 'MATRIX', format: ExportFormat, title?: string): Promise<void> {
+    const exportedAt = new Date();
     let response: Response;
     try {
       response = await fetch(`${this.baseUrl}/exams/${jobId}/export?type=${type}&format=${format}`);
@@ -896,7 +908,9 @@ export class ApiExamService implements IExamService {
     const url = URL.createObjectURL(await response.blob());
     const link = document.createElement('a'); link.href = url;
     const filename = response.headers.get('content-disposition')?.match(/filename="?([a-zA-Z0-9_.-]+)/)?.[1];
-    link.download = filename || (type === 'STUDENT_EXAM' ? `de_thi.${format}` : `dap_an.${format}`);
+    const extension = format === 'md' && response.headers.get('content-type') === 'application/zip' ? 'zip' : format;
+    link.download = title ? exportFilename(title, extension, exportedAt) :
+      filename || (type === 'STUDENT_EXAM' ? `de_thi.${format}` : `dap_an.${format}`);
     link.click(); URL.revokeObjectURL(url);
   }
 }
@@ -910,7 +924,7 @@ export class ApiExamService implements IExamService {
 //   3. Restart dev server (npm run dev)
 //
 // The integrated API also exposes /api/exam-formats, /status and /approve.
-// Current locked THPT export formats are student .tex and teacher .json.
+// Student export supports Word, LaTeX, Markdown and PDF. Teacher keys use JSON.
 // Core endpoints:
 //   POST   /api/exams/generate                         → { jobId: string }
 //   GET    /api/exams/{jobId}/events                   → SSE stream of GenerationProgress

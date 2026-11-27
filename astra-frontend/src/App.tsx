@@ -544,15 +544,17 @@ export const App: React.FC = () => {
       setUndo({ sessionId, jobId, previousRevision, revision: regenerated.examRevision });
     }
   };
-  const exportFile = async (type: 'STUDENT_EXAM' | 'TEACHER_KEY', format: 'tex' | 'pdf' | 'json') => {
+  const exportFile = async (type: 'STUDENT_EXAM' | 'TEACHER_KEY', format: 'tex' | 'pdf' | 'json' | 'docx' | 'md') => {
     const session = active;
     if (!session?.jobId) return false;
-    try { await examService.downloadExport(session.jobId, type, format); return true; }
+    try {
+      await examService.downloadExport(
+        session.jobId, type, format, session.meta?.title || session.package?.title || session.title,
+      );
+      return true;
+    }
     catch (error) { await store.handleActionError(session.id, error); return false; }
   };
-  const handleExportPdf = () => { void exportFile('STUDENT_EXAM', 'pdf'); };
-  const handleExportWord = () => { void exportFile('STUDENT_EXAM', 'tex'); };
-  const handleExportAnswer = () => { void exportFile('TEACHER_KEY', 'json'); };
   const approve = async () => {
     const session = active;
     if (!session?.jobId || !session.package || !examService.approveExam || !store.canApprove(session.id)) return false;
@@ -1220,21 +1222,11 @@ export const App: React.FC = () => {
                     examMeta={examMeta}
                     isGenerating={isGenerating}
                     canExport={active.package?.approved === true && !active.artifactChanged}
-                    canExportPdf={Boolean(
-                      active.package?.approved &&
-                      !active.artifactChanged &&
-                      active.preview?.status === 'ready' &&
-                      active.preview.revision === active.package.revision &&
-                      active.preview.contentHash === active.package.contentHash
-                    )}
                     showApprove={active.status === 'complete' && !active.package?.approved && !active.artifactChanged}
                     canApprove={store.canApprove(active.id)}
                     approving={approving}
                     onOpenPdfPreview={openPdfManually}
                     onApprove={() => { void approve(); }}
-                    onExportPdf={handleExportPdf}
-                    onExportWord={handleExportWord}
-                    onExportAnswer={handleExportAnswer}
                     onShowHistory={canOpenHistory ? () => setHistorySession(active.id) : undefined}
                     onUndoRegeneration={latestUndo ? () => void undoRecordedChange(latestUndo)
                       : canUndo ? () => void undoRegeneration() : undefined}
@@ -1242,6 +1234,7 @@ export const App: React.FC = () => {
                   />}
                   controlsRef={canvas}
                   onManualPdfOpen={() => store.markPreviewOpened(active.id)}
+                  onExport={format => exportFile(format === 'json' ? 'TEACHER_KEY' : 'STUDENT_EXAM', format)}
                   questions={liveQuestions}
                   passages={active.package?.passages}
                   examMeta={examMeta}

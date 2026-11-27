@@ -7,6 +7,7 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from hashlib import sha256
 from pathlib import Path
+from subprocess import SubprocessError
 from uuid import uuid4
 
 import httpx
@@ -28,7 +29,7 @@ from exam_baseline.thpt.rag import (
     default_request,
     retrieval_matrix,
 )
-from exam_baseline.thpt.rendering import render, student_view
+from exam_baseline.thpt.rendering import reflow_saved_choice_rows, render, student_view
 from exam_baseline.thpt.runtime import ContractError
 from exam_baseline.thpt.short_answers import MAX_ANSWER_CHARACTERS, validate_short_answer_precision
 from exam_baseline.thpt.subject_workflow import (
@@ -67,6 +68,7 @@ from exam_baseline.ui.errors import UiError
 from exam_baseline.ui.exam_source import SOURCE_NAME
 from exam_baseline.ui.preview import PreviewService
 from exam_baseline.ui.storage import EXAM_VERSION_FIELDS, JobStore
+from exam_baseline.ui.student_export import export_student_document
 from exam_baseline.ui.timeline import workspace_change_messages
 from exam_baseline.vact import models as vact_models
 from exam_baseline.vact import template as vact_template
@@ -1909,9 +1911,33 @@ class JobManager:
             source = self._verify_source(job)
             root = self.root / job_id
             if kind == "STUDENT_EXAM" and file_format == "tex":
-                return root / SOURCE_NAME, "application/x-tex", source
+                return (
+                    root / SOURCE_NAME,
+                    "application/x-tex",
+                    reflow_saved_choice_rows(source, job["rawQuestions"]),
+                )
             if kind == "STUDENT_EXAM" and file_format == "pdf":
                 return self.previews.file(job), "application/pdf", None
+            if kind == "STUDENT_EXAM" and file_format in {"docx", "md"}:
+                label = "Word" if file_format == "docx" else "Markdown"
+                try:
+                    name, media, data = await asyncio.to_thread(
+                        export_student_document,
+                        self._package(job, include_preview=False),
+                        job,
+                        file_format,
+                        source=source,
+                        compiler=self.previews.compiler(),
+                        timeout=self.settings.latex_timeout_seconds,
+                        cache_directory=self.settings.latex_cache_dir,
+                    )
+                except (OSError, RuntimeError, SubprocessError, ValueError) as exc:
+                    raise UiError(
+                        "word_export_failed" if file_format == "docx" else "markdown_export_failed",
+                        f"Không thể tạo tệp {label} với đầy đủ công thức và hình minh họa.",
+                        500,
+                    ) from exc
+                return root / name, media, data
             if job.get("contractExport") and file_format == "json":
                 filename = (
                     contract_artifacts.STUDENT

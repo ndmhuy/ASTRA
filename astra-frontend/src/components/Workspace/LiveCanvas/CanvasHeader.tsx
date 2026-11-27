@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle2, Download, Eye, FileCheck2, History, LoaderCircle, Undo2 } from 'lucide-react';
+import { CheckCircle2, Eye, History, LoaderCircle, Undo2 } from 'lucide-react';
 
 interface ExamMeta {
   title: string;
@@ -13,10 +13,6 @@ interface CanvasHeaderProps {
   examMeta: ExamMeta | null;
   isGenerating: boolean;
   canExport?: boolean;
-  canExportPdf?: boolean;
-  onExportPdf?: () => void;
-  onExportWord?: () => void;
-  onExportAnswer?: () => void;
   showApprove?: boolean;
   canApprove?: boolean;
   approving?: boolean;
@@ -31,10 +27,6 @@ export const CanvasHeader: React.FC<CanvasHeaderProps> = ({
   examMeta,
   isGenerating,
   canExport = true,
-  canExportPdf = true,
-  onExportPdf,
-  onExportWord,
-  onExportAnswer,
   showApprove,
   canApprove,
   approving,
@@ -93,19 +85,6 @@ export const CanvasHeader: React.FC<CanvasHeaderProps> = ({
             Đã kiểm tra, phê duyệt bản này
           </button>
         )}
-        {canExport && <>
-          <button
-            type="button"
-            className="button-primary"
-            disabled={canExportPdf === false}
-            title={canExportPdf === false ? 'Cần bản xem trước PDF sẵn sàng của phiên bản hiện tại' : undefined}
-            onClick={onExportPdf}
-          >
-            <Download size={14} aria-hidden="true" />Xuất PDF
-          </button>
-          <button type="button" className="button-secondary" onClick={onExportWord}><Download size={14} aria-hidden="true" />Tải tệp nguồn (.tex)</button>
-          <button type="button" className="button-secondary" onClick={onExportAnswer}><FileCheck2 size={14} aria-hidden="true" />Tải tệp đáp án</button>
-        </>}
       </div>}
     </header>
   );
