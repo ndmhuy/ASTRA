@@ -2,6 +2,8 @@
 
 For the owner/next engineer in the existing feat/longlth2297/agent-main-v2 worktree. Current authority: [development approval](MAS_DEVELOPMENT_AUTHORIZATION.md), superseding the old one-exam budget gate. Backend integration is 18243ac; this checkpoint adds configurable budget bypass and enabled MAS development deployment. Read [MAS runbook](MAS_WORKER_RUNBOOK.md).
 
+Teammate setup: [TEAM_QUICKSTART.md](TEAM_QUICKSTART.md). Workers are already deployed, but a fresh local clone needs dependencies/frontend build and privately supplied ignored caller profiles. No teammate needs to configure Cloudflare or receive the Gemini/Gateway credentials. The owner now authorizes committing/pushing this feature branch as a backup; no PR/merge or main integration is performed. Pre-push scripts/verify.py still stops on91 existing RAG lint findings.
+
 ## Current Chat follow-up
 
 - Owner explicitly asked to remove Chat call limits as well. Existing Chat Worker734d9fd6-0aa5-458e-8152-57a1f4763dc7 now has ASTRA_AGENT_BUDGETS_ENABLED=false and forwarding=true. Lifetime/daily/session/token/expiry budget checks bypassed; usage/history retained (21 at verification). No new per-call or per-session approval required. Earlier expiry12:40 is inactive in this mode.
