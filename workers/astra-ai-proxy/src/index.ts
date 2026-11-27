@@ -50,6 +50,7 @@ export default {
         if (!status.ok) throw new Error("quota storage unavailable");
         return response({ status: "ok", contract: VERSION,
           contracts: [VERSION, semanticResources.catalog.schemaVersion], semanticContractHash: semanticResources.contractHash,
+          model: /^gemini-[A-Za-z0-9._-]{1,90}$/.test(env.ASTRA_AGENT_MODEL ?? "") ? env.ASTRA_AGENT_MODEL : null,
           forwarding: env.ASTRA_FORWARDING_ENABLED === "true" && env.ASTRA_AGENT_FORWARDING_ENABLED !== "false",
           masForwarding: false, quota: await status.json() });
       } catch {
@@ -67,6 +68,7 @@ export default {
     let providerStarted: number | undefined;
     let attempts = 0;
     let category = "valid";
+    let requestStage = "configuration";
     let outputMetadata: Record<string, unknown> = {};
     let controller: AbortController | undefined;
     const disconnect = () => controller?.abort();
@@ -87,6 +89,7 @@ export default {
       const milliseconds = bounded(env.ASTRA_UPSTREAM_MS, 30000);
       const tokens = bounded(env.ASTRA_OUTPUT_TOKENS, 1024);
       if (milliseconds < 100 || tokens < 128) throw new Failure("configuration", 503);
+      requestStage = "input_validation";
       if (request.headers.get("content-type")?.split(";")[0].trim() !== "application/json") {
         throw new Failure("rejected", 415);
       }
@@ -120,6 +123,7 @@ export default {
         },
       });
       admission = env.ADMISSION.get(env.ADMISSION.idFromName("global-v1"));
+      requestStage = "admission";
       const admitted = await admission.fetch("https://admission/reserve", {
         method: "POST", body: JSON.stringify({ ip: ipHash, id, operation: "agent",
           reservedTokens: new TextEncoder().encode(providerBody).length + tokens,
@@ -136,6 +140,7 @@ export default {
       const upstreamUrl = "https://gateway.ai.cloudflare.com/v1/" + account + "/" + gateway +
         "/google-ai-studio/v1/models/" + model + ":generateContent";
       attempts = 1;
+      requestStage = "provider_request";
       providerStarted = performance.now();
       const upstream = await fetch(upstreamUrl, {
         method: "POST", redirect: "manual", signal: controller.signal,
@@ -149,6 +154,7 @@ export default {
         body: providerBody,
       });
       upstreamStatus = upstream.status;
+      requestStage = "provider_http";
       if (!upstream.ok) {
         let errorCode: number | undefined;
         let errorStatus: string | undefined;
@@ -159,11 +165,13 @@ export default {
             ? error.status : undefined;
         } catch { /* HTTP classification remains authoritative for malformed error bodies. */ }
         console.log(JSON.stringify({ requestId: id, upstreamStatus, errorCode, errorStatus }));
+        outputMetadata = { schemaStage: requestStage, errorCode, errorStatus };
         const category = upstream.status === 429 ? "quota" : [401,403].includes(upstream.status) ? "auth" :
           upstream.status === 404 ? "model" : [408,504].includes(upstream.status) ? "timeout" :
           upstream.status >= 500 ? "transient" : "rejected";
         throw new Failure(category, 502);
       }
+      requestStage = "provider_response";
       const parsed = parseGemini(await readBounded(upstream, MAX_RESPONSE), upstream.headers.get("content-type"), semantic);
       const decision = parsed.decision;
       outputMetadata = parsed.diagnostics;
@@ -171,7 +179,8 @@ export default {
       return response({ schemaVersion: semantic ? semanticResources.catalog.schemaVersion : VERSION,
         clientMessageId: turn.clientMessageId, ...(semantic ? { frame: decision } : { decision }),
         evidence: { requestId: id, admitted: true, attempts, provider: "google-ai-studio",
-          model, upstreamStatus, elapsedMs: Math.round(performance.now() - started) } });
+          model, upstreamStatus, elapsedMs: Math.round(performance.now() - started),
+          providerElapsedMs: Math.round(performance.now() - providerStarted), diagnostics: outputMetadata } });
     } catch (error) {
       if (error instanceof GeminiOutputFailure) outputMetadata = error.diagnostics;
       const failure = error instanceof GeminiOutputFailure ? new Failure("schema", 502) :
@@ -182,6 +191,10 @@ export default {
       category = failure.category;
       if (category === "schema") console.log(JSON.stringify({ requestId: id, ...outputMetadata }));
       return response({ error: failure.category, requestId: id,
+        ...(semantic ? { evidence: { requestId: id, admitted: reserved, attempts, upstreamStatus,
+          model: attempts ? env.ASTRA_AGENT_MODEL : undefined, requestStage,
+          elapsedMs: Math.round(performance.now() - started),
+          providerElapsedMs: providerStarted === undefined ? undefined : Math.round(performance.now() - providerStarted) } } : {}),
         ...(semantic && Object.keys(outputMetadata).length ? { diagnostics: outputMetadata } : {}) }, failure.status);
     } finally {
       if (timer !== undefined) clearTimeout(timer);

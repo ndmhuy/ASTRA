@@ -9,6 +9,12 @@ const math = { id: 'thpt-math', version: '1', displayName: 'Toán THPT', subject
   available: true, grades: [12], examType: 'THPT_STANDARD', durationMinutes: 90, totalQuestions: 22, sections: [] };
 const frame = (goals, extra = {}) => parseFrame({ schemaVersion: 'astra-semantic-v1', dialogueAct: 'REQUEST', goals, ...extra });
 
+test('observed live INFORM recall remains read-only and executable; navigation is not permitted', () => {
+  const observed = frame([{ goal: 'RECALL_REQUIREMENTS', parameters: { what: 'first' } }], { dialogueAct: 'INFORM' });
+  assert.deepEqual(resolveSemantic(observed).decision.intents, [{ id: 'RECALL', args: { what: 'first' } }]);
+  assert.equal(resolveSemantic(frame([{ goal: 'RETURN_HOME' }], { dialogueAct: 'INFORM' })).decision, undefined);
+});
+
 test('THPT semantics pause for catalog subject, then select actual UI format without generation', () => {
   const semantic = frame([{ goal: 'PREPARE_EXAM', parameters: { family: 'thpt' } }]);
   const workflow = resolveSemantic(semantic);
@@ -16,6 +22,8 @@ test('THPT semantics pause for catalog subject, then select actual UI format wit
   assert.equal(initial.draft.missing, 'subject');
   assert.equal(initial.draft.family, 'thpt');
   const local = contextualSubject('Toan.', initial.draft, [math]);
+  assert.equal(contextualSubject('Môn Toán nhé.', initial.draft, [math]).intake.subject, 'Toán Học');
+  assert.equal(contextualSubject('Không chọn môn Toán nhé.', initial.draft, [math]), undefined);
   const next = resolveIntake(local.intake, 'Toan.', initial.draft, [math], 'second');
   assert.equal(next.intent.id, 'SELECT_FORMAT');
   assert.equal(next.intent.args.format, math.id);

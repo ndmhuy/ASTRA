@@ -23,6 +23,18 @@ export interface Env {
   ASTRA_MAS_TOKEN_DAILY?: string;
   ASTRA_MAS_PER_MINUTE?: string;
   ASTRA_MAS_IP_PER_MINUTE?: string;
+  ASTRA_DIAGNOSTIC_SESSION?: string;
+  ASTRA_DIAGNOSTIC_LIMIT?: string;
+  ASTRA_DIAGNOSTIC_UNTIL?: string;
+}
+
+export function diagnosticPolicy(env: Env) {
+  if (![env.ASTRA_DIAGNOSTIC_SESSION, env.ASTRA_DIAGNOSTIC_LIMIT, env.ASTRA_DIAGNOSTIC_UNTIL].some(value => value !== undefined)) return;
+  const id = env.ASTRA_DIAGNOSTIC_SESSION ?? "";
+  const limit = bounded(env.ASTRA_DIAGNOSTIC_LIMIT, 12);
+  const until = Date.parse(env.ASTRA_DIAGNOSTIC_UNTIL ?? "");
+  if (!/^[a-z0-9-]{1,64}$/.test(id) || !Number.isFinite(until)) throw new Error("configuration");
+  return { id, limit, until };
 }
 
 export function bounded(value: string | undefined, maximum: number): number {

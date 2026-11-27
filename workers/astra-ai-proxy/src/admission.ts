@@ -1,12 +1,12 @@
 import type { Env } from "./env";
-import { bounded } from "./env";
+import { bounded, diagnosticPolicy } from "./env";
 import policies from "../../../src/exam_baseline/resources/agent/workloads.json";
 
 type Operation = "agent" | "mas";
 type Counter = { day: string; global: number; agent: number; mas: number; agentTokens?: number; masTokens?: number };
 type Reservation = { id: string; expires: number; operation?: Operation };
 type Rate = { key: string; count: number; expires: number; operation?: Operation };
-type Ledger = { counter: Counter; leases: Reservation[]; rates: Rate[]; turns?: {id: string; expires: number; operation?: Operation}[]; circuits?: Partial<Record<Operation, {failures: number; until: number}>> };
+type Ledger = { counter: Counter; leases: Reservation[]; rates: Rate[]; turns?: {id: string; expires: number; operation?: Operation}[]; circuits?: Partial<Record<Operation, {failures: number; until: number}>>; sessions?: Record<string, { used: number }> };
 
 export class Admission {
   constructor(private state: DurableObjectState, private env: Env) {}
@@ -17,12 +17,18 @@ export class Admission {
       const day = new Date(now).toISOString().slice(0, 10);
       const ledger = await this.state.storage.get<Ledger>("ledger");
       const current = ledger?.counter.day === day ? ledger.counter : undefined;
+      const policy = diagnosticPolicy(this.env);
+      const used = policy ? ledger?.sessions?.[policy.id]?.used ?? 0 : 0;
       const remaining = Math.max(0, Math.min(
         bounded(this.env.ASTRA_GLOBAL_DAILY, 10000) - (current?.global ?? 0),
         bounded(this.env.ASTRA_AGENT_DAILY, 10000) - (current?.agent ?? 0),
       ));
       const active = ledger?.leases.filter(lease => lease.expires > now).length ?? 0;
-      return Response.json({ day, remainingAttempts: remaining, activeReservations: active,
+      return Response.json({ day, remainingAttempts: policy ? Math.min(remaining, policy.until <= now ? 0 : Math.max(0, policy.limit - used)) : remaining,
+        consumedAttempts: { global: current?.global ?? 0, agent: current?.agent ?? 0, mas: current?.mas ?? 0 },
+        diagnostic: policy ? { session: policy.id, used, limit: policy.limit, expiresAt: new Date(policy.until).toISOString(),
+          remaining: policy.until <= now ? 0 : Math.max(0, policy.limit - used) } : null,
+        activeReservations: active,
         workloads: { agent: { remainingAttempts: remaining,
           activeReservations: ledger?.leases.filter(lease => lease.expires > now && (lease.operation ?? "agent") === "agent").length ?? 0 },
           mas: { enabled: this.env.ASTRA_MAS_FORWARDING_ENABLED === "true",
@@ -66,9 +72,16 @@ export class Admission {
           (body.operation === "agent" && this.env.ASTRA_AGENT_FORWARDING_ENABLED === "false")) {
         return Response.json({ error: "rejected" }, { status: 400 });
       }
-      if (ledger.counter.day !== day) ledger.counter = { day, global: 0, agent: 0, mas: 0 };
+      const previousDay = ledger.counter.day !== day ? { ...ledger.counter } : undefined;
+      if (previousDay) ledger.counter = { day, global: 0, agent: 0, mas: 0 };
       const globalLimit = bounded(this.env.ASTRA_GLOBAL_DAILY, 10000);
       const operation = body.operation as Operation;
+      const diagnostic = operation === "agent" ? diagnosticPolicy(this.env) : undefined;
+      if (diagnostic) {
+        const used = ledger.sessions?.[diagnostic.id]?.used ?? 0;
+        if (diagnostic.until <= now || used >= diagnostic.limit) return Response.json({error:"quota"}, {status:429});
+        if (!ledger.sessions?.[diagnostic.id] && Object.keys(ledger.sessions ?? {}).length >= 16) return Response.json({error:"configuration"}, {status:503});
+      }
       if ((ledger.circuits?.[operation]?.until ?? 0) > now) return Response.json({error: "circuit_open"}, {status: 503});
       const agentLimit = bounded(this.env.ASTRA_AGENT_DAILY, 10000);
       const workloadLimit = operation === "agent" ? agentLimit : bounded(this.env.ASTRA_MAS_DAILY ?? "0", 10000);
@@ -109,11 +122,16 @@ export class Admission {
       }
       ledger.counter.global++;
       ledger.counter[operation]++;
+      if (diagnostic) {
+        ledger.sessions ??= {};
+        ledger.sessions[diagnostic.id] = { used: (ledger.sessions[diagnostic.id]?.used ?? 0) + 1 };
+      }
       const tokenKey = operation === "agent" ? "agentTokens" : "masTokens";
       ledger.counter[tokenKey] = (ledger.counter[tokenKey] ?? 0) + reservedTokens;
       if (body.turnId) ledger.turns.push({id: body.turnId, operation, expires: now + 300000});
       const policy = operation === "agent" ? policies.AGENT_CHAT : policies.MAS_GENERATION;
       ledger.leases.push({ id: body.id, operation, expires: now + policy.leaseMs });
+      if (previousDay) await transaction.put("daily-history-v1:" + previousDay.day, previousDay);
       await transaction.put("ledger", ledger);
       return Response.json({ admitted: true, attempts: 1 });
     });

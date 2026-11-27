@@ -121,7 +121,7 @@ export function resolveSemantic(frame: SemanticFrame, recent?: { number: number;
 
 export function contextualSubject(message: string, previous: Intake | undefined, formats: ExamFormat[]): Decision | undefined {
   if (previous?.missing !== 'subject') return;
-  const text = fold(message).replace(/[.!]+$/, '');
+  const text = fold(message).replace(/[.!]+$/, '').replace(/^mon\s+/, '').replace(/\s+(?:nhe|nha)$/, '');
   const subjects: Record<string, string[]> = { ...domain.subjects };
   for (const format of formats) for (const subject of format.subjects) subjects[subject] ??= [];
   const subject = Object.entries(subjects).find(([name, aliases]) => [name, ...aliases].some(term => fold(term) === text))?.[0];

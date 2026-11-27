@@ -18,6 +18,50 @@ const bindings = {
   ASTRA_CONCURRENCY: "1", ASTRA_IP_PER_MINUTE: "2", ASTRA_GLOBAL_PER_MINUTE: "10",
   ASTRA_UPSTREAM_MS: "100", ASTRA_OUTPUT_TOKENS: "512",
 };
+
+test("diagnostic session survives restart and UTC rollover without refreshing its allowance", async () => {
+  const path = await mkdtemp(join(tmpdir(), "astra-session-"));
+  const config = {ASTRA_GLOBAL_DAILY:"12",ASTRA_AGENT_DAILY:"12",ASTRA_IP_PER_MINUTE:"60",
+    ASTRA_DIAGNOSTIC_SESSION:"acceptance-fixture",ASTRA_DIAGNOSTIC_LIMIT:"2",
+    ASTRA_DIAGNOSTIC_UNTIL:new Date(Date.now()+600000).toISOString()};
+  let {mf} = runtime(config,path,"build-test/admission-harness.js");
+  try {
+    let ns=await mf.getDurableObjectNamespace("ADMISSION"), stub=ns.get(ns.idFromName("global-v1"));
+    const reserve=id=>stub.fetch("https://quota/reserve",{method:"POST",body:JSON.stringify({operation:"agent",ip:"test",id})});
+    assert.equal((await reserve("first")).status,200);
+    await stub.fetch("https://quota/release",{method:"POST",body:JSON.stringify({release:"first"})});
+    await mf.dispose();
+    ({mf}=runtime(config,path,"build-test/admission-harness.js"));
+    ns=await mf.getDurableObjectNamespace("ADMISSION"); stub=ns.get(ns.idFromName("global-v1"));
+    assert.equal((await (await stub.fetch("https://quota/status")).json()).diagnostic.used,1);
+    await stub.fetch("https://quota/seed",{method:"POST",body:JSON.stringify({
+      counter:{day:"2000-01-01",global:2,agent:2,mas:0},leases:[],rates:[],
+      sessions:{"acceptance-fixture":{used:1}},
+    })});
+    assert.equal((await reserve("second")).status,200);
+    await stub.fetch("https://quota/release",{method:"POST",body:JSON.stringify({release:"second"})});
+    assert.equal((await reserve("third")).status,429);
+    const status=await (await stub.fetch("https://quota/status")).json();
+    assert.equal(status.diagnostic.used,2); assert.equal(status.remainingAttempts,0);
+    const archived=await (await stub.fetch("https://quota/history?day=2000-01-01")).json();
+    assert.equal(archived.agent,2);
+    await mf.dispose();
+    ({mf}=runtime({...config,ASTRA_DIAGNOSTIC_LIMIT:"3"},path));
+    ns=await mf.getDurableObjectNamespace("ADMISSION"); stub=ns.get(ns.idFromName("global-v1"));
+    assert.equal((await (await stub.fetch("https://quota/status")).json()).diagnostic.remaining,1);
+  } finally {await mf.dispose();await rm(path,{recursive:true,force:true});}
+});
+
+test("expired or oversized diagnostic allowances fail closed without upstream",async()=>{
+  for(const override of [
+    {ASTRA_DIAGNOSTIC_LIMIT:"8",ASTRA_DIAGNOSTIC_UNTIL:"2000-01-01T00:00:00Z"},
+    {ASTRA_DIAGNOSTIC_LIMIT:"13",ASTRA_DIAGNOSTIC_UNTIL:new Date(Date.now()+600000).toISOString()},
+  ]) {
+    const {mf,mock}=runtime({ASTRA_DIAGNOSTIC_SESSION:"acceptance-fixture",...override});
+    try {assert.notEqual((await post(mf)).status,200);mock.assertNoPendingInterceptors();}
+    finally {await mf.dispose();}
+  }
+});
 const turn = { schemaVersion: "astra-intent-v1", clientMessageId: "a".repeat(36),
   workspaceId: "b".repeat(36), message: "Natural fixture",
   context: { screen: "start", setup: false } };

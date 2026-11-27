@@ -15,6 +15,51 @@ from .semantics import VERSION as SEMANTIC_VERSION
 from .semantics import SemanticFrame, normalize_frame
 
 logger = logging.getLogger(__name__)
+
+
+def log_evidence(turn: Turn, payload: dict) -> None:
+    evidence = payload.get("evidence", {})
+    if not isinstance(evidence, dict):
+        return
+    diagnostics = evidence.get("diagnostics", payload.get("diagnostics", {}))
+    if not isinstance(evidence, dict) or not isinstance(diagnostics, dict):
+        return
+    safe = {"turnId": turn.clientMessageId}
+    request_id = evidence.get("requestId", payload.get("requestId"))
+    if isinstance(request_id, str) and re.fullmatch(r"[a-f0-9-]{36}", request_id):
+        safe["requestId"] = request_id
+    for key in ("attempts", "upstreamStatus", "elapsedMs", "providerElapsedMs"):
+        value = evidence.get(key)
+        if type(value) is int and 0 <= value < 10_000_000:
+            safe[key] = value
+    for key in (
+        "promptTokenCount",
+        "candidatesTokenCount",
+        "thoughtsTokenCount",
+        "totalTokenCount",
+        "textBytes",
+    ):
+        value = diagnostics.get(key)
+        if type(value) is int and 0 <= value < 10_000_000:
+            safe[key] = value
+    for key in ("schemaStage", "finishReason", "dialogueAct"):
+        value = diagnostics.get(key)
+        if isinstance(value, str) and re.fullmatch(r"[A-Za-z_]{1,60}", value):
+            safe[key] = value
+    stage = evidence.get("requestStage")
+    if isinstance(stage, str) and re.fullmatch(r"[a-z_]{1,40}", stage):
+        safe["requestStage"] = stage
+    # Field paths have already been restricted by the Worker; never forward arbitrary prose.
+    paths = diagnostics.get("validationPaths")
+    if isinstance(paths, list):
+        safe["validationPaths"] = [
+            path
+            for path in paths
+            if isinstance(path, str) and re.fullmatch(r"/[A-Za-z0-9_/]{0,150}", path)
+        ][:8]
+    logger.info("agent_worker_evidence %s", json.dumps(safe, separators=(",", ":")))
+
+
 WORKER_URL = "https://astra-ai-proxy.letranhoanglong2227.workers.dev"
 CONTRACT_HASH = json.loads(
     (Path(__file__).parents[1] / "resources/agent/worker-contract.json").read_text(encoding="utf-8")
@@ -76,6 +121,8 @@ class WorkerInterpretationProvider:
                     raw.extend(chunk)
                 payload = json.loads(raw)
                 logger.info("agent_worker_http status=%d", response.status_code)
+                if isinstance(payload, dict):
+                    log_evidence(turn, payload)
                 if response.status_code != 200:
                     reason = payload.get("error") if isinstance(payload, dict) else None
                     raise ProviderFailure(reason if reason in ERRORS else "transient")
@@ -90,6 +137,8 @@ class WorkerInterpretationProvider:
                     else Decision.model_validate(payload["decision"])
                 )
                 evidence = payload.get("evidence", {})
+                if not isinstance(evidence, dict):
+                    raise ProviderFailure("schema")
                 worker_id = evidence.get("requestId", "")
                 if not isinstance(worker_id, str) or not re.fullmatch(r"[a-f0-9-]{36}", worker_id):
                     worker_id = "unavailable"
