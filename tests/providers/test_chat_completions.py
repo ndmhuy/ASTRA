@@ -49,6 +49,7 @@ def test_adapter_request_and_usage_mapping():
         assert data["response_format"] == {"type": "json_object"}
         assert data["max_completion_tokens"] == 8192
         assert "temperature" not in data and "seed" not in data
+        assert "reasoning_effort" not in data
         return httpx.Response(200, json=envelope())
 
     result = invoke(handler)
@@ -157,6 +158,7 @@ def test_compatible_provider_options():
         data = json.loads(request.content)
         assert data["max_tokens"] == 900
         assert data["temperature"] == 0 and data["seed"] == 5
+        assert data["reasoning_effort"] == "low"
         assert data["response_format"] == {"type": "text"}
         return httpx.Response(200, json=envelope(usage=None))
 
@@ -168,6 +170,7 @@ def test_compatible_provider_options():
             token_limit_field="max_tokens",
             temperature=0,
             seed=5,
+            reasoning_effort="low",
             response_format="text",
         ),
     )

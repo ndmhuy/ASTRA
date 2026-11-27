@@ -27,8 +27,8 @@ Tài liệu này dành cho **Trọng (`phutrong-2208`)** và bất kỳ thành v
 
 | Milestone | Mô tả | Trạng thái | Commit SHA | Bằng chứng kiểm tra |
 | :---: | :--- | :---: | :---: | :--- |
-| **M1** | Tạo worktree + Đặc tả kiểm chứng & file Checkpoint | **DONE** | *(pending commit)* | Worktree tạo từ `origin/main` `c9badf5c` |
-| **M2** | Thêm `EXAM_REASONING_EFFORT` & đơn giá Gemini 2.5 / 3.1 / 3.8 | PENDING | — | — |
+| **M1** | Tạo worktree + Đặc tả kiểm chứng & file Checkpoint | **DONE** | `a459f2d` | Worktree tạo từ `origin/main` `c9badf5c` |
+| **M2** | Thêm `EXAM_REASONING_EFFORT` & đơn giá Gemini 2.5 / 3.1 / 3.8 | **DONE** | *(pending commit)* | `pytest` 60/60 pass (`test_chat_completions`, `test_metrics`, `test_runtime`); Ruff check & format pass |
 | **M3** | Xây dựng `thpt_suite` (4 kiến trúc + 5 đề cố định + `--resume` + template PDF check) | PENDING | — | — |
 | **M4** | Xây dựng `thpt_validator` (Seeded Defect Suite cho Toán THPT) | PENDING | — | — |
 | **M5** | Xây dựng bộ xuất phiếu chấm mù CSV + `BENCHMARK_REPORT.md` + 3 biểu đồ SVG | PENDING | — | — |

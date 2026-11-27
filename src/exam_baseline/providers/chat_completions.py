@@ -57,6 +57,8 @@ class ChatCompletionsProvider:
             self.parameters["temperature"] = settings.temperature
         if settings.seed is not None:
             self.parameters["seed"] = settings.seed
+        if settings.reasoning_effort is not None:
+            self.parameters["reasoning_effort"] = settings.reasoning_effort
 
     async def complete(self, request: CompletionRequest) -> Completion:
         if request.images and not self.supports_images:

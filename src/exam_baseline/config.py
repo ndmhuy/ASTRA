@@ -39,6 +39,7 @@ class Settings(BaseSettings):
     schema_as_tool: bool = False
     temperature: float | None = Field(default=None, ge=0, le=2, allow_inf_nan=False)
     seed: int | None = None
+    reasoning_effort: Literal["none", "minimal", "low", "medium", "high", "xhigh"] | None = None
     max_prompt_chars: int = Field(default=200000, gt=0)
     supports_images: bool = False
     input_price_per_million: float | None = Field(default=None, ge=0, allow_inf_nan=False)

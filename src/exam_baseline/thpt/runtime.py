@@ -41,7 +41,10 @@ class RecordingProvider:
                 ):
                     raise
                 delay = exc.retry_after_seconds
-                await asyncio.sleep(delay if delay is not None else 1)
+                wait_seconds = delay if delay is not None else 1.0
+                if self.record is not None:
+                    self.record["retry_wait_ms"] = round(wait_seconds * 1000)
+                await asyncio.sleep(wait_seconds)
 
     async def _once(self, request):
         record = dict(role=self.stage, revision=self.revision, status="started")
