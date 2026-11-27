@@ -1,0 +1,808 @@
+[
+  {
+    "id": "thpt-subject-continuation",
+    "partition": "development",
+    "scenarioFamily": "thpt-subject-continuation",
+    "provenance": "Synthetic state and authored dialogue; real current format catalog snapshot.",
+    "initialState": {
+      "status": "draft"
+    },
+    "turns": [
+      {
+        "input": "Cô muốn chuẩn bị đề thi thử tốt nghiệp.",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "REQUEST",
+          "goals": [
+            {
+              "goal": "PREPARE_EXAM",
+              "parameters": {
+                "family": "thpt"
+              }
+            }
+          ],
+          "constraints": []
+        },
+        "expected": {
+          "missing": "subject",
+          "family": "thpt",
+          "capabilities": []
+        }
+      },
+      {
+        "input": "Toán.",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "INFORM",
+          "goals": [
+            {
+              "goal": "PREPARE_EXAM",
+              "parameters": {
+                "subject": "Toán"
+              }
+            }
+          ],
+          "constraints": []
+        },
+        "expected": {
+          "localSubject": true,
+          "family": "thpt",
+          "subject": "Toán Học",
+          "capabilities": [
+            "SELECT_FORMAT"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "unsupported-subject-then-supported",
+    "partition": "evaluation",
+    "scenarioFamily": "unsupported-subject-then-supported",
+    "provenance": "Synthetic state and authored dialogue; real current format catalog snapshot.",
+    "initialState": {
+      "status": "draft"
+    },
+    "turns": [
+      {
+        "input": "Cần một đề THPT.",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "REQUEST",
+          "goals": [
+            {
+              "goal": "PREPARE_EXAM",
+              "parameters": {
+                "family": "thpt"
+              }
+            }
+          ],
+          "constraints": []
+        },
+        "expected": {
+          "missing": "subject",
+          "capabilities": []
+        }
+      },
+      {
+        "input": "Hóa.",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "INFORM",
+          "goals": [
+            {
+              "goal": "PREPARE_EXAM",
+              "parameters": {
+                "subject": "Hóa"
+              }
+            }
+          ],
+          "constraints": []
+        },
+        "expected": {
+          "localSubject": true,
+          "missing": "subject",
+          "capabilities": [],
+          "textContains": "chưa hỗ trợ"
+        }
+      },
+      {
+        "input": "Toán",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "INFORM",
+          "goals": [
+            {
+              "goal": "PREPARE_EXAM",
+              "parameters": {
+                "subject": "Toán"
+              }
+            }
+          ],
+          "constraints": []
+        },
+        "expected": {
+          "localSubject": true,
+          "capabilities": [
+            "SELECT_FORMAT"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "family-correction-clears-obsolete-topic",
+    "partition": "evaluation",
+    "scenarioFamily": "family-correction-clears-obsolete-topic",
+    "provenance": "Synthetic state and authored dialogue; real current format catalog snapshot.",
+    "initialState": {
+      "status": "draft"
+    },
+    "turns": [
+      {
+        "input": "THPT môn Toán, tập trung đạo hàm.",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "REQUEST",
+          "goals": [
+            {
+              "goal": "PREPARE_EXAM",
+              "parameters": {
+                "family": "thpt",
+                "subject": "Toán",
+                "topic": "đạo hàm"
+              }
+            }
+          ],
+          "constraints": []
+        },
+        "expected": {
+          "capabilities": [
+            "SELECT_FORMAT"
+          ]
+        }
+      },
+      {
+        "input": "Chuyển sang V-ACT nhưng chưa tạo.",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "CORRECT",
+          "goals": [
+            {
+              "goal": "PREPARE_EXAM",
+              "parameters": {
+                "family": "vact"
+              }
+            }
+          ],
+          "constraints": [
+            "NO_GENERATION"
+          ]
+        },
+        "expected": {
+          "family": "vact",
+          "topicAbsent": true,
+          "capabilities": [
+            "SELECT_FORMAT"
+          ],
+          "invalidatesConfirmation": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "subject-already-provided",
+    "partition": "development",
+    "scenarioFamily": "subject-already-provided",
+    "provenance": "Synthetic state and authored dialogue; real current format catalog snapshot.",
+    "initialState": {
+      "status": "draft"
+    },
+    "turns": [
+      {
+        "input": "Chuẩn bị đề tốt nghiệp môn Toán.",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "REQUEST",
+          "goals": [
+            {
+              "goal": "PREPARE_EXAM",
+              "parameters": {
+                "family": "thpt",
+                "subject": "Toán"
+              }
+            }
+          ],
+          "constraints": []
+        },
+        "expected": {
+          "capabilities": [
+            "SELECT_FORMAT"
+          ],
+          "subject": "Toán Học"
+        }
+      }
+    ]
+  },
+  {
+    "id": "unknown-family-needs-choice",
+    "partition": "development",
+    "scenarioFamily": "unknown-family-needs-choice",
+    "provenance": "Synthetic state and authored dialogue; real current format catalog snapshot.",
+    "initialState": {
+      "status": "draft"
+    },
+    "turns": [
+      {
+        "input": "Chuẩn bị đề thi thử.",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "REQUEST",
+          "goals": [
+            {
+              "goal": "PREPARE_EXAM",
+              "parameters": {}
+            }
+          ],
+          "constraints": []
+        },
+        "expected": {
+          "missing": "family",
+          "capabilities": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "locked-count-is-not-repaired",
+    "partition": "development",
+    "scenarioFamily": "locked-count-is-not-repaired",
+    "provenance": "Synthetic state and authored dialogue; real current format catalog snapshot.",
+    "initialState": {
+      "status": "draft"
+    },
+    "turns": [
+      {
+        "input": "THPT môn Toán 15 câu.",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "REQUEST",
+          "goals": [
+            {
+              "goal": "PREPARE_EXAM",
+              "parameters": {
+                "family": "thpt",
+                "subject": "Toán",
+                "count": 15
+              }
+            }
+          ],
+          "constraints": []
+        },
+        "expected": {
+          "capabilities": [],
+          "textContains": "cố định"
+        }
+      }
+    ]
+  },
+  {
+    "id": "explicit-defaults-clear-count-conflict",
+    "partition": "development",
+    "scenarioFamily": "explicit-defaults-clear-count-conflict",
+    "provenance": "Synthetic state and authored dialogue; real current format catalog snapshot.",
+    "initialState": {
+      "status": "draft"
+    },
+    "turns": [
+      {
+        "input": "THPT môn Toán 15 câu.",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "REQUEST",
+          "goals": [
+            {
+              "goal": "PREPARE_EXAM",
+              "parameters": {
+                "family": "thpt",
+                "subject": "Toán",
+                "count": 15
+              }
+            }
+          ],
+          "constraints": []
+        },
+        "expected": {
+          "capabilities": []
+        }
+      },
+      {
+        "input": "Đồng ý dùng cấu trúc mặc định.",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "INFORM",
+          "goals": [
+            {
+              "goal": "PREPARE_EXAM",
+              "parameters": {
+                "useDefaults": true
+              }
+            }
+          ],
+          "constraints": []
+        },
+        "expected": {
+          "capabilities": [
+            "SELECT_FORMAT"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "structure-is-read-only",
+    "partition": "evaluation",
+    "scenarioFamily": "structure-is-read-only",
+    "provenance": "Synthetic state and authored dialogue; real current format catalog snapshot.",
+    "initialState": {
+      "status": "draft"
+    },
+    "turns": [
+      {
+        "input": "Cấu trúc V-ACT như thế nào?",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "QUESTION",
+          "goals": [
+            {
+              "goal": "INSPECT_FORMAT",
+              "parameters": {
+                "family": "vact"
+              }
+            }
+          ],
+          "constraints": []
+        },
+        "expected": {
+          "capabilities": [],
+          "textContains": "120 câu"
+        }
+      }
+    ]
+  },
+  {
+    "id": "question-does-not-open-setup",
+    "partition": "development",
+    "scenarioFamily": "question-does-not-open-setup",
+    "provenance": "Synthetic state and authored dialogue; real current format catalog snapshot.",
+    "initialState": {
+      "status": "draft"
+    },
+    "turns": [
+      {
+        "input": "Cấu hình nằm ở đâu?",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "QUESTION",
+          "goals": [
+            {
+              "goal": "OPEN_CONFIGURATION",
+              "parameters": {}
+            }
+          ],
+          "constraints": []
+        },
+        "expected": {
+          "capabilities": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "no-generation-with-topic",
+    "partition": "evaluation",
+    "scenarioFamily": "no-generation-with-topic",
+    "provenance": "Synthetic state and authored dialogue; real current format catalog snapshot.",
+    "initialState": {
+      "status": "draft"
+    },
+    "turns": [
+      {
+        "input": "Chọn THPT môn Toán, đạo hàm, chưa tạo.",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "REQUEST",
+          "goals": [
+            {
+              "goal": "REQUEST_GENERATION",
+              "parameters": {
+                "family": "thpt",
+                "subject": "Toán",
+                "topic": "đạo hàm"
+              }
+            }
+          ],
+          "constraints": [
+            "NO_GENERATION"
+          ]
+        },
+        "expected": {
+          "capabilities": [
+            "SELECT_FORMAT"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "cancellation-clears-dialogue",
+    "partition": "development",
+    "scenarioFamily": "cancellation-clears-dialogue",
+    "provenance": "Synthetic state and authored dialogue; real current format catalog snapshot.",
+    "initialState": {
+      "status": "draft"
+    },
+    "turns": [
+      {
+        "input": "Soạn đề THPT.",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "REQUEST",
+          "goals": [
+            {
+              "goal": "PREPARE_EXAM",
+              "parameters": {
+                "family": "thpt"
+              }
+            }
+          ],
+          "constraints": []
+        },
+        "expected": {
+          "missing": "subject",
+          "capabilities": []
+        }
+      },
+      {
+        "input": "Bỏ yêu cầu đó đi.",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "CANCEL",
+          "goals": [],
+          "constraints": []
+        },
+        "expected": {
+          "capabilities": [],
+          "cancelled": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "semantic-confirmation-is-not-authorization",
+    "partition": "evaluation",
+    "scenarioFamily": "semantic-confirmation-is-not-authorization",
+    "provenance": "Synthetic state and authored dialogue; real current format catalog snapshot.",
+    "initialState": {
+      "status": "draft"
+    },
+    "turns": [
+      {
+        "input": "Đồng ý.",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "CONFIRM",
+          "goals": [],
+          "constraints": []
+        },
+        "expected": {
+          "capabilities": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "ambiguous-previous-question",
+    "partition": "development",
+    "scenarioFamily": "ambiguous-previous-question",
+    "provenance": "Synthetic state and authored dialogue; real current format catalog snapshot.",
+    "initialState": {
+      "status": "draft"
+    },
+    "turns": [
+      {
+        "input": "Cái câu hồi nãy ấy, làm dễ hơn.",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "AMBIGUOUS",
+          "goals": [],
+          "constraints": []
+        },
+        "expected": {
+          "capabilities": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "ordered-open-and-answer",
+    "partition": "evaluation",
+    "scenarioFamily": "ordered-open-and-answer",
+    "provenance": "Synthetic state and authored dialogue; real current format catalog snapshot.",
+    "initialState": {
+      "status": "draft"
+    },
+    "turns": [
+      {
+        "input": "Mở đề gần đây nhất rồi xem đáp án câu 5.",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "REQUEST",
+          "goals": [
+            {
+              "goal": "OPEN_WORKSPACE",
+              "parameters": {}
+            },
+            {
+              "goal": "INSPECT_QUESTION",
+              "parameters": {
+                "number": 5,
+                "view": "review"
+              }
+            }
+          ],
+          "constraints": []
+        },
+        "expected": {
+          "capabilities": [
+            "OPEN_SESSION",
+            "FOCUS_QUESTION"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "whole-request-negation-stops-composition",
+    "partition": "evaluation",
+    "scenarioFamily": "whole-request-negation-stops-composition",
+    "provenance": "Synthetic state and authored dialogue; real current format catalog snapshot.",
+    "initialState": {
+      "status": "draft"
+    },
+    "turns": [
+      {
+        "input": "Mở đề rồi thôi đừng mở và đừng xuất.",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "REQUEST",
+          "goals": [
+            {
+              "goal": "OPEN_WORKSPACE",
+              "parameters": {}
+            },
+            {
+              "goal": "EXPORT_EXAM",
+              "parameters": {
+                "format": "pdf"
+              }
+            }
+          ],
+          "constraints": [
+            "CONTRADICTORY"
+          ]
+        },
+        "expected": {
+          "capabilities": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "guidance-during-generation",
+    "partition": "development",
+    "scenarioFamily": "guidance-during-generation",
+    "provenance": "Synthetic state and authored dialogue; real current format catalog snapshot.",
+    "initialState": {
+      "status": "generating",
+      "jobId": "synthetic-job"
+    },
+    "turns": [
+      {
+        "input": "Cô cần hướng dẫn dùng ứng dụng.",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "GUIDANCE",
+          "goals": [
+            {
+              "goal": "APPLICATION_GUIDANCE",
+              "parameters": {}
+            }
+          ],
+          "constraints": []
+        },
+        "expected": {
+          "capabilities": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "progress-during-generation",
+    "partition": "evaluation",
+    "scenarioFamily": "progress-during-generation",
+    "provenance": "Synthetic state and authored dialogue; real current format catalog snapshot.",
+    "initialState": {
+      "status": "generating",
+      "jobId": "synthetic-job"
+    },
+    "turns": [
+      {
+        "input": "Đề tới đâu rồi?",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "QUESTION",
+          "goals": [
+            {
+              "goal": "READ_PROGRESS",
+              "parameters": {}
+            }
+          ],
+          "constraints": []
+        },
+        "expected": {
+          "capabilities": [
+            "STATUS"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "deferred-note-edit-and-cancel",
+    "partition": "development",
+    "scenarioFamily": "deferred-note-edit-and-cancel",
+    "provenance": "Synthetic state and authored dialogue; real current format catalog snapshot.",
+    "initialState": {
+      "status": "generating",
+      "jobId": "synthetic-job"
+    },
+    "turns": [
+      {
+        "input": "Ghi chú câu 1 dễ hơn.",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "REQUEST",
+          "goals": [
+            {
+              "goal": "RECORD_REVISION_NOTE",
+              "parameters": {
+                "number": 1,
+                "instruction": "dễ hơn"
+              }
+            }
+          ],
+          "constraints": []
+        },
+        "expected": {
+          "capabilities": [
+            "ADD_NOTE"
+          ]
+        }
+      },
+      {
+        "input": "Bỏ ghi chú câu 1.",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "REQUEST",
+          "goals": [
+            {
+              "goal": "CANCEL_REVISION_NOTE",
+              "parameters": {
+                "number": 1
+              }
+            }
+          ],
+          "constraints": []
+        },
+        "expected": {
+          "capabilities": [
+            "CANCEL_NOTE"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "unsupported-word-export",
+    "partition": "evaluation",
+    "scenarioFamily": "unsupported-word-export",
+    "provenance": "Synthetic state and authored dialogue; real current format catalog snapshot.",
+    "initialState": {
+      "status": "draft"
+    },
+    "turns": [
+      {
+        "input": "Xuất Word.",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "UNSUPPORTED",
+          "goals": [],
+          "constraints": []
+        },
+        "expected": {
+          "capabilities": [],
+          "textContains": "chưa có"
+        }
+      }
+    ]
+  },
+  {
+    "id": "generation-requests-confirmation-only",
+    "partition": "development",
+    "scenarioFamily": "generation-requests-confirmation-only",
+    "provenance": "Synthetic state and authored dialogue; real current format catalog snapshot.",
+    "initialState": {
+      "status": "draft"
+    },
+    "turns": [
+      {
+        "input": "Tạo đề Toán THPT.",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "REQUEST",
+          "goals": [
+            {
+              "goal": "REQUEST_GENERATION",
+              "parameters": {
+                "family": "thpt",
+                "subject": "Toán"
+              }
+            }
+          ],
+          "constraints": []
+        },
+        "expected": {
+          "capabilities": [
+            "PREPARE_GENERATION"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "observed-reference-followup",
+    "partition": "evaluation",
+    "scenarioFamily": "observed-reference",
+    "provenance": "Synthetic current observed question, confirmation remains in React.",
+    "initialState": {
+      "status": "complete",
+      "recentQuestion": {
+        "number": 1,
+        "part": "P1"
+      }
+    },
+    "turns": [
+      {
+        "input": "Kiểm tra câu vừa xem giúp cô.",
+        "expectedFrame": {
+          "schemaVersion": "astra-semantic-v1",
+          "dialogueAct": "REQUEST",
+          "goals": [
+            {
+              "goal": "VERIFY_ANSWER",
+              "parameters": {},
+              "reference": "previous"
+            }
+          ],
+          "constraints": []
+        },
+        "expected": {
+          "capabilities": [
+            "VERIFY_QUESTION"
+          ]
+        }
+      }
+    ]
+  }
+]

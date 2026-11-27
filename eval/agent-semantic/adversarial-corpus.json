@@ -1,0 +1,370 @@
+[
+  {
+    "id": "unknown-goal",
+    "partition": "evaluation",
+    "scenarioFamily": "unknown-goal",
+    "invalidFrame": {
+      "schemaVersion": "astra-semantic-v1",
+      "dialogueAct": "REQUEST",
+      "goals": [
+        {
+          "goal": "RUN_SHELL",
+          "parameters": {}
+        }
+      ]
+    },
+    "expected": "reject_no_action",
+    "provenance": "Synthetic structural regression fixture."
+  },
+  {
+    "id": "invented-workspace-id",
+    "partition": "evaluation",
+    "scenarioFamily": "invented-workspace-id",
+    "invalidFrame": {
+      "schemaVersion": "astra-semantic-v1",
+      "dialogueAct": "REQUEST",
+      "goals": [
+        {
+          "goal": "OPEN_WORKSPACE",
+          "parameters": {
+            "workspaceId": "invented"
+          }
+        }
+      ]
+    },
+    "expected": "reject_no_action",
+    "provenance": "Synthetic structural regression fixture."
+  },
+  {
+    "id": "unknown-family",
+    "partition": "evaluation",
+    "scenarioFamily": "unknown-family",
+    "invalidFrame": {
+      "schemaVersion": "astra-semantic-v1",
+      "dialogueAct": "REQUEST",
+      "goals": [
+        {
+          "goal": "PREPARE_EXAM",
+          "parameters": {
+            "family": "unknown"
+          }
+        }
+      ]
+    },
+    "expected": "reject_no_action",
+    "provenance": "Synthetic structural regression fixture."
+  },
+  {
+    "id": "boolean-count",
+    "partition": "evaluation",
+    "scenarioFamily": "boolean-count",
+    "invalidFrame": {
+      "schemaVersion": "astra-semantic-v1",
+      "dialogueAct": "REQUEST",
+      "goals": [
+        {
+          "goal": "PREPARE_EXAM",
+          "parameters": {
+            "count": true
+          }
+        }
+      ]
+    },
+    "expected": "reject_no_action",
+    "provenance": "Synthetic structural regression fixture."
+  },
+  {
+    "id": "negative-question",
+    "partition": "evaluation",
+    "scenarioFamily": "negative-question",
+    "invalidFrame": {
+      "schemaVersion": "astra-semantic-v1",
+      "dialogueAct": "REQUEST",
+      "goals": [
+        {
+          "goal": "INSPECT_QUESTION",
+          "parameters": {
+            "number": -1
+          }
+        }
+      ]
+    },
+    "expected": "reject_no_action",
+    "provenance": "Synthetic structural regression fixture."
+  },
+  {
+    "id": "raw-url",
+    "partition": "evaluation",
+    "scenarioFamily": "raw-url",
+    "invalidFrame": {
+      "schemaVersion": "astra-semantic-v1",
+      "dialogueAct": "REQUEST",
+      "url": "https://untrusted.invalid"
+    },
+    "expected": "reject_no_action",
+    "provenance": "Synthetic structural regression fixture."
+  },
+  {
+    "id": "model-confirmation-token",
+    "partition": "evaluation",
+    "scenarioFamily": "model-confirmation-token",
+    "invalidFrame": {
+      "schemaVersion": "astra-semantic-v1",
+      "dialogueAct": "CONFIRM",
+      "confirmationToken": "fake"
+    },
+    "expected": "reject_no_action",
+    "provenance": "Synthetic structural regression fixture."
+  },
+  {
+    "id": "unknown-export",
+    "partition": "evaluation",
+    "scenarioFamily": "unknown-export",
+    "invalidFrame": {
+      "schemaVersion": "astra-semantic-v1",
+      "dialogueAct": "REQUEST",
+      "goals": [
+        {
+          "goal": "EXPORT_EXAM",
+          "parameters": {
+            "format": "docx"
+          }
+        }
+      ]
+    },
+    "expected": "reject_no_action",
+    "provenance": "Synthetic structural regression fixture."
+  },
+  {
+    "id": "too-many-goals",
+    "partition": "evaluation",
+    "scenarioFamily": "too-many-goals",
+    "invalidFrame": {
+      "schemaVersion": "astra-semantic-v1",
+      "dialogueAct": "REQUEST",
+      "goals": [
+        {
+          "goal": "READ_PROGRESS",
+          "parameters": {}
+        },
+        {
+          "goal": "READ_PROGRESS",
+          "parameters": {}
+        },
+        {
+          "goal": "READ_PROGRESS",
+          "parameters": {}
+        },
+        {
+          "goal": "READ_PROGRESS",
+          "parameters": {}
+        },
+        {
+          "goal": "READ_PROGRESS",
+          "parameters": {}
+        }
+      ]
+    },
+    "expected": "reject_no_action",
+    "provenance": "Synthetic structural regression fixture."
+  },
+  {
+    "id": "wrong-dialogue-act",
+    "partition": "evaluation",
+    "scenarioFamily": "wrong-dialogue-act",
+    "invalidFrame": {
+      "schemaVersion": "astra-semantic-v1",
+      "dialogueAct": "EXECUTE_NOW"
+    },
+    "expected": "reject_no_action",
+    "provenance": "Synthetic structural regression fixture."
+  },
+  {
+    "id": "whitespace",
+    "partition": "development",
+    "scenarioFamily": "whitespace",
+    "input": "   ",
+    "expected": "reject_input",
+    "provenance": "Synthetic input-admission fixture."
+  },
+  {
+    "id": "repeated-character",
+    "partition": "development",
+    "scenarioFamily": "repeated-character",
+    "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "expected": "reject_input",
+    "provenance": "Synthetic input-admission fixture."
+  },
+  {
+    "id": "control-character",
+    "partition": "development",
+    "scenarioFamily": "control-character",
+    "input": "a\u0001b",
+    "expected": "reject_input",
+    "provenance": "Synthetic input-admission fixture."
+  },
+  {
+    "id": "oversize",
+    "partition": "development",
+    "scenarioFamily": "oversize",
+    "input": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "expected": "reject_input",
+    "provenance": "Synthetic input-admission fixture."
+  },
+  {
+    "id": "no-action-ambiguous",
+    "partition": "evaluation",
+    "scenarioFamily": "no-action-ambiguous",
+    "frame": {
+      "schemaVersion": "astra-semantic-v1",
+      "dialogueAct": "AMBIGUOUS",
+      "goals": []
+    },
+    "expected": "no_action",
+    "provenance": "Synthetic abstention regression fixture."
+  },
+  {
+    "id": "no-action-unsupported",
+    "partition": "evaluation",
+    "scenarioFamily": "no-action-unsupported",
+    "frame": {
+      "schemaVersion": "astra-semantic-v1",
+      "dialogueAct": "UNSUPPORTED",
+      "goals": []
+    },
+    "expected": "no_action",
+    "provenance": "Synthetic abstention regression fixture."
+  },
+  {
+    "id": "no-action-out_of_scope",
+    "partition": "evaluation",
+    "scenarioFamily": "no-action-out_of_scope",
+    "frame": {
+      "schemaVersion": "astra-semantic-v1",
+      "dialogueAct": "OUT_OF_SCOPE",
+      "goals": []
+    },
+    "expected": "no_action",
+    "provenance": "Synthetic abstention regression fixture."
+  },
+  {
+    "id": "no-action-conversation",
+    "partition": "evaluation",
+    "scenarioFamily": "no-action-conversation",
+    "frame": {
+      "schemaVersion": "astra-semantic-v1",
+      "dialogueAct": "CONVERSATION",
+      "goals": []
+    },
+    "expected": "no_action",
+    "provenance": "Synthetic abstention regression fixture."
+  },
+  {
+    "id": "no-action-confirm",
+    "partition": "evaluation",
+    "scenarioFamily": "no-action-confirm",
+    "frame": {
+      "schemaVersion": "astra-semantic-v1",
+      "dialogueAct": "CONFIRM",
+      "goals": []
+    },
+    "expected": "no_action",
+    "provenance": "Synthetic abstention regression fixture."
+  },
+  {
+    "id": "composed-no_execution",
+    "partition": "evaluation",
+    "scenarioFamily": "composed-no_execution",
+    "frame": {
+      "schemaVersion": "astra-semantic-v1",
+      "dialogueAct": "REQUEST",
+      "goals": [
+        {
+          "goal": "OPEN_WORKSPACE",
+          "parameters": {}
+        },
+        {
+          "goal": "APPROVE_EXAM",
+          "parameters": {}
+        }
+      ],
+      "constraints": [
+        "NO_EXECUTION"
+      ]
+    },
+    "expected": "no_action",
+    "provenance": "Synthetic whole-turn constraint regression fixture."
+  },
+  {
+    "id": "composed-negated",
+    "partition": "evaluation",
+    "scenarioFamily": "composed-negated",
+    "frame": {
+      "schemaVersion": "astra-semantic-v1",
+      "dialogueAct": "REQUEST",
+      "goals": [
+        {
+          "goal": "OPEN_WORKSPACE",
+          "parameters": {}
+        },
+        {
+          "goal": "APPROVE_EXAM",
+          "parameters": {}
+        }
+      ],
+      "constraints": [
+        "NEGATED"
+      ]
+    },
+    "expected": "no_action",
+    "provenance": "Synthetic whole-turn constraint regression fixture."
+  },
+  {
+    "id": "composed-conditional",
+    "partition": "evaluation",
+    "scenarioFamily": "composed-conditional",
+    "frame": {
+      "schemaVersion": "astra-semantic-v1",
+      "dialogueAct": "REQUEST",
+      "goals": [
+        {
+          "goal": "OPEN_WORKSPACE",
+          "parameters": {}
+        },
+        {
+          "goal": "APPROVE_EXAM",
+          "parameters": {}
+        }
+      ],
+      "constraints": [
+        "CONDITIONAL"
+      ]
+    },
+    "expected": "no_action",
+    "provenance": "Synthetic whole-turn constraint regression fixture."
+  },
+  {
+    "id": "composed-contradictory",
+    "partition": "evaluation",
+    "scenarioFamily": "composed-contradictory",
+    "frame": {
+      "schemaVersion": "astra-semantic-v1",
+      "dialogueAct": "REQUEST",
+      "goals": [
+        {
+          "goal": "OPEN_WORKSPACE",
+          "parameters": {}
+        },
+        {
+          "goal": "APPROVE_EXAM",
+          "parameters": {}
+        }
+      ],
+      "constraints": [
+        "CONTRADICTORY"
+      ]
+    },
+    "expected": "no_action",
+    "provenance": "Synthetic whole-turn constraint regression fixture."
+  }
+]

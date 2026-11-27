@@ -100,6 +100,7 @@ class WorkspaceMessage(Model):
     timestamp: datetime
     examVersion: ExamVersionRef | None = None
     recorded: bool = False
+    agentTurn: bool = False
 
 
 class WorkspaceContent(Model):

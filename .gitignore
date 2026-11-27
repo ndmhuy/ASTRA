@@ -19,6 +19,7 @@ htmlcov/
 # Secrets: only the credential-free template belongs in Git
 .env*
 !.env.example
+.dev.vars*
 *.pem
 *.key
 *.p12
@@ -83,6 +84,12 @@ Resource/*
 *.exe
 
 # Local design critique
+**/.dev.vars
+**/.dev.vars.*
+**/.wrangler/
+workers/**/node_modules/
+workers/**/build/
+workers/**/build-test/
 /review2.md
 
 # Local AI frontend design skill
