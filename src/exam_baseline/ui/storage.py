@@ -14,8 +14,12 @@ from exam_baseline.ui.timeline import workspace_change_messages
 
 
 def _search_text(value: str) -> str:
-    folded = unicodedata.normalize("NFD", value.lower().replace("đ", "d"))
-    return " ".join("".join(char for char in folded if not unicodedata.combining(char)).split())
+    return " ".join(unicodedata.normalize("NFC", value.lower()).split())
+
+
+def _fold_search_accents(value: str) -> str:
+    decomposed = unicodedata.normalize("NFD", value.replace("đ", "d"))
+    return "".join(char for char in decomposed if not unicodedata.category(char).startswith("M"))
 
 
 EXAM_VERSION_FIELDS = (
@@ -208,9 +212,11 @@ class JobStore:
         term = _search_text(query)
         if not term:
             return []
+        ignore_accents = term == _fold_search_accents(term)
 
         def matches(value: str) -> bool:
-            return term in _search_text(value)
+            normalized = _search_text(value)
+            return term in (_fold_search_accents(normalized) if ignore_accents else normalized)
 
         with self.connect() as db:
             rows = db.execute(

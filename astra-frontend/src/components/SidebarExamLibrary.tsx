@@ -36,12 +36,19 @@ interface Props {
 }
 
 function searchText(value: string) {
-  return value.toLocaleLowerCase('vi').replace(/đ/g, 'd').normalize('NFD')
-    .replace(/\p{M}/gu, '').replace(/\s+/g, ' ').trim();
+  return value.toLocaleLowerCase('vi').normalize('NFC').replace(/\s+/g, ' ').trim();
+}
+
+function foldSearchAccents(value: string) {
+  return value.replace(/đ/g, 'd').normalize('NFD').replace(/\p{M}/gu, '');
 }
 
 function matchesSession(session: ExamSession, term: string, searchContent: boolean) {
-  const matches = (value: string) => searchText(value).includes(term);
+  const ignoreAccents = term === foldSearchAccents(term);
+  const matches = (value: string) => {
+    const normalized = searchText(value);
+    return (ignoreAccents ? foldSearchAccents(normalized) : normalized).includes(term);
+  };
   if ([session.title, session.meta?.title, session.meta?.subject].some(text => text && matches(text))) return true;
   if (!searchContent) return false;
   return session.messages.some(message => message.role !== 'system' && matches(message.content)) ||
@@ -83,6 +90,11 @@ export function SidebarExamLibrary({
     setQuery('');
     setResult(undefined);
   }
+
+  function dismissSearch() {
+    closeSearch();
+    window.requestAnimationFrame(() => searchButton.current?.focus());
+  }
   useEffect(() => {
     if (!deleteId) return;
     const handleKey = (event: KeyboardEvent) => {
@@ -94,14 +106,17 @@ export function SidebarExamLibrary({
   return <nav className="sidebar-library" aria-label="Đề thi của thầy cô">
     <button type="button" className="sidebar-new-exam" onClick={onNew} title="Tạo đề mới"><Plus size={16} aria-hidden="true" /><span className="sidebar-label">Tạo đề mới</span></button>
     <div className="sidebar-library-search">
-      {searchOpen ? <input type="search" aria-label="Tìm đề thi và tin nhắn" placeholder="Tìm trong tủ đề…"
-        maxLength={200} value={query} autoFocus onChange={event => setQuery(event.target.value)}
+      {searchOpen ? <div className="sidebar-library-search-field"
         onKeyDown={event => {
           if (event.key !== 'Escape') return;
           event.preventDefault();
-          closeSearch();
-          window.requestAnimationFrame(() => searchButton.current?.focus());
-        }} /> : <>
+          dismissSearch();
+        }}>
+        <input type="search" aria-label="Tìm đề thi và tin nhắn" placeholder="Tìm trong tủ đề…"
+          maxLength={200} value={query} autoFocus onChange={event => setQuery(event.target.value)} />
+        <button type="button" className="sidebar-library-search-close" aria-label="Đóng tìm kiếm"
+          title="Đóng tìm kiếm" onClick={dismissSearch}><X size={14} aria-hidden="true" /></button>
+      </div> : <>
         <h2 className="sidebar-library-heading sidebar-label">Tủ đề</h2>
         <button ref={searchButton} type="button" aria-label="Tìm trong tủ đề" title="Tìm trong tủ đề"
           onClick={() => setSearchOpen(true)}><Search size={14} aria-hidden="true" /></button>

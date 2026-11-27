@@ -245,7 +245,7 @@ def test_saved_workspace_search_matches_current_exam_and_chat(tmp_path):
             {
                 "id": "one",
                 "role": "user",
-                "content": "Động lực",
+                "content": "Động lực của toàn bộ hệ",
                 "timestamp": "2026-11-27T09:00:00Z",
             },
             {
@@ -267,6 +267,9 @@ def test_saved_workspace_search_matches_current_exam_and_chat(tmp_path):
         assert client.put(f"/api/workspaces/{chat_id}", json=chat).status_code == 200
         assert search("   LICH  SU ") == [chat_id]
         assert search("dong luc") == [chat_id]
+        assert search("toàn") == [chat_id]
+        assert search("toán") == []
+        assert search("toan") == [chat_id]
         assert search("an khoi tim kiem") == []
         assert search("   ") == []
 
@@ -278,6 +281,9 @@ def test_saved_workspace_search_matches_current_exam_and_chat(tmp_path):
         job = generation.json()["jobId"]
         assert wait(client, job)["status"] == "completed"
         assert search("toan hoc") == [exam_id]
+        assert search("TOÁN") == [exam_id]
+        assert search("toa\u0301n") == [exam_id]
+        assert set(search("toan")) == {chat_id, exam_id}
         assert search("(p1-1)") == [exam_id]
         exam = client.get(f"/api/exams/{job}").json()
         edited = client.put(

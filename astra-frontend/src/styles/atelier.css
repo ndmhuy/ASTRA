@@ -279,8 +279,10 @@
 }
 
 .integrated-shell .sidebar-library-search {
+  position: relative;
   display: flex;
   align-items: center;
+  flex: 0 0 14px;
   gap: 4px;
   margin: 10px 4px 2px;
 }
@@ -312,15 +314,39 @@
   color: var(--atelier-paper);
 }
 
+.integrated-shell .sidebar-library-search-field {
+  position: absolute;
+  inset-inline: -4px;
+  /* Center the field in the space around the heading's 10px / 2px margins. */
+  inset-block-start: calc(50% - 4px);
+  transform: translateY(-50%);
+}
+
 .integrated-shell .sidebar-library-search input {
+  display: block;
+  box-sizing: border-box;
   width: 100%;
   min-width: 0;
-  padding: 4px 7px;
+  padding: 4px 26px 4px 7px;
   border: 1px solid var(--atelier-edge);
   border-radius: var(--radius-md);
   background: var(--atelier-paper);
   color: var(--atelier-ink);
   font: 500 12px/1.35 var(--font-ui);
+}
+
+.integrated-shell .sidebar-library-search .sidebar-library-search-close {
+  position: absolute;
+  inset-inline-end: 4px;
+  inset-block-start: 50%;
+  transform: translateY(-50%);
+  height: 20px;
+  color: var(--atelier-muted);
+}
+
+.integrated-shell .sidebar-library-search .sidebar-library-search-close:is(:hover, :focus-visible) {
+  background: var(--ui-green-soft);
+  color: var(--atelier-ink);
 }
 
 .app-shell.integrated-shell .sidebar-library-search input:focus {
