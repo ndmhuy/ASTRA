@@ -14,6 +14,7 @@ from jsonschema import ValidationError
 
 from exam_baseline.core.contracts import ProviderError
 from exam_baseline.providers.chat_completions import ChatCompletionsProvider
+from exam_baseline.providers.worker_mas import configured_worker_mas
 from exam_baseline.thpt import contract_artifacts
 from exam_baseline.thpt.agents import QUESTION_FORMAT, Agent, IllustratorAgent, SolverAgent
 from exam_baseline.thpt.content import choice_latex
@@ -405,6 +406,11 @@ class JobManager:
         if self.providers is not None:
             yield self.providers
             return
+        async with httpx.AsyncClient(follow_redirects=False) as worker_client:
+            worker_providers = configured_worker_mas(self.settings, worker_client)
+            if worker_providers is not None:
+                yield worker_providers
+                return
         if self.settings.provider != "chat_completions":
             raise UiError(
                 "provider_not_configured",

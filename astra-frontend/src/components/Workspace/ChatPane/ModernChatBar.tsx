@@ -122,8 +122,8 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
 
           <div className="composer-toolbar-spacer" />
 
-          <span className="composer-hint" aria-hidden="true">
-            Enter gửi · Shift+Enter xuống dòng
+          <span className="composer-hint" role={disabled ? 'status' : undefined} aria-live="polite">
+            {disabled ? 'Đang đọc yêu cầu…' : 'Enter gửi · Shift+Enter xuống dòng'}
           </span>
 
           <button

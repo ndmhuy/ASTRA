@@ -15,6 +15,7 @@ from exam_baseline.core.contracts import LLMProvider
 from exam_baseline.core.validation import ExamValidator
 from exam_baseline.providers.chat_completions import ChatCompletionsProvider
 from exam_baseline.providers.mock import MockProvider
+from exam_baseline.providers.worker_mas import configured_worker_mas
 
 
 def build_service(settings: Settings, provider: LLMProvider) -> GenerationService:
@@ -42,5 +43,10 @@ async def service_scope(
                 client = await resources.enter_async_context(
                     httpx.AsyncClient(follow_redirects=False)
                 )
-                provider = ChatCompletionsProvider(settings, client)
+                mas = configured_worker_mas(settings, client)
+                provider = (
+                    mas["composer"]
+                    if mas is not None
+                    else ChatCompletionsProvider(settings, client)
+                )
         yield build_service(settings, provider)

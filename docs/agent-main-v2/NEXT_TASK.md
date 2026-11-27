@@ -1,0 +1,59 @@
+# Next task: owner tests real Chat and MAS through the UI
+
+For the owner/reviewer on feat/longlth2297/chat-mas-main-review. This branch starts at latest origin/main c0fbdaf and merges the existing feature2fd37f6 in an isolated worktree, preserving the owner's original running app. Current authority includes opening a PR into main for teammate review, not merging the PR. [Development approval](MAS_DEVELOPMENT_AUTHORIZATION.md) still prohibits agent-initiated real inference or exam generation. Read [MAS runbook](MAS_WORKER_RUNBOOK.md) and the current [integration evidence](PROGRESS.md#main-integration-for-teammate-review---2026-11-27).
+
+Teammate setup: install CPython3.11 and Node24, then run `.\start.cmd`; see [TEAM_QUICKSTART.md](TEAM_QUICKSTART.md). It prepares dependencies/pinned corpus/frontend and opens localhost:8001. The owner explicitly requested including the two Worker caller tokens in `config/team-worker-access.env`; fresh clones use them automatically without input. Repository/history readers can consume the shared Gemini quota. Provider/Gateway keys stay on Cloudflare. Existing personal/explicit profiles remain supported; no teammate Cloudflare setup or per-user login is added. All48 upstream commits are included in the review base. Pre-push scripts/verify.py still stops on91 existing RAG lint findings; CI Python Ruff/format, focused Python/frontend tests and production build passed.
+
+Launcher readiness was observed on isolated port8002 using only local health/static GETs and offline tests, with no model request or exam submission. The owner's actual app remains on8001. Shared repository access supersedes the earlier instruction against committing caller tokens, under the owner's explicit request. Removing the file does not revoke Git-history copies: rotate/revoke the Worker secrets, then update the repository profile or restore private setup. Provider credentials must remain excluded. The following older runtime sections remain historical where superseded by this checkpoint and the current Chat/MAS configuration.
+
+## Current Chat follow-up
+
+- Owner explicitly asked to remove Chat call limits as well. Existing Chat Worker734d9fd6-0aa5-458e-8152-57a1f4763dc7 now has ASTRA_AGENT_BUDGETS_ENABLED=false and forwarding=true. Lifetime/daily/session/token/expiry budget checks bypassed; usage/history retained (21 at verification). No new per-call or per-session approval required. Earlier expiry12:40 is inactive in this mode.
+- Budgetless requests require a separate revocable Backend credential: encrypted ASTRA_AGENT_CALLER_TOKEN on Worker, ignored .env.agent-worker with ASTRA_AGENT_WORKER_CALLER_TOKEN locally. Agent settings load that file automatically. It is never sent to the frontend or Gemini. Use http://localhost:8001; Backend was restarted without an active generation and logged private access configured=true. The old8000 process has not reloaded this credential.
+- Retained technical rate limits3/IP/minute and10/global/minute, concurrency1, replay rejection, existing deadlines/output cap and kill switch. Existing Gateway/model/contracts and MAS configuration unchanged. To restore budget checks set ASTRA_AGENT_BUDGETS_ENABLED=true and appropriate limits; do not reset usage. Active operator config workers/astra-ai-proxy/.wrangler/development.jsonc is ignored. Tracked defaults remain disabled/bounded.
+- Verified25 offline Worker groups,9 Python adapter checks, generated hashes and GET-only readiness. Zero agent-initiated live Chat/MAS inference or generation. All actual model calls must be owner-driven through UI.
+
+The earlier MAS-only instruction to leave Chat expired is superseded by this explicit Chat follow-up.
+
+## Active development configuration
+
+- Open **http://localhost:8001**. Application is already running with demoMode=false/providerConfigured=true and the existing ignored caller profile. Startup/reload makes no inference. All real exams and Gemini calls must be initiated by the owner on the UI; do not auto-submit even one job or run live inference smoke/integration checks.
+- Existing MAS deployment 6cc7f3de-3e99-4b9b-84ec-8217d3714563: forwarding=true, ASTRA_MAS_BUDGETS_ENABLED=false. ASTRA total/daily request, estimated-token and expiry limits are bypassed, not deleted. Actual used was0 at activation verification. No per-job budget approval required. Gemini's actual quotas and existing technical limits still apply.
+- Revocable caller token, Gateway Secret, fixed destination/model, persistent counters, concurrency3, upstream90s, Backend100s, output8192, request1MiB/response2MiB, Backend idempotency/academic retries/validation and kill switch remain. Model/prompt/schema/academic logic unchanged. No new Worker/Gateway, paid fallback, billing activation or resource purchase.
+- Active operator config: ignored workers/astra-mas-proxy/.wrangler/development.jsonc. To stop forwarding set ASTRA_MAS_FORWARDING_ENABLED=false there and deploy that exact config. To restore budget enforcement set ASTRA_MAS_BUDGETS_ENABLED=true and configure suitable total/daily/token/expiry values; consumed counters remain. Tracked wrangler defaults are deliberately disabled/bounded; deploy the intended profile explicitly.
+- Verified with13 offline Worker groups, tsc, deployment metadata and GET-only health calls; no academic job or live model call was made. Actual live protocol/quality/speed/concurrent Chat acceptance is exclusively owner-driven.
+- Chat API/code/configuration was untouched. The prior Chat window expired independently at12:40 Asia/Bangkok; MAS activation does not renew it. Preserve its usage and do not silently change it under this MAS-only request.
+
+## Historical one-exam approval proposal — superseded
+
+## Current MAS gate
+
+- Application for MAS acceptance: **http://localhost:8001**, actual Backend demoMode=false/providerConfigured=true. The old 8000 process remains the demo profile; use 8001. Restart using `.venv-win/Scripts/python.exe scripts/start_mas_worker.py --port 8001` and the existing ignored .env.mas-worker profile. No Gemini/Gateway key is needed locally; only the revocable Worker caller credential.
+- Existing MAS Worker final version aa62dcd7-ab17-4c31-b282-745634d05d3c, model gemini-3.1-flash-lite, independent astra-mas-gateway/default BYOK. Actual deployed Secrets and prior Gateway bindings preserved. Forwarding=false, total/daily/token limits zero, used=0. Never replace this with the Chat Worker or its credential.
+- No owner-approved MAS inference has occurred. Specification section 7 explicitly requires access-policy/budget approval first. Concrete proposal: internal revocable bearer access; owner starts exactly one standard Toán THPT 22-question/90-minute exam; maximum 41 upstream calls, 4000000 conservative reservation units, two-hour activation window. See runbook for derivation, payload limits, exact deployment steps and acceptance evidence to capture. Do not silently reset counters or auto-run the exam.
+- After approval, activate through the existing Worker with bounded quotas and expiry, verify metadata/health, then let the owner submit through the current UI. Keep native RAG/Composer/Illustrator/Blind Solver/Reviewer/validation unchanged. Worker has no academic orchestration. No website/Backend deployment, push, PR, merge or new Gateway/Worker.
+- Actual disabled checks passed: wrong/no caller token401, correct token with forwarding disabled503, used remains0. 10 Worker groups,17 focused Python checks, real RAG22-context preflight, and non-demo mounted browser passed. Synthetic HTTP academic completions are explicitly fixtures, not live Gemini acceptance. Independent Chat responsiveness during a blocked MAS request passed locally; live concurrent Chat/MAS remains for owner acceptance.
+- Latest fetched origin/main d67d218c has 36 missing commits; no integration performed. Earlier unrelated RAG lint findings remain outside scope.
+
+## Prior Chat checkpoint (historical; MAS information below is superseded)
+
+The real natural THPT to subject question to local Mathematics to actual setup path works. Stored-format recall was corrected and verified live; unsupported Chemistry and home navigation passed. One V-ACT switch timed out upstream at 30 seconds and still needs manual acceptance. Zero exam writes. Eight automated upstream attempts consumed: seven valid frames, one timeout. Two harness-context mistakes count but are excluded from contextual acceptance.
+
+## Current runtime and owner allowance
+
+- Open http://localhost:8000. Actual keyless Worker-profile app remains running here; MAS demo, no local token or private fallback. Reload opens home; select the existing sidebar chat to continue it.
+- Latest owner request authorizes 20 additional manual calls instead of the previous four. Actual preserved usage was already 12 when checked; total session/global/Agent ceilings are now 32, leaving 20. Same session astra-chat-acceptance-20261127-0205, no reset. Current expiry 2026-11-27 05:40 UTC / 12:40 Asia/Bangkok. Deployment b5fe6c1f-cafe-4583-ad72-309ba8c38150; actual metadata/health verified used=12, limit=32, remaining=20, forwarding enabled, MAS disabled. ASTRA's allowance is not a measurement of Gemini quota. No inference was consumed in this update. This supersedes the earlier 12-total authorization and both earlier windows.
+- Both contracts retained; semantic hash 27addb54bfcb694d5cd838671cf1a1662829eec84b365cba48e24e6a2500b7d4. Existing Gemini 3.1 Flash Lite / astra-gateway / BYOK default.
+- Session allowance/expiry survive UTC rollover/restart. Public traffic consumes the same cap. Read /health.quota.diagnostic and root remainingAttempts, not raw daily workload remainder. After expiry inference is blocked even if forwarding flag stays true.
+- Automation is exhausted: do not run agent_live_acceptance.py again. Follow the four-step owner script in LIVE_CHAT_RESULTS.md. Subject continuation and exact format recall can be local; natural intake/switch/recall usually use the model. Maximum three/IP/minute.
+- Setup modal blocks chat. Escape/close/Cancel preserves intake; then continue. No generation/confirmation clicks during Chat-only acceptance.
+
+If the app exits, run `.venv-win/Scripts/python.exe scripts/start_agent_worker.py --port 8000` in this worktree. Startup makes no inference and bypasses the preserved private .env. After expiry leave the window closed; renewal needs owner direction, retaining session usage. To close early, in workers/astra-ai-proxy set ASTRA_FORWARDING_ENABLED=false in existing ignored .wrangler/live-chat-session.jsonc, deploy that same config and verify /health.forwarding=false. Never recreate/reset storage. Historical rollback code bb165c28-5a06-4372-9c9e-b2bf758b9599 is only safe after disabling forwarding.
+
+## Remaining release gates
+
+- Record owner family-switch/manual behavior. Full live acceptance remains conditional; corrected recall is development evidence. Core Chat can be reviewed; PR preparation also needs owner acceptance and upstream compatibility. No push/PR/merge authorized here.
+- Latest fetched origin/main 0adcc468 has 30 commits missing here. No automatic merge/rebase. Preserve existing worktree and protected fresh clone ../longlth2297-semantic-fresh-20261127.
+- Focused checks passed: 23 Python, 40 frontend, 22 Worker groups, contracts, lint/build. Repository verify.py fails on 91 existing Ruff findings in unchanged RAG code. Address separately before claiming the entire repository green.
+- Independent MAS provider/credential/quota pool and caller authorization remain unavailable. MAS daily=0 and forwarding false. Do not use Chat credentials for academic generation.
+- The 197-record/scenario corpus is unchanged. Independent NLU accuracy and population p95 remain unmeasured; expansion to 700 is not a substitute for evaluation.
