@@ -1063,6 +1063,7 @@ export const App: React.FC = () => {
         </div>
         <SidebarExamLibrary sessions={sessions} activeId={screen === 'workspace' ? activeId : null}
           error={libraryError} onRetry={store.retryLibrary} onNew={newExam} onOpen={openManually}
+          collapsed={controlsCollapsed} searchSaved={examService.workspaceLibrary?.search}
           browserImport={browserImport} onImport={store.importBrowserLibrary}
           onDelete={async id => {
             if (await store.remove(id) && configureId === id) { setConfigureId(null); setShowQuickModal(false); }

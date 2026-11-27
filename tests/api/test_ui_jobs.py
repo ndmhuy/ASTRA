@@ -234,6 +234,63 @@ def test_workspaces_share_drafts_link_existing_jobs_and_reject_stale_saves(tmp_p
         assert client.get(f"/api/exams/{job}").status_code == 200
 
 
+def test_saved_workspace_search_matches_current_exam_and_chat(tmp_path):
+    app, _ = fixture_app(tmp_path)
+    exam_id, chat_id = str(uuid4()), str(uuid4())
+    draft = {"revision": 0, "mode": "custom", "title": "Bộ đề", "draft": "", "messages": []}
+    chat = {
+        **draft,
+        "title": "Lịch sử",
+        "messages": [
+            {
+                "id": "one",
+                "role": "user",
+                "content": "Động lực",
+                "timestamp": "2026-11-27T09:00:00Z",
+            },
+            {
+                "id": "two",
+                "role": "system",
+                "content": "Ẩn khỏi tìm kiếm",
+                "timestamp": "2026-11-27T09:00:00Z",
+            },
+        ],
+    }
+    with TestClient(app) as client:
+
+        def search(q):
+            response = client.get("/api/workspaces/search", params={"q": q})
+            assert response.status_code == 200
+            return response.json()["workspaceIds"]
+
+        assert client.put(f"/api/workspaces/{exam_id}", json=draft).status_code == 200
+        assert client.put(f"/api/workspaces/{chat_id}", json=chat).status_code == 200
+        assert search("   LICH  SU ") == [chat_id]
+        assert search("dong luc") == [chat_id]
+        assert search("an khoi tim kiem") == []
+        assert search("   ") == []
+
+        generation = client.post(
+            f"/api/exams/generate?workspace_id={exam_id}",
+            json=PAYLOAD,
+            headers={"Idempotency-Key": "search-current-exam"},
+        )
+        job = generation.json()["jobId"]
+        assert wait(client, job)["status"] == "completed"
+        assert search("toan hoc") == [exam_id]
+        assert search("(p1-1)") == [exam_id]
+        exam = client.get(f"/api/exams/{job}").json()
+        edited = client.put(
+            f"/api/exams/{job}/questions/1",
+            json={"revision": exam["revision"], "question": {"stem": "Tính đạo hàm tại một điểm."}},
+        )
+        assert edited.status_code == 200
+        assert search("tinh dao ham") == [exam_id]
+        assert search("(p1-1)") == []
+        assert client.delete(f"/api/workspaces/{chat_id}").status_code == 204
+        assert search("dong luc") == []
+
+
 def test_browser_import_preserves_drafts_and_reconnects_existing_artifacts(tmp_path):
     app, _ = fixture_app(tmp_path)
     draft_id, exam_id, missing_id = (str(uuid4()) for _ in range(3))

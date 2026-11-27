@@ -45,6 +45,7 @@ export interface SavedWorkspace extends WorkspaceDraft {
 
 interface WorkspaceLibrary {
   list(): Promise<{ workspaces: SavedWorkspace[] }>;
+  search?(query: string, signal: AbortSignal): Promise<{ workspaceIds: string[] }>;
   changes(id: string): Promise<{ messages: ChatMessage[]; milestones: ChatMessage[] }>;
   branch(id: string, destinationId: string, messageId: string, copyCurrent: boolean): Promise<{ workspaceId: string }>;
   undoChange(id: string, jobId: string, changeId: string, revision: number): Promise<ExamPackage>;
@@ -689,6 +690,7 @@ export class ApiExamService implements IExamService {
   };
   readonly workspaceLibrary: WorkspaceLibrary = {
     list: () => requestJson(`${this.baseUrl}/workspaces`),
+    search: (q, signal) => requestJson(`${this.baseUrl}/workspaces/search?${new URLSearchParams({ q })}`, { signal }),
     changes: id => requestJson(`${this.baseUrl}/workspaces/${id}/changes`),
     branch: (id, destinationId, messageId, copyCurrent) => requestJson(`${this.baseUrl}/workspaces/${id}/branch`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },

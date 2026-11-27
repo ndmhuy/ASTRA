@@ -2,6 +2,7 @@
 
 import json
 import sqlite3
+import unicodedata
 from hashlib import sha256
 from pathlib import Path
 from typing import Literal
@@ -9,6 +10,13 @@ from uuid import uuid4
 
 from exam_baseline.ui.errors import UiError
 from exam_baseline.ui.exam_source import PENDING_NAME, SOURCE_NAME, publish_source, settle_source
+from exam_baseline.ui.timeline import workspace_change_messages
+
+
+def _search_text(value: str) -> str:
+    folded = unicodedata.normalize("NFD", value.lower().replace("đ", "d"))
+    return " ".join("".join(char for char in folded if not unicodedata.combining(char)).split())
+
 
 EXAM_VERSION_FIELDS = (
     "rawQuestions",
@@ -195,6 +203,46 @@ class JobStore:
     def workspace_job_meta(raw: str) -> dict:
         request = json.loads(raw)
         return {key: request[key] for key in ("subject", "durationMinutes", "itemCount")}
+
+    def search_workspaces(self, query: str) -> list[str]:
+        term = _search_text(query)
+        if not term:
+            return []
+
+        def matches(value: str) -> bool:
+            return term in _search_text(value)
+
+        with self.connect() as db:
+            rows = db.execute(
+                """SELECT w.id, w.draft, json_extract(j.data, '$.request.subject'),
+                          json_extract(j.data, '$.rawQuestions'), (
+                              SELECT json_group_array(json(c.data)) FROM workspace_jobs l
+                              JOIN exam_changes c ON c.job_id=l.job_id WHERE l.workspace_id=w.id
+                          )
+                   FROM workspaces w LEFT JOIN jobs j ON j.id=w.job_id
+                   AND json_extract(j.data, '$.status')='completed'
+                   WHERE w.archived=0"""
+            ).fetchall()
+        found = []
+        for workspace_id, draft, subject, questions, changes in rows:
+            content = json.loads(draft)
+            fields = [content["title"], subject or ""]
+            fields.extend(
+                message["content"]
+                for message in content.get("messages", [])
+                if message["role"] in ("user", "assistant")
+            )
+            for question in json.loads(questions or "[]"):
+                fields.append(question["stem"])
+                fields.extend(question.get("choices", {}).values())
+                fields.extend(statement["text"] for statement in question.get("statements", []))
+            if any(map(matches, fields)):
+                found.append(workspace_id)
+                continue
+            recorded = workspace_change_messages(json.loads(changes))
+            if any(matches(message["content"]) for message in recorded):
+                found.append(workspace_id)
+        return found
 
     def save_workspace(self, workspace_id: str, revision: int, draft: dict) -> int:
         with self.connect() as db:

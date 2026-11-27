@@ -34,6 +34,14 @@ def workspaces(request: Request, response: Response):
     return {"workspaces": request.app.state.ui_jobs.store.list_workspaces()}
 
 
+@router.get("/workspaces/search")
+def search_workspaces(
+    request: Request, response: Response, q: Annotated[str, Query(min_length=1, max_length=200)]
+):
+    response.headers["Cache-Control"] = "no-store"
+    return {"workspaceIds": request.app.state.ui_jobs.store.search_workspaces(q)}
+
+
 @router.put("/workspaces/{workspace_id}")
 def save_workspace(request: Request, workspace_id: UUID, payload: WorkspaceDraft):
     revision = request.app.state.ui_jobs.store.save_workspace(

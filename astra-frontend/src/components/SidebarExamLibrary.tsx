@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Check, FileText, Flag, LoaderCircle, Plus, Trash2, Upload, X } from 'lucide-react';
+import { Check, FileText, Flag, LoaderCircle, Plus, Search, Trash2, Upload, X } from 'lucide-react';
 import type { ExamSession } from '../state/examSessions';
 
 function ExamStatus({ session }: { session: ExamSession }) {
@@ -24,6 +24,8 @@ function ExamStatus({ session }: { session: ExamSession }) {
 interface Props {
   sessions: ExamSession[];
   activeId: string | null;
+  collapsed: boolean;
+  searchSaved?: (query: string, signal: AbortSignal) => Promise<{ workspaceIds: string[] }>;
   error: string;
   onRetry: () => void;
   browserImport: { pending: boolean; message: string };
@@ -32,10 +34,55 @@ interface Props {
   onOpen: (id: string) => void;
   onDelete: (id: string) => void;
 }
+
+function searchText(value: string) {
+  return value.toLocaleLowerCase('vi').replace(/đ/g, 'd').normalize('NFD')
+    .replace(/\p{M}/gu, '').replace(/\s+/g, ' ').trim();
+}
+
+function matchesSession(session: ExamSession, term: string, searchContent: boolean) {
+  const matches = (value: string) => searchText(value).includes(term);
+  if ([session.title, session.meta?.title, session.meta?.subject].some(text => text && matches(text))) return true;
+  if (!searchContent) return false;
+  return session.messages.some(message => message.role !== 'system' && matches(message.content)) ||
+    session.questions.some(question => matches(question.stem) ||
+      Object.values(question.choices ?? {}).some(matches) ||
+      question.statements?.some(statement => matches(statement.text)));
+}
+
 export function SidebarExamLibrary({
-  sessions, activeId, error, onRetry, browserImport, onImport, onNew, onOpen, onDelete,
+  sessions, activeId, collapsed, searchSaved, error, onRetry, browserImport, onImport, onNew, onOpen, onDelete,
 }: Props) {
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const [result, setResult] = useState<{ term: string; ids?: Set<string> }>();
+  const searchButton = useRef<HTMLButtonElement>(null);
+  const term = searchOpen && !collapsed ? searchText(query) : '';
+
+  useEffect(() => {
+    if (!term || !searchSaved) return;
+    const controller = new AbortController();
+    const timer = window.setTimeout(async () => {
+      try {
+        const { workspaceIds } = await searchSaved(term, controller.signal);
+        if (!controller.signal.aborted) setResult({ term, ids: new Set(workspaceIds) });
+      } catch {
+        if (!controller.signal.aborted) setResult({ term });
+      }
+    }, 160);
+    return () => { window.clearTimeout(timer); controller.abort(); };
+  }, [searchSaved, term]);
+
+  const currentResult = result?.term === term ? result : undefined;
+  const visible = term ? sessions.filter(session => currentResult?.ids?.has(session.id) ||
+    matchesSession(session, term, session.browserOnly || !searchSaved || Boolean(currentResult && !currentResult.ids))) : sessions;
+
+  function closeSearch() {
+    setSearchOpen(false);
+    setQuery('');
+    setResult(undefined);
+  }
   useEffect(() => {
     if (!deleteId) return;
     const handleKey = (event: KeyboardEvent) => {
@@ -46,7 +93,20 @@ export function SidebarExamLibrary({
   }, [deleteId]);
   return <nav className="sidebar-library" aria-label="Đề thi của thầy cô">
     <button type="button" className="sidebar-new-exam" onClick={onNew} title="Tạo đề mới"><Plus size={16} aria-hidden="true" /><span className="sidebar-label">Tạo đề mới</span></button>
-    <h2 className="sidebar-library-heading sidebar-label">Tủ đề</h2>
+    <div className="sidebar-library-search">
+      {searchOpen ? <input type="search" aria-label="Tìm đề thi và tin nhắn" placeholder="Tìm trong tủ đề…"
+        maxLength={200} value={query} autoFocus onChange={event => setQuery(event.target.value)}
+        onKeyDown={event => {
+          if (event.key !== 'Escape') return;
+          event.preventDefault();
+          closeSearch();
+          window.requestAnimationFrame(() => searchButton.current?.focus());
+        }} /> : <>
+        <h2 className="sidebar-library-heading sidebar-label">Tủ đề</h2>
+        <button ref={searchButton} type="button" aria-label="Tìm trong tủ đề" title="Tìm trong tủ đề"
+          onClick={() => setSearchOpen(true)}><Search size={14} aria-hidden="true" /></button>
+      </>}
+    </div>
     {sessions.some(session => session.browserOnly) && (
       <button type="button" className="sidebar-new-exam sidebar-import-action" aria-label="Nhập đề từ trình duyệt này"
         title="Nhập đề từ trình duyệt này" disabled={browserImport.pending} onClick={onImport}>
@@ -67,9 +127,12 @@ export function SidebarExamLibrary({
         <span>Đề thi đã soạn sẽ lưu tại đây.</span>
       </div>
     )}
-    <ul className="sidebar-exams">{sessions.map(session => <li key={session.id}>
+    {term && sessions.length > 0 && visible.length === 0 && <div className="sidebar-library-empty" role="status">
+      {searchSaved && !currentResult ? 'Đang tìm…' : currentResult && !currentResult.ids ? 'Không thể tìm nội dung đã lưu.' : 'Không tìm thấy kết quả.'}
+    </div>}
+    <ul className="sidebar-exams">{visible.map(session => <li key={session.id}>
       <div className="sidebar-exam-row">
-        <button type="button" className="sidebar-exam" onClick={() => onOpen(session.id)} aria-current={session.id === activeId ? 'page' : undefined} title={session.title}>
+        <button type="button" className="sidebar-exam" onClick={() => { closeSearch(); onOpen(session.id); }} aria-current={session.id === activeId ? 'page' : undefined} title={session.title}>
           <FileText className="sidebar-exam-document" size={14} aria-hidden="true" />
           <span className="sidebar-exam-copy sidebar-label">
             <span className="sidebar-exam-title">{session.mode === 'template' ? session.meta?.title ?? session.title : session.title}</span>
