@@ -1,12 +1,13 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { getActiveUploads, subscribeUploads } from '../../../services/inputDocuments';
+import React, { useSyncExternalStore, useState, useRef, useCallback, useEffect } from 'react';
 import { Globe, ArrowUp } from 'lucide-react';
 
 import { DocumentAttachments } from '../../DocumentAttachments';
-import type { InputDocument } from '../../../services/inputDocuments';
+import type { InputDocument, InputDocumentsUpdate } from '../../../services/inputDocuments';
 
 interface ModernChatBarProps {
   documents?: InputDocument[];
-  onDocumentsChange?: (documents: InputDocument[]) => void;
+  onDocumentsChange?: (documents: InputDocumentsUpdate) => void;
   onSend: (message: string, options: { searchWeb: boolean; attachedFiles: InputDocument[] }) => void;
   disabled?: boolean;
   draft?: string;
@@ -20,8 +21,10 @@ export const ModernChatBar: React.FC<ModernChatBarProps> = ({ onSend, disabled =
   const [searchWeb, setSearchWeb] = useState(false);
   const [localDocuments, setLocalDocuments] = useState<InputDocument[]>([]);
   const attachedFiles = documents ?? localDocuments;
-  const setAttachedFiles = (value: InputDocument[]) => { setLocalDocuments(value); onDocumentsChange?.(value); };
-  const [uploading, setUploading] = useState(false);
+  const setAttachedFiles = (value: InputDocumentsUpdate) => { setLocalDocuments(value); onDocumentsChange?.(value); };
+  const [localUploading, setUploading] = useState(false);
+  const activeUploads = useSyncExternalStore(subscribeUploads, getActiveUploads);
+  const uploading = localUploading || activeUploads > 0;
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const adjustHeight = useCallback(() => {

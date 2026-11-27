@@ -37,7 +37,7 @@ async def document_policy():
 @router.post("/input-documents", status_code=201)
 async def upload_document(
     request: Request,
-    filename: Annotated[str, Query(min_length=1, max_length=180)],
+    filename: Annotated[str, Query(min_length=1, max_length=1024)],
     kind: DocumentKind = "supplementary",
 ):
     validate_filename(filename)

@@ -86,7 +86,35 @@ def main():
                     ),
                 )
                 page.goto(URL)
+                deferred = []
+
+                def hold_upload(route):
+                    if "filename=sample.txt" in route.request.url and not deferred:
+                        deferred.append(route)
+                    else:
+                        route.continue_()
+
+                page.route("**/api/input-documents?**", hold_upload)
+                expect(page.get_by_label("Chọn tài liệu đầu vào")).to_be_enabled()
+                page.get_by_label("Chọn tài liệu đầu vào").set_input_files(str(sample))
                 page.get_by_role("button", name="Soạn từ mẫu", exact=True).click()
+                race_modal = page.get_by_role("dialog")
+                expect(race_modal.get_by_label("Chọn tài liệu đầu vào")).to_be_enabled()
+                race_modal.get_by_label("Chọn tài liệu đầu vào").set_input_files(str(matrix))
+                expect(race_modal.get_by_text("matrix.csv", exact=False)).to_be_visible()
+                assert deferred
+                expect(
+                    race_modal.get_by_role("button", name="Tạo đề thi", exact=True)
+                ).to_be_disabled()
+                deferred[0].continue_()
+                expect(race_modal.get_by_text("sample.txt", exact=False)).to_be_visible()
+                expect(race_modal.get_by_text("matrix.csv", exact=False)).to_be_visible(
+                    timeout=2000
+                )
+                page.unroute("**/api/input-documents?**", hold_upload)
+                race_modal.get_by_role("button", name="Bỏ đính kèm sample.txt").click()
+                race_modal.get_by_role("button", name="Bỏ đính kèm matrix.csv").click()
+
                 modal = page.get_by_role("dialog")
                 picker = modal.get_by_label("Chọn tài liệu đầu vào")
                 expect(picker).to_be_enabled()
@@ -135,6 +163,27 @@ def main():
                 assert len(generated) == 2 and len(generated[-1]["uploadedFiles"]) == 2
                 assert document_id not in generated[-1]["uploadedFiles"]
                 page.screenshot(path=str(OUTPUT / "chat-upload-desktop.png"), full_page=True)
+                # Creating a fresh workspace from chat must not inherit earlier landing uploads.
+                page.get_by_role("textbox", name="Yêu cầu soạn đề").fill("tạo workspace mới")
+                page.get_by_role("button", name="Gửi yêu cầu").click()
+                expect(
+                    page.get_by_role("button", name="Tạo đề từ yêu cầu", exact=True)
+                ).to_be_visible(timeout=10000)
+                expect(page.get_by_text("matrix.csv", exact=False)).to_have_count(0)
+                page.get_by_role("button", name="Tạo đề từ yêu cầu", exact=True).click()
+                empty_modal = page.get_by_role("dialog")
+                expect(empty_modal.get_by_text("matrix.csv", exact=False)).to_have_count(0)
+                empty_modal.get_by_role("button", name="Tạo đề thi", exact=True).click()
+                expect(page.locator(".exam-question-card")).to_have_count(22, timeout=30000)
+                assert len(generated) == 3 and generated[-1]["uploadedFiles"] == []
+                expect(page.get_by_text("matrix.csv", exact=False)).to_have_count(0)
+                # Returning home via chat starts clean without stale landing attachments.
+                page.get_by_role("textbox", name="Yêu cầu soạn đề").fill("về trang chủ")
+                page.get_by_role("button", name="Gửi yêu cầu").click()
+                expect(page.get_by_role("button", name="Soạn từ mẫu", exact=True)).to_be_visible(
+                    timeout=10000
+                )
+                expect(page.get_by_text("matrix.csv", exact=False)).to_have_count(0)
                 browser.close()
                 print(
                     json.dumps(

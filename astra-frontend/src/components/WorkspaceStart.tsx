@@ -10,11 +10,11 @@ import {
 } from './AtelierMotifs';
 import { ModernChatBar } from './Workspace/ChatPane/ModernChatBar';
 
-import type { InputDocument } from '../services/inputDocuments';
+import type { InputDocument, InputDocumentsUpdate } from '../services/inputDocuments';
 
 interface Props {
   documents: InputDocument[];
-  onDocumentsChange: (documents: InputDocument[]) => void;
+  onDocumentsChange: (documents: InputDocumentsUpdate) => void;
   exiting: boolean;
   draft: string;
   onDraftChange: (value: string) => void;

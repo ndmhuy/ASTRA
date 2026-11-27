@@ -1,7 +1,7 @@
 import type { ChatMessage, ExamPackage, ExamPreviewState, ExamRequestParams, QuestionItem, GenerationProgress } from '../types/exam';
 import type { IExamService, SavedWorkspace, WorkspaceDraft } from '../services/examService';
 import { conversationFor, suggestedTitle, titleFrom, touched, type Conversation } from '../agent/memory.ts';
-import type { InputDocument } from '../services/inputDocuments';
+import type { InputDocument, InputDocumentsUpdate } from '../services/inputDocuments';
 import type { Intake } from '../agent/intake.ts';
 import { reconcileNotes, type Note } from '../agent/notes.ts';
 import { formatProgressStatus, humanizeErrorMessage } from '../utils/userMessages.ts';
@@ -563,7 +563,7 @@ export class ExamSessions {
     if (state) void this.loadLibrary();
     return true;
   }
-  setInputDocuments(id: string, inputDocuments: InputDocument[]) { this.update(id, session => ({ ...session, inputDocuments }), true); }
+  setInputDocuments(id: string, inputDocuments: InputDocumentsUpdate) { this.update(id, session => ({ ...session, inputDocuments: typeof inputDocuments === 'function' ? inputDocuments(session.inputDocuments ?? []) : inputDocuments }), true); }
   setDraft(id: string, draft: string) { this.update(id, session => ({ ...session, draft }), true); }
   rename(id: string, value: string) {
     const title = titleFrom(value);

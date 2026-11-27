@@ -203,9 +203,14 @@ export const App: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screen, activeId, showWelcome]);
   const handleDetailedStart = () => {
+    const fromLanding = !configureId;
     const id = configureId || store.create('custom');
     store.setDraft(id, landingDraft);
-    store.setInputDocuments(id, landingDocuments);
+    if (fromLanding) {
+      if (landingDocuments.length) store.setInputDocuments(id, landingDocuments);
+      setLandingDraft('');
+      setLandingDocuments([]);
+    }
     setShowQuickModal(false);
     setConfigureId(null);
     revealSession(id);
@@ -224,7 +229,13 @@ export const App: React.FC = () => {
       if (store.getSnapshot().some(session => session.id === id)) store.appendMessage(id, 'assistant', text);
       else setAdmissionError(text);
     };
-    flushSync(() => { store.setInputDocuments(id, options.attachedFiles); store.appendMessage(id, 'user', content, messageId, true); });
+    flushSync(() => {
+      const currentDocs = store.getSnapshot().find(session => session.id === id)?.inputDocuments;
+      if (options.attachedFiles.length || currentDocs?.length) {
+        store.setInputDocuments(id, options.attachedFiles);
+      }
+      store.appendMessage(id, 'user', content, messageId, true);
+    });
     let resolvedIntake: Intake | undefined;
     const runtime: Runtime = {
       binding: () => runtimeRef.current!.binding(),
@@ -437,7 +448,7 @@ export const App: React.FC = () => {
       return;
     }
     const id = configureId || store.create('custom');
-    flushSync(() => { setLandingDraft(''); openSession(id); });
+    flushSync(() => { setLandingDraft(''); setLandingDocuments([]); openSession(id); });
     if (navigation?.id === 'CREATE_SESSION') {
       store.appendMessage(id, 'user', admission.text);
       store.appendMessage(id, 'assistant', 'Đã mở một không gian soạn đề mới.');
@@ -459,13 +470,18 @@ export const App: React.FC = () => {
       return;
     }
     pending.current = null;
+    const fromLanding = !configureId;
     const id = configureId || store.create('template');
     const session = store.getSnapshot().find(item => item.id === id);
     const instructions = session?.messages.filter(message => message.role === 'user' && !message.agentTurn).map(message => message.content).join('\n');
     setShowQuickModal(false);
     revealSession(id);
     setAgentSelection(undefined);
-    store.setInputDocuments(id, session?.inputDocuments ?? landingDocuments);
+    if (fromLanding) {
+      if (landingDocuments.length) store.setInputDocuments(id, landingDocuments);
+      setLandingDraft('');
+      setLandingDocuments([]);
+    }
     void store.generate(id, { ...params, prompt: instructions ? `${params.prompt}\n${instructions}` : params.prompt });
   };
   const handleSendMessage = (content: string, options: { searchWeb: boolean; attachedFiles: InputDocument[] }) => {

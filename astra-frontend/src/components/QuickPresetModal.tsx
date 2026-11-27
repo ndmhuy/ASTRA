@@ -1,15 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { getActiveUploads, subscribeUploads } from '../services/inputDocuments';
+import React, { useSyncExternalStore, useEffect, useRef, useState } from 'react';
 import { ChevronDown, ChevronUp, X } from 'lucide-react';
 import type { ExamFormat, ExamRequestParams } from '../types/exam';
 import { presetParams } from '../agent/intake';
 import { getBackendHealth, getExamFormats, type BackendHealth } from '../services/examService';
 
 import { DocumentAttachments } from './DocumentAttachments';
-import type { InputDocument } from '../services/inputDocuments';
+import type { InputDocument, InputDocumentsUpdate } from '../services/inputDocuments';
 
 interface Props {
   documents: InputDocument[];
-  onDocumentsChange: (documents: InputDocument[]) => void;
+  onDocumentsChange: (documents: InputDocumentsUpdate) => void;
   onDialogMount?: (node: HTMLDivElement | null) => void;
   title?: string;
   onStart: (params: ExamRequestParams) => void;
@@ -54,7 +55,9 @@ export const QuickPresetModal: React.FC<Props> = ({ documents, onDocumentsChange
   });
   const [health, setHealth] = useState<BackendHealth | null>(null);
   const [error, setError] = useState('');
-  const [uploading, setUploading] = useState(false);
+  const [localUploading, setUploading] = useState(false);
+  const activeUploads = useSyncExternalStore(subscribeUploads, getActiveUploads);
+  const uploading = localUploading || activeUploads > 0;
   const [catalogAttempt, setCatalogAttempt] = useState(0);
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -118,7 +121,7 @@ export const QuickPresetModal: React.FC<Props> = ({ documents, onDocumentsChange
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
     const modal = modalRef.current;
-    const controls = () => Array.from(modal?.querySelectorAll<HTMLElement>('button:not(:disabled), input, select') || []);
+    const controls = () => Array.from(modal?.querySelectorAll<HTMLElement>('button:not(:disabled), input:not([type="file"]):not(:disabled), select:not(:disabled)') || []);
     controls()[0]?.focus();
     const handleKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') onClose();
