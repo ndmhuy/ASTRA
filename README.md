@@ -5,6 +5,15 @@ ASTRA generates and verifies THPT and V-ACT practice exams. This guide runs the 
 The standard ASTRA install includes the [MAS planning backend](docs/mas/).
 Use CPython 3.11 to call `astra_mas.prepare_plan`.
 
+## Team Cloudflare startup
+
+Run `.\start.cmd` with CPython 3.11 and Node.js 24 installed to prepare dependencies,
+build the frontend and open http://localhost:8001. Shared Worker caller tokens are
+included in `config/team-worker-access.env` at the owner's explicit request, so
+teammates need no token entry or Cloudflare setup. Repository/history readers can
+use these shared routes and quota. Gemini/Gateway keys stay on Cloudflare.
+See the [team quickstart](docs/agent-main-v2/TEAM_QUICKSTART.md).
+
 ## 1. Install
 
 Open PowerShell in the repository root. Use Git, CPython 3.11.1 and Node.js 22.12 or later.

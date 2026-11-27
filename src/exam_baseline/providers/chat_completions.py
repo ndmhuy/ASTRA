@@ -38,9 +38,13 @@ class ChatCompletionsProvider:
         self.input_price_per_million = settings.input_price_per_million
         self.output_price_per_million = settings.output_price_per_million
         self.client = client
-        self.url = settings.base_url.rstrip("/") + "/chat/completions"
+        gateway = settings.gateway()
+        self.url = (gateway.base("openai") if gateway else settings.base_url.rstrip("/")) + (
+            "/chat/completions"
+        )
         self.timeout = settings.timeout_seconds
-        self.api_key = settings.api_key.get_secret_value() if settings.api_key else ""
+        key = settings.api_key.get_secret_value() if settings.api_key and not gateway else ""
+        self.headers = gateway.headers() if gateway else {"Authorization": f"Bearer {key}"}
         self.strict = settings.structured_output_strict
         self.schema_as_tool = settings.schema_as_tool
         self.max_output_tokens = settings.max_output_tokens
@@ -123,8 +127,9 @@ class ChatCompletionsProvider:
             response = await self.client.post(
                 self.url,
                 json=payload,
-                headers={"Authorization": f"Bearer {self.api_key}"},
+                headers=self.headers,
                 timeout=self.timeout,
+                follow_redirects=False,
             )
             response.raise_for_status()
         except httpx.TimeoutException as exc:
