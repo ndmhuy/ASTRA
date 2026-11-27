@@ -30,10 +30,11 @@ The browser workflow generates **THPT math** practice papers with 22 questions a
 
 For the deployed ASTRA Chat and MAS Workers, run `.\start.cmd` from the repository
 root with Python and Node.js 24 installed. It prepares dependencies, builds the UI
-and opens http://localhost:8001. First use asks for the two privately supplied
-Worker caller tokens and saves them outside Git for future branches/clones on the
-same machine. Gemini/Gateway keys stay on Cloudflare; teammates need no Cloudflare
-account or deployment. See the [team quickstart](docs/agent-main-v2/TEAM_QUICKSTART.md)
+and opens http://localhost:8001. Shared Worker caller tokens are included in
+`config/team-worker-access.env` at the owner's explicit request, so a fresh clone
+needs no token entry. Anyone reading the repo can use this shared access and quota.
+Gemini/Gateway keys stay on Cloudflare; teammates need no Cloudflare account or
+deployment. See the [team quickstart](docs/agent-main-v2/TEAM_QUICKSTART.md)
 for setup, credential boundaries and current verification limits.
 
 ### Manual development setup

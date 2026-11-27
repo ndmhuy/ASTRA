@@ -23,6 +23,7 @@ from exam_baseline.worker_profile import (  # noqa: E402
     TOKEN_NAMES,
     read_tokens,
     save_profile,
+    startup_profile,
     user_profile,
 )
 
@@ -163,7 +164,8 @@ def main() -> int:
     args = parser.parse_args()
     if not 1 <= args.port <= 65535:
         parser.error("Port must be between 1 and 65535")
-    profile = (args.profile or user_profile()).expanduser().resolve()
+    default = user_profile() if args.configure or args.import_profile else startup_profile()
+    profile = (args.profile or default).expanduser().resolve()
     # Explicit import is restricted to the two caller fields; API/Gateway keys ignored.
     try:
         existing = read_tokens([profile])
@@ -182,6 +184,7 @@ def main() -> int:
                     "frontendBuilt": (ROOT / "astra-frontend/dist/index.html").is_file(),
                     "nodeAvailable": shutil.which("node") is not None,
                     "profileExists": profile.is_file(),
+                    "profileSource": "repository" if profile.is_relative_to(ROOT) else "personal",
                     "inferenceRequests": 0,
                 }
             )

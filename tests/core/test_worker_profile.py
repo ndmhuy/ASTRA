@@ -92,3 +92,53 @@ def test_single_branch_clone_fetches_missing_pinned_corpus_without_switching(mon
     run_app.prepare_corpus(Path(sys.executable))
     assert calls[-1] == ["git", "fetch", "--no-tags", "--", "origin", "c" * 40]
     assert not any(operation in call for call in calls for operation in ("switch", "merge"))
+
+
+def test_fresh_clone_starts_with_shared_access_without_prompt_or_local_profile(
+    tmp_path, monkeypatch
+):
+    checkout = tmp_path / "checkout"
+    shared = checkout / "config/team-worker-access.env"
+    shared.parent.mkdir(parents=True)
+    shared.write_text("\n".join(f"{key}={value}" for key, value in tokens().items()))
+    monkeypatch.setenv("LOCALAPPDATA", str(tmp_path / "new-user"))
+    monkeypatch.setattr(profile, "ROOT", checkout)
+    monkeypatch.setattr(run_app, "ROOT", checkout)
+    monkeypatch.setattr(sys, "argv", ["run_app.py", "--no-browser"])
+    monkeypatch.setattr(run_app, "prepare", lambda: Path(sys.executable))
+    monkeypatch.setattr(
+        run_app.getpass, "getpass", lambda *a: pytest.fail("fresh clone must not prompt")
+    )
+    monkeypatch.setattr(
+        run_app, "save_profile", lambda *a, **kw: pytest.fail("must not rewrite shared access")
+    )
+
+    class UnusedPort:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+        def connect_ex(self, address):
+            return 1
+
+    monkeypatch.setattr(run_app.socket, "socket", UnusedPort)
+
+    def launch(command, *, cwd, env):
+        assert env["ASTRA_WORKER_PROFILE"] == str(shared)
+        assert all(env[key] == value for key, value in tokens().items())
+        assert all(value not in " ".join(command) for value in tokens().values())
+        return 0
+
+    monkeypatch.setattr(run_app.subprocess, "call", launch)
+    assert run_app.main() == 0
+    assert not profile.user_profile().exists()
+    assert profile.read_tokens([shared]) == tokens()
+
+
+def test_existing_private_profile_still_overrides_shared_access(tmp_path, monkeypatch):
+    monkeypatch.setenv("LOCALAPPDATA", str(tmp_path / "user"))
+    monkeypatch.setattr(profile, "ROOT", tmp_path / "checkout")
+    profile.save_profile(profile.user_profile(), tokens())
+    assert profile.startup_profile() == profile.user_profile()

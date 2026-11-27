@@ -1,4 +1,4 @@
-"""Local team caller profile, independent of checkout/branch. No provider keys."""
+"""Team/local Worker caller profiles. Provider keys are never imported."""
 
 import json
 import os
@@ -20,6 +20,12 @@ def user_profile() -> Path:
         or Path.home() / ".config"
     )
     return base / "ASTRA" / "worker.env"
+
+
+def startup_profile() -> Path:
+    personal = user_profile()
+    shared = ROOT / "config/team-worker-access.env"
+    return personal if personal.is_file() or not shared.is_file() else shared
 
 
 def resolve_profile(legacy_name: str, explicit: str | Path | None = None) -> Path:

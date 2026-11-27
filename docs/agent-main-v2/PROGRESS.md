@@ -8,7 +8,14 @@ Old Agent reference SHA: fb834b976cb62eb7292fa839cdaf1d8738e1ec50
 Feature branch / worktree: feat/longlth2297/agent-main-v2 / ../ASTRA.worktrees/longlth2297-agent-main-v2
 Current implementation: MAS Worker cfbf951; Backend adapter/readiness committed with this checkpoint. Prior Chat checkpoint 6c49612.
 Latest origin/main checked: c0fbdafece167ca2b81bb834be95282ce6e52ecf (2026-11-27); 48 upstream commits not integrated.
-Current phase / exact next action: owner creates exams at http://localhost:8001; teammates use [start.cmd and one-time local Worker access](TEAM_QUICKSTART.md). [Development authorization](MAS_DEVELOPMENT_AUTHORIZATION.md) supersedes the previous one-exam/41-call/two-hour proposal and budget approval gate. No agent-initiated real MAS inference or exam generation has run. Feature-branch commit/push authorized; no PR, merge or main integration performed.
+Current phase / exact next action: owner creates exams at http://localhost:8001; teammates use [start.cmd with included shared Worker access](TEAM_QUICKSTART.md). [Development authorization](MAS_DEVELOPMENT_AUTHORIZATION.md) supersedes the previous one-exam/41-call/two-hour proposal and budget approval gate. No agent-initiated real MAS inference or exam generation has run. Feature-branch commit/push authorized; no PR, merge or main integration performed.
+
+## Owner-authorized shared caller profile - 2026-11-27
+
+- The owner explicitly requested storing Worker tokens in the repository so teammates only run the app. Added `config/team-worker-access.env` with the two existing caller tokens only, as an explicit exception to private-only storage. Gemini API keys and Cloudflare/Gateway credentials remain excluded. The owner was told repository/history readers can use this access and shared quota; this is not private authentication against other repo readers.
+- Fresh clones automatically select the included caller profile without prompting or writing credentials. Existing personal profiles and explicit profile/configure/import remain supported. Existing Worker authorization, forwarding/budget policy, kill switches, technical limits, Chat wire and academic Backend are unchanged; no Cloudflare deployment is required.
+- Follow-up checks prohibit inference: offline fresh-clone startup coverage verifies no prompt, correct Backend credentials and no credential argv/local-file rewrite. Live verification is limited to local readiness/static GETs; no Chat or exam submission is allowed. The earlier private-only setup entry below is superseded by this explicit owner request.
+- Observed `start.cmd` select profileSource=repository with no personal profile, then serve the actual non-demo Backend and UI on isolated8002 (GET health/static200, caller configured=True). No personal credential file was created.17 focused Python checks and targeted Ruff/format passed. Repository verify still stops at91 unchanged RAG lint findings. Zero inference requests or exam submissions; owner8001 untouched.
 
 ## Team clone-and-run setup - 2026-11-27
 
