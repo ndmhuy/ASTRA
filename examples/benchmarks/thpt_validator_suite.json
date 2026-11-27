@@ -1,0 +1,477 @@
+{
+  "schema_version": "thpt-validator-v1",
+  "name": "ASTRA THPT Math Seeded Defect Validator Suite",
+  "scope": "5 clean THPT items + 5 seeded math/scope/leakage defects. Evaluator gold never enters Solver or Reviewer prompts.",
+  "cases": [
+    {
+      "id": "v_clean_01_p1_derivative",
+      "category": "clean",
+      "slot": {
+        "id": "P1-1",
+        "part": "P1",
+        "topic": "Ứng dụng đạo hàm",
+        "objective": "Tìm điểm cực tiểu của hàm bậc ba",
+        "level": "NB",
+        "statement_levels": [],
+        "curriculum_unit_ids": ["math12-ch1-u1"]
+      },
+      "requirements": ["Đúng chương trình Toán 12 GDPT 2018."],
+      "rag_scope": {
+        "source_ids": ["sgk-toan-12-ch1"],
+        "curriculum_unit_ids": ["math12-ch1-u1"],
+        "warnings": []
+      },
+      "question": {
+        "id": "P1-1",
+        "stem": "Cho hàm số $y = x^3 - 3x + 1$. Điểm cực tiểu của hàm số đã cho là",
+        "choices": {"A": "$x = 1$", "B": "$x = -1$", "C": "$x = 0$", "D": "$x = 3$"},
+        "statements": [],
+        "solution": "Ta có $y' = 3x^2 - 3 = 0 \\Leftrightarrow x = \\pm 1$ và $y'' = 6x$. Với $x = 1$, $y''(1) = 6 > 0$ nên $x = 1$ là điểm cực tiểu.",
+        "answer": "A",
+        "illustration_request": null
+      },
+      "student_latex": "\\noindent \\textbf{Câu 1:} Cho hàm số $y = x^3 - 3x + 1$. Điểm cực tiểu của hàm số đã cho là\\\\\nA. $x = 1$ \\quad B. $x = -1$ \\quad C. $x = 0$ \\quad D. $x = 3$\\\\",
+      "gold": {"has_defect": false, "defect_type": null, "expected_decision": "approved"},
+      "replay": {
+        "solver": {
+          "entries": [
+            {
+              "question_id": "P1-1",
+              "answer": "A",
+              "reasoning": "Tính $y' = 3x^2 - 3 = 0 \\Rightarrow x = \\pm 1$; $y''(1) = 6 > 0$ nên đạt cực tiểu tại $x = 1$ (chọn A).",
+              "status": "solved"
+            }
+          ]
+        },
+        "reviewer": {"checked_ids": ["P1-1"], "decision": "approved", "issues": []}
+      }
+    },
+    {
+      "id": "v_clean_02_p2_monotonicity",
+      "category": "clean",
+      "slot": {
+        "id": "P2-1",
+        "part": "P2",
+        "topic": "Ứng dụng đạo hàm",
+        "objective": "Xét tính đơn điệu và giá trị cực trị hàm bậc hai",
+        "level": "TH",
+        "statement_levels": ["NB", "TH", "TH", "VD"],
+        "curriculum_unit_ids": ["math12-ch1-u1"]
+      },
+      "requirements": ["Mỗi ý đúng/sai độc lập rõ ràng."],
+      "rag_scope": {
+        "source_ids": ["sgk-toan-12-ch1"],
+        "curriculum_unit_ids": ["math12-ch1-u1"],
+        "warnings": []
+      },
+      "question": {
+        "id": "P2-1",
+        "stem": "Cho hàm số $f(x) = x^2 - 4x + 3$ xác định trên $\\mathbb{R}$.",
+        "choices": {},
+        "statements": [
+          {"text": "Đạo hàm của hàm số là $f'(x) = 2x - 4$.", "answer": true, "solution": "Đạo hàm trực tiếp cho $f'(x) = 2x - 4$."},
+          {"text": "Hàm số đồng biến trên khoảng $(2; +\\infty)$.", "answer": true, "solution": "Với $x > 2$ thì $f'(x) > 0$."},
+          {"text": "Giá trị nhỏ nhất của hàm số trên $\\mathbb{R}$ bằng $1$.", "answer": false, "solution": "Đỉnh tại $x = 2$ cho $f(2) = -1 \\neq 1$."},
+          {"text": "Phương trình $f(x) = 0$ có hai nghiệm phân biệt $x = 1$ và $x = 3$.", "answer": true, "solution": "$x^2 - 4x + 3 = (x-1)(x-3) = 0$."}
+        ],
+        "solution": "Xét từng ý theo $f'(x) = 2x - 4$ và $f(2) = -1$.",
+        "answer": null,
+        "illustration_request": null
+      },
+      "student_latex": "\\noindent \\textbf{Câu 1:} Cho hàm số $f(x) = x^2 - 4x + 3$ xác định trên $\\mathbb{R}$.\\\\",
+      "gold": {"has_defect": false, "defect_type": null, "expected_decision": "approved"},
+      "replay": {
+        "solver": {
+          "entries": [
+            {
+              "question_id": "P2-1",
+              "answer": "a: Đúng; b: Đúng; c: Sai; d: Đúng",
+              "reasoning": "f'(x)=2x-4 (a Đúng); đồng biến trên (2,+inf) (b Đúng); min là f(2)=-1 (c Sai); nghiệm 1 và 3 (d Đúng).",
+              "status": "solved"
+            }
+          ]
+        },
+        "reviewer": {"checked_ids": ["P2-1"], "decision": "approved", "issues": []}
+      }
+    },
+    {
+      "id": "v_clean_03_p3_integral",
+      "category": "clean",
+      "slot": {
+        "id": "P3-1",
+        "part": "P3",
+        "topic": "Tích phân xác định",
+        "objective": "Tính tích phân cơ bản",
+        "level": "TH",
+        "statement_levels": [],
+        "curriculum_unit_ids": ["math12-ch4-u2"]
+      },
+      "requirements": ["Nêu rõ quy tắc làm tròn."],
+      "rag_scope": {
+        "source_ids": ["sgk-toan-12-ch4"],
+        "curriculum_unit_ids": ["math12-ch4-u2"],
+        "warnings": []
+      },
+      "question": {
+        "id": "P3-1",
+        "stem": "Tính giá trị tích phân $I = \\int_{0}^{2} 3x^2\\,dx$. Ghi kết quả chính xác, không làm tròn.",
+        "choices": {},
+        "statements": [],
+        "solution": "Nguyên hàm của $3x^2$ là $x^3$, suy ra $I = 2^3 - 0^3 = 8$.",
+        "answer": "8",
+        "illustration_request": null
+      },
+      "student_latex": "\\noindent \\textbf{Câu 1:} Tính giá trị tích phân $I = \\int_{0}^{2} 3x^2\\,dx$. Ghi kết quả chính xác, không làm tròn.\\\\",
+      "gold": {"has_defect": false, "defect_type": null, "expected_decision": "approved"},
+      "replay": {
+        "solver": {
+          "entries": [
+            {
+              "question_id": "P3-1",
+              "answer": "8",
+              "reasoning": "Nguyên hàm là $x^3$, thay cận từ 0 đến 2 được 8.",
+              "status": "solved"
+            }
+          ]
+        },
+        "reviewer": {"checked_ids": ["P3-1"], "decision": "approved", "issues": []}
+      }
+    },
+    {
+      "id": "v_clean_04_p1_oxyz",
+      "category": "clean",
+      "slot": {
+        "id": "P1-2",
+        "part": "P1",
+        "topic": "Hình học Oxyz",
+        "objective": "Xác định vectơ pháp tuyến của mặt phẳng",
+        "level": "NB",
+        "statement_levels": [],
+        "curriculum_unit_ids": ["math12-ch5-u1"]
+      },
+      "requirements": ["Đúng chương trình Hình học Oxyz lớp 12."],
+      "rag_scope": {
+        "source_ids": ["sgk-toan-12-ch5"],
+        "curriculum_unit_ids": ["math12-ch5-u1"],
+        "warnings": []
+      },
+      "question": {
+        "id": "P1-2",
+        "stem": "Trong không gian $Oxyz$, một vectơ pháp tuyến của mặt phẳng $(P): 2x - y + 3z - 5 = 0$ là",
+        "choices": {
+          "A": "$(2; -1; 3)$",
+          "B": "$(2; 1; 3)$",
+          "C": "$(2; -1; -5)$",
+          "D": "$(-1; 3; -5)$"
+        },
+        "statements": [],
+        "solution": "Hệ số của $x, y, z$ là $2, -1, 3$ nên vectơ pháp tuyến là $(2; -1; 3)$.",
+        "answer": "A",
+        "illustration_request": null
+      },
+      "student_latex": "\\noindent \\textbf{Câu 2:} Trong không gian $Oxyz$, một vectơ pháp tuyến của mặt phẳng $(P): 2x - y + 3z - 5 = 0$ là\\\\",
+      "gold": {"has_defect": false, "defect_type": null, "expected_decision": "approved"},
+      "replay": {
+        "solver": {
+          "entries": [
+            {
+              "question_id": "P1-2",
+              "answer": "A",
+              "reasoning": "Hệ số của x, y, z trong phương trình mặt phẳng là (2; -1; 3), ứng với phương án A.",
+              "status": "solved"
+            }
+          ]
+        },
+        "reviewer": {"checked_ids": ["P1-2"], "decision": "approved", "issues": []}
+      }
+    },
+    {
+      "id": "v_clean_05_p3_probability",
+      "category": "clean",
+      "slot": {
+        "id": "P3-2",
+        "part": "P3",
+        "topic": "Xác suất có điều kiện",
+        "objective": "Tính xác suất có điều kiện từ công thức cơ bản",
+        "level": "TH",
+        "statement_levels": [],
+        "curriculum_unit_ids": ["math12-ch6-u1"]
+      },
+      "requirements": ["Xác suất viết đúng định dạng số thập phân dấu phẩy."],
+      "rag_scope": {
+        "source_ids": ["sgk-toan-12-ch6"],
+        "curriculum_unit_ids": ["math12-ch6-u1"],
+        "warnings": []
+      },
+      "question": {
+        "id": "P3-2",
+        "stem": "Cho hai biến cố $A$ và $B$ có $P(B) = 0,5$ và $P(A \\cap B) = 0,2$. Tính xác suất có điều kiện $P(A | B)$. Ghi kết quả chính xác, không làm tròn.",
+        "choices": {},
+        "statements": [],
+        "solution": "Ta có $P(A | B) = \\frac{P(A \\cap B)}{P(B)} = \\frac{0,2}{0,5} = 0,4$.",
+        "answer": "0,4",
+        "illustration_request": null
+      },
+      "student_latex": "\\noindent \\textbf{Câu 2:} Cho hai biến cố $A$ và $B$ có $P(B) = 0,5$ và $P(A \\cap B) = 0,2$. Tính $P(A | B)$. Ghi kết quả chính xác, không làm tròn.\\\\",
+      "gold": {"has_defect": false, "defect_type": null, "expected_decision": "approved"},
+      "replay": {
+        "solver": {
+          "entries": [
+            {
+              "question_id": "P3-2",
+              "answer": "0,4",
+              "reasoning": "P(A|B) = 0,2 / 0,5 = 0,4.",
+              "status": "solved"
+            }
+          ]
+        },
+        "reviewer": {"checked_ids": ["P3-2"], "decision": "approved", "issues": []}
+      }
+    },
+    {
+      "id": "v_defect_01_p1_wrong_key",
+      "category": "wrong_p1_key",
+      "slot": {
+        "id": "P1-3",
+        "part": "P1",
+        "topic": "Logarit",
+        "objective": "Giải phương trình logarit cơ bản",
+        "level": "NB",
+        "statement_levels": [],
+        "curriculum_unit_ids": ["math11-ch6-u2"]
+      },
+      "requirements": ["Đáp án phải khớp lời giải toán học chính xác."],
+      "rag_scope": {
+        "source_ids": ["sgk-toan-11-ch6"],
+        "curriculum_unit_ids": ["math11-ch6-u2"],
+        "warnings": []
+      },
+      "question": {
+        "id": "P1-3",
+        "stem": "Nghiệm của phương trình $\\log_2(x - 1) = 3$ là",
+        "choices": {"A": "$x = 9$", "B": "$x = 7$", "C": "$x = 6$", "D": "$x = 10$"},
+        "statements": [],
+        "solution": "Sai nhầm $2^3 = 6$ nên chọn $x = 7$.",
+        "answer": "B",
+        "illustration_request": null
+      },
+      "student_latex": "\\noindent \\textbf{Câu 3:} Nghiệm của phương trình $\\log_2(x - 1) = 3$ là\\\\\nA. $x = 9$ \\quad B. $x = 7$ \\quad C. $x = 6$ \\quad D. $x = 10$\\\\",
+      "gold": {"has_defect": true, "defect_type": "wrong_p1_key", "expected_decision": "needs_revision"},
+      "replay": {
+        "solver": {
+          "entries": [
+            {
+              "question_id": "P1-3",
+              "answer": "A",
+              "reasoning": "x - 1 = 2^3 = 8 => x = 9, chọn A.",
+              "status": "solved"
+            }
+          ]
+        },
+        "reviewer": {
+          "checked_ids": ["P1-3"],
+          "decision": "needs_revision",
+          "issues": ["P1-3: Composer key B (x=7) is mathematically wrong; x - 1 = 8 gives x = 9 (A)."]
+        }
+      }
+    },
+    {
+      "id": "v_defect_02_p2_wrong_statement",
+      "category": "wrong_p2_statement",
+      "slot": {
+        "id": "P2-2",
+        "part": "P2",
+        "topic": "Tích phân xác định",
+        "objective": "Đánh giá tính chất nguyên hàm và tích phân",
+        "level": "TH",
+        "statement_levels": ["NB", "TH", "TH", "VD"],
+        "curriculum_unit_ids": ["math12-ch4-u2"]
+      },
+      "requirements": ["Kiểm tra chính xác cả 4 ý đúng/sai."],
+      "rag_scope": {
+        "source_ids": ["sgk-toan-12-ch4"],
+        "curriculum_unit_ids": ["math12-ch4-u2"],
+        "warnings": []
+      },
+      "question": {
+        "id": "P2-2",
+        "stem": "Cho hàm số $f(x) = 2x + 1$ liên tục trên $\\mathbb{R}$.",
+        "choices": {},
+        "statements": [
+          {"text": "Hàm số $F(x) = x^2 + x$ là một nguyên hàm của $f(x)$.", "answer": true, "solution": "$F'(x) = 2x + 1$."},
+          {"text": "$\\int_{0}^{1} f(x)\\,dx = 2$.", "answer": true, "solution": "$F(1) - F(0) = 2$."},
+          {"text": "$\\int_{0}^{2} f(x)\\,dx = 4$.", "answer": true, "solution": "Tính nhầm thành 4 thay vì 6."},
+          {"text": "$\\int_{1}^{1} f(x)\\,dx = 0$.", "answer": true, "solution": "Cận trên bằng cận dưới nên tích phân bằng 0."}
+        ],
+        "solution": "Áp dụng định nghĩa nguyên hàm.",
+        "answer": null,
+        "illustration_request": null
+      },
+      "student_latex": "\\noindent \\textbf{Câu 2:} Cho hàm số $f(x) = 2x + 1$ liên tục trên $\\mathbb{R}$.\\\\",
+      "gold": {"has_defect": true, "defect_type": "wrong_p2_statement", "expected_decision": "needs_revision"},
+      "replay": {
+        "solver": {
+          "entries": [
+            {
+              "question_id": "P2-2",
+              "answer": "a: Đúng; b: Đúng; c: Sai; d: Đúng",
+              "reasoning": "Ý c sai vì F(2)-F(0) = 2^2 + 2 = 6 != 4.",
+              "status": "solved"
+            }
+          ]
+        },
+        "reviewer": {
+          "checked_ids": ["P2-2"],
+          "decision": "needs_revision",
+          "issues": ["P2-2: Statement c evaluates to 6, not 4; Composer erroneously marked True."]
+        }
+      }
+    },
+    {
+      "id": "v_defect_03_p3_wrong_calculation",
+      "category": "wrong_p3_calculation",
+      "slot": {
+        "id": "P3-3",
+        "part": "P3",
+        "topic": "Ứng dụng tích phân",
+        "objective": "Tính diện tích hình phẳng giới hạn bởi đường cong và trục hoành",
+        "level": "VD",
+        "statement_levels": [],
+        "curriculum_unit_ids": ["math12-ch4-u3"]
+      },
+      "requirements": ["Tính chính xác kết quả số học."],
+      "rag_scope": {
+        "source_ids": ["sgk-toan-12-ch4"],
+        "curriculum_unit_ids": ["math12-ch4-u3"],
+        "warnings": []
+      },
+      "question": {
+        "id": "P3-3",
+        "stem": "Tính diện tích hình phẳng giới hạn bởi đồ thị hàm số $y = 3x^2$, trục hoành và hai đường thẳng $x = 1$, $x = 2$. Ghi kết quả chính xác, không làm tròn.",
+        "choices": {},
+        "statements": [],
+        "solution": "Tính nhầm $2^3 - 1^3 = 6$.",
+        "answer": "6",
+        "illustration_request": null
+      },
+      "student_latex": "\\noindent \\textbf{Câu 3:} Tính diện tích hình phẳng giới hạn bởi đồ thị hàm số $y = 3x^2$, trục hoành và $x=1, x=2$. Ghi kết quả chính xác, không làm tròn.\\\\",
+      "gold": {"has_defect": true, "defect_type": "wrong_p3_calculation", "expected_decision": "needs_revision"},
+      "replay": {
+        "solver": {
+          "entries": [
+            {
+              "question_id": "P3-3",
+              "answer": "7",
+              "reasoning": "S = int_1^2 3x^2 dx = 2^3 - 1^3 = 8 - 1 = 7.",
+              "status": "solved"
+            }
+          ]
+        },
+        "reviewer": {
+          "checked_ids": ["P3-3"],
+          "decision": "needs_revision",
+          "issues": ["P3-3: 2^3 - 1^3 = 7, not 6."]
+        }
+      }
+    },
+    {
+      "id": "v_defect_04_scope_drift",
+      "category": "scope_drift",
+      "slot": {
+        "id": "P1-4",
+        "part": "P1",
+        "topic": "Nguyên hàm - Tích phân",
+        "objective": "Tính tích phân hàm đa thức",
+        "level": "NB",
+        "statement_levels": [],
+        "curriculum_unit_ids": ["math12-ch4-u2"]
+      },
+      "requirements": ["CHỈ ra câu hỏi thuộc chuyên đề Nguyên hàm - Tích phân; cấm lạc sang Hình học Oxyz."],
+      "rag_scope": {
+        "source_ids": ["sgk-toan-12-ch4"],
+        "curriculum_unit_ids": ["math12-ch4-u2"],
+        "warnings": []
+      },
+      "question": {
+        "id": "P1-4",
+        "stem": "Trong không gian $Oxyz$, tọa độ trung điểm của đoạn thẳng $AB$ với $A(1; 2; 3)$ và $B(3; 4; 5)$ là",
+        "choices": {
+          "A": "$(2; 3; 4)$",
+          "B": "$(4; 6; 8)$",
+          "C": "$(1; 1; 1)$",
+          "D": "$(2; 2; 2)$"
+        },
+        "statements": [],
+        "solution": "Trung điểm có tọa độ trung bình cộng $(2; 3; 4)$.",
+        "answer": "A",
+        "illustration_request": null
+      },
+      "student_latex": "\\noindent \\textbf{Câu 4:} Trong không gian $Oxyz$, tọa độ trung điểm của đoạn thẳng $AB$ với $A(1; 2; 3)$ và $B(3; 4; 5)$ là\\\\",
+      "gold": {"has_defect": true, "defect_type": "scope_drift", "expected_decision": "needs_revision"},
+      "replay": {
+        "solver": {
+          "entries": [
+            {
+              "question_id": "P1-4",
+              "answer": "A",
+              "reasoning": "Trung điểm I = ((1+3)/2; (2+4)/2; (3+5)/2) = (2; 3; 4), chọn A.",
+              "status": "solved"
+            }
+          ]
+        },
+        "reviewer": {
+          "checked_ids": ["P1-4"],
+          "decision": "needs_revision",
+          "issues": ["P1-4: Question drifted to Oxyz geometry instead of requested Nguyên hàm - Tích phân slot."]
+        }
+      }
+    },
+    {
+      "id": "v_defect_05_answer_leakage",
+      "category": "answer_leakage",
+      "slot": {
+        "id": "P1-5",
+        "part": "P1",
+        "topic": "Ứng dụng đạo hàm",
+        "objective": "Tính đạo hàm cơ bản",
+        "level": "NB",
+        "statement_levels": [],
+        "curriculum_unit_ids": ["math12-ch1-u1"]
+      },
+      "requirements": ["Tuyệt đối không để lộ đáp án trong đề thi học sinh."],
+      "rag_scope": {
+        "source_ids": ["sgk-toan-12-ch1"],
+        "curriculum_unit_ids": ["math12-ch1-u1"],
+        "warnings": []
+      },
+      "question": {
+        "id": "P1-5",
+        "stem": "Đạo hàm của hàm số $y = x^4$ là (Đáp án: A)",
+        "choices": {"A": "$4x^3$", "B": "$x^3$", "C": "$4x^4$", "D": "$3x^4$"},
+        "statements": [],
+        "solution": "Áp dụng công thức $(x^n)' = nx^{n-1}$ được $4x^3$.",
+        "answer": "A",
+        "illustration_request": null
+      },
+      "student_latex": "\\noindent \\textbf{Câu 5:} Đạo hàm của hàm số $y = x^4$ là\\\\\nĐáp án: A\\\\",
+      "gold": {"has_defect": true, "defect_type": "answer_leakage", "expected_decision": "needs_revision"},
+      "replay": {
+        "solver": {
+          "entries": [
+            {
+              "question_id": "P1-5",
+              "answer": "A",
+              "reasoning": "Đạo hàm của x^4 là 4x^3 (chọn A).",
+              "status": "solved"
+            }
+          ]
+        },
+        "reviewer": {
+          "checked_ids": ["P1-5"],
+          "decision": "needs_revision",
+          "issues": ["P1-5: Student stem and LaTeX leak the answer ('Đáp án: A')."]
+        }
+      }
+    }
+  ]
+}
