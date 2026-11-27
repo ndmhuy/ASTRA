@@ -48,7 +48,11 @@ from exam_baseline.thpt.subjects import (
     subject_request,
 )
 from exam_baseline.thpt.visuals import visual_issues
-from exam_baseline.ui.contracts import ExamGenerateRequest, SubjectGenerateRequest
+from exam_baseline.ui.contracts import (
+    ExamGenerateRequest,
+    QuestionApprovalRequest,
+    SubjectGenerateRequest,
+)
 from exam_baseline.ui.demo import regenerate_demo_question, run_demo_job
 from exam_baseline.ui.errors import UiError
 from exam_baseline.ui.exam_source import SOURCE_NAME
@@ -202,8 +206,39 @@ def _current_solutions(job):
     }
 
 
+def _question_content_hash(job: dict, raw: dict, index: int) -> str:
+    passage_id = raw.get("passage_id")
+    passages = [
+        passage
+        for passage in job.get("rawPassages", [])
+        if (passage_id is not None and passage.get("id") == passage_id)
+        or (
+            "questionRange" in passage
+            and passage["questionRange"][0] <= index <= passage["questionRange"][1]
+        )
+    ]
+    drawing = next(
+        (
+            item.get("latex", "")
+            for item in job.get("drawings", {}).get("drawings", [])
+            if item.get("question_id") == raw["id"]
+        ),
+        "",
+    )
+    return fingerprint({"question": raw, "passages": passages, "drawing": drawing})
+
+
+def _serialize_question_approval(job: dict, raw: dict, index: int) -> dict | None:
+    record = job.get("questionApprovals", {}).get(raw["id"])
+    if not isinstance(record, dict):
+        return None
+    if record.get("questionHash") != _question_content_hash(job, raw, index):
+        return None
+    return record
+
+
 def _question_verification(raw, solved, edited):
-    check, _ = compare_answer(raw, solved)
+    check, mismatch = compare_answer(raw, solved)
     notes = {
         "matched": "Đáp án khớp với kết quả giải độc lập.",
         "mismatched": "Đáp án của câu khác với kết quả giải độc lập.",
@@ -215,21 +250,47 @@ def _question_verification(raw, solved, edited):
         notes[check] = "Solver báo câu hỏi có nhiều cách hiểu."
     elif solved and solved["status"] == "unsolvable":
         notes[check] = "Solver chưa giải được câu hỏi từ dữ kiện hiện có."
+    mismatched_statements: list[str] = []
+    if (
+        check == "mismatched"
+        and raw.get("statements")
+        and mismatch
+        and len(mismatch.get("composer", "")) == len(mismatch.get("solver", ""))
+    ):
+        mismatched_statements = [
+            letter
+            for letter, exp, act in zip(
+                "abcd", mismatch["composer"], mismatch["solver"], strict=False
+            )
+            if exp != act
+        ]
+        if mismatched_statements:
+            notes["mismatched"] = (
+                f"Đáp án khác kết quả giải độc lập ở ý {', '.join(mismatched_statements)}."
+            )
     if raw["id"].startswith("P3-"):
         try:
             validate_short_answer_precision(raw["stem"], raw["answer"])
         except ValueError:
             check = "needs_recheck"
             notes[check] = "Kiểm tra lại yêu cầu làm tròn và số chữ số của đáp án."
-    return {
+    writer_key = raw.get("answer") or (
+        " / ".join("Đúng" if s["answer"] else "Sai" for s in raw["statements"])
+        if raw.get("statements")
+        else None
+    )
+    payload = {
         "answerCheck": check,
         "status": {"matched": "VERIFIED", "mismatched": "FLAGGED", "needs_recheck": "PENDING"}[
             check
         ],
         "solverKey": solved["answer"] if solved and solved["status"] == "solved" else None,
-        "writerKey": raw["answer"],
+        "writerKey": writer_key,
         "auditNotes": notes[check],
     }
+    if mismatched_statements:
+        payload["mismatchedStatements"] = mismatched_statements
+    return payload
 
 
 def now():
@@ -854,6 +915,7 @@ class JobManager:
                     **_question_verification(
                         raw, solutions.get(raw["id"]), raw["id"] in job["manualEdits"]
                     ),
+                    "questionApproval": _serialize_question_approval(job, raw, index),
                 }
             )
         return {
@@ -960,6 +1022,7 @@ class JobManager:
                     **_question_verification(
                         raw, solutions.get(raw["id"]), raw["id"] in job["manualEdits"]
                     ),
+                    "questionApproval": _serialize_question_approval(job, raw, index),
                     "sourceReference": "; ".join(
                         e["locator"]
                         for e in retrieval.get("mas_intake_rag", [])
@@ -1334,10 +1397,15 @@ class JobManager:
                 solutions[stable_id] = original_solution[stable_id]
             manual = set(job["manualEdits"]) - {stable_id}
             manual.update(item for item in before.get("manualEdits", []) if item == stable_id)
+            question_approvals = dict(job.get("questionApprovals", {}))
+            question_approvals.pop(stable_id, None)
+            if stable_id in before.get("questionApprovals", {}):
+                question_approvals[stable_id] = before["questionApprovals"][stable_id]
             job.update(
                 revision=revision + 1,
                 approval=None,
                 manualEdits=sorted(manual),
+                questionApprovals=question_approvals,
                 solutions={"entries": list(solutions.values())},
                 solverResultsVersion=1,
             )
@@ -1402,6 +1470,7 @@ class JobManager:
                 job["rawQuestions"][question_id - 1] = updated.model_dump()
             job.update(revision=job["revision"] + 1, approval=None)
             job["manualEdits"] = list(set(job["manualEdits"]) | {raw["id"]})
+            job.setdefault("questionApprovals", {}).pop(raw["id"], None)
             solutions = _current_solutions(job)
             solutions.pop(raw["id"], None)
             job.update(solutions={"entries": list(solutions.values())}, solverResultsVersion=1)
@@ -1436,6 +1505,46 @@ class JobManager:
                     "Nội dung đề thi đã thay đổi. Thầy cô vui lòng tải lại trước khi duyệt.",
                 )
             job["approval"] = {**payload.model_dump(), "approvedAt": now()}
+            self.store.save(job)
+            return self.package(job_id)
+
+    async def approve_question(self, job_id, question_id, payload: QuestionApprovalRequest):
+        async with self.lock(job_id):
+            job = self._completed(job_id)
+            self._check_revision(job, payload.revision)
+            if not 1 <= question_id <= len(job["rawQuestions"]):
+                raise UiError("question_not_found", "Không tìm thấy câu hỏi cần thao tác.", 404)
+            self._verify_source(job)
+            raw = job["rawQuestions"][question_id - 1]
+            stable_id = raw["id"]
+            verification = _question_verification(
+                raw,
+                _current_solutions(job).get(stable_id),
+                stable_id in job["manualEdits"],
+            )
+            reason = payload.reason.strip()
+            if verification["answerCheck"] != "matched" and not reason:
+                raise UiError(
+                    "approval_reason_required",
+                    "Cần ghi lý do xác nhận khi đáp án dự kiến chưa khớp kết quả giải độc lập.",
+                    422,
+                )
+            approvals = dict(job.get("questionApprovals", {}))
+            approvals[stable_id] = {
+                "questionId": stable_id,
+                "questionHash": _question_content_hash(job, raw, question_id),
+                "revision": payload.revision,
+                "reviewer": payload.reviewer.strip(),
+                "approvedAt": now(),
+                "reason": reason,
+                "originalCheck": {
+                    "answerCheck": verification["answerCheck"],
+                    "writerKey": verification["writerKey"],
+                    "solverKey": verification["solverKey"],
+                    "auditNotes": verification["auditNotes"],
+                },
+            }
+            job["questionApprovals"] = approvals
             self.store.save(job)
             return self.package(job_id)
 
@@ -1552,6 +1661,7 @@ class JobManager:
                 approval=None,
             )
             job["manualEdits"] = list(set(job["manualEdits"]) | {repaired.id})
+            job.setdefault("questionApprovals", {}).pop(repaired.id, None)
             await self._save_version(
                 job,
                 "regenerated",

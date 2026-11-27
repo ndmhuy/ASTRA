@@ -148,6 +148,11 @@ class RevisionRequest(Model):
     revision: int = Field(ge=1)
 
 
+class QuestionApprovalRequest(RevisionRequest):
+    reviewer: str = Field(min_length=1, max_length=120)
+    reason: str = Field(default="", max_length=1000)
+
+
 class WorkspaceRestoreRequest(RevisionRequest):
     jobId: UUID
     targetJobId: UUID

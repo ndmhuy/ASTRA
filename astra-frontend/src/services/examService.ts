@@ -63,6 +63,7 @@ export interface IExamService {
   regenerateQuestion(jobId: string, questionId: number, instruction?: string, revision?: number, workspaceId?: string, stableId?: string): Promise<QuestionItem>;
   updateQuestion(jobId: string, updatedQuestion: QuestionItem, workspaceId?: string): Promise<void>;
   verifyQuestion?(jobId: string, questionId: number, revision: number): Promise<void>;
+  approveQuestion?(jobId: string, questionId: number, revision: number, reason?: string, reviewer?: string): Promise<ExamPackage>;
   downloadExport(jobId: string, type: 'STUDENT_EXAM' | 'TEACHER_KEY' | 'MATRIX', format: ExportFormat): Promise<void>;
   approveExam?(jobId: string, pkg: ExamPackage): Promise<ExamPackage>;
   requestPreview?(jobId: string, binding: { revision: number; contentHash: string }): Promise<ExamPreviewState>;
@@ -419,6 +420,8 @@ export class MockExamService implements IExamService {
       auditNotes: `Đã tạo lại bản mẫu theo yêu cầu: "${instruction || 'Sửa lại nội dung và đồng bộ đáp án'}".`,
       writerKey: current.key,
       solverKey: null,
+      mismatchedStatements: undefined,
+      questionApproval: null,
     };
 
     currentQuestions[index] = repaired;
@@ -438,9 +441,58 @@ export class MockExamService implements IExamService {
         writerKey: updatedQuestion.key,
         solverKey: null,
         auditNotes: 'Câu đã chỉnh sửa và cần giải lại trên nội dung mới.',
+        mismatchedStatements: undefined,
+        questionApproval: null,
       };
       this.bumpRevision(pkg, jobId);
     }
+  }
+
+  async approveQuestion(
+    jobId: string,
+    questionId: number,
+    revision: number,
+    reason = '',
+    reviewer = 'local-teacher'
+  ): Promise<ExamPackage> {
+    const stored = this.getJob(jobId);
+    if ((stored.revision ?? 1) !== revision) {
+      throw new ApiError(
+        'Đề thi đã có bản cập nhật mới hơn. Vui lòng tải lại trước khi sửa hoặc duyệt.',
+        'stale_revision',
+        409
+      );
+    }
+    const index = stored.questions.findIndex((q) => q.id === questionId);
+    if (index === -1) {
+      throw new ApiError('Không tìm thấy câu hỏi cần thao tác.', 'question_not_found', 404);
+    }
+    const target = stored.questions[index];
+    const cleanReason = reason.trim();
+    if (target.answerCheck !== 'matched' && !cleanReason) {
+      throw new ApiError(
+        'Cần ghi lý do xác nhận khi đáp án dự kiến chưa khớp kết quả giải độc lập.',
+        'approval_reason_required',
+        422
+      );
+    }
+    stored.questions[index] = {
+      ...target,
+      questionApproval: {
+        questionId: target.stableId || String(target.id),
+        revision,
+        reviewer: reviewer.trim() || 'local-teacher',
+        approvedAt: new Date().toISOString(),
+        reason: cleanReason,
+        originalCheck: {
+          answerCheck: target.answerCheck ?? 'needs_recheck',
+          writerKey: target.writerKey ?? target.key,
+          solverKey: target.solverKey ?? null,
+          auditNotes: target.auditNotes,
+        },
+      },
+    };
+    return structuredClone(stored);
   }
 
   async approveExam(jobId: string, pkg: ExamPackage): Promise<ExamPackage> {
@@ -753,6 +805,27 @@ export class ApiExamService implements IExamService {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ revision }),
     });
+  }
+
+  async approveQuestion(
+    jobId: string,
+    questionId: number,
+    revision: number,
+    reason = '',
+    reviewer = 'local-teacher'
+  ): Promise<ExamPackage> {
+    const updated = await requestJson<ExamPackage>(
+      `${this.baseUrl}/exams/${jobId}/questions/${questionId}/approve`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ revision, reviewer, reason }),
+      }
+    );
+    return {
+      ...adaptStudentPaper(updated, this.baseUrl),
+      preview: normalizePreview(updated.preview, this.baseUrl),
+    };
   }
 
   async approveExam(jobId: string, pkg: ExamPackage): Promise<ExamPackage> {

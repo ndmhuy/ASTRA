@@ -7,6 +7,20 @@ export type CognitiveLevel = 'NHAN_BIET' | 'THONG_HIEU' | 'VAN_DUNG' | 'VAN_DUNG
 export type VerificationStatus = 'PENDING' | 'VERIFIED' | 'FLAGGED';
 export type AnswerCheck = 'matched' | 'mismatched' | 'needs_recheck';
 export type ExportFormat = 'docx' | 'pdf' | 'tex' | 'json';
+export interface QuestionApproval {
+  questionId: string;
+  questionHash?: string;
+  revision: number;
+  reviewer: string;
+  approvedAt: string;
+  reason?: string;
+  originalCheck?: {
+    answerCheck?: AnswerCheck;
+    writerKey?: string | null;
+    solverKey?: string | null;
+    auditNotes?: string;
+  };
+}
 export interface QuestionChoices { A: string; B: string; C: string; D: string; }
 export interface QuestionStatement { text: string; answer: boolean; solution: string; }
 export interface QuestionItem {
@@ -31,6 +45,8 @@ export interface QuestionItem {
   solverKey?: string | null;
   revisionCount?: number;
   auditNotes?: string;
+  mismatchedStatements?: string[];
+  questionApproval?: QuestionApproval | null;
   drawingLatex?: string;
   responseKind?: 'numeric' | 'digit_sequence';
   maxAnswerCharacters?: number;
