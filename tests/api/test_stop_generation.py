@@ -143,10 +143,13 @@ def test_stop_and_restart_discards_late_provider_result(tmp_path):
             manager = app.state.ui_jobs
             old_task = manager.tasks[old]
             old_url = f"/api/exams/{old}"
-            stopped = client.post(old_url + "/stop")
+            stopped = client.post(old_url + "/stop", json={"executionVersion": 1})
             assert stopped.json()["status"] == "cancelled"
             assert interrupted.wait(5)
-            assert client.post(old_url + "/stop").json() == stopped.json()
+            assert (
+                client.post(old_url + "/stop", json={"executionVersion": 1}).json()
+                == stopped.json()
+            )
             assert _start(client, workspace, "first-generation") == old
             new = _start(client, workspace, "new-generation")
             assert new != old
@@ -165,7 +168,10 @@ def test_stop_and_restart_discards_late_provider_result(tmp_path):
             assert "cancelled" in client.get(old_url + "/events").text
             assert not (tmp_path / old / "de_thi.tex").exists()
             assert client.get(f"/api/workspaces/{workspace}/versions").json()["currentJobId"] == new
-            assert client.post(f"/api/exams/{new}/stop").json()["status"] == "completed"
+            assert (
+                client.post(f"/api/exams/{new}/stop", json={"executionVersion": 1}).json()["status"]
+                == "completed"
+            )
             with pytest.raises(UiError, match="Phiên tạo đề đã kết thúc"):
                 manager.store.save_version(
                     {**manager.get(old), "revision": 1, "status": "completed"}, b"late", "generated"
@@ -201,7 +207,10 @@ def test_stop_cancels_all_parallel_composer_calls(tmp_path, monkeypatch):
     with TestClient(app) as client:
         job = _start(client, _workspace(client), "parallel")
         assert entered.wait(5)
-        assert client.post(f"/api/exams/{job}/stop").json()["status"] == "cancelled"
+        assert (
+            client.post(f"/api/exams/{job}/stop", json={"executionVersion": 1}).json()["status"]
+            == "cancelled"
+        )
         assert interrupted.wait(5)
         assert len(started) == len(cancelled) == 3
         assert all(not providers[role].calls for role in ("illustrator", "solver", "reviewer"))
@@ -228,7 +237,10 @@ def test_stop_at_publication_boundary_never_commits_prepared_result(tmp_path):
         workspace = _workspace(client)
         job = _start(client, workspace, "stop-before-save")
         assert prepared.wait(5)
-        assert client.post(f"/api/exams/{job}/stop").json()["status"] == "cancelled"
+        assert (
+            client.post(f"/api/exams/{job}/stop", json={"executionVersion": 1}).json()["status"]
+            == "cancelled"
+        )
         assert drained.wait(5)
         assert manager.store.list_versions(job) == []
         assert manager.store.workspace_job(workspace) is None
@@ -246,7 +258,9 @@ def test_stop_queued_replacement_keeps_existing_exam_after_restart(tmp_path):
         replacement = _start(client, workspace, "replacement")
         url = f"/api/exams/{replacement}"
         assert client.get(url + "/status").json()["status"] == "queued"
-        assert client.post(url + "/stop").json()["status"] == "cancelled"
+        assert (
+            client.post(url + "/stop", json={"executionVersion": 1}).json()["status"] == "cancelled"
+        )
         assert client.get(url + "/versions").status_code == 409
         assert app.state.ui_jobs.store.list_versions(replacement) == []
         assert {role: len(provider.calls) for role, provider in providers.items()} == before
@@ -257,7 +271,7 @@ def test_stop_queued_replacement_keeps_existing_exam_after_restart(tmp_path):
         assert saved["generationId"] == replacement and saved["generationStatus"] == "cancelled"
 
 
-def test_continue_reuses_finished_part_and_keeps_stopped_attempt_cancelled(tmp_path):
+def test_continue_reuses_finished_part_in_same_job_and_rejects_stale_controls(tmp_path):
     app, providers = fixture_app(tmp_path)
     entered = Event()
     parts = []
@@ -278,14 +292,18 @@ def test_continue_reuses_finished_part_and_keeps_stopped_attempt_cancelled(tmp_p
         old = _start(client, workspace, "before-continue")
         assert entered.wait(5)
         url = f"/api/exams/{old}"
-        assert client.post(url + "/stop").json()["status"] == "cancelled"
-        continued = client.post(url + "/resume")
+        assert (
+            client.post(url + "/stop", json={"executionVersion": 1}).json()["status"] == "cancelled"
+        )
+        continued = client.post(url + "/resume", json={"executionVersion": 1})
         assert continued.status_code == 202
         new = continued.json()["jobId"]
-        assert old != new
-        assert client.post(url + "/resume").json()["jobId"] == new
+        assert old == new
+        assert continued.json()["executionVersion"] == 2
+        assert client.post(url + "/resume", json={"executionVersion": 1}).json()["jobId"] == new
         assert wait(client, new)["status"] == "completed"
         assert parts == ["P1", "P2", "P2", "P3"]
-        assert client.get(url + "/status").json()["status"] == "cancelled"
-        assert app.state.ui_jobs.store.list_versions(old) == []
+        assert client.get(url + "/status").json()["status"] == "completed"
+        assert client.post(url + "/pause", json={"executionVersion": 1}).status_code == 409
+        assert len(app.state.ui_jobs.store.list_versions(old)) == 1
         assert client.get(f"/api/workspaces/{workspace}/versions").json()["currentJobId"] == new

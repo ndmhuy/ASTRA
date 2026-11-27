@@ -353,7 +353,15 @@ class Orchestrator:
                 raise
             if validate:
                 validate(response)
-            self.checkpoint_writer(checkpoint, response_checkpoint(fingerprint, response))
+            self.checkpoint_writer(
+                checkpoint,
+                {
+                    **response_checkpoint(fingerprint, response),
+                    "stage": agent.role,
+                    "revision": revision,
+                    "part": data.get("part"),
+                },
+            )
             save(internal / "result.json", report)
             self.check_control()
             return response

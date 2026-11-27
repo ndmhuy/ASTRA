@@ -4,6 +4,7 @@ import asyncio
 import json
 import re
 from contextlib import asynccontextmanager
+from contextvars import ContextVar
 from datetime import datetime, timezone
 from hashlib import sha256
 from pathlib import Path
@@ -14,6 +15,7 @@ import httpx
 from jsonschema import ValidationError
 
 from exam_baseline.agent.research import ADJACENT_TOPICS
+from exam_baseline.core.checkpoints import GenerationPaused
 from exam_baseline.core.contracts import ProviderError
 from exam_baseline.providers.chat_completions import ChatCompletionsProvider
 from exam_baseline.providers.worker_mas import configured_worker_mas
@@ -66,6 +68,7 @@ from exam_baseline.ui.contracts import (
 from exam_baseline.ui.demo import regenerate_demo_question, run_demo_job
 from exam_baseline.ui.errors import UiError
 from exam_baseline.ui.exam_source import SOURCE_NAME
+from exam_baseline.ui.generation_state import POLICY, GenerationState
 from exam_baseline.ui.preview import PreviewService
 from exam_baseline.ui.storage import ACTIVE_GENERATION, EXAM_VERSION_FIELDS, JobStore
 from exam_baseline.ui.student_export import export_student_document
@@ -475,6 +478,9 @@ class SubjectRepairComposer(RepairComposer):
     )
 
 
+GENERATION_RUN = ContextVar("astra_generation_run", default=None)
+
+
 class GenerationProvider:
     def __init__(self, provider, check_active):
         self.provider = provider
@@ -486,7 +492,8 @@ class GenerationProvider:
     async def complete(self, request):
         self.check_active()
         response = await self.provider.complete(request)
-        self.check_active()
+        # A pause must let a valid in-flight response reach the durable checkpoint.
+        # Execution ownership is checked by the checkpoint writer before commit.
         return response
 
 
@@ -495,6 +502,7 @@ class JobManager:
         self.settings = settings
         self.root = Path(root or settings.ui_output_root)
         self.store = JobStore(self.root / "jobs.sqlite3")
+        self.generation_state = GenerationState(self.store)
         self.store.interrupt_unfinished()
         self.providers = providers
         self.retriever = retriever or self._retrieve
@@ -510,6 +518,7 @@ class JobManager:
 
     def get(self, job_id):
         try:
+            self.generation_state.recover(str(job_id))
             return self.store.get(str(job_id))
         except KeyError:
             raise UiError("job_not_found", "Không tìm thấy phiên tạo đề này.", 404) from None
@@ -561,20 +570,37 @@ class JobManager:
             matrix=matrix,
         )
 
-    def resume_generation(self, job_id):
+    def resume_generation(self, job_id, version=None, *, retry=False):
         job = self.get(job_id)
-        if job["status"] != "cancelled":
-            raise UiError("generation_inactive", "Chỉ có thể tiếp tục phiên tạo đề đã dừng.")
-        return self._queue_generation(
-            f"continue:{job_id}",
-            fingerprint({"resumedFrom": job_id}),
-            job.get("workspaceId"),
-            request=job["request"],
-            nativeRequest=job["nativeRequest"],
-            matrix=job["matrix"],
-            resumedFrom=job_id,
-            retrieval=job.get("retrieval"),
+        updated, scheduled = self.generation_state.control(
+            job_id,
+            version if version is not None else job.get("executionVersion", 1),
+            "retry" if retry else "resume",
         )
+        if scheduled:
+            self._schedule_generation(job_id, updated["executionVersion"])
+        return {
+            "jobId": job_id,
+            "status": updated["status"],
+            "executionVersion": updated.get("executionVersion", 1),
+        }
+
+    def pause_generation(self, job_id, version):
+        self.get(job_id)
+        state, _ = self.generation_state.control(job_id, version, "pause")
+        if state["status"] == "paused" and (task := self.tasks.get(job_id)):
+            task.cancel()
+        return self.status(job_id)
+
+    def _schedule_generation(self, job_id, version):
+        task = asyncio.create_task(self._generate(job_id, version))
+        self.tasks[job_id] = task
+
+        def finished(done):
+            if self.tasks.get(job_id) is done:
+                self.tasks.pop(job_id, None)
+
+        task.add_done_callback(finished)
 
     def _queue_generation(self, key, request_hash, workspace_id, **fields):
         data, created = self.store.create(
@@ -583,6 +609,9 @@ class JobManager:
             {
                 **fields,
                 "status": "queued",
+                "executionVersion": 1,
+                "checkpointVersion": POLICY["checkpointVersion"],
+                "executionLeaseUntil": self.generation_state.clock() + POLICY["leaseSeconds"],
                 "createdAt": now(),
                 "progress": {
                     "stage": 0,
@@ -599,21 +628,29 @@ class JobManager:
         )
         if created:
             job_id = data["jobId"]
-            task = asyncio.create_task(self._generate(job_id))
-            self.tasks[job_id] = task
-            task.add_done_callback(lambda _: self.tasks.pop(job_id, None))
-        return {"jobId": data["jobId"], "status": data["status"]}
+            self._schedule_generation(job_id, data["executionVersion"])
+        return {
+            "jobId": data["jobId"],
+            "status": data["status"],
+            "executionVersion": data.get("executionVersion", 1),
+        }
 
-    def stop_generation(self, job_id):
-        self.get(job_id)
-        if self.store.stop_generation(job_id) and (task := self.tasks.get(job_id)):
+    def stop_generation(self, job_id, version=None):
+        job = self.get(job_id)
+        self.generation_state.control(
+            job_id, version if version is not None else job.get("executionVersion", 1), "cancel"
+        )
+        if task := self.tasks.get(job_id):
             task.cancel()
         return self.status(job_id)
 
-    def _active_generation(self, job_id):
+    def _active_generation(self, job_id, *, allow_pause=False):
         job = self.get(job_id)
         if job["status"] not in ACTIVE_GENERATION:
             raise asyncio.CancelledError
+        run = GENERATION_RUN.get()
+        if run and run[0] == job_id:
+            return self.generation_state.check(job_id, run[1], run[2], pause=not allow_pause)
         return job
 
     def _save_generation(self, job):
@@ -638,7 +675,27 @@ class JobManager:
         )
         self._save_generation(job)
 
-    async def _generate(self, job_id):
+    async def _generate(self, job_id, version=None):
+        version = version if version is not None else self.get(job_id).get("executionVersion", 1)
+        owner = str(uuid4())
+        if not self.generation_state.claim(job_id, version, owner):
+            return
+        token = GENERATION_RUN.set((job_id, version, owner))
+
+        async def heartbeat():
+            while True:
+                await asyncio.sleep(POLICY["heartbeatSeconds"])
+                self.generation_state.heartbeat(job_id, version, owner)
+
+        lease = asyncio.create_task(heartbeat())
+        try:
+            await self._run_generation(job_id)
+        finally:
+            lease.cancel()
+            await asyncio.gather(lease, return_exceptions=True)
+            GENERATION_RUN.reset(token)
+
+    async def _run_generation(self, job_id):
         try:
             async with self.capacity:
                 job = self._active_generation(job_id)
@@ -684,12 +741,16 @@ class JobManager:
                     question_model = Question
                 else:
                     self.progress(job_id, "rag")
-                    reuse = any((attempt / "request.json").is_file() for attempt in prior_attempts)
+                    reuse = (
+                        self.root / job_id / "_generation/_internal/request.json"
+                    ).is_file() or any(
+                        (attempt / "request.json").is_file() for attempt in prior_attempts
+                    )
                     retrieval = job.get("retrieval") if reuse else None
                     if retrieval is None:
                         retrieval = await asyncio.to_thread(self.retriever, job["matrix"])
                         reuse = False
-                    job = self._active_generation(job_id)
+                    job = self._active_generation(job_id, allow_pause=True)
                     job["retrieval"] = retrieval
                     self._save_generation(job)
                     if retrieval.get("status") != "success" or retrieval.get("gaps"):
@@ -731,9 +792,20 @@ class JobManager:
                             role: GenerationProvider(provider, check_active)
                             for role, provider in providers.items()
                         }
-                        report = await orchestrator_type(guarded, on_progress=progress).run(
+                        run = GENERATION_RUN.get()
+
+                        def persist(path, data):
+                            self.generation_state.persist(job_id, run[1], run[2], path, data)
+
+                        report = await orchestrator_type(
+                            guarded,
+                            on_progress=progress,
+                            check_control=check_active,
+                            checkpoint_writer=persist,
+                        ).run(
                             request,
                             output,
+                            resume=output.exists(),
                             checkpoint_sources=tuple(
                                 path / "checkpoints" for path in prior_attempts
                             ),
@@ -798,14 +870,12 @@ class JobManager:
                     statusMessage="Đề đã sẵn sàng để kiểm tra",
                 )
                 await self._save_version(job, "generated")
+        except GenerationPaused:
+            run = GENERATION_RUN.get()
+            self.generation_state.settle(job_id, run[1], run[2], "paused")
         except asyncio.CancelledError:
-            self._fail(
-                job_id,
-                UiError(
-                    "server_stopped",
-                    "Quá trình tạo đề bị gián đoạn do máy chủ tạm dừng.",
-                ),
-            )
+            run = GENERATION_RUN.get()
+            self.generation_state.settle(job_id, run[1], run[2], "interrupted")
             raise
         except Exception as exc:
             if isinstance(exc, UiError):
@@ -846,6 +916,10 @@ class JobManager:
             self._fail(job_id, error)
 
     def _fail(self, job_id, error):
+        run = GENERATION_RUN.get()
+        if run and run[0] == job_id:
+            self.generation_state.settle(job_id, run[1], run[2], "failed", error=error.payload())
+            return
         job = self.get(job_id)
         job.update(status="failed", error=error.payload())
         self.store.save_generation(job)
@@ -1292,6 +1366,12 @@ class JobManager:
             "jobId": job_id,
             "status": job["status"],
             "error": job.get("error"),
+            "executionVersion": job.get("executionVersion", 1),
+            "checkpointVersion": job.get("checkpointVersion"),
+            "completedOperations": len(job.get("checkpoints", {})),
+            "resumeAvailable": job["status"] in {"paused", "interrupted", "cancelled", "failed"}
+            and job.get("checkpointVersion") == POLICY["checkpointVersion"],
+            "retry": job.get("retry"),
         }
 
     def _check_revision(self, job, revision):

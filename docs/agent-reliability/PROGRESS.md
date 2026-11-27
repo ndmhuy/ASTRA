@@ -18,3 +18,10 @@ For the owner and next engineer. Active branch: `feat/longlth2297/agent-reliabil
 4. Run focused fake-provider and real-local-persistence regressions, verify the actual entry point without inference, and leave the real configuration ready for owner UI acceptance.
 
 Verification at this initial checkpoint: source/history inspection only; no tests or inference run. Findings above are implementation observations, not live quality/performance claims.
+
+## Implemented locally: durable execution foundation
+
+- `4d8d483`: atomic native JSON checkpoints, versioned request/provider/template manifests, operation-bound response digests and academic contract restoration, completed artifact hashes, durable pre-attempt records and cooperative control/fenced-writer hooks.35 focused deterministic THPT checks passed.
+- Extended the existing SQLite job store with execution versions, renewable ownership leases and transactional checkpoint/file fencing. Pause waits for a valid in-flight response to be persisted; cancel retains main's transport cancellation behavior. Explicit resume/retry continues the same job and increments its execution version; duplicate resume is idempotent and stale controls fail409. No inference starts automatically after abandoned-lease recovery/restart.
+- Generation control API requests carry an execution version. Native section/batch outputs remain actual validated response checkpoints, indexed in the job record; retrying a completed valid section is unnecessary. Existing question-regeneration cancellation and completed-exam version/export logic are retained. Existing continue regression was updated to assert the newly required same-job behavior rather than a replacement exam ID.
+-11 focused persistence/checkpoint/stop tests passed, including pause during a real asynchronous **fake** response, persisted16-question progress, Backend restart without calls, same-job resume with only P3 requested, duplicate resume, stale controls, queued pause with zero calls, lease exclusion/expiry and rejecting late writes. This is offline evidence only. UI bindings, coordinated retry and routing evaluation remain in progress.

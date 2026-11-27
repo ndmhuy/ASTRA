@@ -13,6 +13,7 @@ from exam_baseline.ui.contracts import (
     ApprovalRequest,
     EditRequest,
     ExamGenerateRequest,
+    GenerationControlRequest,
     PreviewRequest,
     QuestionApprovalRequest,
     RegenerateRequest,
@@ -191,13 +192,25 @@ async def status(request: Request, job_id: UUID):
 
 
 @router.post("/exams/{job_id}/stop")
-async def stop_generation(request: Request, job_id: UUID):
-    return request.app.state.ui_jobs.stop_generation(str(job_id))
+async def stop_generation(request: Request, job_id: UUID, payload: GenerationControlRequest):
+    return request.app.state.ui_jobs.stop_generation(str(job_id), payload.executionVersion)
+
+
+@router.post("/exams/{job_id}/pause", status_code=202)
+async def pause_generation(request: Request, job_id: UUID, payload: GenerationControlRequest):
+    return request.app.state.ui_jobs.pause_generation(str(job_id), payload.executionVersion)
 
 
 @router.post("/exams/{job_id}/resume", status_code=202)
-async def resume_generation(request: Request, job_id: UUID):
-    return request.app.state.ui_jobs.resume_generation(str(job_id))
+async def resume_generation(request: Request, job_id: UUID, payload: GenerationControlRequest):
+    return request.app.state.ui_jobs.resume_generation(str(job_id), payload.executionVersion)
+
+
+@router.post("/exams/{job_id}/retry", status_code=202)
+async def retry_generation(request: Request, job_id: UUID, payload: GenerationControlRequest):
+    return request.app.state.ui_jobs.resume_generation(
+        str(job_id), payload.executionVersion, retry=True
+    )
 
 
 @router.get("/exams/{job_id}/events")
@@ -213,7 +226,7 @@ async def events(request: Request, job_id: UUID):
             if encoded != previous:
                 yield f"data: {encoded}\n\n"
                 previous = encoded
-            if packet["status"] in {"completed", "failed", "cancelled"}:
+            if packet["status"] in {"completed", "failed", "cancelled", "paused", "interrupted"}:
                 return
             await asyncio.sleep(0.3)
 

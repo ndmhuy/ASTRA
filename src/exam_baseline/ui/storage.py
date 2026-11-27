@@ -10,6 +10,7 @@ from uuid import uuid4
 
 from exam_baseline.ui.errors import UiError
 from exam_baseline.ui.exam_source import PENDING_NAME, SOURCE_NAME, publish_source, settle_source
+from exam_baseline.ui.generation_state import ACTIVE, GenerationState
 from exam_baseline.ui.timeline import workspace_change_messages
 
 
@@ -40,7 +41,7 @@ class JobConflict(ValueError):
     pass
 
 
-ACTIVE_GENERATION = frozenset({"queued", "running"})
+ACTIVE_GENERATION = ACTIVE
 
 
 class JobStore:
@@ -152,7 +153,7 @@ class JobStore:
                 if db.execute(
                     """SELECT 1 FROM workspace_jobs l JOIN jobs j ON j.id=l.job_id
                        WHERE l.workspace_id=? AND json_extract(j.data, '$.status') IN
-                       ('queued', 'running') LIMIT 1""",
+                       ('queued', 'running', 'pausing', 'resuming', 'retrying') LIMIT 1""",
                     (workspace_id,),
                 ).fetchone():
                     raise UiError("workspace_generating", "Đề này đang được soạn.")
@@ -400,24 +401,13 @@ class JobStore:
                 )
 
     def save_generation(self, data: dict) -> bool:
-        with self.connect() as db:
-            changed = db.execute(
-                """UPDATE jobs SET data=? WHERE id=?
-                   AND json_extract(data, '$.status') IN ('queued', 'running')""",
-                (json.dumps(data, ensure_ascii=False), data["jobId"]),
-            )
-            return changed.rowcount == 1
+        return GenerationState(self).save(data)
 
     def stop_generation(self, job_id: str) -> bool:
-        with self.connect() as db:
-            changed = db.execute(
-                """UPDATE jobs SET data=json_set(data, '$.status', 'cancelled',
-                      '$.progress.stageName', 'cancelled', '$.progress.estimatedSecondsLeft', 0,
-                      '$.progress.statusMessage', 'Đã dừng tạo đề')
-                   WHERE id=? AND json_extract(data, '$.status') IN ('queued', 'running')""",
-                (job_id,),
-            )
-            return changed.rowcount == 1
+        job = self.get(job_id)
+        active = job["status"] in ACTIVE_GENERATION
+        GenerationState(self).control(job_id, job.get("executionVersion", 1), "cancel")
+        return active
 
     @staticmethod
     def _snapshot(job: dict) -> str:
@@ -472,6 +462,14 @@ class JobStore:
             if change == "generated":
                 if previous["status"] not in ACTIVE_GENERATION:
                     raise UiError("generation_inactive", "Phiên tạo đề đã kết thúc.")
+                if previous.get("executionOwner"):
+                    GenerationState(self)._owned(
+                        previous, job.get("executionVersion", 1), job.get("executionOwner")
+                    )
+                if previous.get("pauseRequested"):
+                    from exam_baseline.core.checkpoints import GenerationPaused
+
+                    raise GenerationPaused
                 workspace_id = previous.get("workspaceId")
                 if workspace_id is not None:
                     changed = db.execute(
@@ -784,21 +782,4 @@ class JobStore:
                         "message": "Thay đổi bị gián đoạn khi máy chủ khởi động lại.",
                     },
                 )
-            rows = db.execute("SELECT data FROM jobs").fetchall()
-            for (raw,) in rows:
-                job = json.loads(raw)
-                if job["status"] in {"queued", "running"}:
-                    job.update(
-                        status="failed",
-                        error={
-                            "code": "server_restarted",
-                            "message": (
-                                "Quá trình tạo đề bị gián đoạn do máy chủ khởi động lại. "
-                                "Thầy cô vui lòng bấm thử tạo lại."
-                            ),
-                        },
-                    )
-                    db.execute(
-                        "UPDATE jobs SET data=? WHERE id=?",
-                        (json.dumps(job, ensure_ascii=False), job["jobId"]),
-                    )
+        GenerationState(self).recover()
