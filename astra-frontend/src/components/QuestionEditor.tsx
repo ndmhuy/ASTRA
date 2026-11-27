@@ -1,9 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { LoaderCircle, X } from 'lucide-react';
 import type { QuestionItem } from '../types/exam';
+import { patchEditorDraft } from '../agent/editorDraft';
 import { MathRenderer } from './MathRenderer';
 
+export type QuestionEditorControls = { patch(field: string, value: string): boolean };
+
 interface Props {
+  controlsRef?: React.Ref<QuestionEditorControls>;
   question: QuestionItem;
   onSave: (question: QuestionItem) => Promise<void>;
   onRegenerate: (instruction: string) => Promise<void>;
@@ -11,7 +15,7 @@ interface Props {
   onClose: () => void;
 }
 
-export const QuestionEditor: React.FC<Props> = ({ question, onSave, onRegenerate, onVerify, onClose }) => {
+export const QuestionEditor: React.FC<Props> = ({ question, controlsRef, onSave, onRegenerate, onVerify, onClose }) => {
   const [draft, setDraft] = useState(() => structuredClone(question));
   const [instruction, setInstruction] = useState('');
   const [busyAction, setBusyAction] = useState<'save' | 'regen' | 'verify' | null>(null);
@@ -20,6 +24,21 @@ export const QuestionEditor: React.FC<Props> = ({ question, onSave, onRegenerate
   const draftRef = useRef(draft);
   const busy = busyAction !== null;
   const hasUnsavedChanges = JSON.stringify(draft) !== JSON.stringify(question);
+
+  useImperativeHandle(controlsRef, () => ({
+    patch(field, value) {
+      if (busy) return false;
+      if (field === 'regenerate_instruction') {
+        setInstruction(value);
+        return true;
+      }
+      const next = patchEditorDraft(draftRef.current, field, value);
+      if (!next) return false;
+      draftRef.current = next;
+      setDraft(next);
+      return true;
+    },
+  }));
 
   useEffect(() => {
     draftRef.current = draft;

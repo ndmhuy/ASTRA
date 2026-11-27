@@ -1,9 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ChevronDown, ChevronUp, X } from 'lucide-react';
 import type { ExamFormat, ExamRequestParams } from '../types/exam';
+import { presetParams } from '../agent/intake';
 import { getBackendHealth, getExamFormats, type BackendHealth } from '../services/examService';
 
-interface Props { title?: string; onStart: (params: ExamRequestParams) => void; onClose: () => void; }
+interface Props {
+  onDialogMount?: (node: HTMLDivElement | null) => void;
+  title?: string;
+  onStart: (params: ExamRequestParams) => void;
+  onClose: () => void;
+  agentSelection?: { formats: ExamFormat[]; id: string; expanded: boolean; summary?: string };
+  onManualSelect?: () => void;
+}
 
 const THPT_SECTION_TITLES: Record<string, string> = {
   P1: 'Phần I · Trắc nghiệm nhiều lựa chọn',
@@ -30,35 +38,47 @@ function formatSummary(format: ExamFormat): string {
   return `Môn ${format.subjects[0]} · Lớp ${format.grades[0]}`;
 }
 
-export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, title = 'Tạo đề từ mẫu' }) => {
+export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, onDialogMount, agentSelection, onManualSelect, title = 'Tạo đề từ mẫu' }) => {
   const [formats, setFormats] = useState<ExamFormat[]>([]);
-  const [masterGroup, setMasterGroup] = useState<'thpt' | 'dgnl'>('thpt');
-  const [thptPickerOpen, setThptPickerOpen] = useState(false);
+  const [manualGroup, setMasterGroup] = useState<'thpt' | 'dgnl'>('thpt');
+  const [pickerOpen, setThptPickerOpen] = useState(false);
   const [selectedThptId, setSelectedThptId] = useState('thpt-math');
-  const [expandedGroup, setExpandedGroup] = useState<{ thpt: boolean; dgnl: boolean }>({
-    thpt: false,
-    dgnl: false,
+  const [expandedOverrides, setExpandedGroup] = useState<{ thpt?: boolean; dgnl?: boolean }>({
+    thpt: undefined,
+    dgnl: undefined,
   });
   const [health, setHealth] = useState<BackendHealth | null>(null);
   const [error, setError] = useState('');
   const modalRef = useRef<HTMLDivElement>(null);
 
-  const thptFormats = formats.filter(format => format.examType === 'THPT_STANDARD');
-  const dgnlFormat = formats.find(format => format.examType === 'DGNL_DHQG');
+  const catalog = agentSelection?.formats ?? formats;
+  const agentFormat = agentSelection && catalog.find(format => format.id === agentSelection.id);
+  const masterGroup = agentFormat ? (agentFormat.examType === 'DGNL_DHQG' ? 'dgnl' : 'thpt') : manualGroup;
+  const thptPickerOpen = agentFormat ? masterGroup === 'thpt' : pickerOpen;
+  const expandedGroup = {
+    thpt: expandedOverrides.thpt ?? (masterGroup === 'thpt' && !!agentSelection?.expanded),
+    dgnl: expandedOverrides.dgnl ?? (masterGroup === 'dgnl' && !!agentSelection?.expanded),
+  };
+  const thptFormats = catalog.filter(format => format.examType === 'THPT_STANDARD');
+  const dgnlFormat = catalog.find(format => format.examType === 'DGNL_DHQG');
   const selectedThpt =
-    thptFormats.find(format => format.id === selectedThptId) ||
+    thptFormats.find(format => format.id === (agentSelection?.id ?? selectedThptId)) ||
     thptFormats.find(format => format.available) ||
     thptFormats[0];
   const selected = masterGroup === 'thpt' ? selectedThpt : dgnlFormat;
 
   const toggleGroupExpand = (group: 'thpt' | 'dgnl') => {
-    setExpandedGroup(prev => ({ ...prev, [group]: !prev[group] }));
+    setExpandedGroup(prev => ({ ...prev, [group]: !expandedGroup[group] }));
   };
   const selectThptMaster = () => {
+    setFormats(catalog);
+    onManualSelect?.();
     setMasterGroup('thpt');
     setThptPickerOpen(true);
   };
   const selectDgnlMaster = () => {
+    setFormats(catalog);
+    onManualSelect?.();
     setMasterGroup('dgnl');
     setThptPickerOpen(false);
   };
@@ -66,6 +86,7 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, title = 'T
   useEffect(() => {
     let active = true;
     void getBackendHealth().then(info => { if (active && info) setHealth(info); });
+    if (agentSelection) return () => { active = false; };
     getExamFormats()
       .then(items => {
         if (!active) return;
@@ -85,7 +106,7 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, title = 'T
         }
       });
     return () => { active = false; };
-  }, []);
+  }, [agentSelection]);
 
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
@@ -106,17 +127,7 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, title = 'T
 
   const start = () => {
     if (!selected?.available) return;
-    onStart({
-      formatId: selected.id,
-      formatVersion: selected.version,
-      subject: selected.subjects[0],
-      grade: selected.grades[0],
-      examType: selected.examType,
-      durationMinutes: selected.durationMinutes,
-      itemCount: selected.totalQuestions,
-      prompt: `Tạo đề ${selected.displayName}`,
-      uploadedFiles: [],
-    });
+    onStart(presetParams(selected));
   };
 
   const handleOptionKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -129,7 +140,10 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, title = 'T
   return (
     <div className="preset-modal-backdrop" onClick={onClose}>
       <div
-        ref={modalRef}
+        ref={node => {
+          modalRef.current = node;
+          onDialogMount?.(node);
+        }}
         role="dialog"
         aria-modal="true"
         aria-labelledby="preset-title"
@@ -163,7 +177,7 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, title = 'T
             <p>{error}</p>
           </div>
         )}
-        {!error && !formats.length && (
+        {!error && !catalog.length && (
           <div className="preset-loading-wrap">
             <p role="status" className="preset-loading-text">Đang tải danh sách mẫu đề…</p>
             <div className="preset-skeleton-card" aria-hidden="true" />
@@ -218,7 +232,7 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, title = 'T
                           aria-pressed={active}
                           disabled={!format.available}
                           className={`preset-subject-pill ${active ? 'is-active' : ''}`}
-                          onClick={() => setSelectedThptId(format.id)}
+                          onClick={() => { setFormats(catalog); setMasterGroup('thpt'); setThptPickerOpen(true); setSelectedThptId(format.id); onManualSelect?.(); }}
                         >
                           {format.subjects[0]}
                         </button>
@@ -308,10 +322,11 @@ export const QuickPresetModal: React.FC<Props> = ({ onStart, onClose, title = 'T
           )}
         </div>
 
-        <div className="preset-modal-actions">
-          <button type="button" className="button-secondary" onClick={onClose}>Huỷ</button>
-          <button type="button" className="button-primary" disabled={!selected?.available || !!error} onClick={start}>Tạo đề thi</button>
-        </div>
+      {agentSelection?.summary && <p className="preset-details-summary">{agentSelection.summary}</p>}
+      <div className="preset-modal-actions">
+        <button type="button" className="button-secondary" onClick={onClose}>Huỷ</button>
+        <button type="button" className="button-primary" disabled={!selected?.available || !!error} onClick={start}>Tạo đề thi</button>
+      </div>
       </div>
     </div>
   );

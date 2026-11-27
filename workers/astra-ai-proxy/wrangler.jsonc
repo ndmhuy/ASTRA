@@ -1,0 +1,37 @@
+{
+  "name": "astra-ai-proxy",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-26",
+  "keep_vars": true,
+  "workers_dev": true,
+  "preview_urls": false,
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "ADMISSION",
+        "class_name": "Admission"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1-admission",
+      "new_sqlite_classes": [
+        "Admission"
+      ]
+    }
+  ],
+  "vars": {
+    "ASTRA_AGENT_MODEL": "gemini-3.1-flash-lite",
+    "ASTRA_FORWARDING_ENABLED": "false",
+    "ASTRA_AGENT_BUDGETS_ENABLED": "true",
+    "ASTRA_GLOBAL_DAILY": "2",
+    "ASTRA_AGENT_DAILY": "2",
+    "ASTRA_MAS_DAILY": "0",
+    "ASTRA_CONCURRENCY": "1",
+    "ASTRA_IP_PER_MINUTE": "3",
+    "ASTRA_GLOBAL_PER_MINUTE": "10",
+    "ASTRA_UPSTREAM_MS": "30000",
+    "ASTRA_OUTPUT_TOKENS": "1024"
+  }
+}
