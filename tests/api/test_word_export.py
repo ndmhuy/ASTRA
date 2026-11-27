@@ -35,10 +35,21 @@ def test_word_download_uses_approved_revision_and_editable_equations(tmp_path, m
         assert package["questions"][0]["explanation"] not in student_text
         assert list(doc.element.iter(qn("m:oMath")))
         assert len(doc.inline_shapes) == 1
+        assert doc.styles["Normal"].font.name == "Times New Roman"
+        assert "KỲ THI TỐT NGHIỆP" in doc.tables[0].cell(0, 1).text
+        assert "Mã đề: 1034" in doc.tables[1].cell(0, 1).text
+        assert "90 phút" in doc.tables[0].cell(0, 1).text
+        assert len(doc.tables[2].columns) == 4
 
         edited = client.put(
             url + "/questions/1",
-            json={"revision": binding["revision"], "question": {"stem": r"Tính $\frac{1}{2}$."}},
+            json={
+                "revision": binding["revision"],
+                "question": {
+                    "stem": r"Tính $\frac{1}{2}$.",
+                    "choices": {"A": "So sánh kết quả đo", "B": "Hai", "C": "Ba", "D": "Bốn"},
+                },
+            },
         )
         assert edited.is_success
         assert client.get(export_url).status_code == 409
@@ -48,6 +59,8 @@ def test_word_download_uses_approved_revision_and_editable_equations(tmp_path, m
         assert revised.is_success
         doc = Document(BytesIO(revised.content))
         assert list(doc.element.iter(qn("m:f")))
+        assert len(doc.tables[2].columns) == 2
+        assert len(doc.tables[2].rows) == 2
 
 
 def test_markdown_download_preserves_math_and_bundles_images(tmp_path, monkeypatch):
@@ -64,6 +77,7 @@ def test_markdown_download_preserves_math_and_bundles_images(tmp_path, monkeypat
         assert response.headers["content-type"] == "text/markdown; charset=utf-8"
         assert response.headers["content-disposition"] == 'attachment; filename="de_thi.md"'
         assert response.text.startswith("# Đề Toán THPT")
+        assert "{#" not in response.text and ".unnumbered" not in response.text
         assert "**Câu 1.** Tính $1+1$" in response.text
         assert package["questions"][0]["explanation"] not in response.text
 

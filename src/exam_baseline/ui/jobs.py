@@ -1815,6 +1815,7 @@ class JobManager:
                         self._package(job, include_preview=False),
                         job,
                         file_format,
+                        source=source,
                         compiler=self.previews.compiler(),
                         timeout=self.settings.latex_timeout_seconds,
                         cache_directory=self.settings.latex_cache_dir,
