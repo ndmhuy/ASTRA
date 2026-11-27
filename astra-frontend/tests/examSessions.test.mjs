@@ -16,6 +16,79 @@ function fakeService() {
   };
 }
 
+test('browser import keeps the original data and leaves failed entries available locally', async t => {
+  const id = crypto.randomUUID();
+  const missingId = crypto.randomUUID();
+  const legacy = { id, mode: 'custom', title: 'Local draft', status: 'draft', draft: 'Draft text',
+    jobId: null, messages: [], questions: [], meta: null, createdAt: new Date().toISOString() };
+  const original = JSON.stringify([legacy, { ...legacy, id: missingId, jobId: crypto.randomUUID() }]);
+  const storage = new Map([['astra.sessions.v1', original]]);
+  const descriptor = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
+  Object.defineProperty(globalThis, 'localStorage', {
+    configurable: true, value: { getItem: key => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, value) },
+  });
+  t.after(() => {
+    if (descriptor) Object.defineProperty(globalThis, 'localStorage', descriptor);
+    else delete globalThis.localStorage;
+  });
+
+  const workspaces = [];
+  const service = fakeService();
+  service.workspaceLibrary = {
+    async list() { return { workspaces }; },
+    async importLegacy(workspaceId, payload) {
+      if (payload.jobId) throw Object.assign(new Error('Missing job'), { code: 'workspace_import_missing_job' });
+      assert.equal(workspaceId, id);
+      workspaces.push({ ...payload, id, revision: 1 });
+      return { status: 'imported' };
+    },
+  };
+  const store = new ExamSessions(service);
+  await store.importBrowserLibrary();
+  assert.equal(store.getSnapshot().find(session => !session.browserOnly).draft, legacy.draft);
+  assert.equal(store.getSnapshot().filter(session => session.browserOnly).length, 1);
+  assert.equal(storage.get('astra.sessions.v1'), original);
+  assert.match(store.getBrowserImport().message, /Đã nhập 1 đề.*1 đề trên máy chủ/);
+
+  const reloaded = new ExamSessions(service);
+  await reloaded.loadLibrary();
+  assert.equal(reloaded.getSnapshot().filter(session => session.browserOnly).length, 1);
+  await reloaded.importBrowserLibrary();
+  assert.equal(workspaces.length, 1);
+  assert.equal(storage.get('astra.sessions.v1'), original);
+});
+
+test('a draft save with a lost response is acknowledged before sending newer edits', async () => {
+  let saved;
+  let loseResponse = false;
+  const service = fakeService();
+  service.workspaceLibrary = {
+    async list() { return { workspaces: saved ? [saved] : [] }; },
+    async save(id, draft, revision) {
+      if (saved?.draft === draft.draft) return { revision: saved.revision };
+      assert.equal(revision, saved?.revision ?? 0);
+      saved = { ...draft, id, revision: revision + 1, createdAt: new Date().toISOString(), jobId: null };
+      if (loseResponse) throw Object.assign(new Error('Lost response'), { code: 'network_error' });
+      return { revision: saved.revision };
+    },
+  };
+  const writer = new ExamSessions(service);
+  const id = writer.create('custom');
+  await flush();
+  loseResponse = true;
+  writer.setDraft(id, 'First edit');
+  await flush();
+  assert.ok(writer.getLibraryError());
+  loseResponse = false;
+  writer.setDraft(id, 'Latest edit');
+  await flush();
+
+  const reader = new ExamSessions(service);
+  await reader.loadLibrary();
+  assert.equal(reader.getSnapshot()[0].draft, 'Latest edit');
+  assert.equal(writer.getLibraryError(), '');
+});
+
 test('two generation jobs finish out of order without mixing drafts, chat, questions or metadata', async () => {
   const service = fakeService();
   const store = new ExamSessions(service);

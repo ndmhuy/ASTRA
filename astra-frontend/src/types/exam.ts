@@ -106,6 +106,23 @@ export interface ExamPackage {
   gaps?: { code: string; message: string }[];
   provenance?: Record<string, unknown>;
 }
+
+export interface ExamVersionSummary {
+  jobId?: string;
+  revision: number;
+  createdAt: string;
+  change: 'generated' | 'baseline' | 'edited' | 'regenerated' | 'restored' | 'undone' | 'branched';
+  questionId: number | null;
+  restoredFrom: number | null;
+  restorable: boolean;
+}
+
+export interface ExamHistory {
+  list(jobId: string, workspaceId?: string): Promise<{ currentJobId?: string; currentRevision: number; versions: ExamVersionSummary[] }>;
+  read(jobId: string, version: number): Promise<ExamPackage>;
+  restore(jobId: string, version: number, revision: number, workspaceId?: string, targetJobId?: string): Promise<ExamPackage>;
+}
+
 export interface ExamRequestParams {
   subject: Subject; grade: number; examType: ExamType; durationMinutes: number;
   itemCount: number; prompt: string; uploadedFiles: string[];
@@ -118,7 +135,13 @@ export interface GenerationProgress {
   status?: 'queued' | 'running' | 'completed' | 'failed';
   error?: { code: string; message: string; details?: unknown };
 }
-export interface ChatMessage { id: string; role: 'user' | 'assistant' | 'system'; content: string; timestamp: string; }
+export interface ExamVersionReference { jobId: string; revision: number; }
+export interface ChatMessage {
+  id: string; role: 'user' | 'assistant' | 'system'; content: string; timestamp: string;
+  examVersion?: ExamVersionReference | null;
+  recorded?: boolean;
+  changeId?: string;
+}
 export interface ExamFormat {
   id: string; version: string; displayName: string; examType: ExamType;
   subjects: Subject[]; grades: number[]; durationMinutes: number; totalQuestions: number;

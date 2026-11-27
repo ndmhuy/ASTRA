@@ -68,7 +68,8 @@ export function adaptStudentPaper(pkg: ExamPackage, apiBase: string): ExamPackag
       const asset = paper.assets.find(entry => entry.id === block.assetId);
       if (!asset) throw new Error('Thiếu hình minh họa trong bản đề JSON.');
       return {
-        url: apiBase + '/exams/' + encodeURIComponent(pkg.examId) + '/assets/' + encodeURIComponent(asset.id),
+        url: apiBase + '/exams/' + encodeURIComponent(pkg.examId) + '/assets/' + encodeURIComponent(asset.id)
+          + '?revision=' + pkg.revision,
         mimeType: asset.mimeType,
         alt: block.alt,
       };

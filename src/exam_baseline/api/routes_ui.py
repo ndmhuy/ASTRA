@@ -2,10 +2,11 @@
 
 import asyncio
 import json
+from datetime import timezone
 from typing import Annotated, Literal
 from uuid import UUID
 
-from fastapi import APIRouter, Header, Query, Request, Response
+from fastapi import APIRouter, Header, Path, Query, Request, Response
 from fastapi.responses import FileResponse, StreamingResponse
 
 from exam_baseline.ui.contracts import (
@@ -15,11 +16,96 @@ from exam_baseline.ui.contracts import (
     PreviewRequest,
     RegenerateRequest,
     RevisionRequest,
+    WorkspaceBranchRequest,
+    WorkspaceDraft,
+    WorkspaceImport,
+    WorkspaceRestoreRequest,
     format_catalog,
 )
 from exam_baseline.ui.jobs import resolve_request
 
 router = APIRouter(prefix="/api")
+
+
+@router.get("/workspaces")
+def workspaces(request: Request, response: Response):
+    response.headers["Cache-Control"] = "no-store"
+    return {"workspaces": request.app.state.ui_jobs.store.list_workspaces()}
+
+
+@router.put("/workspaces/{workspace_id}")
+def save_workspace(request: Request, workspace_id: UUID, payload: WorkspaceDraft):
+    revision = request.app.state.ui_jobs.store.save_workspace(
+        str(workspace_id), payload.revision, payload.storage_content("revision")
+    )
+    return {"revision": revision}
+
+
+@router.get("/workspaces/{workspace_id}/versions")
+async def workspace_versions(request: Request, workspace_id: UUID, response: Response):
+    response.headers["Cache-Control"] = "no-store"
+    return request.app.state.ui_jobs.workspace_history(str(workspace_id))
+
+
+@router.get("/workspaces/{workspace_id}/changes")
+def workspace_changes(request: Request, workspace_id: UUID, response: Response):
+    response.headers["Cache-Control"] = "no-store"
+    return request.app.state.ui_jobs.workspace_timeline(str(workspace_id))
+
+
+@router.post("/workspaces/{workspace_id}/branch")
+async def branch_workspace(request: Request, workspace_id: UUID, payload: WorkspaceBranchRequest):
+    return await request.app.state.ui_jobs.branch_workspace(
+        str(workspace_id), str(payload.destinationId), payload.messageId, payload.copyCurrent
+    )
+
+
+@router.post("/workspaces/{workspace_id}/changes/{job_id}/{change_id}/undo")
+async def undo_workspace_change(
+    request: Request,
+    workspace_id: UUID,
+    job_id: UUID,
+    change_id: UUID,
+    payload: RevisionRequest,
+    idempotency_key: Annotated[UUID | None, Header()] = None,
+):
+    return await request.app.state.ui_jobs.undo_change(
+        str(workspace_id),
+        str(job_id),
+        str(change_id),
+        payload.revision,
+        str(idempotency_key) if idempotency_key else None,
+    )
+
+
+@router.post("/workspaces/{workspace_id}/versions/restore")
+async def restore_workspace_version(
+    request: Request, workspace_id: UUID, payload: WorkspaceRestoreRequest
+):
+    return await request.app.state.ui_jobs.restore_workspace_version(
+        str(workspace_id),
+        str(payload.jobId),
+        payload.revision,
+        str(payload.targetJobId),
+        payload.targetRevision,
+    )
+
+
+@router.post("/workspaces/{workspace_id}/import")
+def import_workspace(request: Request, workspace_id: UUID, payload: WorkspaceImport):
+    created_at = payload.createdAt.astimezone(timezone.utc).isoformat(timespec="milliseconds")
+    status = request.app.state.ui_jobs.store.import_workspace(
+        str(workspace_id),
+        created_at.replace("+00:00", "Z"),
+        str(payload.jobId) if payload.jobId else None,
+        payload.storage_content("createdAt", "jobId"),
+    )
+    return {"status": status}
+
+
+@router.delete("/workspaces/{workspace_id}", status_code=204)
+def archive_workspace(request: Request, workspace_id: UUID):
+    request.app.state.ui_jobs.store.archive_workspace(str(workspace_id))
 
 
 @router.get("/health")
@@ -62,8 +148,11 @@ async def generate(
     request: Request,
     payload: ExamGenerateRequest,
     idempotency_key: Annotated[str, Header(min_length=1, max_length=128)],
+    workspace_id: UUID | None = None,
 ):
-    return await request.app.state.ui_jobs.start(payload, idempotency_key)
+    return await request.app.state.ui_jobs.start(
+        payload, idempotency_key, str(workspace_id) if workspace_id else None
+    )
 
 
 @router.get("/exams/{job_id}/status")
@@ -100,17 +189,61 @@ async def package(request: Request, job_id: UUID):
     return request.app.state.ui_jobs.package(str(job_id))
 
 
+@router.get("/exams/{job_id}/versions")
+async def versions(request: Request, job_id: UUID, response: Response):
+    response.headers["Cache-Control"] = "no-store"
+    return request.app.state.ui_jobs.versions(str(job_id))
+
+
+@router.get("/exams/{job_id}/versions/{version}")
+async def exam_version(request: Request, job_id: UUID, version: Annotated[int, Path(ge=1)]):
+    return request.app.state.ui_jobs.version(str(job_id), version)
+
+
+@router.post("/exams/{job_id}/versions/{version}/restore")
+async def restore_version(
+    request: Request, job_id: UUID, version: Annotated[int, Path(ge=1)], payload: RevisionRequest
+):
+    return await request.app.state.ui_jobs.restore_version(str(job_id), payload.revision, version)
+
+
 @router.put("/exams/{job_id}/questions/{question_id}")
-async def edit(request: Request, job_id: UUID, question_id: int, payload: EditRequest):
-    return await request.app.state.ui_jobs.edit(
-        str(job_id), question_id, payload.revision, payload.question
+async def edit(
+    request: Request,
+    job_id: UUID,
+    question_id: int,
+    payload: EditRequest,
+    idempotency_key: Annotated[UUID | None, Header()] = None,
+    workspace_id: UUID | None = None,
+):
+    return await request.app.state.ui_jobs.question_change(
+        str(job_id),
+        question_id,
+        payload.revision,
+        "edited",
+        payload.question,
+        str(idempotency_key) if idempotency_key else None,
+        workspace_id=str(workspace_id) if workspace_id else None,
     )
 
 
 @router.post("/exams/{job_id}/questions/{question_id}/regenerate")
-async def regenerate(request: Request, job_id: UUID, question_id: int, payload: RegenerateRequest):
-    return await request.app.state.ui_jobs.regenerate(
-        str(job_id), question_id, payload.revision, payload.instruction
+async def regenerate(
+    request: Request,
+    job_id: UUID,
+    question_id: int,
+    payload: RegenerateRequest,
+    idempotency_key: Annotated[UUID | None, Header()] = None,
+    workspace_id: UUID | None = None,
+):
+    return await request.app.state.ui_jobs.question_change(
+        str(job_id),
+        question_id,
+        payload.revision,
+        "regenerated",
+        payload.instruction,
+        str(idempotency_key) if idempotency_key else None,
+        workspace_id=str(workspace_id) if workspace_id else None,
     )
 
 
@@ -182,8 +315,13 @@ async def preview_log(
 
 
 @router.get("/exams/{job_id}/assets/{asset_id}")
-async def asset(request: Request, job_id: UUID, asset_id: str):
-    path, media_type = request.app.state.ui_jobs.contract_asset(str(job_id), asset_id)
+async def asset(
+    request: Request,
+    job_id: UUID,
+    asset_id: str,
+    revision: Annotated[int | None, Query(ge=1)] = None,
+):
+    path, media_type = request.app.state.ui_jobs.contract_asset(str(job_id), asset_id, revision)
     return FileResponse(path, media_type=media_type, headers={"Cache-Control": "no-store"})
 
 
@@ -194,5 +332,11 @@ async def export(
     type: Literal["STUDENT_EXAM", "TEACHER_KEY"],
     format: Literal["tex", "json", "pdf"],
 ):
-    path, media_type = await request.app.state.ui_jobs.export(str(job_id), type, format)
+    path, media_type, content = await request.app.state.ui_jobs.export(str(job_id), type, format)
+    if content is not None:
+        return Response(
+            content,
+            media_type=media_type,
+            headers={"Content-Disposition": f'attachment; filename="{path.name}"'},
+        )
     return FileResponse(path, media_type=media_type, filename=path.name)

@@ -26,7 +26,7 @@ test('publishes canonical questions and keeps teacher keys bound to the revision
   assert.equal(adapted.questions[0].key, 'B');
   assert.equal(adapted.questions[0].stem, '$x^2$');
   assert.equal(adapted.questions[0].choices.B, 'second');
-  assert.equal(adapted.questions[0].figures[0].url, '/api/exams/job/assets/figure-p1-1');
+  assert.equal(adapted.questions[0].figures[0].url, '/api/exams/job/assets/figure-p1-1?revision=2');
   assert.equal(adapted.passages[0].text, '(1) ____');
   assert.throws(() => adaptStudentPaper({ ...pkg, revision: 3 }, '/api'), /phiên bản/);
 });

@@ -2,6 +2,7 @@
 
 import json
 from collections import Counter
+from uuid import uuid4
 
 import pytest
 from fastapi.testclient import TestClient
@@ -256,3 +257,82 @@ def test_subject_review_preview_and_export(tmp_path, format_id, subject, counts)
             updated_key = json.loads((tmp_path / job / TEACHER).read_text("utf-8"))
             assert updated_key["contentHash"] == updated["contentHash"]
             assert not updated["approved"]
+
+
+def test_contract_artifacts_follow_restored_and_forked_versions(tmp_path):
+    providers = {role: Replay(role) for role in ("composer", "solver", "reviewer")}
+    app = create_app(Settings.for_offline(), ui_output_root=tmp_path, pipeline_providers=providers)
+    workspace_id, destination_id = str(uuid4()), str(uuid4())
+    workspace_url = f"/api/workspaces/{workspace_id}"
+    with TestClient(app) as client:
+        assert (
+            client.put(
+                workspace_url,
+                json={
+                    "revision": 0,
+                    "mode": "custom",
+                    "title": "Lịch sử",
+                    "draft": "",
+                    "messages": [],
+                },
+            ).status_code
+            == 200
+        )
+        generated = client.post(
+            f"/api/exams/generate?workspace_id={workspace_id}",
+            json={
+                "formatId": "thpt-history",
+                "subject": "Lịch Sử",
+                "grade": 12,
+                "examType": "THPT_STANDARD",
+                "durationMinutes": 50,
+                "itemCount": 28,
+            },
+            headers={"Idempotency-Key": "contract-history"},
+        )
+        job_id = generated.json()["jobId"]
+        assert wait(client, job_id)["status"] == "completed"
+        url = f"/api/exams/{job_id}"
+        initial = client.get(url).json()
+        revision = initial["revision"]
+        edited = client.put(
+            f"{url}/questions/1",
+            json={
+                "revision": revision,
+                "question": {"stem": "Revised stem for history."},
+            },
+        )
+        assert edited.status_code == 200, edited.text
+        assert (
+            client.get(f"{url}/versions/{revision}").json()["studentPaper"]
+            == initial["studentPaper"]
+        )
+        restored = client.post(
+            f"{url}/versions/{revision}/restore",
+            json={
+                "revision": edited.json()["revision"],
+            },
+        )
+        assert restored.status_code == 200, restored.text
+        message = client.get(f"{workspace_url}/changes").json()["messages"][0]
+        branched = client.post(
+            f"{workspace_url}/branch",
+            json={
+                "messageId": message["id"],
+                "destinationId": destination_id,
+            },
+        )
+        assert branched.status_code == 200, branched.text
+        fork = next(
+            item
+            for item in client.get("/api/workspaces").json()["workspaces"]
+            if item["id"] == destination_id
+        )
+        for package in (restored.json(), client.get(f"/api/exams/{fork['jobId']}").json()):
+            paper = package["studentPaper"]
+            key = json.loads((tmp_path / package["examId"] / TEACHER).read_text("utf-8"))
+            assert paper["examId"] == f"exam-{package['examId']}" == key["examId"]
+            assert paper["revision"] == package["revision"] == key["revision"]
+            assert paper["contentHash"] == content_hash(paper) == key["contentHash"]
+            assert paper["sections"] == initial["studentPaper"]["sections"]
+            assert not package["approved"]

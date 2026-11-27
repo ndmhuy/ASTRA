@@ -10,6 +10,8 @@
  */
 
 import type {
+  ChatMessage,
+  ExamHistory,
   ExamPackage,
   ExamPreviewState,
   ExamRequestParams,
@@ -20,12 +22,46 @@ import type { ExamFormat, ExportFormat } from '../types/exam';
 import { humanizeErrorMessage } from '../utils/userMessages.ts';
 import { adaptStudentPaper } from './contractPaper.ts';
 
+export interface WorkspaceDraft {
+  schema_version: 1;
+  mode: 'template' | 'custom';
+  title: string;
+  draft: string;
+  messages: ChatMessage[];
+}
+
+export interface SavedWorkspace extends WorkspaceDraft {
+  id: string;
+  createdAt: string;
+  revision: number;
+  jobId: string | null;
+  jobStatus: GenerationProgress['status'] | null;
+  jobMeta: { subject: string; durationMinutes: number; itemCount: number } | null;
+  jobError: GenerationProgress['error'] | null;
+  generationId?: string | null;
+  generationStatus?: GenerationProgress['status'] | null;
+  generationError?: GenerationProgress['error'] | null;
+}
+
+interface WorkspaceLibrary {
+  list(): Promise<{ workspaces: SavedWorkspace[] }>;
+  changes(id: string): Promise<{ messages: ChatMessage[]; milestones: ChatMessage[] }>;
+  branch(id: string, destinationId: string, messageId: string, copyCurrent: boolean): Promise<{ workspaceId: string }>;
+  undoChange(id: string, jobId: string, changeId: string, revision: number): Promise<ExamPackage>;
+  save(id: string, draft: WorkspaceDraft, revision: number): Promise<{ revision: number }>;
+  archive(id: string): Promise<unknown>;
+  importLegacy(id: string, workspace: WorkspaceDraft & Pick<SavedWorkspace, 'createdAt' | 'jobId'>):
+    Promise<{ status: 'imported' | 'existing' }>;
+}
+
 export interface IExamService {
-  startGeneration(params: ExamRequestParams): Promise<{ jobId: string }>;
+  workspaceLibrary?: WorkspaceLibrary;
+  history?: ExamHistory;
+  startGeneration(params: ExamRequestParams, workspaceId?: string): Promise<{ jobId: string }>;
   onProgress(jobId: string, callback: (progress: GenerationProgress) => void): () => void;
   getExamPackage(jobId: string): Promise<ExamPackage>;
-  regenerateQuestion(jobId: string, questionId: number, instruction?: string, revision?: number): Promise<QuestionItem>;
-  updateQuestion(jobId: string, updatedQuestion: QuestionItem): Promise<void>;
+  regenerateQuestion(jobId: string, questionId: number, instruction?: string, revision?: number, workspaceId?: string): Promise<QuestionItem>;
+  updateQuestion(jobId: string, updatedQuestion: QuestionItem, workspaceId?: string): Promise<void>;
   verifyQuestion?(jobId: string, questionId: number, revision: number): Promise<void>;
   downloadExport(jobId: string, type: 'STUDENT_EXAM' | 'TEACHER_KEY' | 'MATRIX', format: ExportFormat): Promise<void>;
   approveExam?(jobId: string, pkg: ExamPackage): Promise<ExamPackage>;
@@ -571,14 +607,55 @@ export async function getExamFormats(): Promise<ExamFormat[]> {
 
 export class ApiExamService implements IExamService {
   private baseUrl: string;
+  private pendingChanges = new Map<string, string>();
+  readonly history: ExamHistory = {
+    list: (jobId, workspaceId) => requestJson(workspaceId
+      ? `${this.baseUrl}/workspaces/${workspaceId}/versions` : `${this.baseUrl}/exams/${jobId}/versions`),
+    read: async (jobId, version) => adaptStudentPaper(
+      await requestJson<ExamPackage>(`${this.baseUrl}/exams/${jobId}/versions/${version}`), this.baseUrl,
+    ),
+    restore: async (jobId, version, revision, workspaceId, targetJobId) => {
+      const path = workspaceId ? `workspaces/${workspaceId}/versions/restore` : `exams/${jobId}/versions/${version}/restore`;
+      const pkg = await requestJson<ExamPackage>(`${this.baseUrl}/${path}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(workspaceId
+          ? { revision, jobId, targetJobId: targetJobId ?? jobId, targetRevision: version } : { revision }),
+      });
+      return { ...adaptStudentPaper(pkg, this.baseUrl), preview: normalizePreview(pkg.preview, this.baseUrl) };
+    },
+  };
+  readonly workspaceLibrary: WorkspaceLibrary = {
+    list: () => requestJson(`${this.baseUrl}/workspaces`),
+    changes: id => requestJson(`${this.baseUrl}/workspaces/${id}/changes`),
+    branch: (id, destinationId, messageId, copyCurrent) => requestJson(`${this.baseUrl}/workspaces/${id}/branch`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ destinationId, messageId, copyCurrent }),
+    }),
+    undoChange: (id, jobId, changeId, revision) => this.changeQuestion(
+      `workspaces/${id}/changes/${jobId}/${changeId}/undo`, 'POST', { revision },
+    ).then(pkg => ({ ...adaptStudentPaper(pkg, this.baseUrl), preview: normalizePreview(pkg.preview, this.baseUrl) })),
+    save: (id, draft, revision) => requestJson(`${this.baseUrl}/workspaces/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...draft, revision }),
+    }),
+    archive: id => requestJson(`${this.baseUrl}/workspaces/${id}`, { method: 'DELETE' }),
+    importLegacy: (id, workspace) => requestJson(`${this.baseUrl}/workspaces/${encodeURIComponent(id)}/import`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(workspace),
+    }),
+  };
 
   constructor(baseUrl: string = '/api') {
     this.baseUrl = baseUrl;
   }
 
-  async startGeneration(params: ExamRequestParams): Promise<{ jobId: string }> {
+  async startGeneration(params: ExamRequestParams, workspaceId?: string): Promise<{ jobId: string }> {
     const { clientRequestId, ...payload } = params;
-    return requestJson(`${this.baseUrl}/exams/generate`, {
+    const query = workspaceId ? `?${new URLSearchParams({ workspace_id: workspaceId })}` : '';
+    return requestJson(`${this.baseUrl}/exams/generate${query}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Idempotency-Key': clientRequestId || crypto.randomUUID() },
       body: JSON.stringify(payload)
@@ -625,22 +702,39 @@ export class ApiExamService implements IExamService {
     };
   }
 
-  async regenerateQuestion(jobId: string, questionId: number, instruction?: string, revision?: number): Promise<QuestionItem> {
-    const pkg = await this.getExamPackage(jobId);
-    const updated = await requestJson<ExamPackage>(`${this.baseUrl}/exams/${jobId}/questions/${questionId}/regenerate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ instruction: instruction || 'Sửa câu hỏi và kiểm tra lại lời giải.', revision: revision ?? pkg.revision })
+  async regenerateQuestion(jobId: string, questionId: number, instruction?: string, revision?: number, workspaceId?: string): Promise<QuestionItem> {
+    const targetRevision = revision ?? (await this.getExamPackage(jobId)).revision;
+    const query = workspaceId ? `?workspace_id=${encodeURIComponent(workspaceId)}` : '';
+    const updated = await this.changeQuestion(`exams/${jobId}/questions/${questionId}/regenerate${query}`, 'POST', {
+      instruction: instruction || 'Sửa câu hỏi và kiểm tra lại lời giải.', revision: targetRevision,
     });
     return adaptStudentPaper(updated, this.baseUrl).questions.find(question => question.id === questionId)!;
   }
 
-  async updateQuestion(jobId: string, updatedQuestion: QuestionItem): Promise<void> {
-    await requestJson(`${this.baseUrl}/exams/${jobId}/questions/${updatedQuestion.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question: updatedQuestion, revision: updatedQuestion.examRevision })
+  async updateQuestion(jobId: string, updatedQuestion: QuestionItem, workspaceId?: string): Promise<void> {
+    const query = workspaceId ? `?workspace_id=${encodeURIComponent(workspaceId)}` : '';
+    await this.changeQuestion(`exams/${jobId}/questions/${updatedQuestion.id}${query}`, 'PUT', {
+      question: updatedQuestion, revision: updatedQuestion.examRevision,
     });
+  }
+
+  private async changeQuestion(path: string, method: string, payload: object): Promise<ExamPackage> {
+    const body = JSON.stringify(payload);
+    const signature = JSON.stringify([path, method, body]);
+    const key = this.pendingChanges.get(signature) ?? crypto.randomUUID();
+    this.pendingChanges.set(signature, key);
+    try {
+      const result = await requestJson<ExamPackage>(`${this.baseUrl}/${path}`, {
+        method, headers: { 'Content-Type': 'application/json', 'Idempotency-Key': key }, body,
+      });
+      this.pendingChanges.delete(signature);
+      return result;
+    } catch (error) {
+      if (!(error instanceof ApiError) || !['network_error', 'exam_change_pending'].includes(error.code)) {
+        this.pendingChanges.delete(signature);
+      }
+      throw error;
+    }
   }
 
   async verifyQuestion(jobId: string, questionId: number, revision: number): Promise<void> {

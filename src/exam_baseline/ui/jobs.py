@@ -7,6 +7,7 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from hashlib import sha256
 from pathlib import Path
+from uuid import uuid4
 
 import httpx
 from jsonschema import ValidationError
@@ -48,8 +49,10 @@ from exam_baseline.thpt.visuals import visual_issues
 from exam_baseline.ui.contracts import ExamGenerateRequest, SubjectGenerateRequest
 from exam_baseline.ui.demo import regenerate_demo_question, run_demo_job
 from exam_baseline.ui.errors import UiError
+from exam_baseline.ui.exam_source import SOURCE_NAME
 from exam_baseline.ui.preview import PreviewService
-from exam_baseline.ui.storage import JobStore
+from exam_baseline.ui.storage import EXAM_VERSION_FIELDS, JobStore
+from exam_baseline.ui.timeline import workspace_change_messages
 from exam_baseline.vact import models as vact_models
 from exam_baseline.vact import template as vact_template
 from exam_baseline.vact.agents import SolverAgent as VactSolverAgent
@@ -367,7 +370,7 @@ class JobManager:
             provider = ChatCompletionsProvider(settings, client)
             yield dict.fromkeys(("composer", "illustrator", "solver", "reviewer"), provider)
 
-    async def start(self, payload: ExamGenerateRequest, key: str):
+    async def start(self, payload: ExamGenerateRequest, key: str, workspace_id: str | None = None):
         request, matrix = await asyncio.to_thread(resolve_request, payload, settings=self.settings)
         data, created = self.store.create(
             key,
@@ -389,6 +392,7 @@ class JobManager:
                 },
                 "approval": None,
             },
+            workspace_id=workspace_id,
         )
         if created:
             task = asyncio.create_task(self._generate(data["jobId"]))
@@ -534,7 +538,6 @@ class JobManager:
                     contractExport=bool(contract_artifacts.profile(job["request"]["formatId"])),
                     **extra_fields,
                 )
-                await self._refresh(job)
                 job["progress"].update(
                     stage=6,
                     stageName="completed",
@@ -542,7 +545,7 @@ class JobManager:
                     completedItems=len(questions),
                     statusMessage="Đề đã sẵn sàng để kiểm tra",
                 )
-                self.store.save(job)
+                await self._save_version(job, "generated")
         except asyncio.CancelledError:
             self._fail(
                 job_id,
@@ -595,7 +598,34 @@ class JobManager:
         job.update(status="failed", error=error.payload())
         self.store.save(job)
 
-    async def _refresh(self, job):
+    async def _save_version(
+        self,
+        job,
+        change,
+        *,
+        question_id=None,
+        change_id=None,
+        promotion=None,
+        summary=None,
+        restored_from=None,
+        source=None,
+    ):
+        if source is None:
+            source = self._render_source(job)
+        if job.get("contractExport"):
+            job["contentHash"] = await self._publish_contract(job)
+        self.store.save_version(
+            job,
+            source,
+            change,
+            question_id=question_id,
+            change_id=change_id,
+            promotion=promotion,
+            summary=summary,
+            restored_from=restored_from,
+        )
+
+    def _render_source(self, job):
         if _is_vact(job):
             sections = _vact_sections(job["rawQuestions"], job.get("rawPassages", []))
             source = vact_render(
@@ -603,7 +633,6 @@ class JobManager:
                 vact_models.Illustrations.model_validate(job["drawings"]),
                 job["nativeRequest"].get("font_profile", "unicode_times"),
             )
-            (self.root / job["jobId"] / "de_thi.tex").write_bytes(source)
             job["sourceHash"] = sha256(source).hexdigest()
             job["contentHash"] = fingerprint(
                 {
@@ -612,7 +641,7 @@ class JobManager:
                     "sourceHash": job["sourceHash"],
                 }
             )
-            return
+            return source
         questions = [Question.model_validate(q) for q in job["rawQuestions"]]
         drawings = Illustrations.model_validate(job["drawings"])
         if _subject_id(job):
@@ -626,11 +655,8 @@ class JobManager:
         binding = {"questions": job["rawQuestions"], "sourceHash": job["sourceHash"]}
         if passages:
             binding["passages"] = passages
-        if job.get("contractExport"):
-            job["contentHash"] = await self._publish_contract(job)
-        else:
-            job["contentHash"] = fingerprint(binding)
-        (self.root / job["jobId"] / "de_thi.tex").write_bytes(source)
+        job["contentHash"] = fingerprint(binding)
+        return source
 
     async def _publish_contract(self, job):
         format_id = job["request"]["formatId"]
@@ -692,10 +718,13 @@ class JobManager:
             ) from exc
         return path, item
 
-    def contract_asset(self, job_id, asset_id):
+    def contract_asset(self, job_id, asset_id, revision=None):
         job = self._completed(job_id)
         if not job.get("contractExport"):
             raise UiError("asset_not_found", "Không tìm thấy hình của đề.", 404)
+        if revision is not None and revision != job["revision"]:
+            snapshot, _ = self.store.get_version(job_id, revision)
+            job = self._version_job(job, snapshot, revision)
         _, paper = self._contract_file(job, contract_artifacts.STUDENT)
         asset = next((a for a in paper["assets"] if a["id"] == asset_id), None)
         if asset is None:
@@ -711,7 +740,7 @@ class JobManager:
             raise UiError("exam_not_ready", "Đề thi vẫn đang được soạn, chưa sẵn sàng để xem.")
         return job
 
-    def _package_vact(self, job):
+    def _package_vact(self, job, *, include_preview=True):
         slots = job["nativeRequest"]["slots"]
         drawings = {d["question_id"]: d["latex"] for d in job["drawings"]["drawings"]}
         solutions = _current_solutions(job)
@@ -786,7 +815,7 @@ class JobManager:
             "contentHash": job["contentHash"],
             "approved": bool(job["approval"]),
             "approval": job["approval"],
-            "preview": self.previews.status(job),
+            **({"preview": self.previews.status(job)} if include_preview else {}),
             "visualWarnings": visual_warnings,
             "hasDrawings": bool(drawings),
             "warnings": [],
@@ -813,9 +842,11 @@ class JobManager:
         }
 
     def package(self, job_id):
-        job = self._completed(job_id)
+        return self._package(self._completed(job_id))
+
+    def _package(self, job, *, include_preview=True):
         if _is_vact(job):
-            return self._package_vact(job)
+            return self._package_vact(job, include_preview=include_preview)
         slots = job["nativeRequest"]["slots"]
         drawings = {d["question_id"]: d["latex"] for d in job["drawings"]["drawings"]}
         solutions = _current_solutions(job)
@@ -899,7 +930,7 @@ class JobManager:
                     for issue in report.get("review_issues", [])
                 )
         return {
-            "examId": job_id,
+            "examId": job["jobId"],
             "title": f"Đề {profile_title}",
             "subject": subject,
             "grade": 12,
@@ -910,7 +941,7 @@ class JobManager:
             "contentHash": job["contentHash"],
             "approved": bool(job["approval"]),
             "approval": job["approval"],
-            "preview": self.previews.status(job),
+            **({"preview": self.previews.status(job)} if include_preview else {}),
             "visualWarnings": [
                 {"questionId": raw["id"], "code": issue}
                 for raw in job["rawQuestions"]
@@ -963,13 +994,303 @@ class JobManager:
                 "Đề thi đã có bản cập nhật mới hơn. Vui lòng tải lại trước khi sửa hoặc duyệt.",
             )
 
-    async def edit(self, job_id, question_id, revision, value):
+    def versions(self, job_id):
+        job = self._completed(job_id)
+        return {"currentRevision": job["revision"], "versions": self.store.list_versions(job_id)}
+
+    def workspace_history(self, workspace_id):
+        job_id = self.store.workspace_job(workspace_id)
+        job = self._completed(job_id) if job_id else None
+        return {
+            "currentJobId": job_id,
+            "currentRevision": job["revision"] if job else None,
+            "versions": self.store.workspace_versions(workspace_id),
+        }
+
+    def workspace_timeline(self, workspace_id):
+        return {
+            "messages": workspace_change_messages(self.store.workspace_changes(workspace_id)),
+            "milestones": self.store.workspace_milestones(workspace_id),
+        }
+
+    async def branch_workspace(self, parent_id, destination_id, message_id, copy_current):
+        signature = fingerprint([message_id, copy_current])
+        if self.store.fork_exists(parent_id, destination_id, signature):
+            return {"workspaceId": destination_id}
+        draft, current = self.store.workspace_content(parent_id)
+        events = self.workspace_timeline(parent_id)
+        messages = {
+            message["id"]: message
+            for message in [*draft["messages"], *events["messages"], *events["milestones"]]
+        }
+        if message_id not in messages:
+            raise UiError(
+                "workspace_message_not_found", "Không tìm thấy tin nhắn để tạo nhánh.", 404
+            )
+        selected = messages[message_id]
+        ref = selected.get("examVersion")
+        if "examVersion" not in selected and current is not None:
+            if not copy_current:
+                raise UiError(
+                    "branch_version_unknown",
+                    "Tin nhắn này không có phiên bản đã lưu. "
+                    "Thầy cô có thể tạo nhánh từ đề đang dùng.",
+                )
+            job = self._completed(current)
+            ref = {"jobId": current, "revision": job["revision"]}
+
+        def message_time(item):
+            text = item["timestamp"]
+            timestamp = datetime.fromisoformat(text[:-1] + "+00:00" if text.endswith("Z") else text)
+            return timestamp.replace(tzinfo=timestamp.tzinfo or timezone.utc)
+
+        chat = []
+        for message in sorted(messages.values(), key=message_time):
+            chat.append({key: value for key, value in message.items() if key != "changeId"})
+            if message["id"] == message_id:
+                break
+        branch_draft = {
+            **draft,
+            "mode": "custom",
+            "draft": "",
+            "messages": chat,
+            "title": f"Nhánh · {draft['title']}",
+        }
+        fork, source = None, None
+        if ref:
+            original = self._completed(ref["jobId"])
+            snapshot, source = self.store.get_version(ref["jobId"], ref["revision"])
+            if source is None or sha256(source).hexdigest() != snapshot["sourceHash"]:
+                raise UiError(
+                    "version_source_missing", "Không tìm thấy tệp nguồn của phiên bản này."
+                )
+            fork = self._version_job(original, snapshot, 1)
+            fork.update(
+                jobId=str(uuid4()),
+                workspaceId=destination_id,
+                createdAt=now(),
+                approval=None,
+                branchOrigin=ref,
+            )
+            if fork.get("contractExport"):
+                (self.root / fork["jobId"]).mkdir()
+                fork["contentHash"] = await self._publish_contract(fork)
+        self.store.create_fork(parent_id, destination_id, signature, branch_draft, fork, source)
+        return {"workspaceId": destination_id}
+
+    @staticmethod
+    def _version_job(job, snapshot, revision):
+        base = {key: value for key, value in job.items() if key not in EXAM_VERSION_FIELDS}
+        return {**base, **snapshot, "revision": revision}
+
+    def version(self, job_id, revision):
+        job = self._completed(job_id)
+        snapshot, _ = self.store.get_version(job_id, revision)
+        return self._package(self._version_job(job, snapshot, revision), include_preview=False)
+
+    async def restore_version(self, job_id, revision, target_revision):
+        async with self.lock(job_id):
+            job = self._completed(job_id)
+            self._check_revision(job, revision)
+            if target_revision == revision:
+                return self._package(job)
+            return await self._restore(job, target_revision)
+
+    async def _restore(self, job, target, *, promotion=None):
+        snapshot, source = self.store.get_version(job["jobId"], target)
+        if source is None or sha256(source).hexdigest() != snapshot["sourceHash"]:
+            raise UiError(
+                "version_source_missing", "Không tìm thấy tệp nguồn hợp lệ của phiên bản này."
+            )
+        restored = self._version_job(job, snapshot, job["revision"] + 1)
+        restored["approval"] = None
+        await self._save_version(
+            restored, "restored", source=source, restored_from=target, promotion=promotion
+        )
+        return self._package(restored)
+
+    async def restore_workspace_version(self, workspace_id, job_id, revision, target_job, target):
+        async with self.lock(target_job):
+            if self.store.workspace_job(workspace_id) != job_id:
+                raise UiError("stale_revision", "Đề đang dùng đã thay đổi.")
+            self._check_revision(self._completed(job_id), revision)
+            if not self.store.owns_job(workspace_id, target_job):
+                raise UiError("exam_version_not_found", "Không tìm thấy phiên bản đề này.", 404)
+            if target_job == job_id and target == revision:
+                return self.package(job_id)
+            return await self._restore(
+                self._completed(target_job), target, promotion=(workspace_id, job_id)
+            )
+
+    async def question_change(
+        self,
+        job_id,
+        question_id,
+        revision,
+        kind,
+        value,
+        change_id=None,
+        *,
+        workspace_id=None,
+    ):
+        self._completed(job_id)
+        change_id = change_id or str(uuid4())
+        signature = fingerprint([kind, question_id, revision, value, workspace_id])
+        existing = self.store.begin_change(
+            job_id,
+            change_id,
+            signature,
+            {
+                "id": change_id,
+                "jobId": job_id,
+                "questionId": question_id,
+                "kind": kind,
+                "request": value if kind == "regenerated" else "Sửa câu hỏi.",
+                "beforeRevision": revision,
+                "startedAt": now(),
+                "status": "pending",
+                **({"request": "Hoàn tác thay đổi.", "undoOf": value} if kind == "undone" else {}),
+            },
+        )
+        if existing is not None:
+            if existing["status"] == "completed":
+                if self._completed(job_id)["revision"] == existing["afterRevision"]:
+                    return self.package(job_id)
+                return self.version(job_id, existing["afterRevision"])
+            if existing["status"] == "failed":
+                error = existing["error"]
+                raise UiError(
+                    error["code"], error["message"], error.get("status", 409), error.get("details")
+                )
+            raise UiError("exam_change_pending", "Yêu cầu chỉnh sửa đang được xử lý.")
+        try:
+            if kind == "undone":
+                return await self._undo_question(workspace_id, job_id, revision, value, change_id)
+            if workspace_id and self.store.workspace_job(workspace_id) != job_id:
+                raise UiError("stale_revision", "Đề đang dùng đã thay đổi.")
+            operation = self.edit if kind == "edited" else self.regenerate
+            promotion = (workspace_id, job_id) if workspace_id else None
+            return await operation(
+                job_id,
+                question_id,
+                revision,
+                value,
+                change_id=change_id,
+                promotion=promotion,
+            )
+        except (Exception, asyncio.CancelledError) as exc:
+            error = {"code": "exam_change_failed", "message": "Chưa lưu được thay đổi câu hỏi."}
+            if isinstance(exc, UiError):
+                error = {**exc.payload(), "status": exc.status}
+            self.store.fail_change(job_id, change_id, error)
+            raise
+
+    async def undo_change(self, workspace_id, job_id, target_id, revision, change_id=None):
+        if not self.store.owns_job(workspace_id, job_id):
+            raise UiError("exam_change_not_found", "Không tìm thấy thay đổi này.", 404)
+        target = self.store.get_change(job_id, target_id)
+        if target["status"] != "completed" or target["kind"] not in {"edited", "regenerated"}:
+            raise UiError("exam_change_not_undoable", "Thay đổi này không thể hoàn tác.")
+        return await self.question_change(
+            job_id,
+            target["questionId"],
+            revision,
+            "undone",
+            target_id,
+            change_id,
+            workspace_id=workspace_id,
+        )
+
+    @staticmethod
+    def _question_state(job, question_id):
+        raw = job["rawQuestions"][question_id - 1]
+        stable_id = raw["id"]
+        drawings = [
+            item for item in job["drawings"]["drawings"] if item["question_id"] == stable_id
+        ]
+        slot = int(stable_id.split("-")[-1]) if stable_id.startswith("P1-") else None
+        passages = [
+            passage
+            for passage in job.get("rawPassages", [])
+            if (passage.get("id") and passage["id"] == raw.get("passage_id"))
+            or (
+                slot is not None
+                and "questionRange" in passage
+                and passage["questionRange"][0] <= slot <= passage["questionRange"][1]
+            )
+        ]
+        return raw, drawings, passages
+
+    async def _undo_question(self, workspace_id, job_id, revision, target_id, change_id):
+        async with self.lock(job_id):
+            if self.store.workspace_job(workspace_id) != job_id:
+                raise UiError("stale_revision", "Thay đổi thuộc lần tạo đề khác.")
+            job = self._completed(job_id)
+            self._check_revision(job, revision)
+            if self.store.change_was_undone(job_id, target_id):
+                raise UiError("exam_change_already_undone", "Thay đổi đã được hoàn tác.")
+            target = self.store.get_change(job_id, target_id)
+            before, _ = self.store.get_version(job_id, target["beforeRevision"])
+            after, _ = self.store.get_version(job_id, target["afterRevision"])
+            number = target["questionId"]
+            original, original_drawings, original_passages = self._question_state(before, number)
+            changed, changed_drawings, changed_passages = self._question_state(after, number)
+            current, current_drawings, current_passages = self._question_state(job, number)
+            if (current, current_drawings, current_passages) != (
+                changed,
+                changed_drawings,
+                changed_passages,
+            ) or original_passages != changed_passages:
+                raise UiError(
+                    "exam_undo_conflict",
+                    "Câu hỏi hoặc ngữ liệu chung đã thay đổi từ lần chỉnh sửa này.",
+                    details={
+                        "questionId": number,
+                        "current": current["stem"],
+                        "afterChange": changed["stem"],
+                        "beforeChange": original["stem"],
+                    },
+                )
+            stable_id = original["id"]
+            job["rawQuestions"][number - 1] = original
+            job["drawings"]["drawings"] = [
+                drawing
+                for drawing in job["drawings"]["drawings"]
+                if drawing["question_id"] != stable_id
+            ] + original_drawings
+            solutions = _current_solutions(job)
+            original_solution = _current_solutions(
+                self._version_job(job, before, target["beforeRevision"])
+            )
+            solutions.pop(stable_id, None)
+            if stable_id in original_solution:
+                solutions[stable_id] = original_solution[stable_id]
+            manual = set(job["manualEdits"]) - {stable_id}
+            manual.update(item for item in before.get("manualEdits", []) if item == stable_id)
+            job.update(
+                revision=revision + 1,
+                approval=None,
+                manualEdits=sorted(manual),
+                solutions={"entries": list(solutions.values())},
+                solverResultsVersion=1,
+            )
+            await self._save_version(
+                job,
+                "undone",
+                question_id=number,
+                change_id=change_id,
+                promotion=(workspace_id, job_id),
+            )
+            return self._package(job)
+
+    async def edit(self, job_id, question_id, revision, value, *, change_id=None, promotion=None):
         async with self.lock(job_id):
             job = self._completed(job_id)
             self._check_revision(job, revision)
             if not 1 <= question_id <= len(job["rawQuestions"]):
                 raise UiError("question_not_found", "Không tìm thấy câu hỏi cần thao tác.", 404)
-            raw = dict(job["rawQuestions"][question_id - 1])
+            original = job["rawQuestions"][question_id - 1]
+            raw = dict(original)
             if value.get("stableId", raw["id"]) != raw["id"]:
                 raise UiError(
                     "invalid_question_id",
@@ -1003,8 +1324,24 @@ class JobManager:
             solutions = _current_solutions(job)
             solutions.pop(raw["id"], None)
             job.update(solutions={"entries": list(solutions.values())}, solverResultsVersion=1)
-            await self._refresh(job)
-            self.store.save(job)
+            updated = job["rawQuestions"][question_id - 1]
+            fields = (
+                ("stem", "đề bài"),
+                ("choices", "lựa chọn"),
+                ("answer", "đáp án"),
+                ("statements", "mệnh đề đúng/sai"),
+                ("solution", "lời giải"),
+            )
+            changes = [label for key, label in fields if original.get(key) != updated.get(key)]
+            summary = f"Đã cập nhật {', '.join(changes)}." if changes else "Đã lưu câu hỏi."
+            await self._save_version(
+                job,
+                "edited",
+                question_id=question_id,
+                change_id=change_id,
+                promotion=promotion,
+                summary=summary,
+            )
             return self.package(job_id)
 
     async def approve(self, job_id, payload):
@@ -1090,7 +1427,16 @@ class JobManager:
             self.store.save(job)
             return self.package(job_id)
 
-    async def regenerate(self, job_id, question_id, revision, instruction):
+    async def regenerate(
+        self,
+        job_id,
+        question_id,
+        revision,
+        instruction,
+        *,
+        change_id=None,
+        promotion=None,
+    ):
         async with self.lock(job_id):
             job = self._completed(job_id)
             self._check_revision(job, revision)
@@ -1203,14 +1549,19 @@ class JobManager:
                 approval=None,
             )
             job["manualEdits"] = list(set(job["manualEdits"]) | {repaired.id})
-            await self._refresh(job)
-            self.store.save(job)
+            await self._save_version(
+                job,
+                "regenerated",
+                question_id=question_id,
+                change_id=change_id,
+                promotion=promotion,
+            )
             # Teacher-initiated regeneration never adds another Reviewer pass.
             return self.package(job_id)
 
     def _verify_source(self, job):
         try:
-            source = (self.root / job["jobId"] / "de_thi.tex").read_bytes()
+            source = (self.root / job["jobId"] / SOURCE_NAME).read_bytes()
         except OSError:
             raise UiError(
                 "artifact_changed",
@@ -1222,6 +1573,7 @@ class JobManager:
                 "Tệp đề thi đã bị thay đổi bên ngoài phiên làm việc nên không thể duyệt "
                 "hoặc xuất tệp.",
             )
+        return source
 
     async def export(self, job_id, kind, file_format):
         async with self.lock(job_id):
@@ -1237,19 +1589,19 @@ class JobManager:
                     "Thầy cô vui lòng xem trước PDF và phê duyệt phiên bản hiện tại "
                     "trước khi xuất tệp.",
                 )
-            self._verify_source(job)
+            source = self._verify_source(job)
             root = self.root / job_id
             if kind == "STUDENT_EXAM" and file_format == "tex":
-                return root / "de_thi.tex", "application/x-tex"
+                return root / SOURCE_NAME, "application/x-tex", source
             if kind == "STUDENT_EXAM" and file_format == "pdf":
-                return self.previews.file(job), "application/pdf"
+                return self.previews.file(job), "application/pdf", None
             if job.get("contractExport") and file_format == "json":
                 filename = (
                     contract_artifacts.STUDENT
                     if kind == "STUDENT_EXAM"
                     else contract_artifacts.TEACHER
                 )
-                return self._contract_file(job, filename)[0], "application/json"
+                return self._contract_file(job, filename)[0], "application/json", None
             if kind == "TEACHER_KEY" and file_format == "json":
                 path = root / "reviewed_answers.json"
                 exported = {
@@ -1259,15 +1611,9 @@ class JobManager:
                 }
                 if "rawPassages" in job:
                     exported["passages"] = job["rawPassages"]
-                path.write_text(
-                    json.dumps(
-                        exported,
-                        ensure_ascii=False,
-                        indent=2,
-                    ),
-                    "utf-8",
-                )
-                return path, "application/json"
+                data = json.dumps(exported, ensure_ascii=False, indent=2).encode("utf-8")
+                path.write_bytes(data)
+                return path, "application/json", data
             raise UiError("unsupported_export", "Định dạng xuất tệp chưa được hỗ trợ.", 422)
 
     async def preview(self, job_id, revision, content_hash, *, start=False, file=False, log=False):
