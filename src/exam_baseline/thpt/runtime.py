@@ -16,7 +16,16 @@ class ContractError(ValueError):
 
 class RecordingProvider:
     def __init__(
-        self, provider, stage: str, revision: int, calls: list, directory: Path, retries: int = 0
+        self,
+        provider,
+        stage: str,
+        revision: int,
+        calls: list,
+        directory: Path,
+        retries: int = 0,
+        *,
+        on_attempt=None,
+        operation_id=None,
     ):
         self.provider = provider
         self.stage = stage
@@ -25,6 +34,8 @@ class RecordingProvider:
         self.directory = directory
         self.retries = retries
         self.record = None
+        self.on_attempt = on_attempt or (lambda: None)
+        self.operation_id = operation_id
 
     async def complete(self, request):
         for attempt in range(self.retries + 1):
@@ -46,6 +57,9 @@ class RecordingProvider:
     async def _once(self, request):
         record = dict(role=self.stage, revision=self.revision, status="started")
         self.calls.append(record)
+        if self.operation_id:
+            record["operation_id"] = self.operation_id
+        self.on_attempt()
         self.record = record
         call_number = len(self.calls)
         start = perf_counter()
@@ -74,6 +88,7 @@ class RecordingProvider:
                     usage=completion.usage.model_dump(),
                     response_file=str(self.directory / name),
                 )
+            self.on_attempt()
 
     def record_contract(self, status, fields=None, normalized=False):
         self.record.update(status=status, fields=fields, normalized_json_fence=normalized)
