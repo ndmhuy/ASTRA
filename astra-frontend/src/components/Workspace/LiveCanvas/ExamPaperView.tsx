@@ -11,6 +11,7 @@ import { StationeryArt } from '../../StationeryArt';
 import { SchoolArt } from '../../SchoolArt';
 import { MathRenderer } from '../../MathRenderer';
 import { QuestionCard } from './QuestionCard';
+import { CanvasExport, type CanvasExportFormat } from './CanvasExport';
 
 export type ExamCanvasViewMode = 'paper' | 'review' | 'pdf';
 
@@ -53,6 +54,7 @@ export type ExamPaperControls = {
 interface ExamPaperViewProps {
   controlsRef?: React.Ref<ExamPaperControls>;
   onManualPdfOpen?: () => void;
+  onExport?: (format: CanvasExportFormat) => Promise<boolean>;
   header?: React.ReactNode;
   questions: QuestionItem[];
   passages?: ExamPassage[];
@@ -92,6 +94,7 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
   header,
   controlsRef,
   onManualPdfOpen,
+  onExport,
   questions,
   passages,
   examMeta,
@@ -362,6 +365,10 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
         <button type="button" aria-pressed={activeMode === 'paper'} onClick={() => setMode('paper')}><FileText size={14} aria-hidden="true" />Đề thi</button>
         <button type="button" aria-pressed={activeMode === 'review'} onClick={() => setMode('review')}><ListChecks size={14} aria-hidden="true" />Xem đáp án</button>
         {showPdf && <button type="button" aria-pressed={activeMode === 'pdf'} onClick={() => setMode('pdf')}><Eye size={14} aria-hidden="true" />Xem trước PDF</button>}
+        {examMeta && !isGenerating && onExport && <CanvasExport key={`${examId}:${revision}`}
+          approved={Boolean(approved && !artifactChanged)}
+          pdfReady={preview?.status === 'ready' && preview.revision === revision && preview.contentHash === contentHash}
+          onExport={onExport} />}
       </div>
       {issueCount > 0 && <button type="button" className="review-count" onClick={() => setMode('review')}>{issueCount} câu cần xử lý</button>}
     </div>

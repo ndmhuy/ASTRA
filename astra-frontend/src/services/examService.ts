@@ -527,9 +527,10 @@ export class MockExamService implements IExamService {
   }
 
   async downloadExport(jobId: string, type: 'STUDENT_EXAM' | 'TEACHER_KEY' | 'MATRIX', format: ExportFormat): Promise<void> {
+    if (format === 'docx') throw new ApiError('Xuất Word cần kết nối với máy chủ ASTRA.', 'word_export_unavailable');
     const pkg = this.getJob(jobId);
     const title = pkg.title;
-    const filename = `${title}_${type}.${format === 'docx' ? 'doc' : format}`;
+    const filename = `${title}_${type}.${format}`;
 
     let content = `==========================================================\n`;
     content += `${title.toUpperCase()}\n`;
@@ -910,7 +911,7 @@ export class ApiExamService implements IExamService {
 //   3. Restart dev server (npm run dev)
 //
 // The integrated API also exposes /api/exam-formats, /status and /approve.
-// Current locked THPT export formats are student .tex and teacher .json.
+// Student export supports Word, LaTeX and PDF. Teacher keys use JSON.
 // Core endpoints:
 //   POST   /api/exams/generate                         → { jobId: string }
 //   GET    /api/exams/{jobId}/events                   → SSE stream of GenerationProgress
