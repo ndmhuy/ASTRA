@@ -66,7 +66,7 @@ from exam_baseline.ui.demo import regenerate_demo_question, run_demo_job
 from exam_baseline.ui.errors import UiError
 from exam_baseline.ui.exam_source import SOURCE_NAME
 from exam_baseline.ui.preview import PreviewService
-from exam_baseline.ui.storage import EXAM_VERSION_FIELDS, JobStore
+from exam_baseline.ui.storage import ACTIVE_GENERATION, EXAM_VERSION_FIELDS, JobStore
 from exam_baseline.ui.timeline import workspace_change_messages
 from exam_baseline.vact import models as vact_models
 from exam_baseline.vact import template as vact_template
@@ -473,6 +473,21 @@ class SubjectRepairComposer(RepairComposer):
     )
 
 
+class GenerationProvider:
+    def __init__(self, provider, check_active):
+        self.provider = provider
+        self.check_active = check_active
+
+    def __getattr__(self, name):
+        return getattr(self.provider, name)
+
+    async def complete(self, request):
+        self.check_active()
+        response = await self.provider.complete(request)
+        self.check_active()
+        return response
+
+
 class JobManager:
     def __init__(self, settings, *, root=None, providers=None, retriever=None, runner=None):
         self.settings = settings
@@ -482,7 +497,7 @@ class JobManager:
         self.providers = providers
         self.retriever = retriever or self._retrieve
         self.runner = runner
-        self.tasks = set()
+        self.tasks = {}
         self.locks = {}
         self.capacity = asyncio.Semaphore(2)
         self.previews = PreviewService(self.root, settings)
@@ -548,13 +563,30 @@ class JobManager:
             workspace_id=workspace_id,
         )
         if created:
-            task = asyncio.create_task(self._generate(data["jobId"]))
-            self.tasks.add(task)
-            task.add_done_callback(self.tasks.discard)
+            job_id = data["jobId"]
+            task = asyncio.create_task(self._generate(job_id))
+            self.tasks[job_id] = task
+            task.add_done_callback(lambda _: self.tasks.pop(job_id, None))
         return {"jobId": data["jobId"], "status": data["status"]}
 
-    def progress(self, job_id, role, part=None, revision=1):
+    def stop_generation(self, job_id):
+        self.get(job_id)
+        if self.store.stop_generation(job_id) and (task := self.tasks.get(job_id)):
+            task.cancel()
+        return self.status(job_id)
+
+    def _active_generation(self, job_id):
         job = self.get(job_id)
+        if job["status"] not in ACTIVE_GENERATION:
+            raise asyncio.CancelledError
+        return job
+
+    def _save_generation(self, job):
+        if not self.store.save_generation(job):
+            raise asyncio.CancelledError
+
+    def progress(self, job_id, role, part=None, revision=1):
+        job = self._active_generation(job_id)
         stage, percent = {
             "rag": (1, 5),
             "composer": (2, 20),
@@ -569,36 +601,36 @@ class JobManager:
             percent=max(percent, job["progress"]["percent"]),
             statusMessage=_format_progress_message(role, part, revision),
         )
-        self.store.save(job)
+        self._save_generation(job)
 
     async def _generate(self, job_id):
         try:
             async with self.capacity:
-                job = self.get(job_id)
+                job = self._active_generation(job_id)
                 is_vact = _is_vact(job)
                 is_adjacent = _is_adjacent(job)
                 demo_active = self.runner is None and self.settings.demo_mode
                 if is_vact:
                     job["retrieval"] = None
-                    self.store.save(job)
+                    self._save_generation(job)
                     request = vact_models.Request.model_validate(job["nativeRequest"])
                     orchestrator_type = VactOrchestrator
                     question_model = vact_models.Question
                 elif is_adjacent:
                     job["retrieval"] = None
-                    self.store.save(job)
+                    self._save_generation(job)
                     request = AdjacentRequest.model_validate(job["nativeRequest"])
                     orchestrator_type = AdjacentOrchestrator
                     question_model = Question
                 elif _subject_id(job):
                     job["retrieval"] = None
-                    self.store.save(job)
+                    self._save_generation(job)
                     request = SubjectRequest.model_validate(job["nativeRequest"])
                     orchestrator_type = SubjectOrchestrator
                     question_model = Question
                 elif demo_active:
                     self.progress(job_id, "rag")
-                    job = self.get(job_id)
+                    job = self._active_generation(job_id)
                     job["retrieval"] = {
                         "status": "success",
                         "gaps": [],
@@ -606,16 +638,16 @@ class JobManager:
                         "question_contexts": [],
                         "mas_intake_rag": [],
                     }
-                    self.store.save(job)
+                    self._save_generation(job)
                     request = Request.model_validate(job["nativeRequest"])
                     orchestrator_type = Orchestrator
                     question_model = Question
                 else:
                     self.progress(job_id, "rag")
                     retrieval = await asyncio.to_thread(self.retriever, job["matrix"])
-                    job = self.get(job_id)
+                    job = self._active_generation(job_id)
                     job["retrieval"] = retrieval
-                    self.store.save(job)
+                    self._save_generation(job)
                     if retrieval.get("status") != "success" or retrieval.get("gaps"):
                         raise UiError(
                             "retrieval_gap",
@@ -629,10 +661,10 @@ class JobManager:
                         variant_key=job_id,
                     )
                     job["nativeRequest"] = request.model_dump()
-                    self.store.save(job)
+                    self._save_generation(job)
                     orchestrator_type = Orchestrator
                     question_model = Question
-                output = self.root / job_id
+                output = self.root / job_id / "_generation"
 
                 def progress(role, part=None, revision=1):
                     self.progress(job_id, role, part, revision)
@@ -645,9 +677,18 @@ class JobManager:
                     report = await run_demo_job(request, output, progress, is_vact=is_vact)
                 else:
                     async with self.provider_scope() as providers:
-                        report = await orchestrator_type(providers, on_progress=progress).run(
+
+                        def check_active():
+                            self._active_generation(job_id)
+
+                        guarded = {
+                            role: GenerationProvider(provider, check_active)
+                            for role, provider in providers.items()
+                        }
+                        report = await orchestrator_type(guarded, on_progress=progress).run(
                             request, output
                         )
+                job = self._active_generation(job_id)
                 if report.get("execution_status") != "completed":
                     raise UiError(
                         "generation_failed",
@@ -685,7 +726,6 @@ class JobManager:
                     extra_fields["rawPassages"] = [p.model_dump() for p in passages]
                 elif _subject_id(job):
                     extra_fields["rawPassages"] = answers.get("passages", [])
-                job = self.get(job_id)
                 job.update(
                     status="completed",
                     rawQuestions=[q.model_dump() for q in questions],
@@ -758,7 +798,7 @@ class JobManager:
     def _fail(self, job_id, error):
         job = self.get(job_id)
         job.update(status="failed", error=error.payload())
-        self.store.save(job)
+        self.store.save_generation(job)
 
     async def _save_version(
         self,
@@ -772,10 +812,14 @@ class JobManager:
         restored_from=None,
         source=None,
     ):
+        if change == "generated":
+            self._active_generation(job["jobId"])
         if source is None:
             source = self._render_source(job)
         if job.get("contractExport"):
             job["contentHash"] = await self._publish_contract(job)
+        if change == "generated":
+            self._active_generation(job["jobId"])
         self.store.save_version(
             job,
             source,
@@ -1948,7 +1992,7 @@ class JobManager:
             return self.previews.request(job, source) if start else self.previews.status(job)
 
     async def close(self):
-        tasks = list(self.tasks)
+        tasks = list(self.tasks.values())
         for task in tasks:
             task.cancel()
         await asyncio.gather(*tasks, return_exceptions=True)

@@ -1182,9 +1182,23 @@ export const App: React.FC = () => {
                       </span>
                       <strong className="canvas-progress-pct">{active.progress.percent}%</strong>
                     </div>
-                    <div className="canvas-progress-track" aria-hidden="true">
-                      <div className="canvas-progress-fill" style={{ width: `${Math.max(4, Math.min(100, active.progress.percent))}%` }} />
+                    <div className="canvas-progress-controls">
+                      {examService.stopGeneration && (active.generationId || active.jobId) && (
+                        <button type="button" className="button-secondary canvas-stop-generation"
+                          disabled={active.stoppingGeneration}
+                          onClick={() => void store.stopGeneration(active.id)}>
+                          {active.stoppingGeneration ? 'Đang dừng…' : 'Dừng'}
+                        </button>
+                      )}
+                      <div className="canvas-progress-track" aria-hidden="true">
+                        <div className="canvas-progress-fill" style={{ width: `${Math.max(4, Math.min(100, active.progress.percent))}%` }} />
+                      </div>
                     </div>
+                  </div>
+                )}
+                {active.generationStopped && (
+                  <div className="canvas-progress-banner" role="status">
+                    <span className="canvas-progress-label">Đã dừng</span>
                   </div>
                 )}
                 {!!active.package?.warnings?.length && (

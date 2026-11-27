@@ -169,6 +169,11 @@ async def status(request: Request, job_id: UUID):
     return request.app.state.ui_jobs.status(str(job_id))
 
 
+@router.post("/exams/{job_id}/stop")
+async def stop_generation(request: Request, job_id: UUID):
+    return request.app.state.ui_jobs.stop_generation(str(job_id))
+
+
 @router.get("/exams/{job_id}/events")
 async def events(request: Request, job_id: UUID):
     manager = request.app.state.ui_jobs
@@ -182,7 +187,7 @@ async def events(request: Request, job_id: UUID):
             if encoded != previous:
                 yield f"data: {encoded}\n\n"
                 previous = encoded
-            if packet["status"] in {"completed", "failed"}:
+            if packet["status"] in {"completed", "failed", "cancelled"}:
                 return
             await asyncio.sleep(0.3)
 

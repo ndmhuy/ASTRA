@@ -171,7 +171,7 @@ export interface GenerationProgress {
   stage: number; stageName: string; percent: number; estimatedSecondsLeft: number;
   completedItems: number; totalItems: number; statusMessage: string;
   latestItemPreview?: QuestionItem;
-  status?: 'queued' | 'running' | 'completed' | 'failed';
+  status?: 'queued' | 'running' | 'completed' | 'failed' | 'cancelled';
   error?: { code: string; message: string; details?: unknown };
 }
 export interface ExamVersionReference { jobId: string; revision: number; }

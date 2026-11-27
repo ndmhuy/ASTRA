@@ -17,6 +17,8 @@ export interface ExamSession {
   jobId: string | null;
   generationId?: string;
   generationError?: string;
+  generationStopped?: boolean;
+  stoppingGeneration?: boolean;
   meta: { title: string; subject: string; duration: number; completedCount: number; totalCount: number } | null;
   previousCount: number;
   error?: string;
@@ -81,6 +83,9 @@ function sharedSession(entry: SavedWorkspace, previous?: ExamSession, memory?: A
     id, mode, createdAt, title, draft, messages: notice ? [...messages, notice] : messages, jobId, status,
     generationId: entry.generationStatus === 'queued' || entry.generationStatus === 'running'
       ? entry.generationId ?? undefined : undefined,
+    generationStopped: entry.generationStatus === 'cancelled',
+    stoppingGeneration: previous?.stoppingGeneration && entry.generationId === (previous.generationId ?? previous.jobId)
+      && (entry.generationStatus === 'queued' || entry.generationStatus === 'running'),
     generationError: status === 'complete' && entry.generationError
       ? humanizeErrorMessage(entry.generationError.message, entry.generationError.code) : undefined,
     meta: sameJob && previous?.meta ? previous.meta : jobMeta && {
@@ -737,6 +742,7 @@ export class ExamSessions {
       errorCode: undefined,
       progress: undefined,
       generationError: undefined,
+      generationStopped: false,
       ...(keepExam ? {} : {
       status: 'generating',
       package: undefined,
@@ -766,6 +772,37 @@ export class ExamSessions {
     } catch (error) { this.fail(id, error); }
     finally { this.starting.delete(id); }
   }
+  async stopGeneration(id: string) {
+    const session = this.sessions.find(item => item.id === id);
+    const jobId = session?.generationId ?? (session?.status === 'generating' ? session.jobId : null);
+    if (!jobId || session?.stoppingGeneration || !this.service.stopGeneration) return;
+    this.update(id, item => ({ ...item, stoppingGeneration: true, generationError: undefined }));
+    try {
+      const progress = await this.service.stopGeneration(jobId);
+      if (progress.status === 'cancelled') this.acceptStop(id, jobId);
+    } catch {
+      this.update(id, item => (item.generationId ?? item.jobId) === jobId ? {
+        ...item, generationError: 'Chưa xác nhận được việc dừng tạo đề. Vui lòng thử lại.',
+      } : item);
+    } finally {
+      this.update(id, item => (item.generationId ?? item.jobId) === jobId
+        ? { ...item, stoppingGeneration: false } : item);
+    }
+  }
+
+  private acceptStop(id: string, jobId: string) {
+    const session = this.sessions.find(item => item.id === id);
+    if (!session || (session.generationId ?? session.jobId) !== jobId) return;
+    this.stopWatching(id);
+    const keepExam = session.status === 'complete' && session.jobId !== jobId;
+    this.update(id, item => ({
+      ...item, generationId: undefined, generationStopped: true, stoppingGeneration: false,
+      progress: undefined, generationError: undefined, error: undefined, errorCode: undefined,
+      requestId: undefined, requestSignature: undefined,
+      ...(keepExam ? {} : { status: 'draft', jobId: null, questions: [], meta: null, previousCount: 0 }),
+    }));
+  }
+
   private watch(id: string, jobId: string) {
     let finishing = false;
     let detach: (() => void) | undefined;
@@ -779,6 +816,10 @@ export class ExamSessions {
     detach = this.service.onProgress(jobId, progress => {
         const session = this.sessions.find(item => item.id === id);
         if (this.disposed || finishing || !session || (session.generationId ?? session.jobId) !== jobId) return;
+      if (progress.status === 'cancelled') {
+        this.acceptStop(id, jobId);
+        return;
+      }
         if (progress.status === 'failed') {
           finishing = true;
           const rawMessage = progress.error?.message || progress.statusMessage;
@@ -1140,6 +1181,7 @@ export class ExamSessions {
       ...session,
       status: session.status === 'complete' ? 'complete' : 'error',
       generationId: undefined,
+      stoppingGeneration: false,
       [session.status === 'complete' ? 'generationError' : 'error']:
         rawMessage ? humanizeErrorMessage(rawMessage, code) : 'Chưa tạo được đề. Thầy cô hãy kiểm tra kết nối rồi thử lại.',
       notes: session.notes?.map(note => note.jobId === session.jobId && note.status === 'recorded'
