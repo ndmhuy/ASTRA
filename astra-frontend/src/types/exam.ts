@@ -6,7 +6,7 @@ export type ExamType = 'THPT_STANDARD' | 'DGNL_DHQG' | 'MID_TERM' | 'CUSTOM';
 export type CognitiveLevel = 'NHAN_BIET' | 'THONG_HIEU' | 'VAN_DUNG' | 'VAN_DUNG_CAO';
 export type VerificationStatus = 'PENDING' | 'VERIFIED' | 'FLAGGED';
 export type AnswerCheck = 'matched' | 'mismatched' | 'needs_recheck';
-export type ExportFormat = 'docx' | 'pdf' | 'tex' | 'json';
+export type ExportFormat = 'docx' | 'pdf' | 'tex' | 'json' | 'md';
 export interface QuestionApproval {
   questionId: string;
   questionHash?: string;

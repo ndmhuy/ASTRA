@@ -7,6 +7,7 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from hashlib import sha256
 from pathlib import Path
+from subprocess import SubprocessError
 from uuid import uuid4
 
 import httpx
@@ -28,7 +29,7 @@ from exam_baseline.thpt.rag import (
     default_request,
     retrieval_matrix,
 )
-from exam_baseline.thpt.rendering import render, student_view
+from exam_baseline.thpt.rendering import reflow_saved_choice_rows, render, student_view
 from exam_baseline.thpt.runtime import ContractError
 from exam_baseline.thpt.short_answers import MAX_ANSWER_CHARACTERS, validate_short_answer_precision
 from exam_baseline.thpt.subject_workflow import (
@@ -67,6 +68,7 @@ from exam_baseline.ui.errors import UiError
 from exam_baseline.ui.exam_source import SOURCE_NAME
 from exam_baseline.ui.preview import PreviewService
 from exam_baseline.ui.storage import ACTIVE_GENERATION, EXAM_VERSION_FIELDS, JobStore
+from exam_baseline.ui.student_export import export_student_document
 from exam_baseline.ui.timeline import workspace_change_messages
 from exam_baseline.vact import models as vact_models
 from exam_baseline.vact import template as vact_template
@@ -539,8 +541,17 @@ class JobManager:
             provider = ChatCompletionsProvider(settings, client)
             yield dict.fromkeys(("composer", "illustrator", "solver", "reviewer"), provider)
 
+    def resolve(self, payload):
+        from exam_baseline.ui.input_documents import reference_material
+
+        references = reference_material(self.root, payload.uploadedFiles)
+        request, matrix = resolve_request(payload, settings=self.settings)
+        if not isinstance(request, AdjacentRequest):
+            request.reference_material.extend(references)
+        return request, matrix
+
     async def start(self, payload: ExamGenerateRequest, key: str, workspace_id: str | None = None):
-        request, matrix = await asyncio.to_thread(resolve_request, payload, settings=self.settings)
+        request, matrix = await asyncio.to_thread(self.resolve, payload)
         return self._queue_generation(
             key,
             fingerprint(payload.model_dump()),
@@ -1954,6 +1965,7 @@ class JobManager:
             "slot": slot,
             "teacher_instruction": instruction,
             "requirements": job["nativeRequest"].get("requirements", []),
+            "reference_material": job["nativeRequest"].get("reference_material", []),
             "current_drawing": current_drawing,
         }
         is_vact = _is_vact(job)
@@ -1976,44 +1988,43 @@ class JobManager:
                     if d["question_id"] != old["id"] and d["question_id"] in related_ids
                 ],
             )
+        elif _is_adjacent(job):
+            adj_request = AdjacentRequest.model_validate(job["nativeRequest"])
+            context = {"subject": adj_request.subject}
+            composer = RepairComposer()
+            illustrator = IllustratorAgent()
+            solver = AdjacentSolver()
+            data.update(
+                **context,
+                reference_material=[
+                    f"{src.get('title', '')}: {src.get('snippet', '')}"
+                    for src in adj_request.web_sources
+                ],
+            )
         else:
-            if _is_adjacent(job):
-                adj_request = AdjacentRequest.model_validate(job["nativeRequest"])
-                context = {"subject": adj_request.subject}
-                composer = RepairComposer()
-                illustrator = IllustratorAgent()
-                solver = AdjacentSolver()
-                data.update(
-                    **context,
-                    reference_material=[
-                        f"{src.get('title', '')}: {src.get('snippet', '')}"
-                        for src in adj_request.web_sources
-                    ],
-                )
-            else:
-                is_subject = _subject_id(job) is not None
-                request = (SubjectRequest if is_subject else Request).model_validate(
-                    job["nativeRequest"]
-                )
-                evidence = request.rag_evidence.get(slot["id"])
-                context = (
-                    _subject_question_context(job, Question.model_validate(old))
-                    if is_subject
-                    else {}
-                )
-                composer = SubjectRepairComposer() if is_subject else RepairComposer()
-                illustrator = IllustratorAgent()
-                solver = SubjectSolver() if is_subject else SolverAgent()
-                data.update(
-                    **context,
-                    reference_material=[evidence.text]
-                    if evidence
-                    else [
+            is_subject = _subject_id(job) is not None
+            request = (SubjectRequest if is_subject else Request).model_validate(
+                job["nativeRequest"]
+            )
+            evidence = request.rag_evidence.get(slot["id"])
+            context = (
+                _subject_question_context(job, Question.model_validate(old)) if is_subject else {}
+            )
+            composer = SubjectRepairComposer() if is_subject else RepairComposer()
+            illustrator = IllustratorAgent()
+            solver = SubjectSolver() if is_subject else SolverAgent()
+            data.update(
+                **context,
+                reference_material=[
+                    *([evidence.text] if evidence else []),
+                    *(
                         t
                         for t in request.reference_material
-                        if t.startswith(f"[THPT_PART:{slot['part']}]")
-                    ],
-                )
+                        if not t.startswith("[THPT_PART:")
+                        or t.startswith(f"[THPT_PART:{slot['part']}]")
+                    ),
+                ],
+            )
 
         repaired, _ = await composer.run(providers["composer"], data)
         if repaired.id != old["id"]:
@@ -2087,9 +2098,33 @@ class JobManager:
             source = self._verify_source(job)
             root = self.root / job_id
             if kind == "STUDENT_EXAM" and file_format == "tex":
-                return root / SOURCE_NAME, "application/x-tex", source
+                return (
+                    root / SOURCE_NAME,
+                    "application/x-tex",
+                    reflow_saved_choice_rows(source, job["rawQuestions"]),
+                )
             if kind == "STUDENT_EXAM" and file_format == "pdf":
                 return self.previews.file(job), "application/pdf", None
+            if kind == "STUDENT_EXAM" and file_format in {"docx", "md"}:
+                label = "Word" if file_format == "docx" else "Markdown"
+                try:
+                    name, media, data = await asyncio.to_thread(
+                        export_student_document,
+                        self._package(job, include_preview=False),
+                        job,
+                        file_format,
+                        source=source,
+                        compiler=self.previews.compiler(),
+                        timeout=self.settings.latex_timeout_seconds,
+                        cache_directory=self.settings.latex_cache_dir,
+                    )
+                except (OSError, RuntimeError, SubprocessError, ValueError) as exc:
+                    raise UiError(
+                        "word_export_failed" if file_format == "docx" else "markdown_export_failed",
+                        f"Không thể tạo tệp {label} với đầy đủ công thức và hình minh họa.",
+                        500,
+                    ) from exc
+                return root / name, media, data
             if job.get("contractExport") and file_format == "json":
                 filename = (
                     contract_artifacts.STUDENT

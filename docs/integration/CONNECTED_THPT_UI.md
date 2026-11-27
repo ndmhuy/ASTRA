@@ -3,7 +3,8 @@
 The integration branch combines `main` (`f6b7ea8`) with `uiux2` (`7897b79`).
 The first supported engine is **Toán THPT**, using the original locked template:
 12 MCQ, 4 true/false questions with four statements each, and 6 short answers.
-VACT, other subjects, uploads and the M2 chatbot controller are not enabled by this adapter.
+The workspace also supports V-ACT, additional THPT subjects and user-uploaded references.
+The original integration notes below describe the Toán THPT path.
 The detailed setup still opens a custom workspace directly; free text becomes Composer requirements.
 
 ## Run locally
@@ -137,3 +138,54 @@ It does not measure model accuracy. Add `--live` only to use the configured exte
 Live mode sends retrieved context to that provider and stops at pending human review;
 it does not automate approval or export of the generated exam.
 Screenshots, logs and receipts stay under ignored `runs/ui-smoke/`.
+
+## User input documents
+
+Teachers can attach **Đề mẫu**, **Ma trận** or **Tài liệu thêm** from the chat composer
+or the template setup dialog. Choose the role before selecting one or more files.
+Expand a filename to inspect the extracted text preview; remove it before generation
+to exclude it. Successful uploads remain selected when another file fails.
+Workspace attachments persist when reopening a saved workspace after a browser/server restart.
+
+Supported files: text-based PDF, DOCX (including tables), UTF-8 TXT/Markdown, CSV and JSON.
+The versioned [upload policy](../../src/exam_baseline/resources/input_documents_v1.json)
+allows five files per request, 10 MiB and 20,000 extracted characters per file,
+100 PDF pages and 20 MiB of expanded DOCX content. Oversized, empty, corrupted,
+password-protected and textless documents return explicit errors. Scans need OCR first;
+figures and images are not extracted. CSV/JSON matrices remain reference text: this
+feature does not convert them into validated per-question slots or override the locked
+question counts, duration and scoring profile. A teacher must check matrix compliance.
+
+`GET /api/input-documents/policy` supplies the server's limits and allowed extensions.
+`POST /api/input-documents?filename=...&kind=sample_exam|matrix|supplementary` receives
+raw file bytes (`application/octet-stream`) and returns `input-document-v1` metadata,
+an opaque UUID and a 600-character preview. Send UUIDs in `uploadedFiles` to the existing
+evaluate/generate endpoints; paths or filenames are rejected. Unknown/duplicate IDs fail
+before generation. No multipart dependency is needed.
+
+Only extracted text and metadata (original filename, role, byte count, SHA-256 and UUID)
+are saved in ignored `EXAM_UI_OUTPUT_ROOT/input-documents/`; original binary files are
+not retained. Removing an attachment excludes it from future requests; existing job
+snapshots and stored references remain available for reproducibility. This follows the
+existing local single-server workspace model, with no additional sharing boundary.
+Composer receives references marked as untrusted data, including during targeted repair.
+Math RAG evidence and missing-evidence checks remain active. Blind Solver receives
+student content and drawings without uploaded references or reference answers.
+
+Validation:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q tests/api/test_input_documents.py
+cd astra-frontend
+npm.cmd test
+npm.cmd run lint
+npm.cmd run build
+cd ..
+.\.venv\Scripts\python.exe scripts/input_documents_smoke.py
+```
+
+The browser test starts the built frontend and real API, uploads synthetic files through
+Chrome, checks removal/errors and both generation entry points, reopens saved attachments,
+and captures desktop/mobile screenshots in ignored `runs/input-documents-smoke/`.
+It uses synthetic retrieval and explicit replay model responses; it does not establish
+live model quality, matrix adherence or OCR support. It never approves or exports a paper.

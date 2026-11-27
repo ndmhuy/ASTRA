@@ -178,7 +178,7 @@ def test_saved_exam_preview_reflows_choices_and_preserves_approval(
         assert b"\n\\noindent A. " not in compiler[0]
         assert b"\\parbox[t]" in compiler[0]
         assert source_path.read_bytes() == saved
-        assert client.get(url + "/export?type=STUDENT_EXAM&format=tex").content == saved
+        assert client.get(url + "/export?type=STUDENT_EXAM&format=tex").content == compiler[0]
         pdf = client.get(state["pdfUrl"]).content
         assert pdf.startswith(b"%PDF-") and pdf != old_pdf
         assert client.get(url + "/export?type=STUDENT_EXAM&format=pdf").content == pdf
