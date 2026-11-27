@@ -429,7 +429,12 @@ export const App: React.FC = () => {
     setShowQuickModal(false);
     revealSession(id);
     setAgentSelection(undefined);
-    void store.generate(id, { ...params, uploadedFiles: [], prompt: instructions ? `${params.prompt}\n${instructions}` : params.prompt });
+    void store.generate(id, {
+      ...params,
+      uploadedFiles: [],
+      prompt: instructions ? `${params.prompt}\n${instructions}` : params.prompt,
+      ...(params.formatId === 'thpt-math' && instructions ? { teacherInstruction: instructions } : {}),
+    });
   };
   const handleSendMessage = (content: string, options: { searchWeb: boolean; attachedFiles: File[] }) => {
     if (activeId) void sendTurn(activeId, content, options);
@@ -740,7 +745,9 @@ export const App: React.FC = () => {
             }
             const proposal = prepareParams(format, intent.args, message, resolved?.topic);
             if (!proposal.params) return failed(proposal.error);
-            const payload = proposal.params;
+            const payload = format.id === 'thpt-math' && proposal.topic
+              ? { ...proposal.params, teacherInstruction: proposal.topic }
+              : proposal.params;
             if (current.errorCode === 'network_error' && current.requestSignature &&
                 current.requestSignature !== JSON.stringify(payload)) {
               return failed('Lần gửi trước chưa rõ kết quả. Hãy thử lại với thông số cũ trước khi đổi yêu cầu.');
@@ -1055,7 +1062,7 @@ export const App: React.FC = () => {
                   <details className="canvas-source-warnings">
                     <summary>
                       <AlertTriangle size={14} aria-hidden="true" />
-                      <span>Cảnh báo cần kiểm tra ({active.package.warnings.length})</span>
+                      <span>Lưu ý khi rà soát đề ({active.package.warnings.length})</span>
                     </summary>
                     <div className="canvas-source-warnings-body">
                       {active.package.warnings.map((warning, i) => (

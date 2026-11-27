@@ -13,6 +13,7 @@ from exam_baseline.ui.contracts import (
     ApprovalRequest,
     EditRequest,
     ExamGenerateRequest,
+    GenerateRequest,
     PreviewRequest,
     RegenerateRequest,
     RevisionRequest,
@@ -131,6 +132,14 @@ async def formats(request: Request):
 
 @router.post("/exam-formats/evaluate")
 async def evaluate(request: Request, payload: ExamGenerateRequest):
+    if isinstance(payload, GenerateRequest) and payload.needs_math_plan:
+        return {
+            "status": "awaiting_planner",
+            "formatId": payload.formatId,
+            "formatVersion": payload.formatVersion,
+            "request": None,
+            "retrievalMatrix": None,
+        }
     native, matrix = await asyncio.to_thread(
         resolve_request, payload, settings=request.app.state.settings
     )

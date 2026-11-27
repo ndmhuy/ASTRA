@@ -44,6 +44,7 @@ def retrieval_matrix(request: Request) -> dict:
         "schema_version": VERSION,
         "subject": "toan",
         "vdc_policy": "fallback_with_warning",
+        **({"allow_curriculum_only": True} if request.topic_review_instruction else {}),
         **CONFIG["thpt_mas_limits"],
         "questions": [
             {
