@@ -31,7 +31,7 @@ Optional null/omitted goal fields have defined defaults. Invalid optional title 
 
 ## Workflow behavior
 
-`PREPARE_EXAM(family=thpt)` resolves through the runtime catalog. Missing subject information is stored in the existing session intake, with source-message provenance. An exact subject answer during that pending question can resolve locally, including accentless aliases. Unsupported subjects remain explicit and the Agent does not substitute Mathematics. The test catalog can add Chemistry without changing routing code.
+`PREPARE_EXAM` resolves through the runtime catalog. In a draft, short requests such as `sử`, `sinh` or `đề môn sinh` can open a matching preset directly. A request with a subject and no family uses the family of its only available match. Multiple matches prompt the teacher to choose among those formats. Subject changes clear the earlier subject's topic, count, duration and grade. Missing subject information is stored in intake with source-message provenance, and unavailable subjects receive an explicit reply. Opening a preset leaves generation to the separate **Tạo đề thi** action.
 
 Questions about a stored question/answer use the current package and revision to assemble a read-only reply. Stored keys and explanations are labeled as stored data, and any recorded Solver disagreement is retained. This does not navigate, regenerate or run an academic solver. The mounted check also exposed an old broad “là gì / như thế nào” substring shortcut; it was removed so domain questions reach semantic interpretation instead of generic setup guidance.
 

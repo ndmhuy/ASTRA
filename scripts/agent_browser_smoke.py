@@ -131,12 +131,32 @@ def observe(base_url: str, intake_only: bool = False):
             run_workflows(page, composer, business_writes)
             # Keep the second browser flow outside the shared loopback burst window.
             page.wait_for_timeout(2100)
+        before = len(business_writes)
+        calls_before_intake = len(agent_calls)
+        for text, subject, preset in [
+            ("sử", "Lịch Sử", "Lịch Sử THPT"),
+            ("sinh", "Sinh Học", "Sinh Học THPT"),
+            ("đề môn sinh", "Sinh Học", "Sinh Học THPT"),
+        ]:
+            shorthand = browser.new_page(reduced_motion="reduce")
+            shorthand.on("request", record)
+            shorthand.goto(base_url)
+            composer = shorthand.locator("textarea").first
+            composer.fill(text)
+            composer.press("Enter")
+            expect(shorthand.get_by_text(f"Đã chọn mẫu. {preset}", exact=False)).to_be_visible()
+            dialog = shorthand.get_by_role("dialog")
+            expect(dialog.get_by_role("button", name=subject, exact=True)).to_have_attribute(
+                "aria-pressed", "true"
+            )
+            expect(dialog.get_by_role("button", name="Tạo đề thi")).to_be_enabled()
+            shorthand.close()
+        assert len(agent_calls) == calls_before_intake and len(business_writes) == before
+
         product = browser.new_page(reduced_motion="reduce")
         product.on("request", record)
         product.goto(base_url)
         product.locator("textarea").first.wait_for(timeout=12000)
-        before = len(business_writes)
-        calls_before_intake = len(agent_calls)
         for text, expected in [
             ("Hướng dẫn cô soạn đề Sinh THPT", "Sinh Học THPT có 28 câu"),
             ("Tạo đề thi thử tốt nghiệp", "Thầy cô muốn ôn thi tốt nghiệp môn nào?"),

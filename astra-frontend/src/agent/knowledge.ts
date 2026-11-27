@@ -11,6 +11,21 @@ export const familyFor = (format: ExamFormat) =>
 const contains = (message: string, value: string) =>
   (" " + fold(message).replace(/[^a-z0-9-]+/g, ' ') + " ").includes(" " + fold(value) + " ");
 
+function subjectVocabulary(formats: ExamFormat[]) {
+  const subjects: Record<string, string[]> = { ...domain.subjects };
+  for (const format of formats) for (const subject of format.subjects) subjects[subject] ??= [];
+  return Object.entries(subjects);
+}
+
+export function shortSubjectIntake(message: string, formats: ExamFormat[] = []): ExamIntake | undefined {
+  const phrase = fold(message).replace(/[.!]+$/, '').replace(/\s+(?:nhe|nha)$/, '');
+  const name = phrase.replace(/^(?:de(?: thi)?(?: mon)?|mon)(?:\s*:\s*|\s+)/, '').replace(/\s+thpt$/, '');
+  const matches = subjectVocabulary(formats).filter(([subject, aliases]) =>
+    [subject, ...aliases].some(term => fold(term) === name));
+  if (matches.length !== 1) return;
+  return { mode: 'request', subject: matches[0][0] };
+}
+
 export function mentionedFamilies(message: string) {
   return (Object.entries(domain.families) as Array<[keyof typeof domain.families, { terms: string[] }]>)
     .filter(([, family]) => family.terms.some(term => contains(message, term)))
@@ -45,36 +60,44 @@ export function resolveIntake(
   semantic = false,
 ): Resolution {
   const available = formats.filter(format => format.available);
-  const availableNames = available.map(format => format.displayName).join(' và ');
   const previousFormat = available.find(format => format.id === previous?.formatId && format.version === previous?.version);
   const literalFamilies = mentionedFamilies(message);
   const priorFamily = previous?.family ?? (previousFormat && familyFor(previousFormat));
   const correction = /\b(?:doi|chuyen) sang\b/.test(fold(message));
-  const family = literalFamilies.length === 1 ? literalFamilies[0]
+  const statedFamily = literalFamilies.length === 1 ? literalFamilies[0]
     : literalFamilies.length > 1
       ? (correction && proposal.family && literalFamilies.includes(proposal.family) ? proposal.family : undefined)
       : semantic ? proposal.family ?? priorFamily : proposal.mode === 'request' ? priorFamily : proposal.family ?? priorFamily;
-  const familyChanged = !!previous?.family && !!family && previous.family !== family ||
-    !!previousFormat && !!family && familyFor(previousFormat) !== family;
 
   // Match a catalog subject dynamically. Vocabulary also recognizes subjects absent from the catalog.
-  const subjects: Record<string, string[]> = { ...domain.subjects };
-  for (const format of formats) for (const subject of format.subjects) subjects[subject] ??= [];
-  const subjectMatch = Object.entries(subjects).find(([name, aliases]) =>
+  const subjects = subjectVocabulary(formats);
+  const subjectMatches = subjects.filter(([name, aliases]) =>
     [name, ...aliases].some(term => contains(message, 'môn ' + term) ||
-      fold(message).replace(/[.!?]+$/, '') === fold(term)))?.[0];
+      fold(message).replace(/[.!?]+$/, '') === fold(term))).map(([name]) => name);
   const proposed = proposal.subject;
-  const canonical = proposed && Object.entries(subjects).find(([name, aliases]) =>
+  const canonical = proposed && subjects.find(([name, aliases]) =>
     [name, ...aliases].some(term => fold(term) === fold(proposed)));
   const extracted = proposed && (contains(message, proposed) ||
     (canonical && canonical[1].some(alias => contains(message, alias))))
     ? canonical?.[0] ?? proposed : undefined;
-  const subject = subjectMatch ?? extracted ?? (familyChanged ? undefined : previous?.subject ?? previousFormat?.subjects[0]);
+  const correctedSubject = correction && extracted && subjectMatches.includes(extracted) ? extracted : undefined;
+  if (proposal.mode === 'request' && subjectMatches.length > 1 && !correctedSubject) {
+    return { text: 'Thầy cô muốn chọn môn nào? ' + subjectMatches.join(', ') + '.' };
+  }
+  const statedSubject = correctedSubject ?? subjectMatches[0] ?? extracted;
+  const priorSubject = previous?.subject ?? previousFormat?.subjects[0];
+  const subjectFormats = statedSubject ? available.filter(format =>
+    format.subjects.some(item => fold(item) === fold(statedSubject))) : [];
+  const family = statedFamily ?? (proposal.mode === 'request' && !literalFamilies.length && subjectFormats.length === 1
+    ? familyFor(subjectFormats[0]) : undefined);
+  const familyChanged = !!priorFamily && !!family && priorFamily !== family;
+  const subjectChanged = !!statedSubject && !!priorSubject && fold(statedSubject) !== fold(priorSubject);
+  const subject = statedSubject ?? (familyChanged ? undefined : priorSubject);
   const topic = proposal.topic?.trim();
   if (topic && (!fold(message).includes(fold(topic)) || /\p{Cc}/u.test(topic))) {
     return { text: 'Thầy cô hãy ghi rõ chuyên đề cần tập trung.' };
   }
-  const previousFacts = familyChanged ? undefined : previous;
+  const previousFacts = familyChanged || subjectChanged ? undefined : previous;
   const text = fold(message);
   const count = Number(text.match(/\b(\d+)\s*cau\b/)?.[1]) || proposal.count || (proposal.useDefaults ? undefined : previousFacts?.count);
   const minutes = Number(text.match(/\b(\d+)\s*phut\b/)?.[1]) || proposal.minutes || (proposal.useDefaults ? undefined : previousFacts?.minutes);
@@ -104,13 +127,13 @@ export function resolveIntake(
   const format = matches.length === 1 ? matches[0] : undefined;
   const familyLabel = family === 'thpt' ? 'THPT' : family === 'vact' ? 'V-ACT' : undefined;
   const title = familyLabel ? 'Soạn đề ' + familyLabel : 'Chọn mẫu đề thi';
-  if (format && (
+  if (family && format && (
     (count !== undefined && count !== format.totalQuestions) ||
     (minutes !== undefined && minutes !== format.durationMinutes) ||
     (grade !== undefined && !format.grades.includes(grade))
   )) return { draft, title, preset: format, text: formatOverview(format) + ' Mẫu này có cấu trúc và khối lớp cố định. Nhắn “Đồng ý” để dùng cấu trúc đó.' };
   if (!family) return { draft: { ...draft, missing: 'family' }, title,
-    text: 'Thầy cô muốn chọn mẫu nào? ASTRA hiện có ' + availableNames + '.' };
+    text: 'Thầy cô muốn chọn mẫu nào? ASTRA hiện có ' + matches.map(format => format.displayName).join(', ') + '.' };
   if (!subject && family === 'thpt') return { draft: { ...draft, missing: 'subject' }, title,
     text: 'Thầy cô muốn ôn thi tốt nghiệp môn nào? Mẫu đang hỗ trợ ' +
       [...new Set(matches.flatMap(item => item.subjects))].join(', ') + '.' };
