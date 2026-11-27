@@ -46,3 +46,6 @@ git log -n 8 --oneline --decorate
 ```
 
 Đọc bảng **Mục 2** phía trên, tiếp tục từ Milestone đầu tiên có trạng thái `PENDING` hoặc `IN_PROGRESS`. Không chỉnh sửa worktree gốc `ASTRA`.
+
+> **Đã hoàn tất M1–M6!** Để chạy thử nghiệm **Live** trên Google Gemini `2.5 / 3.1 / 3.8`, chấm mù CSV và sinh báo cáo cuối cùng, đọc tài liệu bàn giao chuyên biệt:
+> **[THPT_BENCHMARK_LIVE_EXECUTION_HANDOFF.md](THPT_BENCHMARK_LIVE_EXECUTION_HANDOFF.md)**
