@@ -6,6 +6,7 @@ import type { Intake } from './intake.ts';
 import type { ExamFormat } from '../types/exam.ts';
 import { shortSubjectIntake } from './knowledge.ts';
 import { sectionId } from './examActions.ts';
+import { fold } from './language.ts';
 
 const GOALS = { ...catalog.goals, ...local.goals };
 export type GoalId = keyof typeof GOALS;
@@ -100,7 +101,26 @@ export function resolveSemantic(frame: SemanticFrame, recent?: { number: number;
   }
   const nonActions = definitions.filter(definition => definition.resolver !== 'capability');
   if (nonActions.length) {
-    if (frame.goals.length !== 1) return stop('Yêu cầu gồm bước cấu hình hoặc hướng dẫn cần làm rõ trước. Thầy cô hãy hoàn tất bước đó rồi tiếp tục.');
+    if (goals.length > 1) {
+      // Selecting, configuring and requesting one exam are dependent parts of the
+      // same intake, not independent business operations. Keep every stated slot.
+      const compatible = goals.every(goal => ['PREPARE_EXAM', 'REQUEST_GENERATION', 'INSPECT_FORMAT', 'OPEN_CONFIGURATION'].includes(goal.goal));
+      if (!compatible || new Set(goals.map(goal => goal.reference ?? 'current')).size > 1) {
+        return stop('Yêu cầu có nhiều thao tác khác nhau. Thầy cô hãy chọn phần muốn thực hiện trước.');
+      }
+      const parameters: Intent['args'] = {};
+      const comparable = (key: string, value: string | number | boolean) => typeof value === 'string'
+        ? fold(key === 'subject' ? shortSubjectIntake(value)?.subject ?? value : value) : value;
+      for (const goal of goals) for (const [key, value] of Object.entries(goal.parameters)) {
+        if (parameters[key] !== undefined && comparable(key, parameters[key]) !== comparable(key, value)) {
+          return stop('Yêu cầu có các cấu hình đề khác nhau. Thầy cô muốn dùng môn hoặc cấu trúc nào?');
+        }
+        parameters[key] = value;
+      }
+      const goal: GoalId = goals.some(item => item.goal === 'REQUEST_GENERATION') ? 'REQUEST_GENERATION'
+        : goals.some(item => item.goal === 'PREPARE_EXAM') ? 'PREPARE_EXAM' : 'INSPECT_FORMAT';
+      return resolveSemantic({ ...frame, goals: [{ goal, parameters }] }, recent);
+    }
     const definition = definitions[0];
     const goal = frame.goals[0];
     if (definition.resolver === 'guidance') return { invalidateConfirmation, decision: {
