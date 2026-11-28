@@ -6,6 +6,7 @@ import { admit, execute, fastRoute, fold, mayDispatch, type Effect, type Runtime
 import { displayNumber, failure, inspectQuestion, previewText, resolveQuestion, sectionId, statusText, success } from './agent/examActions';
 import type { Decision, Intent } from './agent/contracts';
 import { catalogCandidate, catalogMeaning } from './agent/local';
+import { needsNewExamWorkspace } from './agent/creation';
 import { generationTarget, generationReceipt, generationJob, restingGeneration } from './agent/lifecycle';
 import { contextualSubject, resolveSemantic } from './agent/semantics';
 import { familyFor, formatOverview, guidanceFor, listAdjacentTopics, matchAdjacentTopic, mentionedFamilies, resolveIntake, shortSubjectIntake } from './agent/knowledge';
@@ -261,6 +262,14 @@ export const App: React.FC = () => {
     setAdmissionError(admission.error || '');
     if (admission.error) return;
     content = admission.text;
+    if (!editor && !options.searchWeb && needsNewExamWorkspace(store.getSnapshot().find(session => session.id === id), content)) {
+      setPendingConfirmation(null);
+      flushSync(() => {
+        id = store.create('custom');
+        setAgentSelection(undefined); setShowQuickModal(false); setConfigureId(null);
+        openSession(id);
+      });
+    }
     const controller = new AbortController();
     turn.current = controller;
     setChatPending(true);
@@ -498,7 +507,7 @@ export const App: React.FC = () => {
         return;
       }
       if (workflow?.text) {
-        if (await applyInlineDraft()) return;
+        // A rejected semantic frame must not be reinterpreted by the UI fallback.
         answer(workflow.text);
         return;
       }

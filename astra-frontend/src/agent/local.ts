@@ -1,20 +1,13 @@
 import type { ExamIntake, Intent, IntentId } from './contracts.ts';
 import type { ExamFormat } from '../types/exam.ts';
-import { fold } from './language.ts';
+import { polite } from './language.ts';
+import { examCreation } from './creation.ts';
+export { polite } from './language.ts';
 import { familyFor, shortSubjectIntake } from './knowledge.ts';
 
 export type LocalMeaning = { text: string } | { intents: Intent[] } | { intake: ExamIntake } | { confirm: boolean };
 const action = (id: IntentId, args: Intent['args'] = {}): LocalMeaning => ({ intents: [{ id, args }] });
 const advice = 'Tạm dừng sẽ lưu kết quả hợp lệ sau lượt gọi đang chạy; Tiếp tục chỉ làm phần còn thiếu. Dừng kết thúc lượt chạy hiện tại. Thầy cô có thể dùng các nút trên bảng tiến độ.';
-
-export function polite(message: string) {
-  let text = fold(message).replace(/[.!?]+$/, '');
-  for (let pass = 0; pass < 3; pass++) {
-    text = text.replace(/^(?:astra(?: oi)?[, ]+|em oi[, ]+|(?:cho|giup|gium) (?:co|thay|toi|minh|tao|tui|em) |nho em |hay |vui long |lam on )/, '')
-      .replace(/(?: (?:cho|giup|gium|ho)(?: (?:co|thay|toi|minh|tao|tui|em))?(?: voi)?| (?:di|nhe|nha|voi|em))$/, '');
-  }
-  return text;
-}
 
 export function localMeaning(message: string): LocalMeaning | undefined {
   const text = polite(message);
@@ -56,12 +49,15 @@ export function localMeaning(message: string): LocalMeaning | undefined {
 
 export function catalogCandidate(message: string) {
   const text = polite(message);
+  if (examCreation(message)?.intake) return true;
   return !/["“”«»`]/.test(message) && !/đừng/iu.test(message) &&
     /^(?:chon|doi (?:qua|sang)|xem cau truc|cau truc|co nhung mon nao|thpt .*bao nhieu cau|mon .*bao nhieu cau)/.test(text);
 }
 
 export function catalogMeaning(message: string, formats: ExamFormat[]): LocalMeaning | undefined {
   if (!catalogCandidate(message)) return;
+  const creation = examCreation(message, formats);
+  if (creation?.intake) return { intake: creation.intake };
   const text = polite(message);
   if (/\b(?:khong|chua|neu|gia su)\b/.test(text)) return;
   if (/^co nhung mon nao$/.test(text)) return { text: [...new Set(formats.filter(format => format.available).flatMap(format => format.subjects))].join(', ') };

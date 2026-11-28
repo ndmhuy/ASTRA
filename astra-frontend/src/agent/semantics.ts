@@ -6,6 +6,7 @@ import type { Intake } from './intake.ts';
 import type { ExamFormat } from '../types/exam.ts';
 import { shortSubjectIntake } from './knowledge.ts';
 import { sectionId } from './examActions.ts';
+import { fold } from './language.ts';
 
 const GOALS = { ...catalog.goals, ...local.goals };
 export type GoalId = keyof typeof GOALS;
@@ -100,23 +101,26 @@ export function resolveSemantic(frame: SemanticFrame, recent?: { number: number;
   }
   const nonActions = definitions.filter(definition => definition.resolver !== 'capability');
   if (nonActions.length) {
-    const allIntake = definitions.length > 0 && definitions.every(definition => definition.resolver === 'intake');
-    if (allIntake && goals.length > 1) {
-      const mergedParams = goals.reduce<Intent['args']>((acc, item) => ({ ...acc, ...item.parameters }), {});
-      const wantsGeneration = goals.some(item => item.goal === 'REQUEST_GENERATION') && !frame.constraints.includes('NO_GENERATION');
-      return {
-        invalidateConfirmation,
-        setupOnly: !wantsGeneration,
-        requestGeneration: wantsGeneration,
-        decision: {
-          kind: 'answer',
-          intents: [],
-          title: frame.title,
-          intake: { mode: 'request', ...mergedParams } as ExamIntake,
-        },
-      };
+    if (goals.length > 1) {
+      // Selecting, configuring and requesting one exam are dependent parts of the
+      // same intake, not independent business operations. Keep every stated slot.
+      const compatible = goals.every(goal => ['PREPARE_EXAM', 'REQUEST_GENERATION', 'INSPECT_FORMAT', 'OPEN_CONFIGURATION'].includes(goal.goal));
+      if (!compatible || new Set(goals.map(goal => goal.reference ?? 'current')).size > 1) {
+        return stop('Yêu cầu có nhiều thao tác khác nhau. Thầy cô hãy chọn phần muốn thực hiện trước.');
+      }
+      const parameters: Intent['args'] = {};
+      const comparable = (key: string, value: string | number | boolean) => typeof value === 'string'
+        ? fold(key === 'subject' ? shortSubjectIntake(value)?.subject ?? value : value) : value;
+      for (const goal of goals) for (const [key, value] of Object.entries(goal.parameters)) {
+        if (parameters[key] !== undefined && comparable(key, parameters[key]) !== comparable(key, value)) {
+          return stop('Yêu cầu có các cấu hình đề khác nhau. Thầy cô muốn dùng môn hoặc cấu trúc nào?');
+        }
+        parameters[key] = value;
+      }
+      const goal: GoalId = goals.some(item => item.goal === 'REQUEST_GENERATION') ? 'REQUEST_GENERATION'
+        : goals.some(item => item.goal === 'PREPARE_EXAM') ? 'PREPARE_EXAM' : 'INSPECT_FORMAT';
+      return resolveSemantic({ ...frame, goals: [{ goal, parameters }] }, recent);
     }
-    if (frame.goals.length !== 1) return stop('Yêu cầu đang gộp nhiều bước khác nhau. Thầy cô hãy tách riêng phần chọn mẫu đề và thao tác điều khiển.');
     const definition = definitions[0];
     const goal = frame.goals[0];
     if (definition.resolver === 'guidance') return { invalidateConfirmation, decision: {
