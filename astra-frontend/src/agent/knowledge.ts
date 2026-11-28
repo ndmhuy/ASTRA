@@ -51,6 +51,14 @@ export function shortSubjectIntake(message: string, formats: ExamFormat[] = []):
   return { mode: 'request', subject: matches[0][0] };
 }
 
+export function detectSubjectInMessage(message: string, formats: ExamFormat[] = []): string | undefined {
+  const availableSubjects = new Set<string>(formats.filter(f => f.available).flatMap(f => f.subjects));
+  const matches = subjectVocabulary(formats).filter(([subject, aliases]) =>
+    (!availableSubjects.size || availableSubjects.has(subject)) &&
+    [subject, ...aliases].some(term => contains(message, term)));
+  return matches.length === 1 ? matches[0][0] : undefined;
+}
+
 export function mentionedFamilies(message: string) {
   return (Object.entries(domain.families) as Array<[keyof typeof domain.families, { terms: string[] }]>)
     .filter(([, family]) => family.terms.some(term => contains(message, term)))

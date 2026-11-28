@@ -1,23 +1,33 @@
-import { useEffect, useRef, useState } from 'react';
-import { Paperclip, X } from 'lucide-react';
+import { useEffect, useId, useRef, useState } from 'react';
+import { HelpCircle, Paperclip, X } from 'lucide-react';
 import { documentKinds, getDocumentPolicy, uploadDocument, validateDocument } from '../services/inputDocuments';
 import type { DocumentKind, DocumentPolicy, InputDocument, InputDocumentsUpdate } from '../services/inputDocuments';
 import './DocumentAttachments.css';
 
 interface Props {
-  documents: InputDocument[]; onChange: (documents: InputDocumentsUpdate) => void;
-  disabled?: boolean; onBusyChange?: (busy: boolean) => void;
+  documents: InputDocument[];
+  onChange: (documents: InputDocumentsUpdate) => void;
+  disabled?: boolean;
+  onBusyChange?: (busy: boolean) => void;
+  compact?: boolean;
+  toolsOpen?: boolean;
 }
-export function DocumentAttachments({ documents, onChange, disabled, onBusyChange }: Props) {
+
+export function DocumentAttachments({ documents, onChange, disabled, onBusyChange, compact = false, toolsOpen = true }: Props) {
   const [policy, setPolicy] = useState<DocumentPolicy>();
   const [kind, setKind] = useState<DocumentKind>('supplementary');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [helpOpen, setHelpOpen] = useState(false);
   const [attempt, setAttempt] = useState(0);
+  const helpId = useId();
+  const helpTrigger = useRef<HTMLButtonElement>(null);
+  const helpPopover = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
   const uploading = useRef(false);
   const mounted = useRef(true);
   const abortRef = useRef<AbortController | null>(null);
+
   useEffect(() => {
     mounted.current = true;
     return () => {
@@ -26,12 +36,33 @@ export function DocumentAttachments({ documents, onChange, disabled, onBusyChang
       abortRef.current = null;
     };
   }, []);
+
   useEffect(() => {
     let active = true;
     void getDocumentPolicy().then(value => { if (active) { setPolicy(value); setError(''); } })
       .catch(() => { if (active) setError('Chưa lấy được giới hạn tải tài liệu.'); });
     return () => { active = false; };
   }, [attempt]);
+
+  useEffect(() => {
+    if (!helpOpen) return;
+    function handleOutside(event: PointerEvent) {
+      const target = event.target as Node;
+      if (!helpTrigger.current?.contains(target) && !helpPopover.current?.contains(target)) setHelpOpen(false);
+    }
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key !== 'Escape') return;
+      setHelpOpen(false);
+      helpTrigger.current?.focus();
+    }
+    document.addEventListener('pointerdown', handleOutside);
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('pointerdown', handleOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [helpOpen]);
+
   const upload = async (files: File[]) => {
     if (!policy || uploading.current || disabled) return;
     const controller = new AbortController();
@@ -62,26 +93,63 @@ export function DocumentAttachments({ documents, onChange, disabled, onBusyChang
       if (mounted.current) { setBusy(false); onBusyChange?.(false); }
     }
   };
-  return <section className="input-documents" aria-label="Tài liệu đầu vào">
-    <div className="input-document-tools">
-      <label>Loại tài liệu <select aria-label="Loại tài liệu tải lên" value={kind} disabled={disabled || busy} onChange={e => setKind(e.target.value as DocumentKind)}>
-        {Object.entries(documentKinds).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-      </select></label>
-      <button type="button" className="composer-tool-btn" disabled={disabled || busy || !policy || documents.length >= policy.max_files}
-        onClick={() => input.current?.click()}><Paperclip size={15} aria-hidden="true" />Đính kèm tài liệu</button>
-      <input ref={input} className="composer-file-input" type="file" multiple accept={policy?.extensions.join(',')}
-        aria-label="Chọn tài liệu đầu vào" disabled={disabled || busy || !policy}
-        onChange={event => { const selected = Array.from(event.target.files ?? []); event.target.value = ''; void upload(selected); }} />
-    </div>
-    <small>PDF có chữ, DOCX, TXT, MD, CSV, JSON{policy ? ` · ${policy.max_files} tệp · ${policy.max_bytes / 1048576} MiB/tệp · ${policy.max_characters.toLocaleString('vi-VN')} ký tự/tệp` : ''}</small>
-    <small>Ma trận hướng dẫn chủ đề và mức độ trong cấu trúc đề đã chọn. PDF scan cần OCR trước.</small>
-    {busy && <p role="status">Đang tải và đọc tài liệu…</p>}
-    {error && <p role="alert" className="input-document-error">{error}{!policy && <button type="button" onClick={() => setAttempt(value => value + 1)}>Thử lại</button>}</p>}
-    {documents.map(document => <div className="input-document" key={document.id}>
-      <details><summary>{documentKinds[document.kind]} · {document.filename} · {document.characters.toLocaleString('vi-VN')} ký tự</summary>
-        <pre>{document.preview}</pre></details>
-      <button type="button" className="composer-file-remove" aria-label={`Bỏ đính kèm ${document.filename}`} disabled={disabled || busy}
-        onClick={() => onChange(documents.filter(item => item.id !== document.id))}><X size={14} aria-hidden="true" /></button>
-    </div>)}
-  </section>;
+
+  if (compact && !toolsOpen && !documents.length && !busy && !error) {
+    return null;
+  }
+
+  return (
+    <section className={`input-documents ${compact ? 'is-compact' : ''}`} aria-label="Tài liệu đầu vào">
+      {(!compact || toolsOpen) && (
+        <div className="input-document-tools">
+          <label>Loại tài liệu{' '}
+            <select aria-label="Loại tài liệu tải lên" value={kind} disabled={disabled || busy} onChange={e => setKind(e.target.value as DocumentKind)}>
+              {Object.entries(documentKinds).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+            </select>
+          </label>
+          <button type="button" className="composer-tool-btn" disabled={disabled || busy || !policy || documents.length >= policy.max_files}
+            onClick={() => input.current?.click()}><Paperclip size={15} aria-hidden="true" />Đính kèm tài liệu</button>
+          <div className="input-document-help-wrap">
+            <button
+              ref={helpTrigger}
+              type="button"
+              className={`input-document-help-btn ${helpOpen ? 'is-open' : ''}`}
+              aria-label="Hướng dẫn định dạng và giới hạn tài liệu"
+              title="Định dạng hỗ trợ và lưu ý tài liệu"
+              aria-expanded={helpOpen}
+              aria-controls={helpOpen ? helpId : undefined}
+              onClick={() => setHelpOpen(value => !value)}
+            >
+              <HelpCircle size={15} aria-hidden="true" />
+            </button>
+            {helpOpen && (
+              <div ref={helpPopover} id={helpId} className="input-document-help-popover" role="region" aria-label="Trợ giúp đính kèm tài liệu">
+                <p>Hỗ trợ: PDF có chữ, DOCX, TXT, MD, CSV, JSON{policy ? ` · Tối đa ${policy.max_files} tệp · ${policy.max_bytes / 1048576} MiB/tệp · ${policy.max_characters.toLocaleString('vi-VN')} ký tự/tệp.` : '.'}</p>
+                <p>Ma trận hướng dẫn chủ đề và mức độ trong cấu trúc đề đã chọn. PDF scan cần OCR trước khi tải lên.</p>
+              </div>
+            )}
+          </div>
+          <input ref={input} className="composer-file-input" type="file" multiple accept={policy?.extensions.join(',')}
+            aria-label="Chọn tài liệu đầu vào" disabled={disabled || busy || !policy}
+            onChange={event => { const selected = Array.from(event.target.files ?? []); event.target.value = ''; void upload(selected); }} />
+        </div>
+      )}
+      {busy && <p className="input-document-status" role="status">Đang tải và đọc tài liệu…</p>}
+      {error && <p role="alert" className="input-document-error">{error}{!policy && <button type="button" onClick={() => setAttempt(value => value + 1)}>Thử lại</button>}</p>}
+      {documents.length > 0 && (
+        <div className="input-document-list">
+          {documents.map(document => (
+            <div className="input-document" key={document.id}>
+              <details>
+                <summary>{documentKinds[document.kind]} · {document.filename}</summary>
+                <pre>{document.preview}</pre>
+              </details>
+              <button type="button" className="composer-file-remove" aria-label={`Bỏ đính kèm ${document.filename}`} disabled={disabled || busy}
+                onClick={() => onChange(documents.filter(item => item.id !== document.id))}><X size={14} aria-hidden="true" /></button>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  );
 }
