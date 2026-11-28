@@ -256,7 +256,7 @@ class Orchestrator:
                 raise ValueError("Resume requires the same input request")
             if read_json(internal / "checkpoint-manifest.json") != expected_manifest:
                 raise CheckpointError(
-                    "Generation configuration changed; checkpoint cannot be resumed"
+                    "Checkpoint version or generation configuration changed; cannot resume"
                 )
             report_path = internal / "result.json"
             previous_report = read_json(report_path) if report_path.is_file() else {}

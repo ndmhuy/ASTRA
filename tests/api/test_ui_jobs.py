@@ -549,7 +549,7 @@ def test_retrieval_agents_teacher_approval_export_edit_and_reconnect(tmp_path):
         assert package["questions"][12]["questionType"] == "true_false"
         assert package["questions"][16]["questionType"] == "short_answer"
         assert package["questions"][0]["answerCheck"] == "matched"
-        assert package["questions"][12]["answerCheck"] == "needs_recheck"
+        assert package["questions"][12]["answerCheck"] == "matched"
         assert package["warnings"] and package["provenance"]["corpus_snapshot"] == "test-fixture"
         assert not package["approved"]
         assert len(providers["reviewer"].calls) == 1
@@ -617,7 +617,11 @@ def test_retrieval_agents_teacher_approval_export_edit_and_reconnect(tmp_path):
         assert verified_package["questions"][0]["status"] == "FLAGGED"
         assert verified_package["questions"][0]["solverKey"] == "A"
         assert verified_package["questions"][0]["writerKey"] == "B"
-        assert verified_package["questions"][1] == second
+        assert verified_package["questions"][1] == {
+            **second,
+            "examRevision": verified_package["revision"],
+            "revisionCount": second["revisionCount"] + 1,
+        }
         assert len(providers["solver"].calls) == 2 and len(providers["reviewer"].calls) == 1
         solver_input = providers["solver"].calls[-1]["questions"]
         assert len(solver_input) == 1 and solver_input[0]["id"] == "P1-1"

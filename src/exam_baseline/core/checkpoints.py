@@ -6,7 +6,7 @@ import tempfile
 from hashlib import sha256
 from pathlib import Path
 
-VERSION = 1
+VERSION = 2
 
 
 class CheckpointError(ValueError):
