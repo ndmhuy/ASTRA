@@ -16,6 +16,7 @@ interface Props {
   onStart: (params: ExamRequestParams) => void;
   onClose: () => void;
   agentSelection?: { formats: ExamFormat[]; id: string; expanded: boolean; summary?: string };
+  initialFormatId?: string;
   onManualSelect?: () => void;
 }
 
@@ -44,7 +45,7 @@ function formatSummary(format: ExamFormat): string {
   return `Môn ${format.subjects[0]} · Lớp ${format.grades[0]}`;
 }
 
-export const QuickPresetModal: React.FC<Props> = ({ documents, onDocumentsChange, onStart, onClose, onDialogMount, agentSelection, onManualSelect, title = 'Tạo đề từ mẫu' }) => {
+export const QuickPresetModal: React.FC<Props> = ({ documents, onDocumentsChange, onStart, onClose, onDialogMount, agentSelection, initialFormatId, onManualSelect, title = 'Tạo đề từ mẫu' }) => {
   const [formats, setFormats] = useState<ExamFormat[]>([]);
   const [manualGroup, setMasterGroup] = useState<'thpt' | 'dgnl'>('thpt');
   const [pickerOpen, setThptPickerOpen] = useState(false);
@@ -101,9 +102,18 @@ export const QuickPresetModal: React.FC<Props> = ({ documents, onDocumentsChange
       .then(items => {
         if (!active) return;
         setFormats(items);
+        const preferred = initialFormatId ? items.find(item => item.id === initialFormatId && item.available) : undefined;
         const firstThpt = items.find(item => item.examType === 'THPT_STANDARD' && item.available);
         const firstDgnl = items.find(item => item.examType === 'DGNL_DHQG' && item.available);
-        if (firstThpt) {
+        if (preferred) {
+          if (preferred.examType === 'DGNL_DHQG') {
+            setMasterGroup('dgnl');
+          } else {
+            setSelectedThptId(preferred.id);
+            setMasterGroup('thpt');
+            setThptPickerOpen(true);
+          }
+        } else if (firstThpt) {
           setSelectedThptId(firstThpt.id);
           setMasterGroup('thpt');
         } else if (firstDgnl) {
@@ -116,7 +126,7 @@ export const QuickPresetModal: React.FC<Props> = ({ documents, onDocumentsChange
         }
       });
     return () => { active = false; };
-  }, [agentSelection, catalogAttempt]);
+  }, [agentSelection, initialFormatId, catalogAttempt]);
 
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;

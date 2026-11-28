@@ -100,7 +100,23 @@ export function resolveSemantic(frame: SemanticFrame, recent?: { number: number;
   }
   const nonActions = definitions.filter(definition => definition.resolver !== 'capability');
   if (nonActions.length) {
-    if (frame.goals.length !== 1) return stop('Yêu cầu gồm bước cấu hình hoặc hướng dẫn cần làm rõ trước. Thầy cô hãy hoàn tất bước đó rồi tiếp tục.');
+    const allIntake = definitions.length > 0 && definitions.every(definition => definition.resolver === 'intake');
+    if (allIntake && goals.length > 1) {
+      const mergedParams = goals.reduce<Intent['args']>((acc, item) => ({ ...acc, ...item.parameters }), {});
+      const wantsGeneration = goals.some(item => item.goal === 'REQUEST_GENERATION') && !frame.constraints.includes('NO_GENERATION');
+      return {
+        invalidateConfirmation,
+        setupOnly: !wantsGeneration,
+        requestGeneration: wantsGeneration,
+        decision: {
+          kind: 'answer',
+          intents: [],
+          title: frame.title,
+          intake: { mode: 'request', ...mergedParams } as ExamIntake,
+        },
+      };
+    }
+    if (frame.goals.length !== 1) return stop('Yêu cầu đang gộp nhiều bước khác nhau. Thầy cô hãy tách riêng phần chọn mẫu đề và thao tác điều khiển.');
     const definition = definitions[0];
     const goal = frame.goals[0];
     if (definition.resolver === 'guidance') return { invalidateConfirmation, decision: {

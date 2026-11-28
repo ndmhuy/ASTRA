@@ -7,8 +7,7 @@ import {
   getPrimaryReviewReason,
 } from '../../../utils/questionReview.ts';
 import { formatVisualWarning } from '../../../utils/userMessages.ts';
-import { StationeryArt } from '../../StationeryArt';
-import { SchoolArt } from '../../SchoolArt';
+import { CompassDivider, MathDraftingMotif } from '../../AtelierMotifs';
 import { MathRenderer } from '../../MathRenderer';
 import { QuestionCard } from './QuestionCard';
 import { CanvasExport, type CanvasExportFormat } from './CanvasExport';
@@ -66,6 +65,7 @@ interface ExamPaperViewProps {
     totalCount: number;
   } | null;
   isGenerating: boolean;
+  progressMessage?: string;
   latestQuestionCount?: number;
   onEditQuestion?: (questionId: number) => void;
   onVerifyQuestion?: (questionId: number) => void;
@@ -99,6 +99,7 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
   passages,
   examMeta,
   isGenerating,
+  progressMessage,
   latestQuestionCount = 0,
   onEditQuestion,
   onVerifyQuestion,
@@ -224,12 +225,11 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
     if (!examMeta) {
       return (
         <div className="paper-empty">
-          <StationeryArt kind="pencil" className="preview-pencil" />
-          <StationeryArt kind="apple" className="preview-apple" />
           <span className="preview-label">02 / XEM TRƯỚC PDF</span>
-          <SchoolArt kind="book" className="preview-art" />
+          <MathDraftingMotif className="preview-art preview-drafting" />
           <h2>Chưa có đề để hiển thị bản in PDF.</h2>
           <p>Thầy cô hãy tạo đề thi trước để xem bản in chuẩn theo mẫu.</p>
+          <CompassDivider className="preview-divider" />
           {renderEmptySteps()}
         </div>
       );
@@ -240,7 +240,7 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
         <div className="pdf-preview-loading" role="status">
           <div className="pdf-preview-loading-row">
             <LoaderCircle className="exam-status-spinner" size={16} aria-hidden="true" />
-            <strong>Đang soạn đề thi...</strong>
+            <strong>{progressMessage || 'Đang soạn câu hỏi…'}</strong>
           </div>
           <p>Bản xem trước PDF sẽ được tạo tự động sau khi quá trình soạn câu hỏi hoàn tất.</p>
         </div>
@@ -507,12 +507,11 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
               </section>
             )}
           </> : <div className="paper-empty">
-            <StationeryArt kind="pencil" className="preview-pencil" />
-            <StationeryArt kind="apple" className="preview-apple" />
             <span className="preview-label">02 / TRANG ĐỀ</span>
-            <SchoolArt kind="book" className="preview-art" />
+            <MathDraftingMotif className="preview-art preview-drafting" />
             <h2>Một trang mới,<br />chờ ý tưởng hay.</h2>
             <p>Trao đổi với ASTRA, chọn thiết lập đề, rồi xem từng câu hỏi xuất hiện tại đây.</p>
+            <CompassDivider className="preview-divider" />
             {renderEmptySteps()}
           </div>}
           {questions.map((q, i) => {
@@ -602,7 +601,7 @@ export const ExamPaperView: React.FC<ExamPaperViewProps> = ({
           {isGenerating && (
             <p className="paper-progress" role="status">
               <LoaderCircle className="exam-status-spinner" size={14} aria-hidden="true" />
-              <span>Đang soạn câu hỏi tiếp theo…</span>
+              <span>{progressMessage ? `${progressMessage}…` : 'Đang soạn câu hỏi tiếp theo…'}</span>
             </p>
           )}
           {questions.length > 0 && !isGenerating && <footer className="paper-end">— Hết —</footer>}

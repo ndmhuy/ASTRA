@@ -6,11 +6,15 @@
   place-items: center;
   padding: 24px;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 50% 45%, rgba(217, 169, 56, 0.12) 0%, rgba(18, 38, 30, 0) 56%),
+  background-color: #12261e;
+  background-image:
+    radial-gradient(circle at 50% 42%, rgba(217, 169, 56, 0.1) 0%, rgba(18, 38, 30, 0) 54%),
     radial-gradient(circle at 18% 82%, rgba(34, 82, 62, 0.42) 0%, rgba(18, 38, 30, 0) 52%),
-    #12261e;
+    linear-gradient(to right, rgba(217, 169, 56, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(217, 169, 56, 0.035) 1px, transparent 1px);
+  background-size: auto, auto, 32px 32px, 32px 32px;
   color: #16221c;
+  font-family: var(--font-sans, 'Be Vietnam Pro', 'ASTRA Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
 }
 
 .welcome-backdrop-motifs {
@@ -20,37 +24,18 @@
   overflow: hidden;
 }
 
-.welcome-astrolabe {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: min(740px, 118vw);
-  height: min(740px, 118vw);
-  color: rgba(217, 169, 56, 0.24);
-  transform: translate(-50%, -50%);
-  animation: atelier-astrolabe-spin 90s linear infinite;
-}
-
 .welcome-math-plate {
   position: absolute;
-  left: clamp(16px, 4vw, 64px);
-  bottom: clamp(16px, 5vh, 52px);
-  width: clamp(200px, 24vw, 310px);
-  color: rgba(235, 243, 238, 0.2);
-}
-
-.welcome-constellation {
-  position: absolute;
-  right: clamp(16px, 4vw, 64px);
-  top: clamp(16px, 5vh, 52px);
-  width: clamp(180px, 21vw, 270px);
-  color: rgba(217, 169, 56, 0.28);
+  left: clamp(20px, 4vw, 60px);
+  bottom: clamp(20px, 5vh, 48px);
+  width: clamp(180px, 20vw, 260px);
+  color: rgba(235, 243, 238, 0.14);
 }
 
 .welcome-corner {
   position: absolute;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   color: rgba(217, 169, 56, 0.34);
 }
 
@@ -62,50 +47,37 @@
 .welcome-frame {
   position: relative;
   z-index: 2;
-  width: min(460px, 92vw);
+  width: min(420px, 92vw);
   border-radius: var(--radius-lg, 10px);
-  border: 1px solid rgba(217, 169, 56, 0.34);
+  border: 1px solid rgba(217, 169, 56, 0.38);
   background: #fffdf8;
-  box-shadow: 0 24px 64px rgba(4, 11, 8, 0.45);
-  animation: atelier-welcome-in 420ms cubic-bezier(0.2, 0.85, 0.25, 1) both;
+  box-shadow: 0 24px 60px rgba(4, 11, 8, 0.45);
+  animation: atelier-welcome-in 320ms cubic-bezier(0.2, 0.85, 0.25, 1) both;
 }
 
 .astra-welcome-content {
-  padding: 32px 28px 28px;
+  padding: 28px 26px 24px;
   text-align: center;
   border-radius: var(--radius-lg, 10px);
-  background: transparent;
-}
-
-.welcome-eyebrow {
-  display: inline-block;
-  margin-bottom: 4px;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  color: #7c5c15;
 }
 
 .astra-welcome-logo {
   display: block;
-  width: 170px;
-  height: 144px;
-  margin: 0 auto -6px;
+  width: 132px;
+  height: 112px;
+  margin: 0 auto 2px;
 }
 
 .astra-welcome-wordmark {
-  font-family: var(--font-sans, 'Be Vietnam Pro', 'ASTRA Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-  font-size: 25px;
+  font-size: 20px;
   font-weight: 700;
   letter-spacing: 0.18em;
   color: #12261e;
 }
 
 .astra-welcome-content h1 {
-  margin: 10px 0 4px;
-  font-family: var(--font-sans, 'Be Vietnam Pro', 'ASTRA Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-  font-size: clamp(26px, 4vw, 32px);
+  margin: 8px 0 4px;
+  font-size: clamp(24px, 3.6vw, 28px);
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.2;
@@ -114,15 +86,14 @@
 
 .astra-welcome-content p {
   margin: 0;
-  font-family: var(--font-sans, 'Be Vietnam Pro', 'ASTRA Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-  font-size: 14.5px;
+  font-size: 14px;
   color: #4e5f56;
 }
 
 .welcome-loader {
   height: 3px;
-  width: 176px;
-  margin: 20px auto 16px;
+  width: 172px;
+  margin: 18px auto 16px;
   border-radius: var(--radius-pill, 999px);
   overflow: hidden;
   background: rgba(24, 58, 44, 0.12);
@@ -133,7 +104,7 @@
   height: 100%;
   background: linear-gradient(90deg, #183a2c 0%, #c6962a 100%);
   transform-origin: left;
-  animation: atelier-welcome-load 1.9s cubic-bezier(0.25, 0.8, 0.25, 1) both;
+  animation: atelier-welcome-load 1.3s cubic-bezier(0.25, 0.8, 0.25, 1) both;
 }
 
 .welcome-enter-btn {
@@ -143,19 +114,19 @@
   gap: 7px;
   min-height: 38px;
   padding: 8px 18px;
-  border: 0;
+  border: 1px solid rgba(24, 58, 44, 0.14);
   border-radius: var(--radius-md, 6px);
-  background: rgba(24, 58, 44, 0.08);
+  background: rgba(24, 58, 44, 0.06);
   color: #12261e;
-  font-family: var(--font-sans, 'Be Vietnam Pro', 'ASTRA Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 140ms ease, color 140ms ease;
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
 }
 
 .welcome-enter-btn:hover {
   background: #183a2c;
+  border-color: #183a2c;
   color: #fffdf8;
 }
 
@@ -167,7 +138,7 @@
 @keyframes atelier-welcome-in {
   from {
     opacity: 0;
-    transform: translateY(10px) scale(0.98);
+    transform: translateY(8px) scale(0.985);
   }
   to {
     opacity: 1;
@@ -184,40 +155,18 @@
   }
 }
 
-@keyframes atelier-astrolabe-spin {
-  from {
-    transform: translate(-50%, -50%) rotate(0deg);
-  }
-  to {
-    transform: translate(-50%, -50%) rotate(360deg);
-  }
-}
-
-@media (max-width: 720px) {
-  .welcome-math-plate,
-  .welcome-constellation {
-    opacity: 0.55;
-  }
-
-  .welcome-corner {
-    width: 30px;
-    height: 30px;
-  }
-}
-
 @media (max-width: 520px) {
   .astra-welcome-content {
     padding: 24px 18px 20px;
   }
 
-  .astra-welcome-logo {
-    width: 140px;
-    height: 120px;
+  .welcome-math-plate {
+    display: none;
   }
 
-  .welcome-math-plate,
-  .welcome-constellation {
-    display: none;
+  .welcome-corner {
+    width: 28px;
+    height: 28px;
   }
 }
 
