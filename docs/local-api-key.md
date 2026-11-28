@@ -11,13 +11,14 @@ preserved for rollback. Existing V3 semantic behavior is included in this branch
 ## Configuration path
 
 The initial dialog masks the key, provides an explicit reveal button, and offers
-URL/model settings. The defaults match the supplied compatible API configuration:
+URL/model settings. The defaults use the provider's published compatible endpoint
+at [api.nghimmo.com](https://api.nghimmo.com/):
 
 ```dotenv
 EXAM_PROVIDER=chat_completions
 EXAM_MODEL=nghi/claude-haiku-4.5
 ASTRA_GEMINI_API_KEY=
-EXAM_BASE_URL=https://api.nghimo.com/v1
+EXAM_BASE_URL=https://api.nghimmo.com/v1
 ```
 
 The variable name is historical; the credential belongs to the selected provider.
@@ -75,3 +76,16 @@ the empty masked key dialog. No real provider call or exam generation was initia
 by the agent. Provider authentication, compatible endpoint behavior and academic
 quality remain for the owner to test through the UI. No PR, push or deployment is
 part of this handoff.
+
+### Default URL correction
+
+The initial implementation misspelled the provider hostname as `api.nghimo.com`
+(one `m`). User-created attempts stopped at DNS resolution with
+`provider_connection_failed`. The corrected hostname is `api.nghimmo.com`
+(two `m` characters), as published by the provider linked above. The owner's
+saved URL was corrected without replacing the key or changing the model. DNS
+resolution and credential-free TLS handshakes succeeded; no model request was
+made to verify authentication. A literal endpoint assertion now catches a typo
+in the bundled default instead of comparing it only with itself. DNS/TLS failure
+messages and historical connection-error display now identify connection setup,
+rather than implying that the model is busy.

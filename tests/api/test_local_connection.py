@@ -3,6 +3,8 @@
 import asyncio
 import json
 import os
+import socket
+import ssl
 from contextlib import contextmanager
 from uuid import uuid4
 
@@ -97,6 +99,9 @@ def test_first_start_and_saving_are_probe_free_and_never_return_key(tmp_path):
         status = client.get("/api/connection")
         assert status.headers["cache-control"] == "no-store"
         assert not status.json()["configured"]
+        # Literal from the provider's published compatible endpoint, independent
+        # of DEFAULT_URL so a typo in our bundled defaults cannot validate itself.
+        assert status.json()["baseUrl"] == "https://api.nghimmo.com/v1"
         assert connection.settings.provider == "unconfigured"
         assert client.get("/api/health").json()["demoMode"] is False
         for endpoint in (
@@ -323,7 +328,32 @@ def test_timeout_invalid_json_and_redirect_fail_without_silent_fallback(tmp_path
             with pytest.raises(ProviderError):
                 client.portal.call(connection.baseline.complete, REQUEST)
         assert len(calls) == 3 and connection.configured
-        assert all(request.url.host == "api.nghimo.com" for request in calls)
+        assert all(request.url.host == "api.nghimmo.com" for request in calls)
+
+
+@pytest.mark.parametrize(
+    "cause,expected",
+    [
+        (socket.gaierror(11001, "fixture private details"), "Không phân giải được tên miền API"),
+        (ssl.SSLCertVerificationError(1, "fixture private details"), "kết nối HTTPS"),
+        (OSError("fixture private details"), "kiểm tra API Base URL"),
+    ],
+)
+def test_connection_failures_explain_network_cause_without_exposing_remote_text(
+    tmp_path, cause, expected
+):
+    def handler(request):
+        raise httpx.ConnectError("Never expose " + KEY, request=request) from cause
+
+    with running(tmp_path, handler) as (client, connection, calls):
+        assert save(client).status_code == 200
+        with pytest.raises(ProviderError) as error:
+            client.portal.call(connection.providers["composer"].complete, REQUEST)
+        assert error.value.code == "provider_connection_failed"
+        response = client.get("/api/connection")
+        assert expected in response.json()["lastFailure"]["message"]
+        assert KEY not in response.text and "fixture private details" not in response.text
+        assert connection.configured and len(calls) == 1
 
 
 def test_reconfiguration_is_blocked_until_inflight_work_is_finished(tmp_path):

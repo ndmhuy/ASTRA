@@ -926,6 +926,14 @@ class JobManager:
                 )
             elif isinstance(exc, ProviderError):
                 messages = {
+                    "provider_connection_failed": (
+                        "Không kết nối được tới máy chủ API. "
+                        "Mở Kết nối AI để kiểm tra API Base URL và kết nối Internet."
+                    ),
+                    "provider_connect_timeout": (
+                        "Hết thời gian kết nối tới máy chủ API. "
+                        "Kiểm tra địa chỉ API và kết nối Internet."
+                    ),
                     "provider_auth_error": "Xác thực AI thất bại. Kiểm tra token Worker/cấu hình.",
                     "provider_access_denied": "Dịch vụ từ chối truy cập. Kiểm tra cấu hình.",
                     "provider_not_found": "Không tìm thấy model hoặc endpoint đã cấu hình.",

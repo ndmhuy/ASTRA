@@ -19,6 +19,9 @@ const PART_LABELS: Record<string, string> = {
 
 export function humanizeErrorMessage(message?: string, code?: string): string {
   const raw = (message || '').trim();
+  if (code === 'provider_connection_failed' || code === 'provider_connect_timeout') {
+    return 'Không kết nối được tới máy chủ API. Mở Kết nối AI để kiểm tra API Base URL và kết nối Internet; bản nháp vẫn được giữ.';
+  }
   if (code === 'provider_not_configured' || /Configure a real EXAM_PROVIDER/i.test(raw)) {
     return 'Hệ thống chưa được kết nối dịch vụ AI. Mở Kết nối AI để nhập API key dùng chung cho chat và sinh đề.';
   }

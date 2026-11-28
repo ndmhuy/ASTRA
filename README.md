@@ -15,7 +15,7 @@ The launcher prepares dependencies, builds the UI and opens
 [ASTRA at localhost:8001](http://localhost:8001). First startup may take a few minutes.
 
 1. Paste your API key into the masked **Kết nối AI** dialog.
-2. The default endpoint is `https://api.nghimo.com/v1`, model `nghi/claude-haiku-4.5`.
+2. The default endpoint is `https://api.nghimmo.com/v1`, model `nghi/claude-haiku-4.5`.
    Expand **URL & model** if your compatible API uses different values.
 3. Press **Lưu và vào ASTRA**. The Backend saves the shared key in the ignored root
    `.env`. Chat and exam generation now use this same local connection.

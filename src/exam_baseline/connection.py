@@ -7,6 +7,8 @@ import json
 import os
 import re
 import secrets
+import socket
+import ssl
 import tempfile
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -260,6 +262,32 @@ class SharedConnection:
 
     def record_failure(self, error, role):
         status = error.http_status
+        message = {
+            "provider_connection_failed": (
+                "Không kết nối được tới máy chủ API. "
+                "Mở Kết nối AI để kiểm tra API Base URL và kết nối Internet."
+            ),
+            "provider_connect_timeout": (
+                "Hết thời gian kết nối tới máy chủ API. Kiểm tra URL và kết nối Internet."
+            ),
+        }.get(error.code, "Dịch vụ AI chưa trả lời hợp lệ. Dữ liệu đã lưu vẫn được giữ.")
+        cause = error
+        for _ in range(8):
+            if isinstance(cause, socket.gaierror):
+                message = (
+                    "Không phân giải được tên miền API. "
+                    "Mở Kết nối AI để kiểm tra API Base URL hoặc DNS của mạng."
+                )
+                break
+            if isinstance(cause, ssl.SSLError):
+                message = (
+                    "Không xác minh được kết nối HTTPS tới máy chủ API. "
+                    "Kiểm tra địa chỉ, chứng chỉ và cấu hình mạng."
+                )
+                break
+            cause = cause.__cause__ or cause.__context__
+            if cause is None:
+                break
         descriptions = {
             400: "Dịch vụ từ chối định dạng yêu cầu.",
             401: "API key bị dịch vụ từ chối.",
@@ -290,9 +318,7 @@ class SharedConnection:
             "status": status,
             "role": role,
             "field": field,
-            "message": descriptions.get(
-                status, "Dịch vụ AI chưa trả lời hợp lệ. Dữ liệu đã lưu vẫn được giữ."
-            ),
+            "message": descriptions.get(status, message),
         }
 
 

@@ -11,6 +11,8 @@ test('humanizeErrorMessage translates technical errors to natural Vietnamese', (
   assert.match(humanizeErrorMessage('Bad Gateway', 'request_failed'), /máy chủ/);
   assert.match(humanizeErrorMessage('Model provider failed (HTTP 503)', 'provider_unavailable'), /Dịch vụ AI/);
   assert.equal(humanizeErrorMessage('Provider overloaded', 'provider_unavailable'), 'Provider overloaded');
+  // Previously saved connection errors used the misleading generic busy text.
+  assert.match(humanizeErrorMessage('Dịch vụ AI đang bận', 'provider_connection_failed'), /API Base URL/);
 });
 
 test('formatProgressStatus converts legacy raw progress labels to Vietnamese', () => {
