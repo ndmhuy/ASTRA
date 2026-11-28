@@ -11,6 +11,7 @@ from exam_baseline.core.recovery import POLICY, delay
 
 from .contracts import Decision, Turn
 from .semantics import SemanticFrame
+from .v3 import FrameV3
 
 logger = logging.getLogger(__name__)
 
@@ -107,7 +108,7 @@ class ProviderRouter:
             else:
                 route.failures = 0
                 route.until = 0
-                if isinstance(result, SemanticFrame):
+                if isinstance(result, (SemanticFrame, FrameV3)):
                     logger.info(
                         "agent_semantics act=%s goals=%s",
                         result.dialogueAct,

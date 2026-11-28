@@ -3,6 +3,9 @@ import React, { useSyncExternalStore, useEffect, useRef, useState } from 'react'
 import { ChevronDown, ChevronUp, X } from 'lucide-react';
 import type { ExamFormat, ExamRequestParams } from '../types/exam';
 import { presetParams } from '../agent/intake';
+import type { Intake } from '../agent/intake';
+import { patchSpec, specDraft } from '../agent/examSpec';
+import { buildParamsFromDraft } from '../agent/chatConfig';
 import { getBackendHealth, getExamFormats, type BackendHealth } from '../services/examService';
 
 import { DocumentAttachments } from './DocumentAttachments';
@@ -17,6 +20,7 @@ interface Props {
   onClose: () => void;
   agentSelection?: { formats: ExamFormat[]; id: string; expanded: boolean; summary?: string };
   initialFormatId?: string;
+  spec?: Intake;
   onManualSelect?: () => void;
 }
 
@@ -45,7 +49,7 @@ function formatSummary(format: ExamFormat): string {
   return `Môn ${format.subjects[0]} · Lớp ${format.grades[0]}`;
 }
 
-export const QuickPresetModal: React.FC<Props> = ({ documents, onDocumentsChange, onStart, onClose, onDialogMount, agentSelection, initialFormatId, onManualSelect, title = 'Tạo đề từ mẫu' }) => {
+export const QuickPresetModal: React.FC<Props> = ({ documents, onDocumentsChange, onStart, onClose, onDialogMount, agentSelection, initialFormatId, spec, onManualSelect, title = 'Tạo đề từ mẫu' }) => {
   const [formats, setFormats] = useState<ExamFormat[]>([]);
   const [manualGroup, setMasterGroup] = useState<'thpt' | 'dgnl'>('thpt');
   const [pickerOpen, setThptPickerOpen] = useState(false);
@@ -152,6 +156,11 @@ export const QuickPresetModal: React.FC<Props> = ({ documents, onDocumentsChange
 
   const start = () => {
     if (!selected?.available || uploading) return;
+    if(spec){
+      const projected=specDraft({...patchSpec(spec,{formatId:selected.id},formats),visible:true},formats);
+      const params=projected && buildParamsFromDraft(projected,formats,documents.map(document=>document.id));
+      if(params){onStart(params);return;}
+    }
     onStart({ ...presetParams(selected), uploadedFiles: documents.map(document => document.id) });
   };
 
@@ -178,6 +187,7 @@ export const QuickPresetModal: React.FC<Props> = ({ documents, onDocumentsChange
         <div className="preset-modal-header">
           <div className="preset-modal-title-group">
             <h2 id="preset-title">{title}</h2>
+            {spec && <p>{[spec.subject,spec.topic,spec.difficulty,spec.requirements].filter(Boolean).join(' · ')}</p>}
             {health && !error && (
               <span
                 className={`preset-mode-pill ${health.demoMode ? 'is-demo' : 'is-ai'}`}

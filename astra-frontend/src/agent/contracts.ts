@@ -1,9 +1,9 @@
 import catalog from '../../../src/exam_baseline/resources/agent/catalog.json' with { type: 'json' };
-import local from '../../../src/exam_baseline/resources/agent/local-actions.json' with { type: 'json' };
+import registry from '../../../src/exam_baseline/resources/agent/registry-v3.json' with { type: 'json' };
 
 export const VERSION = catalog.schemaVersion;
 export const MAX_ACTIONS = catalog.maxActions;
-export const INTENTS = { ...catalog.intents, ...local.intents };
+export const INTENTS = registry.intents;
 export type IntentId = keyof typeof INTENTS;
 export type Intent = { id: IntentId; args: Record<string, string | number | boolean> };
 export type ExamIntake = {
@@ -15,6 +15,11 @@ export type ExamIntake = {
   count?: number;
   minutes?: number;
   useDefaults?: boolean;
+  difficulty?: string;
+  requirements?: string;
+  sourcePreference?: 'attachments' | 'web' | 'default';
+  clear?: 'topic' | 'difficulty' | 'requirements' | 'count' | 'minutes' | 'sources';
+  fresh?: boolean;
 };
 export type Decision = {
   kind: 'task' | 'answer' | 'clarify' | 'unsupported' | 'temporarily_unavailable';
@@ -25,6 +30,11 @@ export type Decision = {
   intake?: ExamIntake;
 };
 export type AgentContext = {
+  grounded?: {
+    workspace?: string; lifecycle?: string; spec?: string[]; documents?: string[];
+    capabilities?: string[]; pending?: string; revision?: number;
+    itemRegeneration?: boolean; searchWeb?: boolean;
+  };
   screen: 'start' | 'workspace';
   setup: boolean;
   status: 'draft' | 'generating' | 'complete' | 'error' | null;

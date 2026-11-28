@@ -6,6 +6,8 @@ import { join } from "node:path";
 import { Miniflare, convertV4MiniflareOptions } from "miniflare";
 import resources from "../src/generated.json" with {type:"json"};
 import semanticResources from "../src/semantic.generated.json" with {type:"json"};
+import v3Resources from "../src/semantic-v3.generated.json" with {type:"json"};
+import v3Wire from "../../../eval/agent-v3/native-wire.fixture.json" with {type:"json"};
 import nativeWire from "../../../eval/agent-semantic/native-wire.fixture.json" with {type:"json"};
 
 const bindings = {
@@ -147,9 +149,9 @@ function runtime(overrides = {}, persist = false, scriptPath = "build/index.js",
       const body = await request.json();
       assert.equal(body.generationConfig.thinkingConfig?.thinkingLevel,
         (overrides.ASTRA_AGENT_MODEL ?? bindings.ASTRA_AGENT_MODEL) === "gemini-3.1-flash-lite" ? "MINIMAL" : undefined);
-      assert.deepEqual(body.generationConfig.responseJsonSchema, semantic ? semanticResources.providerSchema : resources.providerSchema);
+      assert.deepEqual(body.generationConfig.responseJsonSchema, semantic==='v3'?v3Resources.providerSchema:semantic ? semanticResources.providerSchema : resources.providerSchema);
       assert.equal(body.generationConfig.maxOutputTokens, Number(overrides.ASTRA_OUTPUT_TOKENS ?? bindings.ASTRA_OUTPUT_TOKENS));
-      if (semantic) assert.deepEqual(body, nativeWire.request, "Worker/direct native payload parity");
+      if (semantic) assert.deepEqual(body, semantic==='v3'?v3Wire.request:nativeWire.request, "Worker/direct native payload parity");
       const reply = replies.shift();
       assert.ok(reply, "Unexpected outbound inference");
       if (reply.delay) await new Promise(resolve => setTimeout(resolve, reply.delay));
@@ -179,7 +181,8 @@ test("Worker admission rejects unsafe requests without upstream", async () => {
     const health = await mf.dispatchFetch("https://local/health");
     assert.equal(health.status, 200);
     const readiness = await health.json();
-    assert.deepEqual(readiness.contracts, ["astra-intent-v1", "astra-semantic-v1"]);
+    assert.deepEqual(readiness.contracts, ["astra-intent-v1", "astra-semantic-v1", "astra-semantic-v3"]);
+    assert.equal(readiness.semanticV3ContractHash,v3Resources.contractHash);
     assert.equal(readiness.semanticContractHash, semanticResources.contractHash);
     assert.equal(readiness.masForwarding, false);
     assert.equal((await mf.dispatchFetch("https://local/v1/agent/interpret")).status, 405);
@@ -433,6 +436,26 @@ async function postSemantic(mf, body = turn) {
       "X-Astra-Contract":semanticResources.contractHash}, body:JSON.stringify(body),
   });
 }
+
+test('v3 new goals and scoped prohibitions share native validation without changing legacy routes',async()=>{
+  const {mf,mock}=runtime({},false,'build/index.js','v3');
+  const proposed={dialogueAct:'REQUEST',goals:[{goal:'OPEN_WORKSPACE',parameters:{title:'A'},prohibited:true},
+    {goal:'RESUME_GENERATION',parameters:{title:'B'}}],constraints:['NO_WEB'],title:42};
+  mock.get().intercept().reply(200,JSON.stringify({candidates:[{finishReason:'STOP',content:{parts:[{text:JSON.stringify(proposed)}]}}]}));
+  const postV3=(hash)=>mf.dispatchFetch('https://local/v3/agent/interpret',{method:'POST',headers:{'content-type':'application/json','CF-Connecting-IP':'192.0.2.1','X-Astra-Contract':hash},body:JSON.stringify(turn)});
+  try{
+    assert.equal((await postV3(semanticResources.contractHash)).status,409);
+    const response=await postV3(v3Resources.contractHash);
+    assert.equal(response.status,200);
+    const result=await response.json();
+    assert.equal(result.schemaVersion,'astra-semantic-v3');
+    assert.equal(result.frame.goals[0].prohibited,true);
+    assert.equal(result.frame.goals[1].goal,'RESUME_GENERATION');
+    assert.equal(result.frame.title,undefined);
+    assert.equal((await postV3(v3Resources.contractHash)).status,409);
+    mock.assertNoPendingInterceptors();
+  }finally{await mf.dispose();}
+});
 
 test("v2 native semantics need no executable kind or clarification invariant", async () => {
   const {mf,mock} = runtime({}, false, "build/index.js", true);

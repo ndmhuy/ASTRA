@@ -13,6 +13,7 @@ from .admission import Admission, normalize_message
 from .contracts import MAX_BODY, VERSION, Decision, Turn
 from .research import ResearchRequest, ResearchResponse, search_adjacent_topic
 from .semantics import SemanticFrame, SemanticTurn, legacy_decision
+from .v3 import FrameV3, TurnV3, upgrade_legacy
 
 Interpreter = Callable[[Turn], Awaitable[Decision | SemanticFrame]]
 Researcher = Callable[[ResearchRequest], Awaitable[ResearchResponse]]
@@ -62,9 +63,13 @@ def create_agent_router(
         selected = interpreter or configured
         try:
             contract = (
-                SemanticTurn
-                if request.headers.get("X-Astra-Semantic") == "astra-semantic-v1"
-                else Turn
+                TurnV3
+                if request.headers.get("X-Astra-Semantic") == "astra-semantic-v3"
+                else (
+                    SemanticTurn
+                    if request.headers.get("X-Astra-Semantic") == "astra-semantic-v1"
+                    else Turn
+                )
             )
             payload = contract.model_validate_json(raw)
         except ValidationError:
@@ -79,12 +84,23 @@ def create_agent_router(
                     if selected
                     else Decision(kind="temporarily_unavailable", reasonCode="disabled")
                 )
-                if not isinstance(decision, SemanticFrame):
+                if not isinstance(decision, (SemanticFrame, FrameV3)):
                     decision = Decision.model_validate(decision)
                 admission.finish(peer, payload, fingerprint, decision)
             finally:
                 admission.leave(peer, payload)
-        if (
+        if request.headers.get("X-Astra-Semantic") == "astra-semantic-v3" and isinstance(
+            decision, (SemanticFrame, FrameV3)
+        ):
+            source = decision.schemaVersion
+            frame = upgrade_legacy(decision) if isinstance(decision, SemanticFrame) else decision
+            result = {
+                "schemaVersion": frame.schemaVersion,
+                "sourceContract": source,
+                "clientMessageId": payload.clientMessageId,
+                "frame": frame.model_dump(exclude_none=True),
+            }
+        elif (
             isinstance(decision, SemanticFrame)
             and request.headers.get("X-Astra-Semantic") == decision.schemaVersion
         ):
@@ -103,6 +119,23 @@ def create_agent_router(
             }
         return JSONResponse(
             result,
+            headers={"Cache-Control": "no-store"},
+        )
+
+    @router.get("/capabilities")
+    async def capabilities(request: Request):
+        configured = getattr(request.app.state, "configured_interpreter", None)
+        provider = getattr(getattr(configured, "routes", [None])[0], "provider", None)
+        version = getattr(provider, "semantic_version", "astra-semantic-v1")
+        return JSONResponse(
+            {
+                "clientContract": "astra-semantic-v3",
+                "providerContract": version,
+                "compatibility": "native"
+                if version == "astra-semantic-v3"
+                else "explicit-legacy-bridge",
+                "workerDeploymentRequired": version != "astra-semantic-v3",
+            },
             headers={"Cache-Control": "no-store"},
         )
 

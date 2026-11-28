@@ -1,6 +1,6 @@
 import type { WebResearchResult } from '../types/exam.ts';
 import { parseDecision, VERSION, type AgentContext } from './contracts.ts';
-import { parseFrame } from './semantics.ts';
+import { parseCanonical } from './intelligence.ts';
 
 export function interpretationUnavailable(reason?: string): string {
   switch (reason) {
@@ -34,16 +34,19 @@ export async function interpret(
     method: 'POST',
     credentials: 'same-origin',
     cache: 'no-store',
-    headers: { 'Content-Type': 'application/json', 'X-Astra-Agent': VERSION, 'X-Astra-Semantic': 'astra-semantic-v1' },
+    headers: { 'Content-Type': 'application/json', 'X-Astra-Agent': VERSION, 'X-Astra-Semantic': 'astra-semantic-v3' },
     body: JSON.stringify({ schemaVersion: VERSION, workspaceId, clientMessageId, message, context }),
     signal: AbortSignal.any([signal, AbortSignal.timeout(38000)]),
   });
   if (!response.ok) throw new Error(response.status === 429 ? 'agent_rate' : 'agent_unavailable');
   const result = await response.json();
-  if (result.schemaVersion === 'astra-semantic-v1') {
-    if (result.clientMessageId !== clientMessageId || Object.keys(result).some(key => !['schemaVersion', 'clientMessageId', 'frame'].includes(key))) throw new Error('agent_semantic_contract');
-    return parseFrame(result.frame);
+  if (result.schemaVersion === 'astra-semantic-v3') {
+    if (result.clientMessageId !== clientMessageId || !['astra-semantic-v1','astra-semantic-v3'].includes(result.sourceContract) || Object.keys(result).some(key => !['schemaVersion', 'clientMessageId', 'frame','sourceContract'].includes(key))) throw new Error('agent_semantic_contract');
+    return parseCanonical(result.frame);
   }
+  // A legacy non-action/unavailable envelope is allowed; an old semantic envelope
+  // is not silently treated as V3. The backend must negotiate the bridge explicitly.
+  if(result.schemaVersion === 'astra-semantic-v1') throw new Error('agent_contract_upgrade_required');
   return parseDecision(result, clientMessageId);
 }
 

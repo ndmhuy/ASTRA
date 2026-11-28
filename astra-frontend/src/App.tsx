@@ -2,14 +2,14 @@ import React, { useState, useEffect, useSyncExternalStore, useCallback, useLayou
 import { flushSync } from 'react-dom';
 import { meaningful, recentQuestion, redact, retrievedContext, searchSessions } from './agent/memory';
 import { interpretationUnavailable, interpret, researchAdjacentTopic } from './agent/client';
-import { admit, execute, fastRoute, fold, mayDispatch, type Effect, type Runtime } from './agent/recipes';
+import { admit, execute, fastRoute, fold, type Effect, type Runtime } from './agent/recipes';
 import { displayNumber, failure, inspectQuestion, previewText, resolveQuestion, sectionId, statusText, success } from './agent/examActions';
-import type { Decision, Intent } from './agent/contracts';
-import { catalogCandidate, catalogMeaning } from './agent/local';
+import type { Intent } from './agent/contracts';
 import { generationTarget, generationReceipt, generationJob, restingGeneration } from './agent/lifecycle';
-import { contextualSubject, resolveSemantic } from './agent/semantics';
-import { familyFor, formatOverview, guidanceFor, listAdjacentTopics, matchAdjacentTopic, mentionedFamilies, resolveIntake, shortSubjectIntake } from './agent/knowledge';
-import { buildParamsFromDraft, extractExamDraft, recomputeDraftStatus, type ChatConfigDraft } from './agent/chatConfig';
+import { GOALS, understandLocal, decisionMeaning, planMeaning } from './agent/intelligence';
+import { reduceSpec, specDraft, patchSpec, specSummary } from './agent/examSpec';
+import { familyFor, formatOverview, matchAdjacentTopic, mentionedFamilies, resolveIntake } from './agent/knowledge';
+import { buildParamsFromDraft } from './agent/chatConfig';
 import { AlertCircle, AlertTriangle, LoaderCircle, PanelLeftClose, PanelLeftOpen, RefreshCw, Settings2 } from 'lucide-react';
 import { WorkspaceStart } from './components/WorkspaceStart';
 import { AstraWelcome } from './components/AstraWelcome';
@@ -58,6 +58,8 @@ type Confirmation = {
   workspaceId: string;
   binding: string;
   expires: number;
+  continuation?: Intent[];
+  continuationMessage?: string;
   run: (sourceId?: string, uploadedFiles?: string[]) => Promise<Effect> | Effect;
 };
 
@@ -84,12 +86,12 @@ export const App: React.FC = () => {
   const [questionProgress, setQuestionProgress] = useState<Record<string, QuestionRun | undefined>>({});
   const [agentOpenedPdf, setAgentOpenedPdf] = useState(false);
   const presetDialog = useRef<HTMLDivElement>(null);
-  const renderEpoch = useRef({ version: 0, state: '' });
   const activeRef = useRef<string | null>(null);
   const runtimeRef = useRef<Runtime | null>(null);
   const [chatPending, setChatPending] = useState(false);
   const [catalogFormats, setCatalogFormats] = useState<ExamFormat[]>([]);
-  const [chatDrafts, setChatDrafts] = useState<Record<string, ChatConfigDraft | undefined>>({});
+  const chatDrafts = useMemo(() => Object.fromEntries(sessions.map(session => [session.id,
+    session.status==='draft' && !session.generationStopped ? specDraft(session.intake,catalogFormats) : undefined])), [sessions,catalogFormats]);
   const [pendingActionMeta, setPendingActionMeta] = useState<{ workspaceId: string; label: string; confirmLabel?: string } | null>(null);
   const [configureFormatId, setConfigureFormatId] = useState<string | undefined>(undefined);
   const setPendingConfirmation = useCallback(
@@ -255,412 +257,128 @@ export const App: React.FC = () => {
     setConfigureId(null);
     revealSession(id);
   };
-  const sendTurn = async (id: string, content: string, options: { searchWeb: boolean; attachedFiles: InputDocument[] }) => {
-    if (turn.current) return;
-    const admission = admit(content);
-    setAdmissionError(admission.error || '');
-    if (admission.error) return;
-    content = admission.text;
-    const controller = new AbortController();
-    turn.current = controller;
-    setChatPending(true);
-    const messageId = crypto.randomUUID();
-    const answer = (text: string) => {
-      if (store.getSnapshot().some(session => session.id === id)) store.appendMessage(id, 'assistant', text);
-      else setAdmissionError(text);
-    };
-    flushSync(() => {
-      const currentDocs = store.getSnapshot().find(session => session.id === id)?.inputDocuments;
-      if (options.attachedFiles.length || currentDocs?.length) {
-        store.setInputDocuments(id, options.attachedFiles);
-      }
-      store.appendMessage(id, 'user', content, messageId, true);
-    });
-    let resolvedIntake: Intake | undefined;
-    const runtime: Runtime = {
-      binding: () => runtimeRef.current!.binding(),
-      dispatch: (intent, expected, message, source) => runtimeRef.current!.dispatch(intent, expected, message, source, resolvedIntake),
-    };
-    const binding = runtime.binding();
-    const origin = store.getSnapshot().find(s => s.id === id);
-    const alive = () => !controller.signal.aborted && !!store.getSnapshot().find(s => s.id === id)?.messages.some(m => m.id === messageId);
-    const inDraftLikeState = !origin || ['draft', 'error'].includes(origin.status);
-    let intakeFormats: ExamFormat[] | undefined;
-    const loadFormats = async (): Promise<ExamFormat[]> => {
-      if (intakeFormats?.length) return intakeFormats;
-      if (catalogFormats.length) {
-        intakeFormats = catalogFormats;
-        return catalogFormats;
-      }
-      try {
-        const loaded = await getExamFormats();
-        intakeFormats = loaded;
-        setCatalogFormats(loaded);
-        return loaded;
-      } catch {
-        return [];
-      }
-    };
-    const applyInlineDraft = async (proposal?: Partial<Intake>): Promise<boolean> => {
-      if (!inDraftLikeState || editor || !mayDispatch(content)) return false;
-      const formats = await loadFormats();
-      if (!alive() || runtime.binding() !== binding || !formats.length) return false;
-      const draft = extractExamDraft(content, formats, messageId, origin?.intake, proposal, chatDrafts[id]?.id);
-      if (!draft) return false;
-      const matchedFormat = formats.find(f => f.id === draft.formatId && f.available);
-      flushSync(() => {
-        setChatDrafts(prev => ({ ...prev, [id]: draft }));
-        if (matchedFormat) {
-          store.setIntake(id, {
-            sourceId: messageId,
-            sourceIds: [messageId],
-            formatId: matchedFormat.id,
-            version: matchedFormat.version,
-            family: draft.family,
-            subject: matchedFormat.subjects[0],
-            topic: draft.topic || undefined,
-            count: draft.requestedCount,
-            minutes: draft.requestedMinutes,
-            grade: draft.requestedGrade,
-            phase: 'collecting',
-          });
-          store.suggestTitle(id, draft.topic ? `Đề ôn tập ${draft.topic}` : `Đề thi ${matchedFormat.displayName}`, messageId, draft.topic ? 4 : 3);
-        }
-      });
-      if (matchedFormat) {
-        const params = buildParamsFromDraft(
-          draft,
-          formats,
-          (store.getSnapshot().find(s => s.id === id)?.inputDocuments ?? []).map(doc => doc.id)
-        );
-        if (params) {
-          const expected = runtimeRef.current!.binding();
-          setPendingConfirmation({
-            workspaceId: id,
-            binding: expected,
-            expires: Date.now() + CONFIRMATION_TTL_MS,
-            run: async () => {
-              setChatDrafts(prev => ({ ...prev, [id]: undefined }));
-              const job = await store.generate(id, params);
-              return job
-                ? { status: 'accepted', text: `Đang tạo đề ${matchedFormat.displayName}. Thầy cô theo dõi tiến độ ở khung bên trái.` }
-                : failure(store.getSnapshot().find(s => s.id === id)?.error || 'Chưa tạo được đề thi.');
-            },
-          }, null);
-        }
-      }
-      const reply = matchedFormat
-        ? draft.hasMismatch
-          ? `Mẫu ${matchedFormat.displayName} cố định ${matchedFormat.totalQuestions} câu, ${matchedFormat.durationMinutes} phút.${draft.topic ? ` Chủ đề “${draft.topic}” đã được giữ lại.` : ''} Thầy cô kiểm tra thẻ cấu hình bên dưới rồi bấm “Dùng mẫu này” hoặc chỉnh lại yêu cầu.`
-          : `Đã tóm tắt cấu hình ${matchedFormat.displayName}${draft.topic ? ` · Chủ đề: ${draft.topic}` : ''}${draft.difficulty ? ` · ${draft.difficulty}` : ''}. Thầy cô chỉnh thêm nếu cần rồi bấm “Tạo đề ngay”.`
-        : `ASTRA chưa xác định được môn / mẫu đề.${draft.limitations.length ? ' Lưu ý: các mẫu chuẩn cố định số câu và thời gian.' : ''} Thầy cô chọn mẫu ở thẻ cấu hình bên dưới.`;
-      answer(reply);
-      return true;
-    };
+  const confirmPending = async (sourceId?: string): Promise<Effect> => {
+    const prepared=pending.current;
+    setPendingConfirmation(null);
+    if(!prepared || prepared.workspaceId!==activeRef.current) return failure('Hiện chưa có thao tác nào đang chờ xác nhận ở đề này.');
+    if(prepared.expires<Date.now() || prepared.binding!==runtimeRef.current!.binding()) return failure('Xác nhận đã hết hiệu lực hoặc đề/cấu hình đã đổi. Hãy gửi lại yêu cầu.');
+    const owned=!turn.current;
+    const controller=turn.current??new AbortController();
+    if(owned){turn.current=controller;setChatPending(true);}
     try {
-      const adjacentTopic = matchAdjacentTopic(content);
-      const earlyFast = fastRoute(content);
-      const isConfirmOrCancel = Boolean(earlyFast && 'confirm' in earlyFast);
-      if (!isConfirmOrCancel && (options.searchWeb || (adjacentTopic && origin?.mode === 'custom' && inDraftLikeState && !editor))) {
-        pending.current = null;
-        const attachedFilesMessage = 'Chưa thể dùng tài liệu đính kèm khi tìm đề trên mạng. Thầy cô hãy gỡ tệp để tìm mạng, hoặc gửi yêu cầu soạn đề từ tài liệu đính kèm.';
-        if (options.attachedFiles.length) {
-          answer(attachedFilesMessage);
-          return;
+      const effect=await prepared.run(sourceId);
+      if(effect.status==='succeeded' && prepared.continuation?.length && !controller.signal.aborted) {
+        const receipts=await execute(prepared.continuation,runtimeRef.current!,runtimeRef.current!.binding(),()=>!controller.signal.aborted,prepared.continuationMessage,sourceId);
+        const consumed=receipts.length;
+        if(receipts.at(-1)?.status==='pending' && pending.current) {pending.current.continuation=prepared.continuation.slice(consumed);pending.current.continuationMessage=prepared.continuationMessage;}
+        return {...effect,text:[effect.text,...receipts.map(item=>item.text)].join('\n')};
+      }
+      return prepared.continuation?.length && effect.status!=='succeeded'?{...effect,text:effect.text+' Các bước phụ thuộc còn lại chưa được thực hiện. Hãy chờ kết quả rồi yêu cầu tiếp tục.'}:effect;
+    } finally {if(owned && turn.current===controller){turn.current=null;setChatPending(false);}}
+  };
+  const sendTurn = async (id: string, content: string, options: { searchWeb: boolean; attachedFiles: InputDocument[] }) => {
+    if(turn.current)return;
+    const admission=admit(content);
+    setAdmissionError(admission.error??'');
+    if(admission.error)return;
+    content=admission.text;
+    const controller=new AbortController();turn.current=controller;setChatPending(true);
+    const messageId=crypto.randomUUID();
+    const answer=(text:string)=>store.appendMessage(id,'assistant',text);
+    let origin=store.getSnapshot().find(session=>session.id===id);
+    flushSync(()=>{store.setInputDocuments(id,options.attachedFiles);store.appendMessage(id,'user',content,messageId,true);});
+    const sourceWorkspace=id;
+    const alive=()=>!controller.signal.aborted && activeRef.current===id && !!store.getSnapshot().find(session=>session.id===sourceWorkspace)?.messages.some(item=>item.id===messageId);
+    // A snapshot of the relevant entity, not every render/progress tick.
+    const readBinding=()=>JSON.stringify([activeRef.current,store.getSnapshot().find(session=>session.id===id)?.jobId,
+      store.getSnapshot().find(session=>session.id===id)?.package?.revision,store.getSnapshot().find(session=>session.id===id)?.intake]);
+    const before=readBinding();
+    const writeBefore=runtimeRef.current!.binding();
+    try {
+      const formats=catalogFormats.length?catalogFormats:await getExamFormats();
+      if(!alive())return;
+      if(!catalogFormats.length)setCatalogFormats(formats);
+      const local=understandLocal(content,{formats,intake:origin?.intake});
+      const interpreted=local.kind==='defer'?await interpret(id,messageId,redact(content),{
+        screen,setup:showQuickModal,status:origin?.status??'draft',view:viewMode,
+        ...(origin?retrievedContext(origin,messageId,content):{}),
+        questionRefs:origin?[...new Set(origin.questions.map(q=>q.part??'').filter(Boolean))].slice(0,8):[],
+        editor:Boolean(editor),approved:Boolean(origin?.package?.approved),preview:origin?.preview?.status??null,
+        confirmationPending:pending.current?.workspaceId===id,
+        grounded:{workspace:origin?.title?.slice(0,120),lifecycle:origin?.progress?.status??origin?.status,
+          spec:specSummary(origin?.intake),documents:(origin?.inputDocuments??[]).slice(0,5).map(doc=>`${doc.filename} (${doc.kind}, ${doc.characters} characters)`.slice(0,240)),
+          capabilities:formats.filter(format=>format.available).slice(0,12).map(format=>format.displayName.slice(0,80)),
+          revision:origin?.package?.revision,pending:pendingActionMeta?.label?.slice(0,240),itemRegeneration:Boolean(questionPending),searchWeb:options.searchWeb},
+      },controller.signal):local.frame;
+      if(!alive() || readBinding()!==before)return;
+      const frame='dialogueAct' in interpreted?interpreted:decisionMeaning(interpreted);
+      if(!frame){setPendingConfirmation(null);answer('reasonCode' in interpreted?interpretationUnavailable(interpreted.reasonCode):'Chưa hiểu đủ yêu cầu để thực hiện. Thầy cô hãy chỉ rõ mục tiêu hoặc đề/câu.');return;}
+      const plan=planMeaning(frame,recentQuestion(origin));
+      if(plan.kind==='confirm'){answer((await confirmPending(messageId)).text);return;}
+      if(plan.kind==='cancel'){setPendingConfirmation(null);if(origin?.intake)store.setIntake(id,{...origin.intake,visible:false});answer('Đã hủy yêu cầu trò chuyện đang chờ. Phiên tạo đề giữ trạng thái hiện tại.');return;}
+      if(plan.kind==='text'){if(frame.dialogueAct==='CORRECT'||frame.dialogueAct==='AMBIGUOUS'||frame.constraints.includes('CONTRADICTORY'))setPendingConfirmation(null);answer(plan.text);return;}
+      const readOnly=plan.kind==='inspect'||(plan.kind==='intake'&&plan.information)||
+        (plan.kind==='task'&&plan.intents.every(intent=>Object.values(GOALS).some(def=>'capability' in def&&def.capability===intent.id&&def.effect==='read')));
+      if(!readOnly || frame.dialogueAct==='CORRECT')setPendingConfirmation(null);
+      if(!readOnly && runtimeRef.current!.binding()!==writeBefore){answer('Đề, cấu hình hoặc trình chỉnh sửa đã thay đổi. Hãy gửi lại yêu cầu để xác nhận đúng trạng thái mới.');return;}
+      if(plan.kind==='intake') {
+        const spec=reduceSpec(origin?.intake,plan.proposal,formats,messageId);
+        const chosen=formats.find(format=>format.id===spec.formatId);
+        if(plan.information){
+          const matches=formats.filter(format=>format.available&&(!spec.family||familyFor(format)===spec.family)&&(!spec.subject||format.subjects.some(subject=>subject===spec.subject)));
+          answer(matches.length?matches.map(formatOverview).join('\n'):`Chưa có mẫu cho ${spec.subject??spec.family??'yêu cầu này'}. Mẫu đang hỗ trợ: ${formats.filter(format=>format.available).map(format=>format.displayName).join(', ')}.`);return;
         }
-        if (!adjacentTopic) {
-          const supported = listAdjacentTopics().map(topic => topic.subject).join(', ');
-          answer(`Tính năng Tìm mạng hiện hỗ trợ các chủ đề lân cận: ${supported}. Thầy cô hãy nêu rõ một chủ đề trong danh sách (ví dụ: “Tìm đề SAT Math 10 câu”).`);
-          return;
+        if(editor){answer('Hãy hoàn tất câu đang chỉnh sửa trước khi đổi cấu hình đề.');return;}
+        if(origin && (origin.status==='complete'||plan.proposal.fresh || origin.status==='generating'||origin.generationStopped)) {
+          const newId=store.create('custom');
+          flushSync(()=>{store.setInputDocuments(newId,options.attachedFiles);store.appendMessage(newId,'user',content,messageId,true);openSession(newId);});
+          id=newId;origin=store.getSnapshot().find(session=>session.id===id);
         }
-        const foldedContent = fold(content);
-        const countMatch = foldedContent.match(/\b(\d+)\s*cau\b/);
-        const minutesMatch = foldedContent.match(/\b(\d+)\s*phut\b/);
-        const requestedCount = countMatch ? Math.min(20, Math.max(4, Number(countMatch[1]))) : undefined;
-        const requestedMinutes = minutesMatch ? Math.min(120, Math.max(5, Number(minutesMatch[1]))) : undefined;
-        const research = await researchAdjacentTopic(
-          id,
-          messageId,
-          adjacentTopic.id,
-          redact(content),
-          { count: requestedCount, minutes: requestedMinutes },
-          controller.signal,
-        );
-        if (!alive() || runtime.binding() !== binding) return;
-        const sourceLines = research.sources.length
-          ? research.sources.slice(0, 5).map((source, idx) => `  ${idx + 1}. ${source.title} — ${source.url}`).join('\n')
-          : '  • Hiện chưa lấy được kết quả web trực tuyến; dùng mô tả cấu trúc tích hợp sẵn.';
-        const modeLabel = research.searchMode === 'live_web'
-          ? 'Đã tìm kiếm trên mạng'
-          : 'Dùng dữ liệu cấu trúc tích hợp sẵn (ngoại tuyến)';
-        const summary = `[${modeLabel}] ${research.topicLabel} · ${research.suggestedCount} câu · ${research.suggestedMinutes} phút\n${research.summary}\nNguồn tham khảo:\n${sourceLines}\nBấm “Tạo đề ngay” bên dưới hoặc nhắn “Xác nhận”.`;
-        flushSync(() => {
-          store.suggestTitle(id, `Đề luyện tập ${research.topicLabel}`, messageId, 4);
-        });
-        setPendingConfirmation({
-          workspaceId: id,
-          binding: runtimeRef.current!.binding(),
-          expires: Date.now() + CONFIRMATION_TTL_MS,
-          run: async () => {
-            const documents = store.getSnapshot().find(session => session.id === id)?.inputDocuments;
-            if (documents?.length) return failure(attachedFilesMessage);
-            const params: ExamRequestParams = {
-              formatId: research.formatId,
-              formatVersion: '1',
-              adjacentTopicId: research.adjacentTopicId,
-              subject: research.subject as Subject,
-              grade: 12,
-              examType: 'CUSTOM',
-              durationMinutes: research.suggestedMinutes,
-              itemCount: research.suggestedCount,
-              prompt: content,
-              uploadedFiles: [],
-              webSources: research.sources,
-            };
-            const job = await store.generate(id, params);
-            if (job) {
-              return { status: 'accepted', text: `Máy chủ đã nhận yêu cầu tạo đề ${research.topicLabel}. Thầy cô có thể theo dõi tiến độ ở khung bên phải.` };
-            }
-            const actual = store.getSnapshot().find(item => item.id === id);
-            return actual?.errorCode === 'network_error'
-              ? { status: 'unknown', text: 'Chưa rõ máy chủ đã nhận yêu cầu hay chưa. Chỉ thử lại với cùng thông số.' }
-              : { status: 'failed', text: actual?.error || 'Chưa nhận được mã công việc tạo đề.' };
-          },
-        }, {
-          workspaceId: id,
-          label: `${research.topicLabel} · ${research.suggestedCount} câu · ${research.suggestedMinutes} phút`,
-          confirmLabel: 'Tạo đề ngay',
-        });
-        answer(summary);
+        const next=reduceSpec(origin?.intake,plan.proposal,formats,messageId);
+        flushSync(()=>store.setIntake(id,next));
+        const draft=specDraft(next,formats)!;
+        if(!chosen || !next.formatId){answer(`Chưa có mẫu cụ thể cho ${next.subject??next.family??'yêu cầu này'}. ${draft.needsClarification.join(' ')} Mẫu đang có: ${formats.filter(format=>format.available).map(format=>format.displayName).join(', ')}.`);return;}
+        store.suggestTitle(id,`Đề ${chosen.displayName}`,messageId,3);
+        answer(`Đã cập nhật cấu hình ${chosen.displayName}. ${draft.limitations.join(' ')}${next.topic?` Chủ đề: ${next.topic}.`:''}${next.difficulty?` Độ khó: ${next.difficulty}.`:''} Kiểm tra thẻ cấu hình rồi bấm “${draft.hasMismatch?'Dùng mẫu này':'Tạo đề ngay'}”.`);
+        // Confirmation uses a fingerprint of the visible spec and documents. Any edit revokes it.
+        const params=buildParamsFromDraft(draft,formats,(origin?.inputDocuments??[]).map(doc=>doc.id));
+        if(params&&!frame.constraints.includes('NO_GENERATION'))setPendingConfirmation({workspaceId:id,binding:runtimeRef.current!.binding(),expires:Date.now()+CONFIRMATION_TTL_MS,run:async()=> {
+          const latest=store.getSnapshot().find(session=>session.id===id);
+          const fresh=specDraft(latest?.intake,formats);
+          if(!fresh)return failure('Cấu hình không còn hiệu lực.');
+          const currentParams=buildParamsFromDraft(fresh,formats,(latest?.inputDocuments??[]).map(doc=>doc.id));
+          if(!currentParams)return failure('Mẫu đề không còn khả dụng.');
+          const job=await store.generate(id,currentParams);
+          return job?{status:'accepted',text:'Backend đã nhận công việc tạo đề. Hãy theo dõi tiến độ.'}:failure(store.getSnapshot().find(session=>session.id===id)?.error??'Chưa nhận được công việc.');
+        }});
         return;
       }
-      await Promise.resolve();
-      if (!alive()) return;
-      let local = earlyFast;
-      if (!local && catalogCandidate(content) && !editor) {
-        intakeFormats = await loadFormats();
-        local = catalogMeaning(content, intakeFormats);
-        if (!alive() || runtime.binding() !== binding) return;
-      }
-      if (!local && origin && ['draft', 'error'].includes(origin.status) && !editor && content.length <= 80) {
-        const subject = shortSubjectIntake(content);
-        if (subject) local = { intake: subject };
-        else if (origin.intake?.missing === 'subject') {
-          intakeFormats = await loadFormats();
-          const contextual = contextualSubject(content, origin.intake, intakeFormats);
-          if (contextual?.intake) local = { intake: contextual.intake };
-          if (!alive() || runtime.binding() !== binding) return;
-        }
-      }
-      if (local && 'text' in local) { answer(local.text); return; }
-      if (local && 'confirm' in local) {
-        const prepared = pending.current;
-        setPendingConfirmation(null);
-        if (!local.confirm) {
-          const intakePending = origin?.intake?.phase === 'collecting';
-          if (intakePending) store.setIntake(id, undefined);
-          setChatDrafts(prev => ({ ...prev, [id]: undefined }));
-          answer(prepared || intakePending ? 'Đã hủy yêu cầu trò chuyện đang chờ.' : 'Hiện chưa có tác vụ trò chuyện đang chờ.');
-        } else if (!prepared || prepared.workspaceId !== id) {
-          answer('Hiện chưa có thao tác nào đang chờ xác nhận.');
-        } else if (prepared.expires < Date.now() || prepared.binding !== runtime.binding()) {
-          answer('Xác nhận đã hết hiệu lực hoặc trạng thái đã thay đổi. Thầy cô hãy gửi lại yêu cầu.');
-        } else {
-          const effect = await prepared.run(messageId);
-          if (alive() || !store.getSnapshot().some(session => session.id === id)) answer(effect.text);
-        }
+      if(plan.kind==='inspect'){
+        const current=store.getSnapshot().find(session=>session.id===id);
+        answer(plan.targets.map(args=>inspectQuestion(current,args).text).join('\n'));
+        for(const args of plan.targets){const q=current&&resolveQuestion(current,args);if(q?.stableId&&current?.jobId&&current.package?.revision)store.rememberQuestion(id,q.stableId,current.jobId,current.package.revision,messageId);}
         return;
       }
-      // An unresolved new turn may be a correction. Do not leave an older write runnable.
-      if (!local || 'intake' in local || ('intents' in local && local.intents.some(intent => !['STATUS', 'WARNINGS', 'LIST_SESSIONS', 'SHOW_FORMATS', 'RECALL'].includes(intent.id)))) {
-        setPendingConfirmation(null);
-      }
-      let canAct = !!local || mayDispatch(content);
-      const started = performance.now();
-      const interpreted = local && 'intents' in local ? { kind: 'task', intents: local.intents } as Decision
-        : local && 'intake' in local ? { kind: 'clarify', intents: [], intake: local.intake }
-        : await interpret(id, messageId, redact(content), {
-          screen, setup: showQuickModal, status: origin?.status ?? 'draft', view: viewMode,
-          ...(origin ? retrievedContext(origin, messageId, content) : {}),
-          questionRefs: origin ? [...new Set(origin.questions.map(q => q.part ?? '').filter(Boolean))].slice(0, 8) : [],
-          editor: Boolean(editor),
-          approved: Boolean(origin?.package?.approved),
-          confirmationPending: pending.current?.workspaceId === id && pending.current.binding === binding,
-          preview: origin?.preview?.status ?? null,
-        }, controller.signal);
-      if (!alive() || runtime.binding() !== binding) return;
-      const workflow = 'dialogueAct' in interpreted ? resolveSemantic(interpreted, recentQuestion(origin)) : undefined;
-      if (workflow?.invalidateConfirmation) setPendingConfirmation(null);
-      if (workflow?.cancel) {
-        store.setIntake(id, undefined);
-        setChatDrafts(prev => ({ ...prev, [id]: undefined }));
-        answer('Đã hủy yêu cầu trò chuyện đang chờ. Công việc tạo đề đã gửi vẫn giữ trạng thái hiện tại.');
-        return;
-      }
-      if (workflow?.text) {
-        if (await applyInlineDraft()) return;
-        answer(workflow.text);
-        return;
-      }
-      if (workflow?.inspections) {
-        const stated = [...fold(content).matchAll(/\bcau\s+(\d+)\b/g)].map(match => Number(match[1]));
-        const parts = [...fold(content).matchAll(/\bcau\s+(\d+)\s+(?:o\s+)?phan\s+(i{1,3}|[123]|p[123]|tv|ta|to|logic|science)\b/g)];
-        const inspections = workflow.inspections.map(args => {
-          const named = parts.filter(match => Number(match[1]) === args.number);
-          return args.part === undefined && named.length === 1 ? { ...args, part: sectionId(named[0][2]) } : args;
-        });
-        if (inspections.some(args => typeof args.number !== 'number' ||
-            (!stated.includes(args.number) && workflow.referenceTarget?.number !== args.number) ||
-            (parts.some(match => Number(match[1]) === args.number) && !parts.some(match => Number(match[1]) === args.number && sectionId(match[2]) === sectionId(String(args.part ?? '')))))) {
-          answer('Thầy cô hãy ghi rõ số câu và phần thi cần xem.'); return;
-        }
-        answer(inspections.map(args => redact(inspectQuestion(origin, args).text)).join('\n'));
-        return;
-      }
-      if (workflow?.setupOnly && 'constraints' in interpreted && interpreted.constraints.includes('NO_GENERATION')) canAct = true;
-      const decision = workflow?.decision ?? interpreted as Decision;
-      if (import.meta.env.VITE_AGENT_TRACE === '1') {
-        console.info('[ASTRA Agent]', { route: local ? 'local' : 'model', kind: decision.kind,
-          intents: decision.intents.map(intent => intent.id), latencyMs: Math.round(performance.now() - started) });
-      }
-      if (!alive() || runtime.binding() !== binding) return;
-      let intents = decision.intents;
-      let suggestedTitle = decision.title;
-      let titleQuality = 1;
-      if (decision.intake || decision.guidance || decision.kind === 'answer') {
-        if (!canAct && decision.intake?.mode === 'request') {
-          answer('Thầy cô muốn xem thông tin hay chuẩn bị đề? Em chưa thực hiện thao tác.');
-          return;
-        }
-        if (decision.intake?.mode === 'request') pending.current = null;
-        const formats = decision.guidance === 'remark' ? [] : intakeFormats ?? await getExamFormats();
-        if (!alive() || runtime.binding() !== binding) return;
-        if (decision.intake) {
-          if (decision.intake.mode === 'request' && !workflow?.setupOnly && await applyInlineDraft(decision.intake)) {
-            return;
-          }
-          const resolution = resolveIntake(decision.intake, content, origin?.intake, formats, messageId, !!workflow);
-          suggestedTitle = resolution.title && resolution.title !== 'Chọn mẫu đề thi'
-            ? resolution.title : decision.title ?? resolution.title;
-          titleQuality = resolution.draft?.formatId ? 3 : resolution.draft?.family ? 2 : 1;
-          if ('text' in resolution) {
-            const { draft, preset } = resolution;
-            flushSync(() => {
-              if (draft) store.setIntake(id, draft);
-              if (suggestedTitle) store.suggestTitle(id, suggestedTitle, messageId, titleQuality);
-            });
-            if (draft && preset) {
-              const accepted: Intake = {
-                ...draft, formatId: preset.id, version: preset.version, subject: preset.subjects[0],
-                count: preset.totalQuestions, minutes: preset.durationMinutes, grade: preset.grades[0],
-              };
-              const action: Intent = !workflow?.setupOnly && (workflow?.requestGeneration || draft.topic)
-                ? { id: 'PREPARE_GENERATION', args: { format: preset.id, ...(draft.topic ? { topic: draft.topic } : {}) } }
-                : { id: 'SELECT_FORMAT', args: { format: preset.id, details: true } };
-              const expected = runtime.binding();
-              setPendingConfirmation({
-                workspaceId: id,
-                binding: expected,
-                expires: Date.now() + CONFIRMATION_TTL_MS,
-                run: (sourceId = messageId) => runtimeRef.current!.dispatch(action, expected, '', sourceId, {
-                  ...accepted, sourceIds: [...new Set([...(accepted.sourceIds ?? [messageId]), sourceId])],
-                }),
-              }, {
-                workspaceId: id,
-                label: `Dùng mẫu ${preset.displayName} (${preset.totalQuestions} câu · ${preset.durationMinutes} phút)`,
-                confirmLabel: 'Dùng mẫu này',
-              });
-            }
-            answer(resolution.text);
-            return;
-          }
-          resolvedIntake = resolution.draft;
-          if (resolvedIntake.topic) suggestedTitle = decision.title ?? suggestedTitle;
-          intents = [workflow?.requestGeneration
-            ? { id: 'PREPARE_GENERATION', args: { format: resolution.draft.formatId!, ...(resolution.draft.topic ? { topic: resolution.draft.topic } : {}) } }
-            : workflow?.setupOnly ? { id: 'SELECT_FORMAT', args: { format: resolution.draft.formatId!, details: true } }
-              : resolution.intent];
-        } else {
-          if (decision.guidance !== 'remark') store.suggestTitle(
-            id, decision.guidance === 'capabilities' ? 'Tìm hiểu khả năng ASTRA' : 'Hướng dẫn soạn đề', messageId,
-          );
-          answer(guidanceFor(decision.guidance, formats));
-          return;
-        }
-      } else if (decision.kind !== 'task') {
-        if (decision.kind === 'temporarily_unavailable' && await applyInlineDraft()) {
-          return;
-        }
-        answer(decision.kind === 'temporarily_unavailable' ? interpretationUnavailable(decision.reasonCode)
-          : decision.kind === 'unsupported' ? 'Tính năng này chưa có trong ASTRA.'
-            : 'Thầy cô muốn thao tác nào trong ASTRA? Em cần thêm thông tin để thực hiện.');
-        return;
-      }
-      if (!canAct) {
-        answer('Em chưa thực hiện thao tác. Thầy cô hãy cho biết phần muốn xem hoặc thao tác cần thực hiện.');
-        return;
-      }
-      if (intents.some(intent => !['STATUS', 'WARNINGS', 'LIST_SESSIONS'].includes(intent.id))) {
-        pending.current = null;
-      }
-      const literalNumbers = [...fold(content).matchAll(/\b(?:cau|question|tin nhan|message)\s+(\d+)\b/g)].map(match => Number(match[1]));
-      if (intents.some(intent => typeof intent.args.number === 'number' && !literalNumbers.includes(intent.args.number) &&
-          !(workflow?.referenceTarget?.number === intent.args.number && intent.args.part === workflow.referenceTarget.part))) {
-        answer('Thầy cô hãy ghi rõ số câu và phần thi để em xác định đúng câu.');
-        return;
-      }
-      const literalPart = fold(content).match(/\bcau\s+(\d+)\s+(?:o\s+)?phan\s+(i{1,3}|[123]|p[123]|tv|ta|to|logic|science)\b/);
-      if (literalPart && intents.some(intent => intent.args.number === Number(literalPart[1]) &&
-          typeof intent.args.part === 'string' && sectionId(intent.args.part) !== sectionId(literalPart[2]))) {
-        answer('Phần thi trong thao tác chưa khớp yêu cầu. Thầy cô hãy ghi rõ phần và số câu.');
-        return;
-      }
-      const receipts = await execute(intents, runtime, binding, alive, content, messageId);
-      if (!alive()) return;
-      // A sidebar title change can affect runtime bindings. Keep a pending confirmation tied to its original state.
-      if (suggestedTitle && !pending.current && receipts.some(receipt => receipt.status === 'succeeded')) {
-        store.suggestTitle(id, suggestedTitle, messageId, titleQuality);
-      }
-      const stopped = receipts.length < intents.length;
-      answer([...receipts.map(receipt => receipt.text),
-        ...(stopped ? ['Các bước tiếp theo chưa được thực hiện. Thầy cô hãy kiểm tra trạng thái hiện tại.'] : []),
-      ].join('\n'));
-    } catch (error) {
-      if (!controller.signal.aborted) {
-        const reason = error instanceof Error ? error.message : '';
-        if ((reason === 'agent_rate' || reason.startsWith('agent_')) && await applyInlineDraft()) {
-          return;
-        }
-        answer(reason === 'agent_rate' ? 'Trợ lý đang nhận quá nhiều yêu cầu. Thầy cô thử lại sau một lát.'
-          : reason.startsWith('agent_') ? 'Chưa kết nối được dịch vụ hiểu yêu cầu. Thầy cô có thể dùng các nút trong ASTRA.'
-            : error instanceof ApiError ? error.message
-              : 'Chưa xác định được kết quả của thao tác. Thầy cô hãy kiểm tra trạng thái trước khi thử lại.');
-      }
-    } finally {
-      if (turn.current === controller) { turn.current = null; setChatPending(false); }
-    }
+      const intents=plan.kind==='practice'?[{id:'PREPARE_PRACTICE',args:{...plan.parameters,
+        ...(!plan.parameters.sourcePreference&&options.searchWeb&&!frame.constraints.includes('NO_WEB')?{sourcePreference:'web'}:{})}} as Intent]:plan.intents;
+      const runtime=runtimeRef.current!;
+      const receipts=await execute(intents,runtime,runtime.binding(),()=>!controller.signal.aborted,content,messageId);
+      if(controller.signal.aborted)return;
+      if(receipts.at(-1)?.status==='pending' && pending.current) {pending.current.continuation=intents.slice(receipts.length);pending.current.continuationMessage=content;}
+      answer(receipts.map(item=>item.text).join('\n') || 'Chưa thực hiện thao tác.');
+    } catch(error) {
+      setPendingConfirmation(null);
+      if(!controller.signal.aborted)answer(error instanceof ApiError?error.message:error instanceof Error&&error.message.startsWith('agent_')?
+        'Dịch vụ hiểu yêu cầu chưa trả lời hợp lệ. Chưa thay đổi cấu hình hay gửi yêu cầu tạo đề; thầy cô có thể dùng các nút trên giao diện.':'Chưa xác định được kết quả. Hãy kiểm tra trạng thái trước khi thử lại.');
+    } finally {if(turn.current===controller){turn.current=null;setChatPending(false);}}
   };
   const handleLandingSend = (content: string, options: { searchWeb: boolean; attachedFiles: InputDocument[] }) => {
     if (turn.current) return;
     const admission = admit(content);
     setAdmissionError(admission.error || '');
     if (admission.error) return;
-    const quick = fastRoute(admission.text);
-    const navigation = quick && 'intents' in quick && !options.searchWeb && !options.attachedFiles.length
-      ? quick.intents[0] : undefined;
-    if (navigation && ['HOME', 'SET_SIDEBAR', 'OPEN_SESSION'].includes(navigation.id)) {
-      const effect = dispatch(navigation, undefined, admission.text) as Effect;
-      if (effect.status === 'failed') setAdmissionError(effect.text);
-      else setLandingDraft('');
-      return;
-    }
     const id = configureId || store.create('custom');
     flushSync(() => { setLandingDraft(''); setLandingDocuments([]); openSession(id); });
-    if (navigation?.id === 'CREATE_SESSION') {
-      store.appendMessage(id, 'user', admission.text);
-      store.appendMessage(id, 'assistant', 'Đã mở một không gian soạn đề mới.');
-      return;
-    }
     void sendTurn(id, content, options);
   };
   const handleQuickStart = (params: ExamRequestParams) => {
@@ -680,6 +398,7 @@ export const App: React.FC = () => {
     const fromLanding = !configureId;
     const id = configureId || store.create('template');
     const session = store.getSnapshot().find(item => item.id === id);
+    if(session?.intake && params.formatId)store.setIntake(id,patchSpec(session.intake,{formatId:params.formatId},catalogFormats));
     const instructions = session?.messages.filter(message => message.role === 'user' && !message.agentTurn).map(message => message.content).join('\n');
     setShowQuickModal(false);
     revealSession(id);
@@ -779,7 +498,7 @@ export const App: React.FC = () => {
       await store.handleActionError(sessionId, error);
     }
   };
-  const exportFile = async (type: 'STUDENT_EXAM' | 'TEACHER_KEY', format: 'tex' | 'pdf' | 'json' | 'docx' | 'md') => {
+  const exportFile = async (type: 'STUDENT_EXAM' | 'TEACHER_KEY' | 'MATRIX', format: 'tex' | 'pdf' | 'json' | 'docx' | 'md') => {
     const session = active;
     if (!session?.jobId) return false;
     try {
@@ -926,14 +645,14 @@ export const App: React.FC = () => {
     }
   };
 
-  const binding = (versioned = true) => {
+  const binding = () => {
     const current = store.getSnapshot().find(s => s.id === activeId);
-    return JSON.stringify([versioned ? renderEpoch.current.version : 0, screen, activeId, showQuickModal, configureId, controlsCollapsed, viewMode,
+    return JSON.stringify([screen, activeId, showQuickModal, configureId, controlsCollapsed, viewMode,
       editor?.question.stableId, current?.status, current?.jobId, current?.package?.revision,
-      current?.package?.contentHash, current?.package?.approved, current?.previewOpenedRevision,
+      editorControls.current?.snapshot(), current?.package?.contentHash, current?.package?.approved, current?.previewOpenedRevision,
       current?.preview?.status, current?.artifactChanged,
       agentSelection?.id, agentSelection?.formats.find(format => format.id === agentSelection?.id)?.version,
-      current?.intake, current?.notes,
+      current?.intake, current?.notes, current?.progress?.executionVersion, current?.inputDocuments?.map(doc=>[doc.id,doc.sha256]),
       current?.conversation?.questionReference,
       store.getSnapshot().map(item => [item.id, item.title])]);
   };
@@ -951,6 +670,116 @@ export const App: React.FC = () => {
       return { status: 'pending', text: `${text} Bấm “${confirmLabel}” bên dưới hoặc nhắn “Xác nhận”.` };
     };
     switch (intent.id) {
+      case 'UPLOAD_GUIDANCE':
+        return succeeded('Dùng nút Đính kèm tài liệu trên ô nhập, chọn loại tài liệu rồi chọn tệp. Em không thể tự mở hộp chọn tệp hay đọc tệp chưa tải lên.');
+      case 'LIST_DOCUMENTS': {
+        const docs=current?.inputDocuments??[];
+        const name=typeof intent.args.name==='string'?fold(intent.args.name):'';
+        const selected=name?docs.filter(doc=>fold(doc.filename)===name):docs;
+        return succeeded(selected.length?selected.map(doc=>`${doc.filename} · ${doc.kind} · ${doc.characters} ký tự${name?`\nTrích đoạn đã lưu: ${doc.preview}`:''}`).join('\n'):'Chưa có tài liệu phù hợp gắn với đề này.');
+      }
+      case 'DETACH_DOCUMENT': {
+        const docs=current?.inputDocuments??[];
+        const matches=docs.filter(doc=>fold(doc.filename)===fold(String(intent.args.name)));
+        if(!current||matches.length!==1)return failed('Hãy ghi đúng tên một tài liệu đang đính kèm: '+docs.map(doc=>doc.filename).join(', '));
+        const document=matches[0];
+        return prepare(`Gỡ ${document.filename} khỏi cấu hình đề này.`,()=>{
+          const latest=store.getSnapshot().find(session=>session.id===current.id);
+          if(!latest?.inputDocuments?.some(doc=>doc.id===document.id))return failed('Tài liệu đã thay đổi.');
+          store.setInputDocuments(current.id,latest.inputDocuments.filter(doc=>doc.id!==document.id));
+          return succeeded('Đã gỡ tài liệu khỏi cấu hình của đề này.');
+        });
+      }
+      case 'ITEM_REGENERATION_STATUS': {
+        const run=current?questionRuns.current.get(current.id):undefined;
+        if(!run || run.target.jobId!==current?.jobId)return succeeded('Không có lượt tạo lại câu hỏi đang được theo dõi ở đề này.');
+        return succeeded(run.receipt?.status==='pending'?`Đang ${QUESTION_STAGES[run.receipt.stage??'queued'][1].toLowerCase()}.`:run.receipt?.status==='completed'?'Backend đã hoàn tất lượt tạo lại câu hỏi.':run.receipt?.status==='cancelled'?'Backend đã xác nhận hủy lượt tạo lại.':run.receipt?.status==='failed'?'Lượt tạo lại câu hỏi đã lỗi.':'Đang chờ Backend xác nhận trạng thái lượt tạo lại.');
+      }
+      case 'STOP_ITEM_REGENERATION': {
+        const run=current?questionRuns.current.get(current.id):undefined;
+        if(!current||!run||run.target.jobId!==current.jobId||run.receipt?.status!=='pending')return failed('Không có lượt tạo lại câu hỏi đang chạy ở đề này.');
+        return stopQuestionRun(current.id).then(()=>{
+          const after=questionRuns.current.get(current.id)?.receipt;
+          return after?.status==='cancelled'?succeeded('Backend đã xác nhận hủy lượt tạo lại câu hỏi.'):{status:'pending',text:'Đã gửi yêu cầu dừng lượt tạo lại câu hỏi; đang chờ trạng thái Backend.'};
+        });
+      }
+      case 'LIST_VERSIONS':
+      case 'INSPECT_VERSION':
+      case 'RESTORE_VERSION': {
+        if(!history||!current?.jobId||!current.package?.revision)return failed('Cần mở đề có phiên bản đã lưu.');
+        if(intent.args.title && fold(String(intent.args.title))!==fold(current.title))return failed('Hãy mở đúng đề trước khi đọc hoặc khôi phục lịch sử của đề đó.');
+        const jobId=current.jobId, revision=current.package.revision;
+        return history.list(jobId,current.browserOnly?undefined:current.id).then(async list=>{
+          if(!validTurn()||runtimeRef.current!.binding()!==expected)return failed('Đề hoặc phiên bản đã thay đổi.');
+          const versions=list.versions;
+          if(intent.id==='LIST_VERSIONS')return succeeded(versions.map(item=>`Phiên bản ${item.revision} · ${item.createdAt} · ${item.change}${(item.jobId??jobId)===jobId&&item.revision===revision?' · đang dùng':''}`).join('\n')||'Chưa có lịch sử phiên bản.');
+          const ordered=versions.slice().sort((a,b)=>a.createdAt.localeCompare(b.createdAt)||a.revision-b.revision);
+          const currentIndex=ordered.findIndex(item=>(item.jobId??jobId)===jobId&&item.revision===revision);
+          const candidates=intent.args.version!==undefined?versions.filter(item=>item.revision===intent.args.version):intent.args.relative==='initial'?ordered.slice(0,1):intent.args.relative==='previous'&&currentIndex>0?ordered.slice(currentIndex-1,currentIndex):[];
+          if(candidates.length!==1)return failed('Chưa xác định duy nhất phiên bản. Hãy xem danh sách lịch sử rồi nêu số phiên bản; các lần tạo có thể trùng số.');
+          const target=candidates[0],targetJob=target.jobId??jobId;
+          const pkg=await history.read(targetJob,target.revision);
+          if(!validTurn()||runtimeRef.current!.binding()!==expected)return failed('Đề đã thay đổi khi đọc lịch sử.');
+          if(intent.id==='INSPECT_VERSION')return succeeded(`Phiên bản ${target.revision} · ${target.createdAt} · ${pkg.questions.length} câu. Chưa khôi phục.\n`+
+            pkg.questions.slice(0,6).map(q=>`${q.part??''} Câu ${displayNumber(q)}: ${q.stem}`).join('\n')+(pkg.questions.length>6?'\nĐây là 6 câu đầu; mở Lịch sử phiên bản để xem toàn bộ.':''));
+          if(!target.restorable)return failed('Phiên bản này không còn đủ tệp nguồn để khôi phục.');
+          return prepare(`Khôi phục phiên bản ${target.revision} (${target.createdAt}); bản mới cần được duyệt lại.`,async()=>{
+            await restoreVersion(current.id,jobId,target.revision,revision,current.browserOnly?undefined:current.id,targetJob);
+            return succeeded('Đã khôi phục phiên bản đã chọn. Hãy kiểm tra và duyệt lại.');
+          });
+        });
+      }
+      case 'UNDO_CHANGE': {
+        if(!current?.package?.revision || !latestUndo || current.id!==sharedId)return failed('Không có thay đổi đủ điều kiện hoàn tác ở phiên bản hiện tại. Hãy xem lịch sử.');
+        const change=latestUndo;
+        return prepare('Hoàn tác thay đổi đã ghi nhận gần nhất của phiên bản hiện tại.',async()=>{
+          const before=current.package?.revision;
+          await undoRecordedChange(change);
+          return store.getSnapshot().find(session=>session.id===current.id)?.package?.revision!==before?succeeded('Đã lưu phiên bản hoàn tác.'):failed('Chưa xác nhận hoàn tác; hãy kiểm tra cảnh báo xung đột và lịch sử.');
+        });
+      }
+      case 'SAVE_EDITOR': {
+        if(!editor||editor.sessionId!==current?.id||!editorControls.current)return failed('Hãy mở và kiểm tra bản nháp câu hỏi trước.');
+        return prepare('Lưu bản nháp câu hỏi đang hiển thị; phê duyệt cũ sẽ hết hiệu lực.',async()=>
+          await editorControls.current?.save()?succeeded('Đã lưu câu hỏi qua Backend.'):failed('Chưa lưu được câu hỏi. Hãy xem lỗi trong trình chỉnh sửa.'));
+      }
+      case 'APPROVE_QUESTION': {
+        if(!current?.package || current.status!=='complete'||!examService.approveQuestion)return failed('Chưa có câu hỏi hoàn chỉnh để duyệt.');
+        const question=resolveQuestion(current,intent.args,editor?.question.stableId);
+        if(!question)return failed('Hãy chỉ rõ số câu và phần thi để duyệt.');
+        return prepare(`Duyệt câu ${displayNumber(question)} (${question.part??''}) của phiên bản hiện tại.`,async()=>{
+          await handleApproveQuestion(question.id);
+          return succeeded('Backend đã ghi nhận phê duyệt câu hỏi.');
+        });
+      }
+      case 'EXPORT_ARTIFACT': {
+        const kind=intent.args.artifact;
+        const format=intent.args.format as 'pdf'|'tex'|'json'|'docx'|'md';
+        if(kind==='matrix')return failed('Backend hiện chưa có artifact ma trận xuất riêng. Em chưa tải tệp thay thế.');
+        if(kind==='teacher'&&format!=='json')return failed('Đáp án giáo viên hiện chỉ xuất JSON. Em chưa đổi sang bản đề học sinh.');
+        if(!current?.package?.approved||current.artifactChanged||editor)return failed('Cần duyệt đúng phiên bản hiện tại trước khi xuất.');
+        if(format==='pdf'&&current.preview?.status!=='ready')return failed(previewText(current));
+        return prepare(`Tải ${kind==='teacher'?'đáp án giáo viên':'bản đề học sinh'} dạng ${format.toUpperCase()}.`,async()=>
+          await exportFile(kind==='teacher'?'TEACHER_KEY':'STUDENT_EXAM',format)?succeeded('Đã yêu cầu trình duyệt tải đúng artifact đã chọn.'):failed('Chưa tải được tệp.'));
+      }
+      case 'PREPARE_PRACTICE': {
+        const topic=matchAdjacentTopic(String(intent.args.topic));
+        if(!current||!topic||current.status!=='draft'||editor)return failed('Cần đề nháp và một chủ đề luyện tập lân cận được hỗ trợ.');
+        const count=Number(intent.args.count??topic.defaultCount),minutes=Number(intent.args.minutes??topic.defaultMinutes);
+        if(count<4||count>20||minutes<5||minutes>120)return failed(`Luyện tập hỗ trợ 4–20 câu, 5–120 phút. Yêu cầu đang là ${count} câu, ${minutes} phút; chưa tự đổi thông số.`);
+        return (async()=>{
+          const web=intent.args.sourcePreference==='web';
+          if(web&&current.inputDocuments?.length)return failed('Tìm mạng chưa kết hợp được tài liệu đính kèm. Hãy chọn một nguồn; chưa gửi yêu cầu nghiên cứu.');
+          const research=web?await researchAdjacentTopic(current.id,messageId,topic.id,redact(message),{count,minutes},activeTurn!.signal):undefined;
+          if(!validTurn()||runtimeRef.current!.binding()!==expected)return failed('Cấu hình đã đổi.');
+          const params:ExamRequestParams={formatId:topic.formatId,formatVersion:'1',adjacentTopicId:topic.id,subject:topic.subject as Subject,grade:12,examType:'CUSTOM',
+            durationMinutes:minutes,itemCount:count,prompt:message||`Luyện tập ${topic.label}`,uploadedFiles:(current.inputDocuments??[]).map(doc=>doc.id),...(research?{webSources:research.sources}:{})};
+          return prepare(`${topic.label} · ${count} câu · ${minutes} phút. ${research?research.searchMode==='live_web'?'Đã tìm nguồn web.':'Tìm web chưa có dữ liệu trực tuyến; dùng cấu trúc tích hợp.':'Không tìm mạng; dùng cấu trúc tích hợp và nguồn đã đính kèm.'} Tạo nội dung mới sẽ dùng AI.`,async()=>{
+            const job=await store.generate(current.id,params);
+            return job?{status:'accepted',text:'Backend đã nhận yêu cầu luyện tập.'}:failed('Chưa nhận được công việc.');
+          },'Tạo đề ngay');
+        })();
+      }
       case 'PAUSE_GENERATION':
       case 'RESUME_GENERATION':
       case 'RETRY_GENERATION':
@@ -970,6 +799,10 @@ export const App: React.FC = () => {
             return stopped?.status === 'cancelled' ? { ...succeeded('Backend xác nhận đã dừng phiên chạy.'), expectedAfter: runtimeRef.current!.binding() }
               : failed('Backend chưa xác nhận việc dừng. Hãy xem trạng thái hiện tại.');
           }
+          if(operation==='resume'||operation==='retry')return prepare(`${operation==='resume'?'Tiếp tục':'Thử lại'} phần còn thiếu của “${selection.target.title}”, giữ cùng công việc đã lưu. Thao tác dùng AI.`,async()=>{
+            const result=await store.controlGeneration(selection.target!.id,operation,{jobId:state.jobId,executionVersion:state.executionVersion});
+            return generationReceipt(operation,result);
+          });
           const result = await store.controlGeneration(selection.target.id, operation, { jobId: state.jobId, executionVersion: state.executionVersion });
           return { ...generationReceipt(operation, result), expectedAfter: runtimeRef.current!.binding() };
         })().catch(error => failed(error instanceof Error ? error.message : 'Chưa xác nhận được trạng thái Backend.'));
@@ -1019,7 +852,11 @@ export const App: React.FC = () => {
           return failed('Có nhiều đề phù hợp. Thầy cô hãy chọn đúng đề trong tủ đề.');
         }
         flushSync(() => { setShowQuickModal(false); setConfigureId(null); setEditor(null); openSession(target.id); });
-        return succeeded(`Đã mở “${target.title}”.`);
+        return (async()=>{
+          if(target.jobId && target.status==='complete')await store.refresh(target.id);
+          if(!validTurn()||activeRef.current!==target.id)return failed('Đề đích đã thay đổi.');
+          return {...succeeded(`Đã mở “${target.title}”.`),expectedAfter:runtimeRef.current!.binding()};
+        })();
       }
       case 'SET_SIDEBAR':
         if (window.matchMedia('(max-width: 800px)').matches) return failed('Chế độ thu gọn thanh điều hướng chỉ có trên màn hình rộng.');
@@ -1270,11 +1107,14 @@ export const App: React.FC = () => {
             !fold(message).includes(fold(intent.args.instruction)) || redact(intent.args.instruction) !== intent.args.instruction)) {
           return failed('Thầy cô hãy ghi chính xác yêu cầu muốn dùng để tạo lại câu hỏi.');
         }
-        if (!verify && current.package.blueprint.examType === 'DGNL_DHQG') return failed('V-ACT hỗ trợ sửa trực tiếp và kiểm tra đáp án. Tạo lại từng câu hiện chỉ có cho Toán THPT.');
         return prepare(verify
           ? `Kiểm tra lại đáp án ${label} bằng bộ giải. Thao tác dùng lượt gọi AI.`
           : `Sinh lại ${label} bằng AI theo yêu cầu “${intent.args.instruction}”.`, async () => {
           try {
+            if(!verify && examService.questionRegeneration){
+              void startQuestionRun(target,String(intent.args.instruction??'')).catch(()=>{});
+              return questionRuns.current.has(current.id)?{status:'accepted',text:`Đã gửi lượt tạo lại ${label}. Có thể hỏi trạng thái hoặc dừng riêng lượt này.`}:{status:'unknown',text:'Chưa xác nhận được lượt tạo lại câu hỏi.'};
+            }
             const latest = await editQuestion(target, verify ? 'verify' : 'regen', String(intent.args.instruction ?? ''));
             const result = latest?.questions.find(item => item.stableId === question.stableId);
             if (verify && result?.answerCheck) {
@@ -1337,7 +1177,6 @@ export const App: React.FC = () => {
         }[note.status]})`).join('\n');
         if (intent.id === 'REVIEW_NOTES') return succeeded(summary);
         if (!current?.package || current.status !== 'complete') return failed('Hãy đợi máy chủ tạo xong đề trước khi áp dụng ghi chú.');
-        if (current.package.blueprint.examType === 'DGNL_DHQG') return failed('Thầy cô hãy mở từng câu V-ACT để sửa trực tiếp. Mẫu này chưa hỗ trợ sinh lại từng câu.');
         const ready = notes.filter(note => note.status === 'awaiting_review' && note.stableId).slice(0, 4);
         if (!ready.length) return failed('Chưa có ghi chú đã xác định đúng câu và đang chờ duyệt.');
         return prepare(`Áp dụng ${ready.length} ghi chú dưới đây với AI:\n${ready.map(note => `${noteLabel(note)}: ${note.instruction}`).join('\n')}`, async () => {
@@ -1383,8 +1222,6 @@ export const App: React.FC = () => {
     }
   };
   useLayoutEffect(() => {
-    const state = binding(false);
-    if (state !== renderEpoch.current.state) renderEpoch.current = { version: renderEpoch.current.version + 1, state };
     activeRef.current = activeId;
     runtimeRef.current = {
       binding,
@@ -1455,10 +1292,7 @@ export const App: React.FC = () => {
                       label: pendingActionMeta.label,
                       confirmLabel: pendingActionMeta.confirmLabel,
                       onConfirm: () => {
-                        const prepared = pending.current;
-                        setPendingConfirmation(null);
-                        if (!prepared || prepared.workspaceId !== active.id) return;
-                        void Promise.resolve(prepared.run(undefined, (active.inputDocuments ?? []).map(d => d.id)))
+                        void confirmPending()
                           .then(effect => store.appendMessage(active.id, 'assistant', effect.text));
                       },
                       onCancel: () => {
@@ -1467,11 +1301,8 @@ export const App: React.FC = () => {
                       },
                     } : null}
                     onChange={patch => {
-                      setChatDrafts(prev => {
-                        const currentDraft = prev[active.id];
-                        if (!currentDraft) return prev;
-                        return { ...prev, [active.id]: recomputeDraftStatus({ ...currentDraft, ...patch }, catalogFormats) };
-                      });
+                      setPendingConfirmation(null);
+                      if(active.intake)store.setIntake(active.id,patchSpec(active.intake,patch,catalogFormats));
                     }}
                     onGenerate={() => {
                       const currentDraft = chatDrafts[active.id];
@@ -1479,7 +1310,6 @@ export const App: React.FC = () => {
                       const params = buildParamsFromDraft(currentDraft, catalogFormats, (active.inputDocuments ?? []).map(d => d.id));
                       if (!params) return;
                       setPendingConfirmation(null);
-                      setChatDrafts(prev => ({ ...prev, [active.id]: undefined }));
                       void store.generate(active.id, params);
                     }}
                     onOpenModal={() => {
@@ -1489,7 +1319,7 @@ export const App: React.FC = () => {
                       setAgentSelection(undefined);
                       setShowQuickModal(true);
                     }}
-                    onDismiss={() => setChatDrafts(prev => ({ ...prev, [active.id]: undefined }))}
+                    onDismiss={() => {setPendingConfirmation(null);if(active.intake)store.setIntake(active.id,{...active.intake,visible:false});}}
                   />
                 )}
               </>
@@ -1725,6 +1555,7 @@ export const App: React.FC = () => {
           onDialogMount={node => { presetDialog.current = node; }}
           agentSelection={agentSelection}
           initialFormatId={configureFormatId}
+          spec={sessions.find(session=>session.id===configureId)?.intake}
           onManualSelect={() => { setPendingConfirmation(null); setAgentSelection(undefined); }}
           onStart={handleQuickStart}
           onClose={closeQuickModal}

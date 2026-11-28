@@ -1,6 +1,7 @@
 import Ajv from "ajv";
 import resources from "./generated.json";
 import semanticResources from "./semantic.generated.json";
+import v3Resources from "./semantic-v3.generated.json";
 import { bounded, agentBudgetsEnabled, type Env } from "./env";
 import { parseGemini, GeminiOutputFailure } from "./gemini";
 export { Admission } from "./admission";
@@ -8,6 +9,7 @@ export { Admission } from "./admission";
 const ajv = new Ajv({ strict: false, validateFormats: false });
 const validateTurn = ajv.compile(resources.turnSchema);
 const validateSemanticTurn = ajv.compile(semanticResources.turnSchema);
+const validateV3Turn = ajv.compile(v3Resources.turnSchema);
 const MAX_BODY = 32768;
 const MAX_RESPONSE = 65536;
 const VERSION = "astra-intent-v1";
@@ -58,7 +60,8 @@ export default {
         const status = await admission.fetch("https://admission/status");
         if (!status.ok) throw new Error("quota storage unavailable");
         return response({ status: "ok", contract: VERSION,
-          contracts: [VERSION, semanticResources.catalog.schemaVersion], semanticContractHash: semanticResources.contractHash,
+          contracts: [VERSION, semanticResources.catalog.schemaVersion, v3Resources.catalog.schemaVersion], semanticContractHash: semanticResources.contractHash,
+          semanticV3ContractHash: v3Resources.contractHash,
           model: /^gemini-[A-Za-z0-9._-]{1,90}$/.test(env.ASTRA_AGENT_MODEL ?? "") ? env.ASTRA_AGENT_MODEL : null,
           forwarding: env.ASTRA_FORWARDING_ENABLED === "true" && env.ASTRA_AGENT_FORWARDING_ENABLED !== "false",
           callerAuthorizationRequired: !agentBudgetsEnabled(env),
@@ -67,7 +70,9 @@ export default {
         return response({ status: "unavailable", forwarding: false }, 503);
       }
     }
-    const semantic = path === "/v2/agent/interpret";
+    const v3 = path === "/v3/agent/interpret";
+    const semantic = v3 || path === "/v2/agent/interpret";
+    const contract = v3 ? v3Resources : semanticResources;
     if (path !== "/v1/agent/interpret" && !semantic) return response({ error: "rejected" }, 404);
     if (request.method !== "POST") return response({ error: "rejected" }, 405);
     const id = crypto.randomUUID();
@@ -87,7 +92,7 @@ export default {
       if (env.ASTRA_FORWARDING_ENABLED !== "true" || env.ASTRA_AGENT_FORWARDING_ENABLED === "false") throw new Failure("disabled", 503);
       requestStage = "authorization";
       if (!agentBudgetsEnabled(env) && (request.headers.has("Origin") || !await callerAuthorized(request,env.ASTRA_AGENT_CALLER_TOKEN))) throw new Failure("auth",401);
-      if (request.headers.get("X-Astra-Contract") !== (semantic ? semanticResources.contractHash : resources.contractHash)) {
+      if (request.headers.get("X-Astra-Contract") !== (semantic ? contract.contractHash : resources.contractHash)) {
         throw new Failure("configuration", 409);
       }
       const account = env.ASTRA_AGENT_GATEWAY_ACCOUNT_ID ?? "";
@@ -109,7 +114,7 @@ export default {
         throw new Failure("rejected", 400);
       }
       const turn: any = JSON.parse(await readBounded(request, MAX_BODY));
-      if (!(semantic ? validateSemanticTurn(turn) : validateTurn(turn))) throw new Failure("rejected", 400);
+      if (!(v3 ? validateV3Turn(turn) : semantic ? validateSemanticTurn(turn) : validateTurn(turn))) throw new Failure("rejected", 400);
       const message = turn.message.trim();
       if (!message || !/[\p{Letter}\p{Number}]/u.test(message) || /^(.)\1{11,}$/su.test(message) ||
           /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(message)) throw new Failure("rejected", 400);
@@ -123,14 +128,14 @@ export default {
       const hintKey = JSON.stringify([context.setup, context.status ?? null, context.approved ?? false, preview]);
       const hints = (resources.hints as Record<string, string[]>)[hintKey] ?? [];
       const providerBody = JSON.stringify({
-        systemInstruction: { parts: [{ text: semantic ? semanticResources.system : resources.system }] },
+        systemInstruction: { parts: [{ text: semantic ? contract.system : resources.system }] },
         contents: [{ role: "user", parts: [{ text: JSON.stringify({
-          ...(semantic ? { goals: Object.fromEntries(Object.entries(semanticResources.catalog.goals).map(([name, item]) =>
+          ...(semantic ? { goals: Object.fromEntries(Object.entries(contract.catalog.goals).map(([name, item]) =>
             [name, { meaning: item.meaning, parameters: item.parameters }])) }
             : { ...resources.base, availableHints: hints }), context, message: turn.message,
         }) }] }],
         generationConfig: {
-          responseMimeType: "application/json", responseJsonSchema: semantic ? semanticResources.providerSchema : resources.providerSchema,
+          responseMimeType: "application/json", responseJsonSchema: semantic ? contract.providerSchema : resources.providerSchema,
           ...(model === "gemini-3.1-flash-lite" ? { thinkingConfig: { thinkingLevel: "MINIMAL" } } : {}), maxOutputTokens: tokens,
         },
       });
@@ -184,11 +189,11 @@ export default {
         throw new Failure(category, 502);
       }
       requestStage = "provider_response";
-      const parsed = parseGemini(await readBounded(upstream, MAX_RESPONSE), upstream.headers.get("content-type"), semantic);
+      const parsed = parseGemini(await readBounded(upstream, MAX_RESPONSE), upstream.headers.get("content-type"), semantic, v3);
       const decision = parsed.decision;
       outputMetadata = parsed.diagnostics;
       console.log(JSON.stringify({ requestId: id, ...outputMetadata }));
-      return response({ schemaVersion: semantic ? semanticResources.catalog.schemaVersion : VERSION,
+      return response({ schemaVersion: semantic ? contract.catalog.schemaVersion : VERSION,
         clientMessageId: turn.clientMessageId, ...(semantic ? { frame: decision } : { decision }),
         evidence: { requestId: id, admitted: true, attempts, provider: "google-ai-studio",
           model, upstreamStatus, elapsedMs: Math.round(performance.now() - started),

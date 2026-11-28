@@ -36,10 +36,13 @@ SYSTEM = (
 
 
 def semantic_context(turn: Turn) -> dict:
+    from .v3 import GOALS as V3_GOALS
+    from .v3 import TurnV3
+
     return {
         "goals": {
             name: {"meaning": item["meaning"], "parameters": item["parameters"]}
-            for name, item in GOALS.items()
+            for name, item in (V3_GOALS if isinstance(turn, TurnV3) else GOALS).items()
         },
         "context": turn.context.model_dump(exclude_defaults=True),
         "message": turn.message,
@@ -47,15 +50,20 @@ def semantic_context(turn: Turn) -> dict:
 
 
 def gemini_request(turn: Turn, output_tokens: int, *, minimal_thinking: bool = False) -> dict:
+    from .v3 import SYSTEM as V3_SYSTEM
+    from .v3 import TurnV3
+    from .v3 import semantic_schema as v3_schema
+
+    v3 = isinstance(turn, TurnV3)
     config = {
         "responseMimeType": "application/json",
-        "responseJsonSchema": semantic_schema(compact=True),
+        "responseJsonSchema": v3_schema(compact=True) if v3 else semantic_schema(compact=True),
         "maxOutputTokens": output_tokens,
     }
     if minimal_thinking:
         config["thinkingConfig"] = {"thinkingLevel": "MINIMAL"}
     return {
-        "systemInstruction": {"parts": [{"text": SYSTEM}]},
+        "systemInstruction": {"parts": [{"text": V3_SYSTEM if v3 else SYSTEM}]},
         "contents": [
             {
                 "role": "user",
@@ -72,7 +80,7 @@ def gemini_request(turn: Turn, output_tokens: int, *, minimal_thinking: bool = F
     }
 
 
-def parse_native(provider: str, payload: dict) -> SemanticFrame:
+def parse_native(provider: str, payload: dict, *, v3=False) -> SemanticFrame:
     stage = "response_envelope"
     finish = None
     text = ""
@@ -104,6 +112,10 @@ def parse_native(provider: str, payload: dict) -> SemanticFrame:
         stage = "semantic_json"
         decoded = json.loads(text)
         stage = "canonical_validation"
+        if v3:
+            from .v3 import normalize_frame as normalize_v3
+
+            return normalize_v3(decoded)
         return normalize_frame(decoded)
     except (KeyError, TypeError, ValueError, AttributeError) as error:
         paths = []

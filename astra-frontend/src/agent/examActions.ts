@@ -35,6 +35,16 @@ export function inspectQuestion(session: ExamSession | undefined, args: Intent['
   const question = resolveQuestion(session, args);
   if (!question) return failure('Chưa xác định được câu hỏi hiện tại. Thầy cô hãy ghi số câu và phần thi.');
   const label = `Câu ${displayNumber(question)}${question.part ? ` (${question.part})` : ''}`;
+  if(args.subItem!==undefined){
+    const index=['a','b','c','d'].indexOf(String(args.subItem));
+    const statement=index>=0?question.statements?.[index]:undefined;
+    if(!statement)return failure(`${label} không có ý ${args.subItem} trong dữ liệu đã lưu.`);
+    return success(`${label}, ý ${args.subItem}: ${statement.text}\nĐáp án đang lưu: ${statement.answer?'Đúng':'Sai'}.${statement.solution?`\nGiải thích đã lưu: ${statement.solution}`:''}`);
+  }
+  if(args.aspect==='verification')return success(`${label}: trạng thái kiểm tra đã lưu ${question.answerCheck??question.status}; đáp án tác giả ${question.writerKey??question.key??'chưa có'}, bộ giải ${question.solverKey??'chưa có'}.${question.auditNotes?` ${question.auditNotes}`:''} Chưa gọi bộ giải mới.`);
+  if(args.aspect==='approval')return success(`${label}: ${question.questionApproval?.revision===session.package.revision?'đã được giáo viên duyệt ở phiên bản hiện tại':'chưa có phê duyệt riêng còn hiệu lực'}.`);
+  if(args.aspect==='metadata')return success(`${label}: ${question.questionType??'chưa rõ loại'} · ${question.topic} · ${question.level}. Nguồn đã lưu: ${question.sourceReference??'chưa có'}. Phiên bản ${session.package.revision}.`);
+  if(args.aspect==='explanation')return success(`${label}: ${question.explanation||'Chưa có lời giải đã lưu.'}`);
   return success([`${label}: ${question.stem}`,
     ...(args.view === 'paper' ? [] : [`Đáp án đang lưu: ${question.key || 'chưa có'}.`,
       ...(question.answerCheck === 'mismatched' ? ['Đáp án đang khác kết quả bộ giải đã lưu.'] : []),

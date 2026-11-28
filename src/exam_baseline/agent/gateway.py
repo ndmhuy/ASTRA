@@ -30,6 +30,7 @@ class AgentSettings(BaseSettings):
     enabled: bool = False
     transport: Literal["gateway", "direct", "codex", "offline", "worker"] = "worker"
     semantic_contract: bool = True
+    semantic_version: Literal["astra-semantic-v1", "astra-semantic-v3"] = "astra-semantic-v1"
     worker_url: str = "https://astra-ai-proxy.letranhoanglong2227.workers.dev"
     worker_caller_token: SecretStr | None = None
     api_key: SecretStr | None = None
@@ -149,7 +150,9 @@ class GeminiGatewayProvider:
             raise ProviderFailure(code)
         try:
             if self.semantic:
-                return parse_native("gemini", response.json())
+                from .v3 import TurnV3
+
+                return parse_native("gemini", response.json(), v3=isinstance(turn, TurnV3))
             candidates = response.json()["candidates"]
             if len(candidates) != 1 or candidates[0]["finishReason"] != "STOP":
                 raise ValueError("incomplete provider output")
@@ -213,6 +216,7 @@ async def configured_interpreter(settings: AgentSettings | None = None):
                         client,
                         settings.worker_url,
                         semantic=settings.semantic_contract,
+                        semantic_version=settings.semantic_version,
                         caller_token=caller.get_secret_value() if caller else None,
                     ),
                     reserve=lambda: True,
