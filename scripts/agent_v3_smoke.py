@@ -356,7 +356,7 @@ def observe(base):
                     if model == "conflicting"
                     else "có 22 câu"
                     if model == "question"
-                    else "Kết quả từ AI chưa đọc được"
+                    else "Phản hồi AI chưa khớp định dạng"
                     if model == "unavailable"
                     else "Chưa có tài liệu"
                     if model == "documents"
