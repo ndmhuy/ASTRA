@@ -6,7 +6,7 @@ import { admit, execute, fastRoute, fold, type Effect, type Runtime } from './ag
 import { displayNumber, failure, inspectQuestion, previewText, resolveQuestion, sectionId, statusText, success } from './agent/examActions';
 import type { Intent } from './agent/contracts';
 import { generationTarget, generationReceipt, generationJob, restingGeneration } from './agent/lifecycle';
-import { GOALS, understandLocal, decisionMeaning, planMeaning } from './agent/intelligence';
+import { GOALS, PRACTICE_LIMITS, understandLocal, decisionMeaning, planMeaning } from './agent/intelligence';
 import { reduceSpec, specDraft, patchSpec, specSummary, paramsForSpec } from './agent/examSpec';
 import { familyFor, formatOverview, matchAdjacentTopic, mentionedFamilies, resolveIntake } from './agent/knowledge';
 import { AlertCircle, AlertTriangle, LoaderCircle, PanelLeftClose, PanelLeftOpen, RefreshCw, Settings2 } from 'lucide-react';
@@ -273,7 +273,8 @@ export const App: React.FC = () => {
         if(receipts.at(-1)?.status==='pending' && pending.current) {pending.current.continuation=prepared.continuation.slice(consumed);pending.current.continuationMessage=prepared.continuationMessage;}
         return {...effect,text:[effect.text,...receipts.map(item=>item.text)].join('\n')};
       }
-      return prepared.continuation?.length && effect.status!=='succeeded'?{...effect,text:effect.text+' Các bước phụ thuộc còn lại chưa được thực hiện. Hãy chờ kết quả rồi yêu cầu tiếp tục.'}:effect;
+      return prepared.continuation?.length && effect.status!=='succeeded'?{...effect,text:effect.text+
+        ` Còn ${prepared.continuation.length} bước trong yêu cầu “${redact(prepared.continuationMessage??'').slice(0,240)}” chưa thực hiện. Hãy chờ kết quả rồi yêu cầu tiếp tục; em sẽ kiểm tra lại đề và phiên bản trước khi làm.`}:effect;
     } finally {if(owned && turn.current===controller){turn.current=null;setChatPending(false);}}
   };
   const sendTurn = async (id: string, content: string, options: { searchWeb: boolean; attachedFiles: InputDocument[] }) => {
@@ -288,7 +289,7 @@ export const App: React.FC = () => {
     let origin=store.getSnapshot().find(session=>session.id===id);
     const immediate=understandLocal(content,{formats:catalogFormats,intake:origin?.intake});
     let moved=false;
-    if(immediate.kind!=='defer' && immediate.frame.dialogueAct!=='QUESTION' && immediate.frame.goals.some(goal=>!goal.prohibited&&['REQUEST_GENERATION','PREPARE_EXAM'].includes(goal.goal)) &&
+    if(immediate.kind!=='defer' && immediate.frame.dialogueAct!=='QUESTION' && immediate.frame.goals.some(goal=>!goal.prohibited&&['REQUEST_GENERATION','PREPARE_EXAM','PREPARE_PRACTICE'].includes(goal.goal)) &&
         (origin?.status==='complete'||origin?.status==='generating'||origin?.generationStopped||immediate.frame.goals.some(goal=>goal.parameters.fresh))) {
       const next=store.create('custom');
       flushSync(()=>openSession(next));id=next;origin=store.getSnapshot().find(session=>session.id===id);moved=true;
@@ -312,25 +313,28 @@ export const App: React.FC = () => {
         questionRefs:origin?[...new Set(origin.questions.map(q=>q.part??'').filter(Boolean))].slice(0,8):[],
         editor:Boolean(editor),approved:Boolean(origin?.package?.approved),preview:origin?.preview?.status??null,
         confirmationPending:pending.current?.workspaceId===id,
-        grounded:{workspace:origin?.title?.slice(0,120),lifecycle:origin?.progress?.status??origin?.status,
-          spec:specSummary(origin?.intake),documents:(origin?.inputDocuments??[]).slice(0,5).map(doc=>`${doc.filename} (${doc.kind}, ${doc.characters} characters)`.slice(0,240)),
+        grounded:{workspace:origin?.title?redact(origin.title).slice(0,120):undefined,lifecycle:origin?.progress?.status??origin?.status,
+          spec:specSummary(origin?.intake).map(redact),documents:(origin?.inputDocuments??[]).slice(0,5).map(doc=>redact(`${doc.filename} (${doc.kind}, ${doc.characters} characters)`).slice(0,240)),
           capabilities:formats.filter(format=>format.available).slice(0,12).map(format=>format.displayName.slice(0,80)),
-          revision:origin?.package?.revision,pending:pendingActionMeta?.label?.slice(0,240),itemRegeneration:Boolean(questionPending),searchWeb:options.searchWeb},
+          revision:origin?.package?.revision,pending:pendingActionMeta?.label?redact(pendingActionMeta.label).slice(0,240):undefined,itemRegeneration:Boolean(questionPending),searchWeb:options.searchWeb},
       },controller.signal):local.frame;
-      if(!alive() || readBinding()!==before)return;
+      if(!alive())return;
       const frame='dialogueAct' in interpreted?interpreted:decisionMeaning(interpreted,formats,origin?.intake);
       if(!frame){setPendingConfirmation(null);answer('reasonCode' in interpreted?interpretationUnavailable(interpreted.reasonCode):'Chưa hiểu đủ yêu cầu để thực hiện. Thầy cô hãy chỉ rõ mục tiêu hoặc đề/câu.');return;}
-      const plan=planMeaning(frame,recentQuestion(origin));
+      if(frame.dialogueAct==='CORRECT'||frame.constraints.some(item=>['NO_GENERATION','NO_WEB','NO_EXECUTION','NEGATED','CONTRADICTORY'].includes(item)))setPendingConfirmation(null);
+      const plan=planMeaning(frame,recentQuestion(origin),origin?.status==='draft'?origin.intake?.missing:undefined);
       if(plan.kind==='confirm'){answer((await confirmPending(messageId)).text);return;}
       if(plan.kind==='cancel'){setPendingConfirmation(null);if(origin?.intake)store.setIntake(id,{...origin.intake,visible:false});answer('Đã hủy yêu cầu trò chuyện đang chờ. Phiên tạo đề giữ trạng thái hiện tại.');return;}
-      if(plan.kind==='text'){if(frame.dialogueAct==='CORRECT'||frame.dialogueAct==='AMBIGUOUS'||frame.constraints.includes('CONTRADICTORY'))setPendingConfirmation(null);answer(plan.text);return;}
+      if(plan.kind==='text'){if(!['QUESTION','CONVERSATION','GUIDANCE'].includes(frame.dialogueAct))setPendingConfirmation(null);answer(plan.text);return;}
       const readOnly=plan.kind==='inspect'||(plan.kind==='intake'&&plan.information)||
         (plan.kind==='task'&&plan.intents.every(intent=>Object.values(GOALS).some(def=>'capability' in def&&def.capability===intent.id&&def.effect==='read')));
+      const freshRead=plan.kind==='task'&&plan.intents.every(intent=>['STATUS','LIST_SESSIONS','RECOVERABLE_JOBS','SHOW_FORMATS','LIST_DOCUMENTS','LIST_VERSIONS'].includes(intent.id));
+      if(readBinding()!==before&&!freshRead){answer('Đề hoặc cấu hình đích đã thay đổi. Hãy chỉ rõ lại nội dung muốn xem hoặc sửa.');return;}
       if(!readOnly || frame.dialogueAct==='CORRECT')setPendingConfirmation(null);
       if(!readOnly && runtimeRef.current!.binding()!==writeBefore){answer('Đề, cấu hình hoặc trình chỉnh sửa đã thay đổi. Hãy gửi lại yêu cầu để xác nhận đúng trạng thái mới.');return;}
       if(plan.kind==='intake') {
         const spec=reduceSpec(origin?.intake,plan.proposal,formats,messageId);
-        const chosen=formats.find(format=>format.id===spec.formatId);
+        let chosen=formats.find(format=>format.id===spec.formatId);
         if(plan.information){
           const matches=formats.filter(format=>format.available&&(!spec.family||familyFor(format)===spec.family)&&(!spec.subject||format.subjects.some(subject=>subject===spec.subject)));
           answer(matches.length?matches.map(formatOverview).join('\n'):`Chưa có mẫu cho ${spec.subject??spec.family??'yêu cầu này'}. Mẫu đang hỗ trợ: ${formats.filter(format=>format.available).map(format=>format.displayName).join(', ')}.`);return;
@@ -342,11 +346,12 @@ export const App: React.FC = () => {
           id=newId;origin=store.getSnapshot().find(session=>session.id===id);
         }
         const next=reduceSpec(origin?.intake,plan.proposal,formats,messageId);
+        chosen=formats.find(format=>format.id===next.formatId);
         flushSync(()=>store.setIntake(id,next));
         const draft=specDraft(next,formats)!;
         if(!chosen || !next.formatId){answer(`Chưa có mẫu cụ thể cho ${next.subject??next.family??'yêu cầu này'}. ${draft.needsClarification.join(' ')} Mẫu đang có: ${formats.filter(format=>format.available).map(format=>format.displayName).join(', ')}.`);return;}
         store.suggestTitle(id,`Đề ${chosen.displayName}`,messageId,3);
-        answer(`Đã cập nhật cấu hình ${chosen.displayName}. ${draft.limitations.join(' ')}${next.topic?` Chủ đề: ${next.topic}.`:''}${next.difficulty?` Độ khó: ${next.difficulty}.`:''} Kiểm tra thẻ cấu hình rồi bấm “${draft.hasMismatch?'Dùng mẫu này':'Tạo đề ngay'}”.`);
+        answer(`Đã cập nhật cấu hình ${chosen.displayName}. ${draft.limitations.join(' ')}${next.topic?` Chủ đề: ${next.topic}.`:''}${next.difficulty?` Độ khó: ${next.difficulty}.`:''}${frame.goals.some(goal=>!goal.prohibited&&goal.goal==='READ_EXAM_STRUCTURE')?` ${formatOverview(chosen)}`:''} Kiểm tra thẻ cấu hình rồi bấm “${draft.hasMismatch?'Dùng mẫu này':'Tạo đề ngay'}”.`);
         // Confirmation uses a fingerprint of the visible spec and documents. Any edit revokes it.
         const {params}=paramsForSpec(next,formats,origin?.inputDocuments??[]);
         if(params&&!frame.constraints.includes('NO_GENERATION'))setPendingConfirmation({workspaceId:id,binding:runtimeRef.current!.binding(),expires:Date.now()+CONFIRMATION_TTL_MS,run:async()=> {
@@ -366,13 +371,21 @@ export const App: React.FC = () => {
         for(const args of plan.targets){const q=current&&resolveQuestion(current,args);if(q?.stableId&&current?.jobId&&current.package?.revision)store.rememberQuestion(id,q.stableId,current.jobId,current.package.revision,messageId);}
         return;
       }
+      if(plan.kind==='practice'&&!moved&&origin&&(origin.status==='complete'||origin.status==='generating'||origin.generationStopped)){
+        const next=store.create('custom');
+        flushSync(()=>{store.setInputDocuments(next,options.attachedFiles);store.moveUserTurn(id,next,messageId);openSession(next);});
+        id=next;origin=store.getSnapshot().find(session=>session.id===id);
+      }
       const intents=plan.kind==='practice'?[{id:'PREPARE_PRACTICE',args:{...plan.parameters,
-        ...(!plan.parameters.sourcePreference&&options.searchWeb&&!frame.constraints.includes('NO_WEB')?{sourcePreference:'web'}:{})}} as Intent]:plan.intents;
+        ...(frame.constraints.includes('NO_GENERATION')?{prepareOnly:true}:{}),
+        ...(!plan.parameters.sourcePreference&&['no_web','attachments'].includes(origin?.intake?.sourcePreference??'')?{sourcePreference:origin!.intake!.sourcePreference!}:
+          !plan.parameters.sourcePreference&&options.searchWeb&&!frame.constraints.includes('NO_WEB')?{sourcePreference:'web'}:{})}} as Intent]:plan.intents;
       const runtime:Runtime={binding:()=>runtimeRef.current!.binding(),dispatch:(...args)=>runtimeRef.current!.dispatch(...args)};
       const receipts=await execute(intents,runtime,runtime.binding(),()=>!controller.signal.aborted,content,messageId);
       if(controller.signal.aborted)return;
       if(receipts.at(-1)?.status==='pending' && pending.current) {pending.current.continuation=intents.slice(receipts.length);pending.current.continuationMessage=content;}
-      answer(receipts.map(item=>item.text).join('\n') || 'Chưa thực hiện thao tác.');
+      answer([...receipts.map(item=>item.text),...(receipts.length<intents.length?[
+        `Còn ${intents.length-receipts.length} bước trong yêu cầu này chưa thực hiện. ${pending.current?'Các bước phụ thuộc đang chờ xác nhận.':'Hãy kiểm tra kết quả bước hiện tại trước khi yêu cầu tiếp tục.'}`]:[])].join('\n') || 'Chưa thực hiện thao tác.');
     } catch(error) {
       setPendingConfirmation(null);
       if(!controller.signal.aborted)answer(error instanceof ApiError?error.message:error instanceof Error&&error.message.startsWith('agent_')?
@@ -406,7 +419,7 @@ export const App: React.FC = () => {
     const id = configureId || store.create('template');
     const session = store.getSnapshot().find(item => item.id === id);
     if(session?.intake && params.formatId)store.setIntake(id,patchSpec(session.intake,{formatId:params.formatId},catalogFormats));
-    const instructions = session?.messages.filter(message => message.role === 'user' && !message.agentTurn).map(message => message.content).join('\n');
+    const instructions = session?.intake ? undefined : session?.messages.filter(message => message.role === 'user' && !message.agentTurn).map(message => message.content).join('\n');
     setShowQuickModal(false);
     revealSession(id);
     setAgentSelection(undefined);
@@ -782,16 +795,30 @@ export const App: React.FC = () => {
       case 'PREPARE_PRACTICE': {
         const topic=matchAdjacentTopic(String(intent.args.topic));
         if(!current||!topic||current.status!=='draft'||editor)return failed('Cần đề nháp và một chủ đề luyện tập lân cận được hỗ trợ.');
-        const count=Number(intent.args.count??topic.defaultCount),minutes=Number(intent.args.minutes??topic.defaultMinutes);
-        if(count<4||count>20||minutes<5||minutes>120)return failed(`Luyện tập hỗ trợ 4–20 câu, 5–120 phút. Yêu cầu đang là ${count} câu, ${minutes} phút; chưa tự đổi thông số.`);
+        const previous=current.intake?.adjacentTopicId===topic.id?current.intake:undefined;
+        const preference=(intent.args.sourcePreference??current.intake?.sourcePreference??'default') as Intake['sourcePreference'];
+        const web=preference==='web';
+        const count=Number(intent.args.count??previous?.count??topic.defaultCount),minutes=Number(intent.args.minutes??previous?.minutes??topic.defaultMinutes);
+        const maxMinutes=web?PRACTICE_LIMITS.researchMinutesMax:PRACTICE_LIMITS.minutesMax;
+        const difficulty=typeof intent.args.difficulty==='string'?intent.args.difficulty:current.intake?.difficulty;
+        const requirements=typeof intent.args.requirements==='string'?intent.args.requirements:current.intake?.requirements;
+        const saveSpec=(validation?:Intake['validation'])=>flushSync(()=>store.setIntake(current.id,{sourceId:messageId,sourceIds:[...new Set([...(current.intake?.sourceIds??[]),messageId])],
+          family:'custom',subject:topic.subject,formatId:topic.formatId,version:'1',adjacentTopicId:topic.id,topic:String(intent.args.topic),count,minutes,difficulty,requirements,
+          sourcePreference:preference,phase:'collecting',visible:false,validation}));
+        if(count<PRACTICE_LIMITS.countMin||count>PRACTICE_LIMITS.countMax||minutes<PRACTICE_LIMITS.minutesMin||minutes>maxMinutes){
+          saveSpec('failed');return failed(`Luyện tập hỗ trợ ${PRACTICE_LIMITS.countMin}–${PRACTICE_LIMITS.countMax} câu, ${PRACTICE_LIMITS.minutesMin}–${maxMinutes} phút${web?' khi tìm web':''}. Yêu cầu đang là ${count} câu, ${minutes} phút; chưa tự đổi thông số.`);
+        }
+        if((current.inputDocuments?.length??0)>PRACTICE_LIMITS.uploadedFilesMax||preference==='attachments'){
+          saveSpec('failed');return failed('Backend hiện chưa hỗ trợ tài liệu đính kèm cho luyện SAT/IELTS/TOEIC/TOEFL/ACT. Em chưa đổi nguồn hay đổi sang đề THPT. Có thể dùng cấu trúc tích hợp không tìm mạng hoặc gỡ tài liệu để tìm web.');
+        }
         return (async()=>{
-          const web=intent.args.sourcePreference==='web';
-          if(web&&current.inputDocuments?.length)return failed('Tìm mạng chưa kết hợp được tài liệu đính kèm. Hãy chọn một nguồn; chưa gửi yêu cầu nghiên cứu.');
-          const research=web?await researchAdjacentTopic(current.id,messageId,topic.id,redact(message),{count,minutes},activeTurn!.signal):undefined;
+          const research=web?await researchAdjacentTopic(current.id,messageId,topic.id,redact(message).slice(0,PRACTICE_LIMITS.researchMessageMax),{count,minutes},activeTurn!.signal):undefined;
           if(!validTurn()||runtimeRef.current!.binding()!==expected)return failed('Cấu hình đã đổi.');
+          saveSpec();
+          if(intent.args.prepareOnly)return {...succeeded(`Đã lưu cấu hình ${intent.args.topic} · ${count} câu · ${minutes} phút. Chưa chuẩn bị lệnh sinh đề vì yêu cầu không tạo nội dung mới đang có hiệu lực.`),expectedAfter:runtimeRef.current!.binding()};
           const params:ExamRequestParams={formatId:topic.formatId,formatVersion:'1',adjacentTopicId:topic.id,subject:topic.subject as Subject,grade:12,examType:'CUSTOM',
-            durationMinutes:minutes,itemCount:count,prompt:message||`Luyện tập ${topic.label}`,uploadedFiles:(current.inputDocuments??[]).map(doc=>doc.id),...(research?{webSources:research.sources}:{})};
-          return prepare(`${topic.label} · ${count} câu · ${minutes} phút. ${research?research.searchMode==='live_web'?'Đã tìm nguồn web.':'Tìm web chưa có dữ liệu trực tuyến; dùng cấu trúc tích hợp.':'Không tìm mạng; dùng cấu trúc tích hợp và nguồn đã đính kèm.'} Tạo nội dung mới sẽ dùng AI.`,async()=>{
+            durationMinutes:minutes,itemCount:count,prompt:[message||`Luyện tập ${topic.label}`,`Chủ đề luyện tập: ${intent.args.topic}`,difficulty?`Độ khó: ${difficulty}`:'',requirements?`Yêu cầu bổ sung: ${requirements}`:''].filter(Boolean).join('\n'),uploadedFiles:[],...(research?{webSources:research.sources}:{})};
+          return prepare(`${topic.label} · ${count} câu · ${minutes} phút. ${research?research.searchMode==='live_web'?'Đã tìm nguồn web.':'Tìm web chưa có dữ liệu trực tuyến; dùng cấu trúc tích hợp.':'Không tìm mạng; dùng cấu trúc tích hợp.'} Tạo nội dung mới sẽ dùng AI.`,async()=>{
             const job=await store.generate(current.id,params);
             return job?{status:'accepted',text:'Backend đã nhận yêu cầu luyện tập.'}:failed('Chưa nhận được công việc.');
           },'Tạo đề ngay');
@@ -904,7 +931,8 @@ export const App: React.FC = () => {
             const family = current.intake.family === 'thpt' ? 'THPT' : current.intake.family === 'vact' ? 'V-ACT' : undefined;
             return succeeded(family ? 'Thầy cô đang xem xét dạng ' + family + '. Chưa chọn mẫu cụ thể.' : 'Thầy cô chưa chọn dạng đề.');
           }
-          const label = current.intake.formatId === 'vact' ? 'V-ACT' : current.intake.subject && current.intake.subject !== 'Toán Học' ? current.intake.subject + ' THPT' : 'Toán THPT';
+          const label = catalogFormats.find(format=>format.id===current.intake?.formatId)?.displayName??
+            (current.intake.adjacentTopicId?matchAdjacentTopic(current.intake.adjacentTopicId)?.label:undefined)??current.intake.subject??'mẫu đã lưu';
           return succeeded(`Mẫu gần nhất là ${label}. Yêu cầu gốc: “${source.content}”.`);
         }
         const first = current.messages.find(item => item.id !== messageId && meaningful(item)) ??

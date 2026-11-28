@@ -14,6 +14,7 @@ from .semantics import (
     normalize_frame,
     semantic_schema,
 )
+from .v3 import FrameV3
 
 logger = logging.getLogger(__name__)
 SYSTEM = (
@@ -80,7 +81,7 @@ def gemini_request(turn: Turn, output_tokens: int, *, minimal_thinking: bool = F
     }
 
 
-def parse_native(provider: str, payload: dict, *, v3=False) -> SemanticFrame:
+def parse_native(provider: str, payload: dict, *, v3=False) -> SemanticFrame | FrameV3:
     stage = "response_envelope"
     finish = None
     text = ""

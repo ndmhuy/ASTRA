@@ -12,6 +12,7 @@ import { sectionId } from './examActions.ts';
 
 export const SEMANTIC_VERSION = registry.schemaVersion;
 export const GOALS = registry.goals;
+export const PRACTICE_LIMITS = registry.limits.practice;
 export type GoalId = keyof typeof GOALS;
 type Slots = Intent['args'];
 export type Goal = { goal: GoalId; parameters: Slots; reference?: 'current' | 'previous' | 'recent'; prohibited?: boolean };
@@ -105,9 +106,12 @@ export function understandLocal(message: string, context: {formats:ExamFormat[];
       const match=tail.match(pattern);
       if(match){parameters[slot]=Number(match[1]);tail=tail.replace(pattern,' ');}
     }
+    let matchedTopic=false;
     for(const term of practice.terms.slice().sort((a,b)=>b.length-a.length)){
       const escaped=fold(term).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-      tail=tail.replace(new RegExp('(^|\\s)'+escaped+'(?=\\s|$)','g'),' ');
+      const pattern=new RegExp('(^|\\s)'+escaped+'(?=\\s|$)','g');
+      if(!matchedTopic&&pattern.test(tail)){parameters.topic=term;matchedTopic=true;}
+      tail=tail.replace(pattern,' ');
     }
     if(tail.replace(/[,.;]/g,'').trim())return {kind:'defer'};
     if(practiceRequest[1].startsWith('tim'))parameters.sourcePreference='web';
@@ -168,7 +172,7 @@ export function understandLocal(message: string, context: {formats:ExamFormat[];
 export type Plan = {kind:'text';text:string} | {kind:'confirm'} | {kind:'cancel'} |
   {kind:'intake';proposal:ExamIntake;information:boolean} | {kind:'inspect';targets:Slots[]} |
   {kind:'task';intents:Intent[]} | {kind:'practice';parameters:Slots};
-export function planMeaning(frame:Frame,recent?:{number:number;part?:string}):Plan {
+export function planMeaning(frame:Frame,recent?:{number:number;part?:string},missing?:Intake['missing']):Plan {
   const stop=(text:string):Plan=>({kind:'text',text});
   if(frame.constraints.some(item=>['NO_EXECUTION','CONDITIONAL','NEGATED','CONTRADICTORY'].includes(item))) return stop('Yêu cầu có điều kiện hoặc mâu thuẫn. Thầy cô muốn thực hiện bước nào? Em chưa thay đổi dữ liệu.');
   if(frame.dialogueAct==='CONFIRM') return {kind:'confirm'};
@@ -193,7 +197,8 @@ export function planMeaning(frame:Frame,recent?:{number:number;part?:string}):Pl
       parameters[key]=val;
     }
     const information=frame.dialogueAct==='QUESTION'||goals.every(goal=>goal.goal==='READ_EXAM_STRUCTURE');
-    return {kind:'intake',proposal:{mode:information?'structure':'request',...parameters,...(frame.constraints.includes('NO_WEB')?{sourcePreference:'attachments'}:{})} as ExamIntake,information};
+    if(!information&&frame.dialogueAct==='INFORM'&&!missing)return stop('Em đã ghi nhận thông tin. Thầy cô muốn xem cấu trúc hay chuẩn bị một đề mới? Chưa có bước cấu hình đang chờ để điền thông tin này.');
+    return {kind:'intake',proposal:{mode:information?'structure':'request',...parameters,...(frame.constraints.includes('NO_WEB')&&parameters.sourcePreference!=='attachments'?{sourcePreference:'no_web'}:{})} as ExamIntake,information};
   }
   if(frame.dialogueAct==='QUESTION' && definitions.some(def=>def.effect!=='read')) return stop('Em chưa thực hiện thao tác. Thao tác này cần đúng đề/câu và xác nhận khi có sửa dữ liệu hoặc dùng AI.');
   if(definitions.some(def=>!def.dialogueActs.includes(frame.dialogueAct))) return stop('Thầy cô đang hỏi thông tin hay muốn thực hiện thao tác? Em chưa thay đổi dữ liệu.');
@@ -208,7 +213,7 @@ export function planMeaning(frame:Frame,recent?:{number:number;part?:string}):Pl
     }
     return {kind:'inspect',targets};
   }
-  if(goals.length===1 && goals[0].goal==='PREPARE_PRACTICE')return frame.constraints.includes('NO_WEB')?{kind:'practice',parameters:{...goals[0].parameters,sourcePreference:'attachments'}}:{kind:'practice',parameters:goals[0].parameters};
+  if(goals.length===1 && goals[0].goal==='PREPARE_PRACTICE')return frame.constraints.includes('NO_WEB')&&goals[0].parameters.sourcePreference!=='attachments'?{kind:'practice',parameters:{...goals[0].parameters,sourcePreference:'no_web'}}:{kind:'practice',parameters:goals[0].parameters};
   if(goals.some(goal=>goal.goal==='CAPABILITY_INQUIRY'))return stop('ASTRA hỗ trợ các mẫu trong danh mục thực tế, tài liệu đính kèm, đọc đáp án/lời giải đã lưu, sửa/kiểm tra/tạo lại câu, tạm dừng/tiếp tục cùng phiên, lịch sử và xuất bản đã duyệt. Việc kiểm tra hoặc sinh nội dung mới dùng AI và cần xác nhận.');
   const intents:Intent[]=[];
   for(const goal of goals) {

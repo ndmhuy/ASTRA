@@ -17,7 +17,8 @@ export type Intake = {
   topic?: string;
   difficulty?: string;
   requirements?: string;
-  sourcePreference?: 'attachments' | 'web' | 'default';
+  sourcePreference?: 'attachments' | 'web' | 'default' | 'no_web';
+  adjacentTopicId?: string;
   documentIds?: string[];
   provenance?: Record<string, string>;
   visible?: boolean;

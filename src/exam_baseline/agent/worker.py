@@ -12,7 +12,8 @@ from pydantic import ValidationError
 from .contracts import VERSION, Decision, Turn
 from .provider import ProviderFailure
 from .semantics import VERSION as SEMANTIC_VERSION
-from .semantics import SemanticFrame, normalize_frame
+from .semantics import normalize_frame
+from .v3 import Interpretation
 
 logger = logging.getLogger(__name__)
 
@@ -112,7 +113,7 @@ class WorkerInterpretationProvider:
             "/v2/agent/interpret" if semantic else "/v1/agent/interpret"
         )
 
-    async def interpret(self, turn: Turn, timeout: float) -> Decision | SemanticFrame:
+    async def interpret(self, turn: Turn, timeout: float) -> Interpretation:
         try:
             body = turn.model_dump(exclude_none=True)
             body["context"] = turn.context.model_dump(exclude_defaults=True, exclude_none=True)

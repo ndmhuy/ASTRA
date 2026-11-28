@@ -11,7 +11,7 @@ from exam_baseline.core.recovery import POLICY, delay
 
 from .contracts import Decision, Turn
 from .semantics import SemanticFrame
-from .v3 import FrameV3
+from .v3 import FrameV3, Interpretation
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +25,7 @@ class ProviderFailure(Exception):
 
 
 class InterpretationProvider(Protocol):
-    async def interpret(self, turn: Turn, timeout: float) -> Decision | SemanticFrame: ...
+    async def interpret(self, turn: Turn, timeout: float) -> Interpretation: ...
 
 
 @dataclass(frozen=True)
@@ -64,7 +64,7 @@ class ProviderRouter:
         self.timing = timing or Timing()
         self.clock = clock
 
-    async def __call__(self, turn: Turn) -> Decision | SemanticFrame:
+    async def __call__(self, turn: Turn) -> Interpretation:
         started = self.clock()
         reason = "transient"
         attempts = 0
@@ -124,7 +124,7 @@ class ProviderRouter:
                 return result
         return Decision(kind="temporarily_unavailable", reasonCode=reason)
 
-    async def _within(self, route: Route, turn: Turn, deadline: float) -> Decision | SemanticFrame:
+    async def _within(self, route: Route, turn: Turn, deadline: float) -> Interpretation:
         task = asyncio.create_task(route.provider.interpret(turn, deadline))
         try:
             done, _ = await asyncio.wait({task}, timeout=deadline)

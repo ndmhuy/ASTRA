@@ -5,7 +5,16 @@
     "workflowSteps": 4,
     "workflowTransitions": 12,
     "workflowRetries": 0,
-    "executionMs": 15000
+    "executionMs": 15000,
+    "practice": {
+      "countMin": 4,
+      "countMax": 20,
+      "minutesMin": 5,
+      "minutesMax": 180,
+      "researchMinutesMax": 120,
+      "researchMessageMax": 2000,
+      "uploadedFilesMax": 0
+    }
   },
   "parameterBounds": {
     "subject": {
@@ -330,7 +339,10 @@
         "topic": "string",
         "count": "integer?",
         "minutes": "integer?",
-        "sourcePreference": "attachments|web|default?"
+        "sourcePreference": "attachments|web|default|no_web?",
+        "difficulty": "string?",
+        "requirements": "string?",
+        "prepareOnly": "boolean?"
       }
     },
     "USE_DOCUMENT": {
@@ -685,7 +697,7 @@
         "useDefaults": "boolean?",
         "difficulty": "string?",
         "requirements": "string?",
-        "sourcePreference": "attachments|web|default?",
+        "sourcePreference": "attachments|web|default|no_web?",
         "clear": "topic|difficulty|requirements|count|minutes|sources?",
         "fresh": "boolean?"
       },
@@ -712,7 +724,7 @@
         "useDefaults": "boolean?",
         "difficulty": "string?",
         "requirements": "string?",
-        "sourcePreference": "attachments|web|default?",
+        "sourcePreference": "attachments|web|default|no_web?",
         "clear": "topic|difficulty|requirements|count|minutes|sources?",
         "fresh": "boolean?"
       },
@@ -1182,7 +1194,9 @@
         "topic": "string",
         "count": "integer?",
         "minutes": "integer?",
-        "sourcePreference": "attachments|web|default?"
+        "sourcePreference": "attachments|web|default|no_web?",
+        "difficulty": "string?",
+        "requirements": "string?"
       },
       "resolver": "capability",
       "capability": "PREPARE_PRACTICE",

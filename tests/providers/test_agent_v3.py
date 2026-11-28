@@ -12,11 +12,13 @@ from pydantic import ValidationError
 from exam_baseline.agent.contracts import Decision
 from exam_baseline.agent.native import gemini_request, parse_native
 from exam_baseline.agent.provider import ProviderRouter
+from exam_baseline.agent.research import ResearchRequest
 from exam_baseline.agent.semantics import SemanticFrame
-from exam_baseline.agent.v3 import GOALS, FrameV3, TurnV3, normalize_frame, upgrade_legacy
+from exam_baseline.agent.v3 import GOALS, REGISTRY, FrameV3, TurnV3, normalize_frame, upgrade_legacy
 from exam_baseline.agent.worker import WorkerInterpretationProvider
 from exam_baseline.api.app import create_app
 from exam_baseline.config import Settings
+from exam_baseline.ui.contracts import AdjacentGenerateRequest
 
 
 def turn():
@@ -40,6 +42,21 @@ def turn():
 
 
 def test_native_v3_registry_covers_all_local_and_new_goals_without_executable_ids():
+    limits = REGISTRY["limits"]["practice"]
+    generated = AdjacentGenerateRequest.model_json_schema()["properties"]
+    research = ResearchRequest.model_json_schema()["properties"]
+    assert (limits["countMin"], limits["countMax"]) == (
+        generated["itemCount"]["minimum"],
+        generated["itemCount"]["maximum"],
+    )
+    assert (limits["minutesMin"], limits["minutesMax"]) == (
+        generated["durationMinutes"]["minimum"],
+        generated["durationMinutes"]["maximum"],
+    )
+    assert limits["uploadedFilesMax"] == generated["uploadedFiles"]["maxItems"]
+    minute = next(item for item in research["minutes"]["anyOf"] if item.get("type") == "integer")
+    assert limits["researchMinutesMax"] == minute["maximum"]
+    assert limits["researchMessageMax"] == research["message"]["maxLength"]
     request = gemini_request(turn(), 512)
     schema = request["generationConfig"]["responseJsonSchema"]
     assert set(schema["properties"]["goals"]["items"]["properties"]["goal"]["enum"]) == set(GOALS)

@@ -26,6 +26,10 @@ export function reduceSpec(previous:Intake|undefined, proposal:ExamIntake, forma
   }
   for(const key of Object.keys(proposal)) if(key!=='mode') next.provenance![key]=sourceId;
   const available=formats.filter(format=>format.available);
+  if(subjectChanged && !proposal.family){
+    const subjectFormats=available.filter(format=>format.subjects.some(item=>fold(item)===fold(subject!)));
+    if(subjectFormats.length===1)next.family=familyFor(subjectFormats[0]);
+  }
   let candidates=available.filter(format=>(!next.family||familyFor(format)===next.family) &&
     (!next.subject||format.subjects.some(item=>fold(item)===fold(next.subject!))));
   if(next.family==='vact')candidates=available.filter(format=>familyFor(format)==='vact');
@@ -33,6 +37,7 @@ export function reduceSpec(previous:Intake|undefined, proposal:ExamIntake, forma
   next.formatId=selected?.id; next.version=selected?.version;
   if(selected) {next.family=familyFor(selected);next.subject=selected.subjects[0];next.missing=undefined;}
   else next.missing=!next.family?'family':'subject';
+  if(next.family!=='custom')delete next.adjacentTopicId;
   return next;
 }
 

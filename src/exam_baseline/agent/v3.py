@@ -6,7 +6,7 @@ from typing import Annotated, Literal
 
 from pydantic import Field, StringConstraints, model_validator
 
-from .contracts import Contract, arg_schema
+from .contracts import Contract, Decision, arg_schema
 from .semantics import QuestionReference, SemanticContext, SemanticFrame, SemanticTurn
 
 REGISTRY = json.loads(
@@ -78,6 +78,9 @@ class FrameV3(Contract):
         ]
     ] = Field(default_factory=list, max_length=6)
     title: Annotated[str, StringConstraints(min_length=1, max_length=60)] | None = None
+
+
+Interpretation = Decision | SemanticFrame | FrameV3
 
 
 class GroundedContext(Contract):

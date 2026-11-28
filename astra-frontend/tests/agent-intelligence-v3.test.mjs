@@ -1,11 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {parseCanonical,meaning,planMeaning,understandLocal,GOALS} from '../src/agent/intelligence.ts';
+import {parseCanonical,meaning,planMeaning,understandLocal,decisionMeaning,GOALS} from '../src/agent/intelligence.ts';
 import {reduceSpec,specDraft,patchSpec,paramsForSpec} from '../src/agent/examSpec.ts';
 import {buildParamsFromDraft} from '../src/agent/chatConfig.ts';
 import {inspectQuestion} from '../src/agent/examActions.ts';
 import {admit,execute} from '../src/agent/recipes.ts';
+import {ExamSessions} from '../src/state/examSessions.ts';
 
 const formats=JSON.parse(fs.readFileSync(new URL('../../eval/agent-semantic/local-catalog.fixture.json',import.meta.url)));
 const frame=(goals,extra={})=>parseCanonical({schemaVersion:'astra-semantic-v3',dialogueAct:'REQUEST',goals,...extra});
@@ -33,6 +34,9 @@ test('information and scoped no-generation read do not become spec writes',()=>{
   }
   const plan=planMeaning(frame([{goal:'REQUEST_GENERATION',parameters:{family:'thpt',subject:'Toán Học'}}],{dialogueAct:'QUESTION'}));
   assert.equal(plan.information,true);
+  const followup=frame([{goal:'PREPARE_EXAM',parameters:{subject:'Hóa Học'}}],{dialogueAct:'INFORM'});
+  assert.equal(planMeaning(followup).kind,'text');
+  assert.equal(planMeaning(followup,undefined,'subject').kind,'intake');
 });
 
 test('unconsumed requirements, quotations, hypothetical and informal input remain honest',()=>{
@@ -96,6 +100,7 @@ test('selected input sources cannot cross workspace or disappear silently at sub
   const doc={id:'local-doc',filename:'fixture.txt'};
   assert.equal(paramsForSpec({...spec,documentIds:['foreign-doc']},formats,[doc]).params,undefined);
   assert.deepEqual(paramsForSpec({...spec,documentIds:['local-doc']},formats,[doc]).params.uploadedFiles,['local-doc']);
+  assert.deepEqual(paramsForSpec({...spec,sourcePreference:'no_web'},formats,[]).params.uploadedFiles,[]);
   const cleared=patchSpec(spec,{formatId:undefined},formats);
   assert.equal(cleared.formatId,undefined);
 });
@@ -104,10 +109,13 @@ test('fresh AI and NO_WEB restrictions are enforced before dispatch',()=>{
   assert.equal(planMeaning(frame([{goal:'VERIFY_ANSWER',parameters:{number:5}}],{constraints:['NO_GENERATION']})).kind,'text');
   assert.equal(planMeaning(frame([{goal:'VERIFY_ANSWER',parameters:{number:5}}],{dialogueAct:'QUESTION'})).kind,'text');
   const plan=planMeaning(frame([{goal:'PREPARE_PRACTICE',parameters:{topic:'SAT Math',count:15,sourcePreference:'web'}}],{constraints:['NO_WEB']}));
-  assert.equal(plan.parameters.sourcePreference,'attachments');
+  assert.equal(plan.parameters.sourcePreference,'no_web');
+  const attached=planMeaning(frame([{goal:'PREPARE_PRACTICE',parameters:{topic:'SAT Math',sourcePreference:'attachments'}}],{constraints:['NO_WEB']}));
+  assert.equal(attached.parameters.sourcePreference,'attachments');
   const direct=understandLocal('Tìm đề SAT Math 15 câu 25 phút',context);
   assert.equal(direct.frame.goals[0].goal,'PREPARE_PRACTICE');
   assert.equal(direct.frame.goals[0].parameters.count,15);
+  assert.equal(direct.frame.goals[0].parameters.topic,'SAT Math');
   assert.equal(direct.frame.goals[0].parameters.sourcePreference,'web');
   assert.equal(understandLocal('Tạo đề SAT Math có ngữ cảnh trường học',context).kind,'defer');
 });
@@ -153,4 +161,34 @@ test('all registry capability bindings exist in the real adapter',()=>{
   }
   assert.ok(!app.includes('applyInlineDraft'));
   assert.ok(!app.includes('mayDispatch('));
+});
+
+test('legacy selection is bridged through actual catalog data without exposing execution IDs',()=>{
+  const legacy={kind:'task',intents:[{id:'SELECT_FORMAT',args:{format:'thpt-math'}}]};
+  assert.equal(decisionMeaning(legacy),undefined);
+  const converted=decisionMeaning(legacy,formats);
+  assert.equal(converted.goals[0].goal,'PREPARE_EXAM');
+  assert.equal(converted.goals[0].parameters.subject,'Toán Học');
+  assert.equal(converted.goals[0].parameters.format,undefined);
+  assert.equal(decisionMeaning({...legacy,intents:[{id:'SELECT_FORMAT',args:{format:'invented'}}]},formats),undefined);
+  const detail=decisionMeaning({kind:'task',intents:[{id:'FORMAT_DETAILS',args:{}}]},formats,{formatId:'thpt-math'});
+  assert.equal(planMeaning(detail).information,true);
+  assert.equal(decisionMeaning({kind:'temporarily_unavailable',intents:[],reasonCode:'schema'},formats),undefined);
+});
+
+test('moving a newly resolved exam request clears the previous paper reference and preserves that job',()=>{
+  const saved=JSON.stringify([{id:'source',title:'old paper',mode:'custom',status:'complete',createdAt:'2026-11-28T00:00:00Z',
+    jobId:'old-job',package:{revision:3},questions:[],draft:'',messages:[{id:'turn',role:'user',content:'new request',timestamp:'2026-11-28T00:00:00Z',examVersion:{jobId:'old-job',revision:3}}]}]);
+  const memory=new Map([['astra.sessions.v1',saved]]);
+  globalThis.localStorage={getItem:key=>memory.get(key)??null,setItem:(key,value)=>memory.set(key,value)};
+  try{
+    const store=new ExamSessions({});
+    const target=store.create('custom');
+    assert.equal(store.moveUserTurn('source',target,'turn'),true);
+    const original=store.getSnapshot().find(item=>item.id==='source');
+    const next=store.getSnapshot().find(item=>item.id===target);
+    assert.equal(original.jobId,'old-job');assert.equal(original.package.revision,3);assert.equal(original.messages.length,0);
+    assert.equal(next.jobId,null);assert.equal(next.messages[0].examVersion,null);assert.equal(next.messages[0].id,'turn');
+    store.dispose();
+  }finally{delete globalThis.localStorage;}
 });

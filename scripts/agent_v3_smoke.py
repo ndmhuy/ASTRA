@@ -70,6 +70,14 @@ def observe(base):
                 False,
                 "no-web-practice",
             ),
+            ("draft", "Luyện SAT theo file đính kèm fixture", None, False, "attached-practice"),
+            (
+                "completed",
+                "Luyện SAT Math 15 câu 25 phút không dùng web fixture",
+                None,
+                True,
+                "no-web-practice",
+            ),
         ]
         for state, message, subject, fresh, model in cases:
             context = browser.new_context(reduced_motion="reduce")
@@ -105,6 +113,19 @@ def observe(base):
                 jobMeta=dict(subject="Tiếng Anh", durationMinutes=50, itemCount=40),
             )
             entries = {workspace: copy.deepcopy(source)}
+            if model == "attached-practice":
+                entries[workspace]["inputDocuments"] = [
+                    {
+                        "schema_version": "input-document-v1",
+                        "id": str(uuid4()),
+                        "filename": "fixture.txt",
+                        "kind": "supplementary",
+                        "size": 30,
+                        "sha256": "a" * 64,
+                        "characters": 30,
+                        "preview": "Synthetic fixture preview",
+                    }
+                ]
             counters = dict(interpretations=0, evaluations=0, generation=0)
             errors, forbidden = [], []
             page.on("pageerror", lambda error, errors=errors: errors.append(str(error)))
@@ -180,6 +201,16 @@ def observe(base):
                                     "topic": "SAT Math",
                                     "count": 15,
                                     "minutes": 25,
+                                    "sourcePreference": "no_web",
+                                },
+                            }
+                        ]
+                    if model == "attached-practice":
+                        goals = [
+                            {
+                                "goal": "PREPARE_PRACTICE",
+                                "parameters": {
+                                    "topic": "SAT Math",
                                     "sourcePreference": "attachments",
                                 },
                             }
@@ -203,6 +234,9 @@ def observe(base):
                             },
                         }
                     )
+                elif path == "/agent/research":
+                    forbidden.append("Unexpected research request")
+                    route.abort()
                 elif path == "/api/exam-formats/evaluate":
                     counters["evaluations"] += 1
                     payload = request.post_data_json
@@ -326,6 +360,8 @@ def observe(base):
                     if model == "unavailable"
                     else "Chưa có tài liệu"
                     if model == "documents"
+                    else "chưa hỗ trợ tài liệu đính kèm"
+                    if model == "attached-practice"
                     else "Đã lưu 16/22 câu"
                     if model == "toggle-status"
                     else "có điều kiện hoặc mâu thuẫn"
@@ -337,6 +373,12 @@ def observe(base):
                 )
             assert len(entries) == (2 if fresh else 1), (state, message, entries)
             if fresh:
+                # Model-resolved creation transfers the turn after interpretation;
+                # wait for the observed, serialized draft saves to finish.
+                for _ in range(100):
+                    if not entries[workspace]["messages"]:
+                        break
+                    page.wait_for_timeout(10)
                 # Typing/clearing the composer legitimately saves a new draft revision.
                 # It must not alter the old exam, checkpoint, title or transcript.
                 for key in source.keys() - {"revision", "messages"}:
@@ -344,6 +386,7 @@ def observe(base):
                 child = next(value for key, value in entries.items() if key != workspace)
                 assert not child.get("jobId") and not child.get("generationId")
                 assert child["messages"][0]["content"] == message
+                assert child["messages"][0].get("examVersion") is None
                 assert not entries[workspace]["messages"], "Old transcript must remain unchanged"
             assert counters["interpretations"] == (
                 1 if model and model != "toggle-status" else 0

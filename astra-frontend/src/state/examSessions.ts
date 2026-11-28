@@ -612,7 +612,7 @@ export class ExamSessions {
     if(!message || !target || target.jobId || target.messages.length)return false;
     // Move exactly this turn; background receipts and the old job stay in place.
     this.update(sourceId,session=>({...session,messages:session.messages.filter(item=>item.id!==messageId)}),true);
-    this.update(targetId,session=>({...session,messages:[message]}),true);
+    this.update(targetId,session=>({...session,messages:[{...message,examVersion:null}]}),true);
     return true;
   }
   rememberQuestion(id: string, stableId: string, jobId: string, revision: number, sourceId: string) {

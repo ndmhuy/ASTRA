@@ -17,7 +17,7 @@ export type ExamIntake = {
   useDefaults?: boolean;
   difficulty?: string;
   requirements?: string;
-  sourcePreference?: 'attachments' | 'web' | 'default';
+  sourcePreference?: 'attachments' | 'web' | 'default' | 'no_web';
   clear?: 'topic' | 'difficulty' | 'requirements' | 'count' | 'minutes' | 'sources';
   fresh?: boolean;
 };

@@ -6,7 +6,8 @@ from time import monotonic
 
 from fastapi import HTTPException
 
-from .contracts import Decision, Turn
+from .contracts import Turn
+from .v3 import Interpretation
 
 
 class Admission:
@@ -24,9 +25,9 @@ class Admission:
         self.recent: deque[tuple[float, str]] = deque()
         self.active: dict[str, str] = {}
         self.inflight: set[tuple[str, str]] = set()
-        self.cached: OrderedDict[tuple[str, str], tuple[float, str, Decision]] = OrderedDict()
+        self.cached: OrderedDict[tuple[str, str], tuple[float, str, Interpretation]] = OrderedDict()
 
-    def enter(self, peer: str, turn: Turn, fingerprint: str) -> Decision | None:
+    def enter(self, peer: str, turn: Turn, fingerprint: str) -> Interpretation | None:
         now = monotonic()
         while self.recent and now - self.recent[0][0] >= self.WINDOW:
             self.recent.popleft()
@@ -61,7 +62,7 @@ class Admission:
         self.active.pop(turn.workspaceId, None)
         self.inflight.discard((peer, turn.clientMessageId))
 
-    def finish(self, peer: str, turn: Turn, fingerprint: str, decision: Decision) -> None:
+    def finish(self, peer: str, turn: Turn, fingerprint: str, decision: Interpretation) -> None:
         self.cached[(peer, turn.clientMessageId)] = (monotonic(), fingerprint, decision)
         if len(self.cached) > self.REPLAY_CAP:
             self.cached.popitem(last=False)

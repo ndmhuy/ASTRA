@@ -19,6 +19,7 @@ from exam_baseline.providers.gateway import Gateway
 from .contracts import Decision, Turn
 from .prompt import SYSTEM, schema, turn_text
 from .provider import ProviderFailure, ProviderRouter, Timing
+from .v3 import Interpretation
 
 logger = logging.getLogger(__name__)
 
@@ -97,8 +98,9 @@ class GeminiGatewayProvider:
         self.url = f"{gateway.base('google-ai-studio')}/v1/models/{model}:generateContent"
         self.output_tokens = output_tokens
         self.semantic = semantic
+        self.semantic_version = "astra-semantic-v3" if semantic else "astra-semantic-v1"
 
-    async def interpret(self, turn: Turn, timeout: float) -> Decision:
+    async def interpret(self, turn: Turn, timeout: float) -> Interpretation:
         from .native import gemini_request, parse_native
 
         native = (

@@ -13,9 +13,9 @@ from .admission import Admission, normalize_message
 from .contracts import MAX_BODY, VERSION, Decision, Turn
 from .research import ResearchRequest, ResearchResponse, search_adjacent_topic
 from .semantics import SemanticFrame, SemanticTurn, legacy_decision
-from .v3 import FrameV3, TurnV3, upgrade_legacy
+from .v3 import FrameV3, Interpretation, TurnV3, upgrade_legacy
 
-Interpreter = Callable[[Turn], Awaitable[Decision | SemanticFrame]]
+Interpreter = Callable[[Turn], Awaitable[Interpretation]]
 Researcher = Callable[[ResearchRequest], Awaitable[ResearchResponse]]
 
 

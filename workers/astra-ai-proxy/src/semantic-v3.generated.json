@@ -6,7 +6,16 @@
       "workflowSteps": 4,
       "workflowTransitions": 12,
       "workflowRetries": 0,
-      "executionMs": 15000
+      "executionMs": 15000,
+      "practice": {
+        "countMin": 4,
+        "countMax": 20,
+        "minutesMin": 5,
+        "minutesMax": 180,
+        "researchMinutesMax": 120,
+        "researchMessageMax": 2000,
+        "uploadedFilesMax": 0
+      }
     },
     "parameterBounds": {
       "subject": {
@@ -331,7 +340,10 @@
           "topic": "string",
           "count": "integer?",
           "minutes": "integer?",
-          "sourcePreference": "attachments|web|default?"
+          "sourcePreference": "attachments|web|default|no_web?",
+          "difficulty": "string?",
+          "requirements": "string?",
+          "prepareOnly": "boolean?"
         }
       },
       "USE_DOCUMENT": {
@@ -686,7 +698,7 @@
           "useDefaults": "boolean?",
           "difficulty": "string?",
           "requirements": "string?",
-          "sourcePreference": "attachments|web|default?",
+          "sourcePreference": "attachments|web|default|no_web?",
           "clear": "topic|difficulty|requirements|count|minutes|sources?",
           "fresh": "boolean?"
         },
@@ -713,7 +725,7 @@
           "useDefaults": "boolean?",
           "difficulty": "string?",
           "requirements": "string?",
-          "sourcePreference": "attachments|web|default?",
+          "sourcePreference": "attachments|web|default|no_web?",
           "clear": "topic|difficulty|requirements|count|minutes|sources?",
           "fresh": "boolean?"
         },
@@ -1183,7 +1195,9 @@
           "topic": "string",
           "count": "integer?",
           "minutes": "integer?",
-          "sourcePreference": "attachments|web|default?"
+          "sourcePreference": "attachments|web|default|no_web?",
+          "difficulty": "string?",
+          "requirements": "string?"
         },
         "resolver": "capability",
         "capability": "PREPARE_PRACTICE",
@@ -2511,7 +2525,8 @@
                       "enum": [
                         "attachments",
                         "web",
-                        "default"
+                        "default",
+                        "no_web"
                       ]
                     },
                     "clear": {
@@ -2611,7 +2626,8 @@
                       "enum": [
                         "attachments",
                         "web",
-                        "default"
+                        "default",
+                        "no_web"
                       ]
                     },
                     "clear": {
@@ -3819,8 +3835,19 @@
                       "enum": [
                         "attachments",
                         "web",
-                        "default"
+                        "default",
+                        "no_web"
                       ]
+                    },
+                    "difficulty": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 160
+                    },
+                    "requirements": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 600
                     }
                   }
                 },
@@ -4176,7 +4203,8 @@
                   "enum": [
                     "attachments",
                     "web",
-                    "default"
+                    "default",
+                    "no_web"
                   ]
                 },
                 "clear": {
@@ -4324,5 +4352,5 @@
     "title": "FrameV3",
     "type": "object"
   },
-  "contractHash": "b4bdb0e8d17811abbd477482b471fc6d1ec64af41da037e4e9c3dfc9e4048cc0"
+  "contractHash": "c300c7de6bc5c321e3020c28f009ce2e74e90059851c59ec5e3e82f524d584da"
 }
