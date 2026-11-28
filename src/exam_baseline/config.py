@@ -20,11 +20,16 @@ class Settings(BaseSettings):
         hide_input_in_errors=True,
     )
 
-    provider: Literal["mock", "chat_completions", "worker_mas", "unconfigured"] = "mock"
+    provider: Literal["mock", "chat_completions", "anthropic", "worker_mas", "unconfigured"] = (
+        "mock"
+    )
     demo_mode: bool = False
     model: str = Field(default="mock-fixture-v1", min_length=1)
     prompt_version: Literal["v1"] = "v1"
     api_key: SecretStr | None = None
+    anthropic_api_key: SecretStr | None = Field(
+        default=None, validation_alias="ANTHROPIC_API_KEY", exclude=True, repr=False
+    )
     use_ai_gateway: bool = False
     gateway_account_id: str = ""
     gateway_id: str = ""
@@ -81,7 +86,11 @@ class Settings(BaseSettings):
     def complete_configuration(self):
         if self.provider == "worker_mas" and self.model == "mock-fixture-v1":
             raise ValueError("set EXAM_MODEL for the real MAS provider")
-        if self.provider == "chat_completions":
+        if self.provider in {"chat_completions", "anthropic"}:
+            if self.provider == "anthropic" and self.api_key is None:
+                self.api_key = self.anthropic_api_key
+            if self.provider == "anthropic" and self.use_ai_gateway:
+                raise ValueError("Anthropic Messages requires its direct API endpoint")
             if self.use_ai_gateway:
                 self.gateway()
                 if not self.spend_limit_usd:

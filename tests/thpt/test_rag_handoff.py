@@ -70,7 +70,7 @@ def test_real_rag_through_thpt_cli_and_resume(tmp_path, monkeypatch, capsys):
                 return await replay["reviewer"].complete(prompt)
             return await replay["solver"].complete(prompt)
 
-    monkeypatch.setattr(cli, "ChatCompletionsProvider", lambda *_: ReplayProvider())
+    monkeypatch.setattr(cli, "http_provider", lambda *_: ReplayProvider())
     assert cli.main() == 0
     result = json.loads(capsys.readouterr().out)
     assert result["quality_decision"] == "pending_human_review"

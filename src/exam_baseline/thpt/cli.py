@@ -10,7 +10,7 @@ from pydantic import ValidationError
 
 from exam_baseline.config import Settings
 from exam_baseline.core.contracts import ProviderError
-from exam_baseline.providers.chat_completions import ChatCompletionsProvider
+from exam_baseline.providers.http import http_provider
 from exam_baseline.thpt.models import Request
 from exam_baseline.thpt.orchestrator import Orchestrator
 from exam_baseline.thpt.planner import plan_request_from_prompt
@@ -95,11 +95,11 @@ async def run(args, request_model=Request, workflow_type=Orchestrator):
         )
         return audit
     settings = Settings()
-    if settings.provider != "chat_completions":
+    if settings.provider not in {"chat_completions", "anthropic"}:
         raise ValueError("Configure EXAM_PROVIDER=chat_completions in .env")
     settings = settings.for_agent_generation()
     async with httpx.AsyncClient(follow_redirects=False) as client:
-        provider = ChatCompletionsProvider(settings, client)
+        provider = http_provider(settings, client)
         return await workflow_type(
             dict.fromkeys(("composer", "illustrator", "solver", "reviewer"), provider)
         ).run(request, args.output, resume=args.resume)
