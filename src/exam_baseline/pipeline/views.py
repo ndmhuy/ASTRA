@@ -81,6 +81,8 @@ def reviewer_view(student: dict, solutions: SolutionBook, payload: PipelineReque
         "solution_sha256": solution_hash(solutions),
         "matrix": payload.request.matrix.model_dump(mode="json"),
         "format_profile": payload.request.format_profile,
+        "instructions": payload.request.context.instructions,
+        "custom_requirements": payload.request.context.custom_requirements,
         "required_visual_question_ids": payload.required_visual_question_ids,
     }
 

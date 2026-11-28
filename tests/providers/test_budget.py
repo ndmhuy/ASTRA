@@ -47,10 +47,14 @@ def test_atomic_reservations_prevent_concurrent_overspend_and_survive_restart(tm
     assert SpendLedger(config).snapshot()["reportedUsd"] == pytest.approx(0.0002)
 
 
-@pytest.mark.parametrize("failure", ["success", "unknown_usage", "timeout", "401", "503"])
+@pytest.mark.parametrize(
+    "failure", ["success", "unknown_usage", "timeout", "connect_timeout", "401", "503"]
+)
 def test_adapter_settles_usage_and_keeps_uncertain_costs(tmp_path, failure):
     async def run():
         def handler(request):
+            if failure == "connect_timeout":
+                raise httpx.ConnectTimeout("not connected", request=request)
             if failure == "timeout":
                 raise httpx.ReadTimeout("unknown outcome", request=request)
             if failure in {"401", "503"}:
@@ -71,7 +75,7 @@ def test_adapter_settles_usage_and_keeps_uncertain_costs(tmp_path, failure):
         async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
             provider = ChatCompletionsProvider(config, client)
             request = CompletionRequest("s", "u", {})
-            if failure in {"timeout", "401", "503"}:
+            if failure in {"timeout", "connect_timeout", "401", "503"}:
                 with pytest.raises(ProviderError):
                     await provider.complete(request)
             else:
@@ -80,10 +84,10 @@ def test_adapter_settles_usage_and_keeps_uncertain_costs(tmp_path, failure):
         if failure == "success":
             assert summary["reportedUsd"] == pytest.approx(0.0002)
             assert summary["reservedUsd"] == 0
-        elif failure == "401":
+        elif failure == "connect_timeout":
             assert summary["remainingUsd"] == 0.003
         else:
-            assert summary["reservedUsd"] > 0
+            assert summary["reservedUsd"] == summary["unknownUsd"] > 0
             with pytest.raises(ProviderError, match="ASTRA"):
                 SpendLedger(config).reserve({}, 100)
 

@@ -1,5 +1,6 @@
 """Replay Composer corrections and compile the result: python -m scripts.ui_pdf_smoke."""
 
+import argparse
 import json
 import time
 from pathlib import Path
@@ -78,15 +79,29 @@ def replay_format_errors(providers):
             model="offline-contract-fixture",
         )
 
+    solve = providers["solver"].complete
+
+    async def solve_corrected_fixture(prompt):
+        result = await solve(prompt)
+        data = json.loads(result.text)
+        for entry in data["entries"]:
+            if entry["question_id"] == "P3-2":
+                entry["answer"] = "1,2"
+        return Completion(text=json.dumps(data), model=result.model)
+
     composer.complete = compose
+    providers["solver"].complete = solve_corrected_fixture
     providers["illustrator"].complete = illustrate
     return repaired
 
 
 def main():
+    cli = argparse.ArgumentParser(description=__doc__)
+    cli.add_argument("--without-figure", action="store_true")
+    args = cli.parse_args()
     root = Path("runs/pdf-smoke") / uuid4().hex[:8]
     app, providers = fixture_app(root)
-    repaired = replay_format_errors(providers)
+    repaired = [] if args.without_figure else replay_format_errors(providers)
     settings = app.state.settings
     settings.latex_cache_dir = Path("runs/latex-cache")
     with TestClient(app) as client:
@@ -96,9 +111,11 @@ def main():
         ).json()["jobId"]
         status = wait(client, job)
         assert status["status"] == "completed", status
-        assert sorted(repaired) == ["P1-12", "P3-2"] and len(providers["reviewer"].calls) == 1
+        assert sorted(repaired) == ([] if args.without_figure else ["P1-12", "P3-2"])
+        assert len(providers["reviewer"].calls) == 1
         package = client.get(f"/api/exams/{job}").json()
-        assert package["hasDrawings"] and not package["visualWarnings"]
+        assert package["hasDrawings"] is not args.without_figure
+        assert not package["visualWarnings"]
         binding = {key: package[key] for key in ("revision", "contentHash")}
         response = client.post(f"/api/exams/{job}/preview", json=binding)
         assert response.status_code == 202, response.text
@@ -115,8 +132,16 @@ def main():
         source = (root / job / "de_thi.tex").read_bytes()
         staged = app.state.ui_jobs.settings.latex_cache_dir / "previews"
         assert any(path.read_bytes() == source for path in staged.glob("*/de_thi.tex"))
-        assert TABLE_TIKZ.encode("utf-8") in source and b"PRIVATE_BANK_KEY" not in source
+        assert (TABLE_TIKZ.encode("utf-8") in source) is not args.without_figure
+        assert b"PRIVATE_BANK_KEY" not in source
         assert not package["approved"]
+        export = f"/api/exams/{job}/export?type=STUDENT_EXAM&format=pdf"
+        assert client.get(export).status_code == 409
+        approval = client.post(
+            f"/api/exams/{job}/approve", json={**binding, "reviewer": "fixture-teacher"}
+        )
+        assert approval.status_code == 200, approval.text
+        assert client.get(export).content == pdf.content
         receipt = {
             "jobId": job,
             "latex": str((root / job / "de_thi.tex").resolve()),

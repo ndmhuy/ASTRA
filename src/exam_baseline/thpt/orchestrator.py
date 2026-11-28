@@ -21,6 +21,7 @@ from exam_baseline.core.checkpoints import (
 )
 from exam_baseline.core.contracts import LLMProvider
 from exam_baseline.core.recovery import POLICY
+from exam_baseline.core.text import normalized_text
 from exam_baseline.thpt import template
 from exam_baseline.thpt.agents import (
     ComposerAgent,
@@ -29,6 +30,7 @@ from exam_baseline.thpt.agents import (
     SectionSolverAgent,
     SolverAgent,
 )
+from exam_baseline.thpt.answer_format import _parse_p2_booleans
 from exam_baseline.thpt.metrics import summarize_calls
 from exam_baseline.thpt.models import Illustrations, Request, Solutions
 from exam_baseline.thpt.rendering import render, student_view
@@ -37,10 +39,6 @@ from exam_baseline.thpt.runtime import ContractError, RecordingProvider
 
 def save(path: Path, data):
     atomic_json(path, data)
-
-
-_BOOL_TRUE = frozenset({"đúng", "dung", "đ", "d", "true", "t"})
-_BOOL_FALSE = frozenset({"sai", "s", "false", "f"})
 
 
 def _parse_p1_letter(answer: str) -> str | None:
@@ -53,22 +51,6 @@ def _parse_p1_letter(answer: str) -> str | None:
         flags=re.IGNORECASE,
     )
     return match.group(1).upper() if match else None
-
-
-def _parse_p2_booleans(answer: str) -> list[bool] | None:
-    lowered = answer.casefold()
-    labeled = re.findall(
-        r"(?<![a-zà-ỹ])([a-d])\s*[):.\-=]\s*(đúng|dung|sai|true|false|đ|d|s|t|f)(?![a-zà-ỹ])",
-        lowered,
-    )
-    if labeled:
-        by_label = {label: token in _BOOL_TRUE for label, token in labeled}
-        if set(by_label) == {"a", "b", "c", "d"}:
-            return [by_label[k] for k in ("a", "b", "c", "d")]
-    tokens = re.findall(r"(?<![a-zà-ỹ])(đúng|dung|sai|true|false|đ|s|t|f)(?![a-zà-ỹ])", lowered)
-    if len(tokens) == 4:
-        return [tok in _BOOL_TRUE for tok in tokens]
-    return None
 
 
 def _parse_p3_decimal(answer: str) -> Decimal | None:
@@ -194,11 +176,23 @@ class Orchestrator:
         )
 
     def review_data(self, request, questions, drawings, solutions, source, sections):
+        solver = solutions.model_dump()
+        if type(request) is Request:
+            for index, entry in enumerate(solutions.entries):
+                if (
+                    entry.question_id.startswith("P2-")
+                    and entry.status == "solved"
+                    and _parse_p2_booleans(entry.answer) is None
+                ):
+                    solver["entries"][index] = {
+                        "question_id": entry.question_id,
+                        "status": "unparsed",
+                    }
         data = dict(
             matrix=request.model_dump(exclude={"rag_evidence"}),
             questions=[q.model_dump() for q in questions],
             drawings=drawings.model_dump(),
-            solver=solutions.model_dump(),
+            solver=solver,
             student_latex=source.decode("utf-8"),
         )
         if isinstance(request, Request) and request.rag_evidence:
@@ -259,7 +253,7 @@ class Orchestrator:
                 raise ValueError("Resume requires the same input request")
             if read_json(internal / "checkpoint-manifest.json") != expected_manifest:
                 raise CheckpointError(
-                    "Generation configuration changed; checkpoint cannot be resumed"
+                    "Checkpoint version or generation configuration changed; cannot resume"
                 )
             report_path = internal / "result.json"
             previous_report = read_json(report_path) if report_path.is_file() else {}
@@ -347,6 +341,7 @@ class Orchestrator:
                 internal / "responses",
                 retries=0 if agent.role == "reviewer" else POLICY["mas"]["maxAttempts"] - 1,
                 on_attempt=lambda: save(internal / "result.json", report),
+                check_admission=self.check_control,
                 operation_id=fingerprint,
             )
             try:
@@ -452,6 +447,14 @@ class Orchestrator:
                     tasks = [asyncio.create_task(prepare(part)) for part in parts]
                     try:
                         results = await asyncio.gather(*tasks)
+                    except GenerationPaused:
+                        drained = await asyncio.gather(*tasks, return_exceptions=True)
+                        for outcome in drained:
+                            if isinstance(outcome, BaseException) and not isinstance(
+                                outcome, GenerationPaused
+                            ):
+                                raise outcome from None
+                        raise
                     except BaseException:
                         for task in tasks:
                             task.cancel()
@@ -468,7 +471,7 @@ class Orchestrator:
                     else:
                         sections = results
                 questions = [q for section in sections for q in section.questions]
-                stems = [q.stem.casefold().strip() for q in questions]
+                stems = [normalized_text(q.stem) for q in questions]
                 if len(set(stems)) != len(stems):
                     raise ValueError("Duplicate question stems")
                 if not stream_sections:
@@ -506,6 +509,7 @@ class Orchestrator:
                             f"disagrees with independent Solver ({mismatch['solver']})."
                         )
                     save(folder / "review.json", review.model_dump())
+                    report["review_revision"] = revision
                     report["review_issues"] = review.issues
                     if revision < self.max_revisions and review.decision == "needs_revision":
                         feedback = self.feedback_data(review, questions, sections)
@@ -520,6 +524,8 @@ class Orchestrator:
                         "revision": revision,
                         "composer": [q.model_dump() for q in questions],
                         "independent_solver": solutions.model_dump(),
+                        "solver_agreement": agreement,
+                        "reviewed_revision": report.get("review_revision"),
                         **self.extra_output(sections),
                     },
                 )
@@ -578,6 +584,8 @@ class Orchestrator:
             report["error_type"] = type(exc).__name__
             if isinstance(exc, ContractError):
                 report["error"] = dict(code="invalid_contract", stage=exc.stage, fields=exc.fields)
+                if exc.stage == "solver":
+                    report["solver_unresolved_reason"] = "invalid_solver_contract"
             raise
         finally:
             report["invocation_elapsed_seconds"] = round(perf_counter() - started, 3)

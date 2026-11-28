@@ -1,5 +1,6 @@
 """HTTP Chat Completions adapter. Wire-level assumptions stay in this module."""
 
+import asyncio
 import base64
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
@@ -108,15 +109,16 @@ class ChatCompletionsProvider:
         reservation = self.ledger.reserve(payload, self.max_output_tokens) if self.ledger else None
         try:
             completion = await self._send(payload)
+        except asyncio.CancelledError:
+            if self.ledger:
+                self.ledger.settle(reservation)
+            raise
         except ProviderError as exc:
             if self.ledger:
                 self.ledger.settle(
                     reservation,
                     exc.completion.usage if exc.completion else None,
-                    unbilled=exc.completion is None
-                    and exc.http_status is not None
-                    and 400 <= exc.http_status < 500
-                    and exc.http_status != 408,
+                    unbilled=exc.code in {"provider_connect_timeout", "provider_connection_failed"},
                 )
             raise
         if self.ledger:

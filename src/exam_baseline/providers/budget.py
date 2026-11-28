@@ -78,10 +78,17 @@ class SpendLedger:
         ):
             amount, state = self.amount(usage.input_tokens, usage.output_tokens), "reported"
         else:
-            return  # Never release unknown costs, including after process interruption.
+            with self.connect() as db:
+                db.execute(
+                    "UPDATE provider_spend SET state='unknown' "
+                    "WHERE id=? AND budget_id=? AND state='reserved'",
+                    (reservation, self.budget_id),
+                )
+            return
         with self.connect() as db:
             db.execute(
-                "UPDATE provider_spend SET micro_usd=?,state=? WHERE id=? AND budget_id=?",
+                "UPDATE provider_spend SET micro_usd=?,state=?"
+                " WHERE id=? AND budget_id=? AND state='reserved'",
                 (amount, state, reservation, self.budget_id),
             )
 
@@ -98,6 +105,7 @@ class SpendLedger:
             "budgetId": self.budget_id,
             "limitUsd": self.limit / MICRO_USD,
             "reportedUsd": totals.get("reported", 0) / MICRO_USD,
-            "reservedUsd": totals.get("reserved", 0) / MICRO_USD,
+            "reservedUsd": (totals.get("reserved", 0) + totals.get("unknown", 0)) / MICRO_USD,
+            "unknownUsd": totals.get("unknown", 0) / MICRO_USD,
             "remainingUsd": max(0, self.limit - used) / MICRO_USD,
         }

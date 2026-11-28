@@ -6,7 +6,7 @@ import tempfile
 from hashlib import sha256
 from pathlib import Path
 
-VERSION = 1
+VERSION = 2
 
 
 class CheckpointError(ValueError):
@@ -59,7 +59,15 @@ def manifest(request, providers, engine: str, template: str) -> dict:
                 "name": str(provider.name),
                 "model": str(provider.model),
                 # Store a digest, never credentials or raw transport configuration.
-                "parametersHash": digest(provider.parameters),
+                "parametersHash": digest(
+                    {
+                        "parameters": provider.parameters,
+                        "endpoint": getattr(provider, "url", None),
+                        "strict": getattr(provider, "strict", None),
+                        "schema_as_tool": getattr(provider, "schema_as_tool", None),
+                        "supports_images": getattr(provider, "supports_images", None),
+                    }
+                ),
             }
             for role, provider in providers.items()
         },
