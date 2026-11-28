@@ -1,5 +1,6 @@
 """Install a pinned portable Windows compiler inside ignored tools/.local/ only."""
 
+import argparse
 import io
 import json
 import platform
@@ -17,6 +18,18 @@ URL = (
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--if-missing", action="store_true", help="Keep an available compiler")
+    args = parser.parse_args()
+    if args.if_missing:
+        from exam_baseline.config import Settings
+        from exam_baseline.pipeline.rendering.compiler import find_compiler
+
+        configured = Settings().latex_compiler
+        if find_compiler(configured):
+            return
+        if configured:
+            raise SystemExit("EXAM_LATEX_COMPILER does not point to an available executable.")
     if platform.system() != "Windows" or platform.machine().lower() not in {"amd64", "x86_64"}:
         raise SystemExit("Install XeLaTeX/LuaLaTeX/Tectonic on PATH or set EXAM_LATEX_COMPILER.")
     target = Path(__file__).resolve().parents[1] / "tools/.local/tectonic"

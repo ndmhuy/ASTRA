@@ -6,6 +6,7 @@ from typing import Literal
 from pydantic import Field, ValidationInfo, field_validator, model_validator
 
 from exam_baseline.core.models import Identifier, Model, Text
+from exam_baseline.thpt.answer_format import _parse_p2_booleans
 from exam_baseline.thpt.content import choice_latex, content_latex
 from exam_baseline.thpt.fonts import DEFAULT_FONT_PROFILE, FontProfile
 from exam_baseline.thpt.short_answers import (
@@ -183,6 +184,20 @@ class Solutions(Model):
             question["id"] for question in questions
         ]:
             raise ValueError("Solver must cover every student question exactly once in order")
+        if (info.context or {}).get("check_solver_answer_format"):
+            unparsed = [
+                entry.question_id
+                for entry in self.entries
+                if entry.question_id.startswith("P2-")
+                and entry.status == "solved"
+                and _parse_p2_booleans(entry.answer) is None
+            ]
+            if unparsed:
+                raise ValueError(
+                    "Return four booleans for "
+                    + ", ".join(unparsed)
+                    + ", with each label a/b/c/d exactly once if labels are used"
+                )
         return self
 
 

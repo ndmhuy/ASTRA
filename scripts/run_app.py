@@ -5,6 +5,7 @@ import getpass
 import hashlib
 import json
 import os
+import platform
 import shutil
 import socket
 import subprocess
@@ -113,6 +114,18 @@ def prepare() -> Path:
             command.extend(["-c", str(ROOT / "requirements-tested.txt")])
         subprocess.run(command, cwd=ROOT, check=True)
         stamp.write_text(signature)
+    if platform.system() == "Windows" and platform.machine().lower() in {"amd64", "x86_64"}:
+        setup = subprocess.run(
+            [str(python), "scripts/install_latex_compiler.py", "--if-missing"],
+            cwd=ROOT,
+            check=False,
+        )
+        if setup.returncode:
+            print(
+                "PDF compiler setup failed. Run scripts/install_latex_compiler.py again "
+                "or configure EXAM_LATEX_COMPILER.",
+                file=sys.stderr,
+            )
     prepare_corpus(python)
     frontend = ROOT / "astra-frontend"
     lock_stamp = frontend / "node_modules/.astra-lock.sha256"

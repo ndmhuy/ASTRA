@@ -51,9 +51,19 @@ def test_pause_inflight_persists_response_and_restart_resumes_same_job_without_r
         return await complete(prompt)
 
     composer.complete = hold_p2
+    p1_solved = Event()
+    solve = providers["solver"].complete
+
+    async def signal_p1(prompt):
+        result = await solve(prompt)
+        if json.loads(prompt.user)["questions"][0]["id"] == "P1-1":
+            p1_solved.set()
+        return result
+
+    providers["solver"].complete = signal_p1
     with TestClient(app) as client:
         job_id = _start(client, _workspace(client), "pause-and-restore")
-        assert entered.wait(5)
+        assert entered.wait(5) and p1_solved.wait(5)
         url = f"/api/exams/{job_id}"
         try:
             receipt = client.post(url + "/pause", json={"executionVersion": 1})
@@ -65,12 +75,12 @@ def test_pause_inflight_persists_response_and_restart_resumes_same_job_without_r
             release.set()
         paused = until(client, job_id, "paused")
         assert paused["completedItems"] == 16
-        assert paused["completedOperations"] == 2
+        assert paused["completedOperations"] == 3
         assert [call["part"] for call in composer.calls] == ["P1", "P2"]
         assert app.state.ui_jobs.store.list_versions(job_id) == []
         saved = client.get("/api/workspaces").json()["workspaces"][0]["generationState"]
         assert saved["status"] == "paused" and saved["completedItems"] == 16
-        assert saved["completedOperations"] == 2
+        assert saved["completedOperations"] == 3
         assert client.post("/agent/turn", json=payload(), headers=HEADERS).status_code == 200
     if abandoned:
         # Simulate the durable record left by a killed executor, with actual response files.
@@ -97,6 +107,10 @@ def test_pause_inflight_persists_response_and_restart_resumes_same_job_without_r
         assert client.post(url + "/pause", json={"executionVersion": 1}).status_code == 409
         assert wait(client, job_id)["status"] == "completed"
         assert [call["part"] for call in next_pool["composer"].calls] == ["P3"]
+        assert {call["questions"][0]["id"] for call in next_pool["solver"].calls} == {
+            "P2-1",
+            "P3-1",
+        }
         with restarted.state.ui_jobs.store.connect() as db:
             assert db.execute("SELECT count(*) FROM jobs").fetchone()[0] == 1
         assert len(restarted.state.ui_jobs.store.list_versions(job_id)) == 1

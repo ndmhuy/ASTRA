@@ -4,6 +4,7 @@ import asyncio
 import json
 import re
 from decimal import Decimal, InvalidOperation
+from functools import partial
 from hashlib import sha256
 from pathlib import Path
 from time import perf_counter
@@ -26,19 +27,18 @@ from exam_baseline.thpt.agents import (
     ComposerAgent,
     IllustratorAgent,
     ReviewerAgent,
+    SectionSolverAgent,
     SolverAgent,
 )
+from exam_baseline.thpt.answer_format import _parse_p2_booleans
 from exam_baseline.thpt.metrics import summarize_calls
-from exam_baseline.thpt.models import Request
+from exam_baseline.thpt.models import Illustrations, Request, Solutions
 from exam_baseline.thpt.rendering import render, student_view
 from exam_baseline.thpt.runtime import ContractError, RecordingProvider
 
 
 def save(path: Path, data):
     atomic_json(path, data)
-
-
-_BOOL_TRUE = frozenset({"đúng", "dung", "đ", "d", "true", "t"})
 
 
 def _parse_p1_letter(answer: str) -> str | None:
@@ -51,21 +51,6 @@ def _parse_p1_letter(answer: str) -> str | None:
         flags=re.IGNORECASE,
     )
     return match.group(1).upper() if match else None
-
-
-def _parse_p2_booleans(answer: str) -> list[bool] | None:
-    tokens = r"đúng|dung|sai|true|false|đ|d|s|t|f"
-    separator = r"(?:\s*[,;]\s*|\s+)"
-    labeled = rf"([a-d])\s*[):.\-=]\s*({tokens})"
-    lowered = answer.strip().casefold()
-    if re.fullmatch(rf"{labeled}(?:{separator}{labeled}){{3}}[.;]?", lowered):
-        by_label = {label: token in _BOOL_TRUE for label, token in re.findall(labeled, lowered)}
-        if len(by_label) == 4:
-            return [by_label[label] for label in "abcd"]
-        return None
-    if re.fullmatch(rf"(?:{tokens})(?:{separator}(?:{tokens})){{3}}[.;]?", lowered):
-        return [token in _BOOL_TRUE for token in re.findall(tokens, lowered)]
-    return None
 
 
 def _parse_p3_decimal(answer: str) -> Decimal | None:
@@ -299,12 +284,13 @@ class Orchestrator:
                 for question_id, passage in request.rag_evidence.items()
             }
 
-        async def call(agent, data, revision, validate=None):
+        async def call(agent, data, revision, validate=None, *, part=None):
             self.check_control()
+            active_part = part if part is not None else data.get("part")
             report["active_stage"] = agent.role
-            report["active_part"] = data.get("part")
+            report["active_part"] = active_part
             if self.on_progress:
-                self.on_progress(agent.role, data.get("part"), revision)
+                self.on_progress(agent.role, active_part, revision)
             fingerprint = sha256(
                 json.dumps(
                     {
@@ -350,7 +336,7 @@ class Orchestrator:
                 response, _ = await agent.run(provider, data)
             except Exception:
                 report["active_stage"] = agent.role
-                report["active_part"] = data.get("part")
+                report["active_part"] = active_part
                 raise
             if validate:
                 validate(response)
@@ -360,7 +346,7 @@ class Orchestrator:
                     **response_checkpoint(fingerprint, response),
                     "stage": agent.role,
                     "revision": revision,
-                    "part": data.get("part"),
+                    "part": active_part,
                 },
             )
             save(internal / "result.json", report)
@@ -369,13 +355,14 @@ class Orchestrator:
 
         try:
             feedback = None
+            stream_sections = self.request_model is Request and type(request) is Request
             for revision in range(1, self.max_revisions + 1):
                 folder = internal / f"revision_{revision}"
                 folder.mkdir(exist_ok=resume)
-                questions = []
                 previous_stems = []
                 composer = self.composer_type()
                 semaphore = asyncio.Semaphore(request.composer_concurrency)
+                compose_errors = []
 
                 async def compose_part(
                     part,
@@ -386,30 +373,68 @@ class Orchestrator:
                     revision=revision,
                     folder=folder,
                     previous_stems=previous_stems,
+                    compose_errors=compose_errors,
                 ):
                     async with semaphore:
-                        section = await call(
-                            composer,
-                            self.composer_data(
-                                composer, request, part, references[part], feedback, previous_stems
-                            ),
-                            revision,
-                            validate=lambda section: self.validate_section(section, request, part),
-                        )
+                        if compose_errors:
+                            raise compose_errors[0]
+                        try:
+                            section = await call(
+                                composer,
+                                self.composer_data(
+                                    composer,
+                                    request,
+                                    part,
+                                    references[part],
+                                    feedback,
+                                    previous_stems,
+                                ),
+                                revision,
+                                validate=lambda section: self.validate_section(
+                                    section, request, part
+                                ),
+                            )
+                        except Exception as exc:
+                            # A queued Composer must not spend another request after failure.
+                            compose_errors.append(exc)
+                            raise
                     self.validate_section(section, request, part)
                     if request.composer_concurrency == 1:
                         previous_stems.extend(q.stem for q in section.questions)
                     save(folder / f"{part}.json", section.model_dump())
                     return section
 
-                if request.composer_concurrency == 1:
-                    sections = [await compose_part(part) for part in self.parts(request)]
+                async def prepare_part(part, *, compose_part=compose_part, revision=revision):
+                    section = await compose_part(part)
+                    section_call = partial(call, part=part)
+                    items = section.questions
+                    drawings = (
+                        await self.illustrate(section_call, items, revision)
+                        if any(q.illustration_request for q in items)
+                        else Illustrations()
+                    )
+                    expected = [q.id for q in items]
+
+                    def check_solutions(solutions):
+                        if [entry.question_id for entry in solutions.entries] != expected:
+                            raise ValueError(f"Solver must cover {part} in matrix order")
+
+                    solutions = await section_call(
+                        SectionSolverAgent(),
+                        dict(questions=student_view(items), drawings=drawings.model_dump()),
+                        revision,
+                        validate=check_solutions,
+                    )
+                    return section, drawings, solutions
+
+                parts = self.parts(request)
+                if not stream_sections and request.composer_concurrency == 1:
+                    sections = [await compose_part(part) for part in parts]
                 else:
-                    tasks = [
-                        asyncio.create_task(compose_part(part)) for part in self.parts(request)
-                    ]
+                    prepare = prepare_part if stream_sections else compose_part
+                    tasks = [asyncio.create_task(prepare(part)) for part in parts]
                     try:
-                        sections = await asyncio.gather(*tasks)
+                        results = await asyncio.gather(*tasks)
                     except GenerationPaused:
                         drained = await asyncio.gather(*tasks, return_exceptions=True)
                         for outcome in drained:
@@ -423,18 +448,31 @@ class Orchestrator:
                             task.cancel()
                         await asyncio.gather(*tasks, return_exceptions=True)
                         raise
-                for section in sections:
-                    questions.extend(section.questions)
+                    if stream_sections:
+                        sections = [section for section, _, _ in results]
+                        drawings = Illustrations(
+                            drawings=[d for _, group, _ in results for d in group.drawings]
+                        )
+                        solutions = Solutions(
+                            entries=[e for _, _, group in results for e in group.entries]
+                        )
+                    else:
+                        sections = results
+                questions = [q for section in sections for q in section.questions]
                 stems = [normalized_text(q.stem) for q in questions]
                 if len(set(stems)) != len(stems):
                     raise ValueError("Duplicate question stems")
-                drawings = await self.illustrate(call, questions, revision)
+                if not stream_sections:
+                    drawings = await self.illustrate(call, questions, revision)
                 report["active_stage"] = "rendering"
                 report["active_part"] = None
                 source = self.render_source(questions, drawings, request, sections)
                 save(folder / "illustrations.json", drawings.model_dump())
                 (folder / "candidate.tex").write_bytes(source)
-                solutions = await self.solve(call, questions, drawings, revision, sections, request)
+                if not stream_sections:
+                    solutions = await self.solve(
+                        call, questions, drawings, revision, sections, request
+                    )
                 ids = [s.id for s in request.slots]
                 if [s.question_id for s in solutions.entries] != ids:
                     raise ValueError("Solver must cover every question in matrix order")
@@ -461,11 +499,8 @@ class Orchestrator:
                     save(folder / "review.json", review.model_dump())
                     report["review_revision"] = revision
                     report["review_issues"] = review.issues
-                    if revision < self.max_revisions and (
-                        review.decision == "needs_revision" or agreement["unparsed"]
-                    ):
+                    if revision < self.max_revisions and review.decision == "needs_revision":
                         feedback = self.feedback_data(review, questions, sections)
-                        feedback["solver_unresolved_ids"] = agreement["unparsed"]
                         report["reviewer_feedback_sent"] = True
                         continue
                 # A final revision always requires human inspection.

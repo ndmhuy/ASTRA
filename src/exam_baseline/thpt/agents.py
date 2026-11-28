@@ -4,7 +4,7 @@ import json
 from copy import deepcopy
 from hashlib import sha256
 
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, Field, ValidationError, create_model
 
 from exam_baseline.core.contracts import CompletionRequest, LLMProvider
 from exam_baseline.pipeline.runtime import normalize_json
@@ -16,6 +16,7 @@ from exam_baseline.thpt.models import (
     Section,
     ShortAnswerSection,
     SingleQuestionSolutions,
+    Solution,
     Solutions,
     TrueFalseSection,
 )
@@ -138,7 +139,13 @@ class Agent:
                 if targeted:
                     text = _replace_questions(text, original, indices, self.role)
                 response = contract.model_validate_json(
-                    text, context={**data, "validate_short_answers": self.role == "composer"}
+                    text,
+                    context={
+                        **data,
+                        "validate_short_answers": self.role == "composer",
+                        "check_solver_answer_format": self.role == "solver"
+                        and attempt + 1 < attempts,
+                    },
                 )
             except ContractError as exc:
                 if hasattr(provider, "record_contract"):
@@ -330,13 +337,23 @@ class SolverAgent(Agent):
     instruction = """Independently solve every student question from its content and drawings.
 You do not receive Composer answers. For P1 return one option letter (A, B, C, or D) in answer.
 For P2 solve all four statements and format answer as "a: Đúng; b: Sai; c: Đúng; d: Sai"
-with detailed reasoning.
+with each label appearing exactly once and detailed reasoning.
 For P3 return only the final numeric answer using a decimal comma (e.g. "10,7" or "-2").
 Check domains, units, rounding, uniqueness and diagrams.
 Mark ambiguous/unsolvable explicitly; never guess a missing condition."""
 
     def contract(self, data):
         return SingleQuestionSolutions if len(data["questions"]) == 1 else self.response
+
+
+class SectionSolverAgent(SolverAgent):
+    def contract(self, data):
+        count = len(data["questions"])
+        return create_model(
+            "SectionSolutions",
+            __base__=Solutions,
+            entries=(list[Solution], Field(min_length=count, max_length=count)),
+        )
 
 
 class ReviewerAgent(Agent):
@@ -349,7 +366,8 @@ disclosure of answers in student content.
 Mark needs_revision if an item drifts outside the requested curriculum/topic scope, ignores user
 requirements, or assesses a different topic or learning objective than its slot.
 Compare independent Solver results with Composer's private answers and detailed solutions.
-Any solver disagreement or unsolved/ambiguous result requires needs_revision with actionable issues.
+Any demonstrated solver disagreement or unsolved/ambiguous result requires needs_revision.
+An unparseable Solver answer remains unverified. Its format alone must not trigger revision.
 Also check template content fit and LaTeX content syntax. Do not rewrite the template.
 This review happens exactly once; actionable feedback goes to Composer at most once.
 Human visual inspection is mandatory after any correction."""

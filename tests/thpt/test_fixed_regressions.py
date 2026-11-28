@@ -123,3 +123,32 @@ def test_parallel_pause_drains_already_sent_valid_sections(tmp_path):
         assert started == ["P1", "P2"]
 
     asyncio.run(asyncio.wait_for(run(), timeout=5))
+
+
+@pytest.mark.parametrize("recovers", [True, False])
+def test_malformed_solver_p2_never_recomposes_the_exam(tmp_path, recovers):
+    from exam_baseline.thpt.orchestrator import Orchestrator
+    from tests.thpt.test_generation import Scripted, request
+
+    class Solver(Scripted):
+        async def complete(self, prompt):
+            completion = await super().complete(prompt)
+            payload = json.loads(prompt.user)
+            assert all("answer" not in question for question in payload["questions"])
+            response = json.loads(completion.text)
+            for entry in response["entries"]:
+                if entry["question_id"] == "P2-1" and not (
+                    recovers and "contract_feedback" in payload
+                ):
+                    entry["answer"] = "a: true; b: true; c: true; c: true"
+            return Completion(text=json.dumps(response), model=completion.model)
+
+    pool = {role: Scripted(role, False) for role in ("composer", "illustrator", "reviewer")}
+    pool["solver"] = Solver("solver", False)
+    report = asyncio.run(Orchestrator(pool).run(request(), tmp_path / "paper"))
+    assert report["revision"] == 1
+    assert len(pool["composer"].calls) == 3
+    assert len(pool["reviewer"].calls) == 1
+    assert len(pool["solver"].calls) == 4
+    assert report["solver_agreement"]["unparsed"] == ([] if recovers else ["P2-1"])
+    assert not report["reviewer_feedback_sent"]

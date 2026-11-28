@@ -584,7 +584,7 @@ def test_retrieval_agents_teacher_approval_export_edit_and_reconnect(tmp_path):
         assert first["answerCheck"] == "needs_recheck"
         assert first["solverKey"] is None
         assert second["answerCheck"] == "matched"
-        assert len(providers["solver"].calls) == 1
+        assert len(providers["solver"].calls) == 3
         assert client.get(export_url).status_code == 409
         assert client.post(f"/api/exams/{job}/approve", json=approval).status_code == 409
         assert (
@@ -622,7 +622,7 @@ def test_retrieval_agents_teacher_approval_export_edit_and_reconnect(tmp_path):
             "examRevision": verified_package["revision"],
             "revisionCount": second["revisionCount"] + 1,
         }
-        assert len(providers["solver"].calls) == 2 and len(providers["reviewer"].calls) == 1
+        assert len(providers["solver"].calls) == 4 and len(providers["reviewer"].calls) == 1
         solver_input = providers["solver"].calls[-1]["questions"]
         assert len(solver_input) == 1 and solver_input[0]["id"] == "P1-1"
         assert solver_input[0]["stem"] == first["stem"]
@@ -844,5 +844,5 @@ def test_targeted_regeneration_keeps_ids_invalidates_approval_and_has_no_second_
         assert app.state.ui_jobs.store.list_versions(job) == versions
         assert client.get(f"/api/exams/{job}").json() == revised
         assert len(providers["reviewer"].calls) == 1
-        assert len(providers["solver"].calls) == 2
+        assert len(providers["solver"].calls) == 4
         assert all("PRIVATE_BANK_KEY" not in json.dumps(call) for call in providers["solver"].calls)

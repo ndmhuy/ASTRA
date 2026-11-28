@@ -83,9 +83,12 @@ def test_real_rag_through_thpt_cli_and_resume(tmp_path, monkeypatch, capsys):
         assert [
             text.split("question_id=", 1)[1].split(" ", 1)[0] for text in call["reference_material"]
         ] == [slot["id"] for slot in call["slots"]]
-    [solver_call] = replay["solver"].calls
-    assert set(solver_call) == {"questions", "drawings", "output_schema"}
-    assert all(set(q) == {"id", "stem", "choices", "statements"} for q in solver_call["questions"])
+    assert len(replay["solver"].calls) == 3
+    for solver_call in replay["solver"].calls:
+        assert set(solver_call) == {"questions", "drawings", "output_schema"}
+        assert all(
+            set(q) == {"id", "stem", "choices", "statements"} for q in solver_call["questions"]
+        )
     [reviewer_call] = replay["reviewer"].calls
     assert "rag_evidence" not in reviewer_call["matrix"]
     assert (output / "de_thi.tex").is_file()
@@ -268,7 +271,10 @@ def test_orchestrator_passes_rag_scope_to_reviewer_and_gates_solver_mismatch(tmp
             data = json.loads(prompt.user)
             self.calls.append(data)
             entries = []
+            requested = {q["id"] for q in data["questions"]}
             for slot in bound.slots:
+                if slot.id not in requested:
+                    continue
                 n = int(slot.id.split("-")[1])
                 if slot.id == "P1-1" and len(self.calls) == 1:
                     ans = "B"  # disagrees with Composer's A on revision 1
