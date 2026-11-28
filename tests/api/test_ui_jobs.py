@@ -610,8 +610,9 @@ def test_retrieval_agents_teacher_approval_export_edit_and_reconnect(tmp_path):
         checked = client.post(verify_url, json={"revision": new_package["revision"]})
         assert checked.status_code == 200, checked.text
         verified_package = checked.json()
-        assert verified_package["revision"] == new_package["revision"]
-        assert verified_package["approved"]
+        assert verified_package["revision"] == new_package["revision"] + 1
+        assert verified_package["contentHash"] != new_package["contentHash"]
+        assert not verified_package["approved"]
         assert verified_package["questions"][0]["answerCheck"] == "mismatched"
         assert verified_package["questions"][0]["status"] == "FLAGGED"
         assert verified_package["questions"][0]["solverKey"] == "A"
@@ -625,8 +626,11 @@ def test_retrieval_agents_teacher_approval_export_edit_and_reconnect(tmp_path):
     restarted, _ = fixture_app(tmp_path)
     with TestClient(restarted) as client:
         loaded = client.get(f"/api/exams/{job}").json()
-        assert loaded["revision"] == package["revision"] + 1
+        assert loaded["revision"] == verified_package["revision"]
         assert loaded["questions"][0]["answerCheck"] == "mismatched"
+        repeated = client.post(verify_url, json={"revision": loaded["revision"]}).json()
+        assert repeated["revision"] == loaded["revision"]
+        assert repeated["contentHash"] == loaded["contentHash"]
         assert '"status": "completed"' in client.get(f"/api/exams/{job}/events").text
 
 

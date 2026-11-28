@@ -20,6 +20,7 @@ from exam_baseline.core.checkpoints import (
 )
 from exam_baseline.core.contracts import LLMProvider
 from exam_baseline.core.recovery import POLICY
+from exam_baseline.core.text import normalized_text
 from exam_baseline.thpt import template
 from exam_baseline.thpt.agents import (
     ComposerAgent,
@@ -38,7 +39,6 @@ def save(path: Path, data):
 
 
 _BOOL_TRUE = frozenset({"đúng", "dung", "đ", "d", "true", "t"})
-_BOOL_FALSE = frozenset({"sai", "s", "false", "f"})
 
 
 def _parse_p1_letter(answer: str) -> str | None:
@@ -54,18 +54,17 @@ def _parse_p1_letter(answer: str) -> str | None:
 
 
 def _parse_p2_booleans(answer: str) -> list[bool] | None:
-    lowered = answer.casefold()
-    labeled = re.findall(
-        r"(?<![a-zà-ỹ])([a-d])\s*[):.\-=]\s*(đúng|dung|sai|true|false|đ|d|s|t|f)(?![a-zà-ỹ])",
-        lowered,
-    )
-    if labeled:
-        by_label = {label: token in _BOOL_TRUE for label, token in labeled}
-        if set(by_label) == {"a", "b", "c", "d"}:
-            return [by_label[k] for k in ("a", "b", "c", "d")]
-    tokens = re.findall(r"(?<![a-zà-ỹ])(đúng|dung|sai|true|false|đ|s|t|f)(?![a-zà-ỹ])", lowered)
-    if len(tokens) == 4:
-        return [tok in _BOOL_TRUE for tok in tokens]
+    tokens = r"đúng|dung|sai|true|false|đ|d|s|t|f"
+    separator = r"(?:\s*[,;]\s*|\s+)"
+    labeled = rf"([a-d])\s*[):.\-=]\s*({tokens})"
+    lowered = answer.strip().casefold()
+    if re.fullmatch(rf"{labeled}(?:{separator}{labeled}){{3}}[.;]?", lowered):
+        by_label = {label: token in _BOOL_TRUE for label, token in re.findall(labeled, lowered)}
+        if len(by_label) == 4:
+            return [by_label[label] for label in "abcd"]
+        return None
+    if re.fullmatch(rf"(?:{tokens})(?:{separator}(?:{tokens})){{3}}[.;]?", lowered):
+        return [token in _BOOL_TRUE for token in re.findall(tokens, lowered)]
     return None
 
 
@@ -344,6 +343,7 @@ class Orchestrator:
                 internal / "responses",
                 retries=0 if agent.role == "reviewer" else POLICY["mas"]["maxAttempts"] - 1,
                 on_attempt=lambda: save(internal / "result.json", report),
+                check_admission=self.check_control,
                 operation_id=fingerprint,
             )
             try:
@@ -410,6 +410,14 @@ class Orchestrator:
                     ]
                     try:
                         sections = await asyncio.gather(*tasks)
+                    except GenerationPaused:
+                        drained = await asyncio.gather(*tasks, return_exceptions=True)
+                        for outcome in drained:
+                            if isinstance(outcome, BaseException) and not isinstance(
+                                outcome, GenerationPaused
+                            ):
+                                raise outcome from None
+                        raise
                     except BaseException:
                         for task in tasks:
                             task.cancel()
@@ -417,7 +425,7 @@ class Orchestrator:
                         raise
                 for section in sections:
                     questions.extend(section.questions)
-                stems = [q.stem.casefold().strip() for q in questions]
+                stems = [normalized_text(q.stem) for q in questions]
                 if len(set(stems)) != len(stems):
                     raise ValueError("Duplicate question stems")
                 drawings = await self.illustrate(call, questions, revision)
@@ -451,9 +459,13 @@ class Orchestrator:
                             f"disagrees with independent Solver ({mismatch['solver']})."
                         )
                     save(folder / "review.json", review.model_dump())
+                    report["review_revision"] = revision
                     report["review_issues"] = review.issues
-                    if revision < self.max_revisions and review.decision == "needs_revision":
+                    if revision < self.max_revisions and (
+                        review.decision == "needs_revision" or agreement["unparsed"]
+                    ):
                         feedback = self.feedback_data(review, questions, sections)
+                        feedback["solver_unresolved_ids"] = agreement["unparsed"]
                         report["reviewer_feedback_sent"] = True
                         continue
                 # A final revision always requires human inspection.
@@ -465,6 +477,8 @@ class Orchestrator:
                         "revision": revision,
                         "composer": [q.model_dump() for q in questions],
                         "independent_solver": solutions.model_dump(),
+                        "solver_agreement": agreement,
+                        "reviewed_revision": report.get("review_revision"),
                         **self.extra_output(sections),
                     },
                 )
@@ -523,6 +537,8 @@ class Orchestrator:
             report["error_type"] = type(exc).__name__
             if isinstance(exc, ContractError):
                 report["error"] = dict(code="invalid_contract", stage=exc.stage, fields=exc.fields)
+                if exc.stage == "solver":
+                    report["solver_unresolved_reason"] = "invalid_solver_contract"
             raise
         finally:
             report["invocation_elapsed_seconds"] = round(perf_counter() - started, 3)

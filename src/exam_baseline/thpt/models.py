@@ -94,8 +94,10 @@ class Question(Model):
 
     @model_validator(mode="after")
     def shape(self, info: ValidationInfo):
-        if issues := visual_issues(self.stem, self.illustration_request):
-            raise ValueError("; ".join(issues))
+        student_text = [self.stem, *self.choices.values(), *(s.text for s in self.statements)]
+        for text in student_text:
+            if issues := visual_issues(text, self.illustration_request):
+                raise ValueError("; ".join(issues))
         for choice in self.choices.values():
             choice_latex(choice)
         if self.id.startswith("P1-"):
@@ -173,6 +175,15 @@ class Solution(Model):
 
 class Solutions(Model):
     entries: list[Solution] = Field(min_length=22, max_length=22)
+
+    @model_validator(mode="after")
+    def covers_student_questions(self, info: ValidationInfo):
+        questions = (info.context or {}).get("questions")
+        if questions and [entry.question_id for entry in self.entries] != [
+            question["id"] for question in questions
+        ]:
+            raise ValueError("Solver must cover every student question exactly once in order")
+        return self
 
 
 class SingleQuestionSolutions(Solutions):
