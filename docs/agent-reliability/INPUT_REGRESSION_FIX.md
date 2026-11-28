@@ -2,6 +2,8 @@
 
 For the owner and reviewer. Branch `fix/longlth2297/agent-exam-request-intake` starts at actual `origin/main` **2119becda1b0ba3289449e5b2f1d3b179b5ff423**, which includes merged PR36. Existing worktrees, runtimes and jobs are preserved. No real inference or exam generation is used for this fix.
 
+Main advanced during verification. Merged **dcc214d903102a23fd81727edb835ec840cdb873** (PR37, Tuan Anh's UX polish) without rewriting history. Preserved its inline configuration card, attachments, layout and error recovery. Resolved the shared semantic merge by retaining slot-conflict/question guards; the UI no longer overrides a rejected semantic frame with a heuristic draft. Fresh-workspace routing clears the new confirmation metadata through the existing setter.
+
 ## Observed causes
 
 - “soạn đề tiếng anh THPT cho tao” did not match the local catalog grammar. The semantic resolver rejects every multi-goal frame containing intake/guidance, including compatible preparation and generation goals for one exam. That condition produces the first reported message. The actual remote frame was not captured/replayed through Gemini; deterministic compatible frames reproduce the rejection.
@@ -17,12 +19,12 @@ For the owner and reviewer. Branch `fix/longlth2297/agent-exam-request-intake` s
 
 ## Verification and owner test
 
-- Frontend75 tests, production build and lint pass. Focused tests cover the reported inputs, other subjects/word orders, topics preserved for interpretation, compatible/conflicting semantic composition and target-state selection.
+- Frontend78 tests, production build and lint pass after merging the latest UX. Focused tests cover the reported inputs, other subjects/word orders, topics preserved for interpretation, compatible/conflicting semantic composition and target-state selection.
 - `python scripts/agent_exam_request_smoke.py` mounts the actual compiled React app against the existing no-inference test server. Ten browser cases cover draft/completed/paused/running/failed states, both reported inputs, compatible/conflicting simulated model frames, negation and questions. Model and business responses are explicit fixtures; external fonts are suppressed; generation endpoints are forbidden. Real inference0, generated exams0.
 - Existing semantic oracle harness passes153 frames,21 workflows/28 turns and23 adversarial cases; model metrics remain null. No new LLM accuracy claim is made.
 - New test script passes Ruff check/format. Required common verify still stops on the89 previously recorded baseline diagnostics; none of those files is changed here.
 - Fixed local UI is served at **http://localhost:5174**, proxying to the existing actual Backend8002. The original8002 tab remains open. Native Chrome observation confirmed the fixed start screen and existing shared library. The first reported sentence is prefilled, **not submitted**; no actual Chat or generation request was sent by the agent.
 
-Owner: submit the prefilled English request and check the40-question/50-minute English preset. From an existing completed/running/paused/failed workspace, request a new Math exam and verify a separate draft opens while the old job remains. Only press the generation confirmation when personally ready to use Gemini.
+Owner: submit the prefilled English request and check the40-question/50-minute English preset in the inline configuration card. From an existing completed/running/paused/failed workspace, request a new Math exam and verify a separate draft opens while the old job remains. Only press the generation confirmation when personally ready to use Gemini.
 
 Non-inference status inspection also found the owner's current failed Composer job has native `invalid_contract` errors (undelimited mathematics in solutions and a missing short-answer rounding instruction). That output-quality failure is separate from the two Agent/UI rejections. This patch does not relax academic validators or claim that live generation failure has been fixed; no retry was initiated.

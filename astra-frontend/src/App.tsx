@@ -10,7 +10,8 @@ import { needsNewExamWorkspace } from './agent/creation';
 import { generationTarget, generationReceipt, generationJob, restingGeneration } from './agent/lifecycle';
 import { contextualSubject, resolveSemantic } from './agent/semantics';
 import { familyFor, formatOverview, guidanceFor, listAdjacentTopics, matchAdjacentTopic, mentionedFamilies, resolveIntake, shortSubjectIntake } from './agent/knowledge';
-import { AlertCircle, AlertTriangle, LoaderCircle, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { buildParamsFromDraft, extractExamDraft, recomputeDraftStatus, type ChatConfigDraft } from './agent/chatConfig';
+import { AlertCircle, AlertTriangle, LoaderCircle, PanelLeftClose, PanelLeftOpen, RefreshCw, Settings2 } from 'lucide-react';
 import { WorkspaceStart } from './components/WorkspaceStart';
 import { AstraWelcome } from './components/AstraWelcome';
 import { SidebarExamLibrary } from './components/SidebarExamLibrary';
@@ -18,6 +19,7 @@ import { AstraLogo } from './components/AstraLogo';
 import { QuickPresetModal } from './components/QuickPresetModal';
 import { WorkspaceLayout } from './components/Workspace/WorkspaceLayout';
 import { ChatHistory } from './components/Workspace/ChatPane/ChatHistory';
+import { ChatConfigCard } from './components/Workspace/ChatPane/ChatConfigCard';
 import { ModernChatBar } from './components/Workspace/ChatPane/ModernChatBar';
 import { CanvasHeader } from './components/Workspace/LiveCanvas/CanvasHeader';
 import { ExamPaperView, type ExamCanvasViewMode, type ExamPaperControls } from './components/Workspace/LiveCanvas/ExamPaperView';
@@ -87,8 +89,31 @@ export const App: React.FC = () => {
   const activeRef = useRef<string | null>(null);
   const runtimeRef = useRef<Runtime | null>(null);
   const [chatPending, setChatPending] = useState(false);
-  const cancelTurn = () => { turn.current?.abort(); turn.current = null; pending.current = null; setChatPending(false); };
+  const [catalogFormats, setCatalogFormats] = useState<ExamFormat[]>([]);
+  const [chatDrafts, setChatDrafts] = useState<Record<string, ChatConfigDraft | undefined>>({});
+  const [pendingActionMeta, setPendingActionMeta] = useState<{ workspaceId: string; label: string; confirmLabel?: string } | null>(null);
+  const [configureFormatId, setConfigureFormatId] = useState<string | undefined>(undefined);
+  const setPendingConfirmation = useCallback(
+    (confirmation: Confirmation | null, meta: { workspaceId: string; label: string; confirmLabel?: string } | null = null) => {
+      pending.current = confirmation;
+      setPendingActionMeta(confirmation ? meta : null);
+    },
+    []
+  );
+  const cancelTurn = () => {
+    turn.current?.abort();
+    turn.current = null;
+    setPendingConfirmation(null);
+    setChatPending(false);
+  };
   useEffect(() => () => turn.current?.abort(), []);
+  useEffect(() => {
+    let mounted = true;
+    void getExamFormats().then(items => {
+      if (mounted) setCatalogFormats(items);
+    }).catch(() => {});
+    return () => { mounted = false; };
+  }, []);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [screen, setScreen] = useState<'start' | 'workspace'>('start');
   const [viewMode, setViewMode] = useState<ExamCanvasViewMode>('paper');
@@ -107,11 +132,12 @@ export const App: React.FC = () => {
   const closeQuickModal = useCallback(() => {
     turn.current?.abort();
     turn.current = null;
-    pending.current = null;
+    setPendingConfirmation(null);
     setChatPending(false);
     setShowQuickModal(false);
     setAgentSelection(undefined);
-  }, []);
+    setConfigureFormatId(undefined);
+  }, [setPendingConfirmation]);
   const active = sessions.find(session => session.id === activeId);
   const candidate = activeId ? questionProgress[activeId] : undefined;
   const questionRun = candidate?.target.jobId === active?.jobId ? candidate : undefined;
@@ -135,8 +161,9 @@ export const App: React.FC = () => {
         message.examVersion?.revision === active.package?.revision)
     : undefined;
   const liveQuestions = active?.questions || [];
-  const examMeta = active?.meta || null;
   const isGenerating = active?.status === 'generating';
+  const hasValidExam = Boolean(active && active.status !== 'error' && (active.package || liveQuestions.length > 0 || isGenerating));
+  const examMeta = hasValidExam ? (active?.meta || null) : null;
   const prevQuestionCount = active?.previousCount || 0;
   useEffect(() => {
     store.resume();
@@ -183,8 +210,8 @@ export const App: React.FC = () => {
   useEffect(() => () => { if (transitionTimer.current) clearTimeout(transitionTimer.current); }, []);
   const cancelTransition = () => { composerOrigin.current = null; if (transitionTimer.current) clearTimeout(transitionTimer.current); setLeavingStart(false); setRevealingWorkspace(false); };
   const openSession = (id: string) => { cancelTransition(); setAgentOpenedPdf(false); setViewMode('paper'); setActiveId(id); setScreen('workspace'); };
-  const openManually = (id: string) => { cancelTurn(); setAgentSelection(undefined); setShowQuickModal(false); setConfigureId(null); setEditor(null); openSession(id); };
-  const newExam = () => { cancelTurn(); cancelTransition(); setActiveId(null); setConfigureId(null); setLandingDraft(''); setLandingDocuments([]); setAgentSelection(undefined); setShowQuickModal(false); setScreen('start'); };
+  const openManually = (id: string) => { cancelTurn(); setAgentSelection(undefined); setShowQuickModal(false); setConfigureId(null); setConfigureFormatId(undefined); setEditor(null); openSession(id); };
+  const newExam = () => { cancelTurn(); cancelTransition(); setActiveId(null); setConfigureId(null); setConfigureFormatId(undefined); setLandingDraft(''); setLandingDocuments([]); setAgentSelection(undefined); setShowQuickModal(false); setScreen('start'); };
   const revealSession = (id: string) => {
     if (screen === 'workspace') { openSession(id); return; }
     composerOrigin.current = document.querySelector('.integrated-start .composer-box')?.getBoundingClientRect() || null;
@@ -236,7 +263,7 @@ export const App: React.FC = () => {
     if (admission.error) return;
     content = admission.text;
     if (!editor && !options.searchWeb && needsNewExamWorkspace(store.getSnapshot().find(session => session.id === id), content)) {
-      pending.current = null;
+      setPendingConfirmation(null);
       flushSync(() => {
         id = store.create('custom');
         setAgentSelection(undefined); setShowQuickModal(false); setConfigureId(null);
@@ -266,11 +293,83 @@ export const App: React.FC = () => {
     const binding = runtime.binding();
     const origin = store.getSnapshot().find(s => s.id === id);
     const alive = () => !controller.signal.aborted && !!store.getSnapshot().find(s => s.id === id)?.messages.some(m => m.id === messageId);
+    const inDraftLikeState = !origin || ['draft', 'error'].includes(origin.status);
+    let intakeFormats: ExamFormat[] | undefined;
+    const loadFormats = async (): Promise<ExamFormat[]> => {
+      if (intakeFormats?.length) return intakeFormats;
+      if (catalogFormats.length) {
+        intakeFormats = catalogFormats;
+        return catalogFormats;
+      }
+      try {
+        const loaded = await getExamFormats();
+        intakeFormats = loaded;
+        setCatalogFormats(loaded);
+        return loaded;
+      } catch {
+        return [];
+      }
+    };
+    const applyInlineDraft = async (proposal?: Partial<Intake>): Promise<boolean> => {
+      if (!inDraftLikeState || editor || !mayDispatch(content)) return false;
+      const formats = await loadFormats();
+      if (!alive() || runtime.binding() !== binding || !formats.length) return false;
+      const draft = extractExamDraft(content, formats, messageId, origin?.intake, proposal, chatDrafts[id]?.id);
+      if (!draft) return false;
+      const matchedFormat = formats.find(f => f.id === draft.formatId && f.available);
+      flushSync(() => {
+        setChatDrafts(prev => ({ ...prev, [id]: draft }));
+        if (matchedFormat) {
+          store.setIntake(id, {
+            sourceId: messageId,
+            sourceIds: [messageId],
+            formatId: matchedFormat.id,
+            version: matchedFormat.version,
+            family: draft.family,
+            subject: matchedFormat.subjects[0],
+            topic: draft.topic || undefined,
+            count: draft.requestedCount,
+            minutes: draft.requestedMinutes,
+            grade: draft.requestedGrade,
+            phase: 'collecting',
+          });
+          store.suggestTitle(id, draft.topic ? `Đề ôn tập ${draft.topic}` : `Đề thi ${matchedFormat.displayName}`, messageId, draft.topic ? 4 : 3);
+        }
+      });
+      if (matchedFormat) {
+        const params = buildParamsFromDraft(
+          draft,
+          formats,
+          (store.getSnapshot().find(s => s.id === id)?.inputDocuments ?? []).map(doc => doc.id)
+        );
+        if (params) {
+          const expected = runtimeRef.current!.binding();
+          setPendingConfirmation({
+            workspaceId: id,
+            binding: expected,
+            expires: Date.now() + CONFIRMATION_TTL_MS,
+            run: async () => {
+              setChatDrafts(prev => ({ ...prev, [id]: undefined }));
+              const job = await store.generate(id, params);
+              return job
+                ? { status: 'accepted', text: `Đang tạo đề ${matchedFormat.displayName}. Thầy cô theo dõi tiến độ ở khung bên trái.` }
+                : failure(store.getSnapshot().find(s => s.id === id)?.error || 'Chưa tạo được đề thi.');
+            },
+          }, null);
+        }
+      }
+      const reply = matchedFormat
+        ? draft.hasMismatch
+          ? `Mẫu ${matchedFormat.displayName} cố định ${matchedFormat.totalQuestions} câu, ${matchedFormat.durationMinutes} phút.${draft.topic ? ` Chủ đề “${draft.topic}” đã được giữ lại.` : ''} Thầy cô kiểm tra thẻ cấu hình bên dưới rồi bấm “Dùng mẫu này” hoặc chỉnh lại yêu cầu.`
+          : `Đã tóm tắt cấu hình ${matchedFormat.displayName}${draft.topic ? ` · Chủ đề: ${draft.topic}` : ''}${draft.difficulty ? ` · ${draft.difficulty}` : ''}. Thầy cô chỉnh thêm nếu cần rồi bấm “Tạo đề ngay”.`
+        : `ASTRA chưa xác định được môn / mẫu đề.${draft.limitations.length ? ' Lưu ý: các mẫu chuẩn cố định số câu và thời gian.' : ''} Thầy cô chọn mẫu ở thẻ cấu hình bên dưới.`;
+      answer(reply);
+      return true;
+    };
     try {
       const adjacentTopic = matchAdjacentTopic(content);
       const earlyFast = fastRoute(content);
       const isConfirmOrCancel = Boolean(earlyFast && 'confirm' in earlyFast);
-      const inDraftLikeState = !origin || ['draft', 'error'].includes(origin.status);
       if (!isConfirmOrCancel && (options.searchWeb || (adjacentTopic && origin?.mode === 'custom' && inDraftLikeState && !editor))) {
         pending.current = null;
         const attachedFilesMessage = 'Chưa thể dùng tài liệu đính kèm khi tìm đề trên mạng. Thầy cô hãy gỡ tệp để tìm mạng, hoặc gửi yêu cầu soạn đề từ tài liệu đính kèm.';
@@ -303,11 +402,11 @@ export const App: React.FC = () => {
         const modeLabel = research.searchMode === 'live_web'
           ? 'Đã tìm kiếm trên mạng'
           : 'Dùng dữ liệu cấu trúc tích hợp sẵn (ngoại tuyến)';
-        const summary = `[${modeLabel}] ${research.topicLabel} · ${research.suggestedCount} câu · ${research.suggestedMinutes} phút\n${research.summary}\nNguồn tham khảo:\n${sourceLines}\nNếu đồng ý tạo đề này, thầy cô hãy nhắn “Xác nhận”.`;
+        const summary = `[${modeLabel}] ${research.topicLabel} · ${research.suggestedCount} câu · ${research.suggestedMinutes} phút\n${research.summary}\nNguồn tham khảo:\n${sourceLines}\nBấm “Tạo đề ngay” bên dưới hoặc nhắn “Xác nhận”.`;
         flushSync(() => {
           store.suggestTitle(id, `Đề luyện tập ${research.topicLabel}`, messageId, 4);
         });
-        pending.current = {
+        setPendingConfirmation({
           workspaceId: id,
           binding: runtimeRef.current!.binding(),
           expires: Date.now() + CONFIRMATION_TTL_MS,
@@ -336,16 +435,19 @@ export const App: React.FC = () => {
               ? { status: 'unknown', text: 'Chưa rõ máy chủ đã nhận yêu cầu hay chưa. Chỉ thử lại với cùng thông số.' }
               : { status: 'failed', text: actual?.error || 'Chưa nhận được mã công việc tạo đề.' };
           },
-        };
+        }, {
+          workspaceId: id,
+          label: `${research.topicLabel} · ${research.suggestedCount} câu · ${research.suggestedMinutes} phút`,
+          confirmLabel: 'Tạo đề ngay',
+        });
         answer(summary);
         return;
       }
       await Promise.resolve();
       if (!alive()) return;
       let local = earlyFast;
-      let intakeFormats: ExamFormat[] | undefined;
       if (!local && catalogCandidate(content) && !editor) {
-        intakeFormats = await getExamFormats();
+        intakeFormats = await loadFormats();
         local = catalogMeaning(content, intakeFormats);
         if (!alive() || runtime.binding() !== binding) return;
       }
@@ -353,7 +455,7 @@ export const App: React.FC = () => {
         const subject = shortSubjectIntake(content);
         if (subject) local = { intake: subject };
         else if (origin.intake?.missing === 'subject') {
-          intakeFormats = await getExamFormats();
+          intakeFormats = await loadFormats();
           const contextual = contextualSubject(content, origin.intake, intakeFormats);
           if (contextual?.intake) local = { intake: contextual.intake };
           if (!alive() || runtime.binding() !== binding) return;
@@ -362,10 +464,11 @@ export const App: React.FC = () => {
       if (local && 'text' in local) { answer(local.text); return; }
       if (local && 'confirm' in local) {
         const prepared = pending.current;
-        pending.current = null;
+        setPendingConfirmation(null);
         if (!local.confirm) {
           const intakePending = origin?.intake?.phase === 'collecting';
           if (intakePending) store.setIntake(id, undefined);
+          setChatDrafts(prev => ({ ...prev, [id]: undefined }));
           answer(prepared || intakePending ? 'Đã hủy yêu cầu trò chuyện đang chờ.' : 'Hiện chưa có tác vụ trò chuyện đang chờ.');
         } else if (!prepared || prepared.workspaceId !== id) {
           answer('Hiện chưa có thao tác nào đang chờ xác nhận.');
@@ -379,7 +482,7 @@ export const App: React.FC = () => {
       }
       // An unresolved new turn may be a correction. Do not leave an older write runnable.
       if (!local || 'intake' in local || ('intents' in local && local.intents.some(intent => !['STATUS', 'WARNINGS', 'LIST_SESSIONS', 'SHOW_FORMATS', 'RECALL'].includes(intent.id)))) {
-        pending.current = null;
+        setPendingConfirmation(null);
       }
       let canAct = !!local || mayDispatch(content);
       const started = performance.now();
@@ -396,13 +499,18 @@ export const App: React.FC = () => {
         }, controller.signal);
       if (!alive() || runtime.binding() !== binding) return;
       const workflow = 'dialogueAct' in interpreted ? resolveSemantic(interpreted, recentQuestion(origin)) : undefined;
-      if (workflow?.invalidateConfirmation) pending.current = null;
+      if (workflow?.invalidateConfirmation) setPendingConfirmation(null);
       if (workflow?.cancel) {
         store.setIntake(id, undefined);
+        setChatDrafts(prev => ({ ...prev, [id]: undefined }));
         answer('Đã hủy yêu cầu trò chuyện đang chờ. Công việc tạo đề đã gửi vẫn giữ trạng thái hiện tại.');
         return;
       }
-      if (workflow?.text) { answer(workflow.text); return; }
+      if (workflow?.text) {
+        // A rejected semantic frame must not be reinterpreted by the UI fallback.
+        answer(workflow.text);
+        return;
+      }
       if (workflow?.inspections) {
         const stated = [...fold(content).matchAll(/\bcau\s+(\d+)\b/g)].map(match => Number(match[1]));
         const parts = [...fold(content).matchAll(/\bcau\s+(\d+)\s+(?:o\s+)?phan\s+(i{1,3}|[123]|p[123]|tv|ta|to|logic|science)\b/g)];
@@ -437,6 +545,9 @@ export const App: React.FC = () => {
         const formats = decision.guidance === 'remark' ? [] : intakeFormats ?? await getExamFormats();
         if (!alive() || runtime.binding() !== binding) return;
         if (decision.intake) {
+          if (decision.intake.mode === 'request' && !workflow?.setupOnly && await applyInlineDraft(decision.intake)) {
+            return;
+          }
           const resolution = resolveIntake(decision.intake, content, origin?.intake, formats, messageId, !!workflow);
           suggestedTitle = resolution.title && resolution.title !== 'Chọn mẫu đề thi'
             ? resolution.title : decision.title ?? resolution.title;
@@ -456,14 +567,18 @@ export const App: React.FC = () => {
                 ? { id: 'PREPARE_GENERATION', args: { format: preset.id, ...(draft.topic ? { topic: draft.topic } : {}) } }
                 : { id: 'SELECT_FORMAT', args: { format: preset.id, details: true } };
               const expected = runtime.binding();
-              pending.current = {
+              setPendingConfirmation({
                 workspaceId: id,
                 binding: expected,
                 expires: Date.now() + CONFIRMATION_TTL_MS,
                 run: (sourceId = messageId) => runtimeRef.current!.dispatch(action, expected, '', sourceId, {
                   ...accepted, sourceIds: [...new Set([...(accepted.sourceIds ?? [messageId]), sourceId])],
                 }),
-              };
+              }, {
+                workspaceId: id,
+                label: `Dùng mẫu ${preset.displayName} (${preset.totalQuestions} câu · ${preset.durationMinutes} phút)`,
+                confirmLabel: 'Dùng mẫu này',
+              });
             }
             answer(resolution.text);
             return;
@@ -482,6 +597,9 @@ export const App: React.FC = () => {
           return;
         }
       } else if (decision.kind !== 'task') {
+        if (decision.kind === 'temporarily_unavailable' && await applyInlineDraft()) {
+          return;
+        }
         answer(decision.kind === 'temporarily_unavailable' ? interpretationUnavailable(decision.reasonCode)
           : decision.kind === 'unsupported' ? 'Tính năng này chưa có trong ASTRA.'
             : 'Thầy cô muốn thao tác nào trong ASTRA? Em cần thêm thông tin để thực hiện.');
@@ -519,6 +637,9 @@ export const App: React.FC = () => {
     } catch (error) {
       if (!controller.signal.aborted) {
         const reason = error instanceof Error ? error.message : '';
+        if ((reason === 'agent_rate' || reason.startsWith('agent_')) && await applyInlineDraft()) {
+          return;
+        }
         answer(reason === 'agent_rate' ? 'Trợ lý đang nhận quá nhiều yêu cầu. Thầy cô thử lại sau một lát.'
           : reason.startsWith('agent_') ? 'Chưa kết nối được dịch vụ hiểu yêu cầu. Thầy cô có thể dùng các nút trong ASTRA.'
             : error instanceof ApiError ? error.message
@@ -831,10 +952,12 @@ export const App: React.FC = () => {
     const current = store.getSnapshot().find(session => session.id === activeId);
     const activeTurn = turn.current;
     const validTurn = () => !!activeTurn && turn.current === activeTurn && !activeTurn.signal.aborted;
-    const prepare = (text: string, run: Confirmation['run']): Effect => {
+    const prepare = (text: string, run: Confirmation['run'], confirmLabel = 'Xác nhận'): Effect => {
       if (!current) return failed('Hãy mở không gian soạn đề trước.');
-      pending.current = { workspaceId: current.id, binding: binding(), expires: Date.now() + CONFIRMATION_TTL_MS, run };
-      return { status: 'pending', text: `${text} Nếu đồng ý, hãy nhắn “Xác nhận”.` };
+      setPendingConfirmation({ workspaceId: current.id, binding: binding(), expires: Date.now() + CONFIRMATION_TTL_MS, run }, {
+        workspaceId: current.id, label: text, confirmLabel,
+      });
+      return { status: 'pending', text: `${text} Bấm “${confirmLabel}” bên dưới hoặc nhắn “Xác nhận”.` };
     };
     switch (intent.id) {
       case 'PAUSE_GENERATION':
@@ -1318,9 +1441,8 @@ export const App: React.FC = () => {
               <>
                 <div className="studio-chat-heading"><div><span className="studio-kicker">KHÔNG GIAN SOẠN ĐỀ</span><h2>Cùng soạn đề</h2></div></div>
                 <div className="session-context"><strong>{active.mode === 'template' ? active.meta?.title ?? active.title : active.title}</strong></div>
-                {(!active.generationId && !active.generationStopped && (active.status === 'draft' || active.status === 'error')) && <div className="session-create-action">
-                  {active.error && <p className="session-error-note">{active.error}</p>}
-                  <button type="button" className="button-primary" onClick={() => { cancelTurn(); setAgentSelection(undefined); setConfigureId(active.id); setShowQuickModal(true); }}>{active.status === 'error' ? 'Thử tạo lại' : 'Tạo đề từ yêu cầu'}</button>
+                {(!active.generationId && !active.generationStopped && active.status === 'draft' && !chatDrafts[active.id]) && <div className="session-create-action">
+                  <button type="button" className="button-primary" onClick={() => { cancelTurn(); setAgentSelection(undefined); setConfigureFormatId(active.intake?.formatId); setConfigureId(active.id); setShowQuickModal(true); }}>Tạo đề từ yêu cầu</button>
                 </div>}
                 {undoConflict?.id === active.id && <div className="editor-error-box" role="alert">
                   <strong>Có xung đột khi hoàn tác. Hãy kiểm tra câu hỏi và ngữ liệu chung.</strong>
@@ -1333,15 +1455,132 @@ export const App: React.FC = () => {
                 </div>}
                 <ChatHistory messages={messages} onSuggestion={value => store.setDraft(active.id, value)} onEditMessage={message => store.setDraft(active.id, message.content)} onRetractMessage={message => { cancelTurn(); store.retractMessage(active.id, message.id); }} onBranchMessage={message => { cancelTurn(); void branchFromMessage(active.id, message); }}
                   currentJobId={active.jobId} undoing={undoing} onUndoChange={sharedId && active.package?.revision ? message => void undoRecordedChange(message) : undefined} />
+                {(chatDrafts[active.id] || pendingActionMeta?.workspaceId === active.id) && (
+                  <ChatConfigCard
+                    draft={chatDrafts[active.id]}
+                    formats={catalogFormats}
+                    disabled={chatPending || isGenerating}
+                    pendingAction={pendingActionMeta?.workspaceId === active.id && pending.current?.workspaceId === active.id ? {
+                      label: pendingActionMeta.label,
+                      confirmLabel: pendingActionMeta.confirmLabel,
+                      onConfirm: () => {
+                        const prepared = pending.current;
+                        setPendingConfirmation(null);
+                        if (!prepared || prepared.workspaceId !== active.id) return;
+                        void Promise.resolve(prepared.run(undefined, (active.inputDocuments ?? []).map(d => d.id)))
+                          .then(effect => store.appendMessage(active.id, 'assistant', effect.text));
+                      },
+                      onCancel: () => {
+                        setPendingConfirmation(null);
+                        store.appendMessage(active.id, 'assistant', 'Đã hủy thao tác đang chờ.');
+                      },
+                    } : null}
+                    onChange={patch => {
+                      setChatDrafts(prev => {
+                        const currentDraft = prev[active.id];
+                        if (!currentDraft) return prev;
+                        return { ...prev, [active.id]: recomputeDraftStatus({ ...currentDraft, ...patch }, catalogFormats) };
+                      });
+                    }}
+                    onGenerate={() => {
+                      const currentDraft = chatDrafts[active.id];
+                      if (!currentDraft) return;
+                      const params = buildParamsFromDraft(currentDraft, catalogFormats, (active.inputDocuments ?? []).map(d => d.id));
+                      if (!params) return;
+                      setPendingConfirmation(null);
+                      setChatDrafts(prev => ({ ...prev, [active.id]: undefined }));
+                      void store.generate(active.id, params);
+                    }}
+                    onOpenModal={() => {
+                      const fmtId = chatDrafts[active.id]?.formatId;
+                      setConfigureFormatId(fmtId);
+                      setConfigureId(active.id);
+                      setAgentSelection(undefined);
+                      setShowQuickModal(true);
+                    }}
+                    onDismiss={() => setChatDrafts(prev => ({ ...prev, [active.id]: undefined }))}
+                  />
+                )}
               </>
             ),
             right: (
               <>
-                {(active.error || active.generationError) && (
+                {hasValidExam && (active.error || active.generationError) && (
                   <div className="canvas-alert-banner is-error" role="alert">
                     <AlertCircle size={17} aria-hidden="true" />
-                    <span>{active.error || active.generationError}</span>
+                    <span className="canvas-alert-copy">{active.error || active.generationError}</span>
+                    {active.lastParams && (
+                      <button
+                        type="button"
+                        className="button-secondary canvas-alert-retry"
+                        onClick={() => void store.generate(active.id, active.lastParams!)}
+                      >
+                        <RefreshCw size={13} aria-hidden="true" />
+                        <span>Thử lại</span>
+                      </button>
+                    )}
                   </div>
+                )}
+                {!hasValidExam && active.status === 'error' && !isGenerating && (
+                  <section className="canvas-error-recovery" role="alert" aria-label="Khôi phục lỗi tạo đề">
+                    <div className="canvas-error-recovery-head">
+                      <AlertCircle size={18} aria-hidden="true" />
+                      <div>
+                        <strong>Chưa tạo được đề thi hợp lệ</strong>
+                        <p>{active.error || active.generationError || 'Quá trình tạo đề bị gián đoạn hoặc gặp lỗi định dạng.'}</p>
+                      </div>
+                    </div>
+                    {(active.lastParams || active.meta || (active.inputDocuments?.length ?? 0) > 0) && (
+                      <div className="canvas-error-recovery-meta">
+                        <span>
+                          Cấu hình đã giữ: {active.lastParams?.subject || active.meta?.subject || active.title}
+                          {active.lastParams ? ` · ${active.lastParams.itemCount} câu · ${active.lastParams.durationMinutes} phút`
+                            : active.meta ? ` · ${active.meta.totalCount} câu · ${active.meta.duration} phút` : ''}
+                          {(active.inputDocuments?.length ?? 0) > 0 ? ` · ${active.inputDocuments!.length} tệp đính kèm` : ''}
+                        </span>
+                      </div>
+                    )}
+                    <div className="canvas-error-recovery-actions">
+                      <button
+                        type="button"
+                        className="button-primary"
+                        onClick={() => {
+                          cancelTurn();
+                          if (active.lastParams) {
+                            void store.generate(active.id, active.lastParams);
+                            return;
+                          }
+                          const matched = catalogFormats.find(f =>
+                            f.available && (f.id === active.intake?.formatId || f.subjects.some(s => s === active.meta?.subject))
+                          );
+                          setAgentSelection(undefined);
+                          setConfigureFormatId(matched?.id ?? active.intake?.formatId);
+                          setConfigureId(active.id);
+                          setShowQuickModal(true);
+                        }}
+                      >
+                        <RefreshCw size={14} aria-hidden="true" />
+                        <span>Thử tạo lại</span>
+                      </button>
+                      <button
+                        type="button"
+                        className="button-secondary"
+                        onClick={() => {
+                          cancelTurn();
+                          const matched = catalogFormats.find(f =>
+                            f.available && (f.id === active.lastParams?.formatId || f.id === active.intake?.formatId || f.subjects.some(s => s === active.meta?.subject))
+                          );
+                          setAgentSelection(undefined);
+                          setConfigureFormatId(matched?.id);
+                          setConfigureId(active.id);
+                          setShowQuickModal(true);
+                        }}
+                      >
+                        <Settings2 size={14} aria-hidden="true" />
+                        <span>Chỉnh cấu hình</span>
+                      </button>
+                    </div>
+                  </section>
                 )}
                 {(questionStage || ((isGenerating || active.generationId) && active.progress)) && (
                   <div className="canvas-progress-banner" role="status" aria-live="polite">
@@ -1451,6 +1690,7 @@ export const App: React.FC = () => {
                   passages={active.package?.passages}
                   examMeta={examMeta}
                   isGenerating={isGenerating}
+                  progressMessage={isGenerating && active.progress?.statusMessage ? formatProgressStatus(active.progress.statusMessage) : undefined}
                   latestQuestionCount={prevQuestionCount}
                   viewMode={viewMode}
                   onViewModeChange={mode => { setAgentOpenedPdf(false); setViewMode(mode); }}
@@ -1480,7 +1720,7 @@ export const App: React.FC = () => {
                 />
               </>
             ),
-            composer: <ModernChatBar documents={active.inputDocuments ?? []} onDocumentsChange={documents => store.setInputDocuments(active.id, documents)} onSend={handleSendMessage} disabled={chatPending} draft={active.draft} onDraftChange={value => store.setDraft(active.id, value)} />,
+            composer: <ModernChatBar compact documents={active.inputDocuments ?? []} onDocumentsChange={documents => store.setInputDocuments(active.id, documents)} onSend={handleSendMessage} disabled={chatPending} draft={active.draft} onDraftChange={value => store.setDraft(active.id, value)} />,
           }}
         </WorkspaceLayout>
       )}
@@ -1493,7 +1733,8 @@ export const App: React.FC = () => {
           title={configureId ? 'Thiết lập đề theo yêu cầu' : 'Tạo đề từ mẫu'}
           onDialogMount={node => { presetDialog.current = node; }}
           agentSelection={agentSelection}
-          onManualSelect={() => { pending.current = null; setAgentSelection(undefined); }}
+          initialFormatId={configureFormatId}
+          onManualSelect={() => { setPendingConfirmation(null); setAgentSelection(undefined); }}
           onStart={handleQuickStart}
           onClose={closeQuickModal}
         />

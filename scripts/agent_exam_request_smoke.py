@@ -7,7 +7,6 @@ generation and external network requests are forbidden. No exam is generated.
 import copy
 import json
 import os
-import re
 import socket
 import subprocess
 import sys
@@ -45,7 +44,13 @@ def observe(base):
                 False,
                 "compatible",
             ),
-            ("draft", "Chuẩn bị một bài kiểm tra theo yêu cầu fixture", None, False, "conflicting"),
+            (
+                "draft",
+                "Tạo một bài kiểm tra Toán theo mẫu tốt nghiệp fixture",
+                None,
+                False,
+                "conflicting",
+            ),
             ("completed", "Đừng tạo đề mới", None, False, None),
             ("completed", "Tạo đề toán THPT mới được không?", None, False, "question"),
         ]
@@ -215,13 +220,12 @@ def observe(base):
             composer.fill(message)
             composer.press("Enter")
             if subject:
-                expect(page.get_by_role("dialog")).to_be_visible()
-                expect(
-                    page.get_by_role(
-                        "radio", name=re.compile("Đề thi THPT Quốc gia.*" + re.escape(subject))
-                    )
-                ).to_be_checked()
-                expect(page.get_by_role("button", name="Tạo đề thi", exact=True)).to_be_enabled()
+                card = page.get_by_role("region", name="Cấu hình đề thi từ yêu cầu")
+                expect(card).to_be_visible()
+                selected = "thpt-english" if subject == "Tiếng Anh" else "thpt-math"
+                expect(card.get_by_role("combobox", name="Chọn mẫu đề")).to_have_value(selected)
+                expect(card.get_by_role("button", name="Tạo đề ngay", exact=True)).to_be_enabled()
+                expect(page.get_by_role("dialog")).to_have_count(0)
             else:
                 expected = (
                     "cấu hình đề khác nhau"
@@ -232,6 +236,9 @@ def observe(base):
                 )
                 expect(page.get_by_text(expected, exact=False).last).to_be_visible()
                 expect(page.get_by_role("dialog")).to_have_count(0)
+                expect(page.get_by_role("region", name="Cấu hình đề thi từ yêu cầu")).to_have_count(
+                    0
+                )
             assert len(entries) == (2 if fresh else 1), (state, message, entries)
             if fresh:
                 # Typing/clearing the composer legitimately saves a new draft revision.
@@ -242,7 +249,7 @@ def observe(base):
                 assert not child.get("jobId") and not child.get("generationId")
                 assert child["messages"][0]["content"] == message
             assert counters["interpretations"] == (1 if model else 0), counters
-            assert counters["evaluations"] == (1 if model == "compatible" else 0), counters
+            assert counters["evaluations"] == 0, counters
             assert counters["generation"] == 0 and not forbidden and not errors, (forbidden, errors)
             results.append(
                 {"state": state, "subject": subject, "freshWorkspace": fresh, **counters}

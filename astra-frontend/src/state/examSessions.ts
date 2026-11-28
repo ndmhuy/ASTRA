@@ -38,6 +38,7 @@ export interface ExamSession {
   artifactChanged?: boolean;
   requestId?: string;
   requestSignature?: string;
+  lastParams?: ExamRequestParams;
   progress?: GenerationProgress;
   conversation?: Conversation;
   intake?: Intake;
@@ -754,6 +755,7 @@ export class ExamSessions {
       ...session,
       requestId,
       requestSignature,
+      lastParams: params,
       error: undefined,
       errorCode: undefined,
       progress: undefined,
