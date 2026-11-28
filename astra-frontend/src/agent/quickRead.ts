@@ -1,11 +1,17 @@
 import type { Frame, GoalId } from './intelligence.ts';
 import type { Intent } from './contracts.ts';
+import utterances from '../../../src/exam_baseline/resources/agent/local-utterances.json' with { type: 'json' };
+import { requestText } from './local.ts';
 
 type Reading = { goal: GoalId; parameters: Intent['args']; act: Frame['dialogueAct'] };
+const known = new Map(utterances.routes.flatMap(({examples, ...reading}) =>
+  examples.map(phrase => [requestText(phrase), reading as Reading] as const)));
 
 /** Match a whole request, so the quick path cannot consume part of a compound instruction. */
 export function quickRead(text: string): Reading | undefined {
   const phrase = text.replace(/^(?:bay gio |hien tai )/, '');
+  const matched = known.get(phrase) ?? known.get(phrase.replace(/[, ]+(?:nhi|vay|the|a)$/, ''));
+  if (matched) return matched;
   const question = (goal: GoalId, parameters: Intent['args'] = {}): Reading =>
     ({ goal, parameters, act: 'QUESTION' });
 

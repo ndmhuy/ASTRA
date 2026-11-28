@@ -16,6 +16,10 @@ export function polite(message: string) {
   return text;
 }
 
+export function requestText(message: string) {
+  return polite(message).replace(/^(?:(?:co|thay|toi|minh|tao|tui|em|t) )?(?:muon|can) /, '');
+}
+
 export function localMeaning(message: string): LocalMeaning | undefined {
   const text = polite(message);
   if (/^thu lai (?:ban )?xem truoc(?: pdf)?$/.test(text)) return;
