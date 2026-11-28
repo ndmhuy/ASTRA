@@ -4,6 +4,7 @@ import asyncio
 import hmac
 import io
 import json
+import logging
 import os
 import re
 import secrets
@@ -405,6 +406,7 @@ class SharedInterpreter:
     semantic_version = "astra-semantic-v3"
 
     def __init__(self, owner):
+        self.owner = owner
         self.provider = SharedProvider(owner, "chat")
 
     async def interpret(self, turn, timeout):
@@ -414,7 +416,7 @@ class SharedInterpreter:
                 CompletionRequest(
                     V3_SYSTEM if v3 else SYSTEM,
                     json.dumps(semantic_context(turn), ensure_ascii=False, separators=(",", ":")),
-                    schema_v3(compact=True) if v3 else semantic_schema(compact=True),
+                    schema_v3() if v3 else semantic_schema(compact=True),
                 ),
                 chat=True,
                 timeout=timeout,
@@ -436,7 +438,21 @@ class SharedInterpreter:
                 else "transient",
             )
             raise ProviderFailure(reason) from None
-        except (ValueError, TypeError):
+        except (ValueError, TypeError) as error:
+            # Keep diagnostics, never the raw model reply, prompt or credentials.
+            fields = (
+                [
+                    {"path": list(item["loc"]), "type": item["type"]}
+                    for item in error.errors(
+                        include_input=False, include_context=False, include_url=False
+                    )
+                ]
+                if isinstance(error, ValidationError)
+                else []
+            )
+            logging.getLogger("exam_baseline.agent").warning(
+                "agent_semantic_validation kind=%s fields=%s", type(error).__name__, fields[:8]
+            )
             raise ProviderFailure("schema") from None
 
 

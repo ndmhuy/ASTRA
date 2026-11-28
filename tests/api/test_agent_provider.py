@@ -42,8 +42,8 @@ def test_one_fallback_and_refusal_when_daily_budget_is_exhausted():
     assert first.calls == second.calls == 1
 
 
-@pytest.mark.parametrize("reason", ["configuration", "schema", "quota"])
-def test_auth_schema_and_429_cooldown_do_not_trigger_fallback(reason):
+@pytest.mark.parametrize("reason", ["configuration", "quota"])
+def test_configuration_and_429_cooldown_do_not_trigger_fallback(reason):
     clock = [0.0]
     first = Fake(ProviderFailure(reason, retry_after=45))
     second = Fake(Decision(kind="clarify"))
@@ -55,6 +55,20 @@ def test_auth_schema_and_429_cooldown_do_not_trigger_fallback(reason):
         assert (await router(TURN)).reasonCode == reason
         assert first.calls == 1
         assert second.calls == 0
+
+    asyncio.run(scenario())
+
+
+def test_schema_error_does_not_cool_down_the_next_independent_user_turn():
+    first = Fake(ProviderFailure("schema"))
+    router = ProviderRouter(first, reserve=lambda: True, clock=lambda: 0.0)
+
+    async def scenario():
+        assert (await router(TURN)).reasonCode == "schema"
+        assert first.calls == 1  # No automatic paid repair request.
+        first.result = Decision(kind="clarify")
+        assert (await router(TURN)).kind == "clarify"
+        assert first.calls == 2
 
     asyncio.run(scenario())
 

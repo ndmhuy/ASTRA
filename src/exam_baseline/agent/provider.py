@@ -138,6 +138,11 @@ class ProviderRouter:
 
     def _record_failure(self, route: Route, error: ProviderFailure) -> None:
         route.reason = error.reason
+        if error.reason == "schema":
+            # A malformed interpretation of one utterance is not a provider outage.
+            route.failures = 0
+            route.until = 0
+            return
         route.failures += 1
         if error.reason == "quota":
             route.until = self.clock() + max(1.0, error.retry_after or self.timing.cooldown)

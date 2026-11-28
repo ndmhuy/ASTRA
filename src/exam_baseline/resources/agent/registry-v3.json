@@ -82,7 +82,7 @@
     },
     "STATUS": {
       "purpose": "Đọc trạng thái tạo đề hiện tại",
-      "args": {}
+      "args": {"scope": "current|active?", "name": "string?"}
     },
     "WARNINGS": {
       "purpose": "Đọc cảnh báo nguồn, hình và đáp án",
@@ -484,14 +484,14 @@
       "availability": "implemented"
     },
     "READ_PROGRESS": {
-      "meaning": "Đọc trạng thái tạo đề hiện tại",
+      "meaning": "Đọc đề đang làm, môn/số câu/thời gian và tiến độ thật. scope=current cho đề này, scope=active cho các đề đang chạy; name chỉ dùng khi người dùng nêu tên đề.",
       "dialogueActs": [
         "REQUEST",
         "CORRECT",
         "QUESTION",
         "INFORM"
       ],
-      "parameters": {},
+      "parameters": {"scope": "current|active?", "name": "string?"},
       "resolver": "capability",
       "capability": "STATUS",
       "effect": "read",

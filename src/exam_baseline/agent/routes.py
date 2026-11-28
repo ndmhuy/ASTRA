@@ -1,15 +1,18 @@
 """Same-origin conversation interpretation and allowlisted web research. No MAS deps."""
 
+import asyncio
 from collections.abc import Awaitable, Callable
 from hashlib import sha256
 from ipaddress import ip_address
 from typing import Annotated
+from uuid import UUID
 
 from fastapi import APIRouter, Header, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 
 from .admission import Admission, normalize_message
+from .context import backend_facts, ground_turn
 from .contracts import MAX_BODY, VERSION, Decision, Turn
 from .research import ResearchRequest, ResearchResponse, search_adjacent_topic
 from .semantics import SemanticFrame, SemanticTurn, legacy_decision
@@ -51,6 +54,19 @@ def create_agent_router(
     router = APIRouter(prefix="/agent")
     admission = Admission()
 
+    @router.get("/workspace-state")
+    async def workspace_state(request: Request, workspace_id: UUID):
+        if not is_loopback(request.url.hostname) or not is_loopback(
+            request.client.host if request.client else ""
+        ):
+            raise HTTPException(403, "agent_local_boundary")
+        state = await asyncio.to_thread(
+            backend_facts, request.app.state.ui_jobs.store, str(workspace_id)
+        )
+        return JSONResponse(
+            state.model_dump(exclude_none=True), headers={"Cache-Control": "no-store"}
+        )
+
     @router.post("/turn")
     async def turn(
         request: Request, marker: Annotated[str | None, Header(alias="X-Astra-Agent")] = None
@@ -79,8 +95,12 @@ def create_agent_router(
         decision = admission.enter(peer, payload, fingerprint)
         if decision is None:
             try:
+                jobs = getattr(request.app.state, "ui_jobs", None)
+                observed = (
+                    await asyncio.to_thread(ground_turn, payload, jobs.store) if jobs else payload
+                )
                 decision = (
-                    await selected(payload)
+                    await selected(observed)
                     if selected
                     else Decision(kind="temporarily_unavailable", reasonCode="disabled")
                 )
@@ -94,11 +114,18 @@ def create_agent_router(
         ):
             source = decision.schemaVersion
             frame = upgrade_legacy(decision) if isinstance(decision, SemanticFrame) else decision
+            view = frame.model_dump(exclude_none=True)
+            if request.headers.get("X-Astra-Dialogue") != "grounded-v1":
+                view.pop("reply", None)  # Keep strict older V3 clients compatible.
+                for goal in view.get("goals", []):
+                    if goal["goal"] == "READ_PROGRESS":
+                        goal.get("parameters", {}).pop("scope", None)
+                        goal.get("parameters", {}).pop("name", None)
             result = {
                 "schemaVersion": frame.schemaVersion,
                 "sourceContract": source,
                 "clientMessageId": payload.clientMessageId,
-                "frame": frame.model_dump(exclude_none=True),
+                "frame": view,
             }
         elif (
             isinstance(decision, SemanticFrame)

@@ -190,7 +190,7 @@ def test_shared_key_reaches_all_roles_and_chat_with_original_schema(tmp_path, mo
         assert json.loads(calls[0].content)["tools"][0]["input_schema"] == REQUEST.output_schema
         assert json.loads(calls[0].content)["system"] == REQUEST.system
         assert json.loads(calls[0].content)["max_tokens"] == 8192
-        assert json.loads(calls[-1].content)["max_tokens"] == 1024
+        assert json.loads(calls[-1].content)["max_tokens"] == 2048
         assert client.get("/api/connection").json()["verified"]
 
 
