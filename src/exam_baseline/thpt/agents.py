@@ -367,7 +367,8 @@ Mark needs_revision if an item drifts outside the requested curriculum/topic sco
 requirements, or assesses a different topic or learning objective than its slot.
 Compare independent Solver results with Composer's private answers and detailed solutions.
 Any demonstrated solver disagreement or unsolved/ambiguous result requires needs_revision.
-An unparseable Solver answer remains unverified. Its format alone must not trigger revision.
+A Solver entry with status unparsed has no comparable answer. Assess the question's content
+independently and request revision only if you identify a substantive issue with the question.
 Also check template content fit and LaTeX content syntax. Do not rewrite the template.
 This review happens exactly once; actionable feedback goes to Composer at most once.
 Human visual inspection is mandatory after any correction."""

@@ -125,8 +125,10 @@ def test_parallel_pause_drains_already_sent_valid_sections(tmp_path):
     asyncio.run(asyncio.wait_for(run(), timeout=5))
 
 
-@pytest.mark.parametrize("recovers", [True, False])
-def test_malformed_solver_p2_never_recomposes_the_exam(tmp_path, recovers):
+@pytest.mark.parametrize(
+    ("recovers", "content_issue"), [(True, False), (False, False), (False, True)]
+)
+def test_reviewer_separates_solver_p2_format_from_content(tmp_path, recovers, content_issue):
     from exam_baseline.thpt.orchestrator import Orchestrator
     from tests.thpt.test_generation import Scripted, request
 
@@ -143,12 +145,38 @@ def test_malformed_solver_p2_never_recomposes_the_exam(tmp_path, recovers):
                     entry["answer"] = "a: true; b: true; c: true; c: true"
             return Completion(text=json.dumps(response), model=completion.model)
 
-    pool = {role: Scripted(role, False) for role in ("composer", "illustrator", "reviewer")}
-    pool["solver"] = Solver("solver", False)
+    class Reviewer(Scripted):
+        async def complete(self, prompt):
+            completion = await super().complete(prompt)
+            response = json.loads(completion.text)
+            entries = {entry["question_id"]: entry for entry in self.calls[-1]["solver"]["entries"]}
+            assert entries["P2-2"]["answer"] == "true true true true"
+            if recovers:
+                assert entries["P2-1"]["answer"] == "true true true true"
+            elif "answer" in entries["P2-1"]:
+                response.update(
+                    decision="needs_revision", issues=["P2-1: Solver answer has duplicate labels."]
+                )
+            else:
+                assert entries["P2-1"] == {"question_id": "P2-1", "status": "unparsed"}
+                if content_issue:
+                    response.update(
+                        decision="needs_revision", issues=["P2-1: A condition is missing."]
+                    )
+            return Completion(text=json.dumps(response), model=completion.model)
+
+    pool = {
+        "composer": Scripted("composer", False),
+        "illustrator": Scripted("illustrator", False),
+        "reviewer": Reviewer("reviewer", False),
+        "solver": Solver("solver", False),
+    }
     report = asyncio.run(Orchestrator(pool).run(request(), tmp_path / "paper"))
-    assert report["revision"] == 1
-    assert len(pool["composer"].calls) == 3
+    assert report["revision"] == (2 if content_issue else 1)
+    assert len(pool["composer"].calls) == (6 if content_issue else 3)
     assert len(pool["reviewer"].calls) == 1
-    assert len(pool["solver"].calls) == 4
+    assert len(pool["solver"].calls) == (8 if content_issue else 4)
     assert report["solver_agreement"]["unparsed"] == ([] if recovers else ["P2-1"])
-    assert not report["reviewer_feedback_sent"]
+    assert report["reviewer_feedback_sent"] is content_issue
+    if content_issue:
+        assert report["review_issues"] == ["P2-1: A condition is missing."]

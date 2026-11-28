@@ -176,11 +176,23 @@ class Orchestrator:
         )
 
     def review_data(self, request, questions, drawings, solutions, source, sections):
+        solver = solutions.model_dump()
+        if type(request) is Request:
+            for index, entry in enumerate(solutions.entries):
+                if (
+                    entry.question_id.startswith("P2-")
+                    and entry.status == "solved"
+                    and _parse_p2_booleans(entry.answer) is None
+                ):
+                    solver["entries"][index] = {
+                        "question_id": entry.question_id,
+                        "status": "unparsed",
+                    }
         data = dict(
             matrix=request.model_dump(exclude={"rag_evidence"}),
             questions=[q.model_dump() for q in questions],
             drawings=drawings.model_dump(),
-            solver=solutions.model_dump(),
+            solver=solver,
             student_latex=source.decode("utf-8"),
         )
         if isinstance(request, Request) and request.rag_evidence:
