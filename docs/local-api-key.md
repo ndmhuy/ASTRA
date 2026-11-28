@@ -17,11 +17,16 @@ at [api.nghimmo.com](https://api.nghimmo.com/):
 ```dotenv
 EXAM_PROVIDER=chat_completions
 EXAM_MODEL=nghi/claude-haiku-4.5
-ASTRA_GEMINI_API_KEY=
+ANTHROPIC_API_KEY=
 EXAM_BASE_URL=https://api.nghimmo.com/v1
 ```
 
-The variable name is historical; the credential belongs to the selected provider.
+The key is a Claude/Anthropic credential. The former `ASTRA_GEMINI_API_KEY` name
+remains a read fallback; the next save migrates its value to `ANTHROPIC_API_KEY`
+and removes the obsolete variable. If both contain a value, `ANTHROPIC_API_KEY`
+takes precedence. This changes credential storage, not the request protocol:
+Nghimmo publishes both Anthropic and OpenAI-compatible endpoints; this adapter
+continues to use the configured `/v1/chat/completions` endpoint and Claude model.
 Saving requires a key on first setup; later, a blank key retains the current one.
 The API validates configuration locally and atomically replaces only these four
 fields, preserving other `.env` settings/comments. Saving, reload and startup make

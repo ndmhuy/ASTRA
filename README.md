@@ -35,9 +35,10 @@ metadata only; it never installs, starts or probes a model.
 
 ## Local credentials and failures
 
-The app writes `EXAM_PROVIDER`, `EXAM_MODEL`, `ASTRA_GEMINI_API_KEY` and
-`EXAM_BASE_URL`, preserving unrelated settings/comments. Despite its historical
-name, `ASTRA_GEMINI_API_KEY` holds the key for the selected compatible provider.
+The app writes `EXAM_PROVIDER`, `EXAM_MODEL`, `ANTHROPIC_API_KEY` and
+`EXAM_BASE_URL`, preserving unrelated settings/comments. Older local files using
+`ASTRA_GEMINI_API_KEY` remain readable; the next save moves the existing value to
+`ANTHROPIC_API_KEY` and removes the obsolete name without requiring key re-entry.
 The key remains in the local Backend and `.env`; it is never returned by the
 configuration API or stored in browser storage. `.env` is plaintext local storage:
 anyone able to read your files can read it. Keep it out of Git and shared folders.

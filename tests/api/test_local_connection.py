@@ -32,7 +32,7 @@ REQUEST = CompletionRequest("Unchanged synthetic system", "Synthetic data", {"ty
 @pytest.fixture(autouse=True)
 def isolated_environment(monkeypatch):
     for name in os.environ:
-        if name.startswith(("EXAM_", "ASTRA_")):
+        if name.startswith(("EXAM_", "ASTRA_", "ANTHROPIC_")):
             monkeypatch.delenv(name)
 
 
@@ -102,6 +102,7 @@ def test_first_start_and_saving_are_probe_free_and_never_return_key(tmp_path):
         # Literal from the provider's published compatible endpoint, independent
         # of DEFAULT_URL so a typo in our bundled defaults cannot validate itself.
         assert status.json()["baseUrl"] == "https://api.nghimmo.com/v1"
+        assert KEY_NAME == "ANTHROPIC_API_KEY"
         assert connection.settings.provider == "unconfigured"
         assert client.get("/api/health").json()["demoMode"] is False
         for endpoint in (
@@ -138,6 +139,31 @@ def test_explicit_offline_demo_entry_point_remains_separate(tmp_path, monkeypatc
     with TestClient(create_web_app()) as client:
         assert client.get("/api/health").json()["demoMode"] is True
         assert client.get("/api/connection").status_code == 404
+
+
+@pytest.mark.parametrize("source", ["legacy", "anthropic", "both"])
+def test_anthropic_key_precedence_and_probe_free_migration_without_reentry(tmp_path, source):
+    values = {
+        "EXAM_PROVIDER": "chat_completions",
+        "EXAM_MODEL": DEFAULT_MODEL,
+        "EXAM_BASE_URL": DEFAULT_URL,
+    }
+    if source in {"legacy", "both"}:
+        values["ASTRA_GEMINI_API_KEY"] = "fixture-legacy-key"
+    if source in {"anthropic", "both"}:
+        values["ANTHROPIC_API_KEY"] = "fixture-anthropic-key"
+    expected = "fixture-legacy-key" if source == "legacy" else "fixture-anthropic-key"
+    env = tmp_path / ".env"
+    env.write_text("\n".join(f"{name}={value}" for name, value in values.items()), encoding="utf-8")
+    with running(tmp_path) as (client, connection, calls):
+        assert connection.configured
+        assert connection.settings.api_key.get_secret_value() == expected
+        response = save(client, apiKey="")
+        assert response.status_code == 200 and expected not in response.text and not calls
+        saved = dotenv_values(env)
+        assert saved["ANTHROPIC_API_KEY"] == expected
+        assert "ASTRA_GEMINI_API_KEY" not in saved
+    assert SharedConnection(env).settings.api_key.get_secret_value() == expected
 
 
 def test_shared_key_reaches_all_roles_and_chat_with_original_schema(tmp_path, monkeypatch):

@@ -37,6 +37,7 @@ PROFILE = json.loads((Path(__file__).parent / "resources/connection.json").read_
 DEFAULT_MODEL = PROFILE["defaultModel"]
 DEFAULT_URL = PROFILE["defaultBaseUrl"]
 KEY_NAME = PROFILE["keyName"]
+LEGACY_KEY_NAME = "ASTRA_GEMINI_API_KEY"
 MANAGED = ("EXAM_PROVIDER", "EXAM_MODEL", KEY_NAME, "EXAM_BASE_URL")
 
 
@@ -114,7 +115,7 @@ class SharedConnection:
                 self.values.get("EXAM_MODEL") or DEFAULT_MODEL,
                 self.values.get("EXAM_BASE_URL") or DEFAULT_URL,
             )
-            key = self.values.get(KEY_NAME) or ""
+            key = self.values.get(KEY_NAME) or self.values.get(LEGACY_KEY_NAME) or ""
             return self.make_settings(model, url, key)
         except (ValueError, ValidationError):
             self.configuration_error = "Cấu hình .env chưa hợp lệ. Hãy nhập lại kết nối AI."
@@ -202,6 +203,9 @@ class SharedConnection:
         remaining = dict(values)
         lines = []
         for binding in parse_stream(io.StringIO(text)):
+            if binding.key == LEGACY_KEY_NAME:
+                # Migrate the misleading old name on save, without two stale keys.
+                continue
             if binding.key in values:
                 if binding.key in remaining:
                     lines.append(binding.key + "=" + json.dumps(remaining.pop(binding.key)) + "\n")
