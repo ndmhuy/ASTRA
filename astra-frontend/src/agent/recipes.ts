@@ -1,10 +1,11 @@
 import type { Intake } from './intake.ts';
 import { MAX_ACTIONS, validIntent, type ExamIntake, type Intent, type IntentId } from './contracts.ts';
 import workflows from '../../../src/exam_baseline/resources/agent/semantic-catalog.json' with { type: 'json' };
+import { fold } from './language.ts';
+import { localMeaning } from './local.ts';
+export { fold } from './language.ts';
 
 // Adapted from the legacy Agent's accent folding. Preserve the original text for data fields.
-export const fold = (value: string) => value.toLocaleLowerCase('vi').replace(/đ/g, 'd')
-  .normalize('NFD').replace(/\p{Mark}/gu, '').replace(/\s+/g, ' ').trim();
 const command = (value: string) => fold(value).replace(/[.!]+$/, '');
 const directCommand = (text: string) => text
   .replace(/^(?:astra oi[, ]+|hay |cho (?:co|thay|toi|minh|tao|t|em) )/, '')
@@ -38,6 +39,8 @@ export function fastRoute(message: string): Local | undefined {
   if (/^(cam on( em)?|thanks)$/.test(text)) return { text: 'Em sẵn sàng hỗ trợ khi thầy cô cần.' };
   if (/^(dong y|xac nhan|ok)$/.test(text)) return { confirm: true };
   if (/^(huy tac vu|huy yeu cau|thoi dung lai)$/.test(text)) return { confirm: false };
+  const extension = localMeaning(message);
+  if (extension) return extension;
   if (/^(mo (?:phan )?(?:soan de|cau hinh|thiet lap)(?: de thi)?|mo mau de|vao (?:phan )?soan de|soan de dua tren tai lieu dinh kem)$/.test(direct)) return action('OPEN_SETUP');
   if (/^(tinh trang|tien do|toi dau roi|(?:tao )?de (?:toi|den) dau roi|xem (?:tinh trang|tien do)(?: tao de)?|status)[?]?$/.test(direct)) return action('STATUS');
   if (/^(xem dap an|review)$/.test(text)) return action('SET_VIEW', { view: 'review' });
@@ -65,7 +68,10 @@ export function fastRoute(message: string): Local | undefined {
   }
   if (/^(tao de|soan de|tao de toan 12|tao lai de)$/.test(text)) return action('PREPARE_GENERATION');
   const note = message.match(/^(?:ghi chú sửa|sửa) câu (\d{1,3})(?: phần ([a-z0-9]+))?\s+(.{2,300})$/iu);
-  if (note) return action('ADD_NOTE', { number: Number(note[1]), ...(note[2] ? { part: note[2] } : {}), instruction: note[3] });
+  if (note) {
+    if (/\b(?:va|roi|sau do|dong thoi) (?:duyet|xuat|mo|tao de)\b/.test(fold(note[3]))) return { text: 'Yêu cầu có nhiều thao tác. Thầy cô hãy gửi ghi chú sửa câu trước, rồi duyệt hoặc xuất riêng sau khi kiểm tra.' };
+    return action('ADD_NOTE', { number: Number(note[1]), ...(note[2] ? { part: note[2] } : {}), instruction: note[3] });
+  }
   const cancel = text.match(/^(?:a )?(?:thoi cau|bo ghi chu cau) (\d{1,3})(?: phan ([a-z0-9]+))?(?: giu nguyen)?$/);
   if (cancel) return action('CANCEL_NOTE', { number: Number(cancel[1]), ...(cancel[2] ? { part: cancel[2] } : {}) });
   if (/^(phe duyet|duyet de|phe duyet ban nay)$/.test(text)) return action('APPROVE');

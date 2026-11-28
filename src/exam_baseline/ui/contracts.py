@@ -180,6 +180,11 @@ class RevisionRequest(Model):
     revision: int = Field(ge=1)
 
 
+class GenerationControlRequest(Model):
+    schemaVersion: Literal["astra-generation-control-v1"] = "astra-generation-control-v1"
+    executionVersion: int = Field(ge=1, strict=True)
+
+
 class QuestionApprovalRequest(RevisionRequest):
     reviewer: str = Field(min_length=1, max_length=120)
     reason: str = Field(default="", max_length=1000)

@@ -171,7 +171,15 @@ export interface GenerationProgress {
   stage: number; stageName: string; percent: number; estimatedSecondsLeft: number;
   completedItems: number; totalItems: number; statusMessage: string;
   latestItemPreview?: QuestionItem;
-  status?: 'queued' | 'running' | 'completed' | 'failed' | 'cancelled';
+  jobId?: string;
+  executionVersion?: number;
+  checkpointVersion?: number;
+  completedOperations?: number;
+  resumeAvailable?: boolean;
+  connectionLost?: boolean;
+  retryNotBefore?: number;
+  retry?: { attempt: number; maxAttempts: number; category: string; phase: string; retryAt?: number } | null;
+  status?: 'queued' | 'running' | 'pausing' | 'paused' | 'resuming' | 'retrying' | 'interrupted' | 'completed' | 'failed' | 'cancelled';
   error?: { code: string; message: string; details?: unknown };
 }
 export interface ExamVersionReference { jobId: string; revision: number; }

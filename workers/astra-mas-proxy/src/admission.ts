@@ -75,7 +75,9 @@ export class MasAdmission {
         if (!/^[a-f0-9-]{36}$/.test(body.id ?? "") || !Number.isSafeInteger(body.tokens) || body.tokens! < 0) return Response.json({error:"rejected"}, {status:400});
         const budgetBlocked = rules.budgetsEnabled && (rules.until! <= now || ledger.used >= rules.attempts! ||
           (ledger.days[day] ?? 0) >= rules.daily! || ledger.tokens + body.tokens! > rules.tokens!);
-        if (this.env.ASTRA_MAS_FORWARDING_ENABLED !== "true" || budgetBlocked || ledger.leases.length >= rules.concurrency) return Response.json({error:"quota"}, {status:429});
+        if (this.env.ASTRA_MAS_FORWARDING_ENABLED !== "true") return Response.json({error:"mas_forwarding_disabled"}, {status:503});
+        if (budgetBlocked) return Response.json({error:"mas_budget_exhausted"}, {status:429});
+        if (ledger.leases.length >= rules.concurrency) return Response.json({error:"mas_capacity"}, {status:429,headers:{"Retry-After":"1"}});
         // Lifetime counters cannot renew at midnight or process restart. No refunds.
         ledger.used++; ledger.tokens += body.tokens!;
         ledger.days[day] = (ledger.days[day] ?? 0) + 1;

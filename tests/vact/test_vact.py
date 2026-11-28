@@ -92,6 +92,9 @@ def test_matrix_and_group_bindings_reject_missing_data():
 
 
 class Scripted:
+    name = model = "offline-vact-contract-fixture"
+    parameters = {}
+
     def __init__(self, role, correct=False):
         self.role = role
         self.correct = correct

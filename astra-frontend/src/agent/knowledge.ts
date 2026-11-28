@@ -2,7 +2,7 @@ import domain from '../../../src/exam_baseline/resources/agent/domain.json' with
 import type { ExamFormat } from '../types/exam.ts';
 import type { Decision, ExamIntake, Intent } from './contracts.ts';
 import type { Intake } from './intake.ts';
-import { fold } from './recipes.ts';
+import { fold } from './language.ts';
 
 export type AdjacentTopicConfig = {
   id: string;
@@ -72,7 +72,7 @@ export function guidanceFor(kind: Decision['guidance'], formats: ExamFormat[]) {
   const options = formats.filter(format => format.available).map(format => format.displayName).join(' và ');
   if (!options) return 'Hiện chưa thấy mẫu đề khả dụng. Thầy cô có thể xem lại đề đã lưu trong tủ đề.';
   return kind === 'capabilities'
-    ? 'ASTRA có thể chuẩn bị đề theo mẫu ' + options + ', cho xem cấu trúc, kiểm tra câu hỏi, xem trước PDF và xuất tệp sau khi thầy cô duyệt.'
+    ? 'ASTRA có thể chuẩn bị đề theo mẫu ' + options + ', xem cấu trúc, đính kèm tài liệu, tạm dừng/tiếp tục phần còn thiếu, kiểm tra câu hỏi, xem lịch sử và xuất PDF/Word/Markdown sau khi thầy cô duyệt.'
     : 'Thầy cô có thể bắt đầu bằng một trong các mẫu ' + options + '. Hãy cho em biết muốn luyện dạng nào. Em có thể trình bày cấu trúc trước khi thầy cô quyết định tạo đề.';
 }
 

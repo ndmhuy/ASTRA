@@ -13,7 +13,8 @@ test('precise Vietnamese paths preserve guardrails', () => {
   assert.deepEqual(fastRoute('Đừng mở đề A, mở đề B').intents, [{ id: 'OPEN_SESSION', args: { title: 'B' } }]);
   assert.equal(fastRoute('Mở đề này'), undefined);
   assert.equal(fastRoute('Mở đề A rồi xem đáp án câu 5'), undefined);
-  assert.equal(fastRoute('Tạo đề là gì? Đừng tạo nhé'), undefined);
+  assert.ok(fastRoute('Tạo đề là gì? Đừng tạo nhé').text);
+  assert.equal(fastRoute('Tạo đề là gì? Đừng tạo nhé').intents, undefined);
   assert.equal(mayDispatch('Tạo đề là gì? Đừng tạo nhé'), false);
   assert.equal(fastRoute('Đáp án câu 1 là gì?'), undefined);
   assert.equal(mayDispatch('Câu này khó nhỉ'), false);
@@ -31,7 +32,7 @@ test('natural help and custom exam requests fall through to interpretation', () 
     'sinh',
   ]) assert.equal(fastRoute(message), undefined, message);
   assert.deepEqual(fastRoute('ok'), { confirm: true });
-  assert.doesNotMatch(fastRoute('Xuất Word').text, /Toán THPT|V-ACT/);
+  assert.deepEqual(fastRoute('Xuất Word').intents, [{ id: 'EXPORT_DOCUMENT', args: { format: 'docx' } }]);
 });
 
 test('common Vietnamese phrasing reaches local UI intents when AI is disabled', () => {

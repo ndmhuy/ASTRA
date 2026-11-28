@@ -3,11 +3,40 @@ import limits from "./limits.json";
 export { MasAdmission } from "./admission";
 
 class Failure extends Error {
-  constructor(public code: string, public status: number) { super(code); }
+  constructor(public code: string, public status: number, public retryAfter?: string) { super(code); }
 }
-const reply = (body: unknown, status = 200, requestId?: string) => Response.json(body, {
-  status, headers: {"Cache-Control":"no-store", ...(requestId ? {"X-Astra-MAS-Request-ID":requestId} : {})},
+const reply = (body: unknown, status = 200, requestId?: string, retryAfter?: string) => Response.json(body, {
+  status, headers: {"Cache-Control":"no-store", ...(requestId ? {"X-Astra-MAS-Request-ID":requestId} : {}),
+    ...(retryAfter ? {"Retry-After":retryAfter} : {})},
 });
+function retrySeconds(value: string | null): string | undefined {
+  if (!value) return;
+  const seconds = /^\d+(?:\.\d+)?$/.test(value) ? Number(value) : (Date.parse(value)-Date.now())/1000;
+  return Number.isFinite(seconds) ? String(Math.max(0,seconds)) : undefined;
+}
+function dailyQuota(value: unknown): boolean {
+  const pending: unknown[] = [value];
+  for (let visited=0;pending.length && visited<1000;visited++) {
+    const item = pending.pop();
+    if (!item || typeof item !== "object") continue;
+    for (const [key,child] of Object.entries(item)) {
+      if (key === "code" && ["insufficient_quota","billing_hard_limit_reached"].includes(String(child))) return true;
+      if (["quotaId","quota_id","quotaMetric","quota_metric","quotaLimit","quota_limit"].includes(key) &&
+        /perday|daily/.test(String(child).toLowerCase().replace(/[^a-z0-9]/g,""))) return true;
+      if (child && typeof child === "object") pending.push(child);
+    }
+  }
+  return false;
+}
+function upstreamFailure(status: number, text: string, retry: string | null): Failure {
+  const named: Record<number,string> = {400:"upstream_invalid_request",401:"upstream_auth",403:"upstream_access",404:"upstream_model"};
+  let error: any; try { error = JSON.parse(text)?.error; } catch { /* Never expose provider prose. */ }
+  const wait = retrySeconds(retry);
+  const code = status === 429 ? dailyQuota(error) ? "upstream_quota_exhausted"
+    : wait !== undefined || error?.code === "rate_limit_exceeded" ? "upstream_rate_limited" : "upstream_quota_unknown"
+    : named[status] ?? "upstream_http_"+status;
+  return new Failure(code,status >= 400 && status <= 599 ? status : 502,wait);
+}
 async function readBounded(input: Request | Response, maximum: number) {
   const reader = input.body?.getReader();
   if (!reader) throw new Failure("invalid_body",400);
@@ -99,13 +128,22 @@ export default {
       const requestedRole = request.headers.get("X-Astra-MAS-Stage");
       if (!["composer","illustrator","solver","reviewer"].includes(requestedRole ?? "")) throw new Failure("invalid_stage",400);
       role = requestedRole;
+      const operation = request.headers.get("X-Astra-MAS-Operation");
+      const attempt = request.headers.get("X-Astra-MAS-Attempt");
+      if (operation && !/^[a-f0-9]{64}$/.test(operation) || attempt && !/^[a-f0-9-]{36}$/.test(attempt)) throw new Failure("invalid_operation",400);
+      if (operation) console.log(JSON.stringify({requestId:id,operationId:operation,attemptId:attempt,role}));
       stage = "request_validation";
       const raw = await readBounded(request,limits.maxRequestBytes), body = JSON.parse(raw);
       const tokens = validate(body,env.ASTRA_MAS_MODEL!,rules.outputTokens);
       stub = env.MAS_ADMISSION.get(env.MAS_ADMISSION.idFromName("mas-global-v1"));
       stage = "admission";
       const reservation = await stub.fetch("https://quota/reserve", {method:"POST",body:JSON.stringify({id,tokens:new TextEncoder().encode(raw).length+tokens})});
-      if (!reservation.ok) throw new Failure("mas_budget_or_capacity",reservation.status === 429 ? 429 : 503);
+      if (!reservation.ok) {
+        const rejection = await reservation.json() as {error?:string};
+        const code = ["mas_capacity","mas_budget_exhausted","mas_forwarding_disabled"].includes(rejection.error ?? "")
+          ? rejection.error! : "mas_budget_or_capacity";
+        throw new Failure(code,reservation.status === 429 ? 429 : 503,retrySeconds(reservation.headers.get("Retry-After")));
+      }
       admitted = true;
       if (request.signal.aborted) throw new Failure("caller_cancelled",499);
       request.signal.addEventListener("abort",disconnect,{once:true});
@@ -120,7 +158,7 @@ export default {
       }});
       upstreamStatus = upstream.status; stage = "provider_response";
       const text = await readBounded(upstream,limits.maxResponseBytes); settled = true;
-      if (!upstream.ok) throw new Failure("upstream_http_"+upstream.status,upstream.status >= 400 && upstream.status <= 599 ? upstream.status : 502);
+      if (!upstream.ok) throw upstreamFailure(upstream.status,text,upstream.headers.get("Retry-After"));
       if (!upstream.headers.get("content-type")?.includes("application/json")) throw new Failure("provider_protocol",502);
       const envelope = JSON.parse(text);
       if (!Array.isArray(envelope.choices) || envelope.choices.length !== 1 || !envelope.choices[0]?.message) throw new Failure("provider_protocol",502);
@@ -133,7 +171,7 @@ export default {
     } catch (error) {
       const failure = error instanceof Failure ? error : error instanceof Error && error.name === "AbortError" ? new Failure("upstream_timeout",504) :
         error instanceof SyntaxError ? new Failure(attempted ? "provider_protocol" : "invalid_json",attempted ? 502 : 400) : new Failure("mas_transport_error",503);
-      return reply({error:{type:"astra_mas_error",code:failure.code,message:"MAS inference unavailable; no result was substituted."}},failure.status,id);
+      return reply({error:{type:"astra_mas_error",code:failure.code,message:"MAS inference unavailable; no result was substituted."}},failure.status,id,failure.retryAfter);
     } finally {
       if (timer !== undefined) clearTimeout(timer);
       request.signal.removeEventListener("abort",disconnect);

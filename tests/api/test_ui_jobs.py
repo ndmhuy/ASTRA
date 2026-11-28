@@ -82,6 +82,7 @@ def fixture_app(root, **kwargs):
         pipeline_providers=providers,
         ui_output_root=root,
         rag_retriever=kwargs.get("retriever", retrieval),
+        agent_interpreter=kwargs.get("agent_interpreter"),
     )
     return app, providers
 

@@ -33,6 +33,7 @@ export interface WorkspaceDraft {
 }
 
 export interface SavedWorkspace extends WorkspaceDraft {
+  generationState?: GenerationProgress | null;
   id: string;
   createdAt: string;
   revision: number;
@@ -73,10 +74,13 @@ export interface IExamService {
   };
   workspaceLibrary?: WorkspaceLibrary;
   history?: ExamHistory;
-  startGeneration(params: ExamRequestParams, workspaceId?: string): Promise<{ jobId: string }>;
+  startGeneration(params: ExamRequestParams, workspaceId?: string): Promise<{ jobId: string; executionVersion?: number; status?: GenerationProgress['status'] }>;
   onProgress(jobId: string, callback: (progress: GenerationProgress) => void): () => void;
-  stopGeneration?(jobId: string): Promise<GenerationProgress>;
-  resumeGeneration?(jobId: string): Promise<{ jobId: string }>;
+  generationState?(jobId: string): Promise<GenerationProgress>;
+  pauseGeneration?(jobId: string, executionVersion: number): Promise<GenerationProgress>;
+  stopGeneration?(jobId: string, executionVersion: number): Promise<GenerationProgress>;
+  resumeGeneration?(jobId: string, executionVersion: number): Promise<GenerationProgress & { jobId: string }>;
+  retryGeneration?(jobId: string, executionVersion: number): Promise<GenerationProgress & { jobId: string }>;
   getExamPackage(jobId: string): Promise<ExamPackage>;
   regenerateQuestion(jobId: string, questionId: number, instruction?: string, revision?: number, workspaceId?: string, stableId?: string): Promise<QuestionItem>;
   updateQuestion(jobId: string, updatedQuestion: QuestionItem, workspaceId?: string): Promise<void>;
@@ -772,7 +776,8 @@ export class ApiExamService implements IExamService {
     let stopped = false;
     let polling = false;
     let failures = 0;
-    const deliver = (progress: GenerationProgress) => { if (!stopped) callback(progress); };
+    let last: GenerationProgress | undefined;
+    const deliver = (progress: GenerationProgress) => { if (!stopped) { last = progress; callback(progress); } };
     eventSource.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
@@ -788,10 +793,10 @@ export class ApiExamService implements IExamService {
         const data = await requestJson<GenerationProgress>(`${this.baseUrl}/exams/${jobId}/status`);
         failures = 0;
         deliver(data);
-      } catch (error) {
-        if (++failures >= 3) deliver({ stage: 0, stageName: 'connection', percent: 0, estimatedSecondsLeft: 0,
-          completedItems: 0, totalItems: 22, statusMessage: 'Mất kết nối máy chủ', status: 'failed',
-          error: { code: 'network_error', message: humanizeErrorMessage(error instanceof Error ? error.message : 'Connection lost', 'network_error') } });
+      } catch {
+        if (++failures >= 3 && !stopped) callback({ stage: 0, stageName: 'connection', percent: 0, estimatedSecondsLeft: 0,
+          completedItems: 0, totalItems: 0, ...last, connectionLost: true,
+          statusMessage: 'Mất kết nối máy chủ; chưa xác định được trạng thái mới. Đang kết nối lại, kết quả đã lưu vẫn được giữ.' });
       } finally { polling = false; }
     };
     const timer = setInterval(() => { void poll(); }, 1500);
@@ -799,13 +804,21 @@ export class ApiExamService implements IExamService {
     return () => { stopped = true; clearInterval(timer); eventSource.close(); };
   }
 
-  stopGeneration(jobId: string): Promise<GenerationProgress> {
-    return requestJson(`${this.baseUrl}/exams/${jobId}/stop`, { method: 'POST' });
+  generationState(jobId: string): Promise<GenerationProgress> {
+    return requestJson(`${this.baseUrl}/exams/${jobId}/status`);
   }
 
-  resumeGeneration(jobId: string): Promise<{ jobId: string }> {
-    return requestJson(`${this.baseUrl}/exams/${jobId}/resume`, { method: 'POST' });
+  private controlGeneration(jobId: string, executionVersion: number, operation: string) {
+    return requestJson<GenerationProgress & { jobId: string }>(`${this.baseUrl}/exams/${jobId}/${operation}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ schemaVersion: 'astra-generation-control-v1', executionVersion }),
+    });
   }
+
+  pauseGeneration(jobId: string, version: number) { return this.controlGeneration(jobId, version, 'pause'); }
+  stopGeneration(jobId: string, version: number) { return this.controlGeneration(jobId, version, 'stop'); }
+  resumeGeneration(jobId: string, version: number) { return this.controlGeneration(jobId, version, 'resume'); }
+  retryGeneration(jobId: string, version: number) { return this.controlGeneration(jobId, version, 'retry'); }
 
   async getExamPackage(jobId: string): Promise<ExamPackage> {
     const pkg = await requestJson<ExamPackage>(`${this.baseUrl}/exams/${jobId}`);

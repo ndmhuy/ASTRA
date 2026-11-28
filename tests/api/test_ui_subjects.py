@@ -44,6 +44,9 @@ def test_subject_notation_normalization_preserves_semantics():
 
 
 class Replay:
+    name = model = "offline-test"
+    parameters = {}
+
     def __init__(self, role):
         self.role = role
         self.calls = []

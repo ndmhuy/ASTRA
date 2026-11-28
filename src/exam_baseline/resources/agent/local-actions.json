@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "astra-local-actions-v1",
+  "scope": "Local execution extensions; deployed interpretation contracts remain unchanged",
+  "intents": {
+    "PAUSE_GENERATION": {"purpose": "Request a cooperative durable generation pause", "args": {"title": "string?"}},
+    "RESUME_GENERATION": {"purpose": "Resume the same paused/interrupted generation job", "args": {"title": "string?"}},
+    "RETRY_GENERATION": {"purpose": "Explicitly retry unfinished saved academic work", "args": {"title": "string?"}},
+    "CANCEL_GENERATION": {"purpose": "Stop the current generation execution", "args": {"title": "string?"}},
+    "RECOVERABLE_JOBS": {"purpose": "Inspect paused or interrupted generation jobs", "args": {}},
+    "OPEN_HISTORY": {"purpose": "Open the existing exam version history", "args": {}},
+    "EXPORT_DOCUMENT": {"purpose": "Use the existing approved student Word/Markdown export", "args": {"format": "docx|md"}}
+  },
+  "goals": {
+    "PAUSE_GENERATION": {"meaning": "Pause generation while preserving valid work", "capability": "PAUSE_GENERATION", "resolver": "capability", "dialogueActs": ["REQUEST"], "parameters": {"title": "string?"}},
+    "RESUME_GENERATION": {"meaning": "Continue unfinished generation from saved outputs", "capability": "RESUME_GENERATION", "resolver": "capability", "dialogueActs": ["REQUEST"], "parameters": {"title": "string?"}},
+    "RETRY_GENERATION": {"meaning": "Retry incomplete work after a recoverable failure", "capability": "RETRY_GENERATION", "resolver": "capability", "dialogueActs": ["REQUEST"], "parameters": {"title": "string?"}},
+    "CANCEL_GENERATION": {"meaning": "Cancel the current generation execution", "capability": "CANCEL_GENERATION", "resolver": "capability", "dialogueActs": ["REQUEST"], "parameters": {"title": "string?"}},
+    "RECOVERABLE_JOBS": {"meaning": "List jobs whose valid work may be continued", "capability": "RECOVERABLE_JOBS", "resolver": "capability", "dialogueActs": ["REQUEST", "QUESTION"], "parameters": {}},
+    "OPEN_HISTORY": {"meaning": "Inspect the existing version-history dialog", "capability": "OPEN_HISTORY", "resolver": "capability", "dialogueActs": ["REQUEST"], "parameters": {}},
+    "EXPORT_DOCUMENT": {"meaning": "Download an approved Word or Markdown student document", "capability": "EXPORT_DOCUMENT", "resolver": "capability", "dialogueActs": ["REQUEST"], "parameters": {"format": "docx|md"}}
+  }
+}

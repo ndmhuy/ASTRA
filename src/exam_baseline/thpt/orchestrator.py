@@ -9,7 +9,17 @@ from pathlib import Path
 from time import perf_counter
 from typing import Literal
 
+from exam_baseline.core.checkpoints import (
+    CheckpointError,
+    GenerationPaused,
+    atomic_json,
+    manifest,
+    read_json,
+    response_checkpoint,
+    restore_response,
+)
 from exam_baseline.core.contracts import LLMProvider
+from exam_baseline.core.recovery import POLICY
 from exam_baseline.thpt import template
 from exam_baseline.thpt.agents import (
     ComposerAgent,
@@ -24,7 +34,7 @@ from exam_baseline.thpt.runtime import ContractError, RecordingProvider
 
 
 def save(path: Path, data):
-    path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    atomic_json(path, data)
 
 
 _BOOL_TRUE = frozenset({"đúng", "dung", "đ", "d", "true", "t"})
@@ -205,9 +215,18 @@ class Orchestrator:
             review=review.model_dump(), previous_questions=[q.model_dump() for q in questions]
         )
 
-    def __init__(self, providers: dict[str, LLMProvider], *, on_progress=None):
+    def __init__(
+        self,
+        providers: dict[str, LLMProvider],
+        *,
+        on_progress=None,
+        check_control=None,
+        checkpoint_writer=None,
+    ):
         self.providers = providers
         self.on_progress = on_progress
+        self.check_control = check_control or (lambda: None)
+        self.checkpoint_writer = checkpoint_writer or save
 
     async def run(
         self,
@@ -218,26 +237,51 @@ class Orchestrator:
         checkpoint_sources: tuple[Path, ...] = (),
     ) -> dict:
         started = perf_counter()
+        save = self.checkpoint_writer
         self.template.original()  # Verify before spending provider calls.
         references = self.references(request)
         internal = output / "_internal"
         calls = []
         previous_elapsed = 0.0
+        expected_manifest = manifest(
+            request.model_dump(),
+            self.providers,
+            f"{type(self).__module__}.{type(self).__qualname__}",
+            self.template.TEMPLATE_SHA256,
+        )
         if resume:
             previous = self.request_model.model_validate_json(
                 (internal / "request.json").read_bytes()
             )
             if previous != request:
                 raise ValueError("Resume requires the same input request")
-            previous_report = json.loads((internal / "result.json").read_text("utf-8"))
-            if previous_report["execution_status"] == "completed":
+            if read_json(internal / "checkpoint-manifest.json") != expected_manifest:
+                raise CheckpointError(
+                    "Generation configuration changed; checkpoint cannot be resumed"
+                )
+            report_path = internal / "result.json"
+            previous_report = read_json(report_path) if report_path.is_file() else {}
+            if previous_report.get("execution_status") == "completed":
+                if (
+                    not (output / "de_thi.tex").is_file()
+                    or sha256((output / "de_thi.tex").read_bytes()).hexdigest()
+                    != previous_report.get("latex_sha256")
+                    or not (output / "dap_an_va_loi_giai.json").is_file()
+                    or sha256((output / "dap_an_va_loi_giai.json").read_bytes()).hexdigest()
+                    != previous_report.get("answers_sha256")
+                ):
+                    raise CheckpointError("Completed checkpoint artifacts changed")
                 return previous_report
-            calls = previous_report["calls"]
+            calls = previous_report.get("calls", [])
+            for previous_call in calls:
+                if previous_call.get("status") in {"started", "response_received"}:
+                    previous_call["status"] = "interrupted_uncertain"
             previous_elapsed = previous_report.get("elapsed_seconds", 0.0)
         else:
             output.mkdir(parents=True, exist_ok=False)
             internal.mkdir()
             save(internal / "request.json", request.model_dump())
+            save(internal / "checkpoint-manifest.json", expected_manifest)
         checkpoints = internal / "checkpoints"
         checkpoints.mkdir(exist_ok=True)
         report = dict(
@@ -256,7 +300,8 @@ class Orchestrator:
                 for question_id, passage in request.rag_evidence.items()
             }
 
-        async def call(agent, data, revision):
+        async def call(agent, data, revision, validate=None):
+            self.check_control()
             report["active_stage"] = agent.role
             report["active_part"] = data.get("part")
             if self.on_progress:
@@ -285,13 +330,11 @@ class Orchestrator:
                 checkpoint if resume and checkpoint.is_file() else None,
             )
             if prior is not None:
-                saved = json.loads(prior.read_text("utf-8"))
-                content = json.dumps(saved["response"], ensure_ascii=False, sort_keys=True)
-                if sha256(content.encode()).hexdigest() != saved["sha256"]:
-                    raise ValueError("Changed checkpoint; refusing to resume")
-                response = agent.contract(data).model_validate(saved["response"])
+                response = restore_response(prior, fingerprint, agent.contract(data))
+                if validate:
+                    validate(response)
                 if prior != checkpoint:
-                    save(checkpoint, saved)
+                    self.checkpoint_writer(checkpoint, response_checkpoint(fingerprint, response))
                 return response
             provider = RecordingProvider(
                 self.providers[agent.role],
@@ -299,7 +342,9 @@ class Orchestrator:
                 revision,
                 calls,
                 internal / "responses",
-                retries=0 if agent.role == "reviewer" else 1,
+                retries=0 if agent.role == "reviewer" else POLICY["mas"]["maxAttempts"] - 1,
+                on_attempt=lambda: save(internal / "result.json", report),
+                operation_id=fingerprint,
             )
             try:
                 response, _ = await agent.run(provider, data)
@@ -307,12 +352,19 @@ class Orchestrator:
                 report["active_stage"] = agent.role
                 report["active_part"] = data.get("part")
                 raise
-            content = json.dumps(response.model_dump(), ensure_ascii=False, sort_keys=True)
-            save(
+            if validate:
+                validate(response)
+            self.checkpoint_writer(
                 checkpoint,
-                {"response": response.model_dump(), "sha256": sha256(content.encode()).hexdigest()},
+                {
+                    **response_checkpoint(fingerprint, response),
+                    "stage": agent.role,
+                    "revision": revision,
+                    "part": data.get("part"),
+                },
             )
             save(internal / "result.json", report)
+            self.check_control()
             return response
 
         try:
@@ -342,6 +394,7 @@ class Orchestrator:
                                 composer, request, part, references[part], feedback, previous_stems
                             ),
                             revision,
+                            validate=lambda section: self.validate_section(section, request, part),
                         )
                     self.validate_section(section, request, part)
                     if request.composer_concurrency == 1:
@@ -446,6 +499,9 @@ class Orchestrator:
                     revision=revision,
                     final_latex=str(output / "de_thi.tex"),
                     latex_sha256=sha256(source).hexdigest(),
+                    answers_sha256=sha256(
+                        (output / "dap_an_va_loi_giai.json").read_bytes()
+                    ).hexdigest(),
                     latex_validation="not_compiled",
                 )
                 (output / "KIEM_TRA.txt").write_text(
@@ -460,6 +516,9 @@ class Orchestrator:
                 )
                 break
             return report
+        except GenerationPaused:
+            report["execution_status"] = "paused"
+            raise
         except Exception as exc:
             report["error_type"] = type(exc).__name__
             if isinstance(exc, ContractError):

@@ -32,7 +32,7 @@ function runtime(overrides={},persist=false,scriptPath="build/index.js") {
     observed.push({url:request.url,headers:Object.fromEntries(request.headers),body:await request.text()});
     const item=queue.shift(); assert.ok(item,"Unexpected outbound MAS inference");
     if(item.delay) await new Promise(resolve=>setTimeout(resolve,item.delay));
-    return new Response(item.text??responseText,{status:item.status??200,headers:{"content-type":"application/json"}});
+    return new Response(item.text??responseText,{status:item.status??200,headers:{"content-type":"application/json",...(item.headers??{})}});
   }};
   return {mf:new Miniflare(options),queue,observed};
 }
@@ -41,6 +41,34 @@ const post=(mf,body=payload,headers={})=>mf.dispatchFetch("https://local/v1/chat
   body:typeof body==="string"?body:JSON.stringify(body),
 });
 const health=async mf=>(await(await mf.dispatchFetch("https://local/health")).json());
+
+test("upstream categories and Retry-After are sanitized with exactly one attempt per request",async()=>{
+  const {mf,queue,observed}=runtime({ASTRA_MAS_ATTEMPT_LIMIT:"20",ASTRA_MAS_DAILY:"20"});
+  const cases=[
+    [401,{code:"bad_key"},"upstream_auth"],
+    [404,{code:"not_found"},"upstream_model"],
+    [400,{code:"invalid_argument"},"upstream_invalid_request"],
+    [429,{code:"rate_limit_exceeded"},"upstream_rate_limited"],
+    [429,{details:[{violations:[{quotaId:"RequestsPerDayPerModel"}]}]},"upstream_quota_exhausted"],
+    [503,{code:"unavailable"},"upstream_http_503"],
+  ];
+  try {
+    for (const [status,error,code] of cases) {
+      queue.push({status,text:JSON.stringify({error:{...error,message:"DO_NOT_ECHO_PROVIDER_PROSE"}}),headers:{"Retry-After":"2"}});
+      const response=await post(mf);
+      assert.equal(response.status,status);
+      assert.equal(response.headers.get("Retry-After"),"2");
+      const text=await response.text();
+      assert.equal(JSON.parse(text).error.code,code);
+      assert.ok(!text.includes("DO_NOT_ECHO_PROVIDER_PROSE"));
+    }
+    assert.equal(observed.length,cases.length);
+    assert.equal((await health(mf)).quota.used,cases.length);
+    assert.ok(observed.every(item=>item.headers["cf-aig-max-attempts"]==="1"));
+    assert.equal((await post(mf,payload,{"X-Astra-MAS-Operation":"invalid"})).status,400);
+    assert.equal(observed.length,cases.length);
+  } finally {await mf.dispose();}
+});
 
 test("revocable caller authorization and disabled rollout spend no upstream attempts",async()=>{
   const {mf,observed}=runtime({ASTRA_MAS_FORWARDING_ENABLED:"false"});

@@ -44,6 +44,12 @@ export function inspectQuestion(session: ExamSession | undefined, args: Intent['
 
 export function statusText(session?: ExamSession) {
   if (!session) return 'Thầy cô hãy mở một không gian soạn đề để xem trạng thái.';
+    if (session.progress && (session.generationId || session.stoppedJobId || session.status === 'generating')) {
+      const progress = session.progress;
+      const done = progress.completedItems ?? 0;
+      const total = progress.totalItems ?? session.meta?.totalCount ?? 0;
+      return `${progress.statusMessage} · Đã lưu ${done}/${total} câu, còn ${Math.max(0, total - done)} câu. ${progress.error?.message ?? ''}`.trim();
+    }
   if (session.status === 'generating') {
     if (!session.jobId) return 'ASTRA đang gửi yêu cầu tạo đề và chờ mã công việc.';
     const progress = session.progress;

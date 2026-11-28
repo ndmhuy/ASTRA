@@ -57,6 +57,9 @@ def test_real_rag_through_thpt_cli_and_resume(tmp_path, monkeypatch, capsys):
     }
 
     class ReplayProvider:
+        name = model = "offline-contract-fixture"
+        parameters = {}
+
         async def complete(self, prompt):
             data = json.loads(prompt.user)
             if "part" in data:

@@ -1,0 +1,714 @@
+{
+  "schemaVersion": "astra-local-routing-results-v1",
+  "baselineSha": "98b1df5467255b5de94f0b3191b5613db33bd48a",
+  "scope": "Authored local routing fixtures and deterministic context selection only. Split by paraphrase family; no LLM accuracy, rendered UI latency, production traffic or inference claims. Baseline recipes plus unchanged subject shorthand versus current recipes/catalog/shorthand. One evaluation safety failure (mixed note/approval) was fixed and retained as regression; reported evaluation is post-fix, not blind.",
+  "current": {
+    "dev": {
+      "families": 17,
+      "cases": 68,
+      "matched": 68,
+      "accuracyPercent": 100,
+      "semanticCases": 60,
+      "semanticCorrect": 60,
+      "accepted": 64,
+      "coveragePercent": 94.12,
+      "safetyCases": 4,
+      "falseExecutions": 0,
+      "falseExecutionPercent": 0,
+      "incorrectFastPaths": 0,
+      "incorrectAcceptancePercent": 0,
+      "modelFallbacks": 4,
+      "mismatches": []
+    },
+    "eval": {
+      "families": 17,
+      "cases": 76,
+      "matched": 76,
+      "accuracyPercent": 100,
+      "semanticCases": 56,
+      "semanticCorrect": 56,
+      "accepted": 66,
+      "coveragePercent": 86.84,
+      "safetyCases": 20,
+      "falseExecutions": 0,
+      "falseExecutionPercent": 0,
+      "incorrectFastPaths": 0,
+      "incorrectAcceptancePercent": 0,
+      "modelFallbacks": 3,
+      "mismatches": []
+    }
+  },
+  "baseline": {
+    "dev": {
+      "families": 17,
+      "cases": 68,
+      "matched": 37,
+      "accuracyPercent": 54.41,
+      "semanticCases": 60,
+      "semanticCorrect": 29,
+      "accepted": 30,
+      "coveragePercent": 44.12,
+      "safetyCases": 4,
+      "falseExecutions": 0,
+      "falseExecutionPercent": 0,
+      "incorrectFastPaths": 1,
+      "incorrectAcceptancePercent": 3.33,
+      "modelFallbacks": 34,
+      "mismatches": [
+        {
+          "family": "pause-direct",
+          "message": "Tạm dừng tạo đề",
+          "expected": "PAUSE_GENERATION",
+          "actual": {
+            "kind": "guard",
+            "local": false
+          }
+        },
+        {
+          "family": "pause-direct",
+          "message": "Dừng tạo đề lại",
+          "expected": "PAUSE_GENERATION",
+          "actual": {
+            "kind": "guard",
+            "local": false
+          }
+        },
+        {
+          "family": "pause-direct",
+          "message": "tam dung phien hien tai",
+          "expected": "PAUSE_GENERATION",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "pause-direct",
+          "message": "Pause job",
+          "expected": "PAUSE_GENERATION",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "resume-direct",
+          "message": "Tiếp tục tạo đề",
+          "expected": "RESUME_GENERATION",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "resume-direct",
+          "message": "Làm tiếp phần đang dở",
+          "expected": "RESUME_GENERATION",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "resume-direct",
+          "message": "Gen tiếp đi",
+          "expected": "RESUME_GENERATION",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "resume-direct",
+          "message": "resume job",
+          "expected": "RESUME_GENERATION",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "retry-direct",
+          "message": "Thử lại phần bị lỗi",
+          "expected": "RETRY_GENERATION",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "retry-direct",
+          "message": "thu lai phan dang bi loi",
+          "expected": "RETRY_GENERATION",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "retry-direct",
+          "message": "Retry job",
+          "expected": "RETRY_GENERATION",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "retry-direct",
+          "message": "Thử lại đề này",
+          "expected": "RETRY_GENERATION",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "named-lifecycle",
+          "message": "Tiếp tục đề Sinh A",
+          "expected": "RESUME_GENERATION",
+          "expectedArgs": {
+            "title": "sinh a"
+          },
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "named-lifecycle",
+          "message": "Tạm dừng đề Toán tối",
+          "expected": "PAUSE_GENERATION",
+          "expectedArgs": {
+            "title": "toan toi"
+          },
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "named-lifecycle",
+          "message": "Thử lại phiên tên Hóa nâng cao",
+          "expected": "RETRY_GENERATION",
+          "expectedArgs": {
+            "title": "hoa nang cao"
+          },
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "named-lifecycle",
+          "message": "Hủy job Sinh A",
+          "expected": "CANCEL_GENERATION",
+          "expectedArgs": {
+            "title": "sinh a"
+          },
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "status-direct",
+          "message": "Đề làm tới đâu rồi em?",
+          "expected": "STATUS",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "status-direct",
+          "message": "Còn bao nhiêu câu nữa?",
+          "expected": "STATUS",
+          "actual": {
+            "kind": "guard",
+            "local": false
+          }
+        },
+        {
+          "family": "status-direct",
+          "message": "Nãy tạo được tới đâu rồi?",
+          "expected": "STATUS",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "recoverable-library",
+          "message": "Xem các phiên tạm dừng",
+          "expected": "RECOVERABLE_JOBS",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "recoverable-library",
+          "message": "Liệt kê những đề đang dở",
+          "expected": "RECOVERABLE_JOBS",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "recoverable-library",
+          "message": "Xem công việc có thể tiếp tục",
+          "expected": "RECOVERABLE_JOBS",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "recoverable-library",
+          "message": "Xem đề bị gián đoạn",
+          "expected": "RECOVERABLE_JOBS",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "document-export",
+          "message": "Xuất Word",
+          "expected": "EXPORT_DOCUMENT",
+          "expectedArgs": {
+            "format": "docx"
+          },
+          "actual": {
+            "kind": "message",
+            "local": true
+          }
+        },
+        {
+          "family": "document-export",
+          "message": "Tải đề sang Markdown",
+          "expected": "EXPORT_DOCUMENT",
+          "expectedArgs": {
+            "format": "md"
+          },
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "document-export",
+          "message": "Lưu file docx",
+          "expected": "EXPORT_DOCUMENT",
+          "expectedArgs": {
+            "format": "docx"
+          },
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "document-export",
+          "message": "Download md",
+          "expected": "EXPORT_DOCUMENT",
+          "expectedArgs": {
+            "format": "md"
+          },
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "subject-selection",
+          "message": "Chọn môn Sinh",
+          "expected": "intake",
+          "expectedArgs": {
+            "subject": "Sinh Học"
+          },
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "subject-selection",
+          "message": "Đổi sang Vật lý",
+          "expected": "intake",
+          "expectedArgs": {
+            "subject": "Vật Lý"
+          },
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "subject-selection",
+          "message": "Chọn Hóa THPT",
+          "expected": "intake",
+          "expectedArgs": {
+            "subject": "Hóa Học"
+          },
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "subject-selection",
+          "message": "Chọn Tiếng Anh",
+          "expected": "intake",
+          "expectedArgs": {
+            "subject": "Tiếng Anh"
+          },
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        }
+      ]
+    },
+    "eval": {
+      "families": 17,
+      "cases": 76,
+      "matched": 45,
+      "accuracyPercent": 59.21,
+      "semanticCases": 56,
+      "semanticCorrect": 26,
+      "accepted": 25,
+      "coveragePercent": 32.89,
+      "safetyCases": 20,
+      "falseExecutions": 1,
+      "falseExecutionPercent": 5,
+      "incorrectFastPaths": 1,
+      "incorrectAcceptancePercent": 4,
+      "modelFallbacks": 37,
+      "mismatches": [
+        {
+          "family": "polite-rest",
+          "message": "Em ơi, tạm nghỉ tí nhé",
+          "expected": "PAUSE_GENERATION",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "polite-rest",
+          "message": "Nhờ em tạm dừng việc tạo đề cho cô",
+          "expected": "PAUSE_GENERATION",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "polite-rest",
+          "message": "Vui lòng pause phiên hiện tại",
+          "expected": "PAUSE_GENERATION",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "polite-rest",
+          "message": "Cho tôi tạm dừng cái đề đang tạo với",
+          "expected": "PAUSE_GENERATION",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "unfinished-continuation",
+          "message": "Làm tiếp phần còn thiếu giúp mình",
+          "expected": "RESUME_GENERATION",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "unfinished-continuation",
+          "message": "Tiep tuc de luc nay nha",
+          "expected": "RESUME_GENERATION",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "unfinished-continuation",
+          "message": "Continue job",
+          "expected": "RESUME_GENERATION",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "unfinished-continuation",
+          "message": "Cho cô gen tiếp đề đang dở đi",
+          "expected": "RESUME_GENERATION",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "retry-informal",
+          "message": "Em ơi, thử lại cái phần đang bị lỗi",
+          "expected": "RETRY_GENERATION",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "retry-informal",
+          "message": "Vui lòng retry phiên này",
+          "expected": "RETRY_GENERATION",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "retry-informal",
+          "message": "Nhờ em thử lại công việc",
+          "expected": "RETRY_GENERATION",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "retry-informal",
+          "message": "Thu lai phan bi loi giup tui voi",
+          "expected": "RETRY_GENERATION",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "ambiguous-lifecycle",
+          "message": "Tiếp tục",
+          "expected": "RESUME_GENERATION",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "negative-corrections",
+          "message": "Đừng tạo đề, cô chỉ muốn xem cấu trúc",
+          "expected": "SHOW_FORMATS",
+          "actual": {
+            "kind": "guard",
+            "local": false
+          }
+        },
+        {
+          "family": "progress-reasons",
+          "message": "Còn bn câu nữa em?",
+          "expected": "STATUS",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "progress-reasons",
+          "message": "Tại sao đề bị gián đoạn?",
+          "expected": "STATUS",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "progress-reasons",
+          "message": "Vì sao phiên tạm dừng?",
+          "expected": "STATUS",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "progress-reasons",
+          "message": "Nãy tạo tới đâu rồi?",
+          "expected": "STATUS",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "history-recent",
+          "message": "Cho cô xem đề gần đây nhất.",
+          "expected": "OPEN_SESSION",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "history-recent",
+          "message": "Mở cái đề hồi nãy",
+          "expected": "OPEN_SESSION",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "history-recent",
+          "message": "Mở lịch sử của đề này",
+          "expected": "OPEN_HISTORY",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "history-recent",
+          "message": "Xem các phiên bản đề",
+          "expected": "OPEN_HISTORY",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "export-guards",
+          "message": "Có thể xuất Word không?",
+          "expected": "message",
+          "actual": {
+            "kind": "guard",
+            "local": false
+          }
+        },
+        {
+          "family": "tools-guidance",
+          "message": "Thêm tài liệu tham khảo",
+          "expected": "message",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "tools-guidance",
+          "message": "Đính kèm file",
+          "expected": "message",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "tools-guidance",
+          "message": "Tìm kiếm web",
+          "expected": "message",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "catalog-structure",
+          "message": "Xem cấu trúc Sinh THPT",
+          "expected": "intake",
+          "expectedArgs": {
+            "subject": "Sinh Học",
+            "mode": "structure"
+          },
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "catalog-structure",
+          "message": "Cấu trúc môn Toán",
+          "expected": "intake",
+          "expectedArgs": {
+            "subject": "Toán Học",
+            "mode": "structure"
+          },
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "catalog-structure",
+          "message": "THPT Vật lý bao nhiêu câu?",
+          "expected": "intake",
+          "expectedArgs": {
+            "subject": "Vật Lý",
+            "mode": "structure"
+          },
+          "actual": {
+            "kind": "guard",
+            "local": false
+          }
+        },
+        {
+          "family": "catalog-structure",
+          "message": "Có những môn nào?",
+          "expected": "message",
+          "actual": {
+            "kind": "needs_model",
+            "local": false
+          }
+        },
+        {
+          "family": "mixed-and-unsafe-navigation",
+          "message": "Sửa câu 2 và duyệt luôn đề",
+          "expected": "safe",
+          "actual": {
+            "kind": "ADD_NOTE",
+            "args": {
+              "number": 2,
+              "instruction": "và duyệt luôn đề"
+            },
+            "local": true
+          }
+        }
+      ]
+    }
+  },
+  "context": {
+    "cases": 12,
+    "matched": 12,
+    "mismatches": []
+  },
+  "fallbackReduction": {
+    "dev": {
+      "baselineModelFallbacks": 34,
+      "currentModelFallbacks": 4,
+      "avoidedFallbacks": 30,
+      "avoidedPercent": 88.24
+    },
+    "eval": {
+      "baselineModelFallbacks": 37,
+      "currentModelFallbacks": 3,
+      "avoidedFallbacks": 34,
+      "avoidedPercent": 91.89
+    }
+  },
+  "localLatency": {
+    "samples": 4320,
+    "p50ms": 0.0076,
+    "p95ms": 0.0387
+  },
+  "inferenceAttempts": 0
+}
