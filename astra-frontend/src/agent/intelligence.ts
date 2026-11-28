@@ -6,8 +6,9 @@ import type { Intake } from './intake.ts';
 import type { ExamFormat } from '../types/exam.ts';
 import { fastRoute } from './recipes.ts';
 import { fold } from './language.ts';
-import { polite } from './local.ts';
+import { requestText } from './local.ts';
 import { quickRead, productOverview } from './quickRead.ts';
+import { guideQuestion, type GuideTopic } from './guide.ts';
 import { shortSubjectIntake, mentionedFamilies, matchAdjacentTopic, familyFor } from './knowledge.ts';
 import { sectionId } from './examActions.ts';
 
@@ -94,12 +95,15 @@ export function understandLocal(message: string, context: {formats:ExamFormat[];
 }
 
 function classifyLocal(message: string, context: {formats:ExamFormat[];intake?:Intake}): LocalResult {
-  const text = polite(message).replace(/^(?:(?:co|thay|toi|minh|tao|tui|em|t) )?(?:muon|can) /, '');
+  const text = requestText(message);
   const done = (frame:Frame):LocalResult=>({kind:frame.dialogueAct==='QUESTION'?'information':frame.dialogueAct==='AMBIGUOUS'?'ambiguity':'resolved',frame});
   // Quoted, hypothetical and conflicting intent belongs to the configured interpreter.
-  if(/["“”«»`]/.test(message) || /\b(?:neu|gia su|nhung|sau do|dong thoi)\b/.test(text)) return {kind:'defer'};
+  if(/["“”«»`]/.test(message) || /\b(?:neu|gia su|sau do|dong thoi)\b/.test(text)) return {kind:'defer'};
   const quick = quickRead(text);
   if (quick) return done(meaning(quick.goal, quick.parameters, quick.act));
+  const help = guideQuestion(text, context.formats);
+  if (help) return done(meaning('CAPABILITY_INQUIRY', help, 'GUIDANCE'));
+  if (/\bnhung\b/.test(text)) return {kind:'defer'};
   const statusText=text.replace(/^(?:bay gio |hien tai )/,'').replace(/[.!?]+$/,'');
   if(/^(?:(?:may|ban|em|astra) )?dang (?:tao|soan|sinh|lam) (?:cai )?de (?:gi|nao)$/.test(statusText))
     return done(meaning('READ_PROGRESS',{scope:'active'},'QUESTION'));
@@ -192,7 +196,8 @@ function classifyLocal(message: string, context: {formats:ExamFormat[];intake?:I
 
 export type Plan = {kind:'text';text:string} | {kind:'confirm'} | {kind:'cancel'} |
   {kind:'intake';proposal:ExamIntake;information:boolean} | {kind:'inspect';targets:Slots[]} |
-  {kind:'task';intents:Intent[]} | {kind:'practice';parameters:Slots};
+  {kind:'task';intents:Intent[]} | {kind:'practice';parameters:Slots} |
+  {kind:'guide';topic:GuideTopic;subject?:string;family?:string};
 export function planMeaning(frame:Frame,recent?:{number:number;part?:string},missing?:Intake['missing']):Plan {
   const stop=(text:string):Plan=>({kind:'text',text});
   if(frame.constraints.some(item=>['NO_EXECUTION','CONDITIONAL','NEGATED','CONTRADICTORY'].includes(item))) return stop('Yêu cầu có điều kiện hoặc mâu thuẫn. Thầy cô muốn thực hiện bước nào? Em chưa thay đổi dữ liệu.');
@@ -208,6 +213,8 @@ export function planMeaning(frame:Frame,recent?:{number:number;part?:string},mis
       (!goal.parameters.part||!other.parameters.part||sectionId(String(goal.parameters.part))===sectionId(String(other.parameters.part))))))) return stop('Cùng một thao tác hoặc câu hỏi đang được yêu cầu sửa và bị cấm sửa. Thầy cô hãy làm rõ trước.');
   if(!goals.length)return stop('Đã giữ nguyên trạng thái theo yêu cầu.');
   const definitions=goals.map(goal=>GOALS[goal.goal]);
+  if(frame.dialogueAct==='GUIDANCE' && definitions.some(def=>def.effect!=='read'))
+    return stop('Bạn muốn mình chỉ cách chọn mẫu, thêm tài liệu hay xem lại đề?');
   if(['CONVERSATION','INFORM'].includes(frame.dialogueAct)&&goals.some(goal=>GOALS[goal.goal].effect!=='read'&&!(goal.goal==='PREPARE_EXAM'&&missing)))return stop('Mình đã ghi nhận thông tin, chưa thay đổi đề hay chạy tác vụ. Bạn muốn mình thực hiện thao tác nào?');
   const noAI=frame.constraints.includes('NO_GENERATION');
   if(noAI && definitions.some(def=>def.effect==='inference' && !['PREPARE_EXAM','REQUEST_GENERATION'].includes(goals[definitions.indexOf(def)].goal))) return stop('Yêu cầu không gọi AI đang có hiệu lực. Em chưa kiểm tra hay tạo lại nội dung.');
@@ -236,7 +243,13 @@ export function planMeaning(frame:Frame,recent?:{number:number;part?:string},mis
     return {kind:'inspect',targets};
   }
   if(goals.length===1 && goals[0].goal==='PREPARE_PRACTICE')return frame.constraints.includes('NO_WEB')&&goals[0].parameters.sourcePreference!=='attachments'?{kind:'practice',parameters:{...goals[0].parameters,sourcePreference:'no_web'}}:{kind:'practice',parameters:goals[0].parameters};
-  if(goals.length===1 && goals[0].goal==='CAPABILITY_INQUIRY')return stop(productOverview());
+  if (goals.length === 1 && goals[0].goal === 'CAPABILITY_INQUIRY') {
+    const { helpTopic, subject, family } = goals[0].parameters;
+    if (!helpTopic) return stop(productOverview());
+    return {kind:'guide', topic: helpTopic as GuideTopic,
+      subject: typeof subject === 'string' ? subject : undefined,
+      family: typeof family === 'string' ? family : undefined};
+  }
   const intents:Intent[]=[];
   for(const goal of goals) {
     const def=GOALS[goal.goal];

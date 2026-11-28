@@ -45,6 +45,14 @@ SYSTEM = (
     "discussion. AMBIGUOUS may carry a specific clarification in reply. reply is text only, "
     "never an action/result receipt; never claim an operation was executed. Prefer read goals "
     "for workspace facts so the app renders current verified facts. Omit an unused reply. "
+    "For how-to questions, use CAPABILITY_INQUIRY with helpTopic and the named subject or "
+    "family when provided, or GUIDANCE with a short reply based on appGuide and availableFormats. "
+    "context.grounded.guide describes the step the user is following. Continue that step when "
+    "appropriate with a GUIDANCE reply. When the user changes task or chooses another template, "
+    "use the new topic or template. Ask one concrete question and use the actual button labels. "
+    "Speak in natural Vietnamese to a first-time user. Avoid implementation terms, SDKs, "
+    "endpoints, model format and internal state names. Use short steps. Never invent a format, "
+    "button, or the result of an action. A how-to question does not authorize any action. "
     "For 'khi nào xong' use READ_PROGRESS with estimate=true. Treat 'tao muốn xem đề thi' "
     "as a request to view the current paper. Use exactly the per-goal "
     "parameters in the tool schema; parameters belong inside each goal, not at the root. "
@@ -126,6 +134,11 @@ class BackendFacts(Contract):
     activeCount: Annotated[int, Field(ge=0)] = 0
 
 
+class GuideContext(Contract):
+    stage: Literal["choose", "select", "details", "start", "review"]
+    selected: Annotated[str, StringConstraints(max_length=120)] | None = None
+
+
 class GroundedContext(Contract):
     """Bounded facts, not exam bodies, credentials, executable IDs or serialized UI."""
 
@@ -144,6 +157,7 @@ class GroundedContext(Contract):
     revision: Annotated[int, Field(ge=1)] | None = None
     itemRegeneration: bool = False
     searchWeb: bool = False
+    guide: GuideContext | None = None
     backend: BackendFacts | None = None
 
 

@@ -129,7 +129,9 @@ def observe(base, directory, viewport):
         message = "Danh sách tài liệu fixture"
         composer.fill(message)
         composer.press("Enter")
-        expect(page.get_by_text("Dịch vụ AI từ chối API key.", exact=False).last).to_be_visible()
+        expect(
+            page.get_by_text("Mã kết nối hiện tại chưa dùng được.", exact=False).last
+        ).to_be_visible()
         expect(page.get_by_role("button", name="Kiểm tra kết nối AI", exact=True)).to_be_visible(
             timeout=10000
         )

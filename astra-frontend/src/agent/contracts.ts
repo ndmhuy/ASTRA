@@ -34,6 +34,7 @@ export type AgentContext = {
     workspace?: string; lifecycle?: string; spec?: string[]; documents?: string[];
     capabilities?: string[]; pending?: string; revision?: number;
     itemRegeneration?: boolean; searchWeb?: boolean;
+    guide?: {stage: string; selected?: string};
   };
   screen: 'start' | 'workspace';
   setup: boolean;

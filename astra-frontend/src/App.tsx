@@ -8,6 +8,7 @@ import type { Intent } from './agent/contracts';
 import { activeGeneration, generationTarget, generationReceipt, generationJob, restingGeneration } from './agent/lifecycle';
 import { workspaceDescription, workspaceContextFacts } from './agent/workspaceFacts';
 import { readLiveState, liveStatusText } from './agent/liveState';
+import { continueGuide, guideContext, startGuide, type GuideProgress } from './agent/guide';
 import { GOALS, PRACTICE_LIMITS, understandLocal, decisionMeaning, planMeaning } from './agent/intelligence';
 import { reduceSpec, specDraft, patchSpec, specSummary, paramsForSpec } from './agent/examSpec';
 import { familyFor, formatOverview, matchAdjacentTopic, mentionedFamilies, resolveIntake } from './agent/knowledge';
@@ -81,6 +82,7 @@ export const App: React.FC = () => {
   const turn = useRef<AbortController | null>(null);
   const [admissionError, setAdmissionError] = useState('');
   const pending = useRef<Confirmation | null>(null);
+  const guide = useRef<{ workspaceId: string; progress: GuideProgress } | null>(null);
   const canvas = useRef<ExamPaperControls>(null);
   const editorControls = useRef<QuestionEditorControls>(null);
   const editorBusy = useRef(new Set<string>());
@@ -291,8 +293,11 @@ export const App: React.FC = () => {
     const answer=(text:string)=>store.appendMessage(id,'assistant',text);
     let origin=store.getSnapshot().find(session=>session.id===id);
     const immediate=understandLocal(content,{formats:catalogFormats,intake:origin?.intake});
+    const currentGuide = guide.current?.workspaceId === id ? guide.current.progress : undefined;
+    const guideFollowup = currentGuide && pending.current?.workspaceId !== id
+      ? continueGuide(currentGuide, content, catalogFormats) : undefined;
     let moved=false;
-    if(immediate.kind!=='defer' && immediate.frame.dialogueAct!=='QUESTION' && immediate.frame.goals.some(goal=>!goal.prohibited&&['REQUEST_GENERATION','PREPARE_EXAM','PREPARE_PRACTICE'].includes(goal.goal)) &&
+    if(!guideFollowup && immediate.kind!=='defer' && immediate.frame.dialogueAct!=='QUESTION' && immediate.frame.goals.some(goal=>!goal.prohibited&&['REQUEST_GENERATION','PREPARE_EXAM','PREPARE_PRACTICE'].includes(goal.goal)) &&
         (origin?.status==='complete'||origin?.status==='generating'||origin?.generationStopped||immediate.frame.goals.some(goal=>goal.parameters.fresh))) {
       const next=store.create('custom');
       flushSync(()=>openSession(next));id=next;origin=store.getSnapshot().find(session=>session.id===id);moved=true;
@@ -306,8 +311,9 @@ export const App: React.FC = () => {
     const before=readBinding();
     const writeBefore=runtimeRef.current!.binding();
     try {
-      const needsCatalog = immediate.kind === 'defer' || immediate.frame.goals.some(goal =>
-        ['PREPARE_EXAM', 'REQUEST_GENERATION', 'READ_EXAM_STRUCTURE'].includes(goal.goal));
+      const needsCatalog = !!currentGuide || immediate.kind === 'defer' || immediate.frame.goals.some(goal =>
+        ['PREPARE_EXAM', 'REQUEST_GENERATION', 'READ_EXAM_STRUCTURE'].includes(goal.goal) ||
+        goal.parameters.helpTopic === 'create');
       const formats = catalogFormats.length || !needsCatalog
         ? catalogFormats : await getExamFormats();
       if(!alive())return;
@@ -315,6 +321,12 @@ export const App: React.FC = () => {
       const local = immediate.kind === 'defer' && formats !== catalogFormats
         ? understandLocal(content, { formats, intake: origin?.intake }) : immediate;
       origin=store.getSnapshot().find(session=>session.id===id);
+      const nextGuide = guideFollowup ?? (!moved && currentGuide && continueGuide(currentGuide, content, formats));
+      if (nextGuide && pending.current?.workspaceId !== id) {
+        guide.current = nextGuide.progress ? { workspaceId: id, progress: nextGuide.progress } : null;
+        answer(nextGuide.text);
+        return;
+      }
       const interpreted=local.kind==='defer'?await interpret(id,messageId,redact(content),{
         screen,setup:showQuickModal,status:origin?.status??'draft',view:viewMode,
         ...(origin?retrievedContext(origin,messageId,content):{}),
@@ -324,7 +336,8 @@ export const App: React.FC = () => {
         grounded:{workspace:origin?.title?redact(origin.title).slice(0,120):undefined,lifecycle:origin?.progress?.status??origin?.status,
           spec:[...(origin?workspaceContextFacts(origin):[]),...specSummary(origin?.intake)].slice(0,8).map(redact),documents:(origin?.inputDocuments??[]).slice(0,5).map(doc=>redact(`${doc.filename} (${doc.kind}, ${doc.characters} characters)`).slice(0,240)),
           capabilities:formats.filter(format=>format.available).slice(0,12).map(format=>format.displayName.slice(0,80)),
-          revision:origin?.package?.revision,pending:pendingActionMeta?.label?redact(pendingActionMeta.label).slice(0,240):undefined,itemRegeneration:Boolean(questionPending),searchWeb:options.searchWeb},
+          revision:origin?.package?.revision,pending:pendingActionMeta?.label?redact(pendingActionMeta.label).slice(0,240):undefined,itemRegeneration:Boolean(questionPending),searchWeb:options.searchWeb,
+          guide: currentGuide ? guideContext(currentGuide, formats) : undefined},
       },controller.signal):local.frame;
       if(!alive())return;
       const frame='dialogueAct' in interpreted?interpreted:decisionMeaning(interpreted,formats,origin?.intake);
@@ -337,6 +350,13 @@ export const App: React.FC = () => {
       }
       if(frame.dialogueAct==='CORRECT'||frame.constraints.some(item=>['NO_GENERATION','NO_WEB','NO_EXECUTION','NEGATED','CONTRADICTORY'].includes(item)))setPendingConfirmation(null);
       const plan=planMeaning(frame,recentQuestion(origin),origin?.status==='draft'?origin.intake?.missing:undefined);
+      if (plan.kind === 'guide') {
+        if (pending.current?.workspaceId === id) setPendingConfirmation(null);
+        const help = startGuide(plan.topic, formats, plan.subject, plan.family);
+        if (help.progress) guide.current = { workspaceId: id, progress: help.progress };
+        answer(help.text);
+        return;
+      }
       if(plan.kind==='confirm'){answer((await confirmPending(messageId)).text);return;}
       if(plan.kind==='cancel'){setPendingConfirmation(null);if(origin?.intake)store.setIntake(id,{...origin.intake,visible:false});answer('Đã hủy yêu cầu trò chuyện đang chờ. Phiên tạo đề giữ trạng thái hiện tại.');return;}
       if(plan.kind==='text'){
@@ -379,7 +399,7 @@ export const App: React.FC = () => {
           const {params:currentParams,error:problem}=paramsForSpec(latest?.intake,formats,latest?.inputDocuments??[]);
           if(!currentParams)return failure(problem??'Mẫu đề không còn khả dụng.');
           const job=await store.generate(id,currentParams);
-          return job?{status:'accepted',text:'Backend đã nhận công việc tạo đề. Hãy theo dõi tiến độ.'}:failure(store.getSnapshot().find(session=>session.id===id)?.error??'Chưa nhận được công việc.');
+          return job?{status:'accepted',text:'Yêu cầu soạn đề đã được nhận. Bạn có thể xem tiến độ ngay trong đề.'}:failure(store.getSnapshot().find(session=>session.id===id)?.error??'Mình chưa bắt đầu được lượt soạn đề.');
         }});
         return;
       }
@@ -407,7 +427,7 @@ export const App: React.FC = () => {
     } catch(error) {
       setPendingConfirmation(null);
       if(!controller.signal.aborted)answer(error instanceof ApiError?error.message:error instanceof Error&&error.message.startsWith('agent_')?
-        'Dịch vụ hiểu yêu cầu chưa trả lời hợp lệ. Chưa thay đổi cấu hình hay gửi yêu cầu tạo đề; thầy cô có thể dùng các nút trên giao diện.':'Chưa xác định được kết quả. Hãy kiểm tra trạng thái trước khi thử lại.');
+        'Mình chưa rõ bạn muốn làm gì. Bạn muốn xem đề, kiểm tra tiến độ hay cần hướng dẫn soạn đề?':'Mình chưa kiểm tra được kết quả. Bạn có thể mở đề để xem lại trước khi thử tiếp.');
     } finally {if(turn.current===controller){turn.current=null;setChatPending(false);}}
   };
   const handleLandingSend = (content: string, options: { searchWeb: boolean; attachedFiles: InputDocument[] }) => {
@@ -741,14 +761,14 @@ export const App: React.FC = () => {
       case 'ITEM_REGENERATION_STATUS': {
         const run=current?questionRuns.current.get(current.id):undefined;
         if(!run || run.target.jobId!==current?.jobId)return succeeded('Không có lượt tạo lại câu hỏi đang được theo dõi ở đề này.');
-        return succeeded(run.receipt?.status==='pending'?`Đang ${QUESTION_STAGES[run.receipt.stage??'queued'][1].toLowerCase()}.`:run.receipt?.status==='completed'?'Backend đã hoàn tất lượt tạo lại câu hỏi.':run.receipt?.status==='cancelled'?'Backend đã xác nhận hủy lượt tạo lại.':run.receipt?.status==='failed'?'Lượt tạo lại câu hỏi đã lỗi.':'Đang chờ Backend xác nhận trạng thái lượt tạo lại.');
+        return succeeded(run.receipt?.status==='pending'?`Đang ${QUESTION_STAGES[run.receipt.stage??'queued'][1].toLowerCase()}.`:run.receipt?.status==='completed'?'Đã soạn lại câu hỏi.':run.receipt?.status==='cancelled'?'Đã dừng lượt soạn lại câu hỏi.':run.receipt?.status==='failed'?'Lượt tạo lại câu hỏi đã lỗi.':'Đang chờ cập nhật lượt soạn lại câu hỏi.');
       }
       case 'STOP_ITEM_REGENERATION': {
         const run=current?questionRuns.current.get(current.id):undefined;
         if(!current||!run||run.target.jobId!==current.jobId||run.receipt?.status!=='pending')return failed('Không có lượt tạo lại câu hỏi đang chạy ở đề này.');
         return stopQuestionRun(current.id).then(()=>{
           const after=questionRuns.current.get(current.id)?.receipt;
-          return after?.status==='cancelled'?succeeded('Backend đã xác nhận hủy lượt tạo lại câu hỏi.'):{status:'pending',text:'Đã gửi yêu cầu dừng lượt tạo lại câu hỏi; đang chờ trạng thái Backend.'};
+          return after?.status==='cancelled'?succeeded('Đã dừng lượt soạn lại câu hỏi.'):{status:'pending',text:'Đã gửi yêu cầu dừng. Bạn có thể xem cập nhật ngay trong đề.'};
         });
       }
       case 'LIST_VERSIONS':
@@ -789,7 +809,7 @@ export const App: React.FC = () => {
       case 'SAVE_EDITOR': {
         if(!editor||editor.sessionId!==current?.id||!editorControls.current)return failed('Hãy mở và kiểm tra bản nháp câu hỏi trước.');
         return prepare('Lưu bản nháp câu hỏi đang hiển thị; phê duyệt cũ sẽ hết hiệu lực.',async()=>
-          await editorControls.current?.save()?succeeded('Đã lưu câu hỏi qua Backend.'):failed('Chưa lưu được câu hỏi. Hãy xem lỗi trong trình chỉnh sửa.'));
+          await editorControls.current?.save()?succeeded('Đã lưu câu hỏi.'):failed('Chưa lưu được câu hỏi. Hãy xem lỗi trong trình chỉnh sửa.'));
       }
       case 'APPROVE_QUESTION': {
         if(!current?.package || current.status!=='complete'||!examService.approveQuestion)return failed('Chưa có câu hỏi hoàn chỉnh để duyệt.');
@@ -797,13 +817,13 @@ export const App: React.FC = () => {
         if(!question)return failed('Hãy chỉ rõ số câu và phần thi để duyệt.');
         return prepare(`Duyệt câu ${displayNumber(question)} (${question.part??''}) của phiên bản hiện tại.`,async()=>{
           await handleApproveQuestion(question.id);
-          return succeeded('Backend đã ghi nhận phê duyệt câu hỏi.');
+          return succeeded('Đã duyệt câu hỏi.');
         });
       }
       case 'EXPORT_ARTIFACT': {
         const kind=intent.args.artifact;
         const format=intent.args.format as 'pdf'|'tex'|'json'|'docx'|'md';
-        if(kind==='matrix')return failed('Backend hiện chưa có artifact ma trận xuất riêng. Em chưa tải tệp thay thế.');
+        if(kind==='matrix')return failed('Đề này chưa có tệp ma trận để tải riêng.');
         if(kind==='teacher'&&format!=='json')return failed('Đáp án giáo viên hiện chỉ xuất JSON. Em chưa đổi sang bản đề học sinh.');
         if(!current?.package?.approved||current.artifactChanged||editor)return failed('Cần duyệt đúng phiên bản hiện tại trước khi xuất.');
         if(format==='pdf'&&current.preview?.status!=='ready')return failed(previewText(current));
@@ -827,7 +847,7 @@ export const App: React.FC = () => {
           saveSpec('failed');return failed(`Luyện tập hỗ trợ ${PRACTICE_LIMITS.countMin}–${PRACTICE_LIMITS.countMax} câu, ${PRACTICE_LIMITS.minutesMin}–${maxMinutes} phút${web?' khi tìm web':''}. Yêu cầu đang là ${count} câu, ${minutes} phút; chưa tự đổi thông số.`);
         }
         if((current.inputDocuments?.length??0)>PRACTICE_LIMITS.uploadedFilesMax||preference==='attachments'){
-          saveSpec('failed');return failed('Backend hiện chưa hỗ trợ tài liệu đính kèm cho luyện SAT/IELTS/TOEIC/TOEFL/ACT. Em chưa đổi nguồn hay đổi sang đề THPT. Có thể dùng cấu trúc tích hợp không tìm mạng hoặc gỡ tài liệu để tìm web.');
+          saveSpec('failed');return failed('Các mẫu luyện SAT, IELTS, TOEIC, TOEFL và ACT hiện chưa dùng được tài liệu đính kèm. Bạn có thể dùng mẫu có sẵn hoặc bỏ tệp đính kèm để tìm tài liệu trên mạng.');
         }
         return (async()=>{
           const research=web?await researchAdjacentTopic(current.id,messageId,topic.id,redact(message).slice(0,PRACTICE_LIMITS.researchMessageMax),{count,minutes},activeTurn!.signal):undefined;
@@ -838,7 +858,7 @@ export const App: React.FC = () => {
             durationMinutes:minutes,itemCount:count,prompt:[message||`Luyện tập ${topic.label}`,`Chủ đề luyện tập: ${intent.args.topic}`,difficulty?`Độ khó: ${difficulty}`:'',requirements?`Yêu cầu bổ sung: ${requirements}`:''].filter(Boolean).join('\n'),uploadedFiles:[],...(research?{webSources:research.sources}:{})};
           return prepare(`${topic.label} · ${count} câu · ${minutes} phút. ${research?research.searchMode==='live_web'?'Đã tìm nguồn web.':'Tìm web chưa có dữ liệu trực tuyến; dùng cấu trúc tích hợp.':'Không tìm mạng; dùng cấu trúc tích hợp.'} Tạo nội dung mới sẽ dùng AI.`,async()=>{
             const job=await store.generate(current.id,params);
-            return job?{status:'accepted',text:'Backend đã nhận yêu cầu luyện tập.'}:failed('Chưa nhận được công việc.');
+            return job?{status:'accepted',text:'Yêu cầu soạn đề luyện tập đã được nhận.'}:failed('Chưa nhận được công việc.');
           },'Tạo đề ngay');
         })();
       }
@@ -858,8 +878,8 @@ export const App: React.FC = () => {
           if (!validTurn()) return failed('Yêu cầu đã hết hiệu lực.');
           if (operation === 'cancel') {
             const stopped = await store.stopGeneration(selection.target.id, { jobId: state.jobId, executionVersion: state.executionVersion });
-            return stopped?.status === 'cancelled' ? { ...succeeded('Backend xác nhận đã dừng phiên chạy.'), expectedAfter: runtimeRef.current!.binding() }
-              : failed('Backend chưa xác nhận việc dừng. Hãy xem trạng thái hiện tại.');
+            return stopped?.status === 'cancelled' ? { ...succeeded('Đã dừng lượt soạn đề.'), expectedAfter: runtimeRef.current!.binding() }
+              : failed('Mình chưa kiểm tra được lượt soạn đã dừng chưa. Bạn có thể mở đề để xem.');
           }
           if(operation==='resume'||operation==='retry')return prepare(`${operation==='resume'?'Tiếp tục':'Thử lại'} phần còn thiếu của “${selection.target.title}”, giữ cùng công việc đã lưu. Thao tác dùng AI.`,async()=>{
             const result=await store.controlGeneration(selection.target!.id,operation,{jobId:state.jobId,executionVersion:state.executionVersion});
@@ -867,7 +887,7 @@ export const App: React.FC = () => {
           });
           const result = await store.controlGeneration(selection.target.id, operation, { jobId: state.jobId, executionVersion: state.executionVersion });
           return { ...generationReceipt(operation, result), expectedAfter: runtimeRef.current!.binding() };
-        })().catch(error => failed(error instanceof Error ? error.message : 'Chưa xác nhận được trạng thái Backend.'));
+        })().catch(error => failed(error instanceof Error ? error.message : 'Mình chưa cập nhật được tiến độ lúc này.'));
       }
       case 'RECOVERABLE_JOBS':
         return store.loadLibrary().then(() => {
@@ -957,7 +977,7 @@ export const App: React.FC = () => {
           };
           return readLiveState(current.id).then(state=>state.current?.subject
             ?succeeded(liveStatusText(state.current)+(state.current.requirements?`\nYêu cầu đã gửi: ${state.current.requirements}`:''))
-            :localFormat()).catch(()=>failed('Chưa đọc được cấu hình hiện tại từ Backend. Yêu cầu đã lưu vẫn được giữ.'));
+            :localFormat()).catch(()=>failed('Mình chưa xem được thông tin đề lúc này. Yêu cầu đã lưu vẫn còn.'));
         }
         const first = current.messages.find(item => item.id !== messageId && meaningful(item)) ??
           current.messages.find(item => item.id !== messageId && item.role === 'user' &&
@@ -1116,14 +1136,14 @@ export const App: React.FC = () => {
             // Legacy/browser-only workspaces may have a job without a server library link.
             if(generationJob(current))return succeeded(statusText({...current,progress:await store.generationState(current.id)}));
             return succeeded(statusText(current));
-          }).catch(()=>failed('Chưa đọc được trạng thái mới nhất từ Backend. Đề đã lưu vẫn được giữ.'));
+          }).catch(()=>failed('Mình chưa cập nhật được tiến độ lúc này. Đề đã lưu vẫn còn.'));
         }
         if(intent.args.scope==='active'){
           const running=all.filter(session=>activeGeneration(session.progress?.status)||(!session.progress?.status&&session.status==='generating'));
           if(!running.length)return succeeded('Hiện không có phiên tạo đề đang chạy.'+(current?`\n${statusText(current)}`:''));
           return Promise.all(running.slice(0,5).map(async session=>{
             try{return statusText({...session,progress:await store.generationState(session.id)});}
-            catch{return `${workspaceDescription(session)}: chưa đọc được trạng thái mới nhất từ Backend.`;}
+            catch{return `${workspaceDescription(session)} chưa có cập nhật tiến độ lúc này.`;}
           })).then(lines=>succeeded(lines.join('\n\n')));
         }
         if(current&&!intent.args.name&&!generationJob(current))return succeeded(statusText(current));
@@ -1131,7 +1151,7 @@ export const App: React.FC = () => {
         if (!selection.target) return succeeded(store.getSnapshot().some(session => generationJob(session)) ? selection.text! : current ? statusText(current) : selection.text!);
         const target = selection.target;
         return store.generationState(target.id).then(state => succeeded(statusText({ ...target, progress: state })))
-          .catch(() => failed('Chưa đọc được trạng thái mới nhất từ Backend. Kết quả đã lưu vẫn được giữ.'));
+          .catch(() => failed('Mình chưa cập nhật được tiến độ lúc này. Phần đã lưu vẫn còn.'));
       }
       case 'WARNINGS': {
         if (!current?.package) return failed('Chưa có đề hoàn chỉnh để đọc cảnh báo.');

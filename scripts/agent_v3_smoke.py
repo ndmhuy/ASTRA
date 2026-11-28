@@ -361,7 +361,7 @@ def observe(base):
                     if model == "unavailable"
                     else "Chưa có tài liệu"
                     if model == "documents"
-                    else "chưa hỗ trợ tài liệu đính kèm"
+                    else "chưa dùng được tài liệu đính kèm"
                     if model == "attached-practice"
                     else "Đã lưu 16/22 câu"
                     if model == "toggle-status"

@@ -122,6 +122,8 @@ def create_agent_router(
                         goal.get("parameters", {}).pop("scope", None)
                         goal.get("parameters", {}).pop("name", None)
                         goal.get("parameters", {}).pop("estimate", None)
+                    if goal["goal"] == "CAPABILITY_INQUIRY":
+                        goal["parameters"] = {}
             result = {
                 "schemaVersion": frame.schemaVersion,
                 "sourceContract": source,

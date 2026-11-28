@@ -890,14 +890,14 @@
       "availability": "implemented"
     },
     "CAPABILITY_INQUIRY": {
-      "meaning": "Hỏi các chức năng ASTRA hỗ trợ",
+      "meaning": "Hỏi chức năng hoặc hướng dẫn sử dụng. helpTopic chọn từng việc; subject/family chỉ khi người dùng đã nêu mẫu muốn dùng.",
       "dialogueActs": [
         "GUIDANCE",
         "QUESTION",
         "REQUEST",
         "INFORM"
       ],
-      "parameters": {},
+      "parameters": {"helpTopic": "create|documents|review|export|progress?", "subject": "string?", "family": "thpt|vact|custom?"},
       "resolver": "guidance",
       "capability": null,
       "effect": "read",

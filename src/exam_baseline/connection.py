@@ -415,7 +415,11 @@ class SharedInterpreter:
             completion = await self.provider.complete(
                 CompletionRequest(
                     V3_SYSTEM if v3 else SYSTEM,
-                    json.dumps(semantic_context(turn), ensure_ascii=False, separators=(",", ":")),
+                    json.dumps(
+                        semantic_context(turn, demo_mode=self.owner.settings.demo_mode),
+                        ensure_ascii=False,
+                        separators=(",", ":"),
+                    ),
                     schema_v3() if v3 else semantic_schema(compact=True),
                 ),
                 chat=True,

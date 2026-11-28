@@ -2,6 +2,8 @@
 
 import json
 import logging
+from functools import lru_cache
+from pathlib import Path
 
 from pydantic import ValidationError
 
@@ -36,7 +38,31 @@ SYSTEM = (
 )
 
 
-def semantic_context(turn: Turn) -> dict:
+@lru_cache(maxsize=2)
+def app_help_context(demo_mode: bool) -> dict:
+    from exam_baseline.ui.contracts import format_catalog
+
+    path = Path(__file__).parents[1] / "resources/agent/app-guide.json"
+    guide = json.loads(path.read_text(encoding="utf-8"))
+    return {
+        "appGuide": {
+            topic: {"title": card["title"], "steps": card["steps"]}
+            for topic, card in guide["topics"].items()
+        },
+        "availableFormats": [
+            {
+                "name": item["displayName"],
+                "subjects": item["subjects"],
+                "questions": item["totalQuestions"],
+                "minutes": item["durationMinutes"],
+            }
+            for item in format_catalog(demo_mode=demo_mode)
+            if item["available"]
+        ],
+    }
+
+
+def semantic_context(turn: Turn, *, demo_mode: bool | None = None) -> dict:
     from .v3 import GOALS as V3_GOALS
     from .v3 import TurnV3
 
@@ -47,6 +73,11 @@ def semantic_context(turn: Turn) -> dict:
         },
         "context": turn.context.model_dump(exclude_defaults=True),
         "message": turn.message,
+        **(
+            app_help_context(demo_mode)
+            if isinstance(turn, TurnV3) and demo_mode is not None
+            else {}
+        ),
     }
 
 

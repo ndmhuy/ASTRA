@@ -26,6 +26,7 @@ DISCUSS = "Cảm ơn, vậy mình xem lại nội dung trước nhé"
 BAD = "Kiểm tra ngữ nghĩa fixture hỏng"
 GOOD = "Hãy liệt kê tài liệu fixture tiếp theo"
 STATE = "Có vẻ đề đã xong, mình nên làm gì tiếp?"
+GUIDE_FOLLOWUP = "Trong hộp vừa mở thì tôi nhìn tên môn ở phần nào ấy"
 
 
 def serve(port, directory):
@@ -88,6 +89,16 @@ def serve(port, directory):
         elif message == STATE:
             assert current["lifecycle"] == "completed"
             frame = {"dialogueAct": "QUESTION", "goals": [{"goal": "READ_PROGRESS"}]}
+        elif message == GUIDE_FOLLOWUP:
+            guidance = prompt["context"]["grounded"]["guide"]
+            assert guidance == {"stage": "select", "selected": "Tiếng Anh THPT"}
+            assert "Soạn từ mẫu" in prompt["appGuide"]["create"]["steps"][0]
+            assert any(item["name"] == "Tiếng Anh THPT" for item in prompt["availableFormats"])
+            frame = {
+                "dialogueAct": "GUIDANCE",
+                "goals": [],
+                "reply": "Trong cửa sổ Soạn từ mẫu, chọn Tiếng Anh THPT trong danh sách mẫu.",
+            }
         else:
             raise AssertionError("Unexpected synthetic model request")
         return httpx.Response(
@@ -249,8 +260,13 @@ def observe(base):
             page.locator(".chat-history").get_by_text("Đã soạn xong 28 câu", exact=False).last
         ).to_be_visible()
         send(GOOD, "Chưa có tài liệu")
+        send("hướng dẫn sử dụng app", "Bạn muốn dùng mẫu nào?")
+        send("tao muốn chọn tiếng Anh THPT", "Bạn đã chọn được mẫu chưa?")
+        send(GUIDE_FOLLOWUP, "chọn Tiếng Anh THPT trong danh sách mẫu")
+        send("đã chọn mẫu", "Điền chủ đề hoặc yêu cầu thêm")
+        send("dùng mẫu mặc định", "bấm Tạo đề thi")
         calls = page.request.get(base + "/fixture/calls").json()["calls"]
-        assert [c["message"] for c in calls] == [RECALL, STATE, DISCUSS, BAD, GOOD], calls
+        assert [c["message"] for c in calls] == [RECALL, STATE, DISCUSS, BAD, GOOD, GUIDE_FOLLOWUP]
         assert (
             page.request.get(
                 base + "/agent/workspace-state?workspace_id=" + ids["workspace"]
@@ -267,7 +283,7 @@ def observe(base):
         json.dumps(
             {
                 "evidence": "MOUNTED_CHAT_LIVE_STATE_SYNTHETIC_FIXTURES",
-                "cases": 10,
+                "cases": 15,
                 "syntheticInterpretations": len(calls),
                 "realInference": 0,
                 "generatedExams": 0,
