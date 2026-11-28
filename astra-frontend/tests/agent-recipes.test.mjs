@@ -48,7 +48,8 @@ test('common Vietnamese phrasing reaches local UI intents when AI is disabled', 
   assert.match(fastRoute('Làm cái này đi').text, /màn hình nào/);
   assert.equal(fastRoute('Đừng mở cấu hình giúp tao'), undefined);
   assert.match(interpretationUnavailable('disabled'), /AI cho chat đang tắt/);
-  assert.match(interpretationUnavailable('configuration'), /cấu hình dịch vụ AI/);
+  assert.match(interpretationUnavailable('configuration'), /Mở Kết nối AI.*API key, URL và model/);
+  assert.match(interpretationUnavailable('auth'), /Mở Kết nối AI để sửa key/);
 });
 
 test('rejects invented tools, malformed fields, and stale or repeated steps', async () => {
