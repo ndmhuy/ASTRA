@@ -19,6 +19,18 @@ import httpx
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def stop_fixture_server(process):
+    if os.name == "nt" and process.poll() is None:
+        # Windows venv redirectors can own another Python process. Stop only the
+        # fixture process tree we just created, so SQLite handles are released.
+        subprocess.run(
+            ["taskkill", "/PID", str(process.pid), "/T", "/F"], check=True, capture_output=True
+        )
+    elif process.poll() is None:
+        process.terminate()
+    process.wait(timeout=10)
+
+
 def serve(port, directory):
     import uvicorn
 
@@ -140,10 +152,11 @@ def observe(base):
             if turn["message"] == "Đáp án câu 1 là gì fixture":
                 route.fulfill(
                     json={
-                        "schemaVersion": "astra-semantic-v1",
+                        "schemaVersion": "astra-semantic-v3",
+                        "sourceContract": "astra-semantic-v3",
                         "clientMessageId": turn["clientMessageId"],
                         "frame": {
-                            "schemaVersion": "astra-semantic-v1",
+                            "schemaVersion": "astra-semantic-v3",
                             "dialogueAct": "QUESTION",
                             "goals": [
                                 {
@@ -160,10 +173,11 @@ def observe(base):
                 assert turn["context"]["recentQuestion"] == {"number": 1, "part": "P1"}
                 route.fulfill(
                     json={
-                        "schemaVersion": "astra-semantic-v1",
+                        "schemaVersion": "astra-semantic-v3",
+                        "sourceContract": "astra-semantic-v3",
                         "clientMessageId": turn["clientMessageId"],
                         "frame": {
-                            "schemaVersion": "astra-semantic-v1",
+                            "schemaVersion": "astra-semantic-v3",
                             "dialogueAct": "REQUEST",
                             "goals": [
                                 {"goal": "VERIFY_ANSWER", "reference": "previous", "parameters": {}}
@@ -204,7 +218,7 @@ def observe(base):
         page.goto(base)
         page.locator("textarea").first.wait_for(timeout=12000)
         page.locator('.sidebar-exam[title="Fixture complete"]').click()
-        composer = page.locator("textarea").first
+        composer = page.get_by_role("textbox", name="Yêu cầu soạn đề", exact=True)
 
         def run(intents, message, expected):
             nonlocal decision
@@ -221,6 +235,9 @@ def observe(base):
                 )
             else:
                 expect(page.get_by_text(expected, exact=False).last).to_be_visible()
+            # Pending-action labels can render before the turn's final receipt.
+            # Wait for admission to reopen before advancing the browser clock.
+            expect(composer).to_be_enabled()
             observed.extend(item["id"] for item in intents)
 
         def one(name, args, message, expected):
@@ -254,7 +271,7 @@ def observe(base):
         composer.fill("Xác nhận")
         composer.press("Enter")
         expect(
-            page.get_by_text("Hiện chưa có thao tác nào đang chờ xác nhận.", exact=True)
+            page.get_by_text("Hiện chưa có thao tác nào đang chờ xác nhận ở đề này.", exact=True)
         ).to_be_visible()
         one(
             "REGENERATE_QUESTION",
@@ -266,7 +283,7 @@ def observe(base):
         composer.fill("Xác nhận")
         composer.press("Enter")
         expect(
-            page.get_by_text("Xác nhận đã hết hiệu lực hoặc trạng thái đã thay đổi.", exact=False)
+            page.get_by_text("Xác nhận đã hết hiệu lực hoặc đề/cấu hình đã đổi.", exact=False)
         ).to_be_visible()
         one(
             "REGENERATE_QUESTION",
@@ -277,13 +294,13 @@ def observe(base):
         composer.fill("Hủy yêu cầu")
         composer.press("Enter")
         expect(
-            page.get_by_text("Đã hủy yêu cầu trò chuyện đang chờ.", exact=True).last
+            page.get_by_text("Đã hủy yêu cầu trò chuyện đang chờ.", exact=False).last
         ).to_be_visible()
         one("APPLY_NOTES", {}, "Thực hiện áp dụng ghi chú fixture", "Áp dụng 1 ghi chú")
         composer.fill("Hủy yêu cầu")
         composer.press("Enter")
         expect(
-            page.get_by_text("Đã hủy yêu cầu trò chuyện đang chờ.", exact=True).last
+            page.get_by_text("Đã hủy yêu cầu trò chuyện đang chờ.", exact=False).last
         ).to_be_visible()
         one("RETRY_PREVIEW", {}, "Thực hiện dựng lại bản in fixture", "Bản xem trước đã sẵn sàng.")
         one(
@@ -309,7 +326,7 @@ def observe(base):
         composer.fill("Hủy yêu cầu")
         composer.press("Enter")
         expect(
-            page.get_by_text("Đã hủy yêu cầu trò chuyện đang chờ.", exact=True).last
+            page.get_by_text("Đã hủy yêu cầu trò chuyện đang chờ.", exact=False).last
         ).to_be_visible()
         one(
             "CREATE_SESSION",
@@ -340,15 +357,19 @@ def observe(base):
             "SELECT_FORMAT",
             {"format": "thpt-math"},
             "Thực hiện chọn mẫu Toán THPT fixture",
-            "Đã chọn mẫu.",
+            "Đã cập nhật cấu hình Toán THPT.",
         )
-        page.keyboard.press("Escape")
         run(
-            [{"id": "FORMAT_DETAILS", "args": {}}, {"id": "CLOSE_SETUP", "args": {}}],
-            "Thực hiện chi tiết rồi đóng cấu hình fixture",
-            "Đã đóng phần cấu hình.",
+            [{"id": "FORMAT_DETAILS", "args": {}}],
+            "Thực hiện đọc cấu trúc fixture",
+            "có 22 câu",
         )
         expect(page.get_by_role("dialog")).to_have_count(0)
+        run(
+            [{"id": "OPEN_SETUP", "args": {}}, {"id": "CLOSE_SETUP", "args": {}}],
+            "Thực hiện mở rồi đóng cấu hình fixture",
+            "Đã đóng phần cấu hình.",
+        )
         # HOME's receipt stays with its originating conversation after navigating away.
         decision = {"kind": "task", "intents": [{"id": "HOME", "args": {}}]}
         composer.fill("Thực hiện về trang bắt đầu fixture")
@@ -398,8 +419,7 @@ def main():
                     raise TimeoutError("Capability fixture server did not start")
             observe(f"http://127.0.0.1:{port}")
         finally:
-            process.terminate()
-            process.wait(timeout=10)
+            stop_fixture_server(process)
 
 
 if __name__ == "__main__":

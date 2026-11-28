@@ -19,6 +19,7 @@ from exam_baseline.providers.gateway import Gateway
 from .contracts import Decision, Turn
 from .prompt import SYSTEM, schema, turn_text
 from .provider import ProviderFailure, ProviderRouter, Timing
+from .v3 import Interpretation
 
 logger = logging.getLogger(__name__)
 
@@ -30,6 +31,7 @@ class AgentSettings(BaseSettings):
     enabled: bool = False
     transport: Literal["gateway", "direct", "codex", "offline", "worker"] = "worker"
     semantic_contract: bool = True
+    semantic_version: Literal["astra-semantic-v1", "astra-semantic-v3"] = "astra-semantic-v1"
     worker_url: str = "https://astra-ai-proxy.letranhoanglong2227.workers.dev"
     worker_caller_token: SecretStr | None = None
     api_key: SecretStr | None = None
@@ -96,8 +98,9 @@ class GeminiGatewayProvider:
         self.url = f"{gateway.base('google-ai-studio')}/v1/models/{model}:generateContent"
         self.output_tokens = output_tokens
         self.semantic = semantic
+        self.semantic_version = "astra-semantic-v3" if semantic else "astra-semantic-v1"
 
-    async def interpret(self, turn: Turn, timeout: float) -> Decision:
+    async def interpret(self, turn: Turn, timeout: float) -> Interpretation:
         from .native import gemini_request, parse_native
 
         native = (
@@ -149,7 +152,9 @@ class GeminiGatewayProvider:
             raise ProviderFailure(code)
         try:
             if self.semantic:
-                return parse_native("gemini", response.json())
+                from .v3 import TurnV3
+
+                return parse_native("gemini", response.json(), v3=isinstance(turn, TurnV3))
             candidates = response.json()["candidates"]
             if len(candidates) != 1 or candidates[0]["finishReason"] != "STOP":
                 raise ValueError("incomplete provider output")
@@ -213,6 +218,7 @@ async def configured_interpreter(settings: AgentSettings | None = None):
                         client,
                         settings.worker_url,
                         semantic=settings.semantic_contract,
+                        semantic_version=settings.semantic_version,
                         caller_token=caller.get_secret_value() if caller else None,
                     ),
                     reserve=lambda: True,

@@ -1,6 +1,7 @@
 import type { ExamSession } from '../state/examSessions.ts';
 import type { Intent } from './contracts.ts';
 import { fold, type Effect } from './recipes.ts';
+import { workspaceDescription } from './workspaceFacts.ts';
 
 export const success = (text: string): Effect => ({ status: 'succeeded', text });
 export const failure = (text: string): Effect => ({ status: 'failed', text });
@@ -35,6 +36,16 @@ export function inspectQuestion(session: ExamSession | undefined, args: Intent['
   const question = resolveQuestion(session, args);
   if (!question) return failure('Chưa xác định được câu hỏi hiện tại. Thầy cô hãy ghi số câu và phần thi.');
   const label = `Câu ${displayNumber(question)}${question.part ? ` (${question.part})` : ''}`;
+  if(args.subItem!==undefined){
+    const index=['a','b','c','d'].indexOf(String(args.subItem));
+    const statement=index>=0?question.statements?.[index]:undefined;
+    if(!statement)return failure(`${label} không có ý ${args.subItem} trong dữ liệu đã lưu.`);
+    return success(`${label}, ý ${args.subItem}: ${statement.text}\nĐáp án đang lưu: ${statement.answer?'Đúng':'Sai'}.${statement.solution?`\nGiải thích đã lưu: ${statement.solution}`:''}`);
+  }
+  if(args.aspect==='verification')return success(`${label}: trạng thái kiểm tra đã lưu ${question.answerCheck??question.status}; đáp án tác giả ${question.writerKey??question.key??'chưa có'}, bộ giải ${question.solverKey??'chưa có'}.${question.auditNotes?` ${question.auditNotes}`:''} Chưa gọi bộ giải mới.`);
+  if(args.aspect==='approval')return success(`${label}: ${question.questionApproval?.revision===session.package.revision?'đã được giáo viên duyệt ở phiên bản hiện tại':'chưa có phê duyệt riêng còn hiệu lực'}.`);
+  if(args.aspect==='metadata')return success(`${label}: ${question.questionType??'chưa rõ loại'} · ${question.topic} · ${question.level}. Nguồn đã lưu: ${question.sourceReference??'chưa có'}. Phiên bản ${session.package.revision}.`);
+  if(args.aspect==='explanation')return success(`${label}: ${question.explanation||'Chưa có lời giải đã lưu.'}`);
   return success([`${label}: ${question.stem}`,
     ...(args.view === 'paper' ? [] : [`Đáp án đang lưu: ${question.key || 'chưa có'}.`,
       ...(question.answerCheck === 'mismatched' ? ['Đáp án đang khác kết quả bộ giải đã lưu.'] : []),
@@ -44,21 +55,24 @@ export function inspectQuestion(session: ExamSession | undefined, args: Intent['
 
 export function statusText(session?: ExamSession) {
   if (!session) return 'Thầy cô hãy mở một không gian soạn đề để xem trạng thái.';
+  const description = workspaceDescription(session);
+  const headline = description ? `${description}.\n` : '';
+  if(session.progress?.status === 'completed' || (session.status === 'complete' && !session.progress?.error && !['failed','cancelled','paused','interrupted'].includes(session.progress?.status??'')))
+    return `${headline}Đã soạn xong ${session.progress?.status==='completed'?session.progress.completedItems:session.questions.length || session.meta?.totalCount || 0} câu. ${session.package?.approved ? 'Bản hiện tại đã được duyệt.' : 'Bản hiện tại đang chờ giáo viên duyệt.'}`;
     if (session.progress && (session.generationId || session.stoppedJobId || session.status === 'generating')) {
       const progress = session.progress;
       const done = progress.completedItems ?? 0;
       const total = progress.totalItems ?? session.meta?.totalCount ?? 0;
-      return `${progress.statusMessage} · Đã lưu ${done}/${total} câu, còn ${Math.max(0, total - done)} câu. ${progress.error?.message ?? ''}`.trim();
+      return `${headline}${progress.statusMessage} · Đã lưu ${done}/${total} câu, còn ${Math.max(0, total - done)} câu. ${progress.error?.message ?? ''}${session.status === 'complete' ? ' Bản đề đã lưu trước vẫn được giữ.' : ''}`.trim();
     }
   if (session.status === 'generating') {
-    if (!session.jobId) return 'ASTRA đang gửi yêu cầu tạo đề và chờ mã công việc.';
+    if (!session.jobId) return `${headline}ASTRA đang gửi yêu cầu tạo đề và chờ mã công việc.`;
     const progress = session.progress;
-    if (!progress) return 'Máy chủ đã nhận công việc. Em đang chờ cập nhật tiến độ.';
-    return `Cập nhật gần nhất: ${progress.statusMessage} · ${progress.percent}%.`;
+    if (!progress) return `${headline}Máy chủ đã nhận công việc. Em đang chờ cập nhật tiến độ.`;
+    return `${headline}Cập nhật gần nhất: ${progress.statusMessage} · ${progress.percent}%.`;
   }
-  if (session.status === 'error') return session.error || 'Yêu cầu trước gặp lỗi.';
-  if (session.status === 'complete') return `Đề hiện có ${session.questions.length} câu. ${session.package?.approved ? 'Bản hiện tại đã được duyệt.' : 'Bản hiện tại đang chờ duyệt.'}`;
-  return 'Đề vẫn ở bản nháp và chưa gửi yêu cầu tạo.';
+  if (session.status === 'error') return `${headline}${session.error || 'Yêu cầu trước gặp lỗi.'}`;
+  return `${headline}Đề vẫn ở bản nháp và chưa gửi yêu cầu tạo.`;
 }
 
 export function previewText(session?: ExamSession) {

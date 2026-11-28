@@ -51,7 +51,7 @@ def observe(base):
                 False,
                 "conflicting",
             ),
-            ("completed", "Đừng tạo đề mới", None, False, None),
+            ("completed", "Đừng tạo đề mới", None, False, "negated"),
             ("completed", "Tạo đề toán THPT mới được không?", None, False, "question"),
         ]
         for state, message, subject, fresh, model in cases:
@@ -125,16 +125,17 @@ def observe(base):
                         params = second = {"family": "thpt", "subject": "Toán Học"}
                     route.fulfill(
                         json={
-                            "schemaVersion": "astra-semantic-v1",
+                            "schemaVersion": "astra-semantic-v3",
                             "clientMessageId": turn["clientMessageId"],
+                            "sourceContract": "astra-semantic-v3",
                             "frame": {
-                                "schemaVersion": "astra-semantic-v1",
+                                "schemaVersion": "astra-semantic-v3",
                                 "dialogueAct": "QUESTION" if model == "question" else "REQUEST",
                                 "goals": [
                                     {"goal": "PREPARE_EXAM", "parameters": params},
                                     {"goal": "REQUEST_GENERATION", "parameters": second},
                                 ],
-                                "constraints": [],
+                                "constraints": ["NO_EXECUTION"] if model == "negated" else [],
                             },
                         }
                     )
@@ -228,11 +229,11 @@ def observe(base):
                 expect(page.get_by_role("dialog")).to_have_count(0)
             else:
                 expected = (
-                    "cấu hình đề khác nhau"
+                    "chưa thống nhất"
                     if model == "conflicting"
                     else "có 22 câu"
                     if model == "question"
-                    else "Tạm dừng sẽ lưu"
+                    else "có điều kiện hoặc mâu thuẫn"
                 )
                 expect(page.get_by_text(expected, exact=False).last).to_be_visible()
                 expect(page.get_by_role("dialog")).to_have_count(0)

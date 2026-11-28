@@ -177,6 +177,11 @@ export const ChatConfigCard: React.FC<ChatConfigCardProps> = ({
             )}
           </div>
 
+          <label className="chat-config-field">
+            <span>Yêu cầu bổ sung</span>
+            <textarea value={draft.extraNotes} disabled={disabled} onChange={event=>onChange?.({extraNotes:event.target.value})} />
+          </label>
+
           <div className="chat-config-actions">
             {selectedFormat && onGenerate && (
               <button

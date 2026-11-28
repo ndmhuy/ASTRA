@@ -42,7 +42,7 @@ def classify(error) -> Failure:
         "provider_failure_unclassified",
     }:
         return Failure("unclassified_response", recoverable=True)
-    if error.http_status in {500, 502, 503}:
+    if error.http_status in {500, 502, 503, 529}:
         return Failure(
             "temporary_provider", retryable=error.retryable is not False, recoverable=True
         )

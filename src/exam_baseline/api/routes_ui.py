@@ -149,7 +149,7 @@ async def health(request: Request):
         "status": "ok",
         "engine": "thpt_math_v2",
         "demoMode": settings.demo_mode,
-        "providerConfigured": settings.provider in {"chat_completions", "worker_mas"},
+        "providerConfigured": settings.provider in {"chat_completions", "anthropic", "worker_mas"},
         "corpusRef": settings.rag_corpus_ref,
         "latexCompilerAvailable": bool(request.app.state.ui_jobs.previews.compiler()),
     }

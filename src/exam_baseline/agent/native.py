@@ -2,6 +2,8 @@
 
 import json
 import logging
+from functools import lru_cache
+from pathlib import Path
 
 from pydantic import ValidationError
 
@@ -14,6 +16,7 @@ from .semantics import (
     normalize_frame,
     semantic_schema,
 )
+from .v3 import FrameV3
 
 logger = logging.getLogger(__name__)
 SYSTEM = (
@@ -35,27 +38,64 @@ SYSTEM = (
 )
 
 
-def semantic_context(turn: Turn) -> dict:
+@lru_cache(maxsize=2)
+def app_help_context(demo_mode: bool) -> dict:
+    from exam_baseline.ui.contracts import format_catalog
+
+    path = Path(__file__).parents[1] / "resources/agent/app-guide.json"
+    guide = json.loads(path.read_text(encoding="utf-8"))
+    return {
+        "appGuide": {
+            topic: {"title": card["title"], "steps": card["steps"]}
+            for topic, card in guide["topics"].items()
+        },
+        "availableFormats": [
+            {
+                "name": item["displayName"],
+                "subjects": item["subjects"],
+                "questions": item["totalQuestions"],
+                "minutes": item["durationMinutes"],
+            }
+            for item in format_catalog(demo_mode=demo_mode)
+            if item["available"]
+        ],
+    }
+
+
+def semantic_context(turn: Turn, *, demo_mode: bool | None = None) -> dict:
+    from .v3 import GOALS as V3_GOALS
+    from .v3 import TurnV3
+
     return {
         "goals": {
             name: {"meaning": item["meaning"], "parameters": item["parameters"]}
-            for name, item in GOALS.items()
+            for name, item in (V3_GOALS if isinstance(turn, TurnV3) else GOALS).items()
         },
         "context": turn.context.model_dump(exclude_defaults=True),
         "message": turn.message,
+        **(
+            app_help_context(demo_mode)
+            if isinstance(turn, TurnV3) and demo_mode is not None
+            else {}
+        ),
     }
 
 
 def gemini_request(turn: Turn, output_tokens: int, *, minimal_thinking: bool = False) -> dict:
+    from .v3 import SYSTEM as V3_SYSTEM
+    from .v3 import TurnV3
+    from .v3 import semantic_schema as v3_schema
+
+    v3 = isinstance(turn, TurnV3)
     config = {
         "responseMimeType": "application/json",
-        "responseJsonSchema": semantic_schema(compact=True),
+        "responseJsonSchema": v3_schema(compact=True) if v3 else semantic_schema(compact=True),
         "maxOutputTokens": output_tokens,
     }
     if minimal_thinking:
         config["thinkingConfig"] = {"thinkingLevel": "MINIMAL"}
     return {
-        "systemInstruction": {"parts": [{"text": SYSTEM}]},
+        "systemInstruction": {"parts": [{"text": V3_SYSTEM if v3 else SYSTEM}]},
         "contents": [
             {
                 "role": "user",
@@ -72,7 +112,7 @@ def gemini_request(turn: Turn, output_tokens: int, *, minimal_thinking: bool = F
     }
 
 
-def parse_native(provider: str, payload: dict) -> SemanticFrame:
+def parse_native(provider: str, payload: dict, *, v3=False) -> SemanticFrame | FrameV3:
     stage = "response_envelope"
     finish = None
     text = ""
@@ -104,6 +144,10 @@ def parse_native(provider: str, payload: dict) -> SemanticFrame:
         stage = "semantic_json"
         decoded = json.loads(text)
         stage = "canonical_validation"
+        if v3:
+            from .v3 import normalize_frame as normalize_v3
+
+            return normalize_v3(decoded)
         return normalize_frame(decoded)
     except (KeyError, TypeError, ValueError, AttributeError) as error:
         paths = []

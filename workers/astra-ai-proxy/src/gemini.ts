@@ -28,7 +28,7 @@ function validate(validator: ValidateFunction, value: unknown, diagnostics: Diag
   });
 }
 
-export function parseGemini(raw: string, mimeType: string | null, semantic = false) {
+export function parseGemini(raw: string, mimeType: string | null, semantic = false, v3 = false) {
   const diagnostics: Diagnostics = {
     schemaStage: "upstream_json", envelopeParsing: "invalid", jsonParsing: "not_started",
     responseMimeType: mimeType?.split(";")[0] === "application/json" ? "application/json" : "other",
@@ -70,7 +70,7 @@ export function parseGemini(raw: string, mimeType: string | null, semantic = fal
     diagnostics.jsonParsing = "valid";
     if (semantic) {
       try {
-        const frame = normalizeSemantic(proposal);
+        const frame = normalizeSemantic(proposal, v3);
         return { decision: frame, diagnostics: { ...diagnostics, schemaStage: "validated",
           contractVersion: frame.schemaVersion, dialogueAct: frame.dialogueAct,
           goals: frame.goals.map((goal: {goal: string}) => goal.goal) } };

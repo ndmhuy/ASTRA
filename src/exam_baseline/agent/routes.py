@@ -1,20 +1,24 @@
 """Same-origin conversation interpretation and allowlisted web research. No MAS deps."""
 
+import asyncio
 from collections.abc import Awaitable, Callable
 from hashlib import sha256
 from ipaddress import ip_address
 from typing import Annotated
+from uuid import UUID
 
 from fastapi import APIRouter, Header, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 
 from .admission import Admission, normalize_message
+from .context import backend_facts, ground_turn
 from .contracts import MAX_BODY, VERSION, Decision, Turn
 from .research import ResearchRequest, ResearchResponse, search_adjacent_topic
 from .semantics import SemanticFrame, SemanticTurn, legacy_decision
+from .v3 import FrameV3, Interpretation, TurnV3, upgrade_legacy
 
-Interpreter = Callable[[Turn], Awaitable[Decision | SemanticFrame]]
+Interpreter = Callable[[Turn], Awaitable[Interpretation]]
 Researcher = Callable[[ResearchRequest], Awaitable[ResearchResponse]]
 
 
@@ -50,6 +54,19 @@ def create_agent_router(
     router = APIRouter(prefix="/agent")
     admission = Admission()
 
+    @router.get("/workspace-state")
+    async def workspace_state(request: Request, workspace_id: UUID):
+        if not is_loopback(request.url.hostname) or not is_loopback(
+            request.client.host if request.client else ""
+        ):
+            raise HTTPException(403, "agent_local_boundary")
+        state = await asyncio.to_thread(
+            backend_facts, request.app.state.ui_jobs.store, str(workspace_id)
+        )
+        return JSONResponse(
+            state.model_dump(exclude_none=True), headers={"Cache-Control": "no-store"}
+        )
+
     @router.post("/turn")
     async def turn(
         request: Request, marker: Annotated[str | None, Header(alias="X-Astra-Agent")] = None
@@ -62,9 +79,13 @@ def create_agent_router(
         selected = interpreter or configured
         try:
             contract = (
-                SemanticTurn
-                if request.headers.get("X-Astra-Semantic") == "astra-semantic-v1"
-                else Turn
+                TurnV3
+                if request.headers.get("X-Astra-Semantic") == "astra-semantic-v3"
+                else (
+                    SemanticTurn
+                    if request.headers.get("X-Astra-Semantic") == "astra-semantic-v1"
+                    else Turn
+                )
             )
             payload = contract.model_validate_json(raw)
         except ValidationError:
@@ -74,17 +95,42 @@ def create_agent_router(
         decision = admission.enter(peer, payload, fingerprint)
         if decision is None:
             try:
+                jobs = getattr(request.app.state, "ui_jobs", None)
+                observed = (
+                    await asyncio.to_thread(ground_turn, payload, jobs.store) if jobs else payload
+                )
                 decision = (
-                    await selected(payload)
+                    await selected(observed)
                     if selected
                     else Decision(kind="temporarily_unavailable", reasonCode="disabled")
                 )
-                if not isinstance(decision, SemanticFrame):
+                if not isinstance(decision, (SemanticFrame, FrameV3)):
                     decision = Decision.model_validate(decision)
                 admission.finish(peer, payload, fingerprint, decision)
             finally:
                 admission.leave(peer, payload)
-        if (
+        if request.headers.get("X-Astra-Semantic") == "astra-semantic-v3" and isinstance(
+            decision, (SemanticFrame, FrameV3)
+        ):
+            source = decision.schemaVersion
+            frame = upgrade_legacy(decision) if isinstance(decision, SemanticFrame) else decision
+            view = frame.model_dump(exclude_none=True)
+            if request.headers.get("X-Astra-Dialogue") != "grounded-v1":
+                view.pop("reply", None)  # Keep strict older V3 clients compatible.
+                for goal in view.get("goals", []):
+                    if goal["goal"] == "READ_PROGRESS":
+                        goal.get("parameters", {}).pop("scope", None)
+                        goal.get("parameters", {}).pop("name", None)
+                        goal.get("parameters", {}).pop("estimate", None)
+                    if goal["goal"] == "CAPABILITY_INQUIRY":
+                        goal["parameters"] = {}
+            result = {
+                "schemaVersion": frame.schemaVersion,
+                "sourceContract": source,
+                "clientMessageId": payload.clientMessageId,
+                "frame": view,
+            }
+        elif (
             isinstance(decision, SemanticFrame)
             and request.headers.get("X-Astra-Semantic") == decision.schemaVersion
         ):
@@ -103,6 +149,23 @@ def create_agent_router(
             }
         return JSONResponse(
             result,
+            headers={"Cache-Control": "no-store"},
+        )
+
+    @router.get("/capabilities")
+    async def capabilities(request: Request):
+        configured = getattr(request.app.state, "configured_interpreter", None)
+        provider = getattr(getattr(configured, "routes", [None])[0], "provider", None)
+        version = getattr(provider, "semantic_version", "astra-semantic-v1")
+        return JSONResponse(
+            {
+                "clientContract": "astra-semantic-v3",
+                "providerContract": version,
+                "compatibility": "native"
+                if version == "astra-semantic-v3"
+                else "explicit-legacy-bridge",
+                "workerDeploymentRequired": version != "astra-semantic-v3",
+            },
             headers={"Cache-Control": "no-store"},
         )
 

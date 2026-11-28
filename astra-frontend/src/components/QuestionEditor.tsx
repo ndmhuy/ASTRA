@@ -4,7 +4,7 @@ import type { QuestionItem } from '../types/exam';
 import { patchEditorDraft } from '../agent/editorDraft';
 import { MathRenderer } from './MathRenderer';
 
-export type QuestionEditorControls = { patch(field: string, value: string): boolean };
+export type QuestionEditorControls = { patch(field: string, value: string): boolean; snapshot(): QuestionItem; save():Promise<boolean> };
 
 interface Props {
   controlsRef?: React.Ref<QuestionEditorControls>;
@@ -26,6 +26,13 @@ export const QuestionEditor: React.FC<Props> = ({ question, controlsRef, onSave,
   const hasUnsavedChanges = JSON.stringify(draft) !== JSON.stringify(question);
 
   useImperativeHandle(controlsRef, () => ({
+    snapshot: () => structuredClone(draftRef.current),
+    async save() {
+      if(busy)return false;
+      let saved=false;
+      await action('save',async()=>{await onSave(draftRef.current);saved=true;});
+      return saved;
+    },
     patch(field, value) {
       if (busy) return false;
       if (field === 'regenerate_instruction') {
@@ -92,7 +99,7 @@ export const QuestionEditor: React.FC<Props> = ({ question, controlsRef, onSave,
     };
   }, [busy, onClose, onSave]);
 
-  const action = async (kind: 'save' | 'regen' | 'verify', operation: () => Promise<void>) => {
+  async function action(kind: 'save' | 'regen' | 'verify', operation: () => Promise<void>) {
     setBusyAction(kind);
     setError('');
     try {
@@ -102,7 +109,7 @@ export const QuestionEditor: React.FC<Props> = ({ question, controlsRef, onSave,
     } finally {
       setBusyAction(null);
     }
-  };
+  }
 
   return (
     <div

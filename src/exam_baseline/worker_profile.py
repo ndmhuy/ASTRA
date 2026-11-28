@@ -22,12 +22,6 @@ def user_profile() -> Path:
     return base / "ASTRA" / "worker.env"
 
 
-def startup_profile() -> Path:
-    personal = user_profile()
-    shared = ROOT / "config/team-worker-access.env"
-    return personal if personal.is_file() or not shared.is_file() else shared
-
-
 def resolve_profile(legacy_name: str, explicit: str | Path | None = None) -> Path:
     override = explicit or os.environ.get("ASTRA_WORKER_PROFILE")
     if override:

@@ -18,7 +18,7 @@ from exam_baseline.agent.research import ADJACENT_TOPICS
 from exam_baseline.core.checkpoints import CheckpointError, GenerationPaused
 from exam_baseline.core.contracts import ProviderError
 from exam_baseline.core.recovery import classify
-from exam_baseline.providers.chat_completions import ChatCompletionsProvider
+from exam_baseline.providers.http import http_provider
 from exam_baseline.providers.worker_mas import configured_worker_mas
 from exam_baseline.thpt import contract_artifacts
 from exam_baseline.thpt.agents import QUESTION_FORMAT, Agent, IllustratorAgent, SolverAgent
@@ -540,7 +540,7 @@ class JobManager:
             if worker_providers is not None:
                 yield worker_providers
                 return
-        if self.settings.provider != "chat_completions":
+        if self.settings.provider not in {"chat_completions", "anthropic"}:
             raise UiError(
                 "provider_not_configured",
                 "Hệ thống chưa được kết nối dịch vụ AI. "
@@ -549,7 +549,7 @@ class JobManager:
             )
         settings = self.settings.for_agent_generation()
         async with httpx.AsyncClient(follow_redirects=False) as client:
-            provider = ChatCompletionsProvider(settings, client)
+            provider = http_provider(settings, client)
             yield dict.fromkeys(("composer", "illustrator", "solver", "reviewer"), provider)
 
     def resolve(self, payload):
@@ -926,6 +926,14 @@ class JobManager:
                 )
             elif isinstance(exc, ProviderError):
                 messages = {
+                    "provider_connection_failed": (
+                        "Không kết nối được tới máy chủ API. "
+                        "Mở Kết nối AI để kiểm tra API Base URL và kết nối Internet."
+                    ),
+                    "provider_connect_timeout": (
+                        "Hết thời gian kết nối tới máy chủ API. "
+                        "Kiểm tra địa chỉ API và kết nối Internet."
+                    ),
                     "provider_auth_error": "Xác thực AI thất bại. Kiểm tra token Worker/cấu hình.",
                     "provider_access_denied": "Dịch vụ từ chối truy cập. Kiểm tra cấu hình.",
                     "provider_not_found": "Không tìm thấy model hoặc endpoint đã cấu hình.",
