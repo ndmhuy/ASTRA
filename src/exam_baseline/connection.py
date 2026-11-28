@@ -31,7 +31,7 @@ from exam_baseline.agent.v3 import normalize_frame as normalize_v3
 from exam_baseline.agent.v3 import semantic_schema as schema_v3
 from exam_baseline.config import Settings
 from exam_baseline.core.contracts import CompletionRequest, ProviderError
-from exam_baseline.providers.chat_completions import ChatCompletionsProvider
+from exam_baseline.providers.http import http_provider
 
 PROFILE = json.loads((Path(__file__).parent / "resources/connection.json").read_text("utf-8"))
 DEFAULT_MODEL = PROFILE["defaultModel"]
@@ -68,8 +68,10 @@ def validate_public(model: str, base_url: str) -> tuple[str, str]:
     ):
         raise ValueError("baseUrl")
     # The form accepts a base URL; tolerate a pasted full compatible endpoint.
-    if base_url.endswith("/chat/completions"):
-        base_url = base_url[: -len("/chat/completions")]
+    for suffix in ("/chat/completions", "/messages"):
+        if base_url.endswith(suffix):
+            base_url = base_url[: -len(suffix)]
+            break
     return model, base_url
 
 
@@ -136,18 +138,16 @@ class SharedConnection:
         ):
             raise ValueError("apiKey")
         # Preserve academic settings, overriding only credential/transport selection.
-        # An existing Claude-compatible tool wire is reused; no academic schema changes.
-        tool = self.values.get("EXAM_SCHEMA_AS_TOOL")
-        tool = (tool.lower() == "true") if tool is not None else "claude" in model.lower()
+        # Native Claude tool input carries the unchanged academic output schema.
         return Settings(
             _env_file=self.path if self.path.exists() else None,
-            provider="chat_completions" if key else "unconfigured",
+            provider=PROFILE["provider"] if key else "unconfigured",
             model=model,
             base_url=url,
             api_key=SecretStr(key) if key else None,
             use_ai_gateway=False,
             demo_mode=False,
-            schema_as_tool=tool,
+            schema_as_tool=True,
             response_format="json_schema",
             structured_output_strict=False,
             token_limit_field="max_tokens",
@@ -155,7 +155,7 @@ class SharedConnection:
 
     @property
     def configured(self):
-        return self.settings.provider == "chat_completions" and bool(self.settings.api_key)
+        return self.settings.provider == PROFILE["provider"] and bool(self.settings.api_key)
 
     def _router(self):
         # No internal request allowance and no fallback to Cloudflare or a second model.
@@ -177,6 +177,7 @@ class SharedConnection:
             "schemaVersion": "astra-local-connection-v1",
             "managed": True,
             "configured": self.configured,
+            "provider": self.settings.provider,
             "hasApiKey": self.configured,
             "model": self.settings.model,
             "baseUrl": self.settings.base_url,
@@ -195,7 +196,7 @@ class SharedConnection:
             raise ValueError("env_path")
         text = self.path.read_text("utf-8-sig") if self.path.exists() else ""
         values = {
-            "EXAM_PROVIDER": "chat_completions",
+            "EXAM_PROVIDER": PROFILE["provider"],
             "EXAM_MODEL": settings.model,
             KEY_NAME: settings.api_key.get_secret_value(),
             "EXAM_BASE_URL": settings.base_url,
@@ -295,14 +296,39 @@ class SharedConnection:
         descriptions = {
             400: "Dịch vụ từ chối định dạng yêu cầu.",
             401: "API key bị dịch vụ từ chối.",
-            403: "API key chưa có quyền dùng model này.",
+            403: (
+                "Dịch vụ từ chối request (HTTP 403). "
+                "Kiểm tra endpoint và cách xác thực; chưa thể kết luận quyền dùng model."
+            ),
             404: "Không tìm thấy model hoặc đường dẫn API.",
             429: "Dịch vụ đang giới hạn lượt gọi hoặc quota.",
         }
         field = None
+        provider_type = None
+        response_format = None
         try:
-            raw = error.__cause__.response.json().get("error", {})
+            response = error.__cause__.response
+            content_type = response.headers.get("content-type", "").lower()
+            response_format = (
+                "html"
+                if "text/html" in content_type
+                else "json"
+                if "json" in content_type
+                else None
+            )
+            raw = response.json().get("error", {})
             candidate = raw.get("param") if isinstance(raw, dict) else None
+            known_type = raw.get("type") if isinstance(raw, dict) else None
+            if known_type in {
+                "permission_error",
+                "authentication_error",
+                "invalid_request_error",
+                "rate_limit_error",
+                "not_found_error",
+                "overloaded_error",
+                "api_error",
+            }:
+                provider_type = known_type
             if candidate in {
                 "model",
                 "response_format",
@@ -322,6 +348,8 @@ class SharedConnection:
             "status": status,
             "role": role,
             "field": field,
+            "providerType": provider_type,
+            "responseFormat": response_format,
             "message": descriptions.get(status, message),
         }
 
@@ -332,7 +360,7 @@ class SharedProvider:
 
     @property
     def name(self):
-        return "chat_completions" if self.owner.configured else "unconfigured"
+        return self.owner.settings.provider if self.owner.configured else "unconfigured"
 
     @property
     def model(self):
@@ -360,7 +388,7 @@ class SharedProvider:
             )
         self.owner.active_calls += 1
         try:
-            result = await ChatCompletionsProvider(
+            result = await http_provider(
                 settings.for_agent_generation(), self.owner.client
             ).complete(request)
             self.owner.verified = True
@@ -393,7 +421,13 @@ class SharedInterpreter:
             )
             return (normalize_v3 if v3 else normalize_frame)(json.loads(completion.text))
         except ProviderError as error:
-            reason = {400: "rejected", 401: "auth", 403: "auth", 404: "model", 429: "quota"}.get(
+            reason = {
+                400: "rejected",
+                401: "auth",
+                403: "rejected",
+                404: "model",
+                429: "quota",
+            }.get(
                 error.http_status,
                 "configuration"
                 if error.code == "provider_not_configured"

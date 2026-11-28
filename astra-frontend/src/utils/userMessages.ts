@@ -19,6 +19,9 @@ const PART_LABELS: Record<string, string> = {
 
 export function humanizeErrorMessage(message?: string, code?: string): string {
   const raw = (message || '').trim();
+  if (code === 'provider_access_denied') {
+    return 'Dịch vụ từ chối request (HTTP 403). Kiểm tra endpoint và cách xác thực trong Kết nối AI; mã lỗi này chưa xác định được quyền dùng model.';
+  }
   if (code === 'provider_connection_failed' || code === 'provider_connect_timeout') {
     return 'Không kết nối được tới máy chủ API. Mở Kết nối AI để kiểm tra API Base URL và kết nối Internet; bản nháp vẫn được giữ.';
   }

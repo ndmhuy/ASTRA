@@ -13,6 +13,7 @@ test('humanizeErrorMessage translates technical errors to natural Vietnamese', (
   assert.equal(humanizeErrorMessage('Provider overloaded', 'provider_unavailable'), 'Provider overloaded');
   // Previously saved connection errors used the misleading generic busy text.
   assert.match(humanizeErrorMessage('Dịch vụ AI đang bận', 'provider_connection_failed'), /API Base URL/);
+  assert.match(humanizeErrorMessage('API key chưa có quyền dùng model này.', 'provider_access_denied'), /HTTP 403.*endpoint và cách xác thực/);
 });
 
 test('formatProgressStatus converts legacy raw progress labels to Vietnamese', () => {

@@ -44,28 +44,17 @@ def serve(port, directory):
 
     def handle(request):
         calls.append(request)
-        if request.headers["Authorization"] == f"Bearer {BAD}":
+        if request.headers["x-api-key"] == BAD:
             return httpx.Response(401, json={"error": {"message": "Synthetic auth rejection"}})
-        assert request.headers["Authorization"] == f"Bearer {GOOD}"
+        assert request.headers["x-api-key"] == GOOD
         frame = {"dialogueAct": "REQUEST", "goals": [{"goal": "LIST_DOCUMENTS"}]}
         return httpx.Response(
             200,
             json={
-                "choices": [
-                    {
-                        "finish_reason": "tool_calls",
-                        "message": {
-                            "tool_calls": [
-                                {
-                                    "function": {
-                                        "name": "astra_output",
-                                        "arguments": json.dumps(frame),
-                                    }
-                                }
-                            ],
-                        },
-                    }
-                ]
+                "type": "message",
+                "role": "assistant",
+                "stop_reason": "tool_use",
+                "content": [{"type": "tool_use", "name": "astra_output", "input": frame}],
             },
         )
 

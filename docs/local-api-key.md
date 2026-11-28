@@ -15,7 +15,7 @@ URL/model settings. The defaults use the provider's published compatible endpoin
 at [api.nghimmo.com](https://api.nghimmo.com/):
 
 ```dotenv
-EXAM_PROVIDER=chat_completions
+EXAM_PROVIDER=anthropic
 EXAM_MODEL=nghi/claude-haiku-4.5
 ANTHROPIC_API_KEY=
 EXAM_BASE_URL=https://api.nghimmo.com/v1
@@ -24,9 +24,11 @@ EXAM_BASE_URL=https://api.nghimmo.com/v1
 The key is a Claude/Anthropic credential. The former `ASTRA_GEMINI_API_KEY` name
 remains a read fallback; the next save migrates its value to `ANTHROPIC_API_KEY`
 and removes the obsolete variable. If both contain a value, `ANTHROPIC_API_KEY`
-takes precedence. This changes credential storage, not the request protocol:
-Nghimmo publishes both Anthropic and OpenAI-compatible endpoints; this adapter
-continues to use the configured `/v1/chat/completions` endpoint and Claude model.
+takes precedence. The Claude-key flow now uses Anthropic Messages:
+`POST /v1/messages`, `x-api-key`, and `anthropic-version: 2023-06-01`, matching
+the [provider's Claude key guide](https://api.nghimmo.com/guide). Both a root
+base URL and a URL ending in `/v1` produce exactly one `/v1/messages` endpoint.
+Saving also writes `EXAM_PROVIDER=anthropic` without changing the key or model.
 Saving requires a key on first setup; later, a blank key retains the current one.
 The API validates configuration locally and atomically replaces only these four
 fields, preserving other `.env` settings/comments. Saving, reload and startup make
@@ -34,8 +36,12 @@ no inference request. A saved key is not reported as authenticated until a real
 user action receives a usable provider completion.
 
 The shared runtime injects the same credential, model and URL into Chat, baseline
-and Composer/Illustrator/Solver/Reviewer. It reuses the existing compatible HTTP
-adapter and Claude forced-tool encoding, with the original academic schemas.
+and Composer/Illustrator/Solver/Reviewer. The Anthropic adapter shares the existing
+HTTP/timeout/ledger behavior, but uses Anthropic-native messages and tool encoding.
+The original system/user prompts and academic schemas pass through unchanged.
+Exactly one `astra_output` tool object is required; ordinary prose, ambiguous tool
+calls, truncation and refusal do not become successful academic results. Existing
+Chat Completions and Worker adapters remain available in their explicit modes.
 Chat retains V3 canonical meaning and uses its bounded semantic output/timeout;
 the exam pipeline retains its existing generation limits and academic checks.
 There is no automatic model fallback or Cloudflare fallback.
@@ -94,3 +100,24 @@ made to verify authentication. A literal endpoint assertion now catches a typo
 in the bundled default instead of comparing it only with itself. DNS/TLS failure
 messages and historical connection-error display now identify connection setup,
 rather than implying that the model is busy.
+
+### Claude key protocol correction
+
+Renaming a credential variable alone did not change the old OpenAI request wire.
+The owner reported HTTP 403 despite the model working for a teammate. The local
+Claude flow was switched to the native Anthropic endpoint/authentication documented
+for this key type, retaining the same key, model and academic inputs. A 403 is now
+reported as a refused request, without claiming a particular model entitlement.
+Safe diagnostics distinguish JSON/HTML and allowlisted provider error types; they
+never reflect remote prose or credentials. The change is verified using synthetic
+responses, including all shared roles and mounted desktop/mobile UI recovery.
+Real inference remains strictly owner-initiated; these tests cannot establish the
+provider's current authentication/availability for the owner's account.
+
+After the native-wire correction, the complete offline Python suite passed 607
+tests and 7 subtests with external sockets blocked; all 91 frontend tests and
+frontend build/lint passed. Mounted desktop/mobile tests used Anthropic-shaped
+synthetic responses and generated no exams. The real local server was restarted
+idle on port 8001 with `provider=anthropic`, preserving the key, model and two
+existing workspaces; only configuration/health reads and a probe-free save were
+performed. Provider authentication is still unverified by the agent.

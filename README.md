@@ -16,7 +16,8 @@ The launcher prepares dependencies, builds the UI and opens
 
 1. Paste your API key into the masked **Kết nối AI** dialog.
 2. The default endpoint is `https://api.nghimmo.com/v1`, model `nghi/claude-haiku-4.5`.
-   Expand **URL & model** if your compatible API uses different values.
+   The app uses Anthropic Messages (`/v1/messages`) with `x-api-key` authentication.
+   Expand **URL & model** if your Claude endpoint uses different values.
 3. Press **Lưu và vào ASTRA**. The Backend saves the shared key in the ignored root
    `.env`. Chat and exam generation now use this same local connection.
 

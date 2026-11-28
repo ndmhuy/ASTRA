@@ -106,7 +106,7 @@ export function ConnectionSetup({ busy = false }: { busy?: boolean }) {
             <input id="connection-url" type="url" value={url} onChange={event => setUrl(event.target.value)} required disabled={saving} maxLength={2048} autoComplete="off" />
             <label htmlFor="connection-model">Model ID</label>
             <input id="connection-model" value={model} onChange={event => setModel(event.target.value)} required disabled={saving} maxLength={200} autoComplete="off" />
-            <p>Dùng endpoint tương thích Chat Completions. Cấu hình này áp dụng cho cả chat và sinh đề.</p>
+            <p>Dùng API Claude / Anthropic Messages. Cấu hình này áp dụng cho cả chat và sinh đề.</p>
           </details>
           {(error || status.configurationError || status.lastFailure) && <div className="connection-form-error" role="alert">
             <AlertCircle size={18} /><div>{error || status.configurationError || status.lastFailure?.message}

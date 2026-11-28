@@ -50,23 +50,11 @@ def completion(value=FRAME):
     return httpx.Response(
         200,
         json={
-            "choices": [
-                {
-                    "finish_reason": "tool_calls",
-                    "message": {
-                        "tool_calls": [
-                            {
-                                "type": "function",
-                                "function": {
-                                    "name": "astra_output",
-                                    "arguments": json.dumps(value),
-                                },
-                            }
-                        ]
-                    },
-                }
-            ],
-            "usage": {"prompt_tokens": 12, "completion_tokens": 8},
+            "type": "message",
+            "role": "assistant",
+            "stop_reason": "tool_use",
+            "content": [{"type": "tool_use", "name": "astra_output", "input": value}],
+            "usage": {"input_tokens": 12, "output_tokens": 8},
         },
     )
 
@@ -172,6 +160,8 @@ def test_shared_key_reaches_all_roles_and_chat_with_original_schema(tmp_path, mo
     monkeypatch.setenv("EXAM_USE_AI_GATEWAY", "true")
     with running(tmp_path) as (client, connection, calls):
         assert save(client).status_code == 200
+        assert connection.settings.provider == "anthropic"
+        assert dotenv_values(connection.path)["EXAM_PROVIDER"] == "anthropic"
         for provider in [connection.baseline, *connection.providers.values()]:
             result = client.portal.call(provider.complete, REQUEST)
             assert json.loads(result.text) == FRAME
@@ -190,16 +180,15 @@ def test_shared_key_reaches_all_roles_and_chat_with_original_schema(tmp_path, mo
         assert len(calls) == 6
         for request in calls:
             payload = json.loads(request.content)
-            assert str(request.url) == DEFAULT_URL + "/chat/completions"
-            assert request.headers["Authorization"] == f"Bearer {KEY}"
+            assert str(request.url) == DEFAULT_URL + "/messages"
+            assert request.headers["x-api-key"] == KEY
+            assert request.headers["anthropic-version"] == "2023-06-01"
+            assert "Authorization" not in request.headers
             assert payload["model"] == DEFAULT_MODEL
             assert "response_format" not in payload
             assert "cf-aig-authorization" not in request.headers
-        assert (
-            json.loads(calls[0].content)["tools"][0]["function"]["parameters"]
-            == REQUEST.output_schema
-        )
-        assert json.loads(calls[0].content)["messages"][0]["content"] == REQUEST.system
+        assert json.loads(calls[0].content)["tools"][0]["input_schema"] == REQUEST.output_schema
+        assert json.loads(calls[0].content)["system"] == REQUEST.system
         assert json.loads(calls[0].content)["max_tokens"] == 8192
         assert json.loads(calls[-1].content)["max_tokens"] == 1024
         assert client.get("/api/connection").json()["verified"]
@@ -333,8 +322,29 @@ def test_provider_failure_keeps_draft_and_key_replacement_recovers(tmp_path, sta
         failed[0] = False
         recovered = client.portal.call(connection.interpreter, turn())
         assert recovered.goals[0].goal == "OPEN_CONFIGURATION" and len(calls) == 2
-        assert calls[-1].headers["Authorization"] == "Bearer fixture-new-key"
+        assert calls[-1].headers["x-api-key"] == "fixture-new-key"
         assert client.get("/api/connection").json()["lastFailure"] is None
+
+
+@pytest.mark.parametrize("html", [False, True])
+def test_403_reports_protocol_metadata_without_assuming_model_entitlement(tmp_path, html):
+    def handler(request):
+        if html:
+            return httpx.Response(403, text="<html>Private upstream details " + KEY + "</html>",
+                                  headers={"content-type": "text/html"})
+        return httpx.Response(403, json={"type": "error", "error": {
+            "type": "permission_error", "message": "Private upstream details " + KEY}})
+    with running(tmp_path, handler) as (client, connection, calls):
+        assert save(client).status_code == 200
+        with pytest.raises(ProviderError):
+            client.portal.call(connection.providers["composer"].complete, REQUEST)
+        public = client.get("/api/connection")
+        failure = public.json()["lastFailure"]
+        assert failure["status"] == 403 and "endpoint" in failure["message"]
+        assert failure["responseFormat"] == ("html" if html else "json")
+        assert failure["providerType"] == (None if html else "permission_error")
+        assert KEY not in public.text and "Private upstream details" not in public.text
+        assert len(calls) == 1
 
 
 def test_timeout_invalid_json_and_redirect_fail_without_silent_fallback(tmp_path):
