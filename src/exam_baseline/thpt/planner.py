@@ -377,6 +377,8 @@ def _pack_objectives(pack: dict[str, Any], part: Part, level: Level) -> list[str
         cleaned = re.sub(r"\s+", " ", text).strip().rstrip(".")
         if len(cleaned) < 12:
             return
+        if len(cleaned) > 150:
+            cleaned = cleaned[:147].rsplit(" ", 1)[0].rstrip(",;:")
         key = normalize(cleaned)
         if key not in seen:
             seen.add(key)

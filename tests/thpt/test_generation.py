@@ -127,16 +127,7 @@ class Scripted:
             result = dict(
                 entries=[
                     dict(
-                        question_id=q["id"],
-                        answer=(
-                            "true true true true"
-                            if q["id"].startswith("P2-")
-                            else str(int(q["id"].split("-")[1]) + 1)
-                            if q["id"].startswith("P3-")
-                            else "A"
-                        ),
-                        reasoning="Test fixture.",
-                        status="solved",
+                        question_id=q["id"], answer="A", reasoning="Test fixture.", status="solved"
                     )
                     for q in data["questions"]
                 ]

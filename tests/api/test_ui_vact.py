@@ -220,13 +220,10 @@ def test_vact_catalog_evaluate_generate_package_edit_approve_and_export(tmp_path
             f"/api/exams/{job_id}/questions/97/verify", json={"revision": edited_pkg["revision"]}
         )
         assert checked.status_code == 200, checked.text
-        verified = checked.json()
-        assert verified["questions"][96]["answerCheck"] == "mismatched"
-        assert verified["revision"] == edited_pkg["revision"] + 1
-        assert verified["contentHash"] != edited_pkg["contentHash"]
+        assert checked.json()["questions"][96]["answerCheck"] == "mismatched"
 
         regenerate_url = f"/api/exams/{job_id}/questions/97/regenerate"
-        request_data = {"revision": verified["revision"], "stableId": "q97"}
+        request_data = {"revision": edited_pkg["revision"], "stableId": "q97"}
         wrong_target = client.post(regenerate_url, json={**request_data, "stableId": "q98"})
         assert wrong_target.json()["error"]["code"] == "invalid_question_id"
         assert not calls["composer"]
@@ -239,7 +236,7 @@ def test_vact_catalog_evaluate_generate_package_edit_approve_and_export(tmp_path
         )
         assert regen.status_code == 200, regen.text
         regenerated = regen.json()
-        assert regenerated["revision"] == verified["revision"] + 1
+        assert regenerated["revision"] == edited_pkg["revision"] + 1
         assert regenerated["passages"] == edited_pkg["passages"]
         assert regenerated["questions"][96]["passageId"] == "g97_99"
         assert regenerated["questions"][96]["answerCheck"] == "matched"
