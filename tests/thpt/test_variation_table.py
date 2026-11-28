@@ -108,6 +108,5 @@ def test_thpt_generation_uses_structured_table_and_retains_solver_drawing(tmp_pa
     assert len(providers["illustrator"].calls) == 2
     drawing = render_variation_table(VariationTable.model_validate(CONTINUOUS))
     assert drawing in (out / "de_thi.tex").read_text(encoding="utf-8")
-    assert providers["solver"].calls[0]["drawings"]["drawings"] == [
-        {"question_id": "P1-1", "latex": drawing}
-    ]
+    [section] = [call for call in providers["solver"].calls if call["questions"][0]["id"] == "P1-1"]
+    assert section["drawings"]["drawings"] == [{"question_id": "P1-1", "latex": drawing}]

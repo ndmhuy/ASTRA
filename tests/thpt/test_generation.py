@@ -153,7 +153,7 @@ def test_end_to_end_review_once(tmp_path, correction):
     assert result["reviewer_feedback_sent"] is correction
     assert len(providers["reviewer"].calls) == 1
     assert len(providers["composer"].calls) == (6 if correction else 3)
-    assert len(providers["solver"].calls) == (2 if correction else 1)
+    assert len(providers["solver"].calls) == (6 if correction else 3)
     header = original()[: spans(original())[0][0]]
     assert (out / "de_thi.tex").read_bytes().startswith(apply_font_profile(header))
     assert (out / "dap_an_va_loi_giai.json").exists()
@@ -181,12 +181,15 @@ def test_resume_after_correction_failure_reuses_review_and_prior_sections(tmp_pa
     with pytest.raises(ProviderError):
         asyncio.run(Orchestrator(providers).run(payload, out))
     assert len(providers["reviewer"].calls) == 1
-    assert len(composer.calls) == 4
+    completed = [call["part"] for call in composer.calls if call.get("feedback")]
+    assert "P1" in completed
+    assert "P2" not in completed
     composer.interrupted = False
     result = asyncio.run(Orchestrator(providers).run(payload, out, resume=True))
     assert result["execution_status"] == "completed"
     assert len(providers["reviewer"].calls) == 1
-    assert len(composer.calls) == 6
+    resumed = [call["part"] for call in composer.calls if call.get("feedback")]
+    assert sorted(resumed) == ["P1", "P2", "P3"]
     changed = request().model_copy(deep=True)
     changed.requirements.append("Different matrix requirements")
     with pytest.raises(ValueError, match="same input"):

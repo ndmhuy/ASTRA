@@ -3,7 +3,7 @@
 import json
 from copy import deepcopy
 
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, Field, ValidationError, create_model
 
 from exam_baseline.core.contracts import CompletionRequest, LLMProvider
 from exam_baseline.pipeline.runtime import normalize_json
@@ -15,6 +15,7 @@ from exam_baseline.thpt.models import (
     Section,
     ShortAnswerSection,
     SingleQuestionSolutions,
+    Solution,
     Solutions,
     TrueFalseSection,
 )
@@ -331,6 +332,16 @@ Mark ambiguous/unsolvable explicitly; never guess a missing condition."""
 
     def contract(self, data):
         return SingleQuestionSolutions if len(data["questions"]) == 1 else self.response
+
+
+class SectionSolverAgent(SolverAgent):
+    def contract(self, data):
+        count = len(data["questions"])
+        return create_model(
+            "SectionSolutions",
+            __base__=Solutions,
+            entries=(list[Solution], Field(min_length=count, max_length=count)),
+        )
 
 
 class ReviewerAgent(Agent):
