@@ -22,7 +22,7 @@ from exam_baseline.providers.chat_completions import ChatCompletionsProvider
 from exam_baseline.providers.worker_mas import configured_worker_mas
 from exam_baseline.thpt import contract_artifacts
 from exam_baseline.thpt.agents import QUESTION_FORMAT, Agent, IllustratorAgent, SolverAgent
-from exam_baseline.thpt.content import choice_rich_text
+from exam_baseline.thpt.content import choice_latex
 from exam_baseline.thpt.models import Illustrations, Question, Request, Slot
 from exam_baseline.thpt.orchestrator import Orchestrator, compare_answer
 from exam_baseline.thpt.planner import plan_request_from_prompt
@@ -1189,7 +1189,7 @@ class JobManager:
                     "passageId": passage_id,
                     **({"groupInstruction": group_instruction} if group_instruction else {}),
                     "stem": raw["stem"],
-                    "choices": {k: choice_rich_text(v) for k, v in raw["choices"].items()},
+                    "choices": {k: choice_latex(v) for k, v in raw["choices"].items()},
                     "key": raw["answer"],
                     "explanation": raw["solution"],
                     "level": levels[slot["level"]],
@@ -1301,7 +1301,7 @@ class JobManager:
                     "stem": raw["stem"],
                     "choices": {
                         **dict.fromkeys("ABCD", ""),
-                        **{k: choice_rich_text(v) for k, v in raw["choices"].items()},
+                        **{k: choice_latex(v) for k, v in raw["choices"].items()},
                     },
                     "key": raw["answer"]
                     or " / ".join("Đúng" if s["answer"] else "Sai" for s in raw["statements"]),
@@ -1340,7 +1340,7 @@ class JobManager:
                 }
             )
             report = job.get("report", {})
-            if report.get("review_revision", 1) == job["revision"]:
+            if report.get("revision") == job["revision"]:
                 warnings.extend(
                     {"code": "adjacent_review_issue", "message": issue}
                     for issue in report.get("review_issues", [])
@@ -1355,7 +1355,7 @@ class JobManager:
                 }
             )
             report = job.get("report", {})
-            if report.get("review_revision", 1) == job["revision"]:
+            if report.get("revision") == job["revision"]:
                 warnings.extend(
                     {"code": "subject_review_issue", "message": issue}
                     for issue in report.get("review_issues", [])
@@ -2001,29 +2001,9 @@ class JobManager:
                     "invalid_solver_response", "Kết quả Solver chưa đúng câu cần kiểm tra.", 502
                 )
             solutions = _current_solutions(job)
-            before = _question_verification(raw, solutions.get(stable_id), False)["status"]
             solutions[stable_id] = entry.model_dump()
-            after = _question_verification(raw, solutions[stable_id], False)["status"]
             job.update(solutions={"entries": list(solutions.values())}, solverResultsVersion=1)
-            if before != after:
-                job.update(revision=revision + 1, approval=None)
-                job.setdefault("questionApprovals", {}).pop(stable_id, None)
-                source = self._render_source(job)
-                if not job.get("contractExport"):
-                    job["contentHash"] = fingerprint(
-                        {
-                            "content": job["contentHash"],
-                            "verification": {
-                                q["id"]: _question_verification(q, solutions.get(q["id"]), False)[
-                                    "status"
-                                ]
-                                for q in job["rawQuestions"]
-                            },
-                        }
-                    )
-                await self._save_version(job, "verified", question_id=question_id, source=source)
-            else:
-                self.store.save(job)
+            self.store.save(job)
             return self.package(job_id)
 
     async def regenerate(

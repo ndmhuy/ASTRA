@@ -117,10 +117,10 @@ def content_latex(value: str, *, check_equations: bool = True) -> str:
     return "".join(output)
 
 
-def choice_rich_text(value: str) -> str:
+def choice_latex(value: str) -> str:
     value = value.strip()
     if "$" in value or any(mark in value for mark in (r"\(", r"\[")):
-        return value
+        return content_latex(value)
     if re.fullmatch(r"\{[-+\d;,\s]+\}", value):
         value = r"\{" + value[1:-1] + r"\}"
     # Legacy Composer responses sometimes omit delimiters on a whole expression.
@@ -129,11 +129,7 @@ def choice_rich_text(value: str) -> str:
     if re.fullmatch(r"[A-Za-z0-9\s\\{}()[\].,;:+*/=<>\-_|^!'\"]+", value) and all(
         len(word) == 1 for word in words
     ):
-        return "$" + value + "$"
+        return content_latex("$" + value + "$")
     if re.search(r"\\[A-Za-z]+|[_^]", value):
         raise ValueError("Choice mixes prose and raw mathematics; enclose formulas in $...$")
-    return value
-
-
-def choice_latex(value: str) -> str:
-    return content_latex(choice_rich_text(value))
+    return content_latex(value)

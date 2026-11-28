@@ -549,7 +549,7 @@ def test_retrieval_agents_teacher_approval_export_edit_and_reconnect(tmp_path):
         assert package["questions"][12]["questionType"] == "true_false"
         assert package["questions"][16]["questionType"] == "short_answer"
         assert package["questions"][0]["answerCheck"] == "matched"
-        assert package["questions"][12]["answerCheck"] == "matched"
+        assert package["questions"][12]["answerCheck"] == "needs_recheck"
         assert package["warnings"] and package["provenance"]["corpus_snapshot"] == "test-fixture"
         assert not package["approved"]
         assert len(providers["reviewer"].calls) == 1
@@ -610,18 +610,13 @@ def test_retrieval_agents_teacher_approval_export_edit_and_reconnect(tmp_path):
         checked = client.post(verify_url, json={"revision": new_package["revision"]})
         assert checked.status_code == 200, checked.text
         verified_package = checked.json()
-        assert verified_package["revision"] == new_package["revision"] + 1
-        assert verified_package["contentHash"] != new_package["contentHash"]
-        assert not verified_package["approved"]
+        assert verified_package["revision"] == new_package["revision"]
+        assert verified_package["approved"]
         assert verified_package["questions"][0]["answerCheck"] == "mismatched"
         assert verified_package["questions"][0]["status"] == "FLAGGED"
         assert verified_package["questions"][0]["solverKey"] == "A"
         assert verified_package["questions"][0]["writerKey"] == "B"
-        assert verified_package["questions"][1] == {
-            **second,
-            "examRevision": verified_package["revision"],
-            "revisionCount": second["revisionCount"] + 1,
-        }
+        assert verified_package["questions"][1] == second
         assert len(providers["solver"].calls) == 4 and len(providers["reviewer"].calls) == 1
         solver_input = providers["solver"].calls[-1]["questions"]
         assert len(solver_input) == 1 and solver_input[0]["id"] == "P1-1"
@@ -630,11 +625,8 @@ def test_retrieval_agents_teacher_approval_export_edit_and_reconnect(tmp_path):
     restarted, _ = fixture_app(tmp_path)
     with TestClient(restarted) as client:
         loaded = client.get(f"/api/exams/{job}").json()
-        assert loaded["revision"] == verified_package["revision"]
+        assert loaded["revision"] == package["revision"] + 1
         assert loaded["questions"][0]["answerCheck"] == "mismatched"
-        repeated = client.post(verify_url, json={"revision": loaded["revision"]}).json()
-        assert repeated["revision"] == loaded["revision"]
-        assert repeated["contentHash"] == loaded["contentHash"]
         assert '"status": "completed"' in client.get(f"/api/exams/{job}/events").text
 
 

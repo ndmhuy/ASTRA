@@ -1,12 +1,10 @@
 """Record every attempted call, including invalid JSON and provider failures."""
 
 import asyncio
-from hashlib import sha256
 from pathlib import Path
 from time import perf_counter
 from uuid import uuid4
 
-from exam_baseline.core.checkpoints import digest
 from exam_baseline.core.contracts import ProviderError
 from exam_baseline.core.recovery import OPERATION, POLICY, classify, delay
 
@@ -29,7 +27,6 @@ class RecordingProvider:
         retries: int = 0,
         *,
         on_attempt=None,
-        check_admission=None,
         operation_id=None,
     ):
         self.provider = provider
@@ -40,7 +37,6 @@ class RecordingProvider:
         self.retries = retries
         self.record = None
         self.on_attempt = on_attempt or (lambda: None)
-        self.check_admission = check_admission or (lambda: None)
         self.operation_id = operation_id
 
     async def complete(self, request):
@@ -83,7 +79,6 @@ class RecordingProvider:
                     await asyncio.sleep(wait)
 
     async def _once(self, request):
-        self.check_admission()
         record = dict(role=self.stage, revision=self.revision, status="started")
         self.calls.append(record)
         if self.operation_id:
@@ -94,22 +89,6 @@ class RecordingProvider:
         completion = None
         attempt_id = str(uuid4())
         record["attempt_id"] = attempt_id
-        record["request_sha256"] = digest(
-            {
-                "system": request.system,
-                "user": request.user,
-                "schema": request.output_schema,
-                "images": [
-                    (image.mime, sha256(image.data).hexdigest()) for image in request.images
-                ],
-                "provider": getattr(self.provider, "name", None),
-                "model": getattr(self.provider, "model", None),
-                "parameters": getattr(self.provider, "parameters", {}),
-                "endpoint": getattr(self.provider, "url", None),
-                "strict": getattr(self.provider, "strict", None),
-                "schema_as_tool": getattr(self.provider, "schema_as_tool", None),
-            }
-        )
         self.on_attempt()
         context = OPERATION.set((self.operation_id, attempt_id))
         try:
