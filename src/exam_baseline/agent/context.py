@@ -37,6 +37,7 @@ def workspace_facts(store, row):
         count=request.get("itemCount"),
         minutes=request.get("durationMinutes"),
         completed=done,
+        estimatedSecondsLeft=state.get("estimatedSecondsLeft") or None,
         stage=clean(
             state.get("statusMessage") or state.get("message") or progress.get("message"), 160
         ),

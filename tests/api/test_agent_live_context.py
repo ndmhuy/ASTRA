@@ -9,7 +9,7 @@ from jsonschema import ValidationError, validate
 
 from exam_baseline.agent.context import ground_turn
 from exam_baseline.agent.native import semantic_context
-from exam_baseline.agent.v3 import FrameV3, TurnV3, semantic_schema
+from exam_baseline.agent.v3 import FrameV3, TurnV3, normalize_frame, semantic_schema
 from exam_baseline.api.app import create_app
 from exam_baseline.config import Settings
 
@@ -183,3 +183,20 @@ def test_full_goal_schema_rejects_cross_goal_parameters_and_accepts_dialogue():
             },
             schema,
         )
+
+
+@pytest.mark.parametrize("reply", ["", " \n ", None])
+def test_empty_conversation_text_preserves_a_valid_navigation_goal(reply):
+    frame = normalize_frame(
+        {
+            "dialogueAct": "REQUEST",
+            "goals": [{"goal": "VIEW_EXAM", "parameters": {"view": "paper"}}],
+            "reply": reply,
+        }
+    )
+    assert frame.reply is None and frame.goals[0].parameters == {"view": "paper"}
+
+
+def test_empty_reply_does_not_repair_unknown_operation():
+    with pytest.raises(ValueError):
+        normalize_frame({"dialogueAct": "REQUEST", "goals": [{"goal": "UNKNOWN"}], "reply": ""})

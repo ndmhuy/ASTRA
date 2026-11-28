@@ -44,7 +44,9 @@ SYSTEM = (
     "CONVERSATION with no goals may carry a short Vietnamese reply for greetings, thanks or "
     "discussion. AMBIGUOUS may carry a specific clarification in reply. reply is text only, "
     "never an action/result receipt; never claim an operation was executed. Prefer read goals "
-    "for workspace facts so the app renders current verified facts. Use exactly the per-goal "
+    "for workspace facts so the app renders current verified facts. Omit an unused reply. "
+    "For 'khi nào xong' use READ_PROGRESS with estimate=true. Treat 'tao muốn xem đề thi' "
+    "as a request to view the current paper. Use exactly the per-goal "
     "parameters in the tool schema; parameters belong inside each goal, not at the root. "
     'Example: {"dialogueAct":"QUESTION","goals":[{"goal":"READ_PROGRESS"}]}. '
     'Example: {"dialogueAct":"CONVERSATION","goals":[],"reply":"Không có gì, '
@@ -107,6 +109,7 @@ class WorkspaceFacts(Contract):
     count: Annotated[int, Field(ge=0, le=9999)] | None = None
     minutes: Annotated[int, Field(ge=0, le=9999)] | None = None
     completed: Annotated[int, Field(ge=0, le=9999)] = 0
+    estimatedSecondsLeft: Annotated[int, Field(gt=0)] | None = None
     stage: Annotated[str, StringConstraints(max_length=160)] | None = None
     requirements: Annotated[str, StringConstraints(max_length=600)] | None = None
     errorCode: Annotated[str, StringConstraints(max_length=80)] | None = None
@@ -164,6 +167,9 @@ def normalize_frame(value: object) -> FrameV3:
     for name in ("goals", "constraints"):
         if result.get(name) is None:
             result.pop(name, None)
+    # Some action-only tool calls populate optional text with an empty string.
+    if isinstance(result.get("reply"), str) and not result["reply"].strip():
+        result.pop("reply")
     title = result.pop("title", None)
     if isinstance(title, str):
         title = " ".join(title.split())

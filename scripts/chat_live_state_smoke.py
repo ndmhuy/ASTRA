@@ -80,7 +80,11 @@ def serve(port, directory):
                 "goals": [{"goal": "RECALL_REQUIREMENTS", "parameters": {"what": "format"}}],
             }
         elif message == GOOD:
-            frame = {"dialogueAct": "REQUEST", "goals": [{"goal": "LIST_DOCUMENTS"}]}
+            frame = {
+                "dialogueAct": "REQUEST",
+                "goals": [{"goal": "LIST_DOCUMENTS"}],
+                "reply": "",
+            }
         elif message == STATE:
             assert current["lifecycle"] == "completed"
             frame = {"dialogueAct": "QUESTION", "goals": [{"goal": "READ_PROGRESS"}]}
@@ -225,6 +229,9 @@ def observe(base):
             return page.locator(".chat-history article").last.inner_text()
 
         send("mày đang tạo đề gì", "Đề Vật Lý THPT")
+        send("mày tạo đề tới đâu rồi", "Đã lưu 3/28 câu")
+        send("khi nào xong", "Chưa có ước lượng thời gian hoàn tất")
+        send("cái app này làm được gì", "ASTRA giúp bạn soạn đề theo mẫu")
         recall = send(RECALL, "50 phút")
         assert "Vật Lý" in recall and "50 phút" in recall
         send("đề này đã soạn xong rồi", "Đã lưu 3/28 câu")
@@ -237,7 +244,7 @@ def observe(base):
         page.request.post(base + "/fixture/complete")
         send(STATE, "Đã soạn xong 28 câu")
         send(DISCUSS, "Bạn cứ xem lại nội dung")
-        send(BAD, "Phản hồi AI chưa khớp định dạng")
+        send(BAD, "Mình chưa xác định được thao tác từ câu này")
         expect(
             page.locator(".chat-history").get_by_text("Đã soạn xong 28 câu", exact=False).last
         ).to_be_visible()
@@ -260,7 +267,7 @@ def observe(base):
         json.dumps(
             {
                 "evidence": "MOUNTED_CHAT_LIVE_STATE_SYNTHETIC_FIXTURES",
-                "cases": 7,
+                "cases": 10,
                 "syntheticInterpretations": len(calls),
                 "realInference": 0,
                 "generatedExams": 0,

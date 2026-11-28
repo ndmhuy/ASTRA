@@ -63,6 +63,7 @@ def observe(base):
             ),
             ("draft", "Danh sách tài liệu fixture", None, False, "documents"),
             ("running", "Tới đâu rồi?", None, False, "toggle-status"),
+            ("completed", "tao muốn xem đề thi", None, False, "local-paper"),
             (
                 "draft",
                 "Luyện SAT Math 15 câu, 25 phút, không dùng web fixture",
@@ -152,7 +153,7 @@ def observe(base):
                     route.abort()
                 elif path == "/agent/turn":
                     counters["interpretations"] += 1
-                    if model is None or model == "toggle-status":
+                    if model is None or model in {"toggle-status", "local-paper"}:
                         forbidden.append("unexpected interpretation: " + message)
                         route.abort()
                         return
@@ -356,7 +357,7 @@ def observe(base):
                     if model == "conflicting"
                     else "có 22 câu"
                     if model == "question"
-                    else "Phản hồi AI chưa khớp định dạng"
+                    else "Mình chưa xác định được thao tác từ câu này"
                     if model == "unavailable"
                     else "Chưa có tài liệu"
                     if model == "documents"
@@ -364,6 +365,8 @@ def observe(base):
                     if model == "attached-practice"
                     else "Đã lưu 16/22 câu"
                     if model == "toggle-status"
+                    else "Đã mở đề thi"
+                    if model == "local-paper"
                     else "có điều kiện hoặc mâu thuẫn"
                 )
                 expect(page.get_by_text(expected, exact=False).last).to_be_visible()
@@ -389,7 +392,7 @@ def observe(base):
                 assert child["messages"][0].get("examVersion") is None
                 assert not entries[workspace]["messages"], "Old transcript must remain unchanged"
             assert counters["interpretations"] == (
-                1 if model and model != "toggle-status" else 0
+                1 if model and model not in {"toggle-status", "local-paper"} else 0
             ), counters
             assert counters["evaluations"] == 0, counters
             assert counters["generation"] == 0 and not forbidden and not errors, (forbidden, errors)

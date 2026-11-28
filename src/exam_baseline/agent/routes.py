@@ -121,6 +121,7 @@ def create_agent_router(
                     if goal["goal"] == "READ_PROGRESS":
                         goal.get("parameters", {}).pop("scope", None)
                         goal.get("parameters", {}).pop("name", None)
+                        goal.get("parameters", {}).pop("estimate", None)
             result = {
                 "schemaVersion": frame.schemaVersion,
                 "sourceContract": source,

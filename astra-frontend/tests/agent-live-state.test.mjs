@@ -54,3 +54,40 @@ test('malformed state cannot masquerade as an approved/completed exam',()=>{
   assert.throws(()=>parseLiveState({...data,current:{...data.current,approved:'false'}}),/live_state_contract/);
   assert.throws(()=>parseLiveState({...data,current:{...data.current,lifecycle:'invented'}}),/live_state_contract/);
 });
+
+test('natural variants reuse the paper navigation without calling the interpreter', () => {
+  const context = {formats: []};
+  for (const message of ['xem đề thi', 'tao muốn xem đề thi', 'mình muốn xem lại đề thi này', 'cho tao mở bản đề thi nhé']) {
+    const result = understandLocal(message, context);
+    assert.notEqual(result.kind, 'defer', message);
+    assert.deepEqual(planMeaning(result.frame), {kind: 'task', intents: [{id: 'SET_VIEW', args: {view: 'paper'}}]});
+  }
+  const history = understandLocal('tôi muốn xem lịch sử đề này', context);
+  assert.deepEqual(planMeaning(history.frame).intents, [{id: 'OPEN_HISTORY', args: {}}]);
+  assert.equal(understandLocal('tôi muốn xem đề thi và duyệt luôn', context).kind, 'defer');
+  assert.equal(understandLocal('xem đáp án câu 0', context).kind, 'defer');
+});
+
+test('ETA follow-ups read real state and distinguish saved items from a finished exam', () => {
+  for (const message of ['khi nào xong', 'bao giờ mới xong đề', 'còn lâu không?']) {
+    const result = understandLocal(message, {formats: []});
+    assert.equal(result.kind, 'information', message);
+    assert.deepEqual(planMeaning(result.frame).intents, [{id: 'STATUS', args: {estimate: true}}]);
+  }
+  const state = {
+    title: 'Đề 1', subject: 'Địa Lý', count: 28, minutes: 50, completed: 28, lifecycle: 'running',
+    stage: 'solver', artifactAvailable: false, approved: false,
+  };
+  assert.match(liveStatusText(state, true), /Đang giải kiểm tra đáp án.*28\/28.*vẫn đang được xử lý.*Chưa có ước lượng/);
+  assert.match(liveStatusText({...state, estimatedSecondsLeft: 70}, true), /khoảng 2 phút/);
+  assert.match(liveStatusText({...state, lifecycle: 'completed'}, true), /Đã soạn xong 28 câu/);
+});
+
+test('general product questions have a short local answer', () => {
+  const result = understandLocal('cái app này làm được gì', {formats: []});
+  assert.equal(result.kind, 'information');
+  const plan = planMeaning(result.frame);
+  assert.equal(plan.kind, 'text');
+  assert.match(plan.text, /soạn đề theo mẫu/);
+  assert.ok(plan.text.length < 240);
+});

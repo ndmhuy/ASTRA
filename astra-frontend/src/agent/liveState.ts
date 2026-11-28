@@ -1,7 +1,10 @@
+import { formatProgressStatus } from '../utils/userMessages.ts';
+
 /** One read-only state projection is shared by server-side Chat grounding and UI reads. */
 export interface LiveWorkspace {
   title: string; lifecycle: string; subject?: string; format?: string; count?: number; minutes?: number;
   completed: number; stage?: string; requirements?: string; errorCode?: string;
+  estimatedSecondsLeft?: number;
   artifactAvailable: boolean; approved: boolean; revision?: number;
 }
 export interface LiveState {
@@ -13,7 +16,7 @@ export function parseLiveState(value: unknown): LiveState {
   const integer=(item:unknown,optional=false)=>optional&&item===undefined||typeof item==='number'&&Number.isInteger(item)&&item>=0&&item<=9999;
   const workspace=(item:unknown)=>record(item)&&typeof item.title==='string'&&typeof item.lifecycle==='string'&&
     ['draft','queued','running','pausing','paused','resuming','retrying','interrupted','cancelled','failed','completed'].includes(item.lifecycle)&&
-    typeof item.approved==='boolean'&&typeof item.artifactAvailable==='boolean'&&integer(item.completed)&&integer(item.count,true)&&integer(item.minutes,true)&&
+    typeof item.approved==='boolean'&&typeof item.artifactAvailable==='boolean'&&integer(item.completed)&&integer(item.count,true)&&integer(item.minutes,true)&&integer(item.estimatedSecondsLeft,true)&&
     ['subject','format','stage','requirements','errorCode'].every(key=>item[key]===undefined||typeof item[key]==='string');
   if(!record(value)||value.schemaVersion!=='astra-workspace-state-v1'||typeof value.observedAt!=='string'||
       !Array.isArray(value.active)||value.active.length>5||!value.active.every(workspace)||
@@ -29,11 +32,22 @@ export async function readLiveState(workspaceId: string): Promise<LiveState> {
   return parseLiveState(await response.json());
 }
 
-export function liveStatusText(facts: LiveWorkspace): string {
+export function liveStatusText(facts: LiveWorkspace, estimate = false): string {
   const family=facts.format?.startsWith('thpt-')?' THPT':facts.format?.startsWith('vact')?' V-ACT':'';
   const title=facts.subject?`Đề ${facts.subject}${family}`:facts.title;
   const headline=[title,facts.count?`${facts.count} câu`:'',facts.minutes?`${facts.minutes} phút`:''].filter(Boolean).join(' · ')+'.';
   if(facts.lifecycle==='completed')return `${headline}\nĐã soạn xong ${facts.count??facts.completed} câu. ${facts.approved?'Bản hiện tại đã được duyệt.':'Bản hiện tại đang chờ giáo viên duyệt.'}`;
   const labels:Record<string,string>={draft:'Bản nháp, chưa gửi yêu cầu tạo',queued:'Đã nhận yêu cầu, đang xếp hàng',running:'Đang soạn đề',resuming:'Đang tiếp tục phần còn lại',retrying:'Đang thử lại có giới hạn',pausing:'Đang chờ lưu để tạm dừng',paused:'Đã tạm dừng',interrupted:'Quá trình bị gián đoạn',cancelled:'Đã dừng lượt tạo',failed:'Lượt tạo gặp lỗi'};
-  return `${headline}\n${labels[facts.lifecycle]??'Chưa xác định trạng thái'}${facts.stage?` · ${facts.stage}`:''}.${facts.count?` Đã lưu ${facts.completed}/${facts.count} câu.`:''}${facts.artifactAvailable?' Bản đề đã lưu trước vẫn được giữ.':''}`;
+  const stage = facts.stage ? formatProgressStatus(facts.stage) : '';
+  const running = ['queued', 'running', 'resuming', 'retrying', 'pausing'].includes(facts.lifecycle);
+  const progress = facts.count ? ` Đã lưu ${facts.completed}/${facts.count} câu.` : '';
+  const reviewPending = running && facts.count && facts.completed >= facts.count
+    ? ' Đã đủ số câu, đề vẫn đang được xử lý trước khi hoàn tất.' : '';
+  const time = estimate && running
+    ? facts.estimatedSecondsLeft
+      ? ` Ước tính còn khoảng ${Math.ceil(facts.estimatedSecondsLeft / 60)} phút.`
+      : ' Chưa có ước lượng thời gian hoàn tất.'
+    : '';
+  const preserved = facts.artifactAvailable ? ' Bản đề đã lưu trước vẫn được giữ.' : '';
+  return `${headline}\n${labels[facts.lifecycle] ?? 'Chưa xác định trạng thái'}${stage ? ` · ${stage}` : ''}.${progress}${reviewPending}${time}${preserved}`;
 }

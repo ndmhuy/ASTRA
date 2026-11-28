@@ -7,6 +7,7 @@ import type { ExamFormat } from '../types/exam.ts';
 import { fastRoute } from './recipes.ts';
 import { fold } from './language.ts';
 import { polite } from './local.ts';
+import { quickRead, productOverview } from './quickRead.ts';
 import { shortSubjectIntake, mentionedFamilies, matchAdjacentTopic, familyFor } from './knowledge.ts';
 import { sectionId } from './examActions.ts';
 
@@ -81,10 +82,24 @@ export function decisionMeaning(decision: Decision, formats:ExamFormat[]=[], cur
 
 export type LocalResult = {kind:'resolved'|'information'|'ambiguity';frame:Frame} | {kind:'defer'};
 export function understandLocal(message: string, context: {formats:ExamFormat[];intake?:Intake}): LocalResult {
-  const text = polite(message).replace(/^(?:co|thay|toi|minh|tao|tui|em) (?:muon|can) /,'');
+  try {
+    return classifyLocal(message, context);
+  } catch (error) {
+    // A recognized phrase can still contain an out-of-range slot such as "câu 0".
+    if (error instanceof Error && error.message.startsWith('agent_semantic_')) {
+      return {kind:'defer'};
+    }
+    throw error;
+  }
+}
+
+function classifyLocal(message: string, context: {formats:ExamFormat[];intake?:Intake}): LocalResult {
+  const text = polite(message).replace(/^(?:(?:co|thay|toi|minh|tao|tui|em|t) )?(?:muon|can) /, '');
   const done = (frame:Frame):LocalResult=>({kind:frame.dialogueAct==='QUESTION'?'information':frame.dialogueAct==='AMBIGUOUS'?'ambiguity':'resolved',frame});
   // Quoted, hypothetical and conflicting intent belongs to the configured interpreter.
   if(/["“”«»`]/.test(message) || /\b(?:neu|gia su|nhung|sau do|dong thoi)\b/.test(text)) return {kind:'defer'};
+  const quick = quickRead(text);
+  if (quick) return done(meaning(quick.goal, quick.parameters, quick.act));
   const statusText=text.replace(/^(?:bay gio |hien tai )/,'').replace(/[.!?]+$/,'');
   if(/^(?:(?:may|ban|em|astra) )?dang (?:tao|soan|sinh|lam) (?:cai )?de (?:gi|nao)$/.test(statusText))
     return done(meaning('READ_PROGRESS',{scope:'active'},'QUESTION'));
@@ -159,7 +174,6 @@ export function understandLocal(message: string, context: {formats:ExamFormat[];
   if(exportArtifact) return done(meaning('EXPORT_ARTIFACT',{artifact:/dap an/.test(text)?'teacher':'matrix',format:exportArtifact[1]}));
   if(/^(?:chi )?dung (?:luot )?tao lai cau hoi$/.test(text)) return done(meaning('STOP_ITEM_REGENERATION'));
   if(/^(?:xem )?(?:trang thai|tien do) tao lai cau hoi$/.test(text)) return done(meaning('READ_ITEM_REGENERATION',{},'QUESTION'));
-  if(/^(?:xem|liet ke) tai lieu(?: dinh kem)?$/.test(text)) return done(meaning('LIST_DOCUMENTS',{},'QUESTION'));
   if(/^(?:luu chinh sua|luu cau hoi)$/.test(text)) return done(meaning('SAVE_EDITOR'));
   const local=fastRoute(message);
   if(!local) return {kind:'defer'};
@@ -222,7 +236,7 @@ export function planMeaning(frame:Frame,recent?:{number:number;part?:string},mis
     return {kind:'inspect',targets};
   }
   if(goals.length===1 && goals[0].goal==='PREPARE_PRACTICE')return frame.constraints.includes('NO_WEB')&&goals[0].parameters.sourcePreference!=='attachments'?{kind:'practice',parameters:{...goals[0].parameters,sourcePreference:'no_web'}}:{kind:'practice',parameters:goals[0].parameters};
-  if(goals.some(goal=>goal.goal==='CAPABILITY_INQUIRY'))return stop('ASTRA hỗ trợ các mẫu trong danh mục thực tế, tài liệu đính kèm, đọc đáp án/lời giải đã lưu, sửa/kiểm tra/tạo lại câu, tạm dừng/tiếp tục cùng phiên, lịch sử và xuất bản đã duyệt. Việc kiểm tra hoặc sinh nội dung mới dùng AI và cần xác nhận.');
+  if(goals.length===1 && goals[0].goal==='CAPABILITY_INQUIRY')return stop(productOverview());
   const intents:Intent[]=[];
   for(const goal of goals) {
     const def=GOALS[goal.goal];

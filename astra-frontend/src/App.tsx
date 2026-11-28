@@ -306,10 +306,14 @@ export const App: React.FC = () => {
     const before=readBinding();
     const writeBefore=runtimeRef.current!.binding();
     try {
-      const formats=catalogFormats.length?catalogFormats:await getExamFormats();
+      const needsCatalog = immediate.kind === 'defer' || immediate.frame.goals.some(goal =>
+        ['PREPARE_EXAM', 'REQUEST_GENERATION', 'READ_EXAM_STRUCTURE'].includes(goal.goal));
+      const formats = catalogFormats.length || !needsCatalog
+        ? catalogFormats : await getExamFormats();
       if(!alive())return;
-      if(!catalogFormats.length)setCatalogFormats(formats);
-      const local=immediate;
+      if (!catalogFormats.length && formats.length) setCatalogFormats(formats);
+      const local = immediate.kind === 'defer' && formats !== catalogFormats
+        ? understandLocal(content, { formats, intake: origin?.intake }) : immediate;
       origin=store.getSnapshot().find(session=>session.id===id);
       const interpreted=local.kind==='defer'?await interpret(id,messageId,redact(content),{
         screen,setup:showQuickModal,status:origin?.status??'draft',view:viewMode,
@@ -1103,10 +1107,12 @@ export const App: React.FC = () => {
       }
       case 'STATUS': {
         const all=store.getSnapshot();
+        const describe = (facts: Parameters<typeof liveStatusText>[0]) =>
+          liveStatusText(facts, intent.args.estimate === true);
         if(current&&!intent.args.name){
           return readLiveState(current.id).then(async state=>{
-            if(intent.args.scope==='active'&&state.activeCount)return succeeded(state.active.map(liveStatusText).join('\n\n')+(state.activeCount>state.active.length?`\nCòn ${state.activeCount-state.active.length} phiên khác đang chạy.`:''));
-            if(state.current)return succeeded((intent.args.scope==='active'?'Hiện không có phiên tạo đề đang chạy.\n':'')+liveStatusText(state.current));
+            if(intent.args.scope==='active'&&state.activeCount)return succeeded(state.active.map(describe).join('\n\n')+(state.activeCount>state.active.length?`\nCòn ${state.activeCount-state.active.length} phiên khác đang chạy.`:''));
+            if(state.current)return succeeded((intent.args.scope==='active'?'Hiện không có phiên tạo đề đang chạy.\n':'')+describe(state.current));
             // Legacy/browser-only workspaces may have a job without a server library link.
             if(generationJob(current))return succeeded(statusText({...current,progress:await store.generationState(current.id)}));
             return succeeded(statusText(current));

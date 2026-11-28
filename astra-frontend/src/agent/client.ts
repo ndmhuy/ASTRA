@@ -21,7 +21,7 @@ export function interpretationUnavailable(reason?: string): string {
     case 'quota':
       return 'Dịch vụ AI đang giới hạn lượt gọi. Thầy cô thử lại sau hoặc dùng lệnh trực tiếp như “Mở cấu hình”.';
     case 'schema':
-      return 'Phản hồi AI chưa khớp định dạng của ứng dụng. Lượt này chưa thực hiện thao tác; hội thoại và đề đang soạn vẫn được giữ.';
+      return 'Mình chưa xác định được thao tác từ câu này. Bạn muốn xem đề, kiểm tra tiến độ hay chỉnh một phần cụ thể?';
     default:
       return 'Kết nối AI cho chat đang chậm hoặc gián đoạn. Thầy cô thử lại sau hoặc nhắn lệnh trực tiếp.';
   }
