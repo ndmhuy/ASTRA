@@ -19,6 +19,7 @@ from exam_baseline.api.routes_ui import router as ui_router
 from exam_baseline.baseline.bootstrap import service_scope
 from exam_baseline.baseline.service import GenerationService
 from exam_baseline.config import Settings
+from exam_baseline.connection import SharedConnection, install_connection
 from exam_baseline.core.contracts import LLMProvider
 from exam_baseline.ui.errors import UiError
 from exam_baseline.ui.jobs import JobManager
@@ -38,7 +39,12 @@ def create_app(
     rag_retriever=None,
     agent_interpreter: Interpreter | None = None,
     agent_researcher: Researcher | None = None,
+    connection: SharedConnection | None = None,
 ) -> FastAPI:
+    if connection is not None:
+        settings = connection.settings
+        provider = connection.baseline
+        pipeline_providers = connection.providers
     settings = settings if settings is not None else Settings()
 
     @asynccontextmanager
@@ -52,7 +58,10 @@ def create_app(
         )
         try:
             async with AsyncExitStack() as stack:
-                if agent_interpreter is None:
+                if connection is not None:
+                    await stack.enter_async_context(connection.lifespan(app))
+                    app.state.configured_interpreter = connection.interpreter
+                elif agent_interpreter is None:
                     app.state.configured_interpreter = await stack.enter_async_context(
                         configured_interpreter()
                     )
@@ -79,6 +88,8 @@ def create_app(
     app.include_router(pipeline_router)
     app.include_router(ui_router)
     app.include_router(create_agent_router(agent_interpreter, agent_researcher))
+    if connection is not None:
+        install_connection(app, connection)
     if workspace_dir is None:
         app.add_api_route("/", root, methods=["GET"], include_in_schema=False)
     else:
@@ -120,7 +131,9 @@ def create_app(
 def create_web_app() -> FastAPI:
     """Serve the built teacher workspace and its API from the same local port."""
     configure_logging()
-    return create_app(workspace_dir=Path("astra-frontend/dist"))
+    return create_app(
+        workspace_dir=Path("astra-frontend/dist"), connection=SharedConnection(Path(".env"))
+    )
 
 
 def configure_logging() -> None:

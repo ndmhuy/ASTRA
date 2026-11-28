@@ -1,7 +1,6 @@
 """Clone-and-run team entry point. Never submits a model request or exam job."""
 
 import argparse
-import getpass
 import hashlib
 import json
 import os
@@ -17,15 +16,6 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
-
-from exam_baseline.worker_profile import (  # noqa: E402
-    DEFAULTS,
-    TOKEN_NAMES,
-    read_tokens,
-    save_profile,
-    startup_profile,
-    user_profile,
-)
 
 
 def fingerprint(paths: list[Path]) -> str:
@@ -140,12 +130,12 @@ def prepare() -> Path:
     return python
 
 
-def launch_command(python: Path, profile: Path, port: int) -> list[str]:
+def launch_command(python: Path, env_file: Path, port: int) -> list[str]:
     return [
         str(python),
-        str(ROOT / "scripts/start_mas_worker.py"),
-        "--profile",
-        str(profile),
+        str(ROOT / "scripts/start_local.py"),
+        "--env-file",
+        str(env_file),
         "--port",
         str(port),
     ]
@@ -153,9 +143,7 @@ def launch_command(python: Path, profile: Path, port: int) -> list[str]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--configure", action="store_true", help="Update local Worker access once")
-    parser.add_argument("--import-profile", nargs="*", type=Path, default=[])
-    parser.add_argument("--profile", type=Path, default=None)
+    parser.add_argument("--env-file", type=Path, default=ROOT / ".env")
     parser.add_argument("--port", type=int, default=8001)
     parser.add_argument("--no-browser", action="store_true")
     parser.add_argument(
@@ -164,27 +152,15 @@ def main() -> int:
     args = parser.parse_args()
     if not 1 <= args.port <= 65535:
         parser.error("Port must be between 1 and 65535")
-    default = user_profile() if args.configure or args.import_profile else startup_profile()
-    profile = (args.profile or default).expanduser().resolve()
-    # Explicit import is restricted to the two caller fields; API/Gateway keys ignored.
-    try:
-        existing = read_tokens([profile])
-        tokens = {
-            **read_tokens([ROOT / ".env.agent-worker", ROOT / ".env.mas-worker"]),
-            **existing,
-            **read_tokens(args.import_profile),
-        }
-    except ValueError as error:
-        parser.error(str(error))
+    env_file = args.env_file.expanduser().absolute()
     if args.check:
         print(
             json.dumps(
                 {
-                    "callerCredentialsPresent": all(key in tokens for key in TOKEN_NAMES),
                     "frontendBuilt": (ROOT / "astra-frontend/dist/index.html").is_file(),
                     "nodeAvailable": shutil.which("node") is not None,
-                    "profileExists": profile.is_file(),
-                    "profileSource": "repository" if profile.is_relative_to(ROOT) else "personal",
+                    "envExists": env_file.is_file(),
+                    "connectionMode": "shared_local_api",
                     "inferenceRequests": 0,
                 }
             )
@@ -196,22 +172,7 @@ def main() -> int:
                 raise RuntimeError(
                     f"Port {args.port} already in use; stop the old app or choose --port"
                 )
-        if args.configure or not profile.is_file() or args.import_profile:
-            for key in TOKEN_NAMES:
-                if key not in tokens or (args.configure and not args.import_profile):
-                    if not sys.stdin.isatty():
-                        raise ValueError(
-                            "Missing Worker access; run start.cmd --configure interactively"
-                        )
-                    entered = getpass.getpass(
-                        f"{key} (Worker access only, hidden; blank keeps current): "
-                    )
-                    if entered:
-                        tokens[key] = entered
-            save_profile(profile, tokens, replace=args.configure or bool(args.import_profile))
-            print("Worker access saved in your local user profile, outside Git.")
         python = prepare()
-        child_env = {**os.environ, **DEFAULTS, **tokens, "ASTRA_WORKER_PROFILE": str(profile)}
         if not args.no_browser:
 
             def open_when_ready():
@@ -228,8 +189,9 @@ def main() -> int:
 
             threading.Thread(target=open_when_ready, daemon=True).start()
         print(f"ASTRA: http://localhost:{args.port} (Ctrl+C to stop)")
-        return subprocess.call(launch_command(python, profile, args.port), cwd=ROOT, env=child_env)
-    except (ValueError, RuntimeError, FileExistsError, subprocess.CalledProcessError) as error:
+        print("Enter your API key in the app's AI connection dialog; no automatic model probe.")
+        return subprocess.call(launch_command(python, env_file, args.port), cwd=ROOT)
+    except (ValueError, RuntimeError, OSError, subprocess.CalledProcessError) as error:
         print(f"Startup failed: {error}", file=sys.stderr)
         return 1
 

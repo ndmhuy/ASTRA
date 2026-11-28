@@ -20,7 +20,7 @@ class Settings(BaseSettings):
         hide_input_in_errors=True,
     )
 
-    provider: Literal["mock", "chat_completions", "worker_mas"] = "mock"
+    provider: Literal["mock", "chat_completions", "worker_mas", "unconfigured"] = "mock"
     demo_mode: bool = False
     model: str = Field(default="mock-fixture-v1", min_length=1)
     prompt_version: Literal["v1"] = "v1"

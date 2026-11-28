@@ -1,0 +1,344 @@
+"""Local onboarding and recovery with an in-memory HTTP provider; no paid calls."""
+
+import asyncio
+import json
+import os
+from contextlib import contextmanager
+from uuid import uuid4
+
+import httpx
+import pytest
+from dotenv import dotenv_values
+from fastapi.testclient import TestClient
+
+from exam_baseline.agent.v3 import TurnV3
+from exam_baseline.api.app import create_app
+from exam_baseline.connection import (
+    DEFAULT_MODEL,
+    DEFAULT_URL,
+    KEY_NAME,
+    ConnectionInput,
+    SharedConnection,
+)
+from exam_baseline.core.contracts import CompletionRequest, ProviderError
+
+KEY = "fixture-only-key-not-a-provider-credential"
+FRAME = {"dialogueAct": "REQUEST", "goals": [{"goal": "OPEN_CONFIGURATION"}]}
+REQUEST = CompletionRequest("Unchanged synthetic system", "Synthetic data", {"type": "object"})
+
+
+@pytest.fixture(autouse=True)
+def isolated_environment(monkeypatch):
+    for name in os.environ:
+        if name.startswith(("EXAM_", "ASTRA_")):
+            monkeypatch.delenv(name)
+
+
+def turn():
+    return TurnV3(
+        schemaVersion="astra-intent-v1",
+        clientMessageId=str(uuid4()),
+        workspaceId=str(uuid4()),
+        message="Synthetic setup request",
+        context={"screen": "workspace", "setup": False},
+    )
+
+
+def completion(value=FRAME):
+    return httpx.Response(
+        200,
+        json={
+            "choices": [
+                {
+                    "finish_reason": "tool_calls",
+                    "message": {
+                        "tool_calls": [
+                            {
+                                "type": "function",
+                                "function": {
+                                    "name": "astra_output",
+                                    "arguments": json.dumps(value),
+                                },
+                            }
+                        ]
+                    },
+                }
+            ],
+            "usage": {"prompt_tokens": 12, "completion_tokens": 8},
+        },
+    )
+
+
+@contextmanager
+def running(tmp_path, handler=None):
+    calls = []
+
+    def handle(request):
+        calls.append(request)
+        return handler(request) if handler else completion()
+
+    connection = SharedConnection(tmp_path / ".env", transport=httpx.MockTransport(handle))
+    app = create_app(connection=connection, ui_output_root=tmp_path / "ui")
+    with TestClient(app, base_url="http://127.0.0.1", client=("127.0.0.1", 50000)) as client:
+        yield client, connection, calls
+
+
+def save(client, **changes):
+    status = client.get("/api/connection").json()
+    return client.post(
+        "/api/connection",
+        headers={"X-Astra-Setup": status["setupToken"]},
+        json={"apiKey": KEY, "model": DEFAULT_MODEL, "baseUrl": DEFAULT_URL, **changes},
+    )
+
+
+def test_first_start_and_saving_are_probe_free_and_never_return_key(tmp_path):
+    with running(tmp_path) as (client, connection, calls):
+        status = client.get("/api/connection")
+        assert status.headers["cache-control"] == "no-store"
+        assert not status.json()["configured"]
+        assert connection.settings.provider == "unconfigured"
+        assert client.get("/api/health").json()["demoMode"] is False
+        for endpoint in (
+            "/agent/turn",
+            "/api/exams/generate",
+            "/v1/exams/generate",
+            "/v2/exams/generate",
+            "/api/exams/fixture/resume",
+            "/api/exams/fixture/questions/1/regenerate",
+        ):
+            assert client.post(endpoint, json={}).status_code == 503
+        assert not connection.path.exists() and not calls
+        assert client.get("/api/workspaces").json() == {"workspaces": []}
+        saved = save(client)
+        assert saved.status_code == 200
+        assert KEY not in saved.text and not saved.json()["verified"]
+        assert saved.json()["configured"] and not calls
+        assert client.get("/api/health").json()["providerConfigured"]
+        assert client.get("/agent/capabilities").json()["workerDeploymentRequired"] is False
+    loaded = SharedConnection(tmp_path / ".env")
+    assert loaded.configured and not loaded.verified
+    assert loaded.settings.api_key.get_secret_value() == KEY
+
+
+def test_shared_key_reaches_all_roles_and_chat_with_original_schema(tmp_path, monkeypatch):
+    monkeypatch.setenv("ASTRA_AGENT_TRANSPORT", "worker")
+    monkeypatch.setenv("ASTRA_MAS_TRANSPORT", "worker")
+    monkeypatch.setenv("EXAM_USE_AI_GATEWAY", "true")
+    with running(tmp_path) as (client, connection, calls):
+        assert save(client).status_code == 200
+        for provider in [connection.baseline, *connection.providers.values()]:
+            result = client.portal.call(provider.complete, REQUEST)
+            assert json.loads(result.text) == FRAME
+        response = client.post(
+            "/agent/turn",
+            json=turn().model_dump(mode="json"),
+            headers={
+                "X-Astra-Agent": "astra-intent-v1",
+                "X-Astra-Semantic": "astra-semantic-v3",
+            },
+        )
+        assert response.status_code == 200, response.text
+        assert response.json()["frame"]["goals"] == [
+            {"goal": "OPEN_CONFIGURATION", "parameters": {}, "prohibited": False}
+        ]
+        assert len(calls) == 6
+        for request in calls:
+            payload = json.loads(request.content)
+            assert str(request.url) == DEFAULT_URL + "/chat/completions"
+            assert request.headers["Authorization"] == f"Bearer {KEY}"
+            assert payload["model"] == DEFAULT_MODEL
+            assert "response_format" not in payload
+            assert "cf-aig-authorization" not in request.headers
+        assert (
+            json.loads(calls[0].content)["tools"][0]["function"]["parameters"]
+            == REQUEST.output_schema
+        )
+        assert json.loads(calls[0].content)["messages"][0]["content"] == REQUEST.system
+        assert json.loads(calls[0].content)["max_tokens"] == 8192
+        assert json.loads(calls[-1].content)["max_tokens"] == 1024
+        assert client.get("/api/connection").json()["verified"]
+
+
+def test_atomic_update_preserves_unrelated_config_and_retains_blank_key(tmp_path, monkeypatch):
+    env = tmp_path / ".env"
+    env.write_text(
+        "# Preserve this comment\nEXAM_TIMEOUT_SECONDS=47\n"
+        'EXAM_MODEL=old\nEXAM_MODEL=duplicate\nUNRELATED="value"\n',
+        encoding="utf-8",
+    )
+    with running(tmp_path) as (client, connection, calls):
+        assert save(client).status_code == 200
+        assert save(client, apiKey="", model="nghi/claude-haiku-4.5-new").status_code == 200
+        values = dotenv_values(env)
+        assert values[KEY_NAME] == KEY and values["EXAM_MODEL"].endswith("-new")
+        assert values["UNRELATED"] == "value" and values["EXAM_TIMEOUT_SECONDS"] == "47"
+        assert env.read_text().count("EXAM_MODEL=") == 1
+        assert "# Preserve this comment" in env.read_text()
+        assert connection.settings.timeout_seconds == 47
+        before = env.read_bytes()
+        monkeypatch.setattr(
+            "exam_baseline.connection.os.replace",
+            lambda *args: (_ for _ in ()).throw(OSError("fixture disk failure")),
+        )
+        failed = save(client, apiKey="fixture-replacement")
+        assert failed.status_code == 503 and KEY not in failed.text
+        assert env.read_bytes() == before
+        assert connection.settings.api_key.get_secret_value() == KEY
+        assert not list(tmp_path.glob(".astra-env-*")) and not calls
+
+
+@pytest.mark.parametrize(
+    "changes",
+    [
+        {"apiKey": ""},
+        {"apiKey": "bad\nkey"},
+        {"apiKey": "bad key"},
+        {"model": "bad\nmodel"},
+        {"baseUrl": "http://example.com/v1"},
+        {"baseUrl": "https://user:secret@example.com/v1"},
+        {"baseUrl": "https://example.com/v1?key=secret"},
+        {"baseUrl": "https://astra-mas-proxy.workers.dev/v1"},
+    ],
+)
+def test_invalid_configuration_is_not_written_or_reflected(tmp_path, changes):
+    with running(tmp_path) as (client, connection, calls):
+        response = save(client, **changes)
+        assert response.status_code == 422 and KEY not in response.text
+        assert "secret" not in response.text and not connection.path.exists() and not calls
+
+
+@pytest.mark.parametrize(
+    "headers",
+    [
+        {"Origin": "https://example.com"},
+        {"Host": "evil.example"},
+        {"Sec-Fetch-Site": "cross-site"},
+        {"X-Astra-Setup": "wrong"},
+    ],
+)
+def test_configuration_requires_local_origin_and_session_nonce(tmp_path, headers):
+    with running(tmp_path) as (client, connection, calls):
+        response = client.post(
+            "/api/connection",
+            json={"apiKey": KEY},
+            headers={
+                "X-Astra-Setup": connection.token,
+                **headers,
+            },
+        )
+        assert response.status_code == 403 and not connection.path.exists() and not calls
+        assert client.post("/api/connection", json={"apiKey": KEY}).status_code == 403
+
+
+def test_nonlocal_peer_and_oversized_body_cannot_save(tmp_path):
+    connection = SharedConnection(tmp_path / ".env")
+    app = create_app(connection=connection, ui_output_root=tmp_path / "ui")
+    with TestClient(app, base_url="http://localhost", client=("192.0.2.5", 8000)) as client:
+        assert client.get("/api/connection").status_code == 403
+    with running(tmp_path) as (client, connection, calls):
+        result = client.post(
+            "/api/connection", content="x" * 16385, headers={"X-Astra-Setup": connection.token}
+        )
+        assert result.status_code == 413 and not connection.path.exists() and not calls
+
+
+@pytest.mark.parametrize("status", [400, 401, 403, 404, 429, 503])
+def test_provider_failure_keeps_draft_and_key_replacement_recovers(tmp_path, status):
+    failed = [True]
+
+    def handler(request):
+        if failed[0]:
+            return httpx.Response(
+                status,
+                json={
+                    "error": {
+                        "message": "Do not reflect remote prose " + KEY,
+                        "param": "model",
+                    }
+                },
+            )
+        return completion()
+
+    with running(tmp_path, handler) as (client, connection, calls):
+        assert save(client).status_code == 200
+        workspace = f"/api/workspaces/{uuid4()}"
+        draft = {
+            "revision": 0,
+            "mode": "custom",
+            "title": "Keep me",
+            "draft": "Keep draft",
+            "messages": [],
+        }
+        assert client.put(workspace, json=draft).status_code == 200
+        checkpoint = tmp_path / "ui/checkpoint-sentinel.json"
+        checkpoint.write_text('{"completedQuestions":["P1_1"]}')
+        result = client.portal.call(connection.interpreter, turn())
+        assert result.kind == "temporarily_unavailable" and len(calls) == 1
+        public = client.get("/api/connection")
+        assert public.json()["lastFailure"]["status"] == status
+        assert public.json()["lastFailure"]["field"] == "model"
+        assert KEY not in public.text and "remote prose" not in public.text
+        assert client.get("/api/workspaces").json()["workspaces"][0]["draft"] == "Keep draft"
+        assert checkpoint.read_text() == '{"completedQuestions":["P1_1"]}'
+        assert save(client, apiKey="fixture-new-key").status_code == 200
+        failed[0] = False
+        recovered = client.portal.call(connection.interpreter, turn())
+        assert recovered.goals[0].goal == "OPEN_CONFIGURATION" and len(calls) == 2
+        assert calls[-1].headers["Authorization"] == "Bearer fixture-new-key"
+        assert client.get("/api/connection").json()["lastFailure"] is None
+
+
+def test_timeout_invalid_json_and_redirect_fail_without_silent_fallback(tmp_path):
+    responses = ["timeout", "invalid", "redirect"]
+
+    def handler(request):
+        mode = responses.pop(0)
+        if mode == "timeout":
+            raise httpx.ReadTimeout("fixture timeout", request=request)
+        if mode == "invalid":
+            return httpx.Response(200, text="not json")
+        return httpx.Response(307, headers={"Location": "https://other.example/v1"})
+
+    with running(tmp_path, handler) as (client, connection, calls):
+        assert save(client).status_code == 200
+        for _ in range(3):
+            with pytest.raises(ProviderError):
+                client.portal.call(connection.baseline.complete, REQUEST)
+        assert len(calls) == 3 and connection.configured
+        assert all(request.url.host == "api.nghimo.com" for request in calls)
+
+
+def test_reconfiguration_is_blocked_until_inflight_work_is_finished(tmp_path):
+    async def scenario():
+        started, release = asyncio.Event(), asyncio.Event()
+
+        async def handle(request):
+            started.set()
+            await release.wait()
+            return completion()
+
+        connection = SharedConnection(tmp_path / ".env", transport=httpx.MockTransport(handle))
+        app = create_app(connection=connection, ui_output_root=tmp_path / "ui")
+        async with app.router.lifespan_context(app):
+            await connection.save(
+                ConnectionInput(apiKey=KEY, model=DEFAULT_MODEL, baseUrl=DEFAULT_URL)
+            )
+            task = asyncio.create_task(connection.providers["composer"].complete(REQUEST))
+            await started.wait()
+            from fastapi import HTTPException
+
+            with pytest.raises(HTTPException) as error:
+                await connection.save(
+                    ConnectionInput(apiKey="replacement", model=DEFAULT_MODEL, baseUrl=DEFAULT_URL)
+                )
+            assert error.value.status_code == 409
+            release.set()
+            await task
+            assert not connection.busy()
+            await connection.save(
+                ConnectionInput(apiKey="replacement", model=DEFAULT_MODEL, baseUrl=DEFAULT_URL)
+            )
+            assert connection.settings.api_key.get_secret_value() == "replacement"
+
+    asyncio.run(scenario())
