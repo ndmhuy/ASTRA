@@ -66,6 +66,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
 
   const matched = question.answerCheck === 'matched';
   const flagged = question.answerCheck === 'mismatched';
+  const needsRecheck = !matched && !flagged;
   const approval = question.questionApproval ?? null;
   const reviewState = getQuestionReviewState(question);
   const requiresReason = !matched;
@@ -98,7 +99,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
   return (
     <section
       ref={articleRef}
-      className={`exam-question-card ${visible ? 'visible' : 'appearing'} ${flagged && !approval ? 'is-flagged' : ''} ${approval ? 'is-approved' : ''} ${review ? 'is-review-mode' : ''}`}
+      className={`exam-question-card ${visible ? 'visible' : 'appearing'} ${flagged && !approval ? 'is-flagged' : ''} ${review && needsRecheck && !approval ? 'is-needs-recheck' : ''} ${approval ? 'is-approved' : ''} ${review ? 'is-review-mode' : ''}`}
       aria-label={questionLabel || `Câu ${index + 1}`}
     >
       <div className="question-card-top">
@@ -283,15 +284,15 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
       {review && (
         <details
           ref={detailsRef}
-          className={`question-review ${flagged ? 'flagged' : ''}`}
+          className={`question-review ${flagged ? 'flagged' : needsRecheck ? 'needs-recheck' : ''}`}
         >
           <summary>
             {flagged ? (
-              <span>Xem đối chiếu · Hai đáp án khác nhau</span>
+              <><AlertTriangle size={14} aria-hidden="true" /><span>Xem đối chiếu · Hai đáp án khác nhau</span></>
             ) : matched ? (
               <><CheckCircle2 size={14} aria-hidden="true" /><span>Xem đối chiếu · Khớp đáp án</span></>
             ) : (
-              <span>Xem đối chiếu · Cần kiểm tra lại</span>
+              <><AlertTriangle size={14} aria-hidden="true" /><span>Xem đối chiếu · Cần kiểm tra lại</span></>
             )}
           </summary>
           <div className="review-content">

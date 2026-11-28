@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import test from 'node:test';
 import { MockExamService } from '../src/services/examService.ts';
 import {
@@ -114,4 +115,19 @@ test('MockExamService.approveQuestion requires reason when unverified and clears
   const afterEdit = await service.getExamPackage(jobId);
   assert.equal(afterEdit.questions[0].questionApproval, null);
   assert.equal(afterEdit.questions[0].answerCheck, 'needs_recheck');
+});
+
+test('needs-recheck review controls use warning amber styling instead of forest green', () => {
+  const card = fs.readFileSync(
+    new URL('../src/components/Workspace/LiveCanvas/QuestionCard.tsx', import.meta.url),
+    'utf8'
+  );
+  const css = fs.readFileSync(
+    new URL('../src/styles/atelier.css', import.meta.url),
+    'utf8'
+  );
+  assert.match(card, /needsRecheck \? 'needs-recheck'/);
+  assert.match(card, /review && needsRecheck && !approval \? 'is-needs-recheck'/);
+  assert.match(css, /\.question-review\.needs-recheck summary\s*\{[^}]*color:\s*#b45309/i);
+  assert.match(css, /\.question-status-badge\.is-needs_recheck\s*\{[^}]*background:\s*#fef3c7/i);
 });
