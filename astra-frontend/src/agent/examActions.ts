@@ -1,6 +1,7 @@
 import type { ExamSession } from '../state/examSessions.ts';
 import type { Intent } from './contracts.ts';
 import { fold, type Effect } from './recipes.ts';
+import { workspaceDescription } from './workspaceFacts.ts';
 
 export const success = (text: string): Effect => ({ status: 'succeeded', text });
 export const failure = (text: string): Effect => ({ status: 'failed', text });
@@ -54,21 +55,24 @@ export function inspectQuestion(session: ExamSession | undefined, args: Intent['
 
 export function statusText(session?: ExamSession) {
   if (!session) return 'Thầy cô hãy mở một không gian soạn đề để xem trạng thái.';
+  const description = workspaceDescription(session);
+  const headline = description ? `${description}.\n` : '';
+  if(session.progress?.status === 'completed' || (session.status === 'complete' && !session.progress?.error && !['failed','cancelled','paused','interrupted'].includes(session.progress?.status??'')))
+    return `${headline}Đã soạn xong ${session.progress?.status==='completed'?session.progress.completedItems:session.questions.length || session.meta?.totalCount || 0} câu. ${session.package?.approved ? 'Bản hiện tại đã được duyệt.' : 'Bản hiện tại đang chờ giáo viên duyệt.'}`;
     if (session.progress && (session.generationId || session.stoppedJobId || session.status === 'generating')) {
       const progress = session.progress;
       const done = progress.completedItems ?? 0;
       const total = progress.totalItems ?? session.meta?.totalCount ?? 0;
-      return `${progress.statusMessage} · Đã lưu ${done}/${total} câu, còn ${Math.max(0, total - done)} câu. ${progress.error?.message ?? ''}`.trim();
+      return `${headline}${progress.statusMessage} · Đã lưu ${done}/${total} câu, còn ${Math.max(0, total - done)} câu. ${progress.error?.message ?? ''}${session.status === 'complete' ? ' Bản đề đã lưu trước vẫn được giữ.' : ''}`.trim();
     }
   if (session.status === 'generating') {
-    if (!session.jobId) return 'ASTRA đang gửi yêu cầu tạo đề và chờ mã công việc.';
+    if (!session.jobId) return `${headline}ASTRA đang gửi yêu cầu tạo đề và chờ mã công việc.`;
     const progress = session.progress;
-    if (!progress) return 'Máy chủ đã nhận công việc. Em đang chờ cập nhật tiến độ.';
-    return `Cập nhật gần nhất: ${progress.statusMessage} · ${progress.percent}%.`;
+    if (!progress) return `${headline}Máy chủ đã nhận công việc. Em đang chờ cập nhật tiến độ.`;
+    return `${headline}Cập nhật gần nhất: ${progress.statusMessage} · ${progress.percent}%.`;
   }
-  if (session.status === 'error') return session.error || 'Yêu cầu trước gặp lỗi.';
-  if (session.status === 'complete') return `Đề hiện có ${session.questions.length} câu. ${session.package?.approved ? 'Bản hiện tại đã được duyệt.' : 'Bản hiện tại đang chờ duyệt.'}`;
-  return 'Đề vẫn ở bản nháp và chưa gửi yêu cầu tạo.';
+  if (session.status === 'error') return `${headline}${session.error || 'Yêu cầu trước gặp lỗi.'}`;
+  return `${headline}Đề vẫn ở bản nháp và chưa gửi yêu cầu tạo.`;
 }
 
 export function previewText(session?: ExamSession) {

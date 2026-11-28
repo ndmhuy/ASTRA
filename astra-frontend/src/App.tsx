@@ -5,7 +5,9 @@ import { interpretationUnavailable, interpret, researchAdjacentTopic } from './a
 import { admit, execute, fastRoute, fold, type Effect, type Runtime } from './agent/recipes';
 import { displayNumber, failure, inspectQuestion, previewText, resolveQuestion, sectionId, statusText, success } from './agent/examActions';
 import type { Intent } from './agent/contracts';
-import { generationTarget, generationReceipt, generationJob, restingGeneration } from './agent/lifecycle';
+import { activeGeneration, generationTarget, generationReceipt, generationJob, restingGeneration } from './agent/lifecycle';
+import { workspaceDescription, workspaceContextFacts } from './agent/workspaceFacts';
+import { readLiveState, liveStatusText } from './agent/liveState';
 import { GOALS, PRACTICE_LIMITS, understandLocal, decisionMeaning, planMeaning } from './agent/intelligence';
 import { reduceSpec, specDraft, patchSpec, specSummary, paramsForSpec } from './agent/examSpec';
 import { familyFor, formatOverview, matchAdjacentTopic, mentionedFamilies, resolveIntake } from './agent/knowledge';
@@ -308,6 +310,7 @@ export const App: React.FC = () => {
       if(!alive())return;
       if(!catalogFormats.length)setCatalogFormats(formats);
       const local=immediate;
+      origin=store.getSnapshot().find(session=>session.id===id);
       const interpreted=local.kind==='defer'?await interpret(id,messageId,redact(content),{
         screen,setup:showQuickModal,status:origin?.status??'draft',view:viewMode,
         ...(origin?retrievedContext(origin,messageId,content):{}),
@@ -315,21 +318,31 @@ export const App: React.FC = () => {
         editor:Boolean(editor),approved:Boolean(origin?.package?.approved),preview:origin?.preview?.status??null,
         confirmationPending:pending.current?.workspaceId===id,
         grounded:{workspace:origin?.title?redact(origin.title).slice(0,120):undefined,lifecycle:origin?.progress?.status??origin?.status,
-          spec:specSummary(origin?.intake).map(redact),documents:(origin?.inputDocuments??[]).slice(0,5).map(doc=>redact(`${doc.filename} (${doc.kind}, ${doc.characters} characters)`).slice(0,240)),
+          spec:[...(origin?workspaceContextFacts(origin):[]),...specSummary(origin?.intake)].slice(0,8).map(redact),documents:(origin?.inputDocuments??[]).slice(0,5).map(doc=>redact(`${doc.filename} (${doc.kind}, ${doc.characters} characters)`).slice(0,240)),
           capabilities:formats.filter(format=>format.available).slice(0,12).map(format=>format.displayName.slice(0,80)),
           revision:origin?.package?.revision,pending:pendingActionMeta?.label?redact(pendingActionMeta.label).slice(0,240):undefined,itemRegeneration:Boolean(questionPending),searchWeb:options.searchWeb},
       },controller.signal):local.frame;
       if(!alive())return;
       const frame='dialogueAct' in interpreted?interpreted:decisionMeaning(interpreted,formats,origin?.intake);
-      if(!frame){setPendingConfirmation(null);answer('reasonCode' in interpreted?interpretationUnavailable(interpreted.reasonCode):'Chưa hiểu đủ yêu cầu để thực hiện. Thầy cô hãy chỉ rõ mục tiêu hoặc đề/câu.');return;}
+      if(!frame){
+        setPendingConfirmation(null);
+        const explanation='reasonCode' in interpreted?interpretationUnavailable(interpreted.reasonCode):'Mình chưa xác định được thao tác bạn muốn thực hiện.';
+        const state=await runtimeRef.current!.dispatch({id:'STATUS',args:{scope:'current'}},runtimeRef.current!.binding(),content,messageId);
+        if(alive())answer(`${explanation}\n\n${state.text}`);
+        return;
+      }
       if(frame.dialogueAct==='CORRECT'||frame.constraints.some(item=>['NO_GENERATION','NO_WEB','NO_EXECUTION','NEGATED','CONTRADICTORY'].includes(item)))setPendingConfirmation(null);
       const plan=planMeaning(frame,recentQuestion(origin),origin?.status==='draft'?origin.intake?.missing:undefined);
       if(plan.kind==='confirm'){answer((await confirmPending(messageId)).text);return;}
       if(plan.kind==='cancel'){setPendingConfirmation(null);if(origin?.intake)store.setIntake(id,{...origin.intake,visible:false});answer('Đã hủy yêu cầu trò chuyện đang chờ. Phiên tạo đề giữ trạng thái hiện tại.');return;}
-      if(plan.kind==='text'){if(!['QUESTION','CONVERSATION','GUIDANCE'].includes(frame.dialogueAct))setPendingConfirmation(null);answer(plan.text);return;}
+      if(plan.kind==='text'){
+        if(!['QUESTION','CONVERSATION','GUIDANCE'].includes(frame.dialogueAct))setPendingConfirmation(null);
+        const state=frame.dialogueAct==='INFORM'&&origin&&generationJob(origin)?await runtimeRef.current!.dispatch({id:'STATUS',args:{scope:'current'}},runtimeRef.current!.binding(),content,messageId):undefined;
+        if(alive())answer(plan.text+(state?`\n\n${state.text}`:''));return;
+      }
       const readOnly=plan.kind==='inspect'||(plan.kind==='intake'&&plan.information)||
         (plan.kind==='task'&&plan.intents.every(intent=>Object.values(GOALS).some(def=>'capability' in def&&def.capability===intent.id&&def.effect==='read')));
-      const freshRead=plan.kind==='task'&&plan.intents.every(intent=>['STATUS','LIST_SESSIONS','RECOVERABLE_JOBS','SHOW_FORMATS','LIST_DOCUMENTS','LIST_VERSIONS'].includes(intent.id));
+      const freshRead=plan.kind==='task'&&plan.intents.every(intent=>['STATUS','RECALL','LIST_SESSIONS','RECOVERABLE_JOBS','SHOW_FORMATS','LIST_DOCUMENTS','LIST_VERSIONS'].includes(intent.id));
       if(readBinding()!==before&&!freshRead){answer('Đề hoặc cấu hình đích đã thay đổi. Hãy chỉ rõ lại nội dung muốn xem hoặc sửa.');return;}
       if(!readOnly || frame.dialogueAct==='CORRECT')setPendingConfirmation(null);
       if(!readOnly && runtimeRef.current!.binding()!==writeBefore){answer('Đề, cấu hình hoặc trình chỉnh sửa đã thay đổi. Hãy gửi lại yêu cầu để xác nhận đúng trạng thái mới.');return;}
@@ -926,6 +939,8 @@ export const App: React.FC = () => {
       case 'RECALL': {
         if (!current) return failed('Hãy mở cuộc trò chuyện mà thầy cô muốn xem lại.');
         if (intent.args.what === 'format') {
+          const localFormat=()=>{
+          if(current.lastParams||current.meta||current.package)return succeeded(`${workspaceDescription(current)}.${current.lastParams?.prompt?`\nYêu cầu trong cấu hình: ${current.lastParams.prompt}`:''}`);
           const source = current.messages.find(item => item.id === current.intake?.sourceId);
           if (!current.intake || !source) return failed('Cuộc trò chuyện này chưa lưu lựa chọn mẫu đề.');
           if (!current.intake.formatId) {
@@ -935,6 +950,10 @@ export const App: React.FC = () => {
           const label = catalogFormats.find(format=>format.id===current.intake?.formatId)?.displayName??
             (current.intake.adjacentTopicId?matchAdjacentTopic(current.intake.adjacentTopicId)?.label:undefined)??current.intake.subject??'mẫu đã lưu';
           return succeeded(`Mẫu gần nhất là ${label}. Yêu cầu gốc: “${source.content}”.`);
+          };
+          return readLiveState(current.id).then(state=>state.current?.subject
+            ?succeeded(liveStatusText(state.current)+(state.current.requirements?`\nYêu cầu đã gửi: ${state.current.requirements}`:''))
+            :localFormat()).catch(()=>failed('Chưa đọc được cấu hình hiện tại từ Backend. Yêu cầu đã lưu vẫn được giữ.'));
         }
         const first = current.messages.find(item => item.id !== messageId && meaningful(item)) ??
           current.messages.find(item => item.id !== messageId && item.role === 'user' &&
@@ -1083,7 +1102,26 @@ export const App: React.FC = () => {
         })();
       }
       case 'STATUS': {
-        const selection = generationTarget(store.getSnapshot(), current?.id ?? null, 'status');
+        const all=store.getSnapshot();
+        if(current&&!intent.args.name){
+          return readLiveState(current.id).then(async state=>{
+            if(intent.args.scope==='active'&&state.activeCount)return succeeded(state.active.map(liveStatusText).join('\n\n')+(state.activeCount>state.active.length?`\nCòn ${state.activeCount-state.active.length} phiên khác đang chạy.`:''));
+            if(state.current)return succeeded((intent.args.scope==='active'?'Hiện không có phiên tạo đề đang chạy.\n':'')+liveStatusText(state.current));
+            // Legacy/browser-only workspaces may have a job without a server library link.
+            if(generationJob(current))return succeeded(statusText({...current,progress:await store.generationState(current.id)}));
+            return succeeded(statusText(current));
+          }).catch(()=>failed('Chưa đọc được trạng thái mới nhất từ Backend. Đề đã lưu vẫn được giữ.'));
+        }
+        if(intent.args.scope==='active'){
+          const running=all.filter(session=>activeGeneration(session.progress?.status)||(!session.progress?.status&&session.status==='generating'));
+          if(!running.length)return succeeded('Hiện không có phiên tạo đề đang chạy.'+(current?`\n${statusText(current)}`:''));
+          return Promise.all(running.slice(0,5).map(async session=>{
+            try{return statusText({...session,progress:await store.generationState(session.id)});}
+            catch{return `${workspaceDescription(session)}: chưa đọc được trạng thái mới nhất từ Backend.`;}
+          })).then(lines=>succeeded(lines.join('\n\n')));
+        }
+        if(current&&!intent.args.name&&!generationJob(current))return succeeded(statusText(current));
+        const selection = generationTarget(all, current?.id ?? null, 'status', typeof intent.args.name==='string'?intent.args.name:undefined);
         if (!selection.target) return succeeded(store.getSnapshot().some(session => generationJob(session)) ? selection.text! : current ? statusText(current) : selection.text!);
         const target = selection.target;
         return store.generationState(target.id).then(state => succeeded(statusText({ ...target, progress: state })))

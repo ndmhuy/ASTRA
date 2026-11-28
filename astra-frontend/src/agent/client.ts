@@ -21,7 +21,7 @@ export function interpretationUnavailable(reason?: string): string {
     case 'quota':
       return 'Dịch vụ AI đang giới hạn lượt gọi. Thầy cô thử lại sau hoặc dùng lệnh trực tiếp như “Mở cấu hình”.';
     case 'schema':
-      return 'Kết quả từ AI chưa đọc được. Thầy cô có thể gửi một yêu cầu ngắn, ví dụ “Chọn V-ACT”.';
+      return 'Phản hồi AI chưa khớp định dạng của ứng dụng. Lượt này chưa thực hiện thao tác; hội thoại và đề đang soạn vẫn được giữ.';
     default:
       return 'Kết nối AI cho chat đang chậm hoặc gián đoạn. Thầy cô thử lại sau hoặc nhắn lệnh trực tiếp.';
   }
@@ -34,7 +34,7 @@ export async function interpret(
     method: 'POST',
     credentials: 'same-origin',
     cache: 'no-store',
-    headers: { 'Content-Type': 'application/json', 'X-Astra-Agent': VERSION, 'X-Astra-Semantic': 'astra-semantic-v3' },
+    headers: { 'Content-Type': 'application/json', 'X-Astra-Agent': VERSION, 'X-Astra-Semantic': 'astra-semantic-v3', 'X-Astra-Dialogue': 'grounded-v1' },
     body: JSON.stringify({ schemaVersion: VERSION, workspaceId, clientMessageId, message, context }),
     signal: AbortSignal.any([signal, AbortSignal.timeout(38000)]),
   });

@@ -18,14 +18,14 @@ type Slots = Intent['args'];
 export type Goal = { goal: GoalId; parameters: Slots; reference?: 'current' | 'previous' | 'recent'; prohibited?: boolean };
 export type Frame = { schemaVersion: 'astra-semantic-v3'; dialogueAct: 'REQUEST' | 'INFORM' | 'QUESTION' | 'GUIDANCE' |
   'CORRECT' | 'CANCEL' | 'CONFIRM' | 'CONVERSATION' | 'AMBIGUOUS' | 'UNSUPPORTED' | 'OUT_OF_SCOPE';
-  goals: Goal[]; constraints: Array<'NO_GENERATION' | 'NO_EXECUTION' | 'CONDITIONAL' | 'NEGATED' | 'CONTRADICTORY' | 'NO_WEB'>; title?: string };
+  goals: Goal[]; constraints: Array<'NO_GENERATION' | 'NO_EXECUTION' | 'CONDITIONAL' | 'NEGATED' | 'CONTRADICTORY' | 'NO_WEB'>; title?: string; reply?: string };
 const record = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value);
 const acts = ['REQUEST','INFORM','QUESTION','GUIDANCE','CORRECT','CANCEL','CONFIRM','CONVERSATION','AMBIGUOUS','UNSUPPORTED','OUT_OF_SCOPE'];
 const constraints = ['NO_GENERATION','NO_EXECUTION','CONDITIONAL','NEGATED','CONTRADICTORY','NO_WEB'];
 
 export function parseCanonical(value: unknown): Frame {
   if (!record(value) || value.schemaVersion !== SEMANTIC_VERSION || !acts.includes(String(value.dialogueAct)) ||
-      Object.keys(value).some(key => !['schemaVersion','dialogueAct','goals','constraints','title'].includes(key))) throw new Error('agent_semantic_contract');
+      Object.keys(value).some(key => !['schemaVersion','dialogueAct','goals','constraints','title','reply'].includes(key))) throw new Error('agent_semantic_contract');
   const goals = value.goals ?? [], bounds = value.constraints ?? [];
   if (!Array.isArray(goals) || goals.length > registry.limits.goalsPerTurn || !Array.isArray(bounds) || bounds.length > 6 || bounds.some(item=>!constraints.includes(item))) throw new Error('agent_semantic_contract');
   const normalized = goals.map((item): Goal => {
@@ -47,8 +47,10 @@ export function parseCanonical(value: unknown): Frame {
     return {goal,parameters:parameters as Slots,...(item.reference?{reference:item.reference as Goal['reference']}:{ }),...(item.prohibited?{prohibited:true}:{})};
   });
   const title = typeof value.title==='string' ? value.title.replace(/[\p{Cc}\p{Cf}]/gu,' ').replace(/\s+/g,' ').trim() : '';
+  if(value.reply!==undefined && (typeof value.reply!=='string'||![...value.reply].length||[...value.reply].length>1200))throw new Error('agent_semantic_reply');
+  const reply=typeof value.reply==='string'?value.reply.replace(/[\p{Cc}\p{Cf}]/gu,' ').trim():'';
   return {schemaVersion:'astra-semantic-v3',dialogueAct:value.dialogueAct as Frame['dialogueAct'],goals:normalized,constraints:bounds,
-    ...(title && [...title].length<=60?{title}:{})};
+    ...(title && [...title].length<=60?{title}:{}),...(reply?{reply}:{})};
 }
 
 export function meaning(goal: GoalId, parameters: Slots = {}, act: Frame['dialogueAct'] = 'REQUEST'): Frame {
@@ -83,6 +85,11 @@ export function understandLocal(message: string, context: {formats:ExamFormat[];
   const done = (frame:Frame):LocalResult=>({kind:frame.dialogueAct==='QUESTION'?'information':frame.dialogueAct==='AMBIGUOUS'?'ambiguity':'resolved',frame});
   // Quoted, hypothetical and conflicting intent belongs to the configured interpreter.
   if(/["“”«»`]/.test(message) || /\b(?:neu|gia su|nhung|sau do|dong thoi)\b/.test(text)) return {kind:'defer'};
+  const statusText=text.replace(/^(?:bay gio |hien tai )/,'').replace(/[.!?]+$/,'');
+  if(/^(?:(?:may|ban|em|astra) )?dang (?:tao|soan|sinh|lam) (?:cai )?de (?:gi|nao)$/.test(statusText))
+    return done(meaning('READ_PROGRESS',{scope:'active'},'QUESTION'));
+  if(/^(?:cai )?de (?:nay )?(?:(?:da )?(?:soan |tao |lam )?xong (?:roi|chua)|dang (?:soan|tao|lam) (?:gi|toi dau))$/.test(statusText))
+    return done(meaning('READ_PROGRESS',{},/roi$/.test(statusText)?'INFORM':'QUESTION'));
   if(/^(?:dong y|xac nhan|ok)$/.test(text)) return done(parseCanonical({schemaVersion:SEMANTIC_VERSION,dialogueAct:'CONFIRM'}));
   if(/^(?:huy tac vu|huy yeu cau|thoi dung lai)$/.test(text)) return done(parseCanonical({schemaVersion:SEMANTIC_VERSION,dialogueAct:'CANCEL'}));
   const noGeneration = /^(?:dung|khong|chua) (?:tao|sinh) de[,;]? (?:co |toi |minh )?chi (?:muon )?/.test(text);
@@ -157,7 +164,7 @@ export function understandLocal(message: string, context: {formats:ExamFormat[];
   const local=fastRoute(message);
   if(!local) return {kind:'defer'};
   if('text' in local) {
-    if(/^(?:xin chao|chao(?: em| astra)?|hello|hi|cam on(?: em)?|thanks)$/.test(text)) return done(parseCanonical({schemaVersion:SEMANTIC_VERSION,dialogueAct:'CONVERSATION'}));
+    if(/^(?:xin chao|chao(?: em| astra)?|hello|hi|cam on(?: em)?|thanks)$/.test(text)) return done(parseCanonical({schemaVersion:SEMANTIC_VERSION,dialogueAct:'CONVERSATION',reply:/cam on|thanks/.test(text)?'Rất vui được hỗ trợ bạn. Bạn có thể tiếp tục xem lại đề hoặc nêu phần muốn chỉnh sửa.':'Chào bạn! Mình có thể cùng bạn cấu hình đề, theo dõi công việc đang chạy và xem lại đề đã soạn.'}));
     if(/^(?:upload|dinh kem file|them tai lieu tham khao)$/.test(text)) return done(meaning('UPLOAD_GUIDANCE',{},'QUESTION'));
     return {kind:'defer'};
   }
@@ -177,8 +184,8 @@ export function planMeaning(frame:Frame,recent?:{number:number;part?:string},mis
   if(frame.constraints.some(item=>['NO_EXECUTION','CONDITIONAL','NEGATED','CONTRADICTORY'].includes(item))) return stop('Yêu cầu có điều kiện hoặc mâu thuẫn. Thầy cô muốn thực hiện bước nào? Em chưa thay đổi dữ liệu.');
   if(frame.dialogueAct==='CONFIRM') return {kind:'confirm'};
   if(frame.dialogueAct==='CANCEL') return {kind:'cancel'};
-  if(['CONVERSATION','GUIDANCE'].includes(frame.dialogueAct)) return stop('Em có thể giúp chọn mẫu đề, xem đáp án đã lưu, quản lý tài liệu, phiên chạy và lịch sử. Thầy cô muốn làm việc gì trước?');
-  if(['UNSUPPORTED','OUT_OF_SCOPE','AMBIGUOUS'].includes(frame.dialogueAct)||!frame.goals.length) return stop('Em cần biết mục tiêu hoặc đề/câu cụ thể. Thầy cô có thể hỏi cấu trúc mẫu đề, trạng thái, đáp án đã lưu hoặc nêu việc cần làm.');
+  if(['CONVERSATION','GUIDANCE'].includes(frame.dialogueAct)&&!frame.goals.length) return stop(frame.reply??'Mình có thể cùng bạn xem đề hiện tại, theo dõi tiến độ hoặc chuẩn bị yêu cầu tiếp theo.');
+  if(['UNSUPPORTED','OUT_OF_SCOPE','AMBIGUOUS'].includes(frame.dialogueAct)||!frame.goals.length) return stop(frame.reply??'Mình chưa xác định được mục tiêu. Bạn muốn xem thông tin, chỉnh sửa đề hiện tại hay chuẩn bị đề mới?');
   const excluded=frame.goals.filter(goal=>goal.prohibited);
   const goals=frame.goals.filter(goal=>!goal.prohibited);
   const signature=(value:Slots)=>JSON.stringify(Object.entries(value).sort(([a],[b])=>a.localeCompare(b)));
@@ -187,6 +194,7 @@ export function planMeaning(frame:Frame,recent?:{number:number;part?:string},mis
       (!goal.parameters.part||!other.parameters.part||sectionId(String(goal.parameters.part))===sectionId(String(other.parameters.part))))))) return stop('Cùng một thao tác hoặc câu hỏi đang được yêu cầu sửa và bị cấm sửa. Thầy cô hãy làm rõ trước.');
   if(!goals.length)return stop('Đã giữ nguyên trạng thái theo yêu cầu.');
   const definitions=goals.map(goal=>GOALS[goal.goal]);
+  if(['CONVERSATION','INFORM'].includes(frame.dialogueAct)&&goals.some(goal=>GOALS[goal.goal].effect!=='read'&&!(goal.goal==='PREPARE_EXAM'&&missing)))return stop('Mình đã ghi nhận thông tin, chưa thay đổi đề hay chạy tác vụ. Bạn muốn mình thực hiện thao tác nào?');
   const noAI=frame.constraints.includes('NO_GENERATION');
   if(noAI && definitions.some(def=>def.effect==='inference' && !['PREPARE_EXAM','REQUEST_GENERATION'].includes(goals[definitions.indexOf(def)].goal))) return stop('Yêu cầu không gọi AI đang có hiệu lực. Em chưa kiểm tra hay tạo lại nội dung.');
   const intake=goals.every(goal=>['PREPARE_EXAM','REQUEST_GENERATION','READ_EXAM_STRUCTURE'].includes(goal.goal));
