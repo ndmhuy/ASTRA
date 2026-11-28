@@ -12,7 +12,7 @@ from fastapi.testclient import TestClient
 from exam_baseline.agent.contracts import VERSION, Decision
 from exam_baseline.api.app import create_app
 from exam_baseline.config import Settings
-from exam_baseline.core.contracts import CompletionRequest
+from exam_baseline.core.contracts import Completion, CompletionRequest
 from tests.api.test_ui_jobs import PAYLOAD, retrieval, wait
 from tests.thpt.test_generation import Scripted
 
@@ -49,6 +49,26 @@ def test_native_ui_uses_worker_wire_and_chat_stays_responsive(tmp_path, monkeypa
                 body["response_format"]["json_schema"]["schema"],
             )
         )
+        data = json.loads(body["messages"][1]["content"])
+        if role == "composer" and data["part"] == "P1":
+            output = json.loads(result.text)
+            output["questions"][0]["illustration_request"] = "Draw a line segment."
+            result = Completion(json.dumps(output), result.model)
+        if role == "illustrator":
+            result = Completion(
+                json.dumps(
+                    {
+                        "drawings": [
+                            {
+                                "question_id": "P1-1",
+                                "latex": r"\begin{tikzpicture}"
+                                r"\draw (0,0) -- (1,1);\end{tikzpicture}",
+                            }
+                        ]
+                    }
+                ),
+                result.model,
+            )
         return httpx.Response(
             200,
             json={
