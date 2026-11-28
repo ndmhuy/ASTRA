@@ -40,5 +40,12 @@ const report = {schemaVersion:'astra-agent-v3-results', mode:v3?'v3-local':'base
   coverage:accepted/cases.length, elapsedMs:performance.now()-start, providerCalls:0,
   limitation:'Routing only; prohibited operations require workflow/UI tests. Deferred cases are not counted as understood. No model accuracy measured.', results:cases};
 const output = process.argv.find(arg=>arg.startsWith('--output='))?.slice(9);
+report.bySplit=Object.fromEntries(['development','challenge'].map(split=>{
+  const selected=cases.filter(item=>item.split===split),accepted=selected.filter(item=>item.accepted);
+  return [split,{cases:selected.length,accepted:accepted.length,correctAccepted:accepted.filter(item=>item.correct).length,
+    deferred:selected.filter(item=>item.observed.outcome==='defer').length,
+    falseAccepted:accepted.filter(item=>!item.correct).map(item=>item.id)}];
+}));
+if(v3)report.engineSha256=crypto.createHash('sha256').update(fs.readFileSync(new URL('astra-frontend/src/agent/intelligence.ts',root))).digest('hex');
 if(output) fs.writeFileSync(new URL(output,root),JSON.stringify(report,null,2)+'\n');
 console.log(JSON.stringify({...report,results:undefined},null,2));

@@ -2,7 +2,8 @@ import type { ExamIntake } from './contracts.ts';
 import type { Intake } from './intake.ts';
 import type { ExamFormat } from '../types/exam.ts';
 import { familyFor, shortSubjectIntake } from './knowledge.ts';
-import { recomputeDraftStatus, type ChatConfigDraft } from './chatConfig.ts';
+import { buildParamsFromDraft, recomputeDraftStatus, type ChatConfigDraft } from './chatConfig.ts';
+import type { InputDocument } from '../services/inputDocuments.ts';
 import { fold } from './language.ts';
 
 // This reducer owns the evolving spec. It accepts canonical slots, never raw text.
@@ -47,10 +48,21 @@ export function patchSpec(spec:Intake,patch:Partial<ChatConfigDraft>,formats:Exa
   const changed=!!selected && selected.id!==spec.formatId;
   return {...spec,phase:'collecting',validation:undefined,
     ...(selected?{formatId:selected.id,version:selected.version,family:familyFor(selected),subject:selected.subjects[0],missing:undefined}:{}),
+    ...(Object.hasOwn(patch,'formatId')&&!selected?{formatId:undefined,version:undefined,subject:undefined,missing:'subject' as const}:{}),
     ...(changed?{topic:undefined}:{}),
     ...(patch.topic!==undefined?{topic:patch.topic}:{}),...(patch.difficulty!==undefined?{difficulty:patch.difficulty}:{}),
     ...(patch.extraNotes!==undefined?{requirements:patch.extraNotes}:{}),
     provenance:{...spec.provenance,...Object.fromEntries(Object.keys(patch).map(key=>[key,'manual-ui']))}};
+}
+
+export function paramsForSpec(spec:Intake|undefined,formats:ExamFormat[],documents:InputDocument[]) {
+  const draft=specDraft(spec?{...spec,visible:true}:undefined,formats);
+  if(!draft)return {error:'Chưa có cấu hình đề.'};
+  const selected=spec?.documentIds?documents.filter(doc=>spec.documentIds!.includes(doc.id)):documents;
+  if(spec?.documentIds?.some(id=>!documents.some(doc=>doc.id===id)))return {error:'Tài liệu đã chọn không còn gắn với đề này. Hãy chọn lại nguồn.'};
+  if(spec?.sourcePreference==='attachments'&&!selected.length)return {error:'Yêu cầu chỉ dùng tài liệu đính kèm đang có hiệu lực. Hãy chọn tài liệu trước khi tạo đề.'};
+  const params=buildParamsFromDraft(draft,formats,selected.map(doc=>doc.id));
+  return params?{params}:{error:'Mẫu đề chưa khả dụng.'};
 }
 
 export function specSummary(spec:Intake|undefined):string[] {

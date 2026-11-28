@@ -333,6 +333,13 @@
           "minutes": "integer?",
           "sourcePreference": "attachments|web|default?"
         }
+      },
+      "USE_DOCUMENT": {
+        "purpose": "Select a uniquely named attached workspace document for the evolving exam spec",
+        "args": {
+          "name": "string",
+          "exclusive": "boolean?"
+        }
       }
     },
     "goals": {
@@ -422,7 +429,9 @@
         "meaning": "Liệt kê hoặc tìm các cuộc trò chuyện",
         "dialogueActs": [
           "REQUEST",
-          "CORRECT"
+          "CORRECT",
+          "QUESTION",
+          "INFORM"
         ],
         "parameters": {
           "title": "string?"
@@ -467,7 +476,9 @@
         "meaning": "Đọc trạng thái tạo đề hiện tại",
         "dialogueActs": [
           "REQUEST",
-          "CORRECT"
+          "CORRECT",
+          "QUESTION",
+          "INFORM"
         ],
         "parameters": {},
         "resolver": "capability",
@@ -480,7 +491,9 @@
         "meaning": "Đọc cảnh báo nguồn, hình và đáp án",
         "dialogueActs": [
           "REQUEST",
-          "CORRECT"
+          "CORRECT",
+          "QUESTION",
+          "INFORM"
         ],
         "parameters": {},
         "resolver": "capability",
@@ -494,7 +507,8 @@
         "dialogueActs": [
           "REQUEST",
           "CORRECT",
-          "QUESTION"
+          "QUESTION",
+          "INFORM"
         ],
         "parameters": {
           "number": "integer",
@@ -644,7 +658,9 @@
         "meaning": "Đọc các mẫu đề hiện có",
         "dialogueActs": [
           "REQUEST",
-          "CORRECT"
+          "CORRECT",
+          "QUESTION",
+          "INFORM"
         ],
         "parameters": {},
         "resolver": "capability",
@@ -852,7 +868,8 @@
         "dialogueActs": [
           "GUIDANCE",
           "QUESTION",
-          "REQUEST"
+          "REQUEST",
+          "INFORM"
         ],
         "parameters": {},
         "resolver": "guidance",
@@ -866,7 +883,8 @@
         "dialogueActs": [
           "GUIDANCE",
           "QUESTION",
-          "REQUEST"
+          "REQUEST",
+          "INFORM"
         ],
         "parameters": {},
         "resolver": "guidance",
@@ -935,7 +953,8 @@
         "meaning": "List jobs whose valid work may be continued",
         "dialogueActs": [
           "REQUEST",
-          "QUESTION"
+          "QUESTION",
+          "INFORM"
         ],
         "parameters": {},
         "resolver": "capability",
@@ -1186,6 +1205,22 @@
         },
         "resolver": "format_info",
         "effect": "read",
+        "confirmation": false,
+        "availability": "implemented"
+      },
+      "USE_DOCUMENT": {
+        "meaning": "Use a named document already attached to this workspace; no upload or invented content",
+        "dialogueActs": [
+          "REQUEST",
+          "CORRECT"
+        ],
+        "parameters": {
+          "name": "string",
+          "exclusive": "boolean?"
+        },
+        "resolver": "capability",
+        "capability": "USE_DOCUMENT",
+        "effect": "write",
         "confirmation": false,
         "availability": "implemented"
       }
@@ -3851,6 +3886,46 @@
                   "type": "boolean"
                 }
               }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "goal"
+              ],
+              "properties": {
+                "goal": {
+                  "type": "string",
+                  "enum": [
+                    "USE_DOCUMENT"
+                  ]
+                },
+                "parameters": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 600
+                    },
+                    "exclusive": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "reference": {
+                  "type": "string",
+                  "enum": [
+                    "current",
+                    "previous",
+                    "recent"
+                  ]
+                },
+                "prohibited": {
+                  "type": "boolean"
+                }
+              }
             }
           ]
         },
@@ -3981,7 +4056,8 @@
                 "APPROVE_QUESTION",
                 "EXPORT_ARTIFACT",
                 "PREPARE_PRACTICE",
-                "READ_EXAM_STRUCTURE"
+                "READ_EXAM_STRUCTURE",
+                "USE_DOCUMENT"
               ]
             },
             "parameters": {
@@ -4188,6 +4264,9 @@
                     "teacher",
                     "matrix"
                   ]
+                },
+                "exclusive": {
+                  "type": "boolean"
                 }
               }
             },
@@ -4245,5 +4324,5 @@
     "title": "FrameV3",
     "type": "object"
   },
-  "contractHash": "bb44fb4e2c0198523a9ee1f15c9cd4947f00c52136f421e71442bf7ec3efabb4"
+  "contractHash": "b4bdb0e8d17811abbd477482b471fc6d1ec64af41da037e4e9c3dfc9e4048cc0"
 }

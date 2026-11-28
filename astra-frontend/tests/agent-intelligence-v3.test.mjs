@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {parseCanonical,meaning,planMeaning,understandLocal,GOALS} from '../src/agent/intelligence.ts';
-import {reduceSpec,specDraft,patchSpec} from '../src/agent/examSpec.ts';
+import {reduceSpec,specDraft,patchSpec,paramsForSpec} from '../src/agent/examSpec.ts';
 import {buildParamsFromDraft} from '../src/agent/chatConfig.ts';
 import {inspectQuestion} from '../src/agent/examActions.ts';
 import {admit,execute} from '../src/agent/recipes.ts';
@@ -87,6 +87,17 @@ test('scoped exclusion permits opening B, conflicting writes on same item never 
   assert.equal(conflict.kind,'text');
   const read=planMeaning(frame([{goal:'READ_PROGRESS',parameters:{}}],{constraints:['NO_GENERATION']}));
   assert.equal(read.kind,'task');
+  assert.equal(planMeaning(frame([{goal:'READ_PROGRESS',parameters:{}}],{dialogueAct:'QUESTION'})).kind,'task');
+});
+
+test('selected input sources cannot cross workspace or disappear silently at submission',()=>{
+  const spec=reduceSpec(undefined,{mode:'request',family:'thpt',subject:'Toán',sourcePreference:'attachments'},formats,'u1');
+  assert.match(paramsForSpec(spec,formats,[]).error,/tài liệu/);
+  const doc={id:'local-doc',filename:'fixture.txt'};
+  assert.equal(paramsForSpec({...spec,documentIds:['foreign-doc']},formats,[doc]).params,undefined);
+  assert.deepEqual(paramsForSpec({...spec,documentIds:['local-doc']},formats,[doc]).params.uploadedFiles,['local-doc']);
+  const cleared=patchSpec(spec,{formatId:undefined},formats);
+  assert.equal(cleared.formatId,undefined);
 });
 
 test('fresh AI and NO_WEB restrictions are enforced before dispatch',()=>{
@@ -94,6 +105,11 @@ test('fresh AI and NO_WEB restrictions are enforced before dispatch',()=>{
   assert.equal(planMeaning(frame([{goal:'VERIFY_ANSWER',parameters:{number:5}}],{dialogueAct:'QUESTION'})).kind,'text');
   const plan=planMeaning(frame([{goal:'PREPARE_PRACTICE',parameters:{topic:'SAT Math',count:15,sourcePreference:'web'}}],{constraints:['NO_WEB']}));
   assert.equal(plan.parameters.sourcePreference,'attachments');
+  const direct=understandLocal('Tìm đề SAT Math 15 câu 25 phút',context);
+  assert.equal(direct.frame.goals[0].goal,'PREPARE_PRACTICE');
+  assert.equal(direct.frame.goals[0].parameters.count,15);
+  assert.equal(direct.frame.goals[0].parameters.sourcePreference,'web');
+  assert.equal(understandLocal('Tạo đề SAT Math có ngữ cảnh trường học',context).kind,'defer');
 });
 
 test('conflicting coalesced intake slots clarify rather than last-write-wins',()=>{

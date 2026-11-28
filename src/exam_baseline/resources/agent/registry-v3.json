@@ -332,6 +332,13 @@
         "minutes": "integer?",
         "sourcePreference": "attachments|web|default?"
       }
+    },
+    "USE_DOCUMENT": {
+      "purpose": "Select a uniquely named attached workspace document for the evolving exam spec",
+      "args": {
+        "name": "string",
+        "exclusive": "boolean?"
+      }
     }
   },
   "goals": {
@@ -421,7 +428,9 @@
       "meaning": "Liệt kê hoặc tìm các cuộc trò chuyện",
       "dialogueActs": [
         "REQUEST",
-        "CORRECT"
+        "CORRECT",
+        "QUESTION",
+        "INFORM"
       ],
       "parameters": {
         "title": "string?"
@@ -466,7 +475,9 @@
       "meaning": "Đọc trạng thái tạo đề hiện tại",
       "dialogueActs": [
         "REQUEST",
-        "CORRECT"
+        "CORRECT",
+        "QUESTION",
+        "INFORM"
       ],
       "parameters": {},
       "resolver": "capability",
@@ -479,7 +490,9 @@
       "meaning": "Đọc cảnh báo nguồn, hình và đáp án",
       "dialogueActs": [
         "REQUEST",
-        "CORRECT"
+        "CORRECT",
+        "QUESTION",
+        "INFORM"
       ],
       "parameters": {},
       "resolver": "capability",
@@ -493,7 +506,8 @@
       "dialogueActs": [
         "REQUEST",
         "CORRECT",
-        "QUESTION"
+        "QUESTION",
+        "INFORM"
       ],
       "parameters": {
         "number": "integer",
@@ -643,7 +657,9 @@
       "meaning": "Đọc các mẫu đề hiện có",
       "dialogueActs": [
         "REQUEST",
-        "CORRECT"
+        "CORRECT",
+        "QUESTION",
+        "INFORM"
       ],
       "parameters": {},
       "resolver": "capability",
@@ -851,7 +867,8 @@
       "dialogueActs": [
         "GUIDANCE",
         "QUESTION",
-        "REQUEST"
+        "REQUEST",
+        "INFORM"
       ],
       "parameters": {},
       "resolver": "guidance",
@@ -865,7 +882,8 @@
       "dialogueActs": [
         "GUIDANCE",
         "QUESTION",
-        "REQUEST"
+        "REQUEST",
+        "INFORM"
       ],
       "parameters": {},
       "resolver": "guidance",
@@ -934,7 +952,8 @@
       "meaning": "List jobs whose valid work may be continued",
       "dialogueActs": [
         "REQUEST",
-        "QUESTION"
+        "QUESTION",
+        "INFORM"
       ],
       "parameters": {},
       "resolver": "capability",
@@ -1185,6 +1204,22 @@
       },
       "resolver": "format_info",
       "effect": "read",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "USE_DOCUMENT": {
+      "meaning": "Use a named document already attached to this workspace; no upload or invented content",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {
+        "name": "string",
+        "exclusive": "boolean?"
+      },
+      "resolver": "capability",
+      "capability": "USE_DOCUMENT",
+      "effect": "write",
       "confirmation": false,
       "availability": "implemented"
     }

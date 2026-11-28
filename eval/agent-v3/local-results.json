@@ -1,0 +1,698 @@
+{
+  "schemaVersion": "astra-agent-v3-results",
+  "mode": "v3-local",
+  "corpusSha256": "e7c82e123ae4c373a991d434bf0b301097a385f3dfa82f7b9151ddaae3f4f231",
+  "provenance": "Engineer-authored synthetic cases frozen before production changes; not an independent blind study. Challenge families must not be used for tuning without recording contamination.",
+  "cases": 40,
+  "accepted": 18,
+  "correctAccepted": 18,
+  "accuracyAmongAccepted": 1,
+  "coverage": 0.45,
+  "elapsedMs": 14.299399999999999,
+  "providerCalls": 0,
+  "limitation": "Routing only; prohibited operations require workflow/UI tests. Deferred cases are not counted as understood. No model accuracy measured.",
+  "results": [
+    {
+      "id": "d01",
+      "split": "development",
+      "family": "exam-intake",
+      "expected": {
+        "goal": "REQUEST_GENERATION",
+        "parameters": {
+          "family": "thpt"
+        }
+      },
+      "observed": {
+        "outcome": "defer"
+      },
+      "accepted": false,
+      "correct": false
+    },
+    {
+      "id": "d02",
+      "split": "development",
+      "family": "exam-intake",
+      "expected": {
+        "goal": "REQUEST_GENERATION",
+        "parameters": {
+          "family": "thpt",
+          "subject": "Tiếng Anh"
+        }
+      },
+      "observed": {
+        "goal": "REQUEST_GENERATION",
+        "parameters": {
+          "family": "thpt",
+          "subject": "Tiếng Anh"
+        },
+        "outcome": "resolved"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "id": "d03",
+      "split": "development",
+      "family": "subject-followup",
+      "expected": {
+        "goal": "PREPARE_EXAM",
+        "parameters": {
+          "subject": "Hóa Học"
+        }
+      },
+      "observed": {
+        "goal": "PREPARE_EXAM",
+        "parameters": {
+          "subject": "Hóa Học"
+        },
+        "outcome": "resolved"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "id": "d04",
+      "split": "development",
+      "family": "bare-subject",
+      "expected": {
+        "outcome": "defer"
+      },
+      "observed": {
+        "outcome": "defer"
+      },
+      "accepted": false,
+      "correct": true
+    },
+    {
+      "id": "d05",
+      "split": "development",
+      "family": "mismatch",
+      "expected": {
+        "goal": "REQUEST_GENERATION",
+        "parameters": {
+          "subject": "Hóa Học",
+          "count": 20,
+          "minutes": 30
+        }
+      },
+      "observed": {
+        "goal": "REQUEST_GENERATION",
+        "parameters": {
+          "family": "thpt",
+          "count": 20,
+          "minutes": 30,
+          "subject": "Hóa Học"
+        },
+        "outcome": "resolved"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "id": "d06",
+      "split": "development",
+      "family": "structure",
+      "expected": {
+        "goal": "READ_EXAM_STRUCTURE",
+        "parameters": {
+          "subject": "Hóa Học"
+        }
+      },
+      "observed": {
+        "goal": "READ_EXAM_STRUCTURE",
+        "parameters": {
+          "family": "thpt",
+          "subject": "Hóa Học"
+        },
+        "outcome": "information"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "id": "d07",
+      "split": "development",
+      "family": "scoped-prohibition",
+      "expected": {
+        "goal": "READ_EXAM_STRUCTURE",
+        "parameters": {
+          "subject": "Hóa Học"
+        }
+      },
+      "observed": {
+        "goal": "READ_EXAM_STRUCTURE",
+        "parameters": {
+          "family": "thpt",
+          "subject": "Hóa Học"
+        },
+        "outcome": "information"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "id": "d08",
+      "split": "development",
+      "family": "spec-correction",
+      "expected": {
+        "goal": "PREPARE_EXAM",
+        "parameters": {
+          "subject": "Sinh Học"
+        }
+      },
+      "observed": {
+        "outcome": "defer"
+      },
+      "accepted": false,
+      "correct": false
+    },
+    {
+      "id": "d09",
+      "split": "development",
+      "family": "stored-answer",
+      "expected": {
+        "goal": "INSPECT_QUESTION",
+        "parameters": {
+          "number": 5,
+          "part": "P2",
+          "subItem": "b"
+        }
+      },
+      "observed": {
+        "goal": "INSPECT_QUESTION",
+        "parameters": {
+          "number": 5,
+          "subItem": "b",
+          "part": "P2",
+          "aspect": "answer"
+        },
+        "outcome": "information"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "id": "d10",
+      "split": "development",
+      "family": "explicit-verify",
+      "expected": {
+        "goal": "VERIFY_ANSWER",
+        "parameters": {
+          "number": 5,
+          "part": "p2"
+        }
+      },
+      "observed": {
+        "goal": "VERIFY_ANSWER",
+        "parameters": {
+          "number": 5,
+          "part": "p2"
+        },
+        "outcome": "resolved"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "id": "d11",
+      "split": "development",
+      "family": "pause",
+      "expected": {
+        "goal": "PAUSE_GENERATION"
+      },
+      "observed": {
+        "goal": "PAUSE_GENERATION",
+        "parameters": {},
+        "outcome": "resolved"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "id": "d12",
+      "split": "development",
+      "family": "resume",
+      "expected": {
+        "goal": "RESUME_GENERATION"
+      },
+      "observed": {
+        "goal": "RESUME_GENERATION",
+        "parameters": {},
+        "outcome": "resolved"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "id": "d13",
+      "split": "development",
+      "family": "ambiguous-job",
+      "expected": {
+        "goal": "RESUME_GENERATION"
+      },
+      "observed": {
+        "goal": "RESUME_GENERATION",
+        "parameters": {},
+        "outcome": "resolved"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "id": "d14",
+      "split": "development",
+      "family": "cancel",
+      "expected": {
+        "goal": "CANCEL_GENERATION"
+      },
+      "observed": {
+        "goal": "CANCEL_GENERATION",
+        "parameters": {},
+        "outcome": "resolved"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "id": "d15",
+      "split": "development",
+      "family": "regen-stop",
+      "expected": {
+        "goal": "STOP_ITEM_REGENERATION"
+      },
+      "observed": {
+        "goal": "STOP_ITEM_REGENERATION",
+        "parameters": {},
+        "outcome": "resolved"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "id": "d16",
+      "split": "development",
+      "family": "versions-info",
+      "expected": {
+        "goal": "INSPECT_VERSION",
+        "parameters": {
+          "relative": "initial"
+        }
+      },
+      "observed": {
+        "goal": "INSPECT_VERSION",
+        "parameters": {
+          "relative": "initial"
+        },
+        "outcome": "resolved"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "id": "d17",
+      "split": "development",
+      "family": "versions-write",
+      "expected": {
+        "goal": "RESTORE_VERSION",
+        "parameters": {
+          "relative": "initial"
+        }
+      },
+      "observed": {
+        "goal": "RESTORE_VERSION",
+        "parameters": {
+          "relative": "initial"
+        },
+        "outcome": "resolved"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "id": "d18",
+      "split": "development",
+      "family": "exports",
+      "expected": {
+        "goal": "EXPORT_DOCUMENT",
+        "parameters": {
+          "format": "docx"
+        }
+      },
+      "observed": {
+        "goal": "EXPORT_DOCUMENT",
+        "parameters": {
+          "format": "docx"
+        },
+        "outcome": "resolved"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "id": "d19",
+      "split": "development",
+      "family": "teacher-export",
+      "expected": {
+        "goal": "EXPORT_ARTIFACT",
+        "parameters": {
+          "artifact": "teacher",
+          "format": "json"
+        }
+      },
+      "observed": {
+        "goal": "EXPORT_ARTIFACT",
+        "parameters": {
+          "artifact": "teacher",
+          "format": "json"
+        },
+        "outcome": "resolved"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "id": "d20",
+      "split": "development",
+      "family": "no-web",
+      "expected": {
+        "goal": "PREPARE_EXAM",
+        "parameters": {
+          "sourcePreference": "attachments"
+        }
+      },
+      "observed": {
+        "outcome": "defer"
+      },
+      "accepted": false,
+      "correct": false
+    },
+    {
+      "id": "d21",
+      "split": "development",
+      "family": "status-toggle",
+      "expected": {
+        "goal": "READ_PROGRESS"
+      },
+      "observed": {
+        "goal": "READ_PROGRESS",
+        "parameters": {},
+        "outcome": "information"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "id": "d22",
+      "split": "development",
+      "family": "contradiction",
+      "expected": {
+        "outcome": "defer"
+      },
+      "observed": {
+        "outcome": "defer"
+      },
+      "accepted": false,
+      "correct": true
+    },
+    {
+      "id": "d23",
+      "split": "development",
+      "family": "capabilities",
+      "expected": {
+        "goal": "CAPABILITY_INQUIRY"
+      },
+      "observed": {
+        "outcome": "defer"
+      },
+      "accepted": false,
+      "correct": false
+    },
+    {
+      "id": "d24",
+      "split": "development",
+      "family": "unsupported-subject",
+      "expected": {
+        "goal": "REQUEST_GENERATION",
+        "parameters": {
+          "subject": "Ngữ Văn"
+        }
+      },
+      "observed": {
+        "goal": "REQUEST_GENERATION",
+        "parameters": {
+          "family": "thpt",
+          "subject": "Ngữ Văn"
+        },
+        "outcome": "resolved"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "id": "c01",
+      "split": "challenge",
+      "family": "request-paraphrase",
+      "expected": {
+        "goal": "PREPARE_EXAM",
+        "parameters": {
+          "family": "thpt",
+          "subject": "Sinh Học"
+        }
+      },
+      "observed": {
+        "outcome": "defer"
+      },
+      "accepted": false,
+      "correct": false
+    },
+    {
+      "id": "c02",
+      "split": "challenge",
+      "family": "catalog-question-paraphrase",
+      "expected": {
+        "goal": "READ_EXAM_STRUCTURE",
+        "parameters": {
+          "subject": "Vật Lý"
+        }
+      },
+      "observed": {
+        "outcome": "defer"
+      },
+      "accepted": false,
+      "correct": false
+    },
+    {
+      "id": "c03",
+      "split": "challenge",
+      "family": "context-followup-paraphrase",
+      "expected": {
+        "goal": "PREPARE_EXAM",
+        "parameters": {
+          "subject": "Địa Lý"
+        }
+      },
+      "observed": {
+        "outcome": "defer"
+      },
+      "accepted": false,
+      "correct": false
+    },
+    {
+      "id": "c04",
+      "split": "challenge",
+      "family": "indirect-pause",
+      "expected": {
+        "goal": "PAUSE_GENERATION"
+      },
+      "observed": {
+        "outcome": "defer"
+      },
+      "accepted": false,
+      "correct": false
+    },
+    {
+      "id": "c05",
+      "split": "challenge",
+      "family": "indirect-cancel",
+      "expected": {
+        "goal": "CANCEL_GENERATION"
+      },
+      "observed": {
+        "outcome": "defer"
+      },
+      "accepted": false,
+      "correct": false
+    },
+    {
+      "id": "c06",
+      "split": "challenge",
+      "family": "historical-inspection",
+      "expected": {
+        "goal": "INSPECT_VERSION"
+      },
+      "observed": {
+        "outcome": "defer"
+      },
+      "accepted": false,
+      "correct": false
+    },
+    {
+      "id": "c07",
+      "split": "challenge",
+      "family": "stored-explanation",
+      "expected": {
+        "goal": "INSPECT_QUESTION",
+        "parameters": {
+          "aspect": "explanation"
+        }
+      },
+      "observed": {
+        "outcome": "defer"
+      },
+      "accepted": false,
+      "correct": false
+    },
+    {
+      "id": "c08",
+      "split": "challenge",
+      "family": "attached-sources",
+      "expected": {
+        "goal": "PREPARE_EXAM",
+        "parameters": {
+          "sourcePreference": "attachments"
+        }
+      },
+      "observed": {
+        "outcome": "defer"
+      },
+      "accepted": false,
+      "correct": false
+    },
+    {
+      "id": "c09",
+      "split": "challenge",
+      "family": "adjacent-practice",
+      "expected": {
+        "goal": "PREPARE_PRACTICE",
+        "parameters": {
+          "topic": "SAT Math",
+          "count": 15,
+          "minutes": 25
+        }
+      },
+      "observed": {
+        "outcome": "defer"
+      },
+      "accepted": false,
+      "correct": false
+    },
+    {
+      "id": "c10",
+      "split": "challenge",
+      "family": "new-regen-capability",
+      "expected": {
+        "goal": "READ_ITEM_REGENERATION"
+      },
+      "observed": {
+        "outcome": "defer"
+      },
+      "accepted": false,
+      "correct": false
+    },
+    {
+      "id": "c11",
+      "split": "challenge",
+      "family": "documents",
+      "expected": {
+        "goal": "LIST_DOCUMENTS"
+      },
+      "observed": {
+        "outcome": "defer"
+      },
+      "accepted": false,
+      "correct": false
+    },
+    {
+      "id": "c12",
+      "split": "challenge",
+      "family": "ambiguous-history",
+      "expected": {
+        "outcome": "defer"
+      },
+      "observed": {
+        "outcome": "defer"
+      },
+      "accepted": false,
+      "correct": true
+    },
+    {
+      "id": "c13",
+      "split": "challenge",
+      "family": "quoted-request",
+      "expected": {
+        "outcome": "defer"
+      },
+      "observed": {
+        "outcome": "defer"
+      },
+      "accepted": false,
+      "correct": true
+    },
+    {
+      "id": "c14",
+      "split": "challenge",
+      "family": "no-action-question",
+      "expected": {
+        "outcome": "defer"
+      },
+      "observed": {
+        "outcome": "defer"
+      },
+      "accepted": false,
+      "correct": true
+    },
+    {
+      "id": "c15",
+      "split": "challenge",
+      "family": "multi-workspace-target",
+      "expected": {
+        "goal": "OPEN_WORKSPACE"
+      },
+      "observed": {
+        "outcome": "defer"
+      },
+      "accepted": false,
+      "correct": false
+    },
+    {
+      "id": "c16",
+      "split": "challenge",
+      "family": "unrestricted-informal",
+      "expected": {
+        "goal": "READ_PROGRESS"
+      },
+      "observed": {
+        "outcome": "defer"
+      },
+      "accepted": false,
+      "correct": false
+    }
+  ],
+  "bySplit": {
+    "development": {
+      "cases": 24,
+      "accepted": 18,
+      "correctAccepted": 18,
+      "deferred": 6,
+      "falseAccepted": []
+    },
+    "challenge": {
+      "cases": 16,
+      "accepted": 0,
+      "correctAccepted": 0,
+      "deferred": 16,
+      "falseAccepted": []
+    }
+  },
+  "engineSha256": "33b35ea6edf19cafacfced929b8cb211e2b111eafb489a42c8e17e1f53f88e09"
+}

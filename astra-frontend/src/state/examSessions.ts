@@ -605,6 +605,16 @@ export class ExamSessions {
   }
 
   setIntake(id: string, intake: Intake | undefined) { this.update(id, session => ({ ...session, intake })); }
+  moveUserTurn(sourceId:string,targetId:string,messageId:string) {
+    const source=this.sessions.find(session=>session.id===sourceId);
+    const target=this.sessions.find(session=>session.id===targetId);
+    const message=source?.messages.find(item=>item.id===messageId&&item.role==='user');
+    if(!message || !target || target.jobId || target.messages.length)return false;
+    // Move exactly this turn; background receipts and the old job stay in place.
+    this.update(sourceId,session=>({...session,messages:session.messages.filter(item=>item.id!==messageId)}),true);
+    this.update(targetId,session=>({...session,messages:[message]}),true);
+    return true;
+  }
   rememberQuestion(id: string, stableId: string, jobId: string, revision: number, sourceId: string) {
     this.update(id, session => session.jobId === jobId && session.package?.revision === revision &&
       session.messages.some(message => message.id === sourceId && message.role === 'user')

@@ -7,7 +7,7 @@ import type { ExamFormat } from '../types/exam.ts';
 import { fastRoute } from './recipes.ts';
 import { fold } from './language.ts';
 import { polite } from './local.ts';
-import { shortSubjectIntake, mentionedFamilies, matchAdjacentTopic } from './knowledge.ts';
+import { shortSubjectIntake, mentionedFamilies, matchAdjacentTopic, familyFor } from './knowledge.ts';
 import { sectionId } from './examActions.ts';
 
 export const SEMANTIC_VERSION = registry.schemaVersion;
@@ -55,7 +55,7 @@ export function meaning(goal: GoalId, parameters: Slots = {}, act: Frame['dialog
 }
 
 // Legacy results are explicitly bridged by meaning, never by re-parsing the utterance.
-export function decisionMeaning(decision: Decision): Frame | undefined {
+export function decisionMeaning(decision: Decision, formats:ExamFormat[]=[], current?:Intake): Frame | undefined {
   if (decision.intake) {
     const {mode,...parameters} = decision.intake;
     return meaning(mode==='request'?'PREPARE_EXAM':'READ_EXAM_STRUCTURE',parameters,mode==='request'?'REQUEST':'QUESTION');
@@ -63,6 +63,12 @@ export function decisionMeaning(decision: Decision): Frame | undefined {
   if(decision.guidance) return meaning('CAPABILITY_INQUIRY',{},'QUESTION');
   if(decision.kind!=='task') return;
   const goals = decision.intents.map(intent=> {
+    if(['SELECT_FORMAT','FORMAT_DETAILS','PREPARE_GENERATION'].includes(intent.id)){
+      const selected=formats.find(format=>format.available&&format.id===(intent.args.format??current?.formatId));
+      if(!selected)return null;
+      return {goal:intent.id==='FORMAT_DETAILS'?'READ_EXAM_STRUCTURE':intent.id==='PREPARE_GENERATION'?'REQUEST_GENERATION':'PREPARE_EXAM',
+        parameters:{family:familyFor(selected),subject:selected.subjects[0],...(intent.args.topic?{topic:intent.args.topic}:{})}};
+    }
     const entry = Object.entries(GOALS).find(([,def])=>'capability' in def && def.capability===intent.id);
     return entry ? {goal:entry[0],parameters:intent.args} : null;
   });
@@ -89,6 +95,24 @@ export function understandLocal(message: string, context: {formats:ExamFormat[];
   if(subject) return {kind:'defer'};
   const structure = /^(?:xem cau truc|cau truc|de .* (?:co )?bao nhieu cau|thpt .*bao nhieu cau)/.test(reading);
   const request = reading.match(/^(tao|soan|ra|gen|chuan bi|chon|doi sang)(?: (?:mot|1))? (?:de(?: thi)? ?)?(.*)$/);
+  const practice=matchAdjacentTopic(message);
+  const practiceRequest=reading.match(/^(tim(?: kiem)?|tao|soan|chuan bi|luyen)(?: (?:de|bai|tap))*\s+(.+)$/);
+  if(practice && practiceRequest && !structure){
+    let tail=practiceRequest[2];
+    const parameters:Slots={topic:practice.label};
+    for(const [slot,unit] of [['count','cau'],['minutes','phut']] as const){
+      const pattern=new RegExp('\\b(\\d+)\\s*'+unit+'\\b');
+      const match=tail.match(pattern);
+      if(match){parameters[slot]=Number(match[1]);tail=tail.replace(pattern,' ');}
+    }
+    for(const term of practice.terms.slice().sort((a,b)=>b.length-a.length)){
+      const escaped=fold(term).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+      tail=tail.replace(new RegExp('(^|\\s)'+escaped+'(?=\\s|$)','g'),' ');
+    }
+    if(tail.replace(/[,.;]/g,'').trim())return {kind:'defer'};
+    if(practiceRequest[1].startsWith('tim'))parameters.sourcePreference='web';
+    return done(meaning('PREPARE_PRACTICE',parameters));
+  }
   if(structure || request) {
     const rawTail = request?.[2] ?? reading.replace(/^(?:xem cau truc|cau truc)\s*/, '').replace(/^(?:de )?/,'').replace(/\s+(?:co )?bao nhieu cau\??$/,'');
     let tail = rawTail;
@@ -126,11 +150,6 @@ export function understandLocal(message: string, context: {formats:ExamFormat[];
   if(/^(?:xem )?(?:trang thai|tien do) tao lai cau hoi$/.test(text)) return done(meaning('READ_ITEM_REGENERATION',{},'QUESTION'));
   if(/^(?:xem|liet ke) tai lieu(?: dinh kem)?$/.test(text)) return done(meaning('LIST_DOCUMENTS',{},'QUESTION'));
   if(/^(?:luu chinh sua|luu cau hoi)$/.test(text)) return done(meaning('SAVE_EDITOR'));
-  const practice=matchAdjacentTopic(message);
-  if(practice && /^(?:tao|soan|chuan bi|tim) (?:de|bai|cau)\b/.test(text)) {
-    // Rich practice requirements defer rather than discarding unparsed constraints.
-    return {kind:'defer'};
-  }
   const local=fastRoute(message);
   if(!local) return {kind:'defer'};
   if('text' in local) {
@@ -138,7 +157,7 @@ export function understandLocal(message: string, context: {formats:ExamFormat[];
     if(/^(?:upload|dinh kem file|them tai lieu tham khao)$/.test(text)) return done(meaning('UPLOAD_GUIDANCE',{},'QUESTION'));
     return {kind:'defer'};
   }
-  const candidate=decisionMeaning('intents' in local?{kind:'task',intents:local.intents}:'intake' in local?{kind:'answer',intents:[],intake:local.intake}:{kind:'clarify',intents:[]});
+  const candidate=decisionMeaning('intents' in local?{kind:'task',intents:local.intents}:'intake' in local?{kind:'answer',intents:[],intake:local.intake}:{kind:'clarify',intents:[]},context.formats,context.intake);
   if(!candidate) return {kind:'defer'};
   // A question about an operation must not be promoted to its execution.
   if(/\b(?:co the|duoc khong|tai sao|vi sao|lam sao|the nao)\b/.test(text) || message.trim().endsWith('?')) candidate.dialogueAct='QUESTION';

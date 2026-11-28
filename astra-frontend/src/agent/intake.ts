@@ -18,6 +18,7 @@ export type Intake = {
   difficulty?: string;
   requirements?: string;
   sourcePreference?: 'attachments' | 'web' | 'default';
+  documentIds?: string[];
   provenance?: Record<string, string>;
   visible?: boolean;
   phase: 'collecting' | 'selected' | 'evaluated' | 'confirmed';

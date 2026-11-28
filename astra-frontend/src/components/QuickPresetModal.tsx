@@ -4,8 +4,7 @@ import { ChevronDown, ChevronUp, X } from 'lucide-react';
 import type { ExamFormat, ExamRequestParams } from '../types/exam';
 import { presetParams } from '../agent/intake';
 import type { Intake } from '../agent/intake';
-import { patchSpec, specDraft } from '../agent/examSpec';
-import { buildParamsFromDraft } from '../agent/chatConfig';
+import { patchSpec, paramsForSpec } from '../agent/examSpec';
 import { getBackendHealth, getExamFormats, type BackendHealth } from '../services/examService';
 
 import { DocumentAttachments } from './DocumentAttachments';
@@ -157,9 +156,9 @@ export const QuickPresetModal: React.FC<Props> = ({ documents, onDocumentsChange
   const start = () => {
     if (!selected?.available || uploading) return;
     if(spec){
-      const projected=specDraft({...patchSpec(spec,{formatId:selected.id},formats),visible:true},formats);
-      const params=projected && buildParamsFromDraft(projected,formats,documents.map(document=>document.id));
+      const {params,error:problem}=paramsForSpec(patchSpec(spec,{formatId:selected.id},formats),formats,documents);
       if(params){onStart(params);return;}
+      setError(problem??'Chưa có cấu hình hợp lệ.');return;
     }
     onStart({ ...presetParams(selected), uploadedFiles: documents.map(document => document.id) });
   };
