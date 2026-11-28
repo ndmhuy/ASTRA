@@ -20,10 +20,10 @@ const PART_LABELS: Record<string, string> = {
 export function humanizeErrorMessage(message?: string, code?: string): string {
   const raw = (message || '').trim();
   if (code === 'provider_not_configured' || /Configure a real EXAM_PROVIDER/i.test(raw)) {
-    return 'Hệ thống chưa được kết nối dịch vụ AI. Vui lòng kiểm tra cấu hình hoặc mở chế độ chạy thử (start-astra-demo.bat).';
+    return 'Hệ thống chưa được kết nối dịch vụ AI. Mở Kết nối AI để nhập API key dùng chung cho chat và sinh đề.';
   }
   if (/Bad Gateway|Failed to fetch|ECONNREFUSED|\b502\b/i.test(raw)) {
-    return 'Chưa kết nối được với máy chủ tạo đề. Thầy cô hãy mở ứng dụng bằng start-astra-demo.bat (chạy thử) hoặc start-astra.bat rồi thử lại.';
+    return 'Chưa kết nối được với máy chủ tạo đề. Thầy cô hãy kiểm tra cửa sổ đang chạy start.cmd rồi thử lại.';
   }
   if (/Model provider failed/i.test(raw)) {
     return 'Dịch vụ AI đang bận hoặc gặp sự cố tạm thời. Thầy cô vui lòng thử lại sau ít phút.';

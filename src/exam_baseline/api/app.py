@@ -1,6 +1,7 @@
 """HTTP application composition, settings and baseline service lifetime."""
 
 import logging
+import os
 from contextlib import AsyncExitStack, asynccontextmanager
 from pathlib import Path
 
@@ -131,6 +132,9 @@ def create_app(
 def create_web_app() -> FastAPI:
     """Serve the built teacher workspace and its API from the same local port."""
     configure_logging()
+    if os.environ.get("EXAM_DEMO_MODE", "").lower() in {"1", "true", "yes", "on"}:
+        # Preserve the separately requested offline walkthrough entry point.
+        return create_app(workspace_dir=Path("astra-frontend/dist"))
     return create_app(
         workspace_dir=Path("astra-frontend/dist"), connection=SharedConnection(Path(".env"))
     )

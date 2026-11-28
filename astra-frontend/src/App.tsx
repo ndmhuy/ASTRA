@@ -12,6 +12,7 @@ import { familyFor, formatOverview, matchAdjacentTopic, mentionedFamilies, resol
 import { AlertCircle, AlertTriangle, LoaderCircle, PanelLeftClose, PanelLeftOpen, RefreshCw, Settings2 } from 'lucide-react';
 import { WorkspaceStart } from './components/WorkspaceStart';
 import { AstraWelcome } from './components/AstraWelcome';
+import { ConnectionSetup } from './components/ConnectionSetup';
 import { SidebarExamLibrary } from './components/SidebarExamLibrary';
 import { AstraLogo } from './components/AstraLogo';
 import { QuickPresetModal } from './components/QuickPresetModal';
@@ -1300,7 +1301,7 @@ export const App: React.FC = () => {
             if (await store.remove(id) && configureId === id) { setConfigureId(null); setShowQuickModal(false); }
           }} />
         <button className="side-rail-edge" type="button" onClick={() => setControlsCollapsed(value => !value)} aria-label={sidebarLabel} aria-expanded={!controlsCollapsed} title={sidebarLabel} />
-        <div className="header-right"><span className="header-avatar" aria-label="Người dùng: Cùng thầy cô" title="Cùng thầy cô">GV</span><span className="header-session">Cùng thầy cô</span></div>
+        <div className="header-right"><ConnectionSetup busy={chatPending || active?.status === 'generating' || Boolean(questionPending)} /><span className="header-avatar" aria-label="Người dùng: Cùng thầy cô" title="Cùng thầy cô">GV</span><span className="header-session">Cùng thầy cô</span></div>
       </header>
 
       {store.storageWarning && <div className="canvas-alert-banner is-error" role="alert">{store.storageWarning}</div>}

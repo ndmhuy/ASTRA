@@ -12,7 +12,7 @@ from dotenv import dotenv_values
 from fastapi.testclient import TestClient
 
 from exam_baseline.agent.v3 import TurnV3
-from exam_baseline.api.app import create_app
+from exam_baseline.api.app import create_app, create_web_app
 from exam_baseline.connection import (
     DEFAULT_MODEL,
     DEFAULT_URL,
@@ -121,6 +121,20 @@ def test_first_start_and_saving_are_probe_free_and_never_return_key(tmp_path):
     assert loaded.settings.api_key.get_secret_value() == KEY
 
 
+def test_explicit_offline_demo_entry_point_remains_separate(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("EXAM_DEMO_MODE", "true")
+    monkeypatch.setenv("EXAM_PROVIDER", "mock")
+    monkeypatch.setenv("EXAM_MODEL", "mock-fixture-v1")
+    monkeypatch.setenv("ASTRA_AGENT_ENABLED", "false")
+    built = tmp_path / "astra-frontend/dist"
+    built.mkdir(parents=True)
+    (built / "index.html").write_text("Offline fixture")
+    with TestClient(create_web_app()) as client:
+        assert client.get("/api/health").json()["demoMode"] is True
+        assert client.get("/api/connection").status_code == 404
+
+
 def test_shared_key_reaches_all_roles_and_chat_with_original_schema(tmp_path, monkeypatch):
     monkeypatch.setenv("ASTRA_AGENT_TRANSPORT", "worker")
     monkeypatch.setenv("ASTRA_MAS_TRANSPORT", "worker")
@@ -199,6 +213,9 @@ def test_atomic_update_preserves_unrelated_config_and_retains_blank_key(tmp_path
         {"baseUrl": "https://user:secret@example.com/v1"},
         {"baseUrl": "https://example.com/v1?key=secret"},
         {"baseUrl": "https://astra-mas-proxy.workers.dev/v1"},
+        {"baseUrl": "https://example.com:invalid/v1"},
+        {"baseUrl": "https://example.com:0/v1"},
+        {"baseUrl": "https://ex ample.com/v1"},
     ],
 )
 def test_invalid_configuration_is_not_written_or_reflected(tmp_path, changes):

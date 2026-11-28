@@ -51,7 +51,9 @@ def validate_public(model: str, base_url: str) -> tuple[str, str]:
         raise ValueError("model")
     url = urlsplit(base_url)
     if (
-        not url.hostname
+        any(character.isspace() or ord(character) < 32 for character in base_url)
+        or (url.port is not None and not 1 <= url.port <= 65535)
+        or not url.hostname
         or url.username
         or url.password
         or url.query
