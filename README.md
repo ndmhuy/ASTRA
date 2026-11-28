@@ -12,6 +12,8 @@ build the frontend and open http://localhost:8001. Shared Worker caller tokens a
 included in `config/team-worker-access.env` at the owner's explicit request, so
 teammates need no token entry or Cloudflare setup. Repository/history readers can
 use these shared routes and quota. Gemini/Gateway keys stay on Cloudflare.
+On Windows x64, `start.cmd` also installs the pinned portable Tectonic compiler
+if no LaTeX compiler is available. The first PDF compile may download TeX packages.
 See the [team quickstart](docs/agent-main-v2/TEAM_QUICKSTART.md).
 
 ## 1. Install
