@@ -11,6 +11,7 @@ from exam_baseline.core.recovery import POLICY, delay
 
 from .contracts import Decision, Turn
 from .semantics import SemanticFrame
+from .v3 import FrameV3, Interpretation
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +25,7 @@ class ProviderFailure(Exception):
 
 
 class InterpretationProvider(Protocol):
-    async def interpret(self, turn: Turn, timeout: float) -> Decision | SemanticFrame: ...
+    async def interpret(self, turn: Turn, timeout: float) -> Interpretation: ...
 
 
 @dataclass(frozen=True)
@@ -63,7 +64,7 @@ class ProviderRouter:
         self.timing = timing or Timing()
         self.clock = clock
 
-    async def __call__(self, turn: Turn) -> Decision | SemanticFrame:
+    async def __call__(self, turn: Turn) -> Interpretation:
         started = self.clock()
         reason = "transient"
         attempts = 0
@@ -107,7 +108,7 @@ class ProviderRouter:
             else:
                 route.failures = 0
                 route.until = 0
-                if isinstance(result, SemanticFrame):
+                if isinstance(result, (SemanticFrame, FrameV3)):
                     logger.info(
                         "agent_semantics act=%s goals=%s",
                         result.dialogueAct,
@@ -123,7 +124,7 @@ class ProviderRouter:
                 return result
         return Decision(kind="temporarily_unavailable", reasonCode=reason)
 
-    async def _within(self, route: Route, turn: Turn, deadline: float) -> Decision | SemanticFrame:
+    async def _within(self, route: Route, turn: Turn, deadline: float) -> Interpretation:
         task = asyncio.create_task(route.provider.interpret(turn, deadline))
         try:
             done, _ = await asyncio.wait({task}, timeout=deadline)
@@ -137,6 +138,11 @@ class ProviderRouter:
 
     def _record_failure(self, route: Route, error: ProviderFailure) -> None:
         route.reason = error.reason
+        if error.reason == "schema":
+            # A malformed interpretation of one utterance is not a provider outage.
+            route.failures = 0
+            route.until = 0
+            return
         route.failures += 1
         if error.reason == "quota":
             route.until = self.clock() + max(1.0, error.retry_after or self.timing.cooldown)

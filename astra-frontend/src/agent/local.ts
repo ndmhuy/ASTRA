@@ -9,6 +9,10 @@ export type LocalMeaning = { text: string } | { intents: Intent[] } | { intake: 
 const action = (id: IntentId, args: Intent['args'] = {}): LocalMeaning => ({ intents: [{ id, args }] });
 const advice = 'Tạm dừng sẽ lưu kết quả hợp lệ sau lượt gọi đang chạy; Tiếp tục chỉ làm phần còn thiếu. Dừng kết thúc lượt chạy hiện tại. Thầy cô có thể dùng các nút trên bảng tiến độ.';
 
+export function requestText(message: string) {
+  return polite(message).replace(/^(?:(?:co|thay|toi|minh|tao|tui|em|t) )?(?:muon|can) /, '');
+}
+
 export function localMeaning(message: string): LocalMeaning | undefined {
   const text = polite(message);
   if (/^thu lai (?:ban )?xem truoc(?: pdf)?$/.test(text)) return;

@@ -1,0 +1,1241 @@
+{
+  "schemaVersion": "astra-semantic-v3",
+  "limits": {
+    "goalsPerTurn": 4,
+    "workflowSteps": 4,
+    "workflowTransitions": 12,
+    "workflowRetries": 0,
+    "executionMs": 15000,
+    "practice": {
+      "countMin": 4,
+      "countMax": 20,
+      "minutesMin": 5,
+      "minutesMax": 180,
+      "researchMinutesMax": 120,
+      "researchMessageMax": 2000,
+      "uploadedFilesMax": 0
+    }
+  },
+  "parameterBounds": {
+    "subject": {
+      "maxLength": 80
+    },
+    "topic": {
+      "maxLength": 250
+    },
+    "grade": {
+      "maximum": 12
+    },
+    "requirements": {
+      "maxLength": 600
+    },
+    "difficulty": {
+      "maxLength": 160
+    }
+  },
+  "intents": {
+    "OPEN_SETUP": {
+      "purpose": "Mở phần cấu hình mẫu đề",
+      "args": {}
+    },
+    "HOME": {
+      "purpose": "Về màn hình bắt đầu",
+      "args": {}
+    },
+    "CREATE_SESSION": {
+      "purpose": "Tạo workspace nháp",
+      "args": {}
+    },
+    "OPEN_SESSION": {
+      "purpose": "Mở cuộc trò chuyện hoặc đề theo tên, hoặc gần đây nhất",
+      "args": {
+        "title": "string?"
+      }
+    },
+    "SET_SIDEBAR": {
+      "purpose": "Thu gọn hoặc mở rộng thanh điều hướng",
+      "args": {
+        "collapsed": "boolean"
+      }
+    },
+    "CLOSE_SETUP": {
+      "purpose": "Đóng phần cấu hình",
+      "args": {}
+    },
+    "LIST_SESSIONS": {
+      "purpose": "Liệt kê hoặc tìm các cuộc trò chuyện",
+      "args": {
+        "title": "string?"
+      }
+    },
+    "DELETE_SESSION": {
+      "purpose": "Chuẩn bị xóa một cuộc trò chuyện",
+      "args": {
+        "title": "string?"
+      }
+    },
+    "SET_VIEW": {
+      "purpose": "Đổi chế độ xem đề, đáp án hoặc PDF",
+      "args": {
+        "view": "paper|review|pdf"
+      }
+    },
+    "STATUS": {
+      "purpose": "Đọc trạng thái tạo đề hiện tại",
+      "args": {"scope": "current|active?", "name": "string?", "estimate": "boolean?"}
+    },
+    "WARNINGS": {
+      "purpose": "Đọc cảnh báo nguồn, hình và đáp án",
+      "args": {}
+    },
+    "FOCUS_QUESTION": {
+      "purpose": "Cuộn đến câu hỏi trong chế độ đề hoặc đáp án",
+      "args": {
+        "number": "integer",
+        "part": "string?",
+        "view": "paper|review?"
+      }
+    },
+    "FOCUS_SECTION": {
+      "purpose": "Cuộn đến một phần trong đề",
+      "args": {
+        "part": "string"
+      }
+    },
+    "SCROLL_TOP": {
+      "purpose": "Cuộn lên đầu đề",
+      "args": {}
+    },
+    "OPEN_EDITOR": {
+      "purpose": "Mở hộp chỉnh sửa một câu hỏi",
+      "args": {
+        "number": "integer?",
+        "part": "string?"
+      }
+    },
+    "CLOSE_EDITOR": {
+      "purpose": "Đóng hộp chỉnh sửa",
+      "args": {}
+    },
+    "VERIFY_QUESTION": {
+      "purpose": "Chuẩn bị kiểm tra lại đáp án một câu",
+      "args": {
+        "number": "integer?",
+        "part": "string?"
+      }
+    },
+    "REGENERATE_QUESTION": {
+      "purpose": "Chuẩn bị sinh lại câu hỏi theo yêu cầu",
+      "args": {
+        "number": "integer?",
+        "part": "string?",
+        "instruction": "string"
+      }
+    },
+    "RETRY_PREVIEW": {
+      "purpose": "Thử dựng lại bản xem trước PDF sau lỗi",
+      "args": {}
+    },
+    "APPROVE": {
+      "purpose": "Chuẩn bị duyệt phiên bản đã được giáo viên kiểm tra",
+      "args": {}
+    },
+    "EXPORT": {
+      "purpose": "Chuẩn bị tải PDF, nguồn TEX hoặc đáp án JSON",
+      "args": {
+        "format": "pdf|tex|json"
+      }
+    },
+    "SHOW_FORMATS": {
+      "purpose": "Đọc các mẫu đề hiện có",
+      "args": {}
+    },
+    "SELECT_FORMAT": {
+      "purpose": "Chọn mẫu trong cấu hình; có thể yêu cầu mở chi tiết",
+      "args": {
+        "format": "string",
+        "details": "boolean?"
+      }
+    },
+    "FORMAT_DETAILS": {
+      "purpose": "Mở chi tiết mẫu đã chọn hoặc mẫu nêu rõ",
+      "args": {
+        "format": "string?"
+      }
+    },
+    "PREPARE_GENERATION": {
+      "purpose": "Chuẩn bị tạo đề theo định dạng và các ràng buộc đã nói rõ; không bắt đầu tự động",
+      "args": {
+        "format": "string?",
+        "topic": "string?",
+        "count": "integer?",
+        "minutes": "integer?"
+      }
+    },
+    "ADD_NOTE": {
+      "purpose": "Ghi yêu cầu chỉnh câu khi đề đang được tạo",
+      "args": {
+        "number": "integer",
+        "part": "string?",
+        "instruction": "string"
+      }
+    },
+    "CANCEL_NOTE": {
+      "purpose": "Bỏ ghi chú sửa một câu",
+      "args": {
+        "number": "integer",
+        "part": "string?"
+      }
+    },
+    "REVIEW_NOTES": {
+      "purpose": "Đọc ghi chú chỉnh sửa của công việc hiện tại",
+      "args": {}
+    },
+    "APPLY_NOTES": {
+      "purpose": "Chuẩn bị áp dụng các ghi chú đã xác định câu hỏi",
+      "args": {}
+    },
+    "RENAME": {
+      "purpose": "Đổi tên cuộc trò chuyện hiện tại",
+      "args": {
+        "title": "string"
+      }
+    },
+    "RECALL": {
+      "purpose": "Đọc lại yêu cầu gốc hoặc mẫu đề đã chọn",
+      "args": {
+        "what": "first|format"
+      }
+    },
+    "CHAT_MESSAGE": {
+      "purpose": "Sao chép, đưa vào ô nhập, thu hồi hoặc tạo nhánh từ tin nhắn hiện tại",
+      "args": {
+        "operation": "copy|draft|retract|branch",
+        "number": "integer"
+      }
+    },
+    "SET_DRAFT": {
+      "purpose": "Đưa phần chữ được yêu cầu vào ô nhập",
+      "args": {
+        "text": "string"
+      }
+    },
+    "PATCH_EDITOR": {
+      "purpose": "Điền giá trị nguyên văn đã được giáo viên cung cấp vào bản nháp của trình chỉnh sửa; giáo viên tự kiểm tra và lưu",
+      "args": {
+        "number": "integer?",
+        "part": "string?",
+        "field": "stem|explanation|key|A|B|C|D|statement_a|statement_b|statement_c|statement_d|truth_a|truth_b|truth_c|truth_d|regenerate_instruction",
+        "value": "string"
+      }
+    },
+    "PAUSE_GENERATION": {
+      "purpose": "Request a cooperative durable generation pause",
+      "args": {
+        "title": "string?"
+      }
+    },
+    "RESUME_GENERATION": {
+      "purpose": "Resume the same paused/interrupted generation job",
+      "args": {
+        "title": "string?"
+      }
+    },
+    "RETRY_GENERATION": {
+      "purpose": "Explicitly retry unfinished saved academic work",
+      "args": {
+        "title": "string?"
+      }
+    },
+    "CANCEL_GENERATION": {
+      "purpose": "Stop the current generation execution",
+      "args": {
+        "title": "string?"
+      }
+    },
+    "RECOVERABLE_JOBS": {
+      "purpose": "Inspect paused or interrupted generation jobs",
+      "args": {}
+    },
+    "OPEN_HISTORY": {
+      "purpose": "Open the existing exam version history",
+      "args": {}
+    },
+    "EXPORT_DOCUMENT": {
+      "purpose": "Use the existing approved student Word/Markdown export",
+      "args": {
+        "format": "docx|md"
+      }
+    },
+    "ITEM_REGENERATION_STATUS": {
+      "purpose": "Read the actual question-regeneration operation status",
+      "args": {}
+    },
+    "STOP_ITEM_REGENERATION": {
+      "purpose": "Stop only the active question-regeneration operation",
+      "args": {}
+    },
+    "LIST_VERSIONS": {
+      "purpose": "List actual versions and change records",
+      "args": {}
+    },
+    "INSPECT_VERSION": {
+      "purpose": "Read stored version without restoring",
+      "args": {
+        "version": "integer?",
+        "relative": "initial|previous?",
+        "title": "string?"
+      }
+    },
+    "RESTORE_VERSION": {
+      "purpose": "Restore an explicitly resolved stored version",
+      "args": {
+        "version": "integer?",
+        "relative": "initial|previous?",
+        "title": "string?"
+      }
+    },
+    "UNDO_CHANGE": {
+      "purpose": "Undo the latest eligible actual change",
+      "args": {}
+    },
+    "LIST_DOCUMENTS": {
+      "purpose": "List workspace attachment metadata and available preview",
+      "args": {
+        "name": "string?"
+      }
+    },
+    "DETACH_DOCUMENT": {
+      "purpose": "Detach one uniquely named document from this workspace",
+      "args": {
+        "name": "string"
+      }
+    },
+    "UPLOAD_GUIDANCE": {
+      "purpose": "Explain the existing user-gesture file upload path",
+      "args": {}
+    },
+    "SAVE_EDITOR": {
+      "purpose": "Save the current question editor draft through existing validation",
+      "args": {}
+    },
+    "APPROVE_QUESTION": {
+      "purpose": "Approve one eligible question at the current revision",
+      "args": {
+        "number": "integer?",
+        "part": "string?"
+      }
+    },
+    "EXPORT_ARTIFACT": {
+      "purpose": "Download the requested approved student, teacher key, or matrix artifact",
+      "args": {
+        "artifact": "student|teacher|matrix",
+        "format": "pdf|tex|json|docx|md"
+      }
+    },
+    "PREPARE_PRACTICE": {
+      "purpose": "Prepare supported adjacent practice (SAT, IELTS, TOEIC, TOEFL, ACT); web only when requested or preferred",
+      "args": {
+        "topic": "string",
+        "count": "integer?",
+        "minutes": "integer?",
+        "sourcePreference": "attachments|web|default|no_web?",
+        "difficulty": "string?",
+        "requirements": "string?",
+        "prepareOnly": "boolean?"
+      }
+    },
+    "USE_DOCUMENT": {
+      "purpose": "Select a uniquely named attached workspace document for the evolving exam spec",
+      "args": {
+        "name": "string",
+        "exclusive": "boolean?"
+      }
+    }
+  },
+  "goals": {
+    "OPEN_CONFIGURATION": {
+      "meaning": "Mở phần cấu hình mẫu đề",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {},
+      "resolver": "capability",
+      "capability": "OPEN_SETUP",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "RETURN_HOME": {
+      "meaning": "Về màn hình bắt đầu",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {},
+      "resolver": "capability",
+      "capability": "HOME",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "CREATE_WORKSPACE": {
+      "meaning": "Tạo workspace nháp",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {},
+      "resolver": "capability",
+      "capability": "CREATE_SESSION",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "OPEN_WORKSPACE": {
+      "meaning": "Mở cuộc trò chuyện hoặc đề theo tên, hoặc gần đây nhất",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {
+        "title": "string?"
+      },
+      "resolver": "capability",
+      "capability": "OPEN_SESSION",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "SET_NAVIGATION": {
+      "meaning": "Thu gọn hoặc mở rộng thanh điều hướng",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {
+        "collapsed": "boolean"
+      },
+      "resolver": "capability",
+      "capability": "SET_SIDEBAR",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "CLOSE_CONFIGURATION": {
+      "meaning": "Đóng phần cấu hình",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {},
+      "resolver": "capability",
+      "capability": "CLOSE_SETUP",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "FIND_CONVERSATIONS": {
+      "meaning": "Liệt kê hoặc tìm các cuộc trò chuyện",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT",
+        "QUESTION",
+        "INFORM"
+      ],
+      "parameters": {
+        "title": "string?"
+      },
+      "resolver": "capability",
+      "capability": "LIST_SESSIONS",
+      "effect": "read",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "REMOVE_CONVERSATION": {
+      "meaning": "Chuẩn bị xóa một cuộc trò chuyện",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {
+        "title": "string?"
+      },
+      "resolver": "capability",
+      "capability": "DELETE_SESSION",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "VIEW_EXAM": {
+      "meaning": "Đổi chế độ xem đề, đáp án hoặc PDF",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {
+        "view": "paper|review|pdf"
+      },
+      "resolver": "capability",
+      "capability": "SET_VIEW",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "READ_PROGRESS": {
+      "meaning": "Đọc đề đang làm, môn/số câu/thời gian và tiến độ thật. scope=current cho đề này, scope=active cho các đề đang chạy; name chỉ dùng khi người dùng nêu tên đề.",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT",
+        "QUESTION",
+        "INFORM"
+      ],
+      "parameters": {"scope": "current|active?", "name": "string?", "estimate": "boolean?"},
+      "resolver": "capability",
+      "capability": "STATUS",
+      "effect": "read",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "READ_WARNINGS": {
+      "meaning": "Đọc cảnh báo nguồn, hình và đáp án",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT",
+        "QUESTION",
+        "INFORM"
+      ],
+      "parameters": {},
+      "resolver": "capability",
+      "capability": "WARNINGS",
+      "effect": "read",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "INSPECT_QUESTION": {
+      "meaning": "Xem câu hỏi, đáp án hoặc giải thích đang lưu trong đề hiện tại",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT",
+        "QUESTION",
+        "INFORM"
+      ],
+      "parameters": {
+        "number": "integer",
+        "part": "string?",
+        "view": "paper|review?",
+        "subItem": "a|b|c|d?",
+        "aspect": "answer|explanation|verification|approval|metadata|content?"
+      },
+      "resolver": "capability",
+      "capability": "FOCUS_QUESTION",
+      "effect": "read",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "INSPECT_SECTION": {
+      "meaning": "Cuộn đến một phần trong đề",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {
+        "part": "string"
+      },
+      "resolver": "capability",
+      "capability": "FOCUS_SECTION",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "GO_TO_EXAM_START": {
+      "meaning": "Cuộn lên đầu đề",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {},
+      "resolver": "capability",
+      "capability": "SCROLL_TOP",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "EDIT_QUESTION": {
+      "meaning": "Mở hộp chỉnh sửa một câu hỏi",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {
+        "number": "integer?",
+        "part": "string?"
+      },
+      "resolver": "capability",
+      "capability": "OPEN_EDITOR",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "CLOSE_QUESTION_EDITOR": {
+      "meaning": "Đóng hộp chỉnh sửa",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {},
+      "resolver": "capability",
+      "capability": "CLOSE_EDITOR",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "VERIFY_ANSWER": {
+      "meaning": "Chuẩn bị kiểm tra lại đáp án một câu",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {
+        "number": "integer?",
+        "part": "string?"
+      },
+      "resolver": "capability",
+      "capability": "VERIFY_QUESTION",
+      "effect": "inference",
+      "confirmation": true,
+      "availability": "implemented"
+    },
+    "REGENERATE_ITEM": {
+      "meaning": "Chuẩn bị sinh lại câu hỏi theo yêu cầu",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {
+        "number": "integer?",
+        "part": "string?",
+        "instruction": "string"
+      },
+      "resolver": "capability",
+      "capability": "REGENERATE_QUESTION",
+      "effect": "inference",
+      "confirmation": true,
+      "availability": "implemented"
+    },
+    "RETRY_PDF": {
+      "meaning": "Thử dựng lại bản xem trước PDF sau lỗi",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {},
+      "resolver": "capability",
+      "capability": "RETRY_PREVIEW",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "APPROVE_EXAM": {
+      "meaning": "Chuẩn bị duyệt phiên bản đã được giáo viên kiểm tra",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {},
+      "resolver": "capability",
+      "capability": "APPROVE",
+      "effect": "write",
+      "confirmation": true,
+      "availability": "implemented"
+    },
+    "EXPORT_EXAM": {
+      "meaning": "Chuẩn bị tải PDF, nguồn TEX hoặc đáp án JSON",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {
+        "format": "pdf|tex|json"
+      },
+      "resolver": "capability",
+      "capability": "EXPORT",
+      "effect": "write",
+      "confirmation": true,
+      "availability": "implemented"
+    },
+    "LIST_EXAM_FORMATS": {
+      "meaning": "Đọc các mẫu đề hiện có",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT",
+        "QUESTION",
+        "INFORM"
+      ],
+      "parameters": {},
+      "resolver": "capability",
+      "capability": "SHOW_FORMATS",
+      "effect": "read",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "PREPARE_EXAM": {
+      "meaning": "Chọn mẫu trong cấu hình; có thể yêu cầu mở chi tiết",
+      "dialogueActs": [
+        "REQUEST",
+        "INFORM",
+        "CORRECT"
+      ],
+      "parameters": {
+        "family": "thpt|vact|custom?",
+        "subject": "string?",
+        "topic": "string?",
+        "grade": "integer?",
+        "count": "integer?",
+        "minutes": "integer?",
+        "useDefaults": "boolean?",
+        "difficulty": "string?",
+        "requirements": "string?",
+        "sourcePreference": "attachments|web|default|no_web?",
+        "clear": "topic|difficulty|requirements|count|minutes|sources?",
+        "fresh": "boolean?"
+      },
+      "resolver": "intake",
+      "capability": null,
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "REQUEST_GENERATION": {
+      "meaning": "Chuẩn bị tạo đề theo định dạng và các ràng buộc đã nói rõ; không bắt đầu tự động",
+      "dialogueActs": [
+        "REQUEST",
+        "INFORM",
+        "CORRECT"
+      ],
+      "parameters": {
+        "family": "thpt|vact|custom?",
+        "subject": "string?",
+        "topic": "string?",
+        "grade": "integer?",
+        "count": "integer?",
+        "minutes": "integer?",
+        "useDefaults": "boolean?",
+        "difficulty": "string?",
+        "requirements": "string?",
+        "sourcePreference": "attachments|web|default|no_web?",
+        "clear": "topic|difficulty|requirements|count|minutes|sources?",
+        "fresh": "boolean?"
+      },
+      "resolver": "intake",
+      "capability": null,
+      "effect": "inference",
+      "confirmation": true,
+      "availability": "implemented"
+    },
+    "RECORD_REVISION_NOTE": {
+      "meaning": "Ghi yêu cầu chỉnh câu khi đề đang được tạo",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {
+        "number": "integer",
+        "part": "string?",
+        "instruction": "string"
+      },
+      "resolver": "capability",
+      "capability": "ADD_NOTE",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "CANCEL_REVISION_NOTE": {
+      "meaning": "Bỏ ghi chú sửa một câu",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {
+        "number": "integer",
+        "part": "string?"
+      },
+      "resolver": "capability",
+      "capability": "CANCEL_NOTE",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "READ_REVISION_NOTES": {
+      "meaning": "Đọc ghi chú chỉnh sửa của công việc hiện tại",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {},
+      "resolver": "capability",
+      "capability": "REVIEW_NOTES",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "APPLY_REVISION_NOTES": {
+      "meaning": "Chuẩn bị áp dụng các ghi chú đã xác định câu hỏi",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {},
+      "resolver": "capability",
+      "capability": "APPLY_NOTES",
+      "effect": "inference",
+      "confirmation": true,
+      "availability": "implemented"
+    },
+    "RENAME_CONVERSATION": {
+      "meaning": "Đổi tên cuộc trò chuyện hiện tại",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {
+        "title": "string"
+      },
+      "resolver": "capability",
+      "capability": "RENAME",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "RECALL_REQUIREMENTS": {
+      "meaning": "Đọc dữ kiện đã lưu: what=first chỉ khi hỏi nguyên văn lời nhắn/yêu cầu ban đầu; what=format khi hỏi môn, kỳ thi hoặc mẫu đã chọn/thống nhất gần nhất. Không tự trả lời từ trí nhớ mô hình.",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT",
+        "QUESTION",
+        "INFORM"
+      ],
+      "parameters": {
+        "what": "first|format"
+      },
+      "resolver": "capability",
+      "capability": "RECALL",
+      "effect": "read",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "MANAGE_MESSAGE": {
+      "meaning": "Sao chép, đưa vào ô nhập, thu hồi hoặc tạo nhánh từ tin nhắn hiện tại",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {
+        "operation": "copy|draft|retract|branch",
+        "number": "integer"
+      },
+      "resolver": "capability",
+      "capability": "CHAT_MESSAGE",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "DRAFT_MESSAGE": {
+      "meaning": "Đưa phần chữ được yêu cầu vào ô nhập",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {
+        "text": "string"
+      },
+      "resolver": "capability",
+      "capability": "SET_DRAFT",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "FILL_EDITOR": {
+      "meaning": "Điền giá trị nguyên văn đã được giáo viên cung cấp vào bản nháp của trình chỉnh sửa; giáo viên tự kiểm tra và lưu",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {
+        "number": "integer?",
+        "part": "string?",
+        "field": "stem|explanation|key|A|B|C|D|statement_a|statement_b|statement_c|statement_d|truth_a|truth_b|truth_c|truth_d|regenerate_instruction",
+        "value": "string"
+      },
+      "resolver": "capability",
+      "capability": "PATCH_EDITOR",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "APPLICATION_GUIDANCE": {
+      "meaning": "Hướng dẫn sử dụng các chức năng đang hỗ trợ",
+      "dialogueActs": [
+        "GUIDANCE",
+        "QUESTION",
+        "REQUEST",
+        "INFORM"
+      ],
+      "parameters": {},
+      "resolver": "guidance",
+      "capability": null,
+      "effect": "read",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "CAPABILITY_INQUIRY": {
+      "meaning": "Hỏi chức năng hoặc hướng dẫn sử dụng. helpTopic chọn từng việc; subject/family chỉ khi người dùng đã nêu mẫu muốn dùng.",
+      "dialogueActs": [
+        "GUIDANCE",
+        "QUESTION",
+        "REQUEST",
+        "INFORM"
+      ],
+      "parameters": {"helpTopic": "create|documents|review|export|progress?", "subject": "string?", "family": "thpt|vact|custom?"},
+      "resolver": "guidance",
+      "capability": null,
+      "effect": "read",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "PAUSE_GENERATION": {
+      "meaning": "Pause generation while preserving valid work",
+      "dialogueActs": [
+        "REQUEST"
+      ],
+      "parameters": {
+        "title": "string?"
+      },
+      "resolver": "capability",
+      "capability": "PAUSE_GENERATION",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "RESUME_GENERATION": {
+      "meaning": "Continue unfinished generation from saved outputs",
+      "dialogueActs": [
+        "REQUEST"
+      ],
+      "parameters": {
+        "title": "string?"
+      },
+      "resolver": "capability",
+      "capability": "RESUME_GENERATION",
+      "effect": "inference",
+      "confirmation": true,
+      "availability": "implemented"
+    },
+    "RETRY_GENERATION": {
+      "meaning": "Retry incomplete work after a recoverable failure",
+      "dialogueActs": [
+        "REQUEST"
+      ],
+      "parameters": {
+        "title": "string?"
+      },
+      "resolver": "capability",
+      "capability": "RETRY_GENERATION",
+      "effect": "inference",
+      "confirmation": true,
+      "availability": "implemented"
+    },
+    "CANCEL_GENERATION": {
+      "meaning": "Cancel the current generation execution",
+      "dialogueActs": [
+        "REQUEST"
+      ],
+      "parameters": {
+        "title": "string?"
+      },
+      "resolver": "capability",
+      "capability": "CANCEL_GENERATION",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "RECOVERABLE_JOBS": {
+      "meaning": "List jobs whose valid work may be continued",
+      "dialogueActs": [
+        "REQUEST",
+        "QUESTION",
+        "INFORM"
+      ],
+      "parameters": {},
+      "resolver": "capability",
+      "capability": "RECOVERABLE_JOBS",
+      "effect": "read",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "OPEN_HISTORY": {
+      "meaning": "Inspect the existing version-history dialog",
+      "dialogueActs": [
+        "REQUEST"
+      ],
+      "parameters": {},
+      "resolver": "capability",
+      "capability": "OPEN_HISTORY",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "EXPORT_DOCUMENT": {
+      "meaning": "Download an approved Word or Markdown student document",
+      "dialogueActs": [
+        "REQUEST"
+      ],
+      "parameters": {
+        "format": "docx|md"
+      },
+      "resolver": "capability",
+      "capability": "EXPORT_DOCUMENT",
+      "effect": "write",
+      "confirmation": true,
+      "availability": "implemented"
+    },
+    "READ_ITEM_REGENERATION": {
+      "meaning": "Read the actual question-regeneration operation status",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT",
+        "QUESTION",
+        "INFORM"
+      ],
+      "parameters": {},
+      "resolver": "capability",
+      "capability": "ITEM_REGENERATION_STATUS",
+      "effect": "read",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "STOP_ITEM_REGENERATION": {
+      "meaning": "Stop only the active question-regeneration operation",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {},
+      "resolver": "capability",
+      "capability": "STOP_ITEM_REGENERATION",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "LIST_VERSIONS": {
+      "meaning": "List actual versions and change records",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT",
+        "QUESTION",
+        "INFORM"
+      ],
+      "parameters": {},
+      "resolver": "capability",
+      "capability": "LIST_VERSIONS",
+      "effect": "read",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "INSPECT_VERSION": {
+      "meaning": "Read stored version without restoring",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT",
+        "QUESTION",
+        "INFORM"
+      ],
+      "parameters": {
+        "version": "integer?",
+        "relative": "initial|previous?",
+        "title": "string?"
+      },
+      "resolver": "capability",
+      "capability": "INSPECT_VERSION",
+      "effect": "read",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "RESTORE_VERSION": {
+      "meaning": "Restore an explicitly resolved stored version",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {
+        "version": "integer?",
+        "relative": "initial|previous?",
+        "title": "string?"
+      },
+      "resolver": "capability",
+      "capability": "RESTORE_VERSION",
+      "effect": "write",
+      "confirmation": true,
+      "availability": "implemented"
+    },
+    "UNDO_CHANGE": {
+      "meaning": "Undo the latest eligible actual change",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {},
+      "resolver": "capability",
+      "capability": "UNDO_CHANGE",
+      "effect": "write",
+      "confirmation": true,
+      "availability": "implemented"
+    },
+    "LIST_DOCUMENTS": {
+      "meaning": "List workspace attachment metadata and available preview",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT",
+        "QUESTION",
+        "INFORM"
+      ],
+      "parameters": {
+        "name": "string?"
+      },
+      "resolver": "capability",
+      "capability": "LIST_DOCUMENTS",
+      "effect": "read",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "DETACH_DOCUMENT": {
+      "meaning": "Detach one uniquely named document from this workspace",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {
+        "name": "string"
+      },
+      "resolver": "capability",
+      "capability": "DETACH_DOCUMENT",
+      "effect": "write",
+      "confirmation": true,
+      "availability": "implemented"
+    },
+    "UPLOAD_GUIDANCE": {
+      "meaning": "Explain the existing user-gesture file upload path",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT",
+        "QUESTION",
+        "INFORM"
+      ],
+      "parameters": {},
+      "resolver": "capability",
+      "capability": "UPLOAD_GUIDANCE",
+      "effect": "read",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "SAVE_EDITOR": {
+      "meaning": "Save the current question editor draft through existing validation",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {},
+      "resolver": "capability",
+      "capability": "SAVE_EDITOR",
+      "effect": "write",
+      "confirmation": true,
+      "availability": "implemented"
+    },
+    "APPROVE_QUESTION": {
+      "meaning": "Approve one eligible question at the current revision",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {
+        "number": "integer?",
+        "part": "string?"
+      },
+      "resolver": "capability",
+      "capability": "APPROVE_QUESTION",
+      "effect": "write",
+      "confirmation": true,
+      "availability": "implemented"
+    },
+    "EXPORT_ARTIFACT": {
+      "meaning": "Download the requested approved student, teacher key, or matrix artifact",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {
+        "artifact": "student|teacher|matrix",
+        "format": "pdf|tex|json|docx|md"
+      },
+      "resolver": "capability",
+      "capability": "EXPORT_ARTIFACT",
+      "effect": "write",
+      "confirmation": true,
+      "availability": "implemented"
+    },
+    "PREPARE_PRACTICE": {
+      "meaning": "Prepare supported adjacent practice (SAT, IELTS, TOEIC, TOEFL, ACT); web only when requested or preferred",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {
+        "topic": "string",
+        "count": "integer?",
+        "minutes": "integer?",
+        "sourcePreference": "attachments|web|default|no_web?",
+        "difficulty": "string?",
+        "requirements": "string?"
+      },
+      "resolver": "capability",
+      "capability": "PREPARE_PRACTICE",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "READ_EXAM_STRUCTURE": {
+      "meaning": "Read actual exam-format structure without configuring or generating",
+      "dialogueActs": [
+        "QUESTION",
+        "REQUEST",
+        "INFORM"
+      ],
+      "parameters": {
+        "family": "thpt|vact|custom?",
+        "subject": "string?",
+        "topic": "string?"
+      },
+      "resolver": "format_info",
+      "effect": "read",
+      "confirmation": false,
+      "availability": "implemented"
+    },
+    "USE_DOCUMENT": {
+      "meaning": "Use a named document already attached to this workspace; no upload or invented content",
+      "dialogueActs": [
+        "REQUEST",
+        "CORRECT"
+      ],
+      "parameters": {
+        "name": "string",
+        "exclusive": "boolean?"
+      },
+      "resolver": "capability",
+      "capability": "USE_DOCUMENT",
+      "effect": "write",
+      "confirmation": false,
+      "availability": "implemented"
+    }
+  }
+}

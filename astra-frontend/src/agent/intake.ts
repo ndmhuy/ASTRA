@@ -15,6 +15,13 @@ export type Intake = {
   missing?: 'family' | 'subject';
   validation?: 'passed' | 'failed';
   topic?: string;
+  difficulty?: string;
+  requirements?: string;
+  sourcePreference?: 'attachments' | 'web' | 'default' | 'no_web';
+  adjacentTopicId?: string;
+  documentIds?: string[];
+  provenance?: Record<string, string>;
+  visible?: boolean;
   phase: 'collecting' | 'selected' | 'evaluated' | 'confirmed';
 };
 

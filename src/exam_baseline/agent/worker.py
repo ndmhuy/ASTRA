@@ -12,7 +12,8 @@ from pydantic import ValidationError
 from .contracts import VERSION, Decision, Turn
 from .provider import ProviderFailure
 from .semantics import VERSION as SEMANTIC_VERSION
-from .semantics import SemanticFrame, normalize_frame
+from .semantics import normalize_frame
+from .v3 import Interpretation
 
 logger = logging.getLogger(__name__)
 
@@ -88,6 +89,7 @@ class WorkerInterpretationProvider:
         endpoint: str,
         *,
         semantic: bool = False,
+        semantic_version: str = "astra-semantic-v1",
         caller_token: str | None = None,
     ):
         url = urlsplit(endpoint)
@@ -106,22 +108,40 @@ class WorkerInterpretationProvider:
             raise ValueError("invalid Worker caller credential")
         self.caller_token = caller_token
         self.semantic = semantic
+        self.semantic_version = semantic_version
         self.url = endpoint.rstrip("/") + (
             "/v2/agent/interpret" if semantic else "/v1/agent/interpret"
         )
 
-    async def interpret(self, turn: Turn, timeout: float) -> Decision | SemanticFrame:
+    async def interpret(self, turn: Turn, timeout: float) -> Interpretation:
         try:
             body = turn.model_dump(exclude_none=True)
             body["context"] = turn.context.model_dump(exclude_defaults=True, exclude_none=True)
+            from .v3 import TurnV3
+            from .v3 import normalize_frame as normalize_v3
+
+            v3 = (
+                isinstance(turn, TurnV3)
+                and self.semantic
+                and self.semantic_version == "astra-semantic-v3"
+            )
+            contract_hash = SEMANTIC_HASH if self.semantic else CONTRACT_HASH
+            if v3:
+                contract_hash = json.loads(
+                    (
+                        Path(__file__).parents[1] / "resources/agent/semantic-v3-contract.json"
+                    ).read_text("utf-8")
+                )["contractHash"]
+            else:
+                body["context"].pop("grounded", None)
             if not self.semantic:
                 body["context"].pop("dialogue", None)
             async with self.client.stream(
                 "POST",
-                self.url,
+                self.url.replace("/v2/", "/v3/") if v3 else self.url,
                 json=body,
                 headers={
-                    "X-Astra-Contract": SEMANTIC_HASH if self.semantic else CONTRACT_HASH,
+                    "X-Astra-Contract": contract_hash,
                     **({"X-Astra-Caller": self.caller_token} if self.caller_token else {}),
                 },
                 timeout=timeout,
@@ -151,12 +171,19 @@ class WorkerInterpretationProvider:
                         reason if reason in ERRORS else "transient", safe_retry=safe
                     )
                 if (
-                    payload.get("schemaVersion") != (SEMANTIC_VERSION if self.semantic else VERSION)
+                    payload.get("schemaVersion")
+                    != (
+                        "astra-semantic-v3"
+                        if v3
+                        else SEMANTIC_VERSION
+                        if self.semantic
+                        else VERSION
+                    )
                     or payload.get("clientMessageId") != turn.clientMessageId
                 ):
                     raise ProviderFailure("schema")
                 decision = (
-                    normalize_frame(payload["frame"])
+                    (normalize_v3(payload["frame"]) if v3 else normalize_frame(payload["frame"]))
                     if self.semantic
                     else Decision.model_validate(payload["decision"])
                 )

@@ -19,11 +19,17 @@ const PART_LABELS: Record<string, string> = {
 
 export function humanizeErrorMessage(message?: string, code?: string): string {
   const raw = (message || '').trim();
+  if (code === 'provider_access_denied') {
+    return 'Dịch vụ từ chối request (HTTP 403). Kiểm tra endpoint và cách xác thực trong Kết nối AI; mã lỗi này chưa xác định được quyền dùng model.';
+  }
+  if (code === 'provider_connection_failed' || code === 'provider_connect_timeout') {
+    return 'Không kết nối được tới máy chủ API. Mở Kết nối AI để kiểm tra API Base URL và kết nối Internet; bản nháp vẫn được giữ.';
+  }
   if (code === 'provider_not_configured' || /Configure a real EXAM_PROVIDER/i.test(raw)) {
-    return 'Hệ thống chưa được kết nối dịch vụ AI. Vui lòng kiểm tra cấu hình hoặc mở chế độ chạy thử (start-astra-demo.bat).';
+    return 'Hệ thống chưa được kết nối dịch vụ AI. Mở Kết nối AI để nhập API key dùng chung cho chat và sinh đề.';
   }
   if (/Bad Gateway|Failed to fetch|ECONNREFUSED|\b502\b/i.test(raw)) {
-    return 'Chưa kết nối được với máy chủ tạo đề. Thầy cô hãy mở ứng dụng bằng start-astra-demo.bat (chạy thử) hoặc start-astra.bat rồi thử lại.';
+    return 'Chưa kết nối được với máy chủ tạo đề. Thầy cô hãy kiểm tra cửa sổ đang chạy start.cmd rồi thử lại.';
   }
   if (/Model provider failed/i.test(raw)) {
     return 'Dịch vụ AI đang bận hoặc gặp sự cố tạm thời. Thầy cô vui lòng thử lại sau ít phút.';

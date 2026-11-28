@@ -63,14 +63,16 @@ def test_cache_fingerprint_detects_source_change_and_credentials_stay_out_of_arg
     source.write_text("version-two")
     assert run_app.fingerprint([source]) != first
     command = run_app.launch_command(Path(sys.executable), tmp_path / "private.env", 8001)
-    assert "--profile" in command and all(
-        value not in " ".join(command) for value in tokens().values()
+    assert (
+        "--env-file" in command
+        and "start_local.py" in command[1]
+        and all(value not in " ".join(command) for value in tokens().values())
     )
 
 
 def test_check_mode_is_read_only_and_never_starts_or_installs(tmp_path, monkeypatch, capsys):
     target = tmp_path / "absent.env"
-    monkeypatch.setattr(sys, "argv", ["run_app.py", "--check", "--profile", str(target)])
+    monkeypatch.setattr(sys, "argv", ["run_app.py", "--check", "--env-file", str(target)])
     monkeypatch.setattr(run_app, "prepare", lambda: pytest.fail("check must not install"))
     monkeypatch.setattr(subprocess, "call", lambda *a, **kw: pytest.fail("must not start app"))
     assert run_app.main() == 0
@@ -94,9 +96,7 @@ def test_single_branch_clone_fetches_missing_pinned_corpus_without_switching(mon
     assert not any(operation in call for call in calls for operation in ("switch", "merge"))
 
 
-def test_fresh_clone_starts_with_shared_access_without_prompt_or_local_profile(
-    tmp_path, monkeypatch
-):
+def test_fresh_clone_opens_key_ui_without_using_legacy_worker_access(tmp_path, monkeypatch):
     checkout = tmp_path / "checkout"
     shared = checkout / "config/team-worker-access.env"
     shared.parent.mkdir(parents=True)
@@ -106,12 +106,6 @@ def test_fresh_clone_starts_with_shared_access_without_prompt_or_local_profile(
     monkeypatch.setattr(run_app, "ROOT", checkout)
     monkeypatch.setattr(sys, "argv", ["run_app.py", "--no-browser"])
     monkeypatch.setattr(run_app, "prepare", lambda: Path(sys.executable))
-    monkeypatch.setattr(
-        run_app.getpass, "getpass", lambda *a: pytest.fail("fresh clone must not prompt")
-    )
-    monkeypatch.setattr(
-        run_app, "save_profile", lambda *a, **kw: pytest.fail("must not rewrite shared access")
-    )
 
     class UnusedPort:
         def __enter__(self):
@@ -125,20 +119,22 @@ def test_fresh_clone_starts_with_shared_access_without_prompt_or_local_profile(
 
     monkeypatch.setattr(run_app.socket, "socket", UnusedPort)
 
-    def launch(command, *, cwd, env):
-        assert env["ASTRA_WORKER_PROFILE"] == str(shared)
-        assert all(env[key] == value for key, value in tokens().items())
+    def launch(command, *, cwd):
+        assert "start_local.py" in command[1]
+        assert command[command.index("--env-file") + 1] == str(checkout / ".env")
         assert all(value not in " ".join(command) for value in tokens().values())
         return 0
 
     monkeypatch.setattr(run_app.subprocess, "call", launch)
     assert run_app.main() == 0
     assert not profile.user_profile().exists()
+    assert not (checkout / ".env").exists()  # Only the UI may save the user's key.
     assert profile.read_tokens([shared]) == tokens()
 
 
-def test_existing_private_profile_still_overrides_shared_access(tmp_path, monkeypatch):
+def test_legacy_worker_launch_only_resolves_private_profile(tmp_path, monkeypatch):
     monkeypatch.setenv("LOCALAPPDATA", str(tmp_path / "user"))
     monkeypatch.setattr(profile, "ROOT", tmp_path / "checkout")
+    monkeypatch.delenv("ASTRA_WORKER_PROFILE", raising=False)
     profile.save_profile(profile.user_profile(), tokens())
-    assert profile.startup_profile() == profile.user_profile()
+    assert profile.resolve_profile(".env.mas-worker") == profile.user_profile()

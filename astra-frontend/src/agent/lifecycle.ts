@@ -34,12 +34,12 @@ export function generationTarget(sessions: ExamSession[], currentId: string | nu
 
 export function generationReceipt(operation: 'pause' | 'resume' | 'retry', state: GenerationProgress) {
   if (operation === 'pause') {
-    if (state.status === 'paused') return { status: 'succeeded' as const, text: 'Backend đã tạm dừng và lưu kết quả hợp lệ.' };
-    if (state.status === 'pausing') return { status: 'accepted' as const, text: 'Backend đã nhận yêu cầu tạm dừng; đang đợi lưu phản hồi đang gọi. Chưa phải trạng thái đã dừng.' };
+    if (state.status === 'paused') return { status: 'succeeded' as const, text: 'Đã tạm dừng và lưu phần đã soạn.' };
+    if (state.status === 'pausing') return { status: 'accepted' as const, text: 'Đang lưu phần vừa soạn để tạm dừng. Bạn có thể xem tiến độ ngay trong đề.' };
   } else {
-    if (state.status === 'running' || state.status === 'retrying') return { status: 'succeeded' as const, text: 'Backend xác nhận đang tiếp tục phần công việc còn thiếu.' };
-    if (state.status === 'resuming' || state.status === 'queued') return { status: 'accepted' as const, text: 'Backend đã nhận yêu cầu tiếp tục từ checkpoint; đang chờ executor bắt đầu.' };
-    if (state.status === 'completed') return { status: 'succeeded' as const, text: 'Backend xác nhận phiên này đã hoàn tất.' };
+    if (state.status === 'running' || state.status === 'retrying') return { status: 'succeeded' as const, text: 'Đang soạn tiếp phần còn lại.' };
+    if (state.status === 'resuming' || state.status === 'queued') return { status: 'accepted' as const, text: 'Yêu cầu tiếp tục đã được nhận. Lượt soạn sẽ nối từ phần đã lưu.' };
+    if (state.status === 'completed') return { status: 'succeeded' as const, text: 'Đề đã soạn xong. Bạn có thể mở đề để kiểm tra.' };
   }
-  return { status: 'failed' as const, text: state.error?.message || state.statusMessage || 'Backend chưa xác nhận trạng thái yêu cầu.' };
+  return { status: 'failed' as const, text: state.error?.message || state.statusMessage || 'Mình chưa kiểm tra được kết quả. Bạn có thể mở đề để xem tiến độ.' };
 }

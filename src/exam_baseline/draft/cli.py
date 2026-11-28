@@ -14,7 +14,7 @@ from exam_baseline.draft.artifacts import private_artifact_path
 from exam_baseline.draft.composer import create_draft
 from exam_baseline.draft.latex import export_latex
 from exam_baseline.draft.models import Evidence, MiniRequest, StageResult
-from exam_baseline.providers.chat_completions import ChatCompletionsProvider
+from exam_baseline.providers.http import http_provider
 
 
 class FixtureProvider:
@@ -55,12 +55,10 @@ async def run(args) -> int:
         result = await create_draft(payload, FixtureProvider(args.fixture), args.output)
     else:
         settings = Settings()
-        if settings.provider != "chat_completions":
-            raise ValueError("Live draft requires EXAM_PROVIDER=chat_completions")
+        if settings.provider not in {"chat_completions", "anthropic"}:
+            raise ValueError("Live draft requires a configured HTTP provider")
         async with httpx.AsyncClient(follow_redirects=False) as client:
-            result = await create_draft(
-                payload, ChatCompletionsProvider(settings, client), args.output
-            )
+            result = await create_draft(payload, http_provider(settings, client), args.output)
     if isinstance(result, StageResult):
         print(result.model_dump_json(indent=2))
         return 1

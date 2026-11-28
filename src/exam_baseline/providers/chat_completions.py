@@ -105,6 +105,10 @@ class ChatCompletionsProvider:
                 }
             ]
             payload["tool_choice"] = {"type": "function", "function": {"name": "astra_output"}}
+        return await self._complete_payload(payload)
+
+    async def _complete_payload(self, payload):
+        """Share HTTP, timeout and optional ledger behavior across wire formats."""
         reservation = self.ledger.reserve(payload, self.max_output_tokens) if self.ledger else None
         try:
             completion = await self._send(payload)
@@ -234,6 +238,9 @@ class ChatCompletionsProvider:
             ) from exc
         except httpx.RequestError as exc:
             raise ProviderError("provider_unreachable", "Could not reach LLM provider.") from exc
+        return self._parse_response(response)
+
+    def _parse_response(self, response):
         completion = None
         try:
             data = response.json()

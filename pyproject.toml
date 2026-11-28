@@ -12,6 +12,7 @@ dependencies = [
   "fastapi>=0.115,<1",
   "pydantic>=2.10,<3",
   "pydantic-settings>=2.6,<3",
+  "python-dotenv>=1,<2",
   "httpx>=0.27,<1",
   "uvicorn>=0.30,<1",
   "pillow>=10,<13",
@@ -42,7 +43,7 @@ include = ["astra_mas", "exam_baseline*", "rag_workflow*"]
 
 [tool.setuptools.package-data]
 astra_mas = ["contracts.pyc", "runtime.pyc", "mas_core.zip"]
-exam_baseline = ["resources/prompts/*.txt", "resources/fixtures/*.json", "resources/templates/*.tex", "resources/exam_formats/*.json", "resources/contracts/*.json", "resources/agent/*.json", "resources/input_documents_v1.json"]
+exam_baseline = ["resources/prompts/*.txt", "resources/fixtures/*.json", "resources/templates/*.tex", "resources/exam_formats/*.json", "resources/contracts/*.json", "resources/agent/*.json", "resources/input_documents_v1.json", "resources/connection.json"]
 rag_workflow = ["config.json", "web/*.html", "web/*.css", "web/*.js"]
 
 [tool.pytest.ini_options]

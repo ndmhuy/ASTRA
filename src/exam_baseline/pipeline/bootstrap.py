@@ -9,7 +9,7 @@ import httpx
 from exam_baseline.config import Settings
 from exam_baseline.core.contracts import Completion, ProviderError
 from exam_baseline.pipeline.contracts import AGENT_ROLES, PipelineRequest, StageConfig
-from exam_baseline.providers.chat_completions import ChatCompletionsProvider
+from exam_baseline.providers.http import http_provider
 
 
 class ReplayProvider:
@@ -68,13 +68,13 @@ def replay_providers(folder: Path) -> dict:
 @asynccontextmanager
 async def provider_scope(payload: PipelineRequest, settings: Settings | None = None):
     settings = settings if settings is not None else Settings()
-    if settings.provider != "chat_completions":
-        raise ValueError("pipeline live mode requires EXAM_PROVIDER=chat_completions")
+    if settings.provider not in {"chat_completions", "anthropic"}:
+        raise ValueError("pipeline live mode requires a configured HTTP provider")
     async with httpx.AsyncClient(follow_redirects=False) as client:
         providers = {}
         for role in AGENT_ROLES:
             configured = stage_settings(settings, getattr(payload.workflow, role))
-            providers[role] = ChatCompletionsProvider(configured, client)
+            providers[role] = http_provider(configured, client)
         yield providers
 
 
